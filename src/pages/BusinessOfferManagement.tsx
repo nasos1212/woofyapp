@@ -12,6 +12,8 @@ import {
   X,
   Check,
   AlertCircle,
+  Clock,
+  Calendar,
 } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
@@ -41,6 +43,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { format } from "date-fns";
+
 interface Offer {
   id: string;
   title: string;
@@ -50,6 +54,10 @@ interface Offer {
   terms: string | null;
   is_active: boolean;
   redemption_count: number;
+  valid_from: string | null;
+  valid_until: string | null;
+  is_limited_time: boolean;
+  limited_time_label: string | null;
 }
 
 const BusinessOfferManagement = () => {
@@ -69,6 +77,9 @@ const BusinessOfferManagement = () => {
     discount_value: "",
     discount_type: "percentage",
     terms: "",
+    valid_until: "",
+    is_limited_time: false,
+    limited_time_label: "",
   });
 
   useEffect(() => {
@@ -106,7 +117,7 @@ const BusinessOfferManagement = () => {
       // Get offers with redemption counts
       const { data: offersData, error } = await supabase
         .from("offers")
-        .select("id, title, description, discount_value, discount_type, terms, is_active")
+        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label")
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -145,6 +156,9 @@ const BusinessOfferManagement = () => {
       discount_value: "",
       discount_type: "percentage",
       terms: "",
+      valid_until: "",
+      is_limited_time: false,
+      limited_time_label: "",
     });
     setIsDialogOpen(true);
   };
@@ -157,6 +171,9 @@ const BusinessOfferManagement = () => {
       discount_value: offer.discount_value?.toString() || "",
       discount_type: offer.discount_type,
       terms: offer.terms || "",
+      valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : "",
+      is_limited_time: offer.is_limited_time || false,
+      limited_time_label: offer.limited_time_label || "",
     });
     setIsDialogOpen(true);
   };
@@ -175,6 +192,9 @@ const BusinessOfferManagement = () => {
         discount_value: formData.discount_value ? parseFloat(formData.discount_value) : null,
         discount_type: formData.discount_type,
         terms: formData.terms.trim() || null,
+        valid_until: formData.valid_until ? new Date(formData.valid_until).toISOString() : null,
+        is_limited_time: formData.is_limited_time,
+        limited_time_label: formData.limited_time_label.trim() || null,
       };
 
       if (editingOffer) {
@@ -439,6 +459,47 @@ const BusinessOfferManagement = () => {
                 value={formData.terms}
                 onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
               />
+            </div>
+
+            {/* Time-sensitive options */}
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Time-Sensitive Options
+              </h4>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="valid_until">Expiry Date (optional)</Label>
+                  <Input
+                    id="valid_until"
+                    type="date"
+                    value={formData.valid_until}
+                    onChange={(e) => setFormData({ ...formData, valid_until: e.target.value })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="is_limited_time" className="cursor-pointer">Mark as Limited Time Offer</Label>
+                  <Switch
+                    id="is_limited_time"
+                    checked={formData.is_limited_time}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_limited_time: checked })}
+                  />
+                </div>
+
+                {formData.is_limited_time && (
+                  <div className="space-y-2">
+                    <Label htmlFor="limited_time_label">Custom Label (optional)</Label>
+                    <Input
+                      id="limited_time_label"
+                      placeholder="e.g., 1 week only, January special"
+                      value={formData.limited_time_label}
+                      onChange={(e) => setFormData({ ...formData, limited_time_label: e.target.value })}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

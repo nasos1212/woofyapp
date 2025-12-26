@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, ExternalLink } from "lucide-react";
+import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, Clock, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
+import { formatDistanceToNow, isPast } from "date-fns";
 
 interface Offer {
   id: string;
@@ -17,6 +18,10 @@ interface Offer {
   discount_value: number | null;
   discount_type: string;
   terms: string | null;
+  valid_from: string | null;
+  valid_until: string | null;
+  is_limited_time: boolean;
+  limited_time_label: string | null;
   business: {
     id: string;
     business_name: string;
@@ -47,7 +52,7 @@ const MemberOffers = () => {
   const [showRedeemed, setShowRedeemed] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [membershipId, setMembershipId] = useState<string | null>(null);
-  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+  const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -102,6 +107,10 @@ const MemberOffers = () => {
           discount_value,
           discount_type,
           terms,
+          valid_from,
+          valid_until,
+          is_limited_time,
+          limited_time_label,
           business:businesses(id, business_name, category, city)
         `)
         .eq("is_active", true);
@@ -129,6 +138,10 @@ const MemberOffers = () => {
           discount_value: offer.discount_value,
           discount_type: offer.discount_type,
           terms: offer.terms,
+          valid_from: offer.valid_from,
+          valid_until: offer.valid_until,
+          is_limited_time: offer.is_limited_time || false,
+          limited_time_label: offer.limited_time_label,
           business: offer.business as unknown as Offer["business"],
           isRedeemed: redeemedOfferIds.includes(offer.id),
         }));
@@ -179,6 +192,29 @@ const MemberOffers = () => {
 
   const getCategoryLabel = (category: string) => {
     return categories.find((c) => c.id === category)?.label || category;
+  };
+
+  const getTimeIndicator = (offer: Offer) => {
+    if (offer.is_limited_time) {
+      return { type: "limited", label: offer.limited_time_label || "Limited Time" };
+    }
+    
+    if (offer.valid_until) {
+      const validUntil = new Date(offer.valid_until);
+      if (isPast(validUntil)) {
+        return { type: "expired", label: "Expired" };
+      }
+      
+      const daysLeft = Math.ceil((validUntil.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      if (daysLeft <= 7) {
+        return { 
+          type: "expiring", 
+          label: `Ends ${formatDistanceToNow(validUntil, { addSuffix: true })}` 
+        };
+      }
+    }
+    
+    return null;
   };
 
   if (loading || isLoading) {
@@ -286,174 +322,117 @@ const MemberOffers = () => {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredOffers.map((offer) => (
-                <button
-                  key={offer.id}
-                  onClick={() => setSelectedOffer(offer)}
-                  className={`bg-white rounded-2xl p-5 shadow-soft border transition-all hover:shadow-card text-left w-full ${
-                    offer.isRedeemed
-                      ? "border-muted opacity-75"
-                      : "border-transparent hover:border-primary/30"
-                  }`}
-                >
-                  {/* Header */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <Building2 className="w-5 h-5 text-primary" />
+              {filteredOffers.map((offer) => {
+                const timeIndicator = getTimeIndicator(offer);
+                
+                return (
+                  <button
+                    key={offer.id}
+                    onClick={() => setSelectedOffer(offer as OfferWithDetails)}
+                    className={`bg-white rounded-2xl p-5 shadow-soft border transition-all hover:shadow-card text-left w-full ${
+                      offer.isRedeemed
+                        ? "border-muted opacity-75"
+                        : "border-transparent hover:border-primary/30"
+                    }`}
+                  >
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                          <Building2 className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <Link 
+                            to={`/business/${offer.business.id}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="font-medium text-foreground text-sm hover:text-primary hover:underline transition-colors"
+                          >
+                            {offer.business.business_name}
+                          </Link>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {offer.business.city || "Location TBD"}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <Link 
-                          to={`/business/${offer.business.id}`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="font-medium text-foreground text-sm hover:text-primary hover:underline transition-colors"
-                        >
-                          {offer.business.business_name}
-                        </Link>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {offer.business.city || "Location TBD"}
-                        </p>
-                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {getCategoryLabel(offer.business.category)}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className="text-xs">
-                      {getCategoryLabel(offer.business.category)}
-                    </Badge>
-                  </div>
 
-                  {/* Offer Details */}
-                  <div className="mb-4">
-                    <h3 className="font-display font-semibold text-foreground mb-1">
-                      {offer.title}
-                    </h3>
-                    {offer.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {offer.description}
+                    {/* Time indicator */}
+                    {timeIndicator && (
+                      <Badge 
+                        variant={timeIndicator.type === "expiring" ? "destructive" : "secondary"}
+                        className={`mb-3 gap-1 ${
+                          timeIndicator.type === "expired" ? "bg-muted text-muted-foreground" :
+                          timeIndicator.type === "expiring" ? "bg-orange-100 text-orange-700 border-orange-200" :
+                          "bg-rose-100 text-rose-700 border-rose-200"
+                        }`}
+                      >
+                        {timeIndicator.type === "expiring" ? (
+                          <AlertTriangle className="w-3 h-3" />
+                        ) : (
+                          <Clock className="w-3 h-3" />
+                        )}
+                        {timeIndicator.label}
+                      </Badge>
+                    )}
+
+                    {/* Offer Details */}
+                    <div className="mb-4">
+                      <h3 className="font-display font-semibold text-foreground mb-1">
+                        {offer.title}
+                      </h3>
+                      {offer.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {offer.description}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Discount Badge */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Percent className="w-4 h-4 text-primary" />
+                        <span className="font-semibold text-primary">
+                          {formatDiscount(offer)}
+                        </span>
+                      </div>
+
+                      {offer.isRedeemed ? (
+                        <Badge
+                          variant="outline"
+                          className="bg-green-50 text-green-700 border-green-200"
+                        >
+                          <Check className="w-3 h-3 mr-1" />
+                          Redeemed
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-primary/10 text-primary border-0">
+                          Available
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Terms */}
+                    {offer.terms && (
+                      <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
+                        {offer.terms}
                       </p>
                     )}
-                  </div>
-
-                  {/* Discount Badge */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Percent className="w-4 h-4 text-primary" />
-                      <span className="font-semibold text-primary">
-                        {formatDiscount(offer)}
-                      </span>
-                    </div>
-
-                    {offer.isRedeemed ? (
-                      <Badge
-                        variant="outline"
-                        className="bg-green-50 text-green-700 border-green-200"
-                      >
-                        <Check className="w-3 h-3 mr-1" />
-                        Redeemed
-                      </Badge>
-                    ) : (
-                      <Badge className="bg-primary/10 text-primary border-0">
-                        Available
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Terms */}
-                  {offer.terms && (
-                    <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border">
-                      {offer.terms}
-                    </p>
-                  )}
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           )}
         </main>
 
         {/* Offer Detail Dialog */}
-        <Dialog open={!!selectedOffer} onOpenChange={() => setSelectedOffer(null)}>
-          <DialogContent className="sm:max-w-md">
-            {selectedOffer && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="font-display text-xl">
-                    {selectedOffer.title}
-                  </DialogTitle>
-                </DialogHeader>
-                
-                <div className="space-y-4">
-                  {/* Business Info */}
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Building2 className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <Link
-                        to={`/business/${selectedOffer.business.id}`}
-                        className="font-semibold text-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1"
-                        onClick={() => setSelectedOffer(null)}
-                      >
-                        {selectedOffer.business.business_name}
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </Link>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {selectedOffer.business.city || "Location TBD"}
-                      </p>
-                    </div>
-                    <Badge variant="secondary">
-                      {getCategoryLabel(selectedOffer.business.category)}
-                    </Badge>
-                  </div>
-
-                  {/* Discount */}
-                  <div className="text-center py-4 bg-primary/10 rounded-xl">
-                    <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
-                      <Percent className="w-6 h-6" />
-                      {formatDiscount(selectedOffer)}
-                    </div>
-                    {selectedOffer.isRedeemed && (
-                      <Badge className="mt-2 bg-green-100 text-green-700 border-0">
-                        <Check className="w-3 h-3 mr-1" />
-                        Already Redeemed
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  {selectedOffer.description && (
-                    <div>
-                      <h4 className="font-medium text-foreground mb-1">Description</h4>
-                      <p className="text-muted-foreground text-sm">
-                        {selectedOffer.description}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Terms */}
-                  {selectedOffer.terms && (
-                    <div>
-                      <h4 className="font-medium text-foreground mb-1">Terms & Conditions</h4>
-                      <p className="text-muted-foreground text-sm italic">
-                        {selectedOffer.terms}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* View Business Button */}
-                  <Link
-                    to={`/business/${selectedOffer.business.id}`}
-                    onClick={() => setSelectedOffer(null)}
-                  >
-                    <Button className="w-full" variant="default">
-                      <Building2 className="w-4 h-4 mr-2" />
-                      View Business Profile
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+        <OfferDetailDialog
+          offer={selectedOffer}
+          onClose={() => setSelectedOffer(null)}
+        />
       </div>
     </>
   );
