@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
+import BackToTop from "./components/BackToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MemberDashboard from "./pages/MemberDashboard";
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <BackToTop />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
