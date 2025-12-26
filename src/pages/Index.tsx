@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import BenefitsSection from "@/components/BenefitsSection";
 import PartnersSection from "@/components/PartnersSection";
+import SheltersSection from "@/components/SheltersSection";
 import HubSection from "@/components/HubSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import PricingSection from "@/components/PricingSection";
@@ -16,9 +17,9 @@ const Index = () => {
         <title>PawPass - The Ultimate Membership for Pet Lovers | €59/year</title>
         <meta 
           name="description" 
-          content="Join 10,000+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. Save €2,000+ yearly with PawPass membership." 
+          content="Join 10,000+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% of proceeds support dog shelters. Save €2,000+ yearly with PawPass membership." 
         />
-        <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops" />
+        <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops, dog shelters, pet charity" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -27,6 +28,7 @@ const Index = () => {
           <HeroSection />
           <BenefitsSection />
           <PartnersSection />
+          <SheltersSection />
           <TestimonialsSection />
           <HubSection />
           <PricingSection />
