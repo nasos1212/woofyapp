@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, Filter, MapPin, Percent, Check, Tag, Building2, X, ExternalLink } from "lucide-react";
+import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Offer {
   id: string;
@@ -201,14 +202,13 @@ const MemberOffers = () => {
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link
-              to="/member"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Dashboard</span>
-            </Link>
+          <div className="container mx-auto px-4 py-4">
+            <Breadcrumbs 
+              items={[
+                { label: "Dashboard", href: "/member" },
+                { label: "Offers" }
+              ]} 
+            />
           </div>
         </header>
 
