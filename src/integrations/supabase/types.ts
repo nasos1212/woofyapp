@@ -423,6 +423,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_membership_owner: {
+        Args: { _membership_id: string; _user_id: string }
+        Returns: boolean
+      }
+      is_membership_shared_with: {
+        Args: { _membership_id: string; _user_id: string }
+        Returns: boolean
+      }
       user_has_membership_access: {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean
