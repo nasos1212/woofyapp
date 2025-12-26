@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut } from "lucide-react";
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,8 +9,15 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const isHomePage = location.pathname === "/";
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+    navigate("/");
+  };
 
   useEffect(() => {
     if (user) {
@@ -110,9 +117,16 @@ const Header = () => {
                 My Account
               </Button>
             </Link>
-            <Link to="/auth">
-              <Button variant="hero" size="default">Join Now</Button>
-            </Link>
+            {user ? (
+              <Button variant="ghost" size="sm" className="gap-2" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </Button>
+            ) : (
+              <Link to="/auth">
+                <Button variant="hero" size="default">Join Now</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -187,9 +201,16 @@ const Header = () => {
                   For Business
                 </Button>
               </Link>
-              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="hero" className="w-full">Join Now</Button>
-              </Link>
+              {user ? (
+                <Button variant="ghost" className="w-full justify-start gap-2 text-destructive" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4" />
+                  Sign Out
+                </Button>
+              ) : (
+                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="hero" className="w-full">Join Now</Button>
+                </Link>
+              )}
             </div>
           </nav>
         </div>
