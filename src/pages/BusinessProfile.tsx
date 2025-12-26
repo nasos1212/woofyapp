@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, ExternalLink, Pencil } from "lucide-react";
+import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,6 +65,7 @@ const categoryLabels: Record<string, string> = {
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -232,9 +233,12 @@ export default function BusinessProfile() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-xl font-semibold text-foreground mb-2">Business not found</h2>
-          <Link to="/member/offers" className="text-primary hover:underline">
-            Back to offers
-          </Link>
+          <button 
+            onClick={() => navigate(-1)} 
+            className="text-primary hover:underline"
+          >
+            Go back
+          </button>
         </div>
       </div>
     );
@@ -250,13 +254,14 @@ export default function BusinessProfile() {
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Header */}
-          <Link 
-            to="/member/offers" 
+          <button 
+            onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to offers
-          </Link>
+            Go back
+          </button>
+
 
           {/* Business Header */}
           <div className="bg-card rounded-2xl border border-border p-6 mb-6">
