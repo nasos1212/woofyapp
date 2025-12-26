@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Dog, Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Dog, Menu, X, Building2, User } from "lucide-react";
 import { Button } from "./ui/button";
 
 const Header = () => {
@@ -8,6 +9,7 @@ const Header = () => {
   const navLinks = [
     { name: "Benefits", href: "#benefits" },
     { name: "Partners", href: "#partners" },
+    { name: "Shelters", href: "#shelters" },
     { name: "Hub", href: "#hub" },
     { name: "Pricing", href: "#pricing" },
   ];
@@ -17,12 +19,12 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 bg-gradient-hero rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <Dog className="w-6 h-6 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-xl text-foreground">PawPass</span>
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
@@ -38,8 +40,19 @@ const Header = () => {
           </nav>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="sm">Log In</Button>
+          <div className="hidden md:flex items-center gap-3">
+            <Link to="/business">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <Building2 className="w-4 h-4" />
+                For Business
+              </Button>
+            </Link>
+            <Link to="/member">
+              <Button variant="outline" size="sm" className="gap-2">
+                <User className="w-4 h-4" />
+                My Account
+              </Button>
+            </Link>
             <Button variant="hero" size="default">Join Now</Button>
           </div>
 
@@ -72,7 +85,18 @@ const Header = () => {
               </a>
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
-              <Button variant="ghost" className="justify-start">Log In</Button>
+              <Link to="/member" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <User className="w-4 h-4" />
+                  My Account
+                </Button>
+              </Link>
+              <Link to="/business" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2">
+                  <Building2 className="w-4 h-4" />
+                  For Business
+                </Button>
+              </Link>
               <Button variant="hero">Join Now</Button>
             </div>
           </nav>
