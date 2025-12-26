@@ -116,11 +116,11 @@ const MemberDashboard = () => {
     
     setIsInviting(true);
     try {
-      // Look up user by email
+      // Look up user by email (case-insensitive)
       const { data: inviteeProfile } = await supabase
         .from("profiles")
         .select("user_id")
-        .eq("email", inviteEmail.trim().toLowerCase())
+        .ilike("email", inviteEmail.trim())
         .maybeSingle();
 
       if (!inviteeProfile) {
