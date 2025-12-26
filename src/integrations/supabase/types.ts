@@ -273,9 +273,13 @@ export type Database = {
           discount_value: number | null
           id: string
           is_active: boolean
+          is_limited_time: boolean | null
+          limited_time_label: string | null
           terms: string | null
           title: string
           updated_at: string
+          valid_from: string | null
+          valid_until: string | null
         }
         Insert: {
           business_id: string
@@ -285,9 +289,13 @@ export type Database = {
           discount_value?: number | null
           id?: string
           is_active?: boolean
+          is_limited_time?: boolean | null
+          limited_time_label?: string | null
           terms?: string | null
           title: string
           updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
         }
         Update: {
           business_id?: string
@@ -297,9 +305,13 @@ export type Database = {
           discount_value?: number | null
           id?: string
           is_active?: boolean
+          is_limited_time?: boolean | null
+          limited_time_label?: string | null
           terms?: string | null
           title?: string
           updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
         }
         Relationships: [
           {
