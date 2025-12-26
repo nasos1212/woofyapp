@@ -4,6 +4,7 @@ import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut } from "lucide-react
 import { Button } from "./ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import NotificationBell from "./NotificationBell";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -97,6 +98,7 @@ const Header = () => {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
+            {user && <NotificationBell />}
             {isAdmin && (
               <Link to="/admin">
                 <Button variant="ghost" size="sm" className="gap-2 text-primary">
