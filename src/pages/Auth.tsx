@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const authSchema = z.object({
@@ -71,7 +72,7 @@ const Auth = () => {
           });
         }
       } else {
-        const { error } = await signUp(email, password, fullName);
+        const { error, data } = await signUp(email, password, fullName);
         if (error) {
           if (error.message.includes("already registered")) {
             toast({
@@ -87,6 +88,23 @@ const Auth = () => {
             });
           }
         } else {
+          // For member accounts, create a membership record
+          if (!isBusiness && data?.user) {
+            const expiryDate = new Date();
+            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+            
+            const { data: memberNumber } = await supabase.rpc('generate_member_number');
+            
+            await supabase.from('memberships').insert({
+              user_id: data.user.id,
+              member_number: memberNumber || `PP-${Date.now()}`,
+              expires_at: expiryDate.toISOString(),
+              is_active: true,
+              pet_name: '',
+              pet_breed: '',
+            });
+          }
+          
           toast({
             title: "Account Created!",
             description: "Welcome to PawPass!",
