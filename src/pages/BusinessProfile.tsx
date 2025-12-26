@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, ExternalLink } from "lucide-react";
+import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, ExternalLink, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,9 +10,11 @@ import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 
 interface Business {
   id: string;
+  user_id: string;
   business_name: string;
   description: string | null;
   category: string;
@@ -73,6 +75,8 @@ export default function BusinessProfile() {
   const [userReview, setUserReview] = useState("");
   const [existingReview, setExistingReview] = useState<Review | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const isOwner = user && business?.user_id === user.id;
 
   useEffect(() => {
     if (id) {
@@ -284,18 +288,33 @@ export default function BusinessProfile() {
                     </Badge>
                   </div>
                   
-                  {/* Rating */}
-                  {reviews.length > 0 && (
-                    <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
-                      <Star className="w-4 h-4 text-primary fill-primary" />
-                      <span className="font-semibold text-foreground">
-                        {averageRating.toFixed(1)}
-                      </span>
-                      <span className="text-muted-foreground text-sm">
-                        ({reviews.length} reviews)
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {/* Edit button for owner */}
+                    {isOwner && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowEditDialog(true)}
+                        className="gap-2"
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit Profile
+                      </Button>
+                    )}
+                  
+                    {/* Rating */}
+                    {reviews.length > 0 && (
+                      <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+                        <Star className="w-4 h-4 text-primary fill-primary" />
+                        <span className="font-semibold text-foreground">
+                          {averageRating.toFixed(1)}
+                        </span>
+                        <span className="text-muted-foreground text-sm">
+                          ({reviews.length} reviews)
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {business.description && (
@@ -534,6 +553,16 @@ export default function BusinessProfile() {
           </Card>
         </div>
       </div>
+
+      {/* Edit Dialog */}
+      {business && (
+        <BusinessEditDialog
+          business={business}
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+          onSave={fetchBusinessData}
+        />
+      )}
     </>
   );
 }

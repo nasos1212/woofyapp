@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { dogBreeds } from "@/data/dogBreeds";
 
 interface Pet {
   id: string;
@@ -385,12 +387,21 @@ const MemberOnboarding = () => {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor={`breed-${pet.id}`}>Breed (optional)</Label>
-                          <Input
-                            id={`breed-${pet.id}`}
-                            placeholder="e.g., Golden Retriever"
+                          <Select
                             value={pet.breed}
-                            onChange={(e) => updatePet(pet.id, "breed", e.target.value)}
-                          />
+                            onValueChange={(value) => updatePet(pet.id, "breed", value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a breed..." />
+                            </SelectTrigger>
+                            <SelectContent className="max-h-[300px]">
+                              {dogBreeds.map((breed) => (
+                                <SelectItem key={breed} value={breed}>
+                                  {breed}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                     </div>
