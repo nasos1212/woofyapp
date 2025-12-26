@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil } from "lucide-react";
+import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Business {
   id: string;
@@ -253,14 +254,13 @@ export default function BusinessProfile() {
 
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto px-4 py-8">
-          {/* Header */}
-          <button 
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Go back
-          </button>
+          {/* Breadcrumbs */}
+          <Breadcrumbs 
+            items={[
+              { label: "Businesses", href: "/member/offers" },
+              { label: business.business_name }
+            ]} 
+          />
 
 
           {/* Business Header */}
