@@ -19,6 +19,7 @@ import FamilyManagement from "./pages/FamilyManagement";
 import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -44,7 +45,7 @@ const App = () => (
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
               <Route path="/business/:id" element={<BusinessProfile />} />
               <Route path="/partner-register" element={<PartnerRegister />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -1,13 +1,20 @@
-import { useState } from "react";
-import { MapPin, Phone, Globe, Mail, Map } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { PhotoUpload } from "./PhotoUpload";
 
+interface BusinessPhoto {
+  id: string;
+  photo_url: string;
+  caption: string | null;
+}
 interface Business {
   id: string;
   business_name: string;
@@ -37,7 +44,48 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   const [website, setWebsite] = useState(business.website || "");
   const [googleMapsUrl, setGoogleMapsUrl] = useState(business.google_maps_url || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
+  const [loadingPhotos, setLoadingPhotos] = useState(false);
 
+  useEffect(() => {
+    if (open) {
+      fetchPhotos();
+    }
+  }, [open, business.id]);
+
+  const fetchPhotos = async () => {
+    setLoadingPhotos(true);
+    try {
+      const { data, error } = await supabase
+        .from("business_photos")
+        .select("id, photo_url, caption")
+        .eq("business_id", business.id)
+        .order("display_order", { ascending: true });
+
+      if (error) throw error;
+      setPhotos(data || []);
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+    } finally {
+      setLoadingPhotos(false);
+    }
+  };
+
+  const deletePhoto = async (photoId: string) => {
+    try {
+      const { error } = await supabase
+        .from("business_photos")
+        .delete()
+        .eq("id", photoId);
+
+      if (error) throw error;
+      toast.success("Photo deleted");
+      fetchPhotos();
+    } catch (error: any) {
+      console.error("Error deleting photo:", error);
+      toast.error(error.message || "Failed to delete photo");
+    }
+  };
   const handleSave = async () => {
     if (!businessName.trim()) {
       toast.error("Business name is required");
@@ -75,129 +123,179 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Business Profile</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="businessName">Business Name *</Label>
-            <Input
-              id="businessName"
-              placeholder="Your Business Name"
-              value={businessName}
-              onChange={(e) => setBusinessName(e.target.value)}
-              required
-            />
-          </div>
+        <Tabs defaultValue="details" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="photos" className="gap-2">
+              <ImageIcon className="w-4 h-4" />
+              Photos ({photos.length})
+            </TabsTrigger>
+          </TabsList>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              placeholder="Tell pet owners about your services..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <TabsContent value="details" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="address">Address</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Label htmlFor="businessName">Business Name *</Label>
+              <Input
+                id="businessName"
+                placeholder="Your Business Name"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                placeholder="Tell pet owners about your services..."
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="address">Address</Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="address"
+                    placeholder="Street address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
                 <Input
-                  id="address"
-                  placeholder="Street address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  id="city"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    placeholder="+353 1 234 5678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Business Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="contact@business.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="website"
+                  placeholder="https://www.yourbusiness.com"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="city">City</Label>
-              <Input
-                id="city"
-                placeholder="City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="googleMapsUrl">Google Maps Link</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  id="phone"
-                  placeholder="+353 1 234 5678"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  id="googleMapsUrl"
+                  placeholder="https://maps.google.com/..."
+                  value={googleMapsUrl}
+                  onChange={(e) => setGoogleMapsUrl(e.target.value)}
                   className="pl-10"
                 />
               </div>
+              <p className="text-xs text-muted-foreground">
+                Paste your Google Maps share link so customers can find you easily
+              </p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Business Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="contact@business.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="website"
-                placeholder="https://www.yourbusiness.com"
-                value={website}
-                onChange={(e) => setWebsite(e.target.value)}
-                className="pl-10"
+            <div className="flex justify-end gap-3 pt-4">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSave} disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="photos" className="py-4">
+            <div className="space-y-6">
+              <PhotoUpload
+                businessId={business.id}
+                onUploadComplete={fetchPhotos}
               />
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="googleMapsUrl">Google Maps Link</Label>
-            <div className="relative">
-              <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                id="googleMapsUrl"
-                placeholder="https://maps.google.com/..."
-                value={googleMapsUrl}
-                onChange={(e) => setGoogleMapsUrl(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Paste your Google Maps share link so customers can find you easily
-            </p>
-          </div>
-        </div>
+              {photos.length > 0 && (
+                <div className="space-y-3">
+                  <Label>Current Photos</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {photos.map((photo) => (
+                      <div key={photo.id} className="relative group">
+                        <img
+                          src={photo.photo_url}
+                          alt={photo.caption || "Business photo"}
+                          className="w-full h-32 object-cover rounded-lg"
+                        />
+                        <Button
+                          size="icon"
+                          variant="destructive"
+                          className="absolute top-2 right-2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => deletePhoto(photo.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-        <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
-            {isSaving ? "Saving..." : "Save Changes"}
-          </Button>
-        </div>
+              {photos.length === 0 && !loadingPhotos && (
+                <p className="text-center text-muted-foreground py-4">
+                  No photos uploaded yet
+                </p>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

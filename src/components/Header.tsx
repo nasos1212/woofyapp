@@ -1,12 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag } from "lucide-react";
+import { Dog, Menu, X, Building2, User, Tag, Shield } from "lucide-react";
 import { Button } from "./ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
   const isHomePage = location.pathname === "/";
+
+  useEffect(() => {
+    if (user) {
+      checkAdminStatus();
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
+
+  const checkAdminStatus = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "admin",
+      });
+      setIsAdmin(!!data);
+    } catch {
+      setIsAdmin(false);
+    }
+  };
 
   const navLinks = [
     { name: "Benefits", href: "#benefits" },
@@ -65,6 +90,14 @@ const Header = () => {
 
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="ghost" size="sm" className="gap-2 text-primary">
+                  <Shield className="w-4 h-4" />
+                  Admin
+                </Button>
+              </Link>
+            )}
             <Link to="/business">
               <Button variant="ghost" size="sm" className="gap-2">
                 <Building2 className="w-4 h-4" />
@@ -134,6 +167,14 @@ const Header = () => {
               )
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
+              {isAdmin && (
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-primary">
+                    <Shield className="w-4 h-4" />
+                    Admin Dashboard
+                  </Button>
+                </Link>
+              )}
               <Link to="/member" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2">
                   <User className="w-4 h-4" />
