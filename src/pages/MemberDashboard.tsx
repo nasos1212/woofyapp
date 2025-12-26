@@ -155,9 +155,11 @@ const MemberDashboard = () => {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" size="sm" className="w-full mt-4">
-                  View All Partners
-                </Button>
+                <Link to="/member/offers">
+                  <Button variant="outline" size="sm" className="w-full mt-4">
+                    View All Partners
+                  </Button>
+                </Link>
               </div>
 
               {/* Pet Profile */}
@@ -175,9 +177,11 @@ const MemberDashboard = () => {
                     <p className="text-sm text-muted-foreground">Golden Retriever • 3 years</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" className="w-full mt-4 text-primary">
-                  + Add Another Pet
-                </Button>
+                <Link to="/member/family">
+                  <Button variant="ghost" size="sm" className="w-full mt-4 text-primary">
+                    + Add Another Pet
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
