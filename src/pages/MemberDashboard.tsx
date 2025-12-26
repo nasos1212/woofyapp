@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Gift, MapPin, Calendar, Clock, Percent, QrCode, Shield, Bell, Users, Copy, Check, Mail } from "lucide-react";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -111,20 +112,43 @@ const MemberDashboard = () => {
   };
 
   const handleInviteByEmail = async () => {
-    if (!inviteEmail.trim() || !membership?.share_code) return;
+    if (!inviteEmail.trim() || !membership?.share_code || !profile?.full_name) return;
     
     setIsInviting(true);
     try {
-      // For now, just copy the code and show instructions
-      // In a real app, you'd send an email here
-      await navigator.clipboard.writeText(
-        `Join my PawPass Family! Use code: ${membership.share_code}\n\nSign up at: ${window.location.origin}/member/join-family`
-      );
-      toast.success(`Invite link copied! Share it with ${inviteEmail}`);
+      // Look up user by email
+      const { data: inviteeProfile } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("email", inviteEmail.trim().toLowerCase())
+        .maybeSingle();
+
+      if (!inviteeProfile) {
+        toast.error("No user found with that email. They need to sign up first.");
+        setIsInviting(false);
+        return;
+      }
+
+      // Create notification for the invitee
+      const { error } = await supabase.from("notifications").insert({
+        user_id: inviteeProfile.user_id,
+        type: "family_invite",
+        title: "Family Pack Invitation",
+        message: `${profile.full_name} is inviting you to add your pets to their family pack!`,
+        data: {
+          share_code: membership.share_code,
+          inviter_name: profile.full_name,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success(`Invitation sent to ${inviteEmail}!`);
       setInviteEmail("");
       setInviteDialogOpen(false);
     } catch (error) {
-      toast.error("Failed to create invite");
+      console.error("Failed to send invite:", error);
+      toast.error("Failed to send invitation");
     } finally {
       setIsInviting(false);
     }
@@ -171,10 +195,7 @@ const MemberDashboard = () => {
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <Breadcrumbs items={[{ label: "Member Dashboard" }]} />
             <div className="flex items-center gap-4">
-              <button className="relative p-2 hover:bg-muted rounded-full transition-colors">
-                <Bell className="w-5 h-5 text-muted-foreground" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full" />
-              </button>
+              <NotificationBell />
               <div className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center text-white font-medium">
                 {initials}
               </div>
@@ -254,15 +275,15 @@ const MemberDashboard = () => {
                   <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                     <DialogTrigger asChild>
                       <Button variant="outline" className="w-full gap-2">
-                        <Mail className="w-4 h-4" />
-                        Invite by Email
+                        <UserPlus className="w-4 h-4" />
+                        Invite Family Member
                       </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Invite Family Member</DialogTitle>
                         <DialogDescription>
-                          Enter their email to send them an invite link with your share code.
+                          Enter their email to send them an in-app notification with your invite.
                         </DialogDescription>
                       </DialogHeader>
                       <div className="space-y-4 pt-4">
@@ -278,7 +299,7 @@ const MemberDashboard = () => {
                         </div>
                         <div className="bg-muted/50 rounded-lg p-3">
                           <p className="text-sm text-muted-foreground">
-                            They'll receive your share code: <strong>{membership.share_code}</strong>
+                            They'll receive a notification with your share code: <strong>{membership.share_code}</strong>
                           </p>
                         </div>
                         <Button 
@@ -286,7 +307,7 @@ const MemberDashboard = () => {
                           onClick={handleInviteByEmail}
                           disabled={!inviteEmail.trim() || isInviting}
                         >
-                          {isInviting ? "Creating invite..." : "Copy Invite Link"}
+                          {isInviting ? "Sending..." : "Send Invite"}
                         </Button>
                       </div>
                     </DialogContent>
