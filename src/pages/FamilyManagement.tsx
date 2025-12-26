@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Dog, Copy, Trash2, UserPlus, Crown, Shield } from "lucide-react";
+import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -49,6 +49,7 @@ const FamilyManagement = () => {
   } | null>(null);
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [isOwner, setIsOwner] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -175,10 +176,12 @@ const FamilyManagement = () => {
     }
   };
 
-  const copyShareCode = () => {
+  const copyShareCode = async () => {
     if (membership?.share_code) {
-      navigator.clipboard.writeText(membership.share_code);
+      await navigator.clipboard.writeText(membership.share_code);
+      setCopied(true);
       toast.success("Share code copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -278,11 +281,24 @@ const FamilyManagement = () => {
                 </div>
                 <Button
                   variant="secondary"
-                  size="icon"
                   onClick={copyShareCode}
-                  className="bg-white text-primary hover:bg-white/90"
+                  className={`transition-all duration-200 ${
+                    copied 
+                      ? "bg-green-500 text-white hover:bg-green-500" 
+                      : "bg-white text-primary hover:bg-white/90"
+                  }`}
                 >
-                  <Copy className="w-4 h-4" />
+                  {copied ? (
+                    <>
+                      <Check className="w-4 h-4 mr-2" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy Code
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
