@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X } from "lucide-react";
+import { ArrowLeft, ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -331,6 +331,34 @@ const BusinessDashboard = () => {
               Partner Dashboard
             </h1>
             <p className="text-slate-500">Verify members and track your PawPass redemptions</p>
+          </div>
+
+          {/* Quick Navigation */}
+          <div className="grid sm:grid-cols-2 gap-4 mb-8">
+            <Link 
+              to="/business/offers" 
+              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Tag className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900">Manage Offers</h3>
+                <p className="text-sm text-slate-500">Create and edit your discounts</p>
+              </div>
+            </Link>
+            <Link 
+              to="/business/analytics" 
+              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <BarChart3 className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900">Analytics</h3>
+                <p className="text-sm text-slate-500">View performance insights</p>
+              </div>
+            </Link>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
