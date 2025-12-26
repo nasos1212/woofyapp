@@ -101,6 +101,55 @@ export type Database = {
         }
         Relationships: []
       }
+      offer_redemptions: {
+        Row: {
+          business_id: string
+          id: string
+          membership_id: string
+          offer_id: string
+          redeemed_at: string
+          redeemed_by_user_id: string
+        }
+        Insert: {
+          business_id: string
+          id?: string
+          membership_id: string
+          offer_id: string
+          redeemed_at?: string
+          redeemed_by_user_id: string
+        }
+        Update: {
+          business_id?: string
+          id?: string
+          membership_id?: string
+          offer_id?: string
+          redeemed_at?: string
+          redeemed_by_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offer_redemptions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offer_redemptions_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offer_redemptions_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "offers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       offers: {
         Row: {
           business_id: string
