@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield, Plus } from "lucide-react";
+import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,9 +70,13 @@ const FamilyManagement = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [copied, setCopied] = useState(false);
   const [addPetDialogOpen, setAddPetDialogOpen] = useState(false);
+  const [editPetDialogOpen, setEditPetDialogOpen] = useState(false);
+  const [editingPet, setEditingPet] = useState<Pet | null>(null);
   const [newPetName, setNewPetName] = useState("");
   const [newPetBreed, setNewPetBreed] = useState("");
   const [isAddingPet, setIsAddingPet] = useState(false);
+  const [isEditingPet, setIsEditingPet] = useState(false);
+  const [isDeletingPet, setIsDeletingPet] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -260,6 +264,65 @@ const FamilyManagement = () => {
     }
   };
 
+  const openEditDialog = (pet: Pet) => {
+    setEditingPet(pet);
+    setNewPetName(pet.pet_name);
+    setNewPetBreed(pet.pet_breed || "");
+    setEditPetDialogOpen(true);
+  };
+
+  const updatePet = async () => {
+    if (!editingPet || !newPetName.trim()) {
+      toast.error("Please enter a pet name");
+      return;
+    }
+
+    setIsEditingPet(true);
+    try {
+      const { error } = await supabase
+        .from("pets")
+        .update({
+          pet_name: newPetName.trim(),
+          pet_breed: newPetBreed || null,
+        })
+        .eq("id", editingPet.id);
+
+      if (error) throw error;
+
+      toast.success(`${newPetName} has been updated!`);
+      setNewPetName("");
+      setNewPetBreed("");
+      setEditingPet(null);
+      setEditPetDialogOpen(false);
+      fetchFamilyData();
+    } catch (error) {
+      console.error("Error updating pet:", error);
+      toast.error("Failed to update pet");
+    } finally {
+      setIsEditingPet(false);
+    }
+  };
+
+  const deletePet = async (pet: Pet) => {
+    setIsDeletingPet(true);
+    try {
+      const { error } = await supabase
+        .from("pets")
+        .delete()
+        .eq("id", pet.id);
+
+      if (error) throw error;
+
+      toast.success(`${pet.pet_name} has been removed`);
+      fetchFamilyData();
+    } catch (error) {
+      console.error("Error deleting pet:", error);
+      toast.error("Failed to remove pet");
+    } finally {
+      setIsDeletingPet(false);
+    }
+  };
+
   const totalPets = familyMembers.reduce((sum, m) => sum + m.pets.length, 0);
 
   if (loading || isLoading) {
@@ -391,7 +454,7 @@ const FamilyManagement = () => {
 
           {/* Family Members */}
           <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
-            <div className="p-6 border-b border-border">
+            <div className="p-6 border-b border-border flex items-center justify-between">
               <h2 className="font-display font-semibold text-foreground flex items-center gap-2">
                 <Users className="w-5 h-5 text-primary" />
                 Family Members
@@ -521,14 +584,59 @@ const FamilyManagement = () => {
                       {member.pets.map((pet) => (
                         <div
                           key={pet.id}
-                          className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
+                          className="flex items-center justify-between bg-muted/50 rounded-lg px-3 py-2 group"
                         >
-                          <Dog className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-medium">{pet.pet_name}</span>
-                          {pet.pet_breed && (
-                            <span className="text-sm text-muted-foreground">
-                              • {pet.pet_breed}
-                            </span>
+                          <div className="flex items-center gap-2">
+                            <Dog className="w-4 h-4 text-primary" />
+                            <span className="text-sm font-medium">{pet.pet_name}</span>
+                            {pet.pet_breed && (
+                              <span className="text-sm text-muted-foreground">
+                                • {pet.pet_breed}
+                              </span>
+                            )}
+                          </div>
+                          
+                          {/* Only show edit/delete for pets owned by current user */}
+                          {pet.owner_user_id === user?.id && (
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                                onClick={() => openEditDialog(pet)}
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Remove {pet.pet_name}?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will permanently remove {pet.pet_name} from your family membership.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => deletePet(pet)}
+                                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      disabled={isDeletingPet}
+                                    >
+                                      {isDeletingPet ? "Removing..." : "Remove"}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           )}
                         </div>
                       ))}
@@ -552,6 +660,66 @@ const FamilyManagement = () => {
               <Button variant="outline">Upgrade to Family Pack</Button>
             </div>
           )}
+
+          {/* Edit Pet Dialog */}
+          <Dialog open={editPetDialogOpen} onOpenChange={(open) => {
+            setEditPetDialogOpen(open);
+            if (!open) {
+              setEditingPet(null);
+              setNewPetName("");
+              setNewPetBreed("");
+            }
+          }}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Pet</DialogTitle>
+                <DialogDescription>
+                  Update your pet's information.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="editPetName">Pet Name *</Label>
+                  <Input
+                    id="editPetName"
+                    placeholder="Enter your pet's name"
+                    value={newPetName}
+                    onChange={(e) => setNewPetName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="editPetBreed">Breed (optional)</Label>
+                  <Select value={newPetBreed} onValueChange={setNewPetBreed}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select breed" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {dogBreeds.map((breed) => (
+                        <SelectItem key={breed} value={breed}>
+                          {breed}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditPetDialogOpen(false)}
+                  disabled={isEditingPet}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={updatePet}
+                  disabled={!newPetName.trim() || isEditingPet}
+                >
+                  {isEditingPet ? "Saving..." : "Save Changes"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </>
