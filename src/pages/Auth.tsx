@@ -31,7 +31,7 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate(isBusiness ? "/partner-register" : "/member");
+      navigate(isBusiness ? "/partner-register" : "/member/onboarding");
     }
   }, [user, navigate, isBusiness]);
 
@@ -233,7 +233,7 @@ const Auth = () => {
           </div>
 
           {/* Account type switch */}
-          <div className="mt-4 pt-4 border-t border-border text-center">
+          <div className="mt-4 pt-4 border-t border-border text-center space-y-3">
             <button
               type="button"
               onClick={() => navigate(`/auth?type=${isBusiness ? "member" : "business"}`)}
@@ -251,6 +251,16 @@ const Auth = () => {
                 </>
               )}
             </button>
+            
+            {!isBusiness && (
+              <button
+                type="button"
+                onClick={() => navigate("/member/join-family")}
+                className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                Have a family share code?
+              </button>
+            )}
           </div>
         </div>
       </div>

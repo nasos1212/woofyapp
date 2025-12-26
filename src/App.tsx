@@ -11,6 +11,8 @@ import MemberDashboard from "./pages/MemberDashboard";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import Auth from "./pages/Auth";
 import PartnerRegister from "./pages/PartnerRegister";
+import MemberOnboarding from "./pages/MemberOnboarding";
+import JoinFamily from "./pages/JoinFamily";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/member" element={<MemberDashboard />} />
+              <Route path="/member/onboarding" element={<MemberOnboarding />} />
+              <Route path="/member/join-family" element={<JoinFamily />} />
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/partner-register" element={<PartnerRegister />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

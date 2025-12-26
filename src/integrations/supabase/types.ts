@@ -68,15 +68,47 @@ export type Database = {
         }
         Relationships: []
       }
+      membership_shares: {
+        Row: {
+          id: string
+          joined_at: string
+          membership_id: string
+          shared_with_user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          membership_id: string
+          shared_with_user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          membership_id?: string
+          shared_with_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_shares_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       memberships: {
         Row: {
           created_at: string
           expires_at: string
           id: string
           is_active: boolean
+          max_pets: number
           member_number: string
           pet_breed: string | null
           pet_name: string | null
+          plan_type: string
+          share_code: string | null
           user_id: string
         }
         Insert: {
@@ -84,9 +116,12 @@ export type Database = {
           expires_at: string
           id?: string
           is_active?: boolean
+          max_pets?: number
           member_number: string
           pet_breed?: string | null
           pet_name?: string | null
+          plan_type?: string
+          share_code?: string | null
           user_id: string
         }
         Update: {
@@ -94,9 +129,12 @@ export type Database = {
           expires_at?: string
           id?: string
           is_active?: boolean
+          max_pets?: number
           member_number?: string
           pet_breed?: string | null
           pet_name?: string | null
+          plan_type?: string
+          share_code?: string | null
           user_id?: string
         }
         Relationships: []
@@ -197,6 +235,41 @@ export type Database = {
           },
         ]
       }
+      pets: {
+        Row: {
+          created_at: string
+          id: string
+          membership_id: string
+          owner_user_id: string
+          pet_breed: string | null
+          pet_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          membership_id: string
+          owner_user_id: string
+          pet_breed?: string | null
+          pet_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          membership_id?: string
+          owner_user_id?: string
+          pet_breed?: string | null
+          pet_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pets_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -254,6 +327,7 @@ export type Database = {
     }
     Functions: {
       generate_member_number: { Args: never; Returns: string }
+      generate_share_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
