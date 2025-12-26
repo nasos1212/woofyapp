@@ -53,7 +53,9 @@ const Header = () => {
                 My Account
               </Button>
             </Link>
-            <Button variant="hero" size="default">Join Now</Button>
+            <Link to="/auth">
+              <Button variant="hero" size="default">Join Now</Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -97,7 +99,9 @@ const Header = () => {
                   For Business
                 </Button>
               </Link>
-              <Button variant="hero">Join Now</Button>
+              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="hero" className="w-full">Join Now</Button>
+              </Link>
             </div>
           </nav>
         </div>
