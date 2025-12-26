@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3 } from "lucide-react";
+import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Redemption {
   id: string;
@@ -159,14 +160,13 @@ const RedemptionHistory = () => {
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link
-              to="/member"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Dashboard</span>
-            </Link>
+          <div className="container mx-auto px-4 py-4">
+            <Breadcrumbs 
+              items={[
+                { label: "Dashboard", href: "/member" },
+                { label: "History" }
+              ]} 
+            />
           </div>
         </header>
 
