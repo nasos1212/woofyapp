@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Plus, Trash2, Users, Check, ArrowRight, Gift, Sparkles } from "lucide-react";
+import { Dog, Plus, Trash2, Users, Check, ArrowRight, Gift, Sparkles, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -79,7 +79,7 @@ const MemberOnboarding = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    // Check if user already has pets set up
+    // Check if user already has a membership set up
     const checkExistingSetup = async () => {
       if (!user) return;
       
@@ -90,17 +90,8 @@ const MemberOnboarding = () => {
         .maybeSingle();
 
       if (membership) {
-        setMembershipId(membership.id);
-        
-        const { data: existingPets } = await supabase
-          .from("pets")
-          .select("*")
-          .eq("membership_id", membership.id);
-
-        if (existingPets && existingPets.length > 0) {
-          // User already completed onboarding
-          navigate("/member");
-        }
+        // User already has a membership - redirect to dashboard
+        navigate("/member");
       }
     };
 
@@ -233,7 +224,11 @@ const MemberOnboarding = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50 py-12 px-4">
         <div className="container max-w-4xl mx-auto">
-          {/* Progress indicator */}
+          {/* Back to home link */}
+          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to home
+          </Link>
           <div className="flex items-center justify-center gap-4 mb-12">
             <div className={`flex items-center gap-2 ${step === "plan" ? "text-primary" : "text-muted-foreground"}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "plan" ? "bg-primary text-primary-foreground" : "bg-green-500 text-white"}`}>
