@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed';
@@ -303,10 +304,7 @@ const BusinessDashboard = () => {
         {/* Header */}
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </Link>
+            <Breadcrumbs items={[{ label: "Partner Dashboard" }]} />
             <div className="flex items-center gap-4">
               <button className="relative p-2 hover:bg-slate-100 rounded-full transition-colors">
                 <Bell className="w-5 h-5 text-slate-500" />
