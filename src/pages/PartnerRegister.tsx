@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail } from "lucide-react";
+import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +59,7 @@ const PartnerRegister = () => {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   
   // Offers
   const [offers, setOffers] = useState<Offer[]>([
@@ -128,6 +129,7 @@ const PartnerRegister = () => {
           phone,
           email: email || user.email || "",
           website,
+          google_maps_url: googleMapsUrl || null,
         })
         .select()
         .single();
@@ -346,6 +348,23 @@ const PartnerRegister = () => {
                       className="pl-10"
                     />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="googleMapsUrl">Google Maps Link (optional)</Label>
+                  <div className="relative">
+                    <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      id="googleMapsUrl"
+                      placeholder="https://maps.google.com/..."
+                      value={googleMapsUrl}
+                      onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Paste your Google Maps share link so customers can find you easily
+                  </p>
                 </div>
               </div>
 
