@@ -30,9 +30,31 @@ const Auth = () => {
   const isBusiness = accountType === "business";
 
   useEffect(() => {
-    if (user) {
-      navigate(isBusiness ? "/partner-register" : "/member/onboarding");
-    }
+    const checkAndRedirect = async () => {
+      if (!user) return;
+      
+      if (isBusiness) {
+        navigate("/partner-register");
+        return;
+      }
+      
+      // Check if user already has a membership
+      const { data: membership } = await supabase
+        .from("memberships")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (membership) {
+        // User already has membership, go to dashboard
+        navigate("/member");
+      } else {
+        // New user, go to onboarding
+        navigate("/member/onboarding");
+      }
+    };
+    
+    checkAndRedirect();
   }, [user, navigate, isBusiness]);
 
   const handleSubmit = async (e: React.FormEvent) => {
