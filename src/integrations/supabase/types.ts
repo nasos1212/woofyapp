@@ -215,6 +215,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          data: Json | null
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       offer_redemptions: {
         Row: {
           business_id: string
@@ -415,6 +448,10 @@ export type Database = {
     }
     Functions: {
       generate_member_number: { Args: never; Returns: string }
+      generate_member_share_code: {
+        Args: { member_name: string }
+        Returns: string
+      }
       generate_share_code: { Args: never; Returns: string }
       has_role: {
         Args: {
