@@ -1,0 +1,539 @@
+import { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { ArrowLeft, Phone, MapPin, Globe, Star, Clock, Tag, Send, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+
+interface Business {
+  id: string;
+  business_name: string;
+  description: string | null;
+  category: string;
+  phone: string | null;
+  email: string;
+  address: string | null;
+  city: string | null;
+  website: string | null;
+  logo_url: string | null;
+  google_maps_url: string | null;
+}
+
+interface Offer {
+  id: string;
+  title: string;
+  description: string | null;
+  discount_type: string;
+  discount_value: number | null;
+  terms: string | null;
+}
+
+interface Review {
+  id: string;
+  user_id: string;
+  rating: number;
+  review_text: string | null;
+  created_at: string;
+  user_name?: string;
+}
+
+interface Photo {
+  id: string;
+  photo_url: string;
+  caption: string | null;
+}
+
+const categoryLabels: Record<string, string> = {
+  veterinary: "Veterinary",
+  grooming: "Grooming",
+  pet_store: "Pet Store",
+  training: "Training",
+  boarding: "Boarding",
+  daycare: "Daycare",
+  pet_food: "Pet Food",
+  accessories: "Accessories",
+  other: "Other"
+};
+
+export default function BusinessProfile() {
+  const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [userRating, setUserRating] = useState(0);
+  const [userReview, setUserReview] = useState("");
+  const [existingReview, setExistingReview] = useState<Review | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      fetchBusinessData();
+    }
+  }, [id, user]);
+
+  const fetchBusinessData = async () => {
+    try {
+      // Fetch business details
+      const { data: businessData, error: businessError } = await supabase
+        .from("businesses")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (businessError) throw businessError;
+      setBusiness(businessData);
+
+      // Fetch active offers
+      const { data: offersData } = await supabase
+        .from("offers")
+        .select("*")
+        .eq("business_id", id)
+        .eq("is_active", true);
+
+      setOffers(offersData || []);
+
+      // Fetch reviews with user profiles
+      const { data: reviewsData } = await supabase
+        .from("business_reviews")
+        .select("*")
+        .eq("business_id", id)
+        .order("created_at", { ascending: false });
+
+      if (reviewsData) {
+        // Get user profiles for reviews
+        const userIds = reviewsData.map(r => r.user_id);
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name")
+          .in("user_id", userIds);
+
+        const profileMap = new Map(profiles?.map(p => [p.user_id, p.full_name]) || []);
+        
+        const reviewsWithNames = reviewsData.map(review => ({
+          ...review,
+          user_name: profileMap.get(review.user_id) || "Anonymous"
+        }));
+        
+        setReviews(reviewsWithNames);
+
+        // Check if current user has a review
+        if (user) {
+          const userExistingReview = reviewsData.find(r => r.user_id === user.id);
+          if (userExistingReview) {
+            setExistingReview(userExistingReview);
+            setUserRating(userExistingReview.rating);
+            setUserReview(userExistingReview.review_text || "");
+          }
+        }
+      }
+
+      // Fetch photos
+      const { data: photosData } = await supabase
+        .from("business_photos")
+        .select("*")
+        .eq("business_id", id)
+        .order("display_order", { ascending: true });
+
+      setPhotos(photosData || []);
+
+    } catch (error) {
+      console.error("Error fetching business:", error);
+      toast.error("Failed to load business profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitReview = async () => {
+    if (!user) {
+      toast.error("Please log in to leave a review");
+      return;
+    }
+
+    if (userRating === 0) {
+      toast.error("Please select a rating");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      if (existingReview) {
+        // Update existing review
+        const { error } = await supabase
+          .from("business_reviews")
+          .update({
+            rating: userRating,
+            review_text: userReview || null
+          })
+          .eq("id", existingReview.id);
+
+        if (error) throw error;
+        toast.success("Review updated!");
+      } else {
+        // Create new review
+        const { error } = await supabase
+          .from("business_reviews")
+          .insert({
+            business_id: id,
+            user_id: user.id,
+            rating: userRating,
+            review_text: userReview || null
+          });
+
+        if (error) throw error;
+        toast.success("Review submitted!");
+      }
+
+      fetchBusinessData();
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      toast.error("Failed to submit review");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const formatDiscount = (offer: Offer) => {
+    if (offer.discount_type === "percentage") {
+      return `${offer.discount_value}% OFF`;
+    } else if (offer.discount_type === "fixed") {
+      return `$${offer.discount_value} OFF`;
+    }
+    return offer.discount_type;
+  };
+
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+    : 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!business) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-foreground mb-2">Business not found</h2>
+          <Link to="/member/offers" className="text-primary hover:underline">
+            Back to offers
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>{business.business_name} | PawPass Partner</title>
+        <meta name="description" content={business.description || `${business.business_name} - PawPass partner business`} />
+      </Helmet>
+
+      <div className="min-h-screen bg-background">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          {/* Header */}
+          <Link 
+            to="/member/offers" 
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to offers
+          </Link>
+
+          {/* Business Header */}
+          <div className="bg-card rounded-2xl border border-border p-6 mb-6">
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Logo */}
+              <div className="w-24 h-24 bg-muted rounded-xl flex items-center justify-center shrink-0">
+                {business.logo_url ? (
+                  <img 
+                    src={business.logo_url} 
+                    alt={business.business_name}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <span className="text-3xl font-bold text-muted-foreground">
+                    {business.business_name.charAt(0)}
+                  </span>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div>
+                    <h1 className="text-2xl font-bold text-foreground mb-1">
+                      {business.business_name}
+                    </h1>
+                    <Badge variant="secondary" className="mb-3">
+                      {categoryLabels[business.category] || business.category}
+                    </Badge>
+                  </div>
+                  
+                  {/* Rating */}
+                  {reviews.length > 0 && (
+                    <div className="flex items-center gap-2 bg-primary/10 px-3 py-1.5 rounded-full">
+                      <Star className="w-4 h-4 text-primary fill-primary" />
+                      <span className="font-semibold text-foreground">
+                        {averageRating.toFixed(1)}
+                      </span>
+                      <span className="text-muted-foreground text-sm">
+                        ({reviews.length} reviews)
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {business.description && (
+                  <p className="text-muted-foreground mb-4">{business.description}</p>
+                )}
+
+                {/* Contact Info */}
+                <div className="flex flex-wrap gap-3">
+                  {business.phone && (
+                    <a
+                      href={`tel:${business.phone}`}
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                    >
+                      <Phone className="w-4 h-4" />
+                      Call Now
+                    </a>
+                  )}
+                  
+                  {business.google_maps_url && (
+                    <a
+                      href={business.google_maps_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      Get Directions
+                    </a>
+                  )}
+                  
+                  {business.website && (
+                    <a
+                      href={business.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="w-4 h-4" />
+                      Website
+                    </a>
+                  )}
+                </div>
+
+                {/* Address */}
+                {(business.address || business.city) && (
+                  <p className="text-sm text-muted-foreground mt-3 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5" />
+                    {[business.address, business.city].filter(Boolean).join(", ")}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Photos Gallery */}
+          {photos.length > 0 && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Photos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {photos.map((photo) => (
+                    <div 
+                      key={photo.id}
+                      className="aspect-square rounded-lg overflow-hidden bg-muted"
+                    >
+                      <img
+                        src={photo.photo_url}
+                        alt={photo.caption || "Business photo"}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Active Offers */}
+          {offers.length > 0 && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Tag className="w-5 h-5" />
+                  Available Offers
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {offers.map((offer) => (
+                    <div 
+                      key={offer.id}
+                      className="p-4 bg-primary/5 rounded-xl border border-primary/20"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="font-semibold text-foreground">{offer.title}</h3>
+                          {offer.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {offer.description}
+                            </p>
+                          )}
+                          {offer.terms && (
+                            <p className="text-xs text-muted-foreground mt-2 italic">
+                              {offer.terms}
+                            </p>
+                          )}
+                        </div>
+                        <Badge className="bg-primary text-primary-foreground shrink-0">
+                          {formatDiscount(offer)}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Reviews Section */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Star className="w-5 h-5" />
+                Reviews
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {/* Write Review */}
+              {user && (
+                <div className="mb-6 p-4 bg-muted/50 rounded-xl">
+                  <h4 className="font-medium text-foreground mb-3">
+                    {existingReview ? "Update your review" : "Write a review"}
+                  </h4>
+                  
+                  {/* Star Rating */}
+                  <div className="flex gap-1 mb-3">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => setUserRating(star)}
+                        className="p-1 transition-transform hover:scale-110"
+                      >
+                        <Star
+                          className={`w-6 h-6 ${
+                            star <= userRating
+                              ? "text-primary fill-primary"
+                              : "text-muted-foreground"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+
+                  <Textarea
+                    placeholder="Share your experience..."
+                    value={userReview}
+                    onChange={(e) => setUserReview(e.target.value)}
+                    className="mb-3"
+                    rows={3}
+                  />
+
+                  <Button 
+                    onClick={handleSubmitReview}
+                    disabled={submitting || userRating === 0}
+                    size="sm"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    {existingReview ? "Update Review" : "Submit Review"}
+                  </Button>
+                </div>
+              )}
+
+              {/* Reviews List */}
+              {reviews.length > 0 ? (
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <div key={review.id} className="border-b border-border pb-4 last:border-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span className="text-sm font-medium text-primary">
+                              {review.user_name?.charAt(0) || "A"}
+                            </span>
+                          </div>
+                          <span className="font-medium text-foreground text-sm">
+                            {review.user_name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`w-3.5 h-3.5 ${
+                                star <= review.rating
+                                  ? "text-primary fill-primary"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      {review.review_text && (
+                        <p className="text-sm text-muted-foreground pl-10">
+                          {review.review_text}
+                        </p>
+                      )}
+                      <p className="text-xs text-muted-foreground pl-10 mt-1">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-center py-4">
+                  No reviews yet. Be the first to review!
+                </p>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Business Hours - Placeholder */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Business Hours
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground text-sm">
+                Contact the business directly for their current operating hours.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
+  );
+}
