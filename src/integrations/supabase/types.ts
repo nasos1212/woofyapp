@@ -14,16 +14,218 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      businesses: {
+        Row: {
+          address: string | null
+          business_name: string
+          category: Database["public"]["Enums"]["business_category"]
+          city: string | null
+          created_at: string
+          description: string | null
+          email: string
+          id: string
+          logo_url: string | null
+          phone: string | null
+          updated_at: string
+          user_id: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          verified_at: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_name: string
+          category: Database["public"]["Enums"]["business_category"]
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          email: string
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          verified_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_name?: string
+          category?: Database["public"]["Enums"]["business_category"]
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          email?: string
+          id?: string
+          logo_url?: string | null
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          verified_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      memberships: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          member_number: string
+          pet_breed: string | null
+          pet_name: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          member_number: string
+          pet_breed?: string | null
+          pet_name?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          member_number?: string
+          pet_breed?: string | null
+          pet_name?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      offers: {
+        Row: {
+          business_id: string
+          created_at: string
+          description: string | null
+          discount_type: string
+          discount_value: number | null
+          id: string
+          is_active: boolean
+          terms: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          description?: string | null
+          discount_type: string
+          discount_value?: number | null
+          id?: string
+          is_active?: boolean
+          terms?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          description?: string | null
+          discount_type?: string
+          discount_value?: number | null
+          id?: string
+          is_active?: boolean
+          terms?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_member_number: { Args: never; Returns: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "member" | "business" | "admin"
+      business_category:
+        | "trainer"
+        | "pet_shop"
+        | "hotel"
+        | "grooming"
+        | "vet"
+        | "daycare"
+        | "food"
+        | "accessories"
+        | "other"
+      verification_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +352,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["member", "business", "admin"],
+      business_category: [
+        "trainer",
+        "pet_shop",
+        "hotel",
+        "grooming",
+        "vet",
+        "daycare",
+        "food",
+        "accessories",
+        "other",
+      ],
+      verification_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
