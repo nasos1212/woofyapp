@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Users, Check, Dog, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { toast } from "sonner";
 const JoinFamily = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [shareCode, setShareCode] = useState("");
   const [petName, setPetName] = useState("");
   const [petBreed, setPetBreed] = useState("");
@@ -20,9 +21,17 @@ const JoinFamily = () => {
   const [step, setStep] = useState<"code" | "pet" | "success">("code");
   const [membershipId, setMembershipId] = useState<string | null>(null);
 
+  // Auto-fill share code from URL
+  useEffect(() => {
+    const codeFromUrl = searchParams.get("code");
+    if (codeFromUrl) {
+      setShareCode(codeFromUrl.toUpperCase());
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (!loading && !user) {
-      navigate("/auth?type=member");
+      navigate("/auth?type=member", { replace: true });
     }
   }, [user, loading, navigate]);
 
