@@ -14,6 +14,79 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_photos: {
+        Row: {
+          business_id: string
+          caption: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          business_id: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          business_id?: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_photos_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_reviews: {
+        Row: {
+          business_id: string
+          created_at: string
+          id: string
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       businesses: {
         Row: {
           address: string | null
@@ -23,6 +96,7 @@ export type Database = {
           created_at: string
           description: string | null
           email: string
+          google_maps_url: string | null
           id: string
           logo_url: string | null
           phone: string | null
@@ -40,6 +114,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email: string
+          google_maps_url?: string | null
           id?: string
           logo_url?: string | null
           phone?: string | null
@@ -57,6 +132,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string
+          google_maps_url?: string | null
           id?: string
           logo_url?: string | null
           phone?: string | null
