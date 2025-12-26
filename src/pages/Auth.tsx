@@ -38,12 +38,19 @@ const Auth = () => {
         return;
       }
       
+      // Small delay to ensure session is fully established for RLS
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       // Check if user already has a membership
-      const { data: membership } = await supabase
+      const { data: membership, error } = await supabase
         .from("memberships")
         .select("id")
         .eq("user_id", user.id)
         .maybeSingle();
+      
+      if (error) {
+        console.error("Error checking membership:", error);
+      }
       
       if (membership) {
         // User already has membership, go to dashboard
