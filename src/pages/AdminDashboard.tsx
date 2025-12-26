@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -197,6 +198,8 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
+        <Breadcrumbs items={[{ label: "Admin Dashboard" }]} />
+        
         <div className="flex items-center gap-3 mb-8">
           <Shield className="w-8 h-8 text-primary" />
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
