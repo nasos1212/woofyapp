@@ -1,12 +1,31 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield } from "lucide-react";
+import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { dogBreeds } from "@/data/dogBreeds";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,6 +69,10 @@ const FamilyManagement = () => {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [isOwner, setIsOwner] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [addPetDialogOpen, setAddPetDialogOpen] = useState(false);
+  const [newPetName, setNewPetName] = useState("");
+  const [newPetBreed, setNewPetBreed] = useState("");
+  const [isAddingPet, setIsAddingPet] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -202,6 +225,41 @@ const FamilyManagement = () => {
     }
   };
 
+  const addPet = async () => {
+    if (!user || !membership || !newPetName.trim()) {
+      toast.error("Please enter a pet name");
+      return;
+    }
+
+    if (totalPets >= membership.max_pets) {
+      toast.error("You've reached the maximum number of pets for this plan");
+      return;
+    }
+
+    setIsAddingPet(true);
+    try {
+      const { error } = await supabase.from("pets").insert({
+        membership_id: membership.id,
+        owner_user_id: user.id,
+        pet_name: newPetName.trim(),
+        pet_breed: newPetBreed || null,
+      });
+
+      if (error) throw error;
+
+      toast.success(`${newPetName} has been added to your family!`);
+      setNewPetName("");
+      setNewPetBreed("");
+      setAddPetDialogOpen(false);
+      fetchFamilyData();
+    } catch (error) {
+      console.error("Error adding pet:", error);
+      toast.error("Failed to add pet");
+    } finally {
+      setIsAddingPet(false);
+    }
+  };
+
   const totalPets = familyMembers.reduce((sum, m) => sum + m.pets.length, 0);
 
   if (loading || isLoading) {
@@ -338,6 +396,65 @@ const FamilyManagement = () => {
                 <Users className="w-5 h-5 text-primary" />
                 Family Members
               </h2>
+              {totalPets < membership.max_pets && (
+                <Dialog open={addPetDialogOpen} onOpenChange={setAddPetDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Add Pet
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add a New Pet</DialogTitle>
+                      <DialogDescription>
+                        Add your furry friend to the family membership.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="petName">Pet Name *</Label>
+                        <Input
+                          id="petName"
+                          placeholder="Enter your pet's name"
+                          value={newPetName}
+                          onChange={(e) => setNewPetName(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="petBreed">Breed (optional)</Label>
+                        <Select value={newPetBreed} onValueChange={setNewPetBreed}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select breed" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60">
+                            {dogBreeds.map((breed) => (
+                              <SelectItem key={breed} value={breed}>
+                                {breed}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => setAddPetDialogOpen(false)}
+                        disabled={isAddingPet}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={addPet}
+                        disabled={!newPetName.trim() || isAddingPet}
+                      >
+                        {isAddingPet ? "Adding..." : "Add Pet"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
 
             <div className="divide-y divide-border">
