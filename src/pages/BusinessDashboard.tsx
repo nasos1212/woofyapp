@@ -1,12 +1,13 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle } from "lucide-react";
+import { ArrowLeft, ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed';
@@ -40,6 +41,7 @@ const BusinessDashboard = () => {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [memberIdInput, setMemberIdInput] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [business, setBusiness] = useState<{ id: string; business_name: string } | null>(null);
   const [offers, setOffers] = useState<{ id: string; title: string; discount_value: number; discount_type: string }[]>([]);
   const [selectedOfferId, setSelectedOfferId] = useState<string>("");
@@ -266,6 +268,30 @@ const BusinessDashboard = () => {
     return date.toLocaleDateString();
   };
 
+  const handleQrScan = (result: { rawValue: string }[]) => {
+    if (result && result.length > 0) {
+      const scannedValue = result[0].rawValue;
+      // Extract member ID from QR code URL or direct value
+      let memberId = scannedValue;
+      
+      // If it's a verification URL, extract the member ID
+      if (scannedValue.includes('/verify/')) {
+        const parts = scannedValue.split('/verify/');
+        memberId = parts[parts.length - 1];
+      } else if (scannedValue.startsWith('PP-')) {
+        memberId = scannedValue;
+      }
+      
+      setMemberIdInput(memberId);
+      setIsScannerOpen(false);
+      
+      toast({
+        title: "QR Code Scanned",
+        description: `Member ID: ${memberId}`,
+      });
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -317,11 +343,69 @@ const BusinessDashboard = () => {
                   Member Verification
                 </h2>
 
+                {/* QR Scanner Modal */}
+                {isScannerOpen && (
+                  <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+                      <div className="flex items-center justify-between p-4 border-b">
+                        <h3 className="font-display font-semibold text-slate-900">Scan QR Code</h3>
+                        <button 
+                          onClick={() => setIsScannerOpen(false)}
+                          className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                        >
+                          <X className="w-5 h-5 text-slate-500" />
+                        </button>
+                      </div>
+                      <div className="p-4">
+                        <div className="aspect-square rounded-xl overflow-hidden bg-black">
+                          <Scanner
+                            onScan={handleQrScan}
+                            onError={(error) => {
+                              console.error('Scanner error:', error);
+                              toast({
+                                title: "Camera Error",
+                                description: "Could not access camera. Please check permissions.",
+                                variant: "destructive",
+                              });
+                            }}
+                            styles={{
+                              container: { width: '100%', height: '100%' },
+                              video: { width: '100%', height: '100%', objectFit: 'cover' },
+                            }}
+                          />
+                        </div>
+                        <p className="text-center text-sm text-slate-500 mt-4">
+                          Point camera at member's QR code
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Verification Form */}
                 <div className="space-y-4 mb-6">
+                  {/* Camera Scanner Button */}
+                  <Button 
+                    onClick={() => setIsScannerOpen(true)}
+                    variant="outline"
+                    className="w-full gap-2 border-primary text-primary hover:bg-primary/5"
+                  >
+                    <Camera className="w-5 h-5" />
+                    Open Camera Scanner
+                  </Button>
+
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-slate-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-white px-2 text-slate-500">or enter manually</span>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Member ID (from QR code or card)
+                      Member ID
                     </label>
                     <Input
                       placeholder="e.g., PP-2024-123456"
