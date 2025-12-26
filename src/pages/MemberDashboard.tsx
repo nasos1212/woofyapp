@@ -1,8 +1,9 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Gift, MapPin, Calendar, Clock, Percent, QrCode, Shield, Bell } from "lucide-react";
+import { Gift, MapPin, Calendar, Clock, Percent, QrCode, Shield, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const recentDeals = [
   { business: "Happy Paws Pet Shop", discount: "15% off", used: "2 days ago", saved: "€12.50" },
@@ -28,10 +29,7 @@ const MemberDashboard = () => {
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
-            </Link>
+            <Breadcrumbs items={[{ label: "Member Dashboard" }]} />
             <div className="flex items-center gap-4">
               <button className="relative p-2 hover:bg-muted rounded-full transition-colors">
                 <Bell className="w-5 h-5 text-muted-foreground" />

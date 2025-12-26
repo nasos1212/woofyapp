@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
   Plus,
   Edit2,
   Trash2,
@@ -14,6 +13,7 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -251,13 +251,12 @@ const BusinessOfferManagement = () => {
         {/* Header */}
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Link
-              to="/business"
-              className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Back to Dashboard</span>
-            </Link>
+            <Breadcrumbs 
+              items={[
+                { label: "Partner Dashboard", href: "/business" },
+                { label: "Manage Offers" }
+              ]} 
+            />
             <Button onClick={openCreateDialog} className="gap-2">
               <Plus className="w-4 h-4" />
               Create Offer
