@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { Constants } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -132,6 +140,35 @@ const AdminDashboard = () => {
     } catch (error: any) {
       console.error("Error updating business:", error);
       toast.error(error.message || "Failed to update business");
+    }
+  };
+
+  const updateUserRole = async (userId: string, currentRoles: UserRole[], newRole: string) => {
+    try {
+      // Remove existing roles for this user
+      if (currentRoles.length > 0) {
+        const { error: deleteError } = await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", userId);
+
+        if (deleteError) throw deleteError;
+      }
+
+      // Add new role if not "none"
+      if (newRole !== "none") {
+        const { error: insertError } = await supabase
+          .from("user_roles")
+          .insert([{ user_id: userId, role: newRole as "admin" | "member" | "business" }]);
+
+        if (insertError) throw insertError;
+      }
+
+      toast.success(`User role updated to ${newRole === "none" ? "no role" : newRole}`);
+      fetchData();
+    } catch (error: any) {
+      console.error("Error updating user role:", error);
+      toast.error(error.message || "Failed to update user role");
     }
   };
 
@@ -423,30 +460,51 @@ const AdminDashboard = () => {
           <TabsContent value="users" className="space-y-4">
             <Card className="border-border/50">
               <CardHeader>
-                <CardTitle>All Users</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <UserCog className="w-5 h-5" />
+                  User Management
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {users.map((user) => (
+                  {users.map((userItem) => (
                     <div
-                      key={user.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30"
+                      key={userItem.id}
+                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 gap-3"
                     >
-                      <div>
-                        <p className="font-medium">{user.full_name || "No name"}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                      <div className="flex-1">
+                        <p className="font-medium">{userItem.full_name || "No name"}</p>
+                        <p className="text-sm text-muted-foreground">{userItem.email}</p>
                       </div>
-                      <div className="flex gap-2">
-                        {user.roles.map((role) => (
-                          <Badge key={role.id} variant="outline">
-                            {role.role}
-                          </Badge>
-                        ))}
-                        {user.roles.length === 0 && (
-                          <Badge variant="outline" className="text-muted-foreground">
-                            No roles
-                          </Badge>
-                        )}
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1">
+                          {userItem.roles.map((role) => (
+                            <Badge key={role.id} variant="outline" className="capitalize">
+                              {role.role}
+                            </Badge>
+                          ))}
+                          {userItem.roles.length === 0 && (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              No roles
+                            </Badge>
+                          )}
+                        </div>
+                        <Select
+                          value={userItem.roles[0]?.role || "none"}
+                          onValueChange={(value) => updateUserRole(userItem.user_id, userItem.roles, value)}
+                        >
+                          <SelectTrigger className="w-[130px]">
+                            <SelectValue placeholder="Set role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">No role</SelectItem>
+                            {Constants.public.Enums.app_role.map((role) => (
+                              <SelectItem key={role} value={role} className="capitalize">
+                                {role}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   ))}
