@@ -493,16 +493,14 @@ const AdminDashboard = () => {
                           value={userItem.roles[0]?.role || "none"}
                           onValueChange={(value) => updateUserRole(userItem.user_id, userItem.roles, value)}
                         >
-                          <SelectTrigger className="w-[130px]">
-                            <SelectValue placeholder="Set role" />
+                          <SelectTrigger className="w-[140px] bg-card border-primary/30 hover:border-primary">
+                            <SelectValue placeholder="Change role" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-card border border-border z-50">
                             <SelectItem value="none">No role</SelectItem>
-                            {Constants.public.Enums.app_role.map((role) => (
-                              <SelectItem key={role} value={role} className="capitalize">
-                                {role}
-                              </SelectItem>
-                            ))}
+                            <SelectItem value="member">Member</SelectItem>
+                            <SelectItem value="business">Business</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
