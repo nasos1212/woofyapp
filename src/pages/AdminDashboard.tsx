@@ -5,15 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { Constants } from "@/integrations/supabase/types";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -106,7 +98,6 @@ const AdminDashboard = () => {
         roles: (rolesData || []).filter((role) => role.user_id === profile.user_id),
       }));
 
-      console.log("Fetched users:", usersWithRoles);
       setUsers(usersWithRoles);
     } catch (error: any) {
       console.error("Error fetching data:", error);
@@ -493,21 +484,18 @@ const AdminDashboard = () => {
                               </Badge>
                             )}
                           </div>
-                          <div className="min-w-[150px]">
-                            <Select
+                          <div className="min-w-[170px]">
+                            <label className="sr-only">Change user role</label>
+                            <select
+                              className="h-10 w-full rounded-md border-2 border-primary/50 bg-background px-3 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                               value={userItem.roles[0]?.role || "none"}
-                              onValueChange={(value) => updateUserRole(userItem.user_id, userItem.roles, value)}
+                              onChange={(e) => updateUserRole(userItem.user_id, userItem.roles, e.target.value)}
                             >
-                              <SelectTrigger className="w-full bg-background border-2 border-primary/50 hover:border-primary font-medium">
-                                <SelectValue placeholder="Change role" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-popover border-2 border-border shadow-lg z-[100]">
-                                <SelectItem value="none">No role</SelectItem>
-                                <SelectItem value="member">Member</SelectItem>
-                                <SelectItem value="business">Business</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              <option value="none">No role</option>
+                              <option value="member">Member</option>
+                              <option value="business">Business</option>
+                              <option value="admin">Admin</option>
+                            </select>
                           </div>
                         </div>
                       </div>
