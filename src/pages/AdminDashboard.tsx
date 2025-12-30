@@ -106,6 +106,7 @@ const AdminDashboard = () => {
         roles: (rolesData || []).filter((role) => role.user_id === profile.user_id),
       }));
 
+      console.log("Fetched users:", usersWithRoles);
       setUsers(usersWithRoles);
     } catch (error: any) {
       console.error("Error fetching data:", error);
@@ -462,51 +463,57 @@ const AdminDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <UserCog className="w-5 h-5" />
-                  User Management
+                  User Management ({users.length} users)
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  {users.map((userItem) => (
-                    <div
-                      key={userItem.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 gap-3"
-                    >
-                      <div className="flex-1">
-                        <p className="font-medium">{userItem.full_name || "No name"}</p>
-                        <p className="text-sm text-muted-foreground">{userItem.email}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="flex gap-1">
-                          {userItem.roles.map((role) => (
-                            <Badge key={role.id} variant="outline" className="capitalize">
-                              {role.role}
-                            </Badge>
-                          ))}
-                          {userItem.roles.length === 0 && (
-                            <Badge variant="outline" className="text-muted-foreground">
-                              No roles
-                            </Badge>
-                          )}
+                {users.length === 0 ? (
+                  <p className="text-muted-foreground text-center py-8">No users found</p>
+                ) : (
+                  <div className="space-y-3">
+                    {users.map((userItem) => (
+                      <div
+                        key={userItem.id}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 gap-3 border border-border/50"
+                      >
+                        <div className="flex-1">
+                          <p className="font-medium">{userItem.full_name || "No name"}</p>
+                          <p className="text-sm text-muted-foreground">{userItem.email}</p>
                         </div>
-                        <Select
-                          value={userItem.roles[0]?.role || "none"}
-                          onValueChange={(value) => updateUserRole(userItem.user_id, userItem.roles, value)}
-                        >
-                          <SelectTrigger className="w-[140px] bg-card border-primary/30 hover:border-primary">
-                            <SelectValue placeholder="Change role" />
-                          </SelectTrigger>
-                          <SelectContent className="bg-card border border-border z-50">
-                            <SelectItem value="none">No role</SelectItem>
-                            <SelectItem value="member">Member</SelectItem>
-                            <SelectItem value="business">Business</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <div className="flex items-center gap-3">
+                          <div className="flex gap-1">
+                            {userItem.roles.map((role) => (
+                              <Badge key={role.id} variant="outline" className="capitalize">
+                                {role.role}
+                              </Badge>
+                            ))}
+                            {userItem.roles.length === 0 && (
+                              <Badge variant="outline" className="text-muted-foreground">
+                                No roles
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="min-w-[150px]">
+                            <Select
+                              value={userItem.roles[0]?.role || "none"}
+                              onValueChange={(value) => updateUserRole(userItem.user_id, userItem.roles, value)}
+                            >
+                              <SelectTrigger className="w-full bg-background border-2 border-primary/50 hover:border-primary font-medium">
+                                <SelectValue placeholder="Change role" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-popover border-2 border-border shadow-lg z-[100]">
+                                <SelectItem value="none">No role</SelectItem>
+                                <SelectItem value="member">Member</SelectItem>
+                                <SelectItem value="business">Business</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
