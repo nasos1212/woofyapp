@@ -21,6 +21,9 @@ import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
 import AdminDashboard from "./pages/AdminDashboard";
+import PetHealthAssistant from "./pages/PetHealthAssistant";
+import LostPetAlerts from "./pages/LostPetAlerts";
+import PetHealthRecords from "./pages/PetHealthRecords";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +44,9 @@ const App = () => (
               <Route path="/member/offers" element={<MemberOffers />} />
               <Route path="/member/history" element={<RedemptionHistory />} />
               <Route path="/member/family" element={<FamilyManagement />} />
+              <Route path="/member/health-assistant" element={<PetHealthAssistant />} />
+              <Route path="/member/lost-pets" element={<LostPetAlerts />} />
+              <Route path="/member/health-records" element={<PetHealthRecords />} />
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/business/offers" element={<BusinessOfferManagement />} />
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
