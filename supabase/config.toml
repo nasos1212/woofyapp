@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.verify-member]
 verify_jwt = true
+
+[functions.confirm-redemption]
+verify_jwt = true
