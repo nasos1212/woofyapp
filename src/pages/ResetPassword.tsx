@@ -24,29 +24,43 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isValidSession, setIsValidSession] = useState(false);
+  const [isValidSession, setIsValidSession] = useState(true); // Assume valid by default
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user has a valid recovery session
+    // Check if we have a hash fragment (recovery token in URL)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = hashParams.get('access_token');
+    const type = hashParams.get('type');
+    
+    // If there's a recovery token in the URL, the link is valid
+    if (accessToken && type === 'recovery') {
+      setIsValidSession(true);
+      setIsCheckingSession(false);
+      return;
+    }
+
+    // Otherwise check for existing session
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
-      // User should have a session from the recovery link
       if (session) {
         setIsValidSession(true);
+      } else {
+        setIsValidSession(false);
       }
       setIsCheckingSession(false);
     };
 
-    checkSession();
+    // Small delay to allow Supabase to process the recovery token
+    setTimeout(checkSession, 500);
 
-    // Listen for auth state changes (recovery link click)
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === "PASSWORD_RECOVERY") {
+        if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
           setIsValidSession(true);
           setIsCheckingSession(false);
         }
