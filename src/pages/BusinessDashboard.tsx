@@ -140,6 +140,21 @@ const BusinessDashboard = () => {
     setScanResult(null);
 
     try {
+      // Get current session to ensure we have a valid token
+      const { data: sessionData } = await supabase.auth.getSession();
+      
+      if (!sessionData?.session) {
+        console.error('No active session - user needs to re-login');
+        toast({
+          title: "Session Expired",
+          description: "Please log in again to verify members.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log('Calling verify-member with session:', !!sessionData.session);
+
       // Use edge function for rate-limited verification
       const { data, error } = await supabase.functions.invoke('verify-member', {
         body: {
@@ -149,8 +164,20 @@ const BusinessDashboard = () => {
         },
       });
 
+      console.log('verify-member response:', { data, error });
+
       if (error) {
         console.error('Verification error:', error);
+        
+        // Check if it's an auth error
+        if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+          toast({
+            title: "Authentication Error",
+            description: "Please log in again.",
+            variant: "destructive",
+          });
+          return;
+        }
         
         // Check if it's a rate limit error
         if (error.message?.includes('429') || error.message?.includes('rate')) {
