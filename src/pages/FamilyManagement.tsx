@@ -605,7 +605,8 @@ const FamilyManagement = () => {
                       {member.pets.map((pet) => (
                         <div
                           key={pet.id}
-                          className="flex items-center justify-between bg-muted/50 rounded-lg px-3 py-2 group"
+                          className="flex items-center justify-between bg-muted/50 rounded-lg px-3 py-2 group hover:bg-muted transition-colors cursor-pointer"
+                          onClick={() => navigate(`/member/pet/${pet.id}`)}
                         >
                           <div className="flex items-center gap-2">
                             <Dog className="w-4 h-4 text-primary" />
@@ -624,7 +625,10 @@ const FamilyManagement = () => {
                                 variant="ghost"
                                 size="icon"
                                 className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                                onClick={() => openEditDialog(pet)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditDialog(pet);
+                                }}
                               >
                                 <Pencil className="w-3.5 h-3.5" />
                               </Button>
@@ -634,6 +638,7 @@ const FamilyManagement = () => {
                                     variant="ghost"
                                     size="icon"
                                     className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                                    onClick={(e) => e.stopPropagation()}
                                   >
                                     <Trash2 className="w-3.5 h-3.5" />
                                   </Button>
