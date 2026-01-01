@@ -214,12 +214,19 @@ const RedemptionHistory = () => {
 
           {/* Savings Progress */}
           <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
-            <h2 className="font-display font-semibold text-foreground mb-4">
-              Your Savings Journey
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display font-semibold text-foreground">
+                Your Savings Journey
+              </h2>
+              {stats.totalSaved >= 100 && (
+                <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">
+                  🌟 Super Saver
+                </span>
+              )}
+            </div>
             <div className="relative pt-2">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Progress to €500</span>
+                <span className="text-sm text-muted-foreground">Progress to €500 milestone</span>
                 <span className="text-sm font-medium text-primary">
                   {Math.min(100, Math.round((stats.totalSaved / 500) * 100))}%
                 </span>
@@ -234,15 +241,40 @@ const RedemptionHistory = () => {
               </div>
               <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
                 <span>€0</span>
+                <div className="flex items-center gap-1">
+                  <span className={stats.totalSaved >= 59 ? 'text-green-500 font-medium' : ''}>
+                    €59
+                  </span>
+                  {stats.totalSaved >= 59 && <span className="text-green-500">✓</span>}
+                </div>
                 <span>€250</span>
                 <span>€500</span>
               </div>
             </div>
-            {stats.totalSaved >= 59 && (
-              <p className="text-sm text-green-600 font-medium mt-4 flex items-center gap-2">
-                🎉 You've already saved more than your membership cost!
-              </p>
-            )}
+            
+            {/* Milestone messages */}
+            <div className="mt-4 space-y-2">
+              {stats.totalSaved >= 59 && (
+                <p className="text-sm text-green-600 font-medium flex items-center gap-2 bg-green-50 p-3 rounded-lg">
+                  🎉 You've already saved more than your membership cost!
+                </p>
+              )}
+              {stats.totalSaved >= 100 && stats.totalSaved < 250 && (
+                <p className="text-sm text-primary flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
+                  🚀 You're on fire! Keep using your PawPass to reach the next milestone.
+                </p>
+              )}
+              {stats.totalSaved >= 250 && stats.totalSaved < 500 && (
+                <p className="text-sm text-amber-600 flex items-center gap-2 bg-amber-50 p-3 rounded-lg">
+                  ⭐ Halfway to €500! You're a PawPass power user.
+                </p>
+              )}
+              {stats.totalSaved >= 500 && (
+                <p className="text-sm text-rose-600 flex items-center gap-2 bg-rose-50 p-3 rounded-lg">
+                  🏆 Incredible! You've saved over €500 with PawPass!
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Redemption List */}

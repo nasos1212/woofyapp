@@ -257,7 +257,12 @@ const MemberOffers = () => {
               Available Offers
             </h1>
             <p className="text-muted-foreground">
-              {filteredOffers.length} offers from our partner businesses
+              {filteredOffers.length} offer{filteredOffers.length !== 1 ? 's' : ''} from our partner businesses
+              {filteredOffers.filter(o => !o.isRedeemed).length > 0 && (
+                <span className="ml-2 inline-flex items-center gap-1 text-primary font-medium">
+                  • {filteredOffers.filter(o => !o.isRedeemed).length} available to redeem
+                </span>
+              )}
             </p>
           </div>
 
@@ -292,7 +297,7 @@ const MemberOffers = () => {
             </div>
 
             {/* Show Redeemed Toggle */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between">
               <button
                 onClick={() => setShowRedeemed(!showRedeemed)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -306,8 +311,15 @@ const MemberOffers = () => {
                 ) : (
                   <X className="w-4 h-4" />
                 )}
-                {showRedeemed ? "Show all" : "Hide redeemed"}
+                {showRedeemed ? "Showing all" : "Hiding redeemed"}
               </button>
+              
+              {offers.filter(o => o.isRedeemed).length > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  <Check className="w-4 h-4 inline mr-1 text-green-500" />
+                  {offers.filter(o => o.isRedeemed).length} redeemed
+                </span>
+              )}
             </div>
           </div>
 
