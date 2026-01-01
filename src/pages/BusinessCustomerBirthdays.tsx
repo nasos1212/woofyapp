@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper } from "lucide-react";
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
+import DogLoader from "@/components/DogLoader";
 
 interface CustomerPet {
   pet_id: string;
@@ -258,7 +259,7 @@ const BusinessCustomerBirthdays = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

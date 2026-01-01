@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DogLoader from "@/components/DogLoader";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { dogBreeds } from "@/data/dogBreeds";
@@ -335,7 +336,7 @@ const FamilyManagement = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
 import { formatDistanceToNow, isPast } from "date-fns";
+import DogLoader from "@/components/DogLoader";
 
 interface Offer {
   id: string;
@@ -221,7 +222,7 @@ const MemberOffers = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

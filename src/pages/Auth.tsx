@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import DogLoader from "@/components/DogLoader";
 
 // Allowed image types for validation (JPEG, PNG, GIF, WebP - no SVG for security)
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
@@ -252,7 +253,7 @@ const Auth = () => {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
+              {isLoading ? <DogLoader size="sm" /> : isLogin ? "Sign In" : "Create Account"}
             </Button>
           </form>
 
