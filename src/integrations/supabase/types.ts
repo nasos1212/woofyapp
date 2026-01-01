@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "ai_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_chat_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       business_photos: {
         Row: {
           business_id: string
@@ -157,6 +213,127 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      lost_pet_alerts: {
+        Row: {
+          additional_info: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          last_seen_date: string
+          last_seen_latitude: number | null
+          last_seen_location: string
+          last_seen_longitude: number | null
+          owner_user_id: string
+          pet_breed: string | null
+          pet_description: string
+          pet_id: string | null
+          pet_name: string
+          pet_photo_url: string | null
+          resolved_at: string | null
+          reward_offered: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          additional_info?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          last_seen_date: string
+          last_seen_latitude?: number | null
+          last_seen_location: string
+          last_seen_longitude?: number | null
+          owner_user_id: string
+          pet_breed?: string | null
+          pet_description: string
+          pet_id?: string | null
+          pet_name: string
+          pet_photo_url?: string | null
+          resolved_at?: string | null
+          reward_offered?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          additional_info?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          last_seen_date?: string
+          last_seen_latitude?: number | null
+          last_seen_location?: string
+          last_seen_longitude?: number | null
+          owner_user_id?: string
+          pet_breed?: string | null
+          pet_description?: string
+          pet_id?: string | null
+          pet_name?: string
+          pet_photo_url?: string | null
+          resolved_at?: string | null
+          reward_offered?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lost_pet_alerts_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lost_pet_sightings: {
+        Row: {
+          alert_id: string
+          created_at: string
+          description: string | null
+          id: string
+          photo_url: string | null
+          reporter_user_id: string
+          sighting_date: string
+          sighting_latitude: number | null
+          sighting_location: string
+          sighting_longitude: number | null
+        }
+        Insert: {
+          alert_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url?: string | null
+          reporter_user_id: string
+          sighting_date: string
+          sighting_latitude?: number | null
+          sighting_location: string
+          sighting_longitude?: number | null
+        }
+        Update: {
+          alert_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          photo_url?: string | null
+          reporter_user_id?: string
+          sighting_date?: string
+          sighting_latitude?: number | null
+          sighting_location?: string
+          sighting_longitude?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lost_pet_sightings_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "lost_pet_alerts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       membership_shares: {
         Row: {
@@ -380,6 +557,143 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_friendly_places: {
+        Row: {
+          added_by_user_id: string | null
+          address: string | null
+          business_id: string | null
+          city: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_24_hour: boolean | null
+          is_emergency: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          phone: string | null
+          place_type: string
+          rating: number | null
+          updated_at: string
+          verified: boolean | null
+          website: string | null
+        }
+        Insert: {
+          added_by_user_id?: string | null
+          address?: string | null
+          business_id?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_24_hour?: boolean | null
+          is_emergency?: boolean | null
+          latitude: number
+          longitude: number
+          name: string
+          phone?: string | null
+          place_type: string
+          rating?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          website?: string | null
+        }
+        Update: {
+          added_by_user_id?: string | null
+          address?: string | null
+          business_id?: string | null
+          city?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_24_hour?: boolean | null
+          is_emergency?: boolean | null
+          latitude?: number
+          longitude?: number
+          name?: string
+          phone?: string | null
+          place_type?: string
+          rating?: number | null
+          updated_at?: string
+          verified?: boolean | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_friendly_places_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_friendly_places_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_health_records: {
+        Row: {
+          clinic_name: string | null
+          created_at: string
+          date_administered: string | null
+          description: string | null
+          document_url: string | null
+          id: string
+          next_due_date: string | null
+          notes: string | null
+          owner_user_id: string
+          pet_id: string
+          record_type: string
+          title: string
+          updated_at: string
+          veterinarian_name: string | null
+        }
+        Insert: {
+          clinic_name?: string | null
+          created_at?: string
+          date_administered?: string | null
+          description?: string | null
+          document_url?: string | null
+          id?: string
+          next_due_date?: string | null
+          notes?: string | null
+          owner_user_id: string
+          pet_id: string
+          record_type: string
+          title: string
+          updated_at?: string
+          veterinarian_name?: string | null
+        }
+        Update: {
+          clinic_name?: string | null
+          created_at?: string
+          date_administered?: string | null
+          description?: string | null
+          document_url?: string | null
+          id?: string
+          next_due_date?: string | null
+          notes?: string | null
+          owner_user_id?: string
+          pet_id?: string
+          record_type?: string
+          title?: string
+          updated_at?: string
+          veterinarian_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_health_records_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
             referencedColumns: ["id"]
           },
         ]

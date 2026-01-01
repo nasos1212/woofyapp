@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus } from "lucide-react";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -347,6 +347,40 @@ const MemberDashboard = () => {
                 <Button variant="secondary" size="sm" className="w-full bg-white text-primary hover:bg-white/90">
                   Renew Early & Save 10%
                 </Button>
+              </div>
+
+              {/* Quick Access - New Features */}
+              <div className="bg-white rounded-2xl p-6 shadow-soft">
+                <h3 className="font-display font-semibold text-foreground mb-4">Quick Access</h3>
+                <div className="space-y-3">
+                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">AI Health Assistant</p>
+                      <p className="text-xs text-muted-foreground">Ask pet health questions</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Syringe className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Health Records</p>
+                      <p className="text-xs text-muted-foreground">Vaccinations & vet visits</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/lost-pets" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
+                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Lost Pet Alerts</p>
+                      <p className="text-xs text-muted-foreground">Community lost & found</p>
+                    </div>
+                  </Link>
+                </div>
               </div>
 
               {/* Nearby Offers */}
