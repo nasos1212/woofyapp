@@ -784,6 +784,41 @@ export type Database = {
         }
         Relationships: []
       }
+      vaccination_reminders: {
+        Row: {
+          created_at: string
+          id: string
+          owner_user_id: string
+          pet_health_record_id: string
+          reminder_date: string
+          reminder_sent: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          owner_user_id: string
+          pet_health_record_id: string
+          reminder_date: string
+          reminder_sent?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          owner_user_id?: string
+          pet_health_record_id?: string
+          reminder_date?: string
+          reminder_sent?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccination_reminders_pet_health_record_id_fkey"
+            columns: ["pet_health_record_id"]
+            isOneToOne: false
+            referencedRelation: "pet_health_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       businesses_public: {
