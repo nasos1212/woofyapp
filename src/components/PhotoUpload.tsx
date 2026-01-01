@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+// Allowed image types - explicitly exclude SVG for security (can contain scripts)
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 interface PhotoUploadProps {
   businessId: string;
   onUploadComplete: () => void;
@@ -19,14 +23,22 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
+    // Validate file type - explicitly check against allowed types (no SVG)
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
+      toast.error("Please select a valid image file (JPEG, PNG, GIF, or WebP)");
+      return;
+    }
+
+    // Validate file extension matches type to prevent MIME type spoofing
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    if (!extension || !validExtensions.includes(extension)) {
+      toast.error("Invalid file extension. Allowed: JPG, PNG, GIF, WebP");
       return;
     }
 
     // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_FILE_SIZE) {
       toast.error("Image must be less than 5MB");
       return;
     }
