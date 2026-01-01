@@ -805,6 +805,7 @@ export type Database = {
           created_at: string
           id: string
           membership_id: string
+          notes: string | null
           owner_user_id: string
           pet_breed: string | null
           pet_name: string
@@ -814,6 +815,7 @@ export type Database = {
           created_at?: string
           id?: string
           membership_id: string
+          notes?: string | null
           owner_user_id: string
           pet_breed?: string | null
           pet_name: string
@@ -823,6 +825,7 @@ export type Database = {
           created_at?: string
           id?: string
           membership_id?: string
+          notes?: string | null
           owner_user_id?: string
           pet_breed?: string | null
           pet_name?: string

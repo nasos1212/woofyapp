@@ -27,6 +27,7 @@ import PetHealthRecords from "./pages/PetHealthRecords";
 import VaccinationReminders from "./pages/VaccinationReminders";
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
 import ResetPassword from "./pages/ResetPassword";
+import PetProfile from "./pages/PetProfile";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="/member/lost-pets" element={<LostPetAlerts />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
               <Route path="/member/vaccinations" element={<VaccinationReminders />} />
+              <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/business/offers" element={<BusinessOfferManagement />} />
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
