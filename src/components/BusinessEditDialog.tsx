@@ -19,8 +19,8 @@ interface Business {
   id: string;
   business_name: string;
   description: string | null;
-  phone: string | null;
-  email: string;
+  phone?: string | null;
+  email?: string;
   address: string | null;
   city: string | null;
   website: string | null;
@@ -40,7 +40,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   const [address, setAddress] = useState(business.address || "");
   const [city, setCity] = useState(business.city || "");
   const [phone, setPhone] = useState(business.phone || "");
-  const [email, setEmail] = useState(business.email);
+  const [email, setEmail] = useState(business.email || "");
   const [website, setWebsite] = useState(business.website || "");
   const [googleMapsUrl, setGoogleMapsUrl] = useState(business.google_maps_url || "");
   const [isSaving, setIsSaving] = useState(false);
