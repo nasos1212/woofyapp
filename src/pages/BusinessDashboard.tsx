@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -332,7 +332,7 @@ const BusinessDashboard = () => {
           </div>
 
           {/* Quick Navigation */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-8">
+          <div className="grid sm:grid-cols-3 gap-4 mb-8">
             <Link 
               to="/business/offers" 
               className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
@@ -355,6 +355,18 @@ const BusinessDashboard = () => {
               <div>
                 <h3 className="font-semibold text-slate-900">Analytics</h3>
                 <p className="text-sm text-slate-500">View performance insights</p>
+              </div>
+            </Link>
+            <Link 
+              to="/business/birthdays" 
+              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-pink-400 hover:shadow-md transition-all group"
+            >
+              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                <Cake className="w-6 h-6 text-pink-500" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900">Pet Birthdays</h3>
+                <p className="text-sm text-slate-500">Celebrate customer pets</p>
               </div>
             </Link>
           </div>

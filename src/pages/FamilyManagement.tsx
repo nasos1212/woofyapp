@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield, Plus, Pencil } from "lucide-react";
+import { Users, Dog, Copy, Check, Trash2, UserPlus, Crown, Shield, Plus, Pencil, Cake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +42,7 @@ interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  birthday: string | null;
   owner_user_id: string;
 }
 
@@ -74,6 +75,7 @@ const FamilyManagement = () => {
   const [editingPet, setEditingPet] = useState<Pet | null>(null);
   const [newPetName, setNewPetName] = useState("");
   const [newPetBreed, setNewPetBreed] = useState("");
+  const [newPetBirthday, setNewPetBirthday] = useState("");
   const [isAddingPet, setIsAddingPet] = useState(false);
   const [isEditingPet, setIsEditingPet] = useState(false);
   const [isDeletingPet, setIsDeletingPet] = useState(false);
@@ -148,7 +150,7 @@ const FamilyManagement = () => {
       // Get owner's pets
       const { data: ownerPets } = await supabase
         .from("pets")
-        .select("id, pet_name, pet_breed, owner_user_id")
+        .select("id, pet_name, pet_breed, birthday, owner_user_id")
         .eq("membership_id", effectiveMembership.id)
         .eq("owner_user_id", effectiveMembership.user_id);
 
@@ -180,7 +182,7 @@ const FamilyManagement = () => {
 
           const { data: memberPets } = await supabase
             .from("pets")
-            .select("id, pet_name, pet_breed, owner_user_id")
+            .select("id, pet_name, pet_breed, birthday, owner_user_id")
             .eq("membership_id", effectiveMembership.id)
             .eq("owner_user_id", share.shared_with_user_id);
 
@@ -247,6 +249,7 @@ const FamilyManagement = () => {
         owner_user_id: user.id,
         pet_name: newPetName.trim(),
         pet_breed: newPetBreed || null,
+        birthday: newPetBirthday || null,
       });
 
       if (error) throw error;
@@ -254,6 +257,7 @@ const FamilyManagement = () => {
       toast.success(`${newPetName} has been added to your family!`);
       setNewPetName("");
       setNewPetBreed("");
+      setNewPetBirthday("");
       setAddPetDialogOpen(false);
       fetchFamilyData();
     } catch (error) {
@@ -268,6 +272,7 @@ const FamilyManagement = () => {
     setEditingPet(pet);
     setNewPetName(pet.pet_name);
     setNewPetBreed(pet.pet_breed || "");
+    setNewPetBirthday(pet.birthday || "");
     setEditPetDialogOpen(true);
   };
 
@@ -284,6 +289,7 @@ const FamilyManagement = () => {
         .update({
           pet_name: newPetName.trim(),
           pet_breed: newPetBreed || null,
+          birthday: newPetBirthday || null,
         })
         .eq("id", editingPet.id);
 
@@ -292,6 +298,7 @@ const FamilyManagement = () => {
       toast.success(`${newPetName} has been updated!`);
       setNewPetName("");
       setNewPetBreed("");
+      setNewPetBirthday("");
       setEditingPet(null);
       setEditPetDialogOpen(false);
       fetchFamilyData();
@@ -499,6 +506,19 @@ const FamilyManagement = () => {
                           </SelectContent>
                         </Select>
                       </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="petBirthday">Birthday (optional)</Label>
+                        <Input
+                          id="petBirthday"
+                          type="date"
+                          value={newPetBirthday}
+                          onChange={(e) => setNewPetBirthday(e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Cake className="w-3 h-3" />
+                          Businesses you visit can send birthday wishes!
+                        </p>
+                      </div>
                     </div>
                     <DialogFooter>
                       <Button
@@ -668,6 +688,7 @@ const FamilyManagement = () => {
               setEditingPet(null);
               setNewPetName("");
               setNewPetBreed("");
+              setNewPetBirthday("");
             }
           }}>
             <DialogContent>
@@ -701,6 +722,19 @@ const FamilyManagement = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="editPetBirthday">Birthday (optional)</Label>
+                  <Input
+                    id="editPetBirthday"
+                    type="date"
+                    value={newPetBirthday}
+                    onChange={(e) => setNewPetBirthday(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Cake className="w-3 h-3" />
+                    Businesses you visit can send birthday wishes!
+                  </p>
                 </div>
               </div>
               <DialogFooter>
