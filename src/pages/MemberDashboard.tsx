@@ -112,7 +112,7 @@ const MemberDashboard = () => {
   };
 
   const handleInviteByEmail = async () => {
-    if (!inviteEmail.trim() || !membership?.share_code || !profile?.full_name) return;
+    if (!inviteEmail.trim() || !membership?.share_code) return;
     
     setIsInviting(true);
     try {
@@ -129,16 +129,11 @@ const MemberDashboard = () => {
         return;
       }
 
-      // Create notification for the invitee
-      const { error } = await supabase.from("notifications").insert({
-        user_id: inviteeProfile.user_id,
-        type: "family_invite",
-        title: "Family Pack Invitation",
-        message: `${profile.full_name} is inviting you to add your pets to their family pack!`,
-        data: {
-          share_code: membership.share_code,
-          inviter_name: profile.full_name,
-        },
+      // Use secure RPC function to create notification
+      // This validates ownership of the share code server-side
+      const { error } = await supabase.rpc("create_family_invite_notification", {
+        _invitee_user_id: inviteeProfile.user_id,
+        _share_code: membership.share_code,
       });
 
       if (error) throw error;
