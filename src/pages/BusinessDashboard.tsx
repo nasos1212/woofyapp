@@ -204,21 +204,39 @@ const BusinessDashboard = () => {
   const confirmRedemption = async () => {
     if (!scanResult || scanResult.status !== 'valid' || !business || !user) return;
 
+    setIsVerifying(true);
+    
     try {
-      const { error } = await supabase
-        .from('offer_redemptions')
-        .insert({
-          membership_id: scanResult.membershipId!,
-          offer_id: scanResult.offerId!,
-          business_id: business.id,
-          redeemed_by_user_id: user.id,
-        });
+      // Use edge function to confirm redemption and send notification
+      const { data, error } = await supabase.functions.invoke('confirm-redemption', {
+        body: {
+          membershipId: scanResult.membershipId,
+          offerId: scanResult.offerId,
+          businessId: business.id,
+        },
+      });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Redemption error:', error);
+        throw error;
+      }
+
+      if (data.error) {
+        if (data.code === 'ALREADY_REDEEMED') {
+          toast({
+            title: "Already Redeemed",
+            description: "This offer has already been redeemed by this member.",
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
 
       toast({
-        title: "Redemption Confirmed!",
-        description: `Discount applied for ${scanResult.memberName}`,
+        title: "Redemption Confirmed! 🎉",
+        description: `${scanResult.memberName} saved ${data.redemption.discount}. They've been notified!`,
       });
 
       setScanResult(null);
@@ -232,6 +250,8 @@ const BusinessDashboard = () => {
         description: "Could not record the redemption. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsVerifying(false);
     }
   };
 

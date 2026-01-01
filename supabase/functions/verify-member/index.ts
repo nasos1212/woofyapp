@@ -111,8 +111,8 @@ serve(async (req) => {
       );
     }
 
-    // Proceed with verification
-    const { data: membership, error: membershipError } = await supabaseClient
+    // Proceed with verification - use admin client since business users can't see other members' data
+    const { data: membership, error: membershipError } = await supabaseAdmin
       .from('memberships')
       .select('id, user_id, member_number, pet_name, pet_breed, expires_at, is_active')
       .eq('member_number', memberId.trim())
@@ -145,7 +145,7 @@ serve(async (req) => {
 
     // Check if membership is expired
     if (new Date(membership.expires_at) < new Date() || !membership.is_active) {
-      const { data: profile } = await supabaseClient
+      const { data: profile } = await supabaseAdmin
         .from('profiles')
         .select('full_name')
         .eq('user_id', membership.user_id)
@@ -163,8 +163,8 @@ serve(async (req) => {
       );
     }
 
-    // Check if offer has already been redeemed
-    const { data: existingRedemption } = await supabaseClient
+    // Check if offer has already been redeemed - use admin to check cross-user data
+    const { data: existingRedemption } = await supabaseAdmin
       .from('offer_redemptions')
       .select('id')
       .eq('membership_id', membership.id)
@@ -172,14 +172,14 @@ serve(async (req) => {
       .maybeSingle();
 
     // Get offer details
-    const { data: offer } = await supabaseClient
+    const { data: offer } = await supabaseAdmin
       .from('offers')
       .select('id, title, discount_value, discount_type')
       .eq('id', offerId)
       .single();
 
     // Get profile
-    const { data: profile } = await supabaseClient
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('full_name')
       .eq('user_id', membership.user_id)
