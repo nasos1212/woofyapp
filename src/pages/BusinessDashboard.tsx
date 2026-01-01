@@ -140,10 +140,12 @@ const BusinessDashboard = () => {
         // Fetch pets for those memberships
         let petsMap: Record<string, string[]> = {};
         if (membershipIds.length > 0) {
-          const { data: petsData } = await supabase
+          const { data: petsData, error: petsError } = await supabase
             .from('pets')
             .select('membership_id, pet_name')
             .in('membership_id', membershipIds);
+          
+          console.log('Pets query result:', { petsData, petsError, membershipIds });
           
           if (petsData) {
             petsMap = petsData.reduce((acc, p) => {
@@ -153,6 +155,9 @@ const BusinessDashboard = () => {
             }, {} as Record<string, string[]>);
           }
         }
+        
+        console.log('Profiles map:', profilesMap);
+        console.log('Pets map:', petsMap);
 
         // Combine redemptions with profile and pet data
         const enrichedRedemptions = redemptionsData.map(r => {
