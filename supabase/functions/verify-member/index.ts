@@ -163,6 +163,17 @@ serve(async (req) => {
       );
     }
 
+    // Fetch pets for this membership
+    const { data: pets } = await supabaseAdmin
+      .from('pets')
+      .select('pet_name')
+      .eq('membership_id', membership.id);
+    
+    // Get pet names - prefer from pets table, fallback to membership pet_name
+    const petNames = pets && pets.length > 0 
+      ? pets.map(p => p.pet_name).join(', ') 
+      : (membership.pet_name || 'Not specified');
+
     // Check if membership is expired
     if (new Date(membership.expires_at) < new Date() || !membership.is_active) {
       const { data: profile } = await supabaseAdmin
@@ -175,7 +186,7 @@ serve(async (req) => {
         JSON.stringify({
           status: 'expired',
           memberName: profile?.full_name || 'Unknown',
-          petName: membership.pet_name || 'Not specified',
+          petName: petNames,
           memberId: membership.member_number,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
         }),
@@ -210,7 +221,7 @@ serve(async (req) => {
         JSON.stringify({
           status: 'already_redeemed',
           memberName: profile?.full_name || 'Unknown',
-          petName: membership.pet_name || 'Not specified',
+          petName: petNames,
           memberId: membership.member_number,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
           offerTitle: offer?.title,
@@ -225,7 +236,7 @@ serve(async (req) => {
       JSON.stringify({
         status: 'valid',
         memberName: profile?.full_name || 'Unknown',
-        petName: membership.pet_name || 'Not specified',
+        petName: petNames,
         memberId: membership.member_number,
         membershipId: membership.id,
         expiryDate: new Date(membership.expires_at).toLocaleDateString(),
