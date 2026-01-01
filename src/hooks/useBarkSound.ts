@@ -1,7 +1,34 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useEffect } from "react";
 
 export const useBarkSound = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
+  const isUnlockedRef = useRef(false);
+
+  // Unlock audio context on first user interaction
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      }
+      
+      if (audioContextRef.current.state === "suspended") {
+        audioContextRef.current.resume();
+      }
+      
+      isUnlockedRef.current = true;
+    };
+
+    // Unlock on any user interaction
+    document.addEventListener("click", unlockAudio, { once: true });
+    document.addEventListener("touchstart", unlockAudio, { once: true });
+    document.addEventListener("keydown", unlockAudio, { once: true });
+
+    return () => {
+      document.removeEventListener("click", unlockAudio);
+      document.removeEventListener("touchstart", unlockAudio);
+      document.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
 
   const playBark = useCallback(() => {
     try {
