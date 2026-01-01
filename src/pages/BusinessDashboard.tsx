@@ -31,6 +31,7 @@ interface Redemption {
   id: string;
   redeemed_at: string;
   membership: {
+    id: string;
     pet_name: string;
     member_number: string;
     user_id: string;
@@ -44,6 +45,7 @@ interface Redemption {
     full_name: string;
     email: string;
   };
+  petNames?: string;
 }
 
 const BusinessDashboard = () => {
@@ -98,7 +100,7 @@ const BusinessDashboard = () => {
         .select(`
           id,
           redeemed_at,
-          membership:memberships(pet_name, member_number, user_id),
+          membership:memberships(id, pet_name, member_number, user_id),
           offer:offers(title, discount_value, discount_type)
         `)
         .eq('business_id', businessData.id)
@@ -106,10 +108,16 @@ const BusinessDashboard = () => {
         .limit(10);
 
       if (redemptionsData && redemptionsData.length > 0) {
-        // Get unique user IDs from memberships
+        // Get unique user IDs and membership IDs
         const userIds = [...new Set(
           redemptionsData
             .map(r => (r.membership as any)?.user_id)
+            .filter(Boolean)
+        )];
+        
+        const membershipIds = [...new Set(
+          redemptionsData
+            .map(r => (r.membership as any)?.id)
             .filter(Boolean)
         )];
 
@@ -129,13 +137,38 @@ const BusinessDashboard = () => {
           }
         }
 
-        // Combine redemptions with profile data
-        const enrichedRedemptions = redemptionsData.map(r => ({
-          ...r,
-          profile: (r.membership as any)?.user_id 
-            ? profilesMap[(r.membership as any).user_id] 
-            : undefined
-        }));
+        // Fetch pets for those memberships
+        let petsMap: Record<string, string[]> = {};
+        if (membershipIds.length > 0) {
+          const { data: petsData } = await supabase
+            .from('pets')
+            .select('membership_id, pet_name')
+            .in('membership_id', membershipIds);
+          
+          if (petsData) {
+            petsMap = petsData.reduce((acc, p) => {
+              if (!acc[p.membership_id]) acc[p.membership_id] = [];
+              acc[p.membership_id].push(p.pet_name);
+              return acc;
+            }, {} as Record<string, string[]>);
+          }
+        }
+
+        // Combine redemptions with profile and pet data
+        const enrichedRedemptions = redemptionsData.map(r => {
+          const membershipId = (r.membership as any)?.id;
+          const userId = (r.membership as any)?.user_id;
+          const petsFromTable = membershipId ? petsMap[membershipId] : [];
+          const petNames = petsFromTable && petsFromTable.length > 0 
+            ? petsFromTable.join(', ') 
+            : ((r.membership as any)?.pet_name || 'Not specified');
+          
+          return {
+            ...r,
+            profile: userId ? profilesMap[userId] : undefined,
+            petNames
+          };
+        });
 
         setRecentRedemptions(enrichedRedemptions as unknown as Redemption[]);
         
@@ -758,7 +791,7 @@ const BusinessDashboard = () => {
                               </div>
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.membership?.pet_name || 'N/A'}
+                              {redemption.petNames || redemption.membership?.pet_name || 'N/A'}
                             </td>
                             <td className="py-3 px-2 text-slate-600">
                               {redemption.offer?.title || 'N/A'}
