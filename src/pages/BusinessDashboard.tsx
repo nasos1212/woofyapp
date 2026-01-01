@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ConfettiCelebration from "@/components/ConfettiCelebration";
+import { useSuccessSound } from "@/hooks/useSuccessSound";
 
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited';
@@ -42,10 +44,12 @@ interface Redemption {
 const BusinessDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { playSuccessSound } = useSuccessSound();
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [memberIdInput, setMemberIdInput] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [business, setBusiness] = useState<{ id: string; business_name: string } | null>(null);
   const [offers, setOffers] = useState<{ id: string; title: string; discount_value: number; discount_type: string }[]>([]);
   const [selectedOfferId, setSelectedOfferId] = useState<string>("");
@@ -234,6 +238,10 @@ const BusinessDashboard = () => {
         return;
       }
 
+      // Trigger celebration animation and sound
+      setShowCelebration(true);
+      playSuccessSound();
+
       toast({
         title: "Redemption Confirmed! 🎉",
         description: `${scanResult.memberName} saved ${data.redemption.discount}. They've been notified!`,
@@ -298,6 +306,12 @@ const BusinessDashboard = () => {
         <title>Partner Dashboard | PawPass Business Portal</title>
         <meta name="description" content="Verify PawPass members and track redemptions at your business." />
       </Helmet>
+
+      {/* Celebration Animation */}
+      <ConfettiCelebration 
+        isActive={showCelebration} 
+        onComplete={() => setShowCelebration(false)} 
+      />
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
         {/* Header */}
