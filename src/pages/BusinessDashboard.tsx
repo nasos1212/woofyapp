@@ -672,10 +672,18 @@ const BusinessDashboard = () => {
 
               {/* Recent Redemptions */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h3 className="font-display font-semibold text-slate-900 mb-4 flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-primary" />
-                  Recent Redemptions
-                </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-semibold text-slate-900 flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    Recent Redemptions
+                  </h3>
+                  <Link 
+                    to="/business/history" 
+                    className="text-sm text-primary hover:underline"
+                  >
+                    View All →
+                  </Link>
+                </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
