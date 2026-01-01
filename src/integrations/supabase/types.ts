@@ -47,6 +47,13 @@ export type Database = {
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "business_photos_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       business_reviews: {
@@ -83,6 +90,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
         ]
@@ -282,6 +296,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "offer_redemptions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "offer_redemptions_membership_id_fkey"
             columns: ["membership_id"]
             isOneToOne: false
@@ -352,6 +373,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
         ]
@@ -444,9 +472,66 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      businesses_public: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          category: Database["public"]["Enums"]["business_category"] | null
+          city: string | null
+          created_at: string | null
+          description: string | null
+          google_maps_url: string | null
+          id: string | null
+          logo_url: string | null
+          updated_at: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          category?: Database["public"]["Enums"]["business_category"] | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          google_maps_url?: string | null
+          id?: string | null
+          logo_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          category?: Database["public"]["Enums"]["business_category"] | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          google_maps_url?: string | null
+          id?: string | null
+          logo_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      create_family_invite_notification: {
+        Args: { _invitee_user_id: string; _share_code: string }
+        Returns: undefined
+      }
       generate_member_number: { Args: never; Returns: string }
       generate_member_share_code: {
         Args: { member_name: string }
