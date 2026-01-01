@@ -517,24 +517,33 @@ export type Database = {
         Row: {
           business_id: string
           id: string
+          member_name: string | null
+          member_number: string | null
           membership_id: string
           offer_id: string
+          pet_names: string | null
           redeemed_at: string
           redeemed_by_user_id: string
         }
         Insert: {
           business_id: string
           id?: string
+          member_name?: string | null
+          member_number?: string | null
           membership_id: string
           offer_id: string
+          pet_names?: string | null
           redeemed_at?: string
           redeemed_by_user_id: string
         }
         Update: {
           business_id?: string
           id?: string
+          member_name?: string | null
+          member_number?: string | null
           membership_id?: string
           offer_id?: string
+          pet_names?: string | null
           redeemed_at?: string
           redeemed_by_user_id?: string
         }
