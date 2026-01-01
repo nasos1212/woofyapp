@@ -870,6 +870,48 @@ export type Database = {
           },
         ]
       }
+      verification_attempts: {
+        Row: {
+          attempted_member_id: string
+          business_id: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          success: boolean
+        }
+        Insert: {
+          attempted_member_id: string
+          business_id: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+        }
+        Update: {
+          attempted_member_id?: string
+          business_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_attempts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_attempts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       businesses_public: {
