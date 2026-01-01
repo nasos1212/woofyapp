@@ -13,6 +13,9 @@ const RATE_LIMIT_WINDOW_MINUTES = 15; // Time window in minutes
 const LOCKOUT_DURATION_MINUTES = 30; // Lockout duration after exceeding limit
 
 serve(async (req) => {
+  console.log('=== verify-member function called ===');
+  console.log('Method:', req.method);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -22,11 +25,16 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     
+    console.log('Supabase URL:', supabaseUrl ? 'set' : 'not set');
+    console.log('Service key:', supabaseServiceKey ? 'set' : 'not set');
+    
     // Create service role client for rate limit operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
     
     // Get user's auth from request
     const authHeader = req.headers.get('Authorization');
+    console.log('Auth header present:', !!authHeader);
+    
     if (!authHeader) {
       return new Response(
         JSON.stringify({ error: 'No authorization header', code: 'UNAUTHORIZED' }),
@@ -48,8 +56,11 @@ serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    
+    console.log('User authenticated:', user.id);
 
     const { memberId, offerId, businessId } = await req.json();
+    console.log('Request body - memberId:', memberId, 'offerId:', offerId, 'businessId:', businessId);
     
     if (!memberId || !offerId || !businessId) {
       return new Response(
@@ -112,18 +123,24 @@ serve(async (req) => {
     }
 
     // Proceed with verification - use admin client since business users can't see other members' data
+    console.log('Looking up membership with member_number:', memberId.trim());
+    
     const { data: membership, error: membershipError } = await supabaseAdmin
       .from('memberships')
       .select('id, user_id, member_number, pet_name, pet_breed, expires_at, is_active')
       .eq('member_number', memberId.trim())
       .maybeSingle();
 
+    console.log('Membership lookup result:', { membership, error: membershipError });
+
     // Record the attempt
     const success = !membershipError && membership && 
                    new Date(membership.expires_at) >= new Date() && 
                    membership.is_active;
 
-    await supabaseAdmin
+    console.log('Recording attempt, success:', success);
+    
+    const { error: insertError } = await supabaseAdmin
       .from('verification_attempts')
       .insert({
         business_id: businessId,
@@ -131,9 +148,13 @@ serve(async (req) => {
         success: success,
         ip_address: ipAddress
       });
+    
+    if (insertError) {
+      console.error('Failed to record attempt:', insertError);
+    }
 
     if (membershipError || !membership) {
-      console.log(`Invalid member ID: ${memberId}`);
+      console.log(`Invalid member ID: ${memberId}, error:`, membershipError);
       return new Response(
         JSON.stringify({ 
           status: 'invalid',
