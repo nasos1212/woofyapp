@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -407,8 +407,39 @@ const BusinessDashboard = () => {
             <p className="text-slate-500">Verify members and track your PawPass redemptions</p>
           </div>
 
+          {/* Onboarding Tips - Show when no redemptions */}
+          {recentRedemptions.length === 0 && (
+            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-6 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Gift className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display font-semibold text-slate-900 mb-2">Welcome to PawPass! 🎉</h3>
+                  <p className="text-slate-600 text-sm mb-3">
+                    Here's how to get started with your first redemption:
+                  </p>
+                  <ol className="text-sm text-slate-600 space-y-2">
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">1</span>
+                      <span>Create your first offer in the <Link to="/business/offers" className="text-primary font-medium hover:underline">Manage Offers</Link> section</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">2</span>
+                      <span>When a customer shows their PawPass, scan their QR code or enter their member ID below</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">3</span>
+                      <span>Confirm the redemption and the customer gets notified of their savings!</span>
+                    </li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Quick Navigation */}
-          <div className="grid sm:grid-cols-3 gap-4 mb-8">
+          <div className="grid sm:grid-cols-4 gap-4 mb-8">
             <Link 
               to="/business/offers" 
               className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
@@ -418,7 +449,19 @@ const BusinessDashboard = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Manage Offers</h3>
-                <p className="text-sm text-slate-500">Create and edit your discounts</p>
+                <p className="text-sm text-slate-500">{offers.length} active</p>
+              </div>
+            </Link>
+            <Link 
+              to="/business/history" 
+              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+            >
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <Clock className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900">Redemptions</h3>
+                <p className="text-sm text-slate-500">View all history</p>
               </div>
             </Link>
             <Link 
@@ -430,7 +473,7 @@ const BusinessDashboard = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Analytics</h3>
-                <p className="text-sm text-slate-500">View performance insights</p>
+                <p className="text-sm text-slate-500">Performance insights</p>
               </div>
             </Link>
             <Link 
@@ -442,7 +485,7 @@ const BusinessDashboard = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">Pet Birthdays</h3>
-                <p className="text-sm text-slate-500">Celebrate customer pets</p>
+                <p className="text-sm text-slate-500">Celebrate customers</p>
               </div>
             </Link>
           </div>
@@ -736,14 +779,22 @@ const BusinessDashboard = () => {
             <div className="space-y-6">
               {/* Quick Stats */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h3 className="font-display font-semibold text-slate-900 mb-4">This Month</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-semibold text-slate-900">This Month</h3>
+                  <Link to="/business/analytics" className="text-xs text-primary hover:underline">
+                    View details →
+                  </Link>
+                </div>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
                         <Users className="w-5 h-5 text-primary" />
                       </div>
-                      <span className="text-slate-600">Redemptions</span>
+                      <div>
+                        <span className="text-slate-600">Redemptions</span>
+                        <p className="text-xs text-slate-400">Total this month</p>
+                      </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.redemptions}</span>
                   </div>
@@ -752,7 +803,10 @@ const BusinessDashboard = () => {
                       <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                         <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
-                      <span className="text-slate-600">New Customers</span>
+                      <div>
+                        <span className="text-slate-600">New Customers</span>
+                        <p className="text-xs text-slate-400">First-time redeemers</p>
+                      </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.newCustomers}</span>
                   </div>
@@ -761,7 +815,10 @@ const BusinessDashboard = () => {
                       <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
                         <Gift className="w-5 h-5 text-amber-600" />
                       </div>
-                      <span className="text-slate-600">Discounts Given</span>
+                      <div>
+                        <span className="text-slate-600">Discounts Given</span>
+                        <p className="text-xs text-slate-400">Value to customers</p>
+                      </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">€{stats.discountsGiven}</span>
                   </div>
@@ -770,21 +827,50 @@ const BusinessDashboard = () => {
 
               {/* Your Offers */}
               <div className="bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl p-6 text-white">
-                <h3 className="font-display font-semibold mb-3">Your Active Offers</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-display font-semibold">Your Active Offers</h3>
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{offers.length} active</span>
+                </div>
                 {offers.length === 0 ? (
-                  <p className="text-white/70 text-sm">No active offers. Add offers in partner registration.</p>
+                  <div className="bg-white/10 rounded-xl p-4 text-center">
+                    <Tag className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-white/70 text-sm mb-3">No active offers yet</p>
+                    <Link to="/business/offers">
+                      <Button size="sm" variant="secondary" className="bg-white text-slate-900 hover:bg-white/90">
+                        Create First Offer
+                      </Button>
+                    </Link>
+                  </div>
                 ) : (
                   <div className="space-y-2">
                     {offers.slice(0, 3).map(offer => (
-                      <div key={offer.id} className="bg-white/10 rounded-xl p-3">
+                      <div key={offer.id} className="bg-white/10 rounded-xl p-3 hover:bg-white/15 transition-colors">
                         <p className="font-display font-bold">
                           {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} OFF
                         </p>
                         <p className="text-white/70 text-sm">{offer.title}</p>
                       </div>
                     ))}
+                    {offers.length > 3 && (
+                      <Link to="/business/offers" className="block text-center text-white/70 text-sm hover:text-white pt-2">
+                        +{offers.length - 3} more offers →
+                      </Link>
+                    )}
                   </div>
                 )}
+              </div>
+
+              {/* Help Tip */}
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+                <div className="flex items-start gap-3">
+                  <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-blue-900 text-sm mb-1">Quick Tip</h4>
+                    <p className="text-xs text-blue-700">
+                      Scan the member's QR code or ask them to tell you their Member ID (starts with PP-). Then select which offer they want to redeem.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Support */}

@@ -290,21 +290,45 @@ const MemberDashboard = () => {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow">
-                  <div className="text-2xl font-display font-bold text-primary">€{stats.totalSaved}</div>
+                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow group">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-2xl font-display font-bold text-primary">€{stats.totalSaved}</span>
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Percent className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
                   <p className="text-sm text-muted-foreground">Total Saved</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">Click to view history</p>
                 </Link>
-                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow">
-                  <div className="text-2xl font-display font-bold text-paw-gold">{stats.dealsUsed}</div>
+                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow group">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-2xl font-display font-bold text-paw-gold">{stats.dealsUsed}</span>
+                    <div className="w-8 h-8 bg-paw-gold/10 rounded-full flex items-center justify-center group-hover:bg-paw-gold/20 transition-colors">
+                      <Gift className="w-4 h-4 text-paw-gold" />
+                    </div>
+                  </div>
                   <p className="text-sm text-muted-foreground">Deals Used</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">{stats.dealsUsed === 0 ? "Start saving today!" : "Keep it up!"}</p>
                 </Link>
                 <div className="bg-white rounded-2xl p-4 shadow-soft">
-                  <div className="text-2xl font-display font-bold text-green-500">{daysLeft}</div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className={`text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`}>{daysLeft}</span>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-green-100'}`}>
+                      <Clock className={`w-4 h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
+                    </div>
+                  </div>
                   <p className="text-sm text-muted-foreground">Days Left</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">{daysLeft <= 30 ? "Renew soon!" : "Plenty of time"}</p>
                 </div>
                 <div className="bg-white rounded-2xl p-4 shadow-soft">
-                  <div className="text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</span>
+                    <div className="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-rose-500" />
+                    </div>
+                  </div>
                   <p className="text-sm text-muted-foreground">To Shelters</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1">5% of your savings</p>
                 </div>
               </div>
 
