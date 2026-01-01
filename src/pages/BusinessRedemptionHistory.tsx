@@ -19,23 +19,15 @@ import { format, subDays, startOfMonth, endOfMonth, isWithinInterval, parseISO }
 interface Redemption {
   id: string;
   redeemed_at: string;
-  membership: {
-    id: string;
-    pet_name: string;
-    member_number: string;
-    user_id: string;
-  };
+  member_name: string | null;
+  pet_names: string | null;
+  member_number: string | null;
   offer: {
     id: string;
     title: string;
     discount_value: number;
     discount_type: string;
   };
-  profile?: {
-    full_name: string;
-    email: string;
-  };
-  petNames?: string;
 }
 
 interface Offer {
@@ -95,82 +87,22 @@ const BusinessRedemptionHistory = () => {
         setOffers(offersData);
       }
 
-      // Fetch all redemptions
+      // Fetch all redemptions with stored member/pet data
       const { data: redemptionsData } = await supabase
         .from('offer_redemptions')
         .select(`
           id,
           redeemed_at,
-          membership:memberships(id, pet_name, member_number, user_id),
+          member_name,
+          pet_names,
+          member_number,
           offer:offers(id, title, discount_value, discount_type)
         `)
         .eq('business_id', businessData.id)
         .order('redeemed_at', { ascending: false });
 
-      if (redemptionsData && redemptionsData.length > 0) {
-        // Get unique user IDs and membership IDs
-        const userIds = [...new Set(
-          redemptionsData
-            .map(r => (r.membership as any)?.user_id)
-            .filter(Boolean)
-        )];
-
-        const membershipIds = [...new Set(
-          redemptionsData
-            .map(r => (r.membership as any)?.id)
-            .filter(Boolean)
-        )];
-
-        // Fetch profiles
-        let profilesMap: Record<string, { full_name: string; email: string }> = {};
-        if (userIds.length > 0) {
-          const { data: profilesData } = await supabase
-            .from('profiles')
-            .select('user_id, full_name, email')
-            .in('user_id', userIds);
-          
-          if (profilesData) {
-            profilesMap = profilesData.reduce((acc, p) => {
-              acc[p.user_id] = { full_name: p.full_name || '', email: p.email };
-              return acc;
-            }, {} as Record<string, { full_name: string; email: string }>);
-          }
-        }
-
-        // Fetch pets for those memberships
-        let petsMap: Record<string, string[]> = {};
-        if (membershipIds.length > 0) {
-          const { data: petsData } = await supabase
-            .from('pets')
-            .select('membership_id, pet_name')
-            .in('membership_id', membershipIds);
-          
-          if (petsData) {
-            petsMap = petsData.reduce((acc, p) => {
-              if (!acc[p.membership_id]) acc[p.membership_id] = [];
-              acc[p.membership_id].push(p.pet_name);
-              return acc;
-            }, {} as Record<string, string[]>);
-          }
-        }
-
-        // Combine data with profiles and pets
-        const enrichedRedemptions = redemptionsData.map(r => {
-          const membershipId = (r.membership as any)?.id;
-          const userId = (r.membership as any)?.user_id;
-          const petsFromTable = membershipId ? petsMap[membershipId] : [];
-          const petNames = petsFromTable && petsFromTable.length > 0 
-            ? petsFromTable.join(', ') 
-            : ((r.membership as any)?.pet_name || 'Not specified');
-
-          return {
-            ...r,
-            profile: userId ? profilesMap[userId] : undefined,
-            petNames
-          };
-        });
-
-        setRedemptions(enrichedRedemptions as unknown as Redemption[]);
+      if (redemptionsData) {
+        setRedemptions(redemptionsData as unknown as Redemption[]);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -186,11 +118,9 @@ const BusinessRedemptionHistory = () => {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(r => 
-        r.profile?.full_name?.toLowerCase().includes(query) ||
-        r.petNames?.toLowerCase().includes(query) ||
-        r.membership?.pet_name?.toLowerCase().includes(query) ||
-        r.membership?.member_number?.toLowerCase().includes(query) ||
-        r.profile?.email?.toLowerCase().includes(query)
+        r.member_name?.toLowerCase().includes(query) ||
+        r.pet_names?.toLowerCase().includes(query) ||
+        r.member_number?.toLowerCase().includes(query)
       );
     }
 
@@ -251,13 +181,12 @@ const BusinessRedemptionHistory = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Date', 'Member Name', 'Email', 'Member ID', 'Pet Name', 'Offer', 'Discount'];
+    const headers = ['Date', 'Member Name', 'Member ID', 'Pet Name', 'Offer', 'Discount'];
     const rows = filteredRedemptions.map(r => [
       format(parseISO(r.redeemed_at), 'yyyy-MM-dd HH:mm'),
-      r.profile?.full_name || 'N/A',
-      r.profile?.email || 'N/A',
-      r.membership?.member_number || 'N/A',
-      r.petNames || r.membership?.pet_name || 'N/A',
+      r.member_name || 'N/A',
+      r.member_number || 'N/A',
+      r.pet_names || 'N/A',
       r.offer?.title || 'N/A',
       formatDiscount(r.offer?.discount_value || 0, r.offer?.discount_type || 'fixed')
     ]);
@@ -328,7 +257,7 @@ const BusinessRedemptionHistory = () => {
             <div className="bg-white rounded-xl p-4 border border-slate-200">
               <p className="text-slate-500 text-sm">Unique Members</p>
               <p className="font-display text-2xl font-bold text-slate-900">
-                {new Set(filteredRedemptions.map(r => r.membership?.member_number)).size}
+                {new Set(filteredRedemptions.map(r => r.member_number).filter(Boolean)).size}
               </p>
             </div>
           </div>
@@ -427,15 +356,15 @@ const BusinessRedemptionHistory = () => {
                         <td className="py-4 px-4">
                           <div>
                             <p className="font-medium text-slate-900">
-                              {redemption.profile?.full_name || 'Member'}
+                              {redemption.member_name || 'Member'}
                             </p>
                             <p className="text-xs text-slate-500">
-                              {redemption.profile?.email || redemption.membership?.member_number}
+                              {redemption.member_number || 'N/A'}
                             </p>
                           </div>
                         </td>
                         <td className="py-4 px-4 text-slate-600">
-                          {redemption.petNames || redemption.membership?.pet_name || 'N/A'}
+                          {redemption.pet_names || 'N/A'}
                         </td>
                         <td className="py-4 px-4">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
