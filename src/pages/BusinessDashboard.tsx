@@ -581,8 +581,12 @@ const BusinessDashboard = () => {
                     </div>
 
                     {scanResult.status === 'valid' && (
-                      <Button onClick={confirmRedemption} className="w-full mt-4 bg-green-600 hover:bg-green-700">
-                        Confirm Redemption
+                      <Button 
+                        onClick={confirmRedemption} 
+                        disabled={isVerifying}
+                        className="w-full mt-4 bg-green-600 hover:bg-green-700"
+                      >
+                        {isVerifying ? 'Confirming...' : 'Confirm Redemption'}
                       </Button>
                     )}
                   </div>
