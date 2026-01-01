@@ -443,15 +443,17 @@ const MemberDashboard = () => {
                 {pets.length > 0 ? (
                   <div className="space-y-3">
                     {pets.map((pet) => (
-                      <div key={pet.id} className="flex items-center gap-4 p-3 bg-muted/50 rounded-xl">
-                        <div className="w-14 h-14 bg-paw-gold/20 rounded-full flex items-center justify-center text-2xl">
-                          🐕
+                      <Link key={pet.id} to={`/member/pet/${pet.id}`}>
+                        <div className="flex items-center gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer">
+                          <div className="w-14 h-14 bg-paw-gold/20 rounded-full flex items-center justify-center text-2xl">
+                            🐕
+                          </div>
+                          <div>
+                            <p className="font-medium text-foreground">{pet.pet_name}</p>
+                            <p className="text-sm text-muted-foreground">{pet.pet_breed || "Mixed breed"}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-foreground">{pet.pet_name}</p>
-                          <p className="text-sm text-muted-foreground">{pet.pet_breed || "Mixed breed"}</p>
-                        </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 ) : (
