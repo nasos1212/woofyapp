@@ -36,11 +36,18 @@ interface Profile {
   email: string;
 }
 
-const recentDeals = [
-  { business: "Happy Paws Pet Shop", discount: "15% off", used: "2 days ago", saved: "€12.50" },
-  { business: "Woof & Wag Grooming", discount: "Free nail trim", used: "1 week ago", saved: "€15.00" },
-  { business: "Pet Paradise Hotel", discount: "10% off", used: "2 weeks ago", saved: "€45.00" },
-];
+interface Redemption {
+  id: string;
+  redeemed_at: string;
+  offer: {
+    title: string;
+    discount_value: number | null;
+    discount_type: string;
+  };
+  business: {
+    business_name: string;
+  };
+}
 
 const nearbyOffers = [
   { business: "Bark & Brew Café", distance: "0.3 km", offer: "Free puppuccino" },
@@ -53,6 +60,8 @@ const MemberDashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
+  const [stats, setStats] = useState({ totalSaved: 0, dealsUsed: 0, toShelters: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [codeCopied, setCodeCopied] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -90,6 +99,44 @@ const MemberDashboard = () => {
             .eq("membership_id", membershipData.id);
 
           if (petsData) setPets(petsData);
+
+          // Fetch redemptions for this membership
+          const { data: redemptionsData } = await supabase
+            .from("offer_redemptions")
+            .select(`
+              id,
+              redeemed_at,
+              offer:offers(title, discount_value, discount_type),
+              business:businesses(business_name)
+            `)
+            .eq("membership_id", membershipData.id)
+            .order("redeemed_at", { ascending: false })
+            .limit(5);
+
+          if (redemptionsData) {
+            const transformed = redemptionsData.map((r) => ({
+              id: r.id,
+              redeemed_at: r.redeemed_at,
+              offer: r.offer as unknown as Redemption["offer"],
+              business: r.business as unknown as Redemption["business"],
+            }));
+            setRedemptions(transformed);
+
+            // Calculate stats
+            const totalSaved = transformed.reduce((sum, r) => {
+              const value = r.offer?.discount_value || 0;
+              if (r.offer?.discount_type === "percentage") {
+                return sum + (value / 100) * 50; // Estimate €50 avg transaction
+              }
+              return sum + value;
+            }, 0);
+
+            setStats({
+              totalSaved: Math.round(totalSaved),
+              dealsUsed: transformed.length,
+              toShelters: Math.round(totalSaved * 0.05), // 5% donation estimate
+            });
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -243,20 +290,20 @@ const MemberDashboard = () => {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-2xl p-4 shadow-soft">
-                  <div className="text-2xl font-display font-bold text-primary">€0</div>
+                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow">
+                  <div className="text-2xl font-display font-bold text-primary">€{stats.totalSaved}</div>
                   <p className="text-sm text-muted-foreground">Total Saved</p>
-                </div>
-                <div className="bg-white rounded-2xl p-4 shadow-soft">
-                  <div className="text-2xl font-display font-bold text-paw-gold">0</div>
+                </Link>
+                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow">
+                  <div className="text-2xl font-display font-bold text-paw-gold">{stats.dealsUsed}</div>
                   <p className="text-sm text-muted-foreground">Deals Used</p>
-                </div>
+                </Link>
                 <div className="bg-white rounded-2xl p-4 shadow-soft">
                   <div className="text-2xl font-display font-bold text-green-500">{daysLeft}</div>
                   <p className="text-sm text-muted-foreground">Days Left</p>
                 </div>
                 <div className="bg-white rounded-2xl p-4 shadow-soft">
-                  <div className="text-2xl font-display font-bold text-rose-500">€0</div>
+                  <div className="text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</div>
                   <p className="text-sm text-muted-foreground">To Shelters</p>
                 </div>
               </div>
@@ -325,23 +372,47 @@ const MemberDashboard = () => {
 
               {/* Recent Activity */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-primary" />
-                  Recent Activity
-                </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    Recent Activity
+                  </h3>
+                  {redemptions.length > 0 && (
+                    <Link to="/member/history" className="text-sm text-primary hover:underline">
+                      View all
+                    </Link>
+                  )}
+                </div>
                 <div className="space-y-4">
-                  {recentDeals.map((deal, index) => (
-                    <div key={index} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
-                      <div>
-                        <p className="font-medium text-foreground">{deal.business}</p>
-                        <p className="text-sm text-muted-foreground">{deal.discount} • {deal.used}</p>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-green-500 font-semibold">{deal.saved}</span>
-                        <p className="text-xs text-muted-foreground">saved</p>
-                      </div>
+                  {redemptions.length === 0 ? (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No redemptions yet</p>
+                      <Link to="/member/offers" className="text-primary text-sm hover:underline">
+                        Browse offers
+                      </Link>
                     </div>
-                  ))}
+                  ) : (
+                    redemptions.map((redemption) => {
+                      const savedAmount = redemption.offer?.discount_type === "percentage"
+                        ? `${redemption.offer.discount_value}%`
+                        : `€${redemption.offer?.discount_value || 0}`;
+                      return (
+                        <div key={redemption.id} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
+                          <div>
+                            <p className="font-medium text-foreground">{redemption.business?.business_name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {redemption.offer?.title} • {format(new Date(redemption.redeemed_at), "MMM d")}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-green-500 font-semibold">{savedAmount}</span>
+                            <p className="text-xs text-muted-foreground">saved</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </div>

@@ -91,6 +91,8 @@ const NotificationBell = () => {
     const data = notification.data as Record<string, unknown> | null;
     if (notification.type === "family_invite" && data?.share_code) {
       navigate(`/member/join-family?code=${data.share_code}`);
+    } else if (notification.type === "redemption") {
+      navigate("/member/history");
     }
   };
 
