@@ -15,12 +15,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Business {
   id: string;
-  user_id: string;
+  user_id?: string; // Only available for owners
   business_name: string;
   description: string | null;
   category: string;
-  phone: string | null;
-  email: string;
+  phone?: string | null; // Only available for owners
+  email?: string; // Only available for owners
   address: string | null;
   city: string | null;
   website: string | null;
@@ -88,14 +88,36 @@ export default function BusinessProfile() {
 
   const fetchBusinessData = async () => {
     try {
-      // Fetch business details
-      const { data: businessData, error: businessError } = await supabase
-        .from("businesses")
-        .select("*")
-        .eq("id", id)
-        .single();
-
-      if (businessError) throw businessError;
+      // First try to fetch from businesses_public view (safe for public access)
+      // This excludes sensitive data like email, phone, user_id
+      let businessData: Business | null = null;
+      
+      // If user is logged in, check if they're the owner first
+      if (user) {
+        const { data: ownerCheck } = await supabase
+          .from("businesses")
+          .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url")
+          .eq("id", id)
+          .eq("user_id", user.id)
+          .maybeSingle();
+        
+        if (ownerCheck) {
+          businessData = ownerCheck;
+        }
+      }
+      
+      // If not owner or not logged in, use the public view
+      if (!businessData) {
+        const { data: publicData, error: publicError } = await supabase
+          .from("businesses_public")
+          .select("*")
+          .eq("id", id)
+          .single();
+        
+        if (publicError) throw publicError;
+        businessData = publicData;
+      }
+      
       setBusiness(businessData);
 
       // Fetch active offers
