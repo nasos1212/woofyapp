@@ -11,7 +11,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface ScanResult {
-  status: 'valid' | 'expired' | 'invalid' | 'already_redeemed';
+  status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited';
   memberName?: string;
   petName?: string;
   memberId?: string;
@@ -20,6 +20,9 @@ interface ScanResult {
   discount?: string;
   offerId?: string;
   offerTitle?: string;
+  attemptsRemaining?: number;
+  lockoutExpiresAt?: string;
+  remainingMinutes?: number;
 }
 
 interface Redemption {
@@ -133,86 +136,62 @@ const BusinessDashboard = () => {
     setScanResult(null);
 
     try {
-      // Find membership by member_number
-      const { data: membership, error: membershipError } = await supabase
-        .from('memberships')
-        .select('id, user_id, member_number, pet_name, pet_breed, expires_at, is_active')
-        .eq('member_number', memberIdInput.trim())
-        .maybeSingle();
+      // Use edge function for rate-limited verification
+      const { data, error } = await supabase.functions.invoke('verify-member', {
+        body: {
+          memberId: memberIdInput.trim(),
+          offerId: selectedOfferId,
+          businessId: business.id,
+        },
+      });
 
-      if (membershipError || !membership) {
+      if (error) {
+        console.error('Verification error:', error);
+        
+        // Check if it's a rate limit error
+        if (error.message?.includes('429') || error.message?.includes('rate')) {
+          setScanResult({ 
+            status: 'rate_limited',
+            remainingMinutes: 30,
+          });
+          toast({
+            title: "Too Many Attempts",
+            description: "Please wait before trying again.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         setScanResult({ status: 'invalid' });
         return;
       }
 
-      // Check if membership is expired
-      if (new Date(membership.expires_at) < new Date() || !membership.is_active) {
-        // Get profile for member name
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('user_id', membership.user_id)
-          .maybeSingle();
-
+      // Handle rate limit response
+      if (data.code === 'RATE_LIMITED') {
         setScanResult({
-          status: 'expired',
-          memberName: profile?.full_name || 'Unknown',
-          petName: membership.pet_name || 'Not specified',
-          memberId: membership.member_number,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          status: 'rate_limited',
+          lockoutExpiresAt: data.lockoutExpiresAt,
+          remainingMinutes: data.remainingMinutes,
+        });
+        toast({
+          title: "Too Many Failed Attempts",
+          description: `Please wait ${data.remainingMinutes} minutes before trying again.`,
+          variant: "destructive",
         });
         return;
       }
 
-      // Check if this offer has already been redeemed by this member
-      const { data: existingRedemption } = await supabase
-        .from('offer_redemptions')
-        .select('id')
-        .eq('membership_id', membership.id)
-        .eq('offer_id', selectedOfferId)
-        .maybeSingle();
+      // Set the scan result from the edge function response
+      setScanResult(data);
 
-      if (existingRedemption) {
-        // Get profile for member name
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('user_id', membership.user_id)
-          .maybeSingle();
-
-        const selectedOffer = offers.find(o => o.id === selectedOfferId);
-
-        setScanResult({
-          status: 'already_redeemed',
-          memberName: profile?.full_name || 'Unknown',
-          petName: membership.pet_name || 'Not specified',
-          memberId: membership.member_number,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
-          offerTitle: selectedOffer?.title,
+      // Show warning if running low on attempts
+      if (data.attemptsRemaining !== undefined && data.attemptsRemaining <= 3) {
+        toast({
+          title: "Warning",
+          description: `${data.attemptsRemaining} verification attempts remaining.`,
+          variant: "destructive",
         });
-        return;
       }
-
-      // Valid membership and offer not yet redeemed
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('user_id', membership.user_id)
-        .maybeSingle();
-
-      const selectedOffer = offers.find(o => o.id === selectedOfferId);
-
-      setScanResult({
-        status: 'valid',
-        memberName: profile?.full_name || 'Unknown',
-        petName: membership.pet_name || 'Not specified',
-        memberId: membership.member_number,
-        membershipId: membership.id,
-        expiryDate: new Date(membership.expires_at).toLocaleDateString(),
-        discount: selectedOffer ? `${selectedOffer.discount_value}${selectedOffer.discount_type === 'percentage' ? '%' : '€'} - ${selectedOffer.title}` : '',
-        offerId: selectedOfferId,
-        offerTitle: selectedOffer?.title,
-      });
 
     } catch (error) {
       console.error('Verification error:', error);
@@ -556,9 +535,27 @@ const BusinessDashboard = () => {
                         )}
 
                         {scanResult.status === 'invalid' && (
-                          <p className="text-red-600 text-sm">
-                            This member ID is not recognized. Please check and try again.
-                          </p>
+                          <div>
+                            <p className="text-red-600 text-sm">
+                              This member ID is not recognized. Please check and try again.
+                            </p>
+                            {scanResult.attemptsRemaining !== undefined && (
+                              <p className="text-slate-500 text-xs mt-2">
+                                {scanResult.attemptsRemaining} verification attempts remaining
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {scanResult.status === 'rate_limited' && (
+                          <div className="p-3 bg-red-100 rounded-lg">
+                            <p className="text-red-800 font-medium">
+                              🚫 Too many failed attempts
+                            </p>
+                            <p className="text-red-700 text-sm mt-1">
+                              Please wait {scanResult.remainingMinutes} minutes before trying again.
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>

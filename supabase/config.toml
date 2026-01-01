@@ -1,1 +1,7 @@
 project_id = "qvdrwfltbqhlwkqndpdp"
+
+[functions.pet-health-assistant]
+verify_jwt = false
+
+[functions.verify-member]
+verify_jwt = true
