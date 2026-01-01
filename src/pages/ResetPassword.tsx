@@ -24,50 +24,19 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [isValidSession, setIsValidSession] = useState(true); // Assume valid by default
-  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we have a hash fragment (recovery token in URL)
+    // Check for error in URL hash (Supabase redirects with error in hash)
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const accessToken = hashParams.get('access_token');
-    const type = hashParams.get('type');
+    const error = hashParams.get('error');
+    const errorDescription = hashParams.get('error_description');
     
-    // If there's a recovery token in the URL, the link is valid
-    if (accessToken && type === 'recovery') {
-      setIsValidSession(true);
-      setIsCheckingSession(false);
-      return;
+    if (error) {
+      setErrorMessage(errorDescription || 'The reset link is invalid or has expired.');
     }
-
-    // Otherwise check for existing session
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        setIsValidSession(true);
-      } else {
-        setIsValidSession(false);
-      }
-      setIsCheckingSession(false);
-    };
-
-    // Small delay to allow Supabase to process the recovery token
-    setTimeout(checkSession, 500);
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
-          setIsValidSession(true);
-          setIsCheckingSession(false);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,15 +93,7 @@ const ResetPassword = () => {
     }
   };
 
-  if (isCheckingSession) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <DogLoader size="lg" />
-      </div>
-    );
-  }
-
-  if (!isValidSession) {
+  if (errorMessage) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
         <div className="w-full max-w-md">
@@ -141,13 +102,13 @@ const ResetPassword = () => {
               <Dog className="w-8 h-8 text-destructive" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-              Invalid or Expired Link
+              Link Expired
             </h1>
             <p className="text-muted-foreground mb-6">
-              This password reset link is invalid or has expired. Please request a new one.
+              {errorMessage}
             </p>
             <Button onClick={() => navigate("/auth")} variant="hero" className="w-full">
-              Back to Login
+              Request New Link
             </Button>
           </div>
         </div>
