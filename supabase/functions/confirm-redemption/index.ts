@@ -143,6 +143,9 @@ serve(async (req) => {
         offer_id: offerId,
         business_id: businessId,
         redeemed_by_user_id: user.id,
+        member_name: memberName,
+        pet_names: petNames,
+        member_number: membership.member_number,
       })
       .select()
       .single();

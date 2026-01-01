@@ -30,22 +30,14 @@ interface ScanResult {
 interface Redemption {
   id: string;
   redeemed_at: string;
-  membership: {
-    id: string;
-    pet_name: string;
-    member_number: string;
-    user_id: string;
-  };
+  member_name: string | null;
+  pet_names: string | null;
+  member_number: string | null;
   offer: {
     title: string;
     discount_value: number;
     discount_type: string;
   };
-  profile?: {
-    full_name: string;
-    email: string;
-  };
-  petNames?: string;
 }
 
 const BusinessDashboard = () => {
@@ -94,88 +86,23 @@ const BusinessDashboard = () => {
         setSelectedOfferId(offersData[0].id);
       }
 
-      // Fetch recent redemptions with membership and offer data
+      // Fetch recent redemptions - now with stored member/pet data
       const { data: redemptionsData } = await supabase
         .from('offer_redemptions')
         .select(`
           id,
           redeemed_at,
-          membership:memberships(id, pet_name, member_number, user_id),
+          member_name,
+          pet_names,
+          member_number,
           offer:offers(title, discount_value, discount_type)
         `)
         .eq('business_id', businessData.id)
         .order('redeemed_at', { ascending: false })
         .limit(10);
 
-      if (redemptionsData && redemptionsData.length > 0) {
-        // Get unique user IDs and membership IDs
-        const userIds = [...new Set(
-          redemptionsData
-            .map(r => (r.membership as any)?.user_id)
-            .filter(Boolean)
-        )];
-        
-        const membershipIds = [...new Set(
-          redemptionsData
-            .map(r => (r.membership as any)?.id)
-            .filter(Boolean)
-        )];
-
-        // Fetch profiles for those users
-        let profilesMap: Record<string, { full_name: string; email: string }> = {};
-        if (userIds.length > 0) {
-          const { data: profilesData } = await supabase
-            .from('profiles')
-            .select('user_id, full_name, email')
-            .in('user_id', userIds);
-          
-          if (profilesData) {
-            profilesMap = profilesData.reduce((acc, p) => {
-              acc[p.user_id] = { full_name: p.full_name || '', email: p.email };
-              return acc;
-            }, {} as Record<string, { full_name: string; email: string }>);
-          }
-        }
-
-        // Fetch pets for those memberships
-        let petsMap: Record<string, string[]> = {};
-        if (membershipIds.length > 0) {
-          const { data: petsData, error: petsError } = await supabase
-            .from('pets')
-            .select('membership_id, pet_name')
-            .in('membership_id', membershipIds);
-          
-          console.log('Pets query result:', { petsData, petsError, membershipIds });
-          
-          if (petsData) {
-            petsMap = petsData.reduce((acc, p) => {
-              if (!acc[p.membership_id]) acc[p.membership_id] = [];
-              acc[p.membership_id].push(p.pet_name);
-              return acc;
-            }, {} as Record<string, string[]>);
-          }
-        }
-        
-        console.log('Profiles map:', profilesMap);
-        console.log('Pets map:', petsMap);
-
-        // Combine redemptions with profile and pet data
-        const enrichedRedemptions = redemptionsData.map(r => {
-          const membershipId = (r.membership as any)?.id;
-          const userId = (r.membership as any)?.user_id;
-          const petsFromTable = membershipId ? petsMap[membershipId] : [];
-          const petNames = petsFromTable && petsFromTable.length > 0 
-            ? petsFromTable.join(', ') 
-            : ((r.membership as any)?.pet_name || 'Not specified');
-          
-          return {
-            ...r,
-            profile: userId ? profilesMap[userId] : undefined,
-            petNames
-          };
-        });
-
-        setRecentRedemptions(enrichedRedemptions as unknown as Redemption[]);
+      if (redemptionsData) {
+        setRecentRedemptions(redemptionsData as unknown as Redemption[]);
         
         // Calculate stats
         const thisMonth = new Date();
@@ -788,15 +715,15 @@ const BusinessDashboard = () => {
                             <td className="py-3 px-2">
                               <div>
                                 <p className="font-medium text-slate-900">
-                                  {redemption.profile?.full_name || 'Member'}
+                                  {redemption.member_name || 'Member'}
                                 </p>
                                 <p className="text-xs text-slate-500 font-mono">
-                                  {redemption.membership?.member_number || 'N/A'}
+                                  {redemption.member_number || 'N/A'}
                                 </p>
                               </div>
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.petNames || redemption.membership?.pet_name || 'N/A'}
+                              {redemption.pet_names || 'N/A'}
                             </td>
                             <td className="py-3 px-2 text-slate-600">
                               {redemption.offer?.title || 'N/A'}
