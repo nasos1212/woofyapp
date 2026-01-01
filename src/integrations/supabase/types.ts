@@ -362,6 +362,33 @@ export type Database = {
           },
         ]
       }
+      lost_pet_notification_preferences: {
+        Row: {
+          cities: string[]
+          created_at: string
+          enabled: boolean
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cities?: string[]
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cities?: string[]
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lost_pet_sightings: {
         Row: {
           alert_id: string
