@@ -28,10 +28,12 @@ const authSchema = z.object({
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -74,6 +76,51 @@ const Auth = () => {
     
     checkAndRedirect();
   }, [user, navigate, isBusiness]);
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const emailValidation = z.string().trim().email("Please enter a valid email address").safeParse(email);
+      
+      if (!emailValidation.success) {
+        toast({
+          title: "Validation Error",
+          description: emailValidation.error.errors[0].message,
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        setResetEmailSent(true);
+        toast({
+          title: "Check your email",
+          description: "We've sent you a password reset link.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,6 +209,92 @@ const Auth = () => {
     }
   };
 
+  // Forgot Password View
+  if (isForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setIsForgotPassword(false);
+              setResetEmailSent(false);
+            }}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Login
+          </Button>
+
+          <div className="bg-card rounded-2xl shadow-card p-8">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Dog className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <h1 className="font-display text-2xl font-bold text-foreground">
+                {resetEmailSent ? "Check Your Email" : "Forgot Password?"}
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                {resetEmailSent 
+                  ? "We've sent a password reset link to your email address."
+                  : "Enter your email and we'll send you a reset link"
+                }
+              </p>
+            </div>
+
+            {resetEmailSent ? (
+              <div className="text-center space-y-4">
+                <div className="p-4 bg-green-50 rounded-xl">
+                  <Mail className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                  <p className="text-sm text-green-700">
+                    Check your inbox for <strong>{email}</strong>
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setResetEmailSent(false);
+                    setEmail("");
+                  }}
+                  className="w-full"
+                >
+                  Try a different email
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="reset-email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  variant="hero"
+                  className="w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? <DogLoader size="sm" /> : "Send Reset Link"}
+                </Button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -232,7 +365,18 @@ const Auth = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => setIsForgotPassword(true)}
+                    className="text-xs text-primary hover:text-primary/80 transition-colors"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input

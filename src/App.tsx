@@ -26,6 +26,7 @@ import LostPetAlerts from "./pages/LostPetAlerts";
 import PetHealthRecords from "./pages/PetHealthRecords";
 import VaccinationReminders from "./pages/VaccinationReminders";
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/member" element={<MemberDashboard />} />
               <Route path="/member/onboarding" element={<MemberOnboarding />} />
               <Route path="/member/join-family" element={<JoinFamily />} />
