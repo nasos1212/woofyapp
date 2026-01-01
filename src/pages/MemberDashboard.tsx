@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe, Bell } from "lucide-react";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe, Bell, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,10 +10,15 @@ import MembershipCardFull from "@/components/MembershipCardFull";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import NotificationBell from "@/components/NotificationBell";
+import AchievementsBadge from "@/components/AchievementsBadge";
+import ReferralSection from "@/components/ReferralSection";
+import RatingPromptDialog from "@/components/RatingPromptDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useRatingPrompts } from "@/hooks/useRatingPrompts";
+import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 
 interface Pet {
   id: string;
@@ -67,6 +72,18 @@ const MemberDashboard = () => {
   const [inviteEmail, setInviteEmail] = useState("");
   const [isInviting, setIsInviting] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
+  
+  const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
+  const { favoriteIds } = useFavoriteOffers();
+  const currentPrompt = pendingPrompts[0];
+
+  // Show rating prompt when available
+  useEffect(() => {
+    if (pendingPrompts.length > 0 && !ratingPromptOpen) {
+      setRatingPromptOpen(true);
+    }
+  }, [pendingPrompts]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -250,6 +267,7 @@ const MemberDashboard = () => {
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <Breadcrumbs items={[{ label: "Member Dashboard" }]} />
             <div className="flex items-center gap-4">
+              <AchievementsBadge />
               <NotificationBell />
               <div className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center text-white font-medium">
                 {initials}
@@ -257,6 +275,19 @@ const MemberDashboard = () => {
             </div>
           </div>
         </header>
+
+        {/* Rating Prompt Dialog */}
+        {currentPrompt && (
+          <RatingPromptDialog
+            open={ratingPromptOpen}
+            onClose={() => setRatingPromptOpen(false)}
+            businessId={currentPrompt.business_id}
+            businessName={currentPrompt.business?.business_name || "this business"}
+            promptId={currentPrompt.id}
+            onRated={() => refetchPrompts()}
+            onDismiss={() => dismissPrompt(currentPrompt.id)}
+          />
+        )}
 
         <main className="container mx-auto px-4 py-8">
           {/* Welcome */}
@@ -500,7 +531,8 @@ const MemberDashboard = () => {
                 </div>
               </div>
 
-              {/* Nearby Offers */}
+              {/* Referral Section */}
+              <ReferralSection userName={profile?.full_name || "Member"} />
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-primary" />

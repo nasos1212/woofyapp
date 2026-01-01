@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, Clock, AlertTriangle } from "lucide-react";
+import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
 import { formatDistanceToNow, isPast } from "date-fns";
 import DogLoader from "@/components/DogLoader";
-
+import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
+import { useReturningCustomer } from "@/hooks/useReturningCustomer";
 interface Offer {
   id: string;
   title: string;
@@ -51,9 +52,13 @@ const MemberOffers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showRedeemed, setShowRedeemed] = useState(true);
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [membershipId, setMembershipId] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
+  
+  const { isFavorite, toggleFavorite } = useFavoriteOffers();
+  const { isReturningCustomer, getRedemptionCount } = useReturningCustomer();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -69,7 +74,7 @@ const MemberOffers = () => {
 
   useEffect(() => {
     filterOffers();
-  }, [offers, searchQuery, selectedCategory, showRedeemed]);
+  }, [offers, searchQuery, selectedCategory, showRedeemed, showFavoritesOnly, isFavorite]);
 
   const fetchOffers = async () => {
     if (!user) return;
@@ -180,6 +185,11 @@ const MemberOffers = () => {
     // Redeemed filter
     if (!showRedeemed) {
       filtered = filtered.filter((offer) => !offer.isRedeemed);
+    }
+
+    // Favorites filter
+    if (showFavoritesOnly) {
+      filtered = filtered.filter((offer) => isFavorite(offer.id));
     }
 
     setFilteredOffers(filtered);
@@ -296,8 +306,8 @@ const MemberOffers = () => {
               ))}
             </div>
 
-            {/* Show Redeemed Toggle */}
-            <div className="flex items-center justify-between">
+            {/* Filter Toggles */}
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setShowRedeemed(!showRedeemed)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -314,8 +324,20 @@ const MemberOffers = () => {
                 {showRedeemed ? "Showing all" : "Hiding redeemed"}
               </button>
               
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  showFavoritesOnly
+                    ? "bg-rose-100 text-rose-600"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
+                {showFavoritesOnly ? "Favorites only" : "Show favorites"}
+              </button>
+              
               {offers.filter(o => o.isRedeemed).length > 0 && (
-                <span className="text-sm text-muted-foreground">
+                <span className="text-sm text-muted-foreground ml-auto">
                   <Check className="w-4 h-4 inline mr-1 text-green-500" />
                   {offers.filter(o => o.isRedeemed).length} redeemed
                 </span>
@@ -356,22 +378,52 @@ const MemberOffers = () => {
                           <Building2 className="w-5 h-5 text-primary" />
                         </div>
                         <div>
-                          <Link 
-                            to={`/business/${offer.business.id}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="font-medium text-foreground text-sm hover:text-primary hover:underline transition-colors"
-                          >
-                            {offer.business.business_name}
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            <Link 
+                              to={`/business/${offer.business.id}`}
+                              onClick={(e) => e.stopPropagation()}
+                              className="font-medium text-foreground text-sm hover:text-primary hover:underline transition-colors"
+                            >
+                              {offer.business.business_name}
+                            </Link>
+                            {isReturningCustomer(offer.business.id) && (
+                              <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200 gap-1">
+                                <RotateCcw className="w-2.5 h-2.5" />
+                                Returning
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <MapPin className="w-3 h-3" />
                             {offer.business.city || "Location TBD"}
+                            {getRedemptionCount(offer.business.id) > 0 && (
+                              <span className="ml-1 text-primary">
+                                • {getRedemptionCount(offer.business.id)} visits
+                              </span>
+                            )}
                           </p>
                         </div>
                       </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {getCategoryLabel(offer.business.category)}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(offer.id);
+                          }}
+                          className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                        >
+                          <Heart
+                            className={`w-4 h-4 transition-colors ${
+                              isFavorite(offer.id)
+                                ? "fill-rose-500 text-rose-500"
+                                : "text-muted-foreground hover:text-rose-500"
+                            }`}
+                          />
+                        </button>
+                        <Badge variant="secondary" className="text-xs">
+                          {getCategoryLabel(offer.business.category)}
+                        </Badge>
+                      </div>
                     </div>
 
                     {/* Time indicator */}
