@@ -4,7 +4,7 @@ project_id = "qvdrwfltbqhlwkqndpdp"
 verify_jwt = false
 
 [functions.verify-member]
-verify_jwt = true
+verify_jwt = false
 
 [functions.confirm-redemption]
-verify_jwt = true
+verify_jwt = false
