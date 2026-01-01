@@ -103,13 +103,6 @@ export type Database = {
             foreignKeyName: "business_birthday_settings_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: true
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
-          {
-            foreignKeyName: "business_birthday_settings_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: true
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
@@ -148,13 +141,6 @@ export type Database = {
           photo_url?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "business_photos_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
           {
             foreignKeyName: "business_photos_business_id_fkey"
             columns: ["business_id"]
@@ -200,13 +186,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "business_reviews_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
           {
             foreignKeyName: "business_reviews_business_id_fkey"
             columns: ["business_id"]
@@ -345,13 +324,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "lost_pet_alerts_pet_id_fkey"
-            columns: ["pet_id"]
-            isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["pet_id"]
-          },
           {
             foreignKeyName: "lost_pet_alerts_pet_id_fkey"
             columns: ["pet_id"]
@@ -542,13 +514,6 @@ export type Database = {
             foreignKeyName: "offer_redemptions_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
-          {
-            foreignKeyName: "offer_redemptions_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
@@ -625,13 +590,6 @@ export type Database = {
           valid_until?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "offers_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
           {
             foreignKeyName: "offers_business_id_fkey"
             columns: ["business_id"]
@@ -714,13 +672,6 @@ export type Database = {
             foreignKeyName: "pet_friendly_places_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["business_id"]
-          },
-          {
-            foreignKeyName: "pet_friendly_places_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
             referencedRelation: "businesses"
             referencedColumns: ["id"]
           },
@@ -783,13 +734,6 @@ export type Database = {
           veterinarian_name?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "pet_health_records_pet_id_fkey"
-            columns: ["pet_id"]
-            isOneToOne: false
-            referencedRelation: "business_customer_pets"
-            referencedColumns: ["pet_id"]
-          },
           {
             foreignKeyName: "pet_health_records_pet_id_fkey"
             columns: ["pet_id"]
@@ -928,22 +872,6 @@ export type Database = {
       }
     }
     Views: {
-      business_customer_pets: {
-        Row: {
-          birthday: string | null
-          business_id: string | null
-          business_name: string | null
-          business_owner_id: string | null
-          last_interaction: string | null
-          owner_email: string | null
-          owner_name: string | null
-          pet_breed: string | null
-          pet_id: string | null
-          pet_name: string | null
-          pet_owner_id: string | null
-        }
-        Relationships: []
-      }
       businesses_public: {
         Row: {
           address: string | null
