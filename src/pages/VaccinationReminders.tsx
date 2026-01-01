@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Bell, BellRing, Calendar, Syringe, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
 import { format, differenceInDays, isPast, isToday, addDays } from "date-fns";
+import DogLoader from "@/components/DogLoader";
 import {
   Dialog,
   DialogContent,
@@ -256,7 +257,7 @@ const VaccinationReminders = () => {
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

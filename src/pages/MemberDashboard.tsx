@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DogLoader from "@/components/DogLoader";
 import NotificationBell from "@/components/NotificationBell";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -172,7 +173,7 @@ const MemberDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }
@@ -184,7 +185,7 @@ const MemberDashboard = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

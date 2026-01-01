@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import DogLoader from "@/components/DogLoader";
 
 const JoinFamily = () => {
   const { user, loading } = useAuth();
@@ -166,7 +167,7 @@ const JoinFamily = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }

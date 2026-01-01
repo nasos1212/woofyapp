@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { useBarkSound } from "@/hooks/useBarkSound";
 
 interface Notification {
   id: string;
@@ -25,6 +26,7 @@ interface Notification {
 const NotificationBell = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { playBark } = useBarkSound();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -61,6 +63,7 @@ const NotificationBell = () => {
         (payload) => {
           setNotifications((prev) => [payload.new as Notification, ...prev]);
           setUnreadCount((prev) => prev + 1);
+          playBark();
         }
       )
       .subscribe();

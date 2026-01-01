@@ -16,6 +16,7 @@ import {
   Calendar,
 } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import DogLoader from "@/components/DogLoader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -255,7 +256,7 @@ const BusinessOfferManagement = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <DogLoader size="lg" />
       </div>
     );
   }
