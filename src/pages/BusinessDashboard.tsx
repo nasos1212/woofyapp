@@ -33,11 +33,16 @@ interface Redemption {
   membership: {
     pet_name: string;
     member_number: string;
+    user_id: string;
   };
   offer: {
     title: string;
     discount_value: number;
     discount_type: string;
+  };
+  profile?: {
+    full_name: string;
+    email: string;
   };
 }
 
@@ -87,21 +92,52 @@ const BusinessDashboard = () => {
         setSelectedOfferId(offersData[0].id);
       }
 
-      // Fetch recent redemptions
+      // Fetch recent redemptions with membership and offer data
       const { data: redemptionsData } = await supabase
         .from('offer_redemptions')
         .select(`
           id,
           redeemed_at,
-          membership:memberships(pet_name, member_number),
+          membership:memberships(pet_name, member_number, user_id),
           offer:offers(title, discount_value, discount_type)
         `)
         .eq('business_id', businessData.id)
         .order('redeemed_at', { ascending: false })
         .limit(10);
 
-      if (redemptionsData) {
-        setRecentRedemptions(redemptionsData as unknown as Redemption[]);
+      if (redemptionsData && redemptionsData.length > 0) {
+        // Get unique user IDs from memberships
+        const userIds = [...new Set(
+          redemptionsData
+            .map(r => (r.membership as any)?.user_id)
+            .filter(Boolean)
+        )];
+
+        // Fetch profiles for those users
+        let profilesMap: Record<string, { full_name: string; email: string }> = {};
+        if (userIds.length > 0) {
+          const { data: profilesData } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .in('user_id', userIds);
+          
+          if (profilesData) {
+            profilesMap = profilesData.reduce((acc, p) => {
+              acc[p.user_id] = { full_name: p.full_name || '', email: p.email };
+              return acc;
+            }, {} as Record<string, { full_name: string; email: string }>);
+          }
+        }
+
+        // Combine redemptions with profile data
+        const enrichedRedemptions = redemptionsData.map(r => ({
+          ...r,
+          profile: (r.membership as any)?.user_id 
+            ? profilesMap[(r.membership as any).user_id] 
+            : undefined
+        }));
+
+        setRecentRedemptions(enrichedRedemptions as unknown as Redemption[]);
         
         // Calculate stats
         const thisMonth = new Date();
@@ -644,7 +680,7 @@ const BusinessDashboard = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Member ID</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Member</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Pet</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Offer</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Time</th>
@@ -660,8 +696,15 @@ const BusinessDashboard = () => {
                       ) : (
                         recentRedemptions.map((redemption) => (
                           <tr key={redemption.id} className="border-b border-slate-100 last:border-0">
-                            <td className="py-3 px-2 font-mono text-xs text-slate-900">
-                              {redemption.membership?.member_number || 'N/A'}
+                            <td className="py-3 px-2">
+                              <div>
+                                <p className="font-medium text-slate-900">
+                                  {redemption.profile?.full_name || 'Member'}
+                                </p>
+                                <p className="text-xs text-slate-500 font-mono">
+                                  {redemption.membership?.member_number || 'N/A'}
+                                </p>
+                              </div>
                             </td>
                             <td className="py-3 px-2 text-slate-600">
                               {redemption.membership?.pet_name || 'N/A'}
