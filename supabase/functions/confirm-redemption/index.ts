@@ -86,6 +86,25 @@ serve(async (req) => {
       );
     }
 
+    // Fetch pets for this membership
+    const { data: petsData } = await supabaseAdmin
+      .from('pets')
+      .select('pet_name')
+      .eq('membership_id', membershipId);
+    
+    const petNames = petsData && petsData.length > 0 
+      ? petsData.map(p => p.pet_name).join(', ') 
+      : (membership.pet_name || 'Not specified');
+
+    // Fetch profile for member name
+    const { data: profileData } = await supabaseAdmin
+      .from('profiles')
+      .select('full_name, email')
+      .eq('user_id', membership.user_id)
+      .maybeSingle();
+    
+    const memberName = profileData?.full_name || 'Unknown';
+
     // Get offer details
     const { data: offer, error: offerError } = await supabaseAdmin
       .from('offers')
@@ -177,6 +196,9 @@ serve(async (req) => {
           discount: discountText,
           business_name: business.business_name,
           redeemed_at: redemption.redeemed_at,
+          member_name: memberName,
+          pet_names: petNames,
+          member_number: membership.member_number,
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
