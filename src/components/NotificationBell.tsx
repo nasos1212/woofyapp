@@ -93,7 +93,27 @@ const NotificationBell = () => {
       navigate(`/member/join-family?code=${data.share_code}`);
     } else if (notification.type === "redemption") {
       navigate("/member/history");
+    } else if (notification.type === "lost_pet_alert" && data?.alert_id) {
+      navigate(`/member/lost-pets?alert=${data.alert_id}`);
+    } else {
+      // For bulk notifications and others, go to notifications page
+      navigate("/member/notifications");
     }
+  };
+
+  const markAllAsRead = async () => {
+    const unreadIds = notifications.filter(n => !n.read).map(n => n.id);
+    if (unreadIds.length === 0) return;
+    
+    await supabase
+      .from("notifications")
+      .update({ read: true })
+      .in("id", unreadIds);
+
+    setNotifications((prev) =>
+      prev.map((n) => ({ ...n, read: true }))
+    );
+    setUnreadCount(0);
   };
 
   return (
@@ -114,25 +134,49 @@ const NotificationBell = () => {
             No notifications
           </div>
         ) : (
-          notifications.map((notification) => (
-            <DropdownMenuItem
-              key={notification.id}
-              className={`flex flex-col items-start gap-1 p-3 cursor-pointer ${
-                !notification.read ? "bg-accent/50" : ""
-              }`}
-              onClick={() => handleNotificationClick(notification)}
-            >
-              <span className="font-medium">{notification.title}</span>
-              <span className="text-sm text-muted-foreground">
-                {notification.message}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {formatDistanceToNow(new Date(notification.created_at), {
-                  addSuffix: true,
-                })}
-              </span>
-            </DropdownMenuItem>
-          ))
+          <>
+            {unreadCount > 0 && (
+              <div className="px-3 py-2 border-b border-border">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-xs text-muted-foreground hover:text-foreground w-full"
+                  onClick={markAllAsRead}
+                >
+                  Mark all as read
+                </Button>
+              </div>
+            )}
+            {notifications.map((notification) => (
+              <DropdownMenuItem
+                key={notification.id}
+                className={`flex flex-col items-start gap-1 p-3 cursor-pointer ${
+                  !notification.read ? "bg-accent/50" : ""
+                }`}
+                onClick={() => handleNotificationClick(notification)}
+              >
+                <span className="font-medium">{notification.title}</span>
+                <span className="text-sm text-muted-foreground line-clamp-2">
+                  {notification.message}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(new Date(notification.created_at), {
+                    addSuffix: true,
+                  })}
+                </span>
+              </DropdownMenuItem>
+            ))}
+            <div className="px-3 py-2 border-t border-border">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs text-primary hover:text-primary/80 w-full"
+                onClick={() => navigate("/member/notifications")}
+              >
+                View all notifications
+              </Button>
+            </div>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
