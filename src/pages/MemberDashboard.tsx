@@ -276,12 +276,12 @@ const MemberDashboard = () => {
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <Breadcrumbs items={[{ label: "Member Dashboard" }]} />
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <AchievementsBadge />
               <NotificationBell />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
+                  <button className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center">
                     <Avatar className="h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all">
                       <AvatarFallback className="bg-gradient-hero text-white font-medium">
                         {initials}
@@ -289,7 +289,7 @@ const MemberDashboard = () => {
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-[calc(100vw-2rem)] max-w-56 sm:w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium">{profile?.full_name || "Member"}</p>

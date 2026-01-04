@@ -20,14 +20,14 @@ const AchievementsBadge = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-paw-gold/10 rounded-full hover:bg-paw-gold/20 transition-colors">
+        <button className="flex items-center gap-2 px-3 py-2 min-h-[44px] bg-paw-gold/10 rounded-full hover:bg-paw-gold/20 transition-colors active:bg-paw-gold/30">
           <Trophy className="w-4 h-4 text-paw-gold" />
           <span className="text-sm font-medium text-paw-gold">
             {unlockedCount}/{totalCount}
           </span>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-xl flex items-center gap-2">
             <Trophy className="w-5 h-5 text-paw-gold" />
