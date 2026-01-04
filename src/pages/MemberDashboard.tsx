@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, Navigate } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe, Bell, Heart } from "lucide-react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe, Bell, Heart, LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
@@ -61,7 +70,8 @@ const nearbyOffers = [
 ];
 
 const MemberDashboard = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
@@ -269,9 +279,53 @@ const MemberDashboard = () => {
             <div className="flex items-center gap-4">
               <AchievementsBadge />
               <NotificationBell />
-              <div className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center text-white font-medium">
-                {initials}
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full">
+                    <Avatar className="h-10 w-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all">
+                      <AvatarFallback className="bg-gradient-hero text-white font-medium">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{profile?.full_name || "Member"}</p>
+                      <p className="text-xs text-muted-foreground">{profile?.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/member")}>
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    My Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                    <Gift className="mr-2 h-4 w-4" />
+                    Browse Offers
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/family")}>
+                    <Users className="mr-2 h-4 w-4" />
+                    Family Pack
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={async () => {
+                      await signOut();
+                      navigate("/");
+                    }}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
