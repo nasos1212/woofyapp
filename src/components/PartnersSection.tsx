@@ -56,8 +56,8 @@ const PartnersSection = () => {
         </div>
 
         {/* Featured partners */}
-        <div className="bg-gradient-hero rounded-3xl p-8 lg:p-12">
-          <h3 className="font-display font-bold text-2xl text-primary-foreground mb-8 text-center">
+        <div className="bg-woofy-dark rounded-3xl p-8 lg:p-12">
+          <h3 className="font-display font-bold text-2xl text-woofy-sky mb-8 text-center">
             Featured Partner Deals
           </h3>
           
@@ -65,14 +65,14 @@ const PartnersSection = () => {
             {featuredPartners.map((partner) => (
               <div
                 key={partner.name}
-                className="bg-primary-foreground/10 backdrop-blur-sm rounded-xl p-4 border border-primary-foreground/20 hover:bg-primary-foreground/20 transition-colors duration-300"
+                className="bg-woofy-blue/10 backdrop-blur-sm rounded-xl p-4 border border-woofy-blue/30 hover:bg-woofy-blue/20 transition-colors duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-display font-semibold text-primary-foreground">{partner.name}</p>
-                    <p className="text-sm text-primary-foreground/70">{partner.category}</p>
+                    <p className="font-display font-semibold text-woofy-light">{partner.name}</p>
+                    <p className="text-sm text-woofy-light/70">{partner.category}</p>
                   </div>
-                  <div className="bg-primary-foreground text-primary px-3 py-1 rounded-full text-sm font-semibold">
+                  <div className="bg-woofy-sky text-woofy-dark px-3 py-1 rounded-full text-sm font-semibold">
                     {partner.discount}
                   </div>
                 </div>
@@ -80,7 +80,7 @@ const PartnersSection = () => {
             ))}
           </div>
           
-          <p className="text-center text-primary-foreground/70 mt-8 text-sm">
+          <p className="text-center text-woofy-light/70 mt-8 text-sm">
             + hundreds more exclusive deals waiting for you
           </p>
         </div>

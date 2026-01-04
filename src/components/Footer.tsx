@@ -8,23 +8,23 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-hero rounded-xl flex items-center justify-center">
-                <Dog className="w-6 h-6 text-primary-foreground" />
+              <div className="w-10 h-10 bg-woofy-blue/20 rounded-xl flex items-center justify-center">
+                <Dog className="w-6 h-6 text-woofy-sky" />
               </div>
-              <span className="font-display font-bold text-xl">Woofy</span>
+              <span className="font-display font-bold text-xl text-woofy-sky">Woofy</span>
             </div>
             <p className="text-white/70 text-sm">
               The ultimate membership for pet lovers. Unlock discounts, connect with community, 
               and make every moment with your pet special.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="#" className="w-10 h-10 bg-woofy-blue/20 rounded-full flex items-center justify-center hover:bg-woofy-sky hover:text-woofy-dark transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="#" className="w-10 h-10 bg-woofy-blue/20 rounded-full flex items-center justify-center hover:bg-woofy-sky hover:text-woofy-dark transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-primary transition-colors">
+              <a href="#" className="w-10 h-10 bg-woofy-blue/20 rounded-full flex items-center justify-center hover:bg-woofy-sky hover:text-woofy-dark transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
             </div>
@@ -32,40 +32,40 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-display font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-3 text-sm text-white/70">
-              <li><a href="#benefits" className="hover:text-primary transition-colors">Benefits</a></li>
-              <li><a href="#partners" className="hover:text-primary transition-colors">Partners</a></li>
-              <li><a href="#hub" className="hover:text-primary transition-colors">Pet Hub</a></li>
-              <li><a href="#pricing" className="hover:text-primary transition-colors">Pricing</a></li>
+            <h4 className="font-display font-semibold mb-4 text-woofy-light">Quick Links</h4>
+            <ul className="space-y-3 text-sm text-woofy-light/70">
+              <li><a href="#benefits" className="hover:text-woofy-sky transition-colors">Benefits</a></li>
+              <li><a href="#partners" className="hover:text-woofy-sky transition-colors">Partners</a></li>
+              <li><a href="#hub" className="hover:text-woofy-sky transition-colors">Pet Hub</a></li>
+              <li><a href="#pricing" className="hover:text-woofy-sky transition-colors">Pricing</a></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="font-display font-semibold mb-4">Support</h4>
-            <ul className="space-y-3 text-sm text-white/70">
-              <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Partner Program</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
+            <h4 className="font-display font-semibold mb-4 text-woofy-light">Support</h4>
+            <ul className="space-y-3 text-sm text-woofy-light/70">
+              <li><a href="#" className="hover:text-woofy-sky transition-colors">Help Center</a></li>
+              <li><a href="#" className="hover:text-woofy-sky transition-colors">Partner Program</a></li>
+              <li><a href="#" className="hover:text-woofy-sky transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-woofy-sky transition-colors">Terms of Service</a></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-semibold mb-4">Contact</h4>
-            <ul className="space-y-3 text-sm text-white/70">
+            <h4 className="font-display font-semibold mb-4 text-woofy-light">Contact</h4>
+            <ul className="space-y-3 text-sm text-woofy-light/70">
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <a href="mailto:hello@woofy.eu" className="hover:text-primary transition-colors">hello@woofy.eu</a>
+                <Mail className="w-4 h-4 text-woofy-sky" />
+                <a href="mailto:hello@woofy.eu" className="hover:text-woofy-sky transition-colors">hello@woofy.eu</a>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <a href="tel:+35799123456" className="hover:text-primary transition-colors">+357 99 123 456</a>
+                <Phone className="w-4 h-4 text-woofy-sky" />
+                <a href="tel:+35799123456" className="hover:text-woofy-sky transition-colors">+357 99 123 456</a>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5" />
+                <MapPin className="w-4 h-4 mt-0.5 text-woofy-sky" />
                 <span>Cyprus</span>
               </li>
             </ul>
@@ -73,7 +73,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-white/20 text-center text-sm text-white/50">
+        <div className="pt-8 border-t border-woofy-blue/30 text-center text-sm text-woofy-light/50">
           <p>© 2026 Woofy. Made with ❤️ for pet lovers everywhere.</p>
         </div>
       </div>

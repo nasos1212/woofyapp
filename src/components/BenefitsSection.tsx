@@ -84,7 +84,7 @@ const BenefitsSection = () => {
           </h2>
           
           <p className="text-lg text-muted-foreground">
-            From everyday savings to special perks, your PawPass membership pays for itself many times over.
+            From everyday savings to special perks, your Woofy membership pays for itself many times over.
           </p>
         </div>
 
