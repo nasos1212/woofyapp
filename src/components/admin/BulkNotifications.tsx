@@ -62,10 +62,6 @@ const BulkNotifications = () => {
       }
 
       // Create notifications for all users
-      // Note: This requires an INSERT policy for notifications table for admins
-      // For now, we'll use a workaround with an edge function in production
-      // This is a simplified version for demo purposes
-      
       const notifications = userIds.map((userId) => ({
         user_id: userId,
         type: notification.type,
@@ -74,10 +70,21 @@ const BulkNotifications = () => {
         data: { bulk: true },
       }));
 
-      // Since the notifications table doesn't allow direct inserts,
-      // we'll need to show what would be sent
+      // Insert notifications in batches of 100 to avoid payload limits
+      const batchSize = 100;
+      for (let i = 0; i < notifications.length; i += batchSize) {
+        const batch = notifications.slice(i, i + batchSize);
+        const { error: insertError } = await supabase
+          .from("notifications")
+          .insert(batch);
+        
+        if (insertError) {
+          throw insertError;
+        }
+      }
+
       setSentCount(userIds.length);
-      toast.success(`Notification queued for ${userIds.length} users!`);
+      toast.success(`Notification sent to ${userIds.length} users!`);
       
       setNotification({
         title: "",
