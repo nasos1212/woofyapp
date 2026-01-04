@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut } from "lucide-react";
+import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Settings, Bell, Heart } from "lucide-react";
 import { Button } from "./ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
@@ -9,6 +17,7 @@ import NotificationBell from "./NotificationBell";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -20,13 +29,36 @@ const Header = () => {
     navigate("/");
   };
 
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   useEffect(() => {
     if (user) {
       checkAdminStatus();
+      fetchProfile();
     } else {
       setIsAdmin(false);
+      setProfile(null);
     }
   }, [user]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    if (data) {
+      setProfile(data);
+    }
+  };
 
   const checkAdminStatus = async () => {
     if (!user) return;
@@ -99,31 +131,62 @@ const Header = () => {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             {user && <NotificationBell />}
-            {isAdmin && (
-              <Link to="/admin">
-                <Button variant="ghost" size="sm" className="gap-2 text-primary">
-                  <Shield className="w-4 h-4" />
-                  Admin
-                </Button>
-              </Link>
-            )}
             <Link to="/business">
               <Button variant="ghost" size="sm" className="gap-2">
                 <Building2 className="w-4 h-4" />
                 For Business
               </Button>
             </Link>
-            <Link to="/member">
-              <Button variant="outline" size="sm" className="gap-2">
-                <User className="w-4 h-4" />
-                My Account
-              </Button>
-            </Link>
             {user ? (
-              <Button variant="ghost" size="sm" className="gap-2" onClick={handleSignOut}>
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+                        {profile?.full_name ? getInitials(profile.full_name) : user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate("/member")}>
+                    <User className="mr-2 h-4 w-4" />
+                    My Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                    <Tag className="mr-2 h-4 w-4" />
+                    Browse Offers
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/member/family")}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    Family Pack
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Link to="/auth">
                 <Button variant="hero" size="default">Join Now</Button>
