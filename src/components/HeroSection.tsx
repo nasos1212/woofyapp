@@ -2,8 +2,19 @@ import { ArrowRight, Sparkles, Heart, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import heroImage from "@/assets/hero-dog.jpg";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
+  const handleGetPass = () => {
+    navigate("/auth");
+  };
+
+  const handleExploreBenefits = () => {
+    document.getElementById("benefits")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen pt-24 pb-16 overflow-hidden">
       {/* Background image with overlay */}
@@ -53,11 +64,11 @@ const HeroSection = () => {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button variant="hero" size="xl" className="group">
+              <Button variant="hero" size="xl" className="group" onClick={handleGetPass}>
                 Get Your Woofy Pass
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="heroOutline" size="xl">
+              <Button variant="heroOutline" size="xl" onClick={handleExploreBenefits}>
                 Explore Benefits
               </Button>
             </div>
