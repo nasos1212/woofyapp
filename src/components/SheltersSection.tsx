@@ -157,7 +157,7 @@ const SheltersSection = () => {
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Apply as a Shelter Partner</DialogTitle>
             <DialogDescription>
-              Join our whitelist and receive 10% of Woofy membership proceeds. Fill out the form below and we'll review your application.
+              Join our whitelist and share in 10% of all Woofy membership proceeds, split amongst our shelter partners. Fill out the form below and we'll review your application.
             </DialogDescription>
           </DialogHeader>
           
@@ -287,7 +287,7 @@ const SheltersSection = () => {
               <strong>What happens next?</strong>
               <ul className="list-disc list-inside mt-2 space-y-1">
                 <li>We'll review your application within 5 business days</li>
-                <li>If approved, you'll receive 10% of Woofy membership proceeds</li>
+                <li>If approved, you'll share in 10% of all membership proceeds (split amongst all partner shelters)</li>
                 <li>Your shelter will be featured on our website</li>
               </ul>
             </div>
