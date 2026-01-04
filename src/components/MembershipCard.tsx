@@ -26,10 +26,10 @@ const MembershipCard = ({
         <div className="relative flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Dog className="w-8 h-8 text-primary-foreground" />
-            <span className="font-display font-bold text-2xl text-primary-foreground">PawPass</span>
+            <span className="font-display font-bold text-2xl text-primary-foreground">Woofy</span>
           </div>
           <div className="flex items-center gap-1">
-            <Crown className="w-5 h-5 text-paw-gold" />
+            <Crown className="w-5 h-5 text-yellow-300" />
             <span className="text-sm font-medium text-primary-foreground/90">Premium</span>
           </div>
         </div>
@@ -55,7 +55,7 @@ const MembershipCard = ({
           {/* Stars */}
           <div className="flex gap-1 pt-2">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-paw-gold text-paw-gold" />
+              <Star key={i} className="w-4 h-4 fill-yellow-300 text-yellow-300" />
             ))}
           </div>
         </div>
@@ -63,7 +63,7 @@ const MembershipCard = ({
         {/* Card number */}
         <div className="relative mt-6 pt-4 border-t border-primary-foreground/20">
           <p className="font-mono text-sm text-primary-foreground/80 tracking-wider">
-            PP-2024-XXXX-XXXX
+            WF-2026-XXXX-XXXX
           </p>
         </div>
       </div>

@@ -65,7 +65,7 @@ const ACHIEVEMENT_DEFINITIONS = [
   {
     type: "referral_master",
     title: "Referral Master",
-    description: "Referred 3 friends to PawPass",
+    description: "Referred 3 friends to Woofy",
     icon: "🤝",
   },
   {

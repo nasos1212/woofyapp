@@ -15,7 +15,7 @@ const CTASection = () => {
           </h2>
           
           <p className="text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Start saving today with your PawPass membership. Over 10,000 pet parents already trust us.
+            Start saving today with your Woofy membership. Over 10,000 pet parents already trust us.
           </p>
 
           {/* Benefits */}
@@ -39,7 +39,7 @@ const CTASection = () => {
             size="xl" 
             className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 hover:scale-105 shadow-lg group"
           >
-            Get Your PawPass for €59/year
+            Get Woofy for €59/year
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
 

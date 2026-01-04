@@ -61,13 +61,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        paw: {
-          amber: "hsl(var(--paw-amber))",
-          orange: "hsl(var(--paw-orange))",
-          cream: "hsl(var(--paw-cream))",
-          brown: "hsl(var(--paw-brown))",
-          gold: "hsl(var(--paw-gold))",
-          peach: "hsl(var(--paw-peach))",
+        woofy: {
+          blue: "hsl(var(--woofy-blue))",
+          sky: "hsl(var(--woofy-sky))",
+          light: "hsl(var(--woofy-light))",
+          dark: "hsl(var(--woofy-dark))",
+          accent: "hsl(var(--woofy-accent))",
+          soft: "hsl(var(--woofy-soft))",
         },
       },
       borderRadius: {

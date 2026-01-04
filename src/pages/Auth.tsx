@@ -10,9 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
 
-// Allowed image types for validation (JPEG, PNG, GIF, WebP - no SVG for security)
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-
 const authSchema = z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255, "Email too long"),
   password: z.string()
@@ -27,6 +24,7 @@ const authSchema = z.object({
 });
 
 const Auth = () => {
+  const [accountType, setAccountType] = useState<"member" | "business" | null>(null);
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -39,14 +37,19 @@ const Auth = () => {
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
 
-  const accountType = searchParams.get("type") || "member";
-  const isBusiness = accountType === "business";
+  // Check URL params for account type
+  useEffect(() => {
+    const typeParam = searchParams.get("type");
+    if (typeParam === "business" || typeParam === "member") {
+      setAccountType(typeParam);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const checkAndRedirect = async () => {
-      if (!user) return;
+      if (!user || !accountType) return;
       
-      if (isBusiness) {
+      if (accountType === "business") {
         navigate("/partner-register");
         return;
       }
@@ -66,16 +69,14 @@ const Auth = () => {
       }
       
       if (membership) {
-        // User already has membership, go to dashboard
         navigate("/member");
       } else {
-        // New user, go to onboarding
         navigate("/member/onboarding");
       }
     };
     
     checkAndRedirect();
-  }, [user, navigate, isBusiness]);
+  }, [user, navigate, accountType]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,7 +177,7 @@ const Auth = () => {
           }
         } else {
           // For member accounts, create a membership record
-          if (!isBusiness && data?.user) {
+          if (accountType === "member" && data?.user) {
             const expiryDate = new Date();
             expiryDate.setFullYear(expiryDate.getFullYear() + 1);
             
@@ -194,7 +195,7 @@ const Auth = () => {
           
           toast({
             title: "Account Created!",
-            description: "Welcome to PawPass!",
+            description: "Welcome to Woofy!",
           });
         }
       }
@@ -208,6 +209,88 @@ const Auth = () => {
       setIsLoading(false);
     }
   };
+
+  // Account Type Selection View
+  if (!accountType) {
+    return (
+      <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+        <div className="w-full max-w-lg">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </Button>
+
+          <div className="bg-card rounded-2xl shadow-card p-8">
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Dog className="w-8 h-8 text-primary-foreground" />
+              </div>
+              <h1 className="font-display text-2xl font-bold text-foreground">
+                Welcome to Woofy
+              </h1>
+              <p className="text-muted-foreground mt-2">
+                How would you like to continue?
+              </p>
+            </div>
+
+            <div className="grid gap-4">
+              <button
+                onClick={() => setAccountType("member")}
+                className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-hero flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Dog className="w-7 h-7 text-primary-foreground" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-lg text-foreground">
+                      I'm a Pet Owner
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Get exclusive discounts and benefits for your furry friend
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setAccountType("business")}
+                className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-gradient-hero">
+                    <Building2 className="w-7 h-7 text-muted-foreground group-hover:text-primary-foreground transition-colors" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-lg text-foreground">
+                      I'm a Business Partner
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Partner with us to reach thousands of pet owners
+                    </p>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-border text-center">
+              <button
+                type="button"
+                onClick={() => navigate("/member/join-family")}
+                className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                Have a family share code?
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Forgot Password View
   if (isForgotPassword) {
@@ -244,9 +327,9 @@ const Auth = () => {
 
             {resetEmailSent ? (
               <div className="text-center space-y-4">
-                <div className="p-4 bg-green-50 rounded-xl">
-                  <Mail className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm text-green-700">
+                <div className="p-4 bg-primary/10 rounded-xl">
+                  <Mail className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <p className="text-sm text-foreground">
                     Check your inbox for <strong>{email}</strong>
                   </p>
                 </div>
@@ -295,16 +378,18 @@ const Auth = () => {
     );
   }
 
+  const isBusiness = accountType === "business";
+
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Button
           variant="ghost"
-          onClick={() => navigate("/")}
+          onClick={() => setAccountType(null)}
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Home
+          Change Account Type
         </Button>
 
         <div className="bg-card rounded-2xl shadow-card p-8">
@@ -318,7 +403,7 @@ const Auth = () => {
               )}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome Back" : "Join PawPass"}
+              {isLogin ? "Welcome Back" : "Join Woofy"}
             </h1>
             <p className="text-muted-foreground mt-2">
               {isBusiness 
@@ -326,6 +411,19 @@ const Auth = () => {
                 : "Your premium pet membership awaits"
               }
             </p>
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-sm text-secondary-foreground">
+              {isBusiness ? (
+                <>
+                  <Building2 className="w-4 h-4" />
+                  Business Account
+                </>
+              ) : (
+                <>
+                  <Dog className="w-4 h-4" />
+                  Pet Owner Account
+                </>
+              )}
+            </div>
           </div>
 
           {/* Form */}
@@ -416,27 +514,9 @@ const Auth = () => {
             </button>
           </div>
 
-          {/* Account type switch */}
-          <div className="mt-4 pt-4 border-t border-border text-center space-y-3">
-            <button
-              type="button"
-              onClick={() => navigate(`/auth?type=${isBusiness ? "member" : "business"}`)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center justify-center gap-2 mx-auto"
-            >
-              {isBusiness ? (
-                <>
-                  <Dog className="w-4 h-4" />
-                  I'm a pet owner
-                </>
-              ) : (
-                <>
-                  <Building2 className="w-4 h-4" />
-                  I'm a business partner
-                </>
-              )}
-            </button>
-            
-            {!isBusiness && (
+          {/* Family share code for members */}
+          {!isBusiness && (
+            <div className="mt-4 pt-4 border-t border-border text-center">
               <button
                 type="button"
                 onClick={() => navigate("/member/join-family")}
@@ -444,8 +524,8 @@ const Auth = () => {
               >
                 Have a family share code?
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
