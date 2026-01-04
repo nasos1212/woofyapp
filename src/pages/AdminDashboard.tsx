@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PromoCodeManager from "@/components/admin/PromoCodeManager";
+import InfluencerMemberships from "@/components/admin/InfluencerMemberships";
+import UserAnalytics from "@/components/admin/UserAnalytics";
+import BulkNotifications from "@/components/admin/BulkNotifications";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -286,14 +290,46 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="pending" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
-            <TabsTrigger value="pending" className="gap-2">
+        <Tabs defaultValue="analytics" className="space-y-6">
+          <TabsList className="flex flex-wrap gap-1 h-auto p-1">
+            <TabsTrigger value="analytics" className="gap-1">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="influencers" className="gap-1">
+              <Crown className="w-4 h-4" />
+              Influencers
+            </TabsTrigger>
+            <TabsTrigger value="promo" className="gap-1">
+              <Tag className="w-4 h-4" />
+              Promo Codes
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-1">
+              <Bell className="w-4 h-4" />
+              Notifications
+            </TabsTrigger>
+            <TabsTrigger value="pending" className="gap-1">
               Pending ({pendingBusinesses.length})
             </TabsTrigger>
-            <TabsTrigger value="businesses">All Businesses</TabsTrigger>
+            <TabsTrigger value="businesses">Businesses</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="analytics">
+            <UserAnalytics />
+          </TabsContent>
+
+          <TabsContent value="influencers">
+            <InfluencerMemberships />
+          </TabsContent>
+
+          <TabsContent value="promo">
+            <PromoCodeManager />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <BulkNotifications />
+          </TabsContent>
 
           <TabsContent value="pending" className="space-y-4">
             {pendingBusinesses.length === 0 ? (

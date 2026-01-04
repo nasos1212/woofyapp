@@ -882,6 +882,99 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string
+          description: string | null
+          discount_type: string
+          discount_value: number | null
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          usage_limit: number | null
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          discount_type: string
+          discount_value?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          usage_limit?: number | null
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          discount_type?: string
+          discount_value?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          usage_limit?: number | null
+          used_count?: number
+        }
+        Relationships: []
+      }
+      promo_memberships: {
+        Row: {
+          expires_at: string
+          granted_at: string
+          granted_by: string
+          id: string
+          membership_id: string | null
+          notes: string | null
+          promo_code_id: string | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          expires_at: string
+          granted_at?: string
+          granted_by: string
+          id?: string
+          membership_id?: string | null
+          notes?: string | null
+          promo_code_id?: string | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          expires_at?: string
+          granted_at?: string
+          granted_by?: string
+          id?: string
+          membership_id?: string | null
+          notes?: string | null
+          promo_code_id?: string | null
+          reason?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_memberships_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "promo_memberships_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rating_prompts: {
         Row: {
           business_id: string
