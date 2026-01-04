@@ -6,7 +6,7 @@ const testimonials = [
     pet: "Owner of Luna",
     avatar: "🐕‍🦺",
     rating: 5,
-    text: "PawPass has saved me over €500 in just 3 months! The discounts at my local pet shop alone made it worth it.",
+    text: "Woofy has saved me over €500 in just 3 months! The discounts at my local pet shop alone made it worth it.",
   },
   {
     name: "Michael K.",
@@ -47,7 +47,7 @@ const TestimonialsSection = () => {
             >
               {/* Header */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-14 h-14 bg-paw-cream rounded-full flex items-center justify-center text-2xl">
+                <div className="w-14 h-14 bg-woofy-soft rounded-full flex items-center justify-center text-2xl">
                   {testimonial.avatar}
                 </div>
                 <div>
@@ -59,7 +59,7 @@ const TestimonialsSection = () => {
               {/* Stars */}
               <div className="flex gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-paw-gold text-paw-gold" />
+                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
 

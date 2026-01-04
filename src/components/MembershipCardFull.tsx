@@ -17,7 +17,7 @@ const MembershipCardFull = ({
   expiryDate = "Dec 25, 2025"
 }: MembershipCardFullProps) => {
   // Generate a verification URL for the QR code
-  const verificationUrl = `https://pawpass.app/verify/${memberId}`;
+  const verificationUrl = `https://woofy.app/verify/${memberId}`;
 
   return (
     <div className="relative w-full max-w-lg mx-auto group">
@@ -34,10 +34,10 @@ const MembershipCardFull = ({
         <div className="relative flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Dog className="w-8 h-8 text-primary-foreground" />
-            <span className="font-display font-bold text-2xl text-primary-foreground">PawPass</span>
+            <span className="font-display font-bold text-2xl text-primary-foreground">Woofy</span>
           </div>
           <div className="flex items-center gap-1">
-            <Crown className="w-5 h-5 text-paw-gold" />
+            <Crown className="w-5 h-5 text-yellow-300" />
             <span className="text-sm font-medium text-primary-foreground/90">Premium</span>
           </div>
         </div>
@@ -64,7 +64,7 @@ const MembershipCardFull = ({
             {/* Stars */}
             <div className="flex gap-1 pt-2">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-paw-gold text-paw-gold" />
+                <Star key={i} className="w-4 h-4 fill-yellow-300 text-yellow-300" />
               ))}
             </div>
 

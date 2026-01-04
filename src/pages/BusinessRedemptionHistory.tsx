@@ -204,7 +204,7 @@ const BusinessRedemptionHistory = () => {
   return (
     <>
       <Helmet>
-        <title>Redemption History | PawPass Business</title>
+        <title>Redemption History | Woofy Business</title>
         <meta name="description" content="View and filter your complete redemption history." />
       </Helmet>
 

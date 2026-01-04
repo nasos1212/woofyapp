@@ -29,7 +29,7 @@ const shelters = [
 
 const SheltersSection = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-paw-cream to-background">
+    <section className="py-20 bg-gradient-to-b from-woofy-soft to-background">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -41,7 +41,7 @@ const SheltersSection = () => {
             10% Goes to <span className="text-rose-500">Dog Shelters</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Every PawPass membership directly supports whitelisted dog shelters. 
+            Every Woofy membership directly supports whitelisted dog shelters. 
             Together, we've helped rehome over 3,400 dogs and counting.
           </p>
         </div>
@@ -57,7 +57,7 @@ const SheltersSection = () => {
             <p className="text-muted-foreground text-sm">Dogs Rehomed</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-paw-gold mb-2">12</div>
+            <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">12</div>
             <p className="text-muted-foreground text-sm">Partner Shelters</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">

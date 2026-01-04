@@ -59,7 +59,7 @@ const Header = () => {
             <div className="w-10 h-10 bg-gradient-hero rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <Dog className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="font-display font-bold text-xl text-foreground">PawPass</span>
+            <span className="font-display font-bold text-xl text-foreground">Woofy</span>
           </Link>
 
           {/* Desktop nav */}

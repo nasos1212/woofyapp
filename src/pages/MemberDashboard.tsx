@@ -257,11 +257,11 @@ const MemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>My PawPass Dashboard | Member Area</title>
-        <meta name="description" content="Access your PawPass membership card, view savings, and discover nearby pet deals." />
+        <title>My Woofy Dashboard | Member Area</title>
+        <meta name="description" content="Access your Woofy membership card, view savings, and discover nearby pet deals." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
+      <div className="min-h-screen bg-gradient-to-b from-woofy-light to-background">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -295,7 +295,7 @@ const MemberDashboard = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
               Welcome back, {firstName}! 👋
             </h1>
-            <p className="text-muted-foreground">Here's your PawPass membership overview</p>
+            <p className="text-muted-foreground">Here's your Woofy membership overview</p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
@@ -333,9 +333,9 @@ const MemberDashboard = () => {
                 </Link>
                 <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow group">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-2xl font-display font-bold text-paw-gold">{stats.dealsUsed}</span>
-                    <div className="w-8 h-8 bg-paw-gold/10 rounded-full flex items-center justify-center group-hover:bg-paw-gold/20 transition-colors">
-                      <Gift className="w-4 h-4 text-paw-gold" />
+                    <span className="text-2xl font-display font-bold text-yellow-500">{stats.dealsUsed}</span>
+                    <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
+                      <Gift className="w-4 h-4 text-yellow-500" />
                     </div>
                   </div>
                   <p className="text-sm text-muted-foreground">Deals Used</p>

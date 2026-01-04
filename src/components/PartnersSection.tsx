@@ -35,7 +35,7 @@ const PartnersSection = () => {
           
           <p className="text-lg text-muted-foreground">
             From local pet shops to premium hotels, our network keeps growing. 
-            Show your PawPass and enjoy instant savings everywhere.
+            Show your Woofy card and enjoy instant savings everywhere.
           </p>
         </div>
 
