@@ -30,30 +30,42 @@ const BulkNotifications = () => {
       // Get users based on audience
       let userIds: string[] = [];
 
+      console.log("Fetching users for audience:", notification.audience);
+
       if (notification.audience === "all_members") {
-        const { data } = await supabase.from("memberships").select("user_id");
+        const { data, error } = await supabase.from("memberships").select("user_id");
+        console.log("Memberships query result:", { data, error });
+        if (error) throw error;
         userIds = [...new Set((data || []).map((m) => m.user_id))];
       } else if (notification.audience === "active_members") {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from("memberships")
           .select("user_id")
           .eq("is_active", true)
           .gt("expires_at", new Date().toISOString());
+        console.log("Active memberships query result:", { data, error });
+        if (error) throw error;
         userIds = [...new Set((data || []).map((m) => m.user_id))];
       } else if (notification.audience === "expiring_soon") {
         const thirtyDaysFromNow = new Date();
         thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from("memberships")
           .select("user_id")
           .eq("is_active", true)
           .lt("expires_at", thirtyDaysFromNow.toISOString())
           .gt("expires_at", new Date().toISOString());
+        console.log("Expiring memberships query result:", { data, error });
+        if (error) throw error;
         userIds = [...new Set((data || []).map((m) => m.user_id))];
       } else if (notification.audience === "all_users") {
-        const { data } = await supabase.from("profiles").select("user_id");
+        const { data, error } = await supabase.from("profiles").select("user_id");
+        console.log("Profiles query result:", { data, error });
+        if (error) throw error;
         userIds = (data || []).map((p) => p.user_id);
       }
+
+      console.log("User IDs to notify:", userIds);
 
       if (userIds.length === 0) {
         toast.error("No users found for this audience");
@@ -74,9 +86,12 @@ const BulkNotifications = () => {
       const batchSize = 100;
       for (let i = 0; i < notifications.length; i += batchSize) {
         const batch = notifications.slice(i, i + batchSize);
+        console.log("Inserting batch:", batch);
         const { error: insertError } = await supabase
           .from("notifications")
           .insert(batch);
+        
+        console.log("Insert result:", { insertError });
         
         if (insertError) {
           throw insertError;
@@ -93,6 +108,7 @@ const BulkNotifications = () => {
         audience: "all_members",
       });
     } catch (error: any) {
+      console.error("Bulk notification error:", error);
       toast.error(error.message || "Failed to send notifications");
     } finally {
       setSending(false);
