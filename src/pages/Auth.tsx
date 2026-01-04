@@ -153,11 +153,6 @@ const Auth = () => {
             description: error.message,
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Welcome back!",
-            description: "You've been successfully logged in.",
-          });
         }
       } else {
         const { error, data } = await signUp(email, password, fullName);

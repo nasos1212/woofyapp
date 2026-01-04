@@ -29,6 +29,7 @@ import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
 import BusinessRedemptionHistory from "./pages/BusinessRedemptionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import PetProfile from "./pages/PetProfile";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
               <Route path="/member/health-records" element={<PetHealthRecords />} />
               <Route path="/member/vaccinations" element={<VaccinationReminders />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
+              <Route path="/member/notifications" element={<Notifications />} />
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/business/offers" element={<BusinessOfferManagement />} />
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
