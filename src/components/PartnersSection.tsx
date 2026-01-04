@@ -11,7 +11,7 @@ const partnerCategories = [
 
 const featuredPartners = [
   { name: "PetWorld", discount: "25% off", category: "Pet Shop" },
-  { name: "Happy Paws Vet", discount: "15% off", category: "Veterinary" },
+  { name: "Woofy Vet Care", discount: "15% off", category: "Veterinary" },
   { name: "Bark Academy", discount: "1 Free Session", category: "Training" },
   { name: "Pawsome Hotel", discount: "20% off", category: "Pet Hotel" },
   { name: "Fluffy Grooming", discount: "€10 off", category: "Grooming" },

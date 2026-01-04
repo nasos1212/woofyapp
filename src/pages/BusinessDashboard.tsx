@@ -314,7 +314,7 @@ const BusinessDashboard = () => {
       if (scannedValue.includes('/verify/')) {
         const parts = scannedValue.split('/verify/');
         memberId = parts[parts.length - 1];
-      } else if (scannedValue.startsWith('PP-')) {
+      } else if (scannedValue.startsWith('WF-') || scannedValue.startsWith('PP-')) {
         memberId = scannedValue;
       }
       
@@ -530,7 +530,7 @@ const BusinessDashboard = () => {
                       Member ID
                     </label>
                     <Input
-                      placeholder="e.g., PP-2024-123456"
+                      placeholder="e.g., WF-2026-123456"
                       value={memberIdInput}
                       onChange={(e) => setMemberIdInput(e.target.value)}
                       className="font-mono"
@@ -832,7 +832,7 @@ const BusinessDashboard = () => {
                   <div>
                     <h4 className="font-medium text-blue-900 text-sm mb-1">Quick Tip</h4>
                     <p className="text-xs text-blue-700">
-                      Scan the member's QR code or ask them to tell you their Member ID (starts with PP-). Then select which offer they want to redeem.
+                      Scan the member's QR code or ask them to tell you their Member ID (starts with WF-). Then select which offer they want to redeem.
                     </p>
                   </div>
                 </div>
