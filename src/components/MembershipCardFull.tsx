@@ -91,7 +91,8 @@ const MembershipCardFull = ({
 
         {/* Card number */}
         <div className="relative mt-6 pt-4 border-t border-woofy-blue/30">
-          <p className="font-mono text-sm text-woofy-light/80 tracking-wider">
+          <p className="text-woofy-light/60 text-xs mb-1">Member ID</p>
+          <p className="font-mono text-sm sm:text-base text-woofy-light/90 tracking-wide break-all">
             {memberId}
           </p>
         </div>
