@@ -1,4 +1,12 @@
+import { useState } from "react";
 import { Heart, Home, PawPrint } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
 
 const shelters = [
   {
@@ -28,6 +36,43 @@ const shelters = [
 ];
 
 const SheltersSection = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    shelterName: "",
+    contactName: "",
+    email: "",
+    phone: "",
+    location: "",
+    website: "",
+    dogsCount: "",
+    yearsOperating: "",
+    description: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate submission
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
+    setIsDialogOpen(false);
+    setFormData({
+      shelterName: "",
+      contactName: "",
+      email: "",
+      phone: "",
+      location: "",
+      website: "",
+      dogsCount: "",
+      yearsOperating: "",
+      description: "",
+    });
+    setIsSubmitting(false);
+  };
+
   return (
     <section id="shelters" className="py-20 bg-gradient-to-b from-woofy-soft to-background">
       <div className="container mx-auto px-4">
@@ -96,15 +141,168 @@ const SheltersSection = () => {
           <p className="text-muted-foreground mb-4">
             Are you a registered dog shelter? Apply to join our whitelist.
           </p>
-          <a 
-            href="#" 
+          <button 
+            onClick={() => setIsDialogOpen(true)}
             className="text-rose-500 font-medium hover:underline inline-flex items-center gap-2"
           >
             Apply as a Shelter Partner
             <span>→</span>
-          </a>
+          </button>
         </div>
       </div>
+
+      {/* Shelter Application Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-xl">Apply as a Shelter Partner</DialogTitle>
+            <DialogDescription>
+              Join our whitelist and receive 10% of Woofy membership proceeds. Fill out the form below and we'll review your application.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="shelterName">Shelter Name *</Label>
+                <Input
+                  id="shelterName"
+                  required
+                  value={formData.shelterName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, shelterName: e.target.value }))}
+                  placeholder="Happy Tails Rescue"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contactName">Contact Person *</Label>
+                <Input
+                  id="contactName"
+                  required
+                  value={formData.contactName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
+                  placeholder="John Smith"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="contact@shelter.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="+353 1 234 5678"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="location">Location *</Label>
+                <Input
+                  id="location"
+                  required
+                  value={formData.location}
+                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="Dublin, Ireland"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="website">Website</Label>
+                <Input
+                  id="website"
+                  type="url"
+                  value={formData.website}
+                  onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                  placeholder="https://shelter.com"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="dogsCount">Dogs Currently in Care *</Label>
+                <Select
+                  value={formData.dogsCount}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, dogsCount: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1-10 dogs</SelectItem>
+                    <SelectItem value="11-25">11-25 dogs</SelectItem>
+                    <SelectItem value="26-50">26-50 dogs</SelectItem>
+                    <SelectItem value="51-100">51-100 dogs</SelectItem>
+                    <SelectItem value="100+">100+ dogs</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="yearsOperating">Years Operating *</Label>
+                <Select
+                  value={formData.yearsOperating}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, yearsOperating: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="<1">Less than 1 year</SelectItem>
+                    <SelectItem value="1-3">1-3 years</SelectItem>
+                    <SelectItem value="3-5">3-5 years</SelectItem>
+                    <SelectItem value="5-10">5-10 years</SelectItem>
+                    <SelectItem value="10+">10+ years</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Tell us about your shelter *</Label>
+              <Textarea
+                id="description"
+                required
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Describe your mission, services, and why you'd like to partner with Woofy..."
+              />
+            </div>
+
+            <div className="bg-rose-50 rounded-lg p-4 text-sm text-rose-700">
+              <strong>What happens next?</strong>
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>We'll review your application within 5 business days</li>
+                <li>If approved, you'll receive 10% of Woofy membership proceeds</li>
+                <li>Your shelter will be featured on our website</li>
+              </ul>
+            </div>
+
+            <div className="flex gap-3 justify-end pt-2">
+              <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting} className="bg-rose-500 hover:bg-rose-600">
+                {isSubmitting ? "Submitting..." : "Submit Application"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
