@@ -98,7 +98,7 @@ const InfluencerMemberships = () => {
       expiresAt.setMonth(expiresAt.getMonth() + parseInt(newMembership.duration_months));
 
       // First create a membership for the user
-      const memberNumber = `PP-${new Date().getFullYear()}-${Math.floor(Math.random() * 999999).toString().padStart(6, "0")}`;
+      const memberNumber = `WF-${new Date().getFullYear()}-${Math.floor(Math.random() * 999999).toString().padStart(6, "0")}`;
       
       const { data: membershipData, error: membershipError } = await supabase
         .from("memberships")

@@ -13,7 +13,7 @@ const MembershipCardFull = ({
   memberName = "John Smith", 
   petName = "Max",
   memberSince = "2024",
-  memberId = "PP-2024-XXXX-XXXX",
+  memberId = "WF-2026-XXXX-XXXX",
   expiryDate = "Dec 25, 2025"
 }: MembershipCardFullProps) => {
   // Generate a verification URL for the QR code

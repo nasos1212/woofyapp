@@ -185,7 +185,7 @@ const Auth = () => {
             
             await supabase.from('memberships').insert({
               user_id: data.user.id,
-              member_number: memberNumber || `PP-${Date.now()}`,
+              member_number: memberNumber || `WF-${Date.now()}`,
               expires_at: expiryDate.toISOString(),
               is_active: true,
               pet_name: '',
