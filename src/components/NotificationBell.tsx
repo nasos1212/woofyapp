@@ -95,6 +95,8 @@ const NotificationBell = () => {
       navigate("/member/history");
     } else if (notification.type === "lost_pet_alert" && data?.alert_id) {
       navigate(`/member/lost-pets?alert=${data.alert_id}`);
+    } else if ((notification.type === "community_answer" || notification.type === "community_follow_activity" || notification.type === "answer_accepted") && data?.question_id) {
+      navigate(`/community/question/${data.question_id}`);
     } else {
       // For bulk notifications and others, go to notifications page
       navigate("/member/notifications");

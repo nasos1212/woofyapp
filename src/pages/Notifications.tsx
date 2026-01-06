@@ -87,6 +87,8 @@ const Notifications = () => {
       navigate("/member/history");
     } else if (notification.type === "lost_pet_alert" && data?.alert_id) {
       navigate(`/member/lost-pets?alert=${data.alert_id}`);
+    } else if ((notification.type === "community_answer" || notification.type === "community_follow_activity" || notification.type === "answer_accepted") && data?.question_id) {
+      navigate(`/community/question/${data.question_id}`);
     }
   };
 
@@ -106,6 +108,12 @@ const Notifications = () => {
         return "✅";
       case "lost_pet_alert":
         return "🐕";
+      case "community_answer":
+        return "💬";
+      case "community_follow_activity":
+        return "👀";
+      case "answer_accepted":
+        return "🏆";
       default:
         return "🔔";
     }
