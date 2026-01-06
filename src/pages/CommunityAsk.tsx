@@ -299,12 +299,12 @@ const CommunityAsk = () => {
                 {pets.length > 0 && (
                   <div className="space-y-2">
                     <Label>Link to your pet (optional)</Label>
-                    <Select value={selectedPetId} onValueChange={setSelectedPetId}>
+                    <Select value={selectedPetId} onValueChange={(val) => setSelectedPetId(val === 'none' ? '' : val)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a pet" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No pet selected</SelectItem>
+                        <SelectItem value="none">No pet selected</SelectItem>
                         {pets.map(pet => (
                           <SelectItem key={pet.id} value={pet.id}>
                             <span className="flex items-center gap-2">
