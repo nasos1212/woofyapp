@@ -226,7 +226,7 @@ const CommunityQuestion = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
         <h1 className="text-2xl font-bold mb-4">Question not found</h1>
-        <Button onClick={() => navigate('/member/community')}>
+        <Button onClick={() => navigate('/community')}>
           Back to Community
         </Button>
       </div>
@@ -253,7 +253,7 @@ const CommunityQuestion = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/member/community')}
+            onClick={() => navigate('/community')}
             className="mb-4"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
