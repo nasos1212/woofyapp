@@ -147,7 +147,7 @@ export default {
         "confetti-fall": "confetti-fall 2.5s ease-out forwards",
         "celebration-burst": "celebration-burst 0.5s ease-out forwards",
         "scale-in": "scale-in 0.3s ease-out 0.2s forwards",
-        "pulse-slow": "pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "pulse-slow": "pulse-slow 6s ease-in-out infinite",
       },
     },
   },
