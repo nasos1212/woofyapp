@@ -301,6 +301,383 @@ export type Database = {
         }
         Relationships: []
       }
+      community_answer_photos: {
+        Row: {
+          answer_id: string
+          caption: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          answer_id: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          answer_id?: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answer_photos_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_answers: {
+        Row: {
+          content: string
+          created_at: string
+          downvotes: number | null
+          id: string
+          is_accepted: boolean | null
+          is_verified_pro: boolean | null
+          question_id: string
+          updated_at: string
+          upvotes: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          downvotes?: number | null
+          id?: string
+          is_accepted?: boolean | null
+          is_verified_pro?: boolean | null
+          question_id: string
+          updated_at?: string
+          upvotes?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          downvotes?: number | null
+          id?: string
+          is_accepted?: boolean | null
+          is_verified_pro?: boolean | null
+          question_id?: string
+          updated_at?: string
+          upvotes?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      community_expert_stats: {
+        Row: {
+          accepted_answers: number | null
+          expertise_areas: string[] | null
+          id: string
+          is_verified_professional: boolean | null
+          professional_credentials: string | null
+          professional_title: string | null
+          reputation_score: number | null
+          total_answers: number | null
+          total_upvotes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepted_answers?: number | null
+          expertise_areas?: string[] | null
+          id?: string
+          is_verified_professional?: boolean | null
+          professional_credentials?: string | null
+          professional_title?: string | null
+          reputation_score?: number | null
+          total_answers?: number | null
+          total_upvotes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepted_answers?: number | null
+          expertise_areas?: string[] | null
+          id?: string
+          is_verified_professional?: boolean | null
+          professional_credentials?: string | null
+          professional_title?: string | null
+          reputation_score?: number | null
+          total_answers?: number | null
+          total_upvotes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      community_helped: {
+        Row: {
+          created_at: string
+          id: string
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_helped_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_question_followers: {
+        Row: {
+          created_at: string
+          id: string
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_question_followers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_question_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          photo_url: string
+          question_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url: string
+          question_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_question_photos_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_questions: {
+        Row: {
+          breed_tags: string[] | null
+          category_id: string
+          content: string
+          created_at: string
+          helped_count: number | null
+          id: string
+          is_featured: boolean | null
+          is_pinned: boolean | null
+          pet_id: string | null
+          status: string
+          title: string
+          updated_at: string
+          urgency: string
+          user_id: string
+          view_count: number | null
+        }
+        Insert: {
+          breed_tags?: string[] | null
+          category_id: string
+          content: string
+          created_at?: string
+          helped_count?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_pinned?: boolean | null
+          pet_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          urgency?: string
+          user_id: string
+          view_count?: number | null
+        }
+        Update: {
+          breed_tags?: string[] | null
+          category_id?: string
+          content?: string
+          created_at?: string
+          helped_count?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_pinned?: boolean | null
+          pet_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          urgency?: string
+          user_id?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_questions_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "community_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_questions_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_saved_questions: {
+        Row: {
+          created_at: string
+          id: string
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_saved_questions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_votes: {
+        Row: {
+          answer_id: string
+          created_at: string
+          id: string
+          user_id: string
+          vote_type: string
+        }
+        Insert: {
+          answer_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+          vote_type: string
+        }
+        Update: {
+          answer_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_votes_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorite_offers: {
         Row: {
           created_at: string
