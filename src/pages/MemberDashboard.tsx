@@ -7,6 +7,7 @@ import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
 import ReferralSection from "@/components/ReferralSection";
 import RatingPromptDialog from "@/components/RatingPromptDialog";
+import Header from "@/components/Header";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -205,8 +206,8 @@ const MemberDashboard = () => {
         <meta name="description" content="Access your Wooffy membership card, view savings, and discover nearby pet deals." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background pt-20">
-
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+        <Header />
         {/* Rating Prompt Dialog */}
         {currentPrompt && (
           <RatingPromptDialog
@@ -220,7 +221,7 @@ const MemberDashboard = () => {
           />
         )}
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
