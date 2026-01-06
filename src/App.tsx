@@ -30,6 +30,10 @@ import BusinessRedemptionHistory from "./pages/BusinessRedemptionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import PetProfile from "./pages/PetProfile";
 import Notifications from "./pages/Notifications";
+import Community from "./pages/Community";
+import CommunityAsk from "./pages/CommunityAsk";
+import CommunityQuestion from "./pages/CommunityQuestion";
+import CommunityLeaderboard from "./pages/CommunityLeaderboard";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +61,10 @@ const App = () => (
               <Route path="/member/vaccinations" element={<VaccinationReminders />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/member/notifications" element={<Notifications />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/community/ask" element={<CommunityAsk />} />
+              <Route path="/community/question/:id" element={<CommunityQuestion />} />
+              <Route path="/community/leaderboard" element={<CommunityLeaderboard />} />
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/business/offers" element={<BusinessOfferManagement />} />
               <Route path="/business/analytics" element={<BusinessAnalytics />} />

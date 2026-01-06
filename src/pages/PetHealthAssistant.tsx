@@ -39,6 +39,7 @@ interface UserContext {
   redemptions: any[];
   favoriteOffers: any[];
   recentActivity: any[];
+  communityQuestions: any[];
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
@@ -231,6 +232,35 @@ const PetHealthAssistant = () => {
       const membership = membershipResult.data;
       const recentActivity = activityResult.data || [];
 
+      // Fetch relevant community questions
+      const { data: communityData } = await supabase
+        .from("community_questions")
+        .select(`
+          id,
+          title,
+          content,
+          urgency,
+          breed_tags,
+          helped_count,
+          category:community_categories(name),
+          answers:community_answers(content, is_verified_pro, upvotes)
+        `)
+        .eq("status", "open")
+        .order("helped_count", { ascending: false })
+        .limit(10);
+
+      // Process community questions for AI context
+      const communityQuestions = (communityData || []).map((q: any) => ({
+        title: q.title,
+        urgency: q.urgency,
+        breed_tags: q.breed_tags,
+        helped_count: q.helped_count,
+        category_name: q.category?.name,
+        answer_count: q.answers?.length || 0,
+        has_verified_answer: q.answers?.some((a: any) => a.is_verified_pro) || false,
+        top_answer: q.answers?.sort((a: any, b: any) => (b.upvotes || 0) - (a.upvotes || 0))[0]?.content || null,
+      }));
+
       if (!membership) {
         setUserContext({
           userProfile,
@@ -241,6 +271,7 @@ const PetHealthAssistant = () => {
           redemptions: [],
           favoriteOffers: [],
           recentActivity,
+          communityQuestions,
         });
         return;
       }
@@ -302,6 +333,72 @@ const PetHealthAssistant = () => {
         healthRecords = healthResult.data || [];
       }
 
+      // Fetch relevant community questions based on user's pet breeds
+      const breedTags = petsData.map(p => p.pet_breed).filter(Boolean);
+      let relevantCommunityQuestions: any[] = [];
+      
+      if (breedTags.length > 0) {
+        const { data: breedCommunity } = await supabase
+          .from("community_questions")
+          .select(`
+            id,
+            title,
+            content,
+            urgency,
+            breed_tags,
+            helped_count,
+            category:community_categories(name),
+            answers:community_answers(content, is_verified_pro, upvotes)
+          `)
+          .eq("status", "open")
+          .overlaps("breed_tags", breedTags)
+          .order("helped_count", { ascending: false })
+          .limit(10);
+
+        relevantCommunityQuestions = (breedCommunity || []).map((q: any) => ({
+          title: q.title,
+          urgency: q.urgency,
+          breed_tags: q.breed_tags,
+          helped_count: q.helped_count,
+          category_name: q.category?.name,
+          answer_count: q.answers?.length || 0,
+          has_verified_answer: q.answers?.some((a: any) => a.is_verified_pro) || false,
+          top_answer: q.answers?.sort((a: any, b: any) => (b.upvotes || 0) - (a.upvotes || 0))[0]?.content || null,
+        }));
+      }
+
+      // If no breed-specific questions, get general popular ones
+      if (relevantCommunityQuestions.length < 5) {
+        const { data: generalCommunity } = await supabase
+          .from("community_questions")
+          .select(`
+            id,
+            title,
+            content,
+            urgency,
+            breed_tags,
+            helped_count,
+            category:community_categories(name),
+            answers:community_answers(content, is_verified_pro, upvotes)
+          `)
+          .eq("status", "open")
+          .order("helped_count", { ascending: false })
+          .limit(10 - relevantCommunityQuestions.length);
+
+        const generalQuestions = (generalCommunity || []).map((q: any) => ({
+          title: q.title,
+          urgency: q.urgency,
+          breed_tags: q.breed_tags,
+          helped_count: q.helped_count,
+          category_name: q.category?.name,
+          answer_count: q.answers?.length || 0,
+          has_verified_answer: q.answers?.some((a: any) => a.is_verified_pro) || false,
+          top_answer: q.answers?.sort((a: any, b: any) => (b.upvotes || 0) - (a.upvotes || 0))[0]?.content || null,
+        }));
+
+        relevantCommunityQuestions = [...relevantCommunityQuestions, ...generalQuestions];
+      }
+
       setUserContext({
         userProfile,
         membership,
@@ -311,6 +408,7 @@ const PetHealthAssistant = () => {
         redemptions: redemptionsResult.data || [],
         favoriteOffers: favoritesResult.data || [],
         recentActivity,
+        communityQuestions: relevantCommunityQuestions,
       });
     } catch (error) {
       console.error("Error fetching user context:", error);

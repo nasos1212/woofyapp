@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Settings, Bell, Heart } from "lucide-react";
+import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Settings, Bell, Heart, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -77,8 +77,8 @@ const Header = () => {
     { name: "Benefits", href: "#benefits" },
     { name: "Partners", href: "#partners" },
     { name: "Offers", href: "/member/offers", isRoute: true },
+    { name: "Community", href: "/community", isRoute: true },
     { name: "Shelters", href: "#shelters" },
-    { name: "Hub", href: "#hub" },
     { name: "Pricing", href: "#pricing" },
   ];
 
@@ -104,6 +104,7 @@ const Header = () => {
                   className="font-medium text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
                 >
                   {link.name === "Offers" && <Tag className="w-4 h-4" />}
+                  {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
                   {link.name}
                 </Link>
               ) : (
@@ -225,6 +226,7 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {link.name === "Offers" && <Tag className="w-4 h-4" />}
+                  {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
                   {link.name}
                 </Link>
               ) : (

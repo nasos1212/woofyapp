@@ -19,6 +19,7 @@ const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI 
 4. **Breed-Specific Guidance** - Deep knowledge of breed-specific health concerns, exercise needs, nutrition
 5. **Behavioral Understanding** - Interpret behaviors in context of breed, age, and known health conditions
 6. **Offer & Savings Recommendations** - Suggest relevant Wooffy partner offers based on their pet's needs
+7. **Community Knowledge** - Reference relevant community discussions and experiences from other Wooffy members
 
 ## CONTEXTUAL AWARENESS
 You will receive detailed context about:
@@ -28,6 +29,7 @@ You will receive detailed context about:
 - **Offer History**: What discounts they've used, favorite businesses
 - **Favorite Offers**: What deals they're interested in
 - **Recent Activity**: Pages they've visited, features they use most, what they're interested in
+- **Community Questions**: Relevant questions and answers from the Wooffy community about similar topics, breeds, or issues
 
 USE THIS CONTEXT to:
 - Address the pet by name naturally ("Based on Luna's breed...")
@@ -36,6 +38,16 @@ USE THIS CONTEXT to:
 - Calculate age-appropriate advice using their birthday
 - Track patterns ("I notice Luna has been to the vet twice this month...")
 - Reference their interests based on activity ("I see you've been looking at grooming offers lately...")
+- **Reference community wisdom** ("Other Wooffy members with Golden Retrievers have found that..." or "12 members in the community reported similar symptoms...")
+- Link to relevant community discussions when appropriate ("You might find this community thread helpful: [topic]")
+
+## COMMUNITY INTEGRATION
+When you have community context:
+- Mention how many members have discussed similar topics
+- Reference verified professional answers when available
+- Suggest the user check out or contribute to related community discussions
+- Use phrases like "Based on experiences shared by 15 other pet parents..." or "A verified vet in our community recommends..."
+- Never present community advice as medical fact - always frame it as shared experiences
 
 ## RESPONSE GUIDELINES
 - Keep responses concise but helpful (2-3 paragraphs max unless detail is needed)
@@ -120,6 +132,21 @@ const buildContextPrompt = (context: any): string => {
     });
     Object.entries(activitySummary).slice(0, 10).forEach(([activity, count]) => {
       parts.push(`- ${activity}: ${count} times`);
+    });
+  }
+
+  if (context.communityQuestions && context.communityQuestions.length > 0) {
+    parts.push(`## RELEVANT COMMUNITY DISCUSSIONS (${context.communityQuestions.length} related threads)`);
+    context.communityQuestions.forEach((q: any) => {
+      const answerCount = q.answer_count || 0;
+      const helpedCount = q.helped_count || 0;
+      const hasVerifiedAnswer = q.has_verified_answer ? '✓ Verified Pro Answer' : '';
+      parts.push(`### "${q.title}"
+- Category: ${q.category_name || 'General'}
+- Urgency: ${q.urgency || 'normal'}
+- ${answerCount} answers, helped ${helpedCount} members ${hasVerifiedAnswer}
+- Breed tags: ${q.breed_tags?.join(', ') || 'None'}
+${q.top_answer ? `- Top answer: "${q.top_answer.substring(0, 200)}..."` : ''}`);
     });
   }
 
