@@ -124,7 +124,7 @@ const Community = () => {
     return (
       <Card 
         className="hover:shadow-lg transition-all cursor-pointer group"
-        onClick={() => navigate(`/member/community/question/${question.id}`)}
+        onClick={() => navigate(`/community/question/${question.id}`)}
       >
         <CardContent className="p-4">
           <div className="flex gap-4">
@@ -449,7 +449,7 @@ const Community = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => navigate('/member/community/leaderboard')}
+                    onClick={() => navigate('/community/leaderboard')}
                   >
                     <Trophy className="w-4 h-4 mr-2" />
                     View Leaderboard

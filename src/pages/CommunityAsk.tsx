@@ -160,7 +160,7 @@ const CommunityAsk = () => {
         photos
       );
 
-      navigate(`/member/community/question/${question.id}`);
+      navigate(`/community/question/${question.id}`);
     } catch (error) {
       console.error('Error creating question:', error);
     }
@@ -430,7 +430,7 @@ const CommunityAsk = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate('/member/community')}
+                    onClick={() => navigate('/community')}
                   >
                     Cancel
                   </Button>
