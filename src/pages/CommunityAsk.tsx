@@ -82,7 +82,10 @@ const CommunityAsk = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
       try {
         const [cats, { data: petsData }] = await Promise.all([
           fetchCategories(),
@@ -100,8 +103,10 @@ const CommunityAsk = () => {
       }
     };
 
-    loadData();
-  }, [user, fetchCategories]);
+    if (!authLoading) {
+      loadData();
+    }
+  }, [user, authLoading, fetchCategories]);
 
   const handlePhotoAdd = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
