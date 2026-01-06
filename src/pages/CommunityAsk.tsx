@@ -293,14 +293,11 @@ const CommunityAsk = () => {
                     <Button
                       type="button"
                       className={cn(
-                        'flex flex-col h-auto py-3 text-white',
+                        'flex flex-col h-auto py-3 text-white animate-pulse-slow',
                         urgency === 'urgent' 
                           ? 'bg-red-600 hover:bg-red-700 ring-2 ring-red-400 ring-offset-2' 
                           : 'bg-red-500 hover:bg-red-600'
                       )}
-                      style={{
-                        animation: 'pulse-slow 6s ease-in-out infinite'
-                      }}
                       onClick={() => {
                         setUrgency('urgent');
                         playWarningSound();
