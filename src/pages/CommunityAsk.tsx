@@ -247,45 +247,42 @@ const CommunityAsk = () => {
                   <div className="grid grid-cols-3 gap-3">
                     <Button
                       type="button"
-                      variant={urgency === 'general' ? 'default' : 'outline'}
                       className={cn(
-                        'flex flex-col h-auto py-3',
+                        'flex flex-col h-auto py-3 text-white',
                         urgency === 'general' 
-                          ? 'bg-green-600 hover:bg-green-700 text-white' 
-                          : 'border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700'
+                          ? 'bg-green-600 hover:bg-green-700 ring-2 ring-green-400 ring-offset-2' 
+                          : 'bg-green-500 hover:bg-green-600'
                       )}
                       onClick={() => setUrgency('general')}
                     >
                       <HelpCircle className="w-5 h-5 mb-1" />
-                      <span className="text-xs">General</span>
+                      <span className="text-xs font-medium">General</span>
                     </Button>
                     <Button
                       type="button"
-                      variant={urgency === 'concerned' ? 'default' : 'outline'}
                       className={cn(
-                        'flex flex-col h-auto py-3',
+                        'flex flex-col h-auto py-3 text-white',
                         urgency === 'concerned' 
-                          ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
-                          : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700'
+                          ? 'bg-yellow-500 hover:bg-yellow-600 ring-2 ring-yellow-400 ring-offset-2' 
+                          : 'bg-yellow-500 hover:bg-yellow-600'
                       )}
                       onClick={() => setUrgency('concerned')}
                     >
                       <AlertTriangle className="w-5 h-5 mb-1" />
-                      <span className="text-xs">Concerned</span>
+                      <span className="text-xs font-medium">Concerned</span>
                     </Button>
                     <Button
                       type="button"
-                      variant={urgency === 'urgent' ? 'default' : 'outline'}
                       className={cn(
-                        'flex flex-col h-auto py-3',
+                        'flex flex-col h-auto py-3 text-white animate-pulse',
                         urgency === 'urgent' 
-                          ? 'bg-red-600 hover:bg-red-700 text-white' 
-                          : 'border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700'
+                          ? 'bg-red-600 hover:bg-red-700 ring-2 ring-red-400 ring-offset-2' 
+                          : 'bg-red-500 hover:bg-red-600'
                       )}
                       onClick={() => setUrgency('urgent')}
                     >
                       <AlertCircle className="w-5 h-5 mb-1" />
-                      <span className="text-xs">Urgent</span>
+                      <span className="text-xs font-medium">Urgent</span>
                     </Button>
                   </div>
                   {urgency === 'urgent' && (
