@@ -324,7 +324,21 @@ const CommunityAsk = () => {
                 {pets.length > 0 && (
                   <div className="space-y-2">
                     <Label>Link to your pet (optional)</Label>
-                    <Select value={selectedPetId} onValueChange={(val) => setSelectedPetId(val === 'none' ? '' : val)}>
+                    <Select 
+                      value={selectedPetId} 
+                      onValueChange={(val) => {
+                        const newPetId = val === 'none' ? '' : val;
+                        setSelectedPetId(newPetId);
+                        
+                        // Auto-fill breed tag when pet is selected
+                        if (newPetId) {
+                          const selectedPet = pets.find(p => p.id === newPetId);
+                          if (selectedPet?.pet_breed && !breedTags.includes(selectedPet.pet_breed)) {
+                            setBreedTags(prev => [...prev.slice(0, 2), selectedPet.pet_breed!]);
+                          }
+                        }
+                      }}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a pet" />
                       </SelectTrigger>
