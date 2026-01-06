@@ -298,6 +298,39 @@ const MemberDashboard = () => {
                 </div>
               </div>
 
+              {/* Your Pets - Most Important */}
+              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-cyan-200">
+                <h3 className="font-display text-xl font-bold text-teal-800 mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                    <span className="text-xl">🐾</span>
+                  </div>
+                  Your Pets
+                </h3>
+                {pets.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    {pets.map((pet) => (
+                      <Link key={pet.id} to={`/member/pet/${pet.id}`}>
+                        <div className="flex items-center gap-4 p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
+                          <div className="w-16 h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-3xl shadow-sm">
+                            🐕
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-teal-800 text-lg">{pet.pet_name}</p>
+                            <p className="text-sm text-teal-600/70">{pet.pet_breed || "Mixed breed"}</p>
+                          </div>
+                          <div className="text-teal-500 text-xl">→</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 bg-white rounded-xl border border-cyan-100">
+                    <div className="text-5xl mb-3">🐶</div>
+                    <p className="text-teal-600/70 text-lg">No pets added yet</p>
+                  </div>
+                )}
+              </div>
+
               {/* Recent Activity */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <div className="flex items-center justify-between mb-4">
@@ -347,38 +380,6 @@ const MemberDashboard = () => {
 
             {/* Right Column - Nearby & Info */}
             <div className="space-y-6">
-              {/* Your Pets - Most Important */}
-              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-6 shadow-lg border border-cyan-200">
-                <h3 className="font-display text-lg font-bold text-teal-800 mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                    <span className="text-lg">🐾</span>
-                  </div>
-                  Your Pets
-                </h3>
-                {pets.length > 0 ? (
-                  <div className="space-y-3">
-                    {pets.map((pet) => (
-                      <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
-                          <div className="w-14 h-14 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl shadow-sm">
-                            🐕
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-teal-800 text-lg">{pet.pet_name}</p>
-                            <p className="text-sm text-teal-600/70">{pet.pet_breed || "Mixed breed"}</p>
-                          </div>
-                          <div className="text-teal-500">→</div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-6 bg-white rounded-xl border border-cyan-100">
-                    <div className="text-4xl mb-2">🐶</div>
-                    <p className="text-teal-600/70">No pets added yet</p>
-                  </div>
-                )}
-              </div>
 
               {/* Quick Access - New Features */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
