@@ -348,46 +348,36 @@ const MemberDashboard = () => {
             {/* Right Column - Nearby & Info */}
             <div className="space-y-6">
               {/* Your Pets - Most Important */}
-              <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Gift className="w-5 h-5 text-primary" />
+              <div className="bg-gradient-to-br from-primary/10 via-paw-gold/10 to-primary/5 rounded-2xl p-6 shadow-lg border-2 border-primary/20">
+                <h3 className="font-display text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <span className="text-white text-lg">🐾</span>
+                  </div>
                   Your Pets
                 </h3>
                 {pets.length > 0 ? (
                   <div className="space-y-3">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-4 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer">
-                          <div className="w-14 h-14 bg-paw-gold/20 rounded-full flex items-center justify-center text-2xl">
+                        <div className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-primary/10 hover:border-primary/30">
+                          <div className="w-16 h-16 bg-gradient-to-br from-paw-gold to-primary/30 rounded-full flex items-center justify-center text-3xl shadow-inner">
                             🐕
                           </div>
-                          <div>
-                            <p className="font-medium text-foreground">{pet.pet_name}</p>
+                          <div className="flex-1">
+                            <p className="font-semibold text-foreground text-lg">{pet.pet_name}</p>
                             <p className="text-sm text-muted-foreground">{pet.pet_breed || "Mixed breed"}</p>
                           </div>
+                          <div className="text-primary">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <p>No pets added yet</p>
+                  <div className="text-center py-6 bg-white rounded-xl">
+                    <div className="text-4xl mb-2">🐶</div>
+                    <p className="text-muted-foreground">No pets added yet</p>
                   </div>
                 )}
-              </div>
-
-              {/* Membership Status */}
-              <div className="bg-gradient-hero rounded-2xl p-6 text-white">
-                <div className="flex items-center gap-2 mb-4">
-                  <Shield className="w-5 h-5" />
-                  <span className="font-medium">Active Membership</span>
-                </div>
-                <p className="text-white/80 text-sm mb-4">
-                  Your membership is valid until <strong>{expiryFormatted}</strong>
-                </p>
-                <Button variant="secondary" size="sm" className="w-full bg-white text-primary hover:bg-white/90">
-                  Renew Early & Save 10%
-                </Button>
               </div>
 
               {/* Quick Access - New Features */}
