@@ -13,10 +13,8 @@ import BusinessDashboard from "./pages/BusinessDashboard";
 import Auth from "./pages/Auth";
 import PartnerRegister from "./pages/PartnerRegister";
 import MemberOnboarding from "./pages/MemberOnboarding";
-import JoinFamily from "./pages/JoinFamily";
 import MemberOffers from "./pages/MemberOffers";
 import RedemptionHistory from "./pages/RedemptionHistory";
-import FamilyManagement from "./pages/FamilyManagement";
 import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
@@ -51,10 +49,8 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/member" element={<MemberDashboard />} />
               <Route path="/member/onboarding" element={<MemberOnboarding />} />
-              <Route path="/member/join-family" element={<JoinFamily />} />
               <Route path="/member/offers" element={<MemberOffers />} />
               <Route path="/member/history" element={<RedemptionHistory />} />
-              <Route path="/member/family" element={<FamilyManagement />} />
               <Route path="/member/health-assistant" element={<PetHealthAssistant />} />
               <Route path="/member/lost-pets" element={<LostPetAlerts />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
