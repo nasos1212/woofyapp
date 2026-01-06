@@ -250,7 +250,9 @@ const CommunityAsk = () => {
                       variant={urgency === 'general' ? 'default' : 'outline'}
                       className={cn(
                         'flex flex-col h-auto py-3',
-                        urgency === 'general' && 'bg-green-600 hover:bg-green-700'
+                        urgency === 'general' 
+                          ? 'bg-green-600 hover:bg-green-700 text-white' 
+                          : 'border-green-500 text-green-600 hover:bg-green-50 hover:text-green-700'
                       )}
                       onClick={() => setUrgency('general')}
                     >
@@ -262,7 +264,9 @@ const CommunityAsk = () => {
                       variant={urgency === 'concerned' ? 'default' : 'outline'}
                       className={cn(
                         'flex flex-col h-auto py-3',
-                        urgency === 'concerned' && 'bg-yellow-600 hover:bg-yellow-700'
+                        urgency === 'concerned' 
+                          ? 'bg-yellow-500 hover:bg-yellow-600 text-white' 
+                          : 'border-yellow-500 text-yellow-600 hover:bg-yellow-50 hover:text-yellow-700'
                       )}
                       onClick={() => setUrgency('concerned')}
                     >
@@ -274,7 +278,9 @@ const CommunityAsk = () => {
                       variant={urgency === 'urgent' ? 'default' : 'outline'}
                       className={cn(
                         'flex flex-col h-auto py-3',
-                        urgency === 'urgent' && 'bg-red-600 hover:bg-red-700'
+                        urgency === 'urgent' 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'border-red-500 text-red-600 hover:bg-red-50 hover:text-red-700'
                       )}
                       onClick={() => setUrgency('urgent')}
                     >
