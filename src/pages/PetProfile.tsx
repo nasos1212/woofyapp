@@ -207,8 +207,8 @@ const PetProfile = () => {
             <Dog className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-xl font-semibold mb-2">Pet Not Found</h2>
             <p className="text-muted-foreground mb-4">This pet profile doesn't exist or you don't have access to it.</p>
-            <Button onClick={() => navigate("/member/family")}>
-              Back to Family
+            <Button onClick={() => navigate("/member/dashboard")}>
+              Back to Dashboard
             </Button>
           </CardContent>
         </Card>
@@ -231,18 +231,18 @@ const PetProfile = () => {
           <div className="mb-4">
             <Breadcrumbs
               items={[
-                { label: "Family", href: "/member/family" },
+                { label: "Dashboard", href: "/member/dashboard" },
                 { label: pet.pet_name },
               ]}
             />
           </div>
           <Button
             variant="ghost"
-            onClick={() => navigate("/member/family")}
+            onClick={() => navigate("/member/dashboard")}
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Family
+            Back to Dashboard
           </Button>
 
           {/* Pet Header Card */}
