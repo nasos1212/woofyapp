@@ -17,6 +17,18 @@ interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  birthday: string | null;
+  notes: string | null;
+}
+
+interface UserContext {
+  userProfile: any;
+  membership: any;
+  pets: Pet[];
+  selectedPet: { name: string; breed: string | null } | null;
+  healthRecords: any[];
+  redemptions: any[];
+  favoriteOffers: any[];
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
@@ -27,6 +39,8 @@ const suggestedQuestions = [
   "My dog is scratching a lot, what could it be?",
   "What human foods are toxic to dogs?",
   "How much exercise does my breed need?",
+  "What offers would be good for my pet?",
+  "When is my pet's next vaccination due?",
 ];
 
 const PetHealthAssistant = () => {
@@ -37,6 +51,7 @@ const PetHealthAssistant = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const [userContext, setUserContext] = useState<UserContext | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +62,7 @@ const PetHealthAssistant = () => {
 
   useEffect(() => {
     if (user) {
-      fetchPets();
+      fetchFullUserContext();
     }
   }, [user]);
 
@@ -55,28 +70,113 @@ const PetHealthAssistant = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const fetchPets = async () => {
+  const fetchFullUserContext = async () => {
     if (!user) return;
-    
-    const { data: membership } = await supabase
-      .from("memberships")
-      .select("id")
-      .eq("user_id", user.id)
-      .maybeSingle();
 
-    if (membership) {
-      const { data: petsData } = await supabase
-        .from("pets")
-        .select("id, pet_name, pet_breed")
-        .eq("membership_id", membership.id);
+    try {
+      // Fetch all data in parallel for efficiency
+      const [
+        profileResult,
+        membershipResult,
+      ] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("memberships")
+          .select("*")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+      ]);
 
-      if (petsData && petsData.length > 0) {
-        setPets(petsData);
+      const userProfile = profileResult.data;
+      const membership = membershipResult.data;
+
+      if (!membership) {
+        setUserContext({
+          userProfile,
+          membership: null,
+          pets: [],
+          selectedPet: null,
+          healthRecords: [],
+          redemptions: [],
+          favoriteOffers: [],
+        });
+        return;
+      }
+
+      // Fetch pets, health records, redemptions, and favorites in parallel
+      const [
+        petsResult,
+        redemptionsResult,
+        favoritesResult,
+      ] = await Promise.all([
+        supabase
+          .from("pets")
+          .select("id, pet_name, pet_breed, birthday, notes")
+          .eq("membership_id", membership.id),
+        supabase
+          .from("offer_redemptions")
+          .select(`
+            id,
+            redeemed_at,
+            offers (id, title, description),
+            businesses:business_id (id, business_name, category)
+          `)
+          .eq("membership_id", membership.id)
+          .order("redeemed_at", { ascending: false })
+          .limit(20),
+        supabase
+          .from("favorite_offers")
+          .select(`
+            id,
+            offers (
+              id,
+              title,
+              description,
+              businesses:business_id (id, business_name, category)
+            )
+          `)
+          .eq("user_id", user.id)
+          .limit(10),
+      ]);
+
+      const petsData = petsResult.data || [];
+      setPets(petsData);
+
+      // Set first pet as selected if available
+      if (petsData.length > 0) {
         setSelectedPet(petsData[0]);
       }
+
+      // Fetch health records for all pets
+      let healthRecords: any[] = [];
+      if (petsData.length > 0) {
+        const petIds = petsData.map(p => p.id);
+        const healthResult = await supabase
+          .from("pet_health_records")
+          .select("*")
+          .in("pet_id", petIds)
+          .order("date_administered", { ascending: false })
+          .limit(30);
+        healthRecords = healthResult.data || [];
+      }
+
+      setUserContext({
+        userProfile,
+        membership,
+        pets: petsData,
+        selectedPet: petsData[0] ? { name: petsData[0].pet_name, breed: petsData[0].pet_breed } : null,
+        healthRecords,
+        redemptions: redemptionsResult.data || [],
+        favoriteOffers: favoritesResult.data || [],
+      });
+    } catch (error) {
+      console.error("Error fetching user context:", error);
     }
   };
-
   const sendMessage = async (messageText: string) => {
     if (!messageText.trim() || isLoading) return;
 
@@ -101,6 +201,12 @@ const PetHealthAssistant = () => {
     };
 
     try {
+      // Build context with selected pet info
+      const contextToSend = userContext ? {
+        ...userContext,
+        selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
+      } : null;
+
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
@@ -109,6 +215,7 @@ const PetHealthAssistant = () => {
         },
         body: JSON.stringify({
           messages: [...messages, userMessage],
+          userContext: contextToSend,
           petInfo: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
         }),
       });
