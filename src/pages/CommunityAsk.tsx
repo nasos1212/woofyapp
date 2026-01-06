@@ -77,36 +77,30 @@ const CommunityAsk = () => {
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
+      return;
     }
-  }, [user, authLoading, navigate]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const [cats, { data: petsData }] = await Promise.all([
-          fetchCategories(),
-          supabase
-            .from('pets')
-            .select('id, pet_name, pet_breed')
-            .eq('owner_user_id', user.id)
-        ]);
-        setCategories(cats);
-        setPets(petsData || []);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!authLoading) {
+    
+    if (!authLoading && user) {
+      const loadData = async () => {
+        try {
+          const [cats, { data: petsData }] = await Promise.all([
+            fetchCategories(),
+            supabase
+              .from('pets')
+              .select('id, pet_name, pet_breed')
+              .eq('owner_user_id', user.id)
+          ]);
+          setCategories(cats);
+          setPets(petsData || []);
+        } catch (error) {
+          console.error('Error loading data:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
       loadData();
     }
-  }, [user, authLoading, fetchCategories]);
+  }, [user, authLoading, navigate, fetchCategories]);
 
   const handlePhotoAdd = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -173,10 +167,14 @@ const CommunityAsk = () => {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <DogLoader />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <DogLoader size="lg" />
       </div>
     );
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
