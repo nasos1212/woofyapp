@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X } from "lucide-react";
+import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Syringe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,7 @@ const PetProfile = () => {
   const [pet, setPet] = useState<Pet | null>(null);
   
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editedNotes, setEditedNotes] = useState("");
@@ -287,30 +288,95 @@ const PetProfile = () => {
           </Card>
 
 
+          {/* Quick Actions - Health Records & Vaccinations */}
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <Button
+              variant="default"
+              size="lg"
+              onClick={() => navigate("/member/health-records")}
+              className="h-auto py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+            >
+              <FileText className="w-6 h-6" />
+              <span className="font-semibold">Health Records</span>
+            </Button>
+            <Button
+              variant="default"
+              size="lg"
+              onClick={() => navigate("/member/vaccinations")}
+              className="h-auto py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+            >
+              <Syringe className="w-6 h-6" />
+              <span className="font-semibold">Vaccinations</span>
+            </Button>
+          </div>
 
           {/* Notes Section */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Edit2 className="w-5 h-5 text-primary" />
-                Notes
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <Edit2 className="w-5 h-5 text-primary" />
+                  Notes
+                </span>
+                {!isEditing && !isEditingNotes && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsEditingNotes(true)}
+                    className="gap-1 text-primary hover:text-primary/80"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Edit
+                  </Button>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {isEditing ? (
+              {isEditing || isEditingNotes ? (
                 <div className="space-y-4">
                   <Textarea
                     value={editedNotes}
                     onChange={(e) => setEditedNotes(e.target.value)}
                     placeholder="Add notes about your pet... (medical info, preferences, quirks, etc.)"
                     className="min-h-[150px]"
+                    autoFocus={isEditingNotes}
                   />
                   <div className="flex gap-2">
-                    <Button onClick={handleSave} disabled={isSaving} className="gap-2">
+                    <Button 
+                      onClick={async () => {
+                        if (!pet) return;
+                        setIsSaving(true);
+                        try {
+                          const { error } = await supabase
+                            .from("pets")
+                            .update({ notes: editedNotes.trim() || null })
+                            .eq("id", pet.id);
+                          if (error) throw error;
+                          setPet({ ...pet, notes: editedNotes.trim() || null });
+                          setIsEditingNotes(false);
+                          setIsEditing(false);
+                          toast.success("Notes saved!");
+                        } catch (error) {
+                          console.error("Error saving notes:", error);
+                          toast.error("Failed to save notes");
+                        } finally {
+                          setIsSaving(false);
+                        }
+                      }} 
+                      disabled={isSaving} 
+                      className="gap-2"
+                    >
                       {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
-                      Save Changes
+                      Save Notes
                     </Button>
-                    <Button variant="outline" onClick={handleCancel} className="gap-2">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setEditedNotes(pet?.notes || "");
+                        setIsEditingNotes(false);
+                      }} 
+                      className="gap-2"
+                    >
                       <X className="w-4 h-4" />
                       Cancel
                     </Button>
@@ -321,32 +387,17 @@ const PetProfile = () => {
                   {pet.notes ? (
                     <p className="whitespace-pre-wrap text-foreground">{pet.notes}</p>
                   ) : (
-                    <p className="text-muted-foreground italic">
-                      No notes yet. Click the edit button above to add notes about {pet.pet_name}.
-                    </p>
+                    <button
+                      onClick={() => setIsEditingNotes(true)}
+                      className="text-muted-foreground italic hover:text-primary cursor-pointer transition-colors"
+                    >
+                      No notes yet. Click here to add notes about {pet.pet_name}.
+                    </button>
                   )}
                 </div>
               )}
             </CardContent>
           </Card>
-
-          {/* Quick Actions */}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button
-              variant="outline"
-              onClick={() => navigate("/member/health-records")}
-              className="gap-2"
-            >
-              View Health Records
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate("/member/vaccinations")}
-              className="gap-2"
-            >
-              Vaccination Reminders
-            </Button>
-          </div>
         </main>
       </div>
     </>
