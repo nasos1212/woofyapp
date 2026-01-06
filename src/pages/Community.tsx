@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -245,14 +244,7 @@ const Community = () => {
 
       <div className="min-h-screen bg-background">
         <Header />
-        
-        <main className="container mx-auto px-4 py-8">
-          <Breadcrumbs
-            items={[
-              { label: 'Dashboard', href: '/member' },
-              { label: 'Community' }
-            ]}
-          />
+        <main className="container mx-auto px-4 py-8 pt-24">
 
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">

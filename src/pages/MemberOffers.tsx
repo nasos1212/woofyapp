@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Header from "@/components/Header";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
 import { formatDistanceToNow, isPast } from "date-fns";
 import DogLoader from "@/components/DogLoader";
@@ -248,19 +248,9 @@ const MemberOffers = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
-        {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <Breadcrumbs 
-              items={[
-                { label: "Dashboard", href: "/member" },
-                { label: "Offers" }
-              ]} 
-            />
-          </div>
-        </header>
+        <Header />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24">
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">

@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import Header from "@/components/Header";
-import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface Notification {
   id: string;
@@ -132,14 +131,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <Breadcrumbs
-          items={[
-            { label: "Dashboard", href: "/member" },
-            { label: "Notifications" },
-          ]}
-        />
-
+      <main className="container mx-auto px-4 py-8 pt-24">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Button

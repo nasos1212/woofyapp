@@ -1,4 +1,4 @@
-import { ChevronRight, Home } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface BreadcrumbItem {
@@ -11,26 +11,10 @@ interface BreadcrumbsProps {
   showHome?: boolean;
 }
 
-const Breadcrumbs = ({ items, showHome = true }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ items, showHome = false }: BreadcrumbsProps) => {
   return (
     <nav aria-label="Breadcrumb" className="mb-6">
       <ol className="flex items-center gap-1.5 text-sm flex-wrap">
-        {showHome && (
-          <>
-            <li>
-              <Link
-                to="/"
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Home className="w-4 h-4" />
-                <span className="sr-only sm:not-sr-only">Home</span>
-              </Link>
-            </li>
-            <li>
-              <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
-            </li>
-          </>
-        )}
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           

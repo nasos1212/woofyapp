@@ -12,7 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { formatDistanceToNow } from "date-fns";
 
@@ -295,18 +295,9 @@ const LostPetAlerts = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background">
-        <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <Breadcrumbs
-              items={[
-                { label: "Dashboard", href: "/member" },
-                { label: "Lost Pet Alerts" },
-              ]}
-            />
-          </div>
-        </header>
+        <Header />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { useActivityTracking } from "@/hooks/useActivityTracking";
 import { toast } from "sonner";
@@ -547,20 +547,10 @@ const PetHealthAssistant = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background flex flex-col">
-        {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <Breadcrumbs
-              items={[
-                { label: "Dashboard", href: "/member" },
-                { label: "AI Health Assistant" },
-              ]}
-            />
-          </div>
-        </header>
+        <Header />
 
         {/* Main Content */}
-        <main className="flex-1 container mx-auto px-4 py-6 flex flex-col max-w-3xl">
+        <main className="flex-1 container mx-auto px-4 py-6 pt-24 flex flex-col max-w-3xl">
           {/* Title & Pet Selector */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
