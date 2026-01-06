@@ -351,7 +351,7 @@ const PetHealthRecords = () => {
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-semibold text-foreground mb-2">No pets found</h3>
               <p className="text-muted-foreground mb-4">Add a pet to your membership first</p>
-              <Button onClick={() => navigate("/member/family")}>Add Pet</Button>
+              <Button onClick={() => navigate("/member")}>Add Pet</Button>
             </div>
           ) : (
             <>

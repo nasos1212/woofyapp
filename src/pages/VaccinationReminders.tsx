@@ -353,7 +353,7 @@ const VaccinationReminders = () => {
                 <p className="text-muted-foreground mb-4">
                   Add a pet to your membership to start tracking vaccinations.
                 </p>
-                <Button onClick={() => navigate("/member/family")}>
+                <Button onClick={() => navigate("/member")}>
                   Manage Pets
                 </Button>
               </CardContent>
