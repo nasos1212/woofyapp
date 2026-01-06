@@ -86,12 +86,8 @@ const PetHealthAssistant = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Save messages to database when they change
-  useEffect(() => {
-    if (currentSessionId && messages.length > 0) {
-      saveMessagesToSession();
-    }
-  }, [messages, currentSessionId]);
+  // Track if we need to save the last message after streaming completes
+  const pendingSaveRef = useRef<{ role: string; content: string } | null>(null);
 
   const fetchChatSessions = async () => {
     if (!user) return;
@@ -147,40 +143,28 @@ const PetHealthAssistant = () => {
     }
   };
 
-  const saveMessagesToSession = async () => {
-    if (!currentSessionId || messages.length === 0) return;
+  const saveMessageToSession = async (sessionId: string, role: string, content: string, isFirstMessage: boolean) => {
+    if (!sessionId || !content) return;
 
-    // Get the last message to save
-    const lastMessage = messages[messages.length - 1];
-    
-    // Check if this message already exists
-    const { data: existingMessages } = await supabase
+    await supabase
       .from("ai_chat_messages")
-      .select("id")
-      .eq("session_id", currentSessionId);
+      .insert({
+        session_id: sessionId,
+        role,
+        content,
+      });
 
-    // Only save if we have new messages
-    if (existingMessages && existingMessages.length < messages.length) {
+    // Update session title based on first user message
+    if (isFirstMessage && role === "user") {
+      const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
       await supabase
-        .from("ai_chat_messages")
-        .insert({
-          session_id: currentSessionId,
-          role: lastMessage.role,
-          content: lastMessage.content,
-        });
+        .from("ai_chat_sessions")
+        .update({ title, updated_at: new Date().toISOString() })
+        .eq("id", sessionId);
 
-      // Update session title based on first user message
-      if (messages.length === 1 && lastMessage.role === "user") {
-        const title = lastMessage.content.slice(0, 50) + (lastMessage.content.length > 50 ? "..." : "");
-        await supabase
-          .from("ai_chat_sessions")
-          .update({ title, updated_at: new Date().toISOString() })
-          .eq("id", currentSessionId);
-
-        setChatSessions(prev => 
-          prev.map(s => s.id === currentSessionId ? { ...s, title } : s)
-        );
-      }
+      setChatSessions(prev => 
+        prev.map(s => s.id === sessionId ? { ...s, title } : s)
+      );
     }
   };
 
@@ -429,9 +413,13 @@ const PetHealthAssistant = () => {
     }
 
     const userMessage: Message = { role: "user", content: messageText.trim() };
+    const isFirstMessage = messages.length === 0;
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+
+    // Save user message immediately
+    await saveMessageToSession(sessionId, "user", userMessage.content, isFirstMessage);
 
     // Track AI chat usage
     trackAIChat(messages.length + 1, selectedPet?.pet_name);
@@ -507,15 +495,21 @@ const PetHealthAssistant = () => {
           }
         }
       }
+      // Save the complete assistant response after streaming finishes
+      if (assistantContent) {
+        await saveMessageToSession(sessionId, "assistant", assistantContent, false);
+      }
     } catch (error) {
       console.error("Chat error:", error);
+      const errorMessage = "I'm sorry, I encountered an error. Please try again in a moment. 🐾";
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "I'm sorry, I encountered an error. Please try again in a moment. 🐾",
+          content: errorMessage,
         },
       ]);
+      await saveMessageToSession(sessionId, "assistant", errorMessage, false);
     } finally {
       setIsLoading(false);
     }
