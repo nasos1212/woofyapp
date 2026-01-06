@@ -73,7 +73,12 @@ const Header = () => {
     }
   };
 
-  const navLinks = [
+  // Navigation links - filter out landing page sections for logged-in users
+  const navLinks = user ? [
+    { name: "Dashboard", href: "/member", isRoute: true },
+    { name: "Offers", href: "/member/offers", isRoute: true },
+    { name: "Community", href: "/community", isRoute: true },
+  ] : [
     { name: "Benefits", href: "#benefits" },
     { name: "Partners", href: "#partners" },
     { name: "Offers", href: "/member/offers", isRoute: true },
@@ -82,12 +87,15 @@ const Header = () => {
     { name: "Pricing", href: "#pricing" },
   ];
 
+  // Logo links to dashboard when logged in, home when not
+  const logoDestination = user ? "/member" : "/";
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to={logoDestination} className="flex items-center gap-2 group">
             <div className="w-10 h-10 bg-wooffy-dark rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <Dog className="w-6 h-6 text-wooffy-sky" />
             </div>
@@ -103,6 +111,7 @@ const Header = () => {
                   to={link.href}
                   className="font-medium text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
                 >
+                  {link.name === "Dashboard" && <User className="w-4 h-4" />}
                   {link.name === "Offers" && <Tag className="w-4 h-4" />}
                   {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
                   {link.name}
@@ -225,6 +234,7 @@ const Header = () => {
                   className="font-medium text-foreground hover:text-primary transition-colors py-2 flex items-center gap-2"
                   onClick={() => setIsMenuOpen(false)}
                 >
+                  {link.name === "Dashboard" && <User className="w-4 h-4" />}
                   {link.name === "Offers" && <Tag className="w-4 h-4" />}
                   {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
                   {link.name}
