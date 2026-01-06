@@ -10,6 +10,86 @@ const MAX_MESSAGES = 50;
 const MAX_MESSAGE_LENGTH = 10000;
 const MAX_CONTEXT_ITEMS = 100;
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
+const MAX_REQUESTS_PER_WINDOW = 20; // 20 requests per minute per user
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // Clean up old entries every 5 minutes
+
+// In-memory rate limit store
+interface RateLimitEntry {
+  requests: number[];
+}
+const rateLimitStore = new Map<string, RateLimitEntry>();
+
+// Periodic cleanup of old rate limit entries
+let lastCleanup = Date.now();
+const cleanupRateLimitStore = () => {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
+  
+  lastCleanup = now;
+  const cutoff = now - RATE_LIMIT_WINDOW_MS;
+  
+  for (const [key, entry] of rateLimitStore.entries()) {
+    entry.requests = entry.requests.filter(ts => ts > cutoff);
+    if (entry.requests.length === 0) {
+      rateLimitStore.delete(key);
+    }
+  }
+};
+
+// Check and update rate limit - returns true if request should be allowed
+const checkRateLimit = (identifier: string): { allowed: boolean; remaining: number; resetIn: number } => {
+  cleanupRateLimitStore();
+  
+  const now = Date.now();
+  const windowStart = now - RATE_LIMIT_WINDOW_MS;
+  
+  let entry = rateLimitStore.get(identifier);
+  if (!entry) {
+    entry = { requests: [] };
+    rateLimitStore.set(identifier, entry);
+  }
+  
+  // Filter to only requests within the current window
+  entry.requests = entry.requests.filter(ts => ts > windowStart);
+  
+  const remaining = MAX_REQUESTS_PER_WINDOW - entry.requests.length;
+  const oldestRequest = entry.requests[0];
+  const resetIn = oldestRequest ? Math.ceil((oldestRequest + RATE_LIMIT_WINDOW_MS - now) / 1000) : 0;
+  
+  if (entry.requests.length >= MAX_REQUESTS_PER_WINDOW) {
+    return { allowed: false, remaining: 0, resetIn };
+  }
+  
+  // Add current request
+  entry.requests.push(now);
+  return { allowed: true, remaining: remaining - 1, resetIn: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
+};
+
+// Extract identifier for rate limiting (user ID from auth header or IP)
+const getRateLimitIdentifier = (req: Request): string => {
+  // Try to get user ID from authorization header
+  const authHeader = req.headers.get('authorization');
+  if (authHeader) {
+    // Use a hash of the auth token to identify users
+    const token = authHeader.replace('Bearer ', '');
+    // Simple hash for identification (not cryptographic, just for rate limit keying)
+    let hash = 0;
+    for (let i = 0; i < Math.min(token.length, 100); i++) {
+      hash = ((hash << 5) - hash) + token.charCodeAt(i);
+      hash |= 0;
+    }
+    return `auth:${hash}`;
+  }
+  
+  // Fallback to IP address
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  const realIp = req.headers.get('x-real-ip');
+  const ip = forwardedFor?.split(',')[0]?.trim() || realIp || 'unknown';
+  return `ip:${ip}`;
+};
+
 const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI pet health assistant for Wooffy members. You have deep knowledge of your user and their pets.
 
 ## YOUR CORE IDENTITY
@@ -185,6 +265,30 @@ const calculateAge = (birthday: string): string => {
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Check rate limit before processing
+  const rateLimitId = getRateLimitIdentifier(req);
+  const rateLimit = checkRateLimit(rateLimitId);
+  
+  if (!rateLimit.allowed) {
+    console.log(`Rate limit exceeded for ${rateLimitId}`);
+    return new Response(
+      JSON.stringify({ 
+        error: `Too many requests. Please wait ${rateLimit.resetIn} seconds before trying again.` 
+      }),
+      { 
+        status: 429, 
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+          'X-RateLimit-Limit': String(MAX_REQUESTS_PER_WINDOW),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': String(rateLimit.resetIn),
+          'Retry-After': String(rateLimit.resetIn)
+        } 
+      }
+    );
   }
 
   try {
