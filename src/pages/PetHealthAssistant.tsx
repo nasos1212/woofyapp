@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Send, Bot, User, Loader2, Sparkles, Heart, AlertCircle } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { useNavigate } from "react-router-dom";
+import { useActivityTracking } from "@/hooks/useActivityTracking";
+import { toast } from "sonner";
 
 interface Message {
   role: "user" | "assistant";
@@ -21,6 +23,13 @@ interface Pet {
   notes: string | null;
 }
 
+interface ChatSession {
+  id: string;
+  title: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 interface UserContext {
   userProfile: any;
   membership: any;
@@ -29,6 +38,7 @@ interface UserContext {
   healthRecords: any[];
   redemptions: any[];
   favoriteOffers: any[];
+  recentActivity: any[];
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
@@ -46,12 +56,16 @@ const suggestedQuestions = [
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { trackAIChat, trackFeatureUse } = useActivityTracking();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [userContext, setUserContext] = useState<UserContext | null>(null);
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -63,12 +77,127 @@ const PetHealthAssistant = () => {
   useEffect(() => {
     if (user) {
       fetchFullUserContext();
+      fetchChatSessions();
     }
   }, [user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Save messages to database when they change
+  useEffect(() => {
+    if (currentSessionId && messages.length > 0) {
+      saveMessagesToSession();
+    }
+  }, [messages, currentSessionId]);
+
+  const fetchChatSessions = async () => {
+    if (!user) return;
+    
+    const { data } = await supabase
+      .from("ai_chat_sessions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("updated_at", { ascending: false })
+      .limit(20);
+
+    if (data) {
+      setChatSessions(data);
+    }
+  };
+
+  const createNewSession = async () => {
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from("ai_chat_sessions")
+      .insert({
+        user_id: user.id,
+        title: "New conversation",
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating session:", error);
+      return null;
+    }
+
+    setChatSessions(prev => [data, ...prev]);
+    setCurrentSessionId(data.id);
+    setMessages([]);
+    trackFeatureUse("ai_new_chat");
+    return data.id;
+  };
+
+  const loadSession = async (sessionId: string) => {
+    const { data } = await supabase
+      .from("ai_chat_messages")
+      .select("role, content")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: true });
+
+    if (data) {
+      setMessages(data as Message[]);
+      setCurrentSessionId(sessionId);
+      setShowHistory(false);
+      trackFeatureUse("ai_load_history", { session_id: sessionId });
+    }
+  };
+
+  const saveMessagesToSession = async () => {
+    if (!currentSessionId || messages.length === 0) return;
+
+    // Get the last message to save
+    const lastMessage = messages[messages.length - 1];
+    
+    // Check if this message already exists
+    const { data: existingMessages } = await supabase
+      .from("ai_chat_messages")
+      .select("id")
+      .eq("session_id", currentSessionId);
+
+    // Only save if we have new messages
+    if (existingMessages && existingMessages.length < messages.length) {
+      await supabase
+        .from("ai_chat_messages")
+        .insert({
+          session_id: currentSessionId,
+          role: lastMessage.role,
+          content: lastMessage.content,
+        });
+
+      // Update session title based on first user message
+      if (messages.length === 1 && lastMessage.role === "user") {
+        const title = lastMessage.content.slice(0, 50) + (lastMessage.content.length > 50 ? "..." : "");
+        await supabase
+          .from("ai_chat_sessions")
+          .update({ title, updated_at: new Date().toISOString() })
+          .eq("id", currentSessionId);
+
+        setChatSessions(prev => 
+          prev.map(s => s.id === currentSessionId ? { ...s, title } : s)
+        );
+      }
+    }
+  };
+
+  const deleteSession = async (sessionId: string) => {
+    await supabase
+      .from("ai_chat_sessions")
+      .delete()
+      .eq("id", sessionId);
+
+    setChatSessions(prev => prev.filter(s => s.id !== sessionId));
+    
+    if (currentSessionId === sessionId) {
+      setCurrentSessionId(null);
+      setMessages([]);
+    }
+    
+    toast.success("Conversation deleted");
+  };
 
   const fetchFullUserContext = async () => {
     if (!user) return;
@@ -78,6 +207,7 @@ const PetHealthAssistant = () => {
       const [
         profileResult,
         membershipResult,
+        activityResult,
       ] = await Promise.all([
         supabase
           .from("profiles")
@@ -89,10 +219,17 @@ const PetHealthAssistant = () => {
           .select("*")
           .eq("user_id", user.id)
           .maybeSingle(),
+        supabase
+          .from("user_activity_tracking")
+          .select("activity_type, activity_data, page_path")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(50),
       ]);
 
       const userProfile = profileResult.data;
       const membership = membershipResult.data;
+      const recentActivity = activityResult.data || [];
 
       if (!membership) {
         setUserContext({
@@ -103,6 +240,7 @@ const PetHealthAssistant = () => {
           healthRecords: [],
           redemptions: [],
           favoriteOffers: [],
+          recentActivity,
         });
         return;
       }
@@ -172,18 +310,33 @@ const PetHealthAssistant = () => {
         healthRecords,
         redemptions: redemptionsResult.data || [],
         favoriteOffers: favoritesResult.data || [],
+        recentActivity,
       });
     } catch (error) {
       console.error("Error fetching user context:", error);
     }
   };
+
   const sendMessage = async (messageText: string) => {
     if (!messageText.trim() || isLoading) return;
+
+    // Ensure we have a session
+    let sessionId = currentSessionId;
+    if (!sessionId) {
+      sessionId = await createNewSession();
+      if (!sessionId) {
+        toast.error("Failed to create chat session");
+        return;
+      }
+    }
 
     const userMessage: Message = { role: "user", content: messageText.trim() };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsLoading(true);
+
+    // Track AI chat usage
+    trackAIChat(messages.length + 1, selectedPet?.pet_name);
 
     let assistantContent = "";
 
@@ -201,7 +354,7 @@ const PetHealthAssistant = () => {
     };
 
     try {
-      // Build context with selected pet info
+      // Build context with selected pet info and activity
       const contextToSend = userContext ? {
         ...userContext,
         selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
@@ -275,6 +428,11 @@ const PetHealthAssistant = () => {
     sendMessage(input);
   };
 
+  const startNewChat = async () => {
+    await createNewSession();
+    setShowHistory(false);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -307,17 +465,37 @@ const PetHealthAssistant = () => {
         <main className="flex-1 container mx-auto px-4 py-6 flex flex-col max-w-3xl">
           {/* Title & Pet Selector */}
           <div className="mb-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center">
-                <Bot className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="font-display text-xl font-bold text-foreground">
+                    Wooffy Health Assistant
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    Ask me anything about your pet's health! 🐾
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-display text-xl font-bold text-foreground">
-                  Wooffy Health Assistant
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Ask me anything about your pet's health! 🐾
-                </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowHistory(!showHistory)}
+                >
+                  <History className="w-4 h-4 mr-1" />
+                  History
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startNewChat}
+                >
+                  <Plus className="w-4 h-4 mr-1" />
+                  New
+                </Button>
               </div>
             </div>
 
@@ -339,6 +517,47 @@ const PetHealthAssistant = () => {
               </div>
             )}
           </div>
+
+          {/* Chat History Panel */}
+          {showHistory && (
+            <div className="mb-4 bg-white rounded-xl shadow-soft border border-border/50 p-4 max-h-64 overflow-y-auto">
+              <h3 className="font-semibold text-sm mb-3">Previous Conversations</h3>
+              {chatSessions.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No previous conversations</p>
+              ) : (
+                <div className="space-y-2">
+                  {chatSessions.map((session) => (
+                    <div
+                      key={session.id}
+                      className={`flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors ${
+                        currentSessionId === session.id ? "bg-muted" : ""
+                      }`}
+                    >
+                      <div
+                        className="flex-1 min-w-0"
+                        onClick={() => loadSession(session.id)}
+                      >
+                        <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(session.updated_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteSession(session.id);
+                        }}
+                      >
+                        <Trash2 className="w-3 h-3 text-muted-foreground" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Chat Messages */}
           <div className="flex-1 bg-white rounded-2xl shadow-soft border border-border/50 p-4 mb-4 overflow-y-auto max-h-[50vh] min-h-[300px]">

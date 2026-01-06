@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.confirm-redemption]
 verify_jwt = false
+
+[functions.generate-ai-alerts]
+verify_jwt = false
