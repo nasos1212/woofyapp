@@ -348,38 +348,34 @@ const MemberDashboard = () => {
             {/* Right Column - Nearby & Info */}
             <div className="space-y-6">
               {/* Your Pets - Most Important */}
-              <div className="relative bg-wooffy-dark rounded-2xl p-6 shadow-lg overflow-hidden">
-                {/* Decorative elements */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-                
-                <h3 className="relative font-display text-lg font-bold text-wooffy-sky mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-wooffy-blue/20 rounded-full flex items-center justify-center">
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 shadow-lg border border-amber-200">
+                <h3 className="font-display text-lg font-bold text-amber-900 mb-4 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center shadow-sm">
                     <span className="text-lg">🐾</span>
                   </div>
                   Your Pets
                 </h3>
                 {pets.length > 0 ? (
-                  <div className="relative space-y-3">
+                  <div className="space-y-3">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-4 p-4 bg-wooffy-blue/10 rounded-xl hover:bg-wooffy-blue/20 transition-all cursor-pointer border border-wooffy-blue/20 hover:border-wooffy-sky/40">
-                          <div className="w-14 h-14 bg-gradient-to-br from-wooffy-accent to-wooffy-sky/50 rounded-full flex items-center justify-center text-2xl shadow-inner">
+                        <div className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-amber-100 hover:border-amber-300">
+                          <div className="w-14 h-14 bg-gradient-to-br from-amber-300 to-orange-300 rounded-full flex items-center justify-center text-2xl shadow-sm">
                             🐕
                           </div>
                           <div className="flex-1">
-                            <p className="font-semibold text-wooffy-sky text-lg">{pet.pet_name}</p>
-                            <p className="text-sm text-wooffy-light/70">{pet.pet_breed || "Mixed breed"}</p>
+                            <p className="font-semibold text-amber-900 text-lg">{pet.pet_name}</p>
+                            <p className="text-sm text-amber-700/70">{pet.pet_breed || "Mixed breed"}</p>
                           </div>
-                          <div className="text-wooffy-sky">→</div>
+                          <div className="text-amber-500">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="relative text-center py-6 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
+                  <div className="text-center py-6 bg-white rounded-xl border border-amber-100">
                     <div className="text-4xl mb-2">🐶</div>
-                    <p className="text-wooffy-light/70">No pets added yet</p>
+                    <p className="text-amber-700/70">No pets added yet</p>
                   </div>
                 )}
               </div>
