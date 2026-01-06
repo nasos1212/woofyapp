@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Plus, Trash2, Users, Check, ArrowRight, Gift, Sparkles, ArrowLeft } from "lucide-react";
+import { Dog, Plus, Trash2, Check, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,7 +30,6 @@ interface PlanOption {
   pricePerPet: number;
   description: string;
   features: string[];
-  familySharing: boolean;
 }
 
 const plans: PlanOption[] = [
@@ -42,7 +41,6 @@ const plans: PlanOption[] = [
     pricePerPet: 59,
     description: "Perfect for one furry friend",
     features: ["500+ partner discounts", "Digital membership card", "Monthly training session"],
-    familySharing: false,
   },
   {
     id: "duo",
@@ -52,28 +50,25 @@ const plans: PlanOption[] = [
     pricePerPet: 49.5,
     description: "Ideal for multi-pet households",
     features: ["Everything in Solo Paw", "Both pets covered", "Save €19 vs 2 single memberships"],
-    familySharing: false,
   },
   {
-    id: "family",
-    name: "Family Pack",
+    id: "pack",
+    name: "Pack Leader",
     pets: 3,
     price: 129,
     pricePerPet: 43,
-    description: "Share with family members",
-    features: ["Everything in Dynamic Duo", "Share access code with family", "Save €48 vs 3 single memberships"],
-    familySharing: true,
+    description: "Best value for 3+ pets",
+    features: ["Everything in Dynamic Duo", "All pets covered", "Save €48 vs 3 single memberships"],
   },
 ];
 
 const MemberOnboarding = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [step, setStep] = useState<"plan" | "pets" | "share">("plan");
+  const [step, setStep] = useState<"plan" | "pets">("plan");
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
   const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "" }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shareCode, setShareCode] = useState<string | null>(null);
   const [membershipId, setMembershipId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -161,20 +156,12 @@ const MemberOnboarding = () => {
         return;
       }
 
-      // Generate share code for family plan
-      let generatedShareCode: string | null = null;
-      if (selectedPlan.familySharing) {
-        const { data: codeData } = await supabase.rpc("generate_share_code");
-        generatedShareCode = codeData as string;
-      }
-
       // Update membership with plan details
       const { error: updateError } = await supabase
         .from("memberships")
         .update({
           plan_type: selectedPlan.id,
           max_pets: selectedPlan.pets,
-          share_code: generatedShareCode,
         })
         .eq("id", membership);
 
@@ -192,24 +179,14 @@ const MemberOnboarding = () => {
 
       if (petsError) throw petsError;
 
-      if (selectedPlan.familySharing && generatedShareCode) {
-        setShareCode(generatedShareCode);
-        setStep("share");
-      } else {
-        toast.success("Welcome to Wooffy! 🎉");
-        navigate("/member");
-      }
+      toast.success("Welcome to Wooffy! 🎉");
+      navigate("/member");
     } catch (error: any) {
       console.error("Onboarding error:", error);
       toast.error(error.message || "Failed to complete setup");
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleComplete = () => {
-    toast.success("Welcome to Wooffy! 🎉");
-    navigate("/member");
   };
 
   if (loading) {
@@ -242,22 +219,11 @@ const MemberOnboarding = () => {
             </div>
             <div className="w-8 h-0.5 bg-border" />
             <div className={`flex items-center gap-2 ${step === "pets" ? "text-primary" : "text-muted-foreground"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : step === "share" ? "bg-green-500 text-white" : "bg-muted"}`}>
-                {step === "share" ? <Check className="w-4 h-4" /> : "2"}
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                2
               </div>
               <span className="text-sm font-medium hidden sm:inline">Add Pets</span>
             </div>
-            {selectedPlan?.familySharing && (
-              <>
-                <div className="w-8 h-0.5 bg-border" />
-                <div className={`flex items-center gap-2 ${step === "share" ? "text-primary" : "text-muted-foreground"}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "share" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                    3
-                  </div>
-                  <span className="text-sm font-medium hidden sm:inline">Share</span>
-                </div>
-              </>
-            )}
           </div>
 
           {/* Step 1: Choose Plan */}
@@ -288,10 +254,10 @@ const MemberOnboarding = () => {
                         </span>
                       </div>
                     )}
-                    {plan.id === "family" && (
+                    {plan.id === "pack" && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                        <span className="bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
-                          <Users className="w-3 h-3" /> Family
+                        <span className="bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                          Best Value
                         </span>
                       </div>
                     )}
@@ -477,63 +443,6 @@ const MemberOnboarding = () => {
                       You'll be redirected to complete payment
                     </p>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Step 3: Share Code (Family Plan only) */}
-          {step === "share" && shareCode && (
-            <div className="space-y-8 max-w-xl mx-auto">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Gift className="w-8 h-8 text-green-600" />
-                </div>
-                <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
-                  You're All Set! 🎉
-                </h1>
-                <p className="text-muted-foreground text-lg">
-                  Share this code with your family member so they can link their account
-                </p>
-              </div>
-
-              <Card>
-                <CardContent className="pt-6 text-center space-y-6">
-                  <div className="p-6 bg-primary/5 rounded-xl border-2 border-dashed border-primary/30">
-                    <p className="text-sm text-muted-foreground mb-2">Your Family Share Code</p>
-                    <p className="text-3xl font-mono font-bold text-primary tracking-wider">
-                      {shareCode}
-                    </p>
-                  </div>
-
-                  <div className="text-left space-y-3">
-                    <p className="font-medium flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-primary" />
-                      How it works:
-                    </p>
-                    <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
-                      <li>Share this code with your family member</li>
-                      <li>They sign up for a Wooffy account</li>
-                      <li>They enter this code to join your membership</li>
-                      <li>They can add their pet and enjoy all benefits!</li>
-                    </ol>
-                  </div>
-
-                  <Button
-                    onClick={() => {
-                      navigator.clipboard.writeText(shareCode);
-                      toast.success("Code copied to clipboard!");
-                    }}
-                    variant="outline"
-                    className="w-full"
-                  >
-                    Copy Code
-                  </Button>
-
-                  <Button variant="hero" size="lg" className="w-full" onClick={handleComplete}>
-                    Go to Dashboard
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
                 </CardContent>
               </Card>
             </div>

@@ -1,4 +1,4 @@
-import { Check, Star, Zap, Dog, Users } from "lucide-react";
+import { Check, Star, Zap, Dog } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -23,15 +23,14 @@ const plans = [
     savings: 19,
   },
   {
-    id: "family",
-    name: "Family Pack",
+    id: "pack",
+    name: "Pack Leader",
     pets: 3,
     price: 129,
     pricePerPet: 43,
-    description: "Share with family members",
+    description: "Best value for 3+ pets",
     popular: false,
     savings: 48,
-    familySharing: true,
   },
 ];
 
@@ -79,14 +78,6 @@ const PricingSection = () => {
                   <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
                     <Star className="w-4 h-4 fill-current" />
                     Most Popular
-                  </div>
-                </div>
-              )}
-              {plan.familySharing && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <div className="bg-accent text-accent-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    Family Sharing
                   </div>
                 </div>
               )}

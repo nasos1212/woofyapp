@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Users, Copy, Check, UserPlus, Bot, AlertTriangle, Syringe, Bell, Heart, LogOut, LayoutDashboard, Settings } from "lucide-react";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell, LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -79,10 +76,6 @@ const MemberDashboard = () => {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [stats, setStats] = useState({ totalSaved: 0, dealsUsed: 0, toShelters: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const [codeCopied, setCodeCopied] = useState(false);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [isInviting, setIsInviting] = useState(false);
-  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
@@ -178,53 +171,6 @@ const MemberDashboard = () => {
     }
   }, [user, loading]);
 
-  const copyShareCode = () => {
-    if (membership?.share_code) {
-      navigator.clipboard.writeText(membership.share_code);
-      setCodeCopied(true);
-      toast.success("Share code copied!");
-      setTimeout(() => setCodeCopied(false), 2000);
-    }
-  };
-
-  const handleInviteByEmail = async () => {
-    if (!inviteEmail.trim() || !membership?.share_code) return;
-    
-    setIsInviting(true);
-    try {
-      // Look up user by email (case-insensitive)
-      const { data: inviteeProfile } = await supabase
-        .from("profiles")
-        .select("user_id")
-        .ilike("email", inviteEmail.trim())
-        .maybeSingle();
-
-      if (!inviteeProfile) {
-        toast.error("No user found with that email. They need to sign up first.");
-        setIsInviting(false);
-        return;
-      }
-
-      // Use secure RPC function to create notification
-      // This validates ownership of the share code server-side
-      const { error } = await supabase.rpc("create_family_invite_notification", {
-        _invitee_user_id: inviteeProfile.user_id,
-        _share_code: membership.share_code,
-      });
-
-      if (error) throw error;
-
-      toast.success(`Invitation sent to ${inviteEmail}!`);
-      setInviteEmail("");
-      setInviteDialogOpen(false);
-    } catch (error) {
-      console.error("Failed to send invite:", error);
-      toast.error("Failed to send invitation");
-    } finally {
-      setIsInviting(false);
-    }
-  };
-
   const firstName = profile?.full_name?.split(" ")[0] || "Member";
   const initials = profile?.full_name
     ?.split(" ")
@@ -309,10 +255,6 @@ const MemberDashboard = () => {
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/family")}>
-                    <Users className="mr-2 h-4 w-4" />
-                    Family Pack
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 
@@ -420,68 +362,6 @@ const MemberDashboard = () => {
                   <p className="text-xs text-muted-foreground/70 mt-1">5% of your savings</p>
                 </div>
               </div>
-
-              {/* Family Share Code - Only for family plans */}
-              {membership?.plan_type === "family" && membership.share_code && (
-                <div className="bg-white rounded-2xl p-6 shadow-soft">
-                  <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
-                    <Users className="w-5 h-5 text-primary" />
-                    Family Sharing
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Share this code with family members so they can join your plan
-                  </p>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex-1 bg-muted rounded-lg px-4 py-3 font-mono text-lg font-semibold tracking-wider">
-                      {membership.share_code}
-                    </div>
-                    <Button variant="outline" size="icon" onClick={copyShareCode}>
-                      {codeCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                  
-                  <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button variant="outline" className="w-full gap-2">
-                        <UserPlus className="w-4 h-4" />
-                        Invite Family Member
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Invite Family Member</DialogTitle>
-                        <DialogDescription>
-                          Enter their email to send them an in-app notification with your invite.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="space-y-4 pt-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="invite-email">Email Address</Label>
-                          <Input
-                            id="invite-email"
-                            type="email"
-                            placeholder="family@example.com"
-                            value={inviteEmail}
-                            onChange={(e) => setInviteEmail(e.target.value)}
-                          />
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-3">
-                          <p className="text-sm text-muted-foreground">
-                            They'll receive a notification with your share code: <strong>{membership.share_code}</strong>
-                          </p>
-                        </div>
-                        <Button 
-                          className="w-full" 
-                          onClick={handleInviteByEmail}
-                          disabled={!inviteEmail.trim() || isInviting}
-                        >
-                          {isInviting ? "Sending..." : "Send Invite"}
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              )}
 
               {/* Recent Activity */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
@@ -646,11 +526,6 @@ const MemberDashboard = () => {
                     <p>No pets added yet</p>
                   </div>
                 )}
-                <Link to="/member/family">
-                  <Button variant="ghost" size="sm" className="w-full mt-4 text-primary">
-                    + Add Another Pet
-                  </Button>
-                </Link>
               </div>
             </div>
           </div>
