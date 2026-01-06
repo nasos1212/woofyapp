@@ -141,12 +141,14 @@ const Header = () => {
           {/* CTA */}
           <div className="hidden md:flex items-center gap-3">
             {user && <NotificationBell />}
-            <Link to="/business">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Building2 className="w-4 h-4" />
-                For Business
-              </Button>
-            </Link>
+            {!user && (
+              <Link to="/partner-register">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Building2 className="w-4 h-4" />
+                  For Business
+                </Button>
+              </Link>
+            )}
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -276,12 +278,14 @@ const Header = () => {
                   My Account
                 </Button>
               </Link>
-              <Link to="/business" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2">
-                  <Building2 className="w-4 h-4" />
-                  For Business
-                </Button>
-              </Link>
+              {!user && (
+                <Link to="/partner-register" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2">
+                    <Building2 className="w-4 h-4" />
+                    For Business
+                  </Button>
+                </Link>
+              )}
               {user ? (
                 <Button variant="ghost" className="w-full justify-start gap-2 text-destructive" onClick={handleSignOut}>
                   <LogOut className="w-4 h-4" />
