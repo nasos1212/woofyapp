@@ -173,7 +173,7 @@ const JoinFamily = () => {
   return (
     <>
       <Helmet>
-        <title>Join Family Membership | PawPass</title>
+        <title>Join Family Membership | Wooffy</title>
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50 py-12 px-4">
@@ -340,8 +340,8 @@ const JoinFamily = () => {
                   </h2>
                   <p className="text-muted-foreground">
                     {petOption === "existing" && selectedPet
-                      ? `You now share ${selectedPet.pet_name} with your family on PawPass!`
-                      : `You and ${petName} are now part of the PawPass family membership.`
+                      ? `You now share ${selectedPet.pet_name} with your family on Wooffy!`
+                      : `You and ${petName} are now part of the Wooffy family membership.`
                     }
                   </p>
                 </div>

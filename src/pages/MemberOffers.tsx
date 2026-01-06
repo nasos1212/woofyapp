@@ -240,10 +240,10 @@ const MemberOffers = () => {
   return (
     <>
       <Helmet>
-        <title>Available Offers | PawPass</title>
+        <title>Available Offers | Wooffy</title>
         <meta
           name="description"
-          content="Browse all available discounts and offers from PawPass partner businesses."
+          content="Browse all available discounts and offers from Wooffy partner businesses."
         />
       </Helmet>
 

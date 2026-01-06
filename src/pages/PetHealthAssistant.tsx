@@ -206,7 +206,7 @@ const PetHealthAssistant = () => {
               </div>
               <div>
                 <h1 className="font-display text-xl font-bold text-foreground">
-                  PawPal Health Assistant
+                  Wooffy Health Assistant
                 </h1>
                 <p className="text-sm text-muted-foreground">
                   Ask me anything about your pet's health! 🐾
@@ -307,7 +307,7 @@ const PetHealthAssistant = () => {
           <div className="flex items-start gap-2 mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-xs text-amber-700">
-              PawPal is an AI assistant and cannot replace professional veterinary care. 
+              Wooffy is an AI assistant and cannot replace professional veterinary care. 
               For emergencies, please contact your vet immediately.
             </p>
           </div>

@@ -193,7 +193,7 @@ const MemberOnboarding = () => {
         setShareCode(generatedShareCode);
         setStep("share");
       } else {
-        toast.success("Welcome to PawPass! 🎉");
+        toast.success("Welcome to Wooffy! 🎉");
         navigate("/member");
       }
     } catch (error: any) {
@@ -205,7 +205,7 @@ const MemberOnboarding = () => {
   };
 
   const handleComplete = () => {
-    toast.success("Welcome to PawPass! 🎉");
+    toast.success("Welcome to Wooffy! 🎉");
     navigate("/member");
   };
 
@@ -220,7 +220,7 @@ const MemberOnboarding = () => {
   return (
     <>
       <Helmet>
-        <title>Complete Your Setup | PawPass</title>
+        <title>Complete Your Setup | Wooffy</title>
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50 py-12 px-4">
@@ -262,7 +262,7 @@ const MemberOnboarding = () => {
             <div className="space-y-8">
               <div className="text-center">
                 <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
-                  Choose Your PawPass Plan
+                  Choose Your Wooffy Plan
                 </h1>
                 <p className="text-muted-foreground text-lg">
                   Select the perfect plan for your furry family
@@ -473,7 +473,7 @@ const MemberOnboarding = () => {
                     </p>
                     <ol className="text-sm text-muted-foreground space-y-2 list-decimal list-inside">
                       <li>Share this code with your family member</li>
-                      <li>They sign up for a PawPass account</li>
+                      <li>They sign up for a Wooffy account</li>
                       <li>They enter this code to join your membership</li>
                       <li>They can add their pet and enjoy all benefits!</li>
                     </ol>

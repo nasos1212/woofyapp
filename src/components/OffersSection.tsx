@@ -180,7 +180,7 @@ const OffersSection = () => {
           <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Offers</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Exclusive discounts from our partner businesses. Join PawPass to unlock all offers!
+            Exclusive discounts from our partner businesses. Join Wooffy to unlock all offers!
           </p>
         </div>
 

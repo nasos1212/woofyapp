@@ -5,7 +5,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SYSTEM_PROMPT = `You are PawPal, a friendly and knowledgeable AI pet health assistant for PawPass members. You help pet owners with:
+const SYSTEM_PROMPT = `You are Wooffy, a friendly and knowledgeable AI pet health assistant for Wooffy members. You help pet owners with:
 
 1. **General pet health questions** - diet, exercise, grooming, behavior
 2. **Symptom checking** - help identify potential issues (always recommend vet visits for serious concerns)
