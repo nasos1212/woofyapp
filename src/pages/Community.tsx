@@ -258,7 +258,7 @@ const Community = () => {
               </p>
             </div>
             <Button 
-              onClick={() => navigate('/member/community/ask')}
+              onClick={() => navigate('/community/ask')}
               className="bg-primary hover:bg-primary/90"
             >
               <MessageSquarePlus className="w-4 h-4 mr-2" />
@@ -359,7 +359,7 @@ const Community = () => {
                       <p className="text-muted-foreground mb-4">
                         Be the first to ask a question in this category!
                       </p>
-                      <Button onClick={() => navigate('/member/community/ask')}>
+                      <Button onClick={() => navigate('/community/ask')}>
                         Ask a Question
                       </Button>
                     </Card>
@@ -375,7 +375,7 @@ const Community = () => {
                     <Card className="p-8 text-center">
                       <HelpCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="font-semibold mb-2">You haven't asked any questions yet</h3>
-                      <Button onClick={() => navigate('/member/community/ask')}>
+                      <Button onClick={() => navigate('/community/ask')}>
                         Ask Your First Question
                       </Button>
                     </Card>
@@ -441,7 +441,7 @@ const Community = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => navigate('/member/community/ask')}
+                    onClick={() => navigate('/community/ask')}
                   >
                     <MessageSquarePlus className="w-4 h-4 mr-2" />
                     Ask a Question
