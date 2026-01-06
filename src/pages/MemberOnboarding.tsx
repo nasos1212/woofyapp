@@ -6,7 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -383,21 +386,58 @@ const MemberOnboarding = () => {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor={`breed-${pet.id}`}>Breed (optional)</Label>
-                          <Select
-                            value={pet.breed}
-                            onValueChange={(value) => updatePet(pet.id, "breed", value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a breed..." />
-                            </SelectTrigger>
-                            <SelectContent className="max-h-[300px]">
-                              {dogBreeds.map((breed) => (
-                                <SelectItem key={breed} value={breed}>
-                                  {breed}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "w-full justify-between font-normal",
+                                  !pet.breed && "text-muted-foreground"
+                                )}
+                              >
+                                {pet.breed || "Select or type breed..."}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-full p-0" align="start">
+                              <Command>
+                                <CommandInput 
+                                  placeholder="Search or type breed..." 
+                                  onValueChange={(value) => {
+                                    // Allow custom input - update directly if not selecting from list
+                                    if (value && !dogBreeds.includes(value)) {
+                                      updatePet(pet.id, "breed", value);
+                                    }
+                                  }}
+                                />
+                                <CommandList>
+                                  <CommandEmpty>
+                                    <span className="text-sm text-muted-foreground">
+                                      No breed found. Your input will be used.
+                                    </span>
+                                  </CommandEmpty>
+                                  <CommandGroup className="max-h-[200px] overflow-auto">
+                                    {dogBreeds.map((breed) => (
+                                      <CommandItem
+                                        key={breed}
+                                        value={breed}
+                                        onSelect={() => updatePet(pet.id, "breed", breed)}
+                                      >
+                                        <Check
+                                          className={cn(
+                                            "mr-2 h-4 w-4",
+                                            pet.breed === breed ? "opacity-100" : "opacity-0"
+                                          )}
+                                        />
+                                        {breed}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                         </div>
                       </div>
                     </div>
