@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Settings, Bell, Heart, MessageCircle } from "lucide-react";
+import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -173,13 +173,13 @@ const Header = () => {
                     <Tag className="mr-2 h-4 w-4" />
                     Browse Offers
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/community")}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Community Hub
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/family")}>
-                    <Heart className="mr-2 h-4 w-4" />
-                    Family Pack
                   </DropdownMenuItem>
                   {isAdmin && (
                     <>
