@@ -5,48 +5,160 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SYSTEM_PROMPT = `You are Wooffy, a friendly and knowledgeable AI pet health assistant for Wooffy members. You help pet owners with:
+const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI pet health assistant for Wooffy members. You have deep knowledge of your user and their pets.
 
-1. **General pet health questions** - diet, exercise, grooming, behavior
-2. **Symptom checking** - help identify potential issues (always recommend vet visits for serious concerns)
-3. **Preventive care tips** - vaccinations, dental care, parasite prevention
-4. **Emergency guidance** - when to seek immediate veterinary care
-5. **Breed-specific advice** - tailored information for different dog breeds
+## YOUR CORE IDENTITY
+- You are warm, friendly, and genuinely care about pets and their owners
+- You remember context from the conversation and build on previous topics
+- You proactively offer relevant advice based on what you know about the user's pet
+- You ALWAYS respond in English only, regardless of what language the user writes in
 
-**Important guidelines:**
-- Always be warm, friendly, and reassuring
-- Use simple language that pet owners understand
-- For serious symptoms, ALWAYS recommend consulting a veterinarian
-- Never diagnose conditions definitively - suggest possibilities and recommend professional evaluation
-- Include practical, actionable advice
-- Use relevant emojis to be friendly 🐕 🐾 💊
-- Keep responses concise but helpful (2-3 paragraphs max unless more detail is needed)
+## YOUR CAPABILITIES
+1. **Personalized Pet Health Advice** - Using the pet's specific breed, age, and health history
+2. **Symptom Analysis** - Help identify potential issues based on the pet's profile (always recommend vet visits for serious concerns)
+3. **Preventive Care Planning** - Tailored vaccination schedules, dental care, parasite prevention based on their records
+4. **Breed-Specific Guidance** - Deep knowledge of breed-specific health concerns, exercise needs, nutrition
+5. **Behavioral Understanding** - Interpret behaviors in context of breed, age, and known health conditions
+6. **Offer & Savings Recommendations** - Suggest relevant Wooffy partner offers based on their pet's needs
 
-**Disclaimer to include when discussing health concerns:**
+## CONTEXTUAL AWARENESS
+You will receive detailed context about:
+- **User Profile**: Name, contact information, membership status
+- **Pet Details**: Name, breed, birthday/age, health notes
+- **Health Records**: Vaccinations, vet visits, medications, upcoming appointments
+- **Offer History**: What discounts they've used, favorite businesses
+- **Favorite Offers**: What deals they're interested in
+
+USE THIS CONTEXT to:
+- Address the pet by name naturally ("Based on Luna's breed...")
+- Reference their health history ("Since Luna had her rabies vaccine in March...")
+- Suggest relevant offers ("There's a great grooming offer at PetSpa that would be perfect for Luna!")
+- Calculate age-appropriate advice using their birthday
+- Track patterns ("I notice Luna has been to the vet twice this month...")
+
+## RESPONSE GUIDELINES
+- Keep responses concise but helpful (2-3 paragraphs max unless detail is needed)
+- Use relevant emojis sparingly 🐕 🐾 💊
+- Be proactive - if you notice something in their records, mention it
+- For health concerns, ALWAYS recommend consulting a veterinarian
+- Never diagnose definitively - suggest possibilities and recommend professional evaluation
+
+## LANGUAGE RULE (CRITICAL)
+**ALWAYS respond in English only.** Even if the user writes in Spanish, Portuguese, French, German, or any other language, you MUST respond in English. You can acknowledge you understood their message but your response must be entirely in English.
+
+## DISCLAIMER (include when discussing health concerns)
 "Remember, I'm an AI assistant and can't replace professional veterinary care. If you're concerned about your pet's health, please consult your veterinarian."`;
 
+const buildContextPrompt = (context: any): string => {
+  const parts: string[] = [];
+  
+  if (context.userProfile) {
+    parts.push(`## USER PROFILE
+- Name: ${context.userProfile.full_name || 'Unknown'}
+- Email: ${context.userProfile.email || 'Unknown'}
+- Phone: ${context.userProfile.phone || 'Not provided'}
+- Member since: ${context.userProfile.created_at ? new Date(context.userProfile.created_at).toLocaleDateString('en-US') : 'Unknown'}`);
+  }
+
+  if (context.membership) {
+    parts.push(`## MEMBERSHIP
+- Plan: ${context.membership.plan_type || 'Standard'}
+- Member Number: ${context.membership.member_number}
+- Active: ${context.membership.is_active ? 'Yes' : 'No'}
+- Expires: ${context.membership.expires_at ? new Date(context.membership.expires_at).toLocaleDateString('en-US') : 'Unknown'}`);
+  }
+
+  if (context.pets && context.pets.length > 0) {
+    parts.push(`## PETS (${context.pets.length} total)`);
+    context.pets.forEach((pet: any, idx: number) => {
+      const age = pet.birthday ? calculateAge(pet.birthday) : 'Unknown';
+      parts.push(`### Pet ${idx + 1}: ${pet.pet_name}
+- Breed: ${pet.pet_breed || 'Mixed/Unknown'}
+- Birthday: ${pet.birthday || 'Not set'}
+- Age: ${age}
+- Notes: ${pet.notes || 'None'}`);
+    });
+  }
+
+  if (context.selectedPet) {
+    parts.push(`## CURRENTLY DISCUSSING: ${context.selectedPet.name} (${context.selectedPet.breed || 'Unknown breed'})`);
+  }
+
+  if (context.healthRecords && context.healthRecords.length > 0) {
+    parts.push(`## HEALTH RECORDS (${context.healthRecords.length} total)`);
+    const recentRecords = context.healthRecords.slice(0, 10);
+    recentRecords.forEach((record: any) => {
+      parts.push(`- ${record.title} (${record.record_type}) - ${record.date_administered ? new Date(record.date_administered).toLocaleDateString('en-US') : 'No date'}
+  Clinic: ${record.clinic_name || 'Unknown'} | Vet: ${record.veterinarian_name || 'Unknown'}
+  ${record.next_due_date ? `Next due: ${new Date(record.next_due_date).toLocaleDateString('en-US')}` : ''}
+  ${record.notes ? `Notes: ${record.notes}` : ''}`);
+    });
+  }
+
+  if (context.redemptions && context.redemptions.length > 0) {
+    parts.push(`## RECENT OFFER REDEMPTIONS (${context.redemptions.length} total)`);
+    const recentRedemptions = context.redemptions.slice(0, 5);
+    recentRedemptions.forEach((r: any) => {
+      parts.push(`- ${r.offers?.title || 'Offer'} at ${r.businesses?.business_name || 'Business'} (${new Date(r.redeemed_at).toLocaleDateString('en-US')})`);
+    });
+  }
+
+  if (context.favoriteOffers && context.favoriteOffers.length > 0) {
+    parts.push(`## FAVORITE/SAVED OFFERS (${context.favoriteOffers.length} total)`);
+    context.favoriteOffers.slice(0, 5).forEach((f: any) => {
+      parts.push(`- ${f.offers?.title || 'Offer'} at ${f.offers?.businesses?.business_name || 'Business'}`);
+    });
+  }
+
+  return parts.length > 0 ? `\n\n---\n# CONTEXT ABOUT THIS USER\n${parts.join('\n\n')}` : '';
+};
+
+const calculateAge = (birthday: string): string => {
+  const birth = new Date(birthday);
+  const now = new Date();
+  const years = now.getFullYear() - birth.getFullYear();
+  const months = now.getMonth() - birth.getMonth();
+  
+  if (years === 0) {
+    return `${months} month${months !== 1 ? 's' : ''} old`;
+  } else if (years === 1 && months < 0) {
+    return `${12 + months} months old`;
+  } else {
+    return `${years} year${years !== 1 ? 's' : ''} old`;
+  }
+};
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { messages, petInfo } = await req.json();
+    const { messages, petInfo, userContext } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    // Build context with pet info if provided
+    // Build contextual system prompt with all user data
     let contextualSystemPrompt = SYSTEM_PROMPT;
-    if (petInfo) {
+    
+    if (userContext) {
+      contextualSystemPrompt += buildContextPrompt(userContext);
+    } else if (petInfo) {
+      // Fallback to basic pet info if no full context
       contextualSystemPrompt += `\n\n**Current pet context:**
 - Pet name: ${petInfo.name || 'Unknown'}
-- Breed: ${petInfo.breed || 'Unknown'}
-- Any known conditions or notes from the user's pet profile can be referenced.`;
+- Breed: ${petInfo.breed || 'Unknown'}`;
     }
+
+    console.log('Processing request with context:', {
+      hasUserContext: !!userContext,
+      petsCount: userContext?.pets?.length || 0,
+      healthRecordsCount: userContext?.healthRecords?.length || 0,
+      messagesCount: messages?.length || 0
+    });
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
