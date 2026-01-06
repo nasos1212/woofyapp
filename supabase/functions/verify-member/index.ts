@@ -8,15 +8,19 @@ const corsHeaders = {
 };
 
 // Rate limiting configuration
-const MAX_FAILED_ATTEMPTS = 10; // Max failed attempts per window
-const RATE_LIMIT_WINDOW_MINUTES = 15; // Time window in minutes
-const LOCKOUT_DURATION_MINUTES = 30; // Lockout duration after exceeding limit
+const MAX_FAILED_ATTEMPTS = 10;
+const RATE_LIMIT_WINDOW_MINUTES = 15;
+const LOCKOUT_DURATION_MINUTES = 30;
+
+// Input validation helpers
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const MEMBER_ID_MAX_LENGTH = 50;
+
+const isValidUUID = (str: string): boolean => UUID_REGEX.test(str);
+const isValidMemberId = (str: string): boolean => 
+  typeof str === 'string' && str.length > 0 && str.length <= MEMBER_ID_MAX_LENGTH;
 
 serve(async (req) => {
-  console.log('=== verify-member function called ===');
-  console.log('Method:', req.method);
-  
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -24,140 +28,125 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    
-    console.log('Supabase URL:', supabaseUrl ? 'set' : 'not set');
-    console.log('Service key:', supabaseServiceKey ? 'set' : 'not set');
-    
-    // Create service role client for rate limit operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Get user's auth from request
     const authHeader = req.headers.get('Authorization');
-    console.log('Auth header present:', !!authHeader);
-    
     if (!authHeader) {
       return new Response(
-        JSON.stringify({ error: 'No authorization header', code: 'UNAUTHORIZED' }),
+        JSON.stringify({ error: 'Authentication required' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Extract and verify JWT token
     const token = authHeader.replace('Bearer ', '');
-    
-    // Get user from the token using admin client
     const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
     
     if (userError || !user) {
-      console.error('Auth error:', userError?.message);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized', code: 'UNAUTHORIZED' }),
+        JSON.stringify({ error: 'Authentication failed' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    
-    console.log('User authenticated:', user.id);
 
-    const { memberId, offerId, businessId } = await req.json();
-    console.log('Request body - memberId:', memberId, 'offerId:', offerId, 'businessId:', businessId);
-    
-    if (!memberId || !offerId || !businessId) {
+    // Parse and validate request body
+    let body;
+    try {
+      body = await req.json();
+    } catch {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields', code: 'MISSING_FIELDS' }),
+        JSON.stringify({ error: 'Invalid request format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Get IP address for additional rate limiting
+    const { memberId, offerId, businessId } = body;
+    
+    // Validate required fields exist
+    if (!memberId || !offerId || !businessId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate input formats
+    if (!isValidMemberId(memberId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid member ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidUUID(offerId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid offer ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidUUID(businessId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid business ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const sanitizedMemberId = memberId.trim();
+
+    // Get IP address for rate limiting
     const ipAddress = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 
                       req.headers.get('cf-connecting-ip') || 
                       'unknown';
 
-    console.log(`Verification attempt: business=${businessId}, member=${memberId}, ip=${ipAddress}`);
-
-    // Check if business is currently locked out
+    // Check rate limiting
     const lockoutWindow = new Date();
     lockoutWindow.setMinutes(lockoutWindow.getMinutes() - LOCKOUT_DURATION_MINUTES);
 
-    const { data: recentFailures, error: failuresError } = await supabaseAdmin
+    const { data: recentFailures } = await supabaseAdmin
       .from('verification_attempts')
       .select('id')
       .eq('business_id', businessId)
       .eq('success', false)
       .gte('created_at', lockoutWindow.toISOString());
 
-    if (failuresError) {
-      console.error('Error checking rate limits:', failuresError);
-    }
-
     const failedCount = recentFailures?.length || 0;
 
     if (failedCount >= MAX_FAILED_ATTEMPTS) {
-      console.warn(`Rate limit exceeded for business ${businessId}: ${failedCount} failed attempts`);
-      
-      // Calculate when lockout expires
-      const { data: oldestFailure } = await supabaseAdmin
-        .from('verification_attempts')
-        .select('created_at')
-        .eq('business_id', businessId)
-        .eq('success', false)
-        .gte('created_at', lockoutWindow.toISOString())
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single();
-
-      const lockoutExpires = oldestFailure 
-        ? new Date(new Date(oldestFailure.created_at).getTime() + LOCKOUT_DURATION_MINUTES * 60 * 1000)
-        : new Date(Date.now() + LOCKOUT_DURATION_MINUTES * 60 * 1000);
-
       return new Response(
         JSON.stringify({ 
-          error: 'Too many failed verification attempts. Please try again later.',
-          code: 'RATE_LIMITED',
-          lockoutExpiresAt: lockoutExpires.toISOString(),
-          remainingMinutes: Math.ceil((lockoutExpires.getTime() - Date.now()) / 60000)
+          error: 'Too many failed attempts. Please try again later.',
+          status: 'rate_limited'
         }),
         { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Proceed with verification - use admin client since business users can't see other members' data
-    console.log('Looking up membership with member_number:', memberId.trim());
-    
+    // Lookup membership
     const { data: membership, error: membershipError } = await supabaseAdmin
       .from('memberships')
       .select('id, user_id, member_number, pet_name, pet_breed, expires_at, is_active')
-      .eq('member_number', memberId.trim())
+      .eq('member_number', sanitizedMemberId)
       .maybeSingle();
 
-    console.log('Membership lookup result:', { membership, error: membershipError });
-
-    // Record the attempt
+    // Determine success status
     const success = !membershipError && membership && 
                    new Date(membership.expires_at) >= new Date() && 
                    membership.is_active;
 
-    console.log('Recording attempt, success:', success);
-    
-    const { error: insertError } = await supabaseAdmin
+    // Record the attempt (fail silently if this fails)
+    await supabaseAdmin
       .from('verification_attempts')
       .insert({
         business_id: businessId,
-        attempted_member_id: memberId,
+        attempted_member_id: sanitizedMemberId,
         success: success,
         ip_address: ipAddress
       });
-    
-    if (insertError) {
-      console.error('Failed to record attempt:', insertError);
-    }
 
     if (membershipError || !membership) {
-      console.log(`Invalid member ID: ${memberId}, error:`, membershipError);
       return new Response(
         JSON.stringify({ 
-          status: 'invalid',
-          attemptsRemaining: MAX_FAILED_ATTEMPTS - failedCount - 1
+          status: 'invalid'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -169,7 +158,6 @@ serve(async (req) => {
       .select('pet_name')
       .eq('membership_id', membership.id);
     
-    // Get pet names - prefer from pets table, fallback to membership pet_name
     const petNames = pets && pets.length > 0 
       ? pets.map(p => p.pet_name).join(', ') 
       : (membership.pet_name || 'Not specified');
@@ -185,7 +173,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           status: 'expired',
-          memberName: profile?.full_name || 'Unknown',
+          memberName: profile?.full_name || 'Member',
           petName: petNames,
           memberId: membership.member_number,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
@@ -194,7 +182,7 @@ serve(async (req) => {
       );
     }
 
-    // Check if offer has already been redeemed - use admin to check cross-user data
+    // Check if offer has already been redeemed
     const { data: existingRedemption } = await supabaseAdmin
       .from('offer_redemptions')
       .select('id')
@@ -220,7 +208,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           status: 'already_redeemed',
-          memberName: profile?.full_name || 'Unknown',
+          memberName: profile?.full_name || 'Member',
           petName: petNames,
           memberId: membership.member_number,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
@@ -231,11 +219,10 @@ serve(async (req) => {
     }
 
     // Valid membership
-    console.log(`Successful verification: member=${memberId}`);
     return new Response(
       JSON.stringify({
         status: 'valid',
-        memberName: profile?.full_name || 'Unknown',
+        memberName: profile?.full_name || 'Member',
         petName: petNames,
         memberId: membership.member_number,
         membershipId: membership.id,
@@ -248,9 +235,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in verify-member function:', error);
+    console.error('verify-member error:', error instanceof Error ? error.message : 'Unknown error');
     return new Response(
-      JSON.stringify({ error: 'Internal server error', code: 'INTERNAL_ERROR' }),
+      JSON.stringify({ error: 'An error occurred. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

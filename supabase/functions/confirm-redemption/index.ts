@@ -7,8 +7,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation helpers
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const isValidUUID = (str: string): boolean => UUID_REGEX.test(str);
+
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -16,73 +19,99 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAnon = Deno.env.get('SUPABASE_ANON_KEY')!;
     
-    // Create service role client for cross-user operations
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
     
-    // Get user's auth from request
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(
-        JSON.stringify({ error: 'No authorization header', code: 'UNAUTHORIZED' }),
+        JSON.stringify({ error: 'Authentication required' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const supabaseAnon = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseClient = createClient(supabaseUrl, supabaseAnon, {
       global: { headers: { Authorization: authHeader } }
     });
 
-    // Get current user (business owner)
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) {
-      console.error('Auth error:', userError);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized', code: 'UNAUTHORIZED' }),
+        JSON.stringify({ error: 'Authentication failed' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const { membershipId, offerId, businessId } = await req.json();
-    
-    if (!membershipId || !offerId || !businessId) {
+    // Parse and validate request body
+    let body;
+    try {
+      body = await req.json();
+    } catch {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields', code: 'MISSING_FIELDS' }),
+        JSON.stringify({ error: 'Invalid request format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log(`Confirming redemption: business=${businessId}, membership=${membershipId}, offer=${offerId}`);
+    const { membershipId, offerId, businessId } = body;
+    
+    // Validate required fields exist
+    if (!membershipId || !offerId || !businessId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate UUID formats
+    if (!isValidUUID(membershipId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid membership ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidUUID(offerId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid offer ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidUUID(businessId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid business ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Verify the business belongs to the current user
-    const { data: business, error: businessError } = await supabaseClient
+    const { data: business } = await supabaseClient
       .from('businesses')
       .select('id, business_name')
       .eq('id', businessId)
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (businessError || !business) {
-      console.error('Business verification failed:', businessError);
+    if (!business) {
       return new Response(
-        JSON.stringify({ error: 'Business not found or unauthorized', code: 'UNAUTHORIZED' }),
+        JSON.stringify({ error: 'Unauthorized' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Get membership details (need admin client to read other users' memberships)
-    const { data: membership, error: membershipError } = await supabaseAdmin
+    // Get membership details
+    const { data: membership } = await supabaseAdmin
       .from('memberships')
       .select('id, user_id, member_number, pet_name')
       .eq('id', membershipId)
       .single();
 
-    if (membershipError || !membership) {
-      console.error('Membership not found:', membershipError);
+    if (!membership) {
       return new Response(
-        JSON.stringify({ error: 'Membership not found', code: 'NOT_FOUND' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Invalid request' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -103,20 +132,19 @@ serve(async (req) => {
       .eq('user_id', membership.user_id)
       .maybeSingle();
     
-    const memberName = profileData?.full_name || 'Unknown';
+    const memberName = profileData?.full_name || 'Member';
 
     // Get offer details
-    const { data: offer, error: offerError } = await supabaseAdmin
+    const { data: offer } = await supabaseAdmin
       .from('offers')
       .select('id, title, discount_value, discount_type, business_id')
       .eq('id', offerId)
       .single();
 
-    if (offerError || !offer) {
-      console.error('Offer not found:', offerError);
+    if (!offer) {
       return new Response(
-        JSON.stringify({ error: 'Offer not found', code: 'NOT_FOUND' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ error: 'Invalid request' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -130,12 +158,12 @@ serve(async (req) => {
 
     if (existingRedemption) {
       return new Response(
-        JSON.stringify({ error: 'Offer already redeemed', code: 'ALREADY_REDEEMED' }),
+        JSON.stringify({ error: 'Offer already redeemed' }),
         { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Insert the redemption using admin client (bypasses RLS)
+    // Insert the redemption
     const { data: redemption, error: redemptionError } = await supabaseAdmin
       .from('offer_redemptions')
       .insert({
@@ -151,21 +179,19 @@ serve(async (req) => {
       .single();
 
     if (redemptionError) {
-      console.error('Redemption insert failed:', redemptionError);
+      console.error('Redemption error:', redemptionError.message);
       return new Response(
-        JSON.stringify({ error: 'Failed to record redemption', code: 'INSERT_FAILED' }),
+        JSON.stringify({ error: 'Failed to process redemption. Please try again.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    console.log(`Redemption recorded: ${redemption.id}`);
 
     // Create notification for the member
     const discountText = offer.discount_type === 'percentage' 
       ? `${offer.discount_value}%` 
       : `€${offer.discount_value}`;
 
-    const { error: notificationError } = await supabaseAdmin
+    await supabaseAdmin
       .from('notifications')
       .insert({
         user_id: membership.user_id,
@@ -182,13 +208,6 @@ serve(async (req) => {
           discount_type: offer.discount_type,
         }
       });
-
-    if (notificationError) {
-      console.error('Notification insert failed:', notificationError);
-      // Don't fail the whole operation if notification fails
-    } else {
-      console.log(`Notification sent to user ${membership.user_id}`);
-    }
 
     return new Response(
       JSON.stringify({
@@ -208,9 +227,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in confirm-redemption function:', error);
+    console.error('confirm-redemption error:', error instanceof Error ? error.message : 'Unknown error');
     return new Response(
-      JSON.stringify({ error: 'Internal server error', code: 'INTERNAL_ERROR' }),
+      JSON.stringify({ error: 'An error occurred. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
