@@ -290,11 +290,11 @@ const LostPetAlerts = () => {
   return (
     <>
       <Helmet>
-        <title>Lost Pet Alerts | Woofy Community</title>
+        <title>Lost Pet Alerts | Wooffy Community</title>
         <meta name="description" content="Community-powered lost pet alert system. Help reunite pets with their families." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-woofy-soft to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background">
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4">
             <Breadcrumbs

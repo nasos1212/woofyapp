@@ -11,7 +11,7 @@ const partnerCategories = [
 
 const featuredPartners = [
   { name: "PetWorld", discount: "25% off", category: "Pet Shop" },
-  { name: "Woofy Vet Care", discount: "15% off", category: "Veterinary" },
+  { name: "Wooffy Vet Care", discount: "15% off", category: "Veterinary" },
   { name: "Bark Academy", discount: "1 Free Session", category: "Training" },
   { name: "Pawsome Hotel", discount: "20% off", category: "Pet Hotel" },
   { name: "Fluffy Grooming", discount: "€10 off", category: "Grooming" },
@@ -35,7 +35,7 @@ const PartnersSection = () => {
           
           <p className="text-lg text-muted-foreground">
             From local pet shops to premium hotels, our network keeps growing. 
-            Show your Woofy card and enjoy instant savings everywhere.
+            Show your Wooffy card and enjoy instant savings everywhere.
           </p>
         </div>
 
@@ -56,8 +56,8 @@ const PartnersSection = () => {
         </div>
 
         {/* Featured partners */}
-        <div className="bg-woofy-dark rounded-3xl p-8 lg:p-12">
-          <h3 className="font-display font-bold text-2xl text-woofy-sky mb-8 text-center">
+        <div className="bg-wooffy-dark rounded-3xl p-8 lg:p-12">
+          <h3 className="font-display font-bold text-2xl text-wooffy-sky mb-8 text-center">
             Featured Partner Deals
           </h3>
           
@@ -65,14 +65,14 @@ const PartnersSection = () => {
             {featuredPartners.map((partner) => (
               <div
                 key={partner.name}
-                className="bg-woofy-blue/10 backdrop-blur-sm rounded-xl p-4 border border-woofy-blue/30 hover:bg-woofy-blue/20 transition-colors duration-300"
+                className="bg-wooffy-blue/10 backdrop-blur-sm rounded-xl p-4 border border-wooffy-blue/30 hover:bg-wooffy-blue/20 transition-colors duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-display font-semibold text-woofy-light">{partner.name}</p>
-                    <p className="text-sm text-woofy-light/70">{partner.category}</p>
+                    <p className="font-display font-semibold text-wooffy-light">{partner.name}</p>
+                    <p className="text-sm text-wooffy-light/70">{partner.category}</p>
                   </div>
-                  <div className="bg-woofy-sky text-woofy-dark px-3 py-1 rounded-full text-sm font-semibold">
+                  <div className="bg-wooffy-sky text-wooffy-dark px-3 py-1 rounded-full text-sm font-semibold">
                     {partner.discount}
                   </div>
                 </div>
@@ -80,7 +80,7 @@ const PartnersSection = () => {
             ))}
           </div>
           
-          <p className="text-center text-woofy-light/70 mt-8 text-sm">
+          <p className="text-center text-wooffy-light/70 mt-8 text-sm">
             + hundreds more exclusive deals waiting for you
           </p>
         </div>

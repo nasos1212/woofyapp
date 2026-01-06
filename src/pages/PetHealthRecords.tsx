@@ -314,7 +314,7 @@ const PetHealthRecords = () => {
                       <Input
                         value={clinicName}
                         onChange={(e) => setClinicName(e.target.value)}
-                        placeholder="Woofy Vet Clinic"
+                        placeholder="Wooffy Vet Clinic"
                       />
                     </div>
                   </div>

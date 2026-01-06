@@ -17,8 +17,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
-        name: "Woofy - Pet Membership",
-        short_name: "Woofy",
+        name: "Wooffy - Pet Membership",
+        short_name: "Wooffy",
         description: "The ultimate membership for pet lovers. Exclusive discounts at 500+ pet shops, trainers, hotels & more.",
         theme_color: "#F97316",
         background_color: "#1A1A2E",

@@ -271,8 +271,8 @@ export default function BusinessProfile() {
   return (
     <>
       <Helmet>
-        <title>{business.business_name} | Woofy Partner</title>
-        <meta name="description" content={business.description || `${business.business_name} - Woofy partner business`} />
+        <title>{business.business_name} | Wooffy Partner</title>
+        <meta name="description" content={business.description || `${business.business_name} - Wooffy partner business`} />
       </Helmet>
 
       <div className="min-h-screen bg-background">

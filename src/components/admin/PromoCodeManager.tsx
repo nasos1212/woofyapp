@@ -60,7 +60,7 @@ const PromoCodeManager = () => {
 
   const generateCode = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "WOOFY";
+    let code = "WOOFFY";
     for (let i = 0; i < 6; i++) {
       code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -166,7 +166,7 @@ const PromoCodeManager = () => {
                   <Input
                     value={newCode.code}
                     onChange={(e) => setNewCode({ ...newCode, code: e.target.value.toUpperCase() })}
-                    placeholder="WOOFY50"
+                    placeholder="WOOFFY50"
                   />
                 </div>
                 <Button variant="outline" className="mt-6" onClick={generateCode}>

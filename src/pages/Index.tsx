@@ -15,12 +15,12 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Woofy - The Ultimate Membership for Pet Lovers | €59/year</title>
+        <title>Wooffy - The Ultimate Membership for Pet Lovers | €59/year</title>
         <meta 
           name="description" 
-          content="Join 10,000+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% of proceeds support dog shelters. Save €2,000+ yearly with Woofy membership." 
+          content="Join 10,000+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% of proceeds support dog shelters. Save €2,000+ yearly with Wooffy membership." 
         />
-        <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops, dog shelters, pet charity, Woofy" />
+        <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops, dog shelters, pet charity, Wooffy" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

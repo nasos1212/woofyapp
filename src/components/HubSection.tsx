@@ -56,7 +56,7 @@ const HubSection = () => {
           </h2>
           
           <p className="text-lg text-muted-foreground">
-            More than just discounts. Woofy is your all-in-one companion for pet parenthood. 
+            More than just discounts. Wooffy is your all-in-one companion for pet parenthood. 
             Connect, discover, and make every moment with your pet count.
           </p>
         </div>
@@ -89,7 +89,7 @@ const HubSection = () => {
             Join the Waitlist for Hub Access
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
-            All Woofy members get early access to new features
+            All Wooffy members get early access to new features
           </p>
         </div>
       </div>
