@@ -369,15 +369,20 @@ const CommunityQuestion = () => {
                     <Bookmark className={`w-4 h-4 ${question.is_saved ? 'fill-current' : ''}`} />
                   </Button>
                   <Button
-                    variant="outline"
+                    variant={question.is_following ? "default" : "outline"}
                     size="sm"
                     onClick={handleFollowToggle}
-                    className={question.is_following ? 'text-primary' : ''}
                   >
                     {question.is_following ? (
-                      <BellOff className="w-4 h-4" />
+                      <>
+                        <BellOff className="w-4 h-4 mr-1" />
+                        Unfollow
+                      </>
                     ) : (
-                      <Bell className="w-4 h-4" />
+                      <>
+                        <Bell className="w-4 h-4 mr-1" />
+                        Follow
+                      </>
                     )}
                   </Button>
                   <DropdownMenu>
