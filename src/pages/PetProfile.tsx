@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
+import Header from "@/components/Header";
 import { format, differenceInYears, differenceInMonths } from "date-fns";
 
 interface Pet {
@@ -223,9 +224,11 @@ const PetProfile = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
-        {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
+        <Header />
+
+        <main className="container mx-auto px-4 py-8 pt-24 max-w-2xl">
+          {/* Breadcrumbs */}
+          <div className="mb-4">
             <Breadcrumbs
               items={[
                 { label: "Family", href: "/member/family" },
@@ -233,9 +236,6 @@ const PetProfile = () => {
               ]}
             />
           </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-8 max-w-2xl">
           <Button
             variant="ghost"
             onClick={() => navigate("/member/family")}

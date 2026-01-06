@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { dogBreeds } from "@/data/dogBreeds";
 import DogLoader from "@/components/DogLoader";
+import Header from "@/components/Header";
 
 interface Pet {
   id: string;
@@ -203,13 +204,9 @@ const MemberOnboarding = () => {
         <title>Complete Your Setup | Wooffy</title>
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50 py-12 px-4">
-        <div className="container max-w-4xl mx-auto">
-          {/* Back to home link */}
-          <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            Back to home
-          </Link>
+      <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
+        <Header />
+        <div className="container max-w-4xl mx-auto px-4 py-8 pt-24">
           <div className="flex items-center justify-center gap-4 mb-12">
             <div className={`flex items-center gap-2 ${step === "plan" ? "text-primary" : "text-muted-foreground"}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "plan" ? "bg-primary text-primary-foreground" : "bg-green-500 text-white"}`}>
