@@ -348,34 +348,38 @@ const MemberDashboard = () => {
             {/* Right Column - Nearby & Info */}
             <div className="space-y-6">
               {/* Your Pets - Most Important */}
-              <div className="bg-gradient-to-br from-primary/10 via-paw-gold/10 to-primary/5 rounded-2xl p-6 shadow-lg border-2 border-primary/20">
-                <h3 className="font-display text-lg font-bold text-foreground mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <span className="text-white text-lg">🐾</span>
+              <div className="relative bg-wooffy-dark rounded-2xl p-6 shadow-lg overflow-hidden">
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className="absolute bottom-0 left-0 w-24 h-24 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+                
+                <h3 className="relative font-display text-lg font-bold text-wooffy-sky mb-4 flex items-center gap-2">
+                  <div className="w-8 h-8 bg-wooffy-blue/20 rounded-full flex items-center justify-center">
+                    <span className="text-lg">🐾</span>
                   </div>
                   Your Pets
                 </h3>
                 {pets.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="relative space-y-3">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-4 p-4 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-primary/10 hover:border-primary/30">
-                          <div className="w-16 h-16 bg-gradient-to-br from-paw-gold to-primary/30 rounded-full flex items-center justify-center text-3xl shadow-inner">
+                        <div className="flex items-center gap-4 p-4 bg-wooffy-blue/10 rounded-xl hover:bg-wooffy-blue/20 transition-all cursor-pointer border border-wooffy-blue/20 hover:border-wooffy-sky/40">
+                          <div className="w-14 h-14 bg-gradient-to-br from-wooffy-accent to-wooffy-sky/50 rounded-full flex items-center justify-center text-2xl shadow-inner">
                             🐕
                           </div>
                           <div className="flex-1">
-                            <p className="font-semibold text-foreground text-lg">{pet.pet_name}</p>
-                            <p className="text-sm text-muted-foreground">{pet.pet_breed || "Mixed breed"}</p>
+                            <p className="font-semibold text-wooffy-sky text-lg">{pet.pet_name}</p>
+                            <p className="text-sm text-wooffy-light/70">{pet.pet_breed || "Mixed breed"}</p>
                           </div>
-                          <div className="text-primary">→</div>
+                          <div className="text-wooffy-sky">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 bg-white rounded-xl">
+                  <div className="relative text-center py-6 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
                     <div className="text-4xl mb-2">🐶</div>
-                    <p className="text-muted-foreground">No pets added yet</p>
+                    <p className="text-wooffy-light/70">No pets added yet</p>
                   </div>
                 )}
               </div>
