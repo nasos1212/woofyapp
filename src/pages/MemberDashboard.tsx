@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
+import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 
 interface Pet {
   id: string;
@@ -344,6 +345,9 @@ const MemberDashboard = () => {
         )}
 
         <main className="container mx-auto px-4 py-8">
+          {/* Proactive AI Alerts */}
+          <AIProactiveAlerts />
+
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">

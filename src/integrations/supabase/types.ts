@@ -70,6 +70,48 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_proactive_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          data: Json | null
+          expires_at: string | null
+          id: string
+          is_dismissed: boolean
+          is_read: boolean
+          message: string
+          priority: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          message: string
+          priority?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          data?: Json | null
+          expires_at?: string | null
+          id?: string
+          is_dismissed?: boolean
+          is_read?: boolean
+          message?: string
+          priority?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       business_birthday_settings: {
         Row: {
           business_id: string
@@ -1101,6 +1143,33 @@ export type Database = {
           achievement_type?: string
           id?: string
           unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_activity_tracking: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          created_at: string
+          id: string
+          page_path: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          created_at?: string
+          id?: string
+          page_path?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          created_at?: string
+          id?: string
+          page_path?: string | null
           user_id?: string
         }
         Relationships: []
