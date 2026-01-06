@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, Users, Crown } from "lucide-react";
+import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -25,19 +25,13 @@ interface Pet {
   membership_id: string;
 }
 
-interface FamilyMember {
-  id: string;
-  full_name: string | null;
-  email: string;
-  isOwner: boolean;
-}
 
 const PetProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [pet, setPet] = useState<Pet | null>(null);
-  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+  
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -47,11 +41,10 @@ const PetProfile = () => {
   const [editedBirthday, setEditedBirthday] = useState("");
 
   useEffect(() => {
-    const fetchPetAndFamily = async () => {
+    const fetchPet = async () => {
       if (!user || !id) return;
 
       try {
-        // Fetch pet
         const { data: petData, error: petError } = await supabase
           .from("pets")
           .select("*")
@@ -66,60 +59,6 @@ const PetProfile = () => {
           setEditedName(petData.pet_name);
           setEditedBreed(petData.pet_breed || "");
           setEditedBirthday(petData.birthday || "");
-
-          // Fetch membership to get owner
-          const { data: membership } = await supabase
-            .from("memberships")
-            .select("user_id")
-            .eq("id", petData.membership_id)
-            .maybeSingle();
-
-          if (membership) {
-            const members: FamilyMember[] = [];
-
-            // Get owner profile
-            const { data: ownerProfile } = await supabase
-              .from("profiles")
-              .select("full_name, email, user_id")
-              .eq("user_id", membership.user_id)
-              .maybeSingle();
-
-            if (ownerProfile) {
-              members.push({
-                id: ownerProfile.user_id,
-                full_name: ownerProfile.full_name,
-                email: ownerProfile.email,
-                isOwner: true,
-              });
-            }
-
-            // Get shared members
-            const { data: shares } = await supabase
-              .from("membership_shares")
-              .select("shared_with_user_id")
-              .eq("membership_id", petData.membership_id);
-
-            if (shares) {
-              for (const share of shares) {
-                const { data: memberProfile } = await supabase
-                  .from("profiles")
-                  .select("full_name, email, user_id")
-                  .eq("user_id", share.shared_with_user_id)
-                  .maybeSingle();
-
-                if (memberProfile) {
-                  members.push({
-                    id: memberProfile.user_id,
-                    full_name: memberProfile.full_name,
-                    email: memberProfile.email,
-                    isOwner: false,
-                  });
-                }
-              }
-            }
-
-            setFamilyMembers(members);
-          }
         }
       } catch (error) {
         console.error("Error fetching pet:", error);
@@ -130,7 +69,7 @@ const PetProfile = () => {
     };
 
     if (!authLoading) {
-      fetchPetAndFamily();
+      fetchPet();
     }
   }, [user, id, authLoading]);
 
@@ -347,48 +286,7 @@ const PetProfile = () => {
             </CardContent>
           </Card>
 
-          {/* Family Members with Access */}
-          {familyMembers.length > 0 && (
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" />
-                  Family Members with Access
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {familyMembers.map((member) => (
-                    <div
-                      key={member.id}
-                      className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl"
-                    >
-                      <div className="w-10 h-10 bg-gradient-hero rounded-full flex items-center justify-center text-white text-sm font-medium">
-                        {(member.full_name || member.email)?.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground flex items-center gap-2">
-                          {member.full_name || member.email}
-                          {member.isOwner && (
-                            <span className="text-xs bg-paw-gold/20 text-paw-gold px-2 py-0.5 rounded-full flex items-center gap-1">
-                              <Crown className="w-3 h-3" />
-                              Owner
-                            </span>
-                          )}
-                        </p>
-                        {member.full_name && (
-                          <p className="text-sm text-muted-foreground">{member.email}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  All family members can view and manage {pet.pet_name}'s profile.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+
 
           {/* Notes Section */}
           <Card>
