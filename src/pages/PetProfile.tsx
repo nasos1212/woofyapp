@@ -218,7 +218,7 @@ const PetProfile = () => {
   return (
     <>
       <Helmet>
-        <title>{pet.pet_name}'s Profile | PawPass</title>
+        <title>{pet.pet_name}'s Profile | Wooffy</title>
         <meta name="description" content={`View and manage ${pet.pet_name}'s profile and notes.`} />
       </Helmet>
 

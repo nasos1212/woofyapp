@@ -41,7 +41,7 @@ const ReferralSection = ({ userName }: ReferralSectionProps) => {
       </h3>
 
       <p className="text-sm text-muted-foreground mb-4">
-        Share PawPass with friends! When they sign up, you'll both benefit from exclusive rewards.
+        Share Wooffy with friends! When they sign up, you'll both benefit from exclusive rewards.
       </p>
 
       {referralCode ? (

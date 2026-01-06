@@ -263,7 +263,7 @@ const BusinessAnalytics = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `pawpass-analytics-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.download = `wooffy-analytics-${format(new Date(), "yyyy-MM-dd")}.csv`;
     a.click();
     URL.revokeObjectURL(url);
     toast.success("Data exported successfully");
@@ -289,10 +289,10 @@ const BusinessAnalytics = () => {
   return (
     <>
       <Helmet>
-        <title>Analytics | PawPass Business</title>
+        <title>Analytics | Wooffy Business</title>
         <meta
           name="description"
-          content="View your PawPass business analytics and customer insights."
+          content="View your Wooffy business analytics and customer insights."
         />
       </Helmet>
 
@@ -320,7 +320,7 @@ const BusinessAnalytics = () => {
               <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
                 Analytics Dashboard
               </h1>
-              <p className="text-slate-500">Track your PawPass performance and customer insights</p>
+              <p className="text-slate-500">Track your Wooffy performance and customer insights</p>
             </div>
 
             {/* Date Range Selector */}

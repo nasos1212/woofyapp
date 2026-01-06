@@ -264,8 +264,8 @@ const BusinessOfferManagement = () => {
   return (
     <>
       <Helmet>
-        <title>Manage Offers | PawPass Business</title>
-        <meta name="description" content="Create and manage your PawPass partner offers." />
+        <title>Manage Offers | Wooffy Business</title>
+        <meta name="description" content="Create and manage your Wooffy partner offers." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -292,7 +292,7 @@ const BusinessOfferManagement = () => {
               Manage Offers
             </h1>
             <p className="text-slate-500">
-              Create, edit, and manage your discount offers for PawPass members
+              Create, edit, and manage your discount offers for Wooffy members
             </p>
           </div>
 
@@ -302,7 +302,7 @@ const BusinessOfferManagement = () => {
               <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
               <h3 className="font-display font-semibold text-lg mb-2">No offers yet</h3>
               <p className="text-slate-500 mb-6">
-                Create your first offer to start attracting PawPass members
+                Create your first offer to start attracting Wooffy members
               </p>
               <Button onClick={openCreateDialog} className="gap-2">
                 <Plus className="w-4 h-4" />
@@ -397,7 +397,7 @@ const BusinessOfferManagement = () => {
             <DialogDescription>
               {editingOffer
                 ? "Update your offer details"
-                : "Fill in the details to create a new offer for PawPass members"}
+                : "Fill in the details to create a new offer for Wooffy members"}
             </DialogDescription>
           </DialogHeader>
 

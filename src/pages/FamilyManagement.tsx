@@ -361,10 +361,10 @@ const FamilyManagement = () => {
   return (
     <>
       <Helmet>
-        <title>Family Management | PawPass</title>
+        <title>Family Management | Wooffy</title>
         <meta
           name="description"
-          content="Manage your PawPass family membership and shared access."
+          content="Manage your Wooffy family membership and shared access."
         />
       </Helmet>
 
@@ -580,7 +580,7 @@ const FamilyManagement = () => {
                             <AlertDialogDescription>
                               This will remove {member.profile?.full_name || "this member"} and
                               their pets from your family membership. They won't be able to use
-                              PawPass benefits anymore.
+                              Wooffy benefits anymore.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>

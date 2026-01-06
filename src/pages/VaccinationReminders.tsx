@@ -268,7 +268,7 @@ const VaccinationReminders = () => {
   return (
     <>
       <Helmet>
-        <title>Vaccination Reminders | Pet Passport</title>
+        <title>Vaccination Reminders | Wooffy</title>
         <meta name="description" content="Keep track of your pet's vaccination schedule and never miss a due date." />
       </Helmet>
 

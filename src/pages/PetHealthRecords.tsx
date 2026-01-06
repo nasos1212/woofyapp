@@ -208,7 +208,7 @@ const PetHealthRecords = () => {
   return (
     <>
       <Helmet>
-        <title>Pet Health Records | PawPass</title>
+        <title>Pet Health Records | Wooffy</title>
         <meta name="description" content="Keep track of your pet's vaccinations, vet visits, and health records." />
       </Helmet>
 

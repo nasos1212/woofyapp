@@ -389,7 +389,7 @@ const PartnerRegister = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-2xl font-bold text-foreground">Your Offers</h1>
-                  <p className="text-muted-foreground">Set discounts for PawPass members</p>
+                  <p className="text-muted-foreground">Set discounts for Wooffy members</p>
                 </div>
               </div>
 

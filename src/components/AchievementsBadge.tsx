@@ -48,7 +48,7 @@ const AchievementsBadge = () => {
             </span>
           ) : (
             <span>
-              Keep using PawPass to unlock more achievements!
+              Keep using Wooffy to unlock more achievements!
             </span>
           )}
         </div>
