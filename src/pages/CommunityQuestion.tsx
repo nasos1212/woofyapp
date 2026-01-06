@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -249,7 +248,7 @@ const CommunityQuestion = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <main className="container mx-auto px-4 py-8 pt-24 max-w-4xl">
           {/* Back button */}
           <Button
             variant="ghost"

@@ -5,7 +5,7 @@ import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3 } from "luci
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import Breadcrumbs from "@/components/Breadcrumbs";
+import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 
 interface Redemption {
@@ -159,19 +159,9 @@ const RedemptionHistory = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
-        {/* Header */}
-        <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4">
-            <Breadcrumbs 
-              items={[
-                { label: "Dashboard", href: "/member" },
-                { label: "History" }
-              ]} 
-            />
-          </div>
-        </header>
+        <Header />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24">
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">

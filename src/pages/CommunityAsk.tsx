@@ -6,7 +6,6 @@ import { useCommunity, Category } from '@/hooks/useCommunity';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -185,16 +184,8 @@ const CommunityAsk = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 max-w-3xl">
-          <Breadcrumbs
-            items={[
-              { label: 'Dashboard', href: '/member' },
-              { label: 'Community', href: '/member/community' },
-              { label: 'Ask a Question' }
-            ]}
-          />
-
-          <Card className="mt-6">
+        <main className="container mx-auto px-4 py-8 pt-24 max-w-3xl">
+          <Card className="mt-2">
             <CardHeader>
               <CardTitle className="text-2xl">Ask the Community</CardTitle>
               <CardDescription>

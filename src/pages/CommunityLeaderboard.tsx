@@ -6,7 +6,6 @@ import { useCommunity, ExpertStats } from '@/hooks/useCommunity';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import DogLoader from '@/components/DogLoader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -137,15 +136,7 @@ const CommunityLeaderboard = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="container mx-auto px-4 py-8">
-          <Breadcrumbs
-            items={[
-              { label: 'Dashboard', href: '/member' },
-              { label: 'Community', href: '/member/community' },
-              { label: 'Leaderboard' }
-            ]}
-          />
-
+        <main className="container mx-auto px-4 py-8 pt-24">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold flex items-center justify-center gap-2 mb-2">
