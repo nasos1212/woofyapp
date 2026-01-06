@@ -5,6 +5,11 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation constants
+const MAX_MESSAGES = 50;
+const MAX_MESSAGE_LENGTH = 10000;
+const MAX_CONTEXT_ITEMS = 100;
+
 const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI pet health assistant for Wooffy members. You have deep knowledge of your user and their pets.
 
 ## YOUR CORE IDENTITY
@@ -81,53 +86,55 @@ const buildContextPrompt = (context: any): string => {
 - Expires: ${context.membership.expires_at ? new Date(context.membership.expires_at).toLocaleDateString('en-US') : 'Unknown'}`);
   }
 
-  if (context.pets && context.pets.length > 0) {
-    parts.push(`## PETS (${context.pets.length} total)`);
-    context.pets.forEach((pet: any, idx: number) => {
+  if (context.pets && Array.isArray(context.pets)) {
+    const pets = context.pets.slice(0, MAX_CONTEXT_ITEMS);
+    parts.push(`## PETS (${pets.length} total)`);
+    pets.forEach((pet: any, idx: number) => {
       const age = pet.birthday ? calculateAge(pet.birthday) : 'Unknown';
-      parts.push(`### Pet ${idx + 1}: ${pet.pet_name}
-- Breed: ${pet.pet_breed || 'Mixed/Unknown'}
+      parts.push(`### Pet ${idx + 1}: ${String(pet.pet_name || 'Unknown').substring(0, 100)}
+- Breed: ${String(pet.pet_breed || 'Mixed/Unknown').substring(0, 100)}
 - Birthday: ${pet.birthday || 'Not set'}
 - Age: ${age}
-- Notes: ${pet.notes || 'None'}`);
+- Notes: ${String(pet.notes || 'None').substring(0, 500)}`);
     });
   }
 
   if (context.selectedPet) {
-    parts.push(`## CURRENTLY DISCUSSING: ${context.selectedPet.name} (${context.selectedPet.breed || 'Unknown breed'})`);
+    parts.push(`## CURRENTLY DISCUSSING: ${String(context.selectedPet.name || 'Unknown').substring(0, 100)} (${String(context.selectedPet.breed || 'Unknown breed').substring(0, 100)})`);
   }
 
-  if (context.healthRecords && context.healthRecords.length > 0) {
-    parts.push(`## HEALTH RECORDS (${context.healthRecords.length} total)`);
-    const recentRecords = context.healthRecords.slice(0, 10);
-    recentRecords.forEach((record: any) => {
-      parts.push(`- ${record.title} (${record.record_type}) - ${record.date_administered ? new Date(record.date_administered).toLocaleDateString('en-US') : 'No date'}
-  Clinic: ${record.clinic_name || 'Unknown'} | Vet: ${record.veterinarian_name || 'Unknown'}
+  if (context.healthRecords && Array.isArray(context.healthRecords)) {
+    const records = context.healthRecords.slice(0, 10);
+    parts.push(`## HEALTH RECORDS (${records.length} shown)`);
+    records.forEach((record: any) => {
+      parts.push(`- ${String(record.title || 'Record').substring(0, 100)} (${record.record_type}) - ${record.date_administered ? new Date(record.date_administered).toLocaleDateString('en-US') : 'No date'}
+  Clinic: ${String(record.clinic_name || 'Unknown').substring(0, 100)} | Vet: ${String(record.veterinarian_name || 'Unknown').substring(0, 100)}
   ${record.next_due_date ? `Next due: ${new Date(record.next_due_date).toLocaleDateString('en-US')}` : ''}
-  ${record.notes ? `Notes: ${record.notes}` : ''}`);
+  ${record.notes ? `Notes: ${String(record.notes).substring(0, 200)}` : ''}`);
     });
   }
 
-  if (context.redemptions && context.redemptions.length > 0) {
-    parts.push(`## RECENT OFFER REDEMPTIONS (${context.redemptions.length} total)`);
-    const recentRedemptions = context.redemptions.slice(0, 5);
-    recentRedemptions.forEach((r: any) => {
-      parts.push(`- ${r.offers?.title || 'Offer'} at ${r.businesses?.business_name || 'Business'} (${new Date(r.redeemed_at).toLocaleDateString('en-US')})`);
+  if (context.redemptions && Array.isArray(context.redemptions)) {
+    const redemptions = context.redemptions.slice(0, 5);
+    parts.push(`## RECENT OFFER REDEMPTIONS`);
+    redemptions.forEach((r: any) => {
+      parts.push(`- ${String(r.offers?.title || 'Offer').substring(0, 100)} at ${String(r.businesses?.business_name || 'Business').substring(0, 100)} (${new Date(r.redeemed_at).toLocaleDateString('en-US')})`);
     });
   }
 
-  if (context.favoriteOffers && context.favoriteOffers.length > 0) {
-    parts.push(`## FAVORITE/SAVED OFFERS (${context.favoriteOffers.length} total)`);
-    context.favoriteOffers.slice(0, 5).forEach((f: any) => {
-      parts.push(`- ${f.offers?.title || 'Offer'} at ${f.offers?.businesses?.business_name || 'Business'}`);
+  if (context.favoriteOffers && Array.isArray(context.favoriteOffers)) {
+    const favorites = context.favoriteOffers.slice(0, 5);
+    parts.push(`## FAVORITE/SAVED OFFERS`);
+    favorites.forEach((f: any) => {
+      parts.push(`- ${String(f.offers?.title || 'Offer').substring(0, 100)} at ${String(f.offers?.businesses?.business_name || 'Business').substring(0, 100)}`);
     });
   }
 
-  if (context.recentActivity && context.recentActivity.length > 0) {
-    parts.push(`## RECENT USER ACTIVITY (behavior patterns)`);
+  if (context.recentActivity && Array.isArray(context.recentActivity)) {
+    parts.push(`## RECENT USER ACTIVITY`);
     const activitySummary: Record<string, number> = {};
-    context.recentActivity.forEach((a: any) => {
-      const key = a.activity_type + (a.page_path ? ` (${a.page_path})` : '');
+    context.recentActivity.slice(0, MAX_CONTEXT_ITEMS).forEach((a: any) => {
+      const key = String(a.activity_type || 'unknown').substring(0, 50);
       activitySummary[key] = (activitySummary[key] || 0) + 1;
     });
     Object.entries(activitySummary).slice(0, 10).forEach(([activity, count]) => {
@@ -135,18 +142,19 @@ const buildContextPrompt = (context: any): string => {
     });
   }
 
-  if (context.communityQuestions && context.communityQuestions.length > 0) {
-    parts.push(`## RELEVANT COMMUNITY DISCUSSIONS (${context.communityQuestions.length} related threads)`);
-    context.communityQuestions.forEach((q: any) => {
+  if (context.communityQuestions && Array.isArray(context.communityQuestions)) {
+    const questions = context.communityQuestions.slice(0, 5);
+    parts.push(`## RELEVANT COMMUNITY DISCUSSIONS`);
+    questions.forEach((q: any) => {
       const answerCount = q.answer_count || 0;
       const helpedCount = q.helped_count || 0;
       const hasVerifiedAnswer = q.has_verified_answer ? '✓ Verified Pro Answer' : '';
-      parts.push(`### "${q.title}"
-- Category: ${q.category_name || 'General'}
+      parts.push(`### "${String(q.title || 'Question').substring(0, 150)}"
+- Category: ${String(q.category_name || 'General').substring(0, 50)}
 - Urgency: ${q.urgency || 'normal'}
 - ${answerCount} answers, helped ${helpedCount} members ${hasVerifiedAnswer}
-- Breed tags: ${q.breed_tags?.join(', ') || 'None'}
-${q.top_answer ? `- Top answer: "${q.top_answer.substring(0, 200)}..."` : ''}`);
+- Breed tags: ${Array.isArray(q.breed_tags) ? q.breed_tags.slice(0, 5).join(', ') : 'None'}
+${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` : ''}`);
     });
   }
 
@@ -154,17 +162,23 @@ ${q.top_answer ? `- Top answer: "${q.top_answer.substring(0, 200)}..."` : ''}`);
 };
 
 const calculateAge = (birthday: string): string => {
-  const birth = new Date(birthday);
-  const now = new Date();
-  const years = now.getFullYear() - birth.getFullYear();
-  const months = now.getMonth() - birth.getMonth();
-  
-  if (years === 0) {
-    return `${months} month${months !== 1 ? 's' : ''} old`;
-  } else if (years === 1 && months < 0) {
-    return `${12 + months} months old`;
-  } else {
-    return `${years} year${years !== 1 ? 's' : ''} old`;
+  try {
+    const birth = new Date(birthday);
+    if (isNaN(birth.getTime())) return 'Unknown';
+    
+    const now = new Date();
+    const years = now.getFullYear() - birth.getFullYear();
+    const months = now.getMonth() - birth.getMonth();
+    
+    if (years === 0) {
+      return `${months} month${months !== 1 ? 's' : ''} old`;
+    } else if (years === 1 && months < 0) {
+      return `${12 + months} months old`;
+    } else {
+      return `${years} year${years !== 1 ? 's' : ''} old`;
+    }
+  } catch {
+    return 'Unknown';
   }
 };
 
@@ -174,31 +188,52 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, petInfo, userContext } = await req.json();
+    // Parse and validate request body
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { messages, petInfo, userContext } = body;
+    
+    // Validate messages
+    if (!messages || !Array.isArray(messages)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Limit messages to prevent abuse
+    const sanitizedMessages = messages.slice(-MAX_MESSAGES).map((msg: any) => ({
+      role: String(msg.role || 'user').substring(0, 20),
+      content: String(msg.content || '').substring(0, MAX_MESSAGE_LENGTH)
+    }));
+
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({ error: 'Service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Build contextual system prompt with all user data
     let contextualSystemPrompt = SYSTEM_PROMPT;
     
-    if (userContext) {
+    if (userContext && typeof userContext === 'object') {
       contextualSystemPrompt += buildContextPrompt(userContext);
-    } else if (petInfo) {
-      // Fallback to basic pet info if no full context
+    } else if (petInfo && typeof petInfo === 'object') {
       contextualSystemPrompt += `\n\n**Current pet context:**
-- Pet name: ${petInfo.name || 'Unknown'}
-- Breed: ${petInfo.breed || 'Unknown'}`;
+- Pet name: ${String(petInfo.name || 'Unknown').substring(0, 100)}
+- Breed: ${String(petInfo.breed || 'Unknown').substring(0, 100)}`;
     }
-
-    console.log('Processing request with context:', {
-      hasUserContext: !!userContext,
-      petsCount: userContext?.pets?.length || 0,
-      healthRecordsCount: userContext?.healthRecords?.length || 0,
-      messagesCount: messages?.length || 0
-    });
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -210,7 +245,7 @@ serve(async (req) => {
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: contextualSystemPrompt },
-          ...messages,
+          ...sanitizedMessages,
         ],
         stream: true,
       }),
@@ -218,33 +253,31 @@ serve(async (req) => {
 
     if (!response.ok) {
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limits exceeded. Please try again in a moment." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: "Service is busy. Please try again in a moment." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Service temporarily unavailable. Please try again later." }), {
-          status: 402,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: "Service temporarily unavailable. Please try again later." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
-      return new Response(JSON.stringify({ error: "AI service error" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "AI service error. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
-    console.error("Pet health assistant error:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("pet-health-assistant error:", error instanceof Error ? error.message : 'Unknown error');
+    return new Response(
+      JSON.stringify({ error: "An error occurred. Please try again." }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });

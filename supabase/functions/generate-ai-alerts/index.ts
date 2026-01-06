@@ -6,16 +6,41 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Input validation
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const isValidUUID = (str: string): boolean => UUID_REGEX.test(str);
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { userId } = await req.json();
+    // Parse and validate request body
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(
+        JSON.stringify({ error: 'Invalid request format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const { userId } = body;
     
     if (!userId) {
-      throw new Error('userId is required');
+      return new Response(
+        JSON.stringify({ error: 'Missing required field' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!isValidUUID(userId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid user ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -24,7 +49,6 @@ serve(async (req) => {
 
     const alerts: any[] = [];
     const now = new Date();
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
     // Fetch user's membership and pets
@@ -91,7 +115,6 @@ serve(async (req) => {
         const birthday = new Date(pet.birthday);
         const thisYearBirthday = new Date(now.getFullYear(), birthday.getMonth(), birthday.getDate());
         
-        // If birthday already passed this year, check next year
         if (thisYearBirthday < now) {
           thisYearBirthday.setFullYear(thisYearBirthday.getFullYear() + 1);
         }
@@ -135,7 +158,7 @@ serve(async (req) => {
       
       offerViews.forEach(a => {
         const category = a.activity_data?.category;
-        if (category) {
+        if (category && typeof category === 'string') {
           categoryInterests[category] = (categoryInterests[category] || 0) + 1;
         }
       });
@@ -175,13 +198,9 @@ serve(async (req) => {
 
     // Insert new alerts
     if (newAlerts.length > 0) {
-      const { error: insertError } = await supabase
+      await supabase
         .from('ai_proactive_alerts')
         .insert(newAlerts);
-
-      if (insertError) {
-        console.error('Error inserting alerts:', insertError);
-      }
     }
 
     return new Response(JSON.stringify({ 
@@ -191,10 +210,10 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Generate AI alerts error:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('generate-ai-alerts error:', error instanceof Error ? error.message : 'Unknown error');
+    return new Response(
+      JSON.stringify({ error: 'An error occurred. Please try again.' }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
