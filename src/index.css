@@ -36,13 +36,13 @@
 
     --radius: 1rem;
 
-    /* Custom design tokens - Woofy brand */
-    --woofy-blue: 200 85% 50%;
-    --woofy-sky: 195 90% 60%;
-    --woofy-light: 200 30% 97%;
-    --woofy-dark: 210 30% 20%;
-    --woofy-accent: 185 80% 45%;
-    --woofy-soft: 200 40% 95%;
+    /* Custom design tokens - Wooffy brand */
+    --wooffy-blue: 200 85% 50%;
+    --wooffy-sky: 195 90% 60%;
+    --wooffy-light: 200 30% 97%;
+    --wooffy-dark: 210 30% 20%;
+    --wooffy-accent: 185 80% 45%;
+    --wooffy-soft: 200 40% 95%;
 
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(200 85% 50%) 0%, hsl(195 90% 60%) 100%);

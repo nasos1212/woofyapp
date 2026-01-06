@@ -331,8 +331,8 @@ const BusinessDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Partner Dashboard | Woofy Business Portal</title>
-        <meta name="description" content="Verify Woofy members and track redemptions at your business." />
+        <title>Partner Dashboard | Wooffy Business Portal</title>
+        <meta name="description" content="Verify Wooffy members and track redemptions at your business." />
       </Helmet>
 
       {/* Celebration Animation */}
@@ -369,7 +369,7 @@ const BusinessDashboard = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
               Partner Dashboard
             </h1>
-            <p className="text-slate-500">Verify members and track your Woofy redemptions</p>
+            <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
           </div>
 
           {/* Onboarding Tips - Show when no redemptions */}
@@ -380,7 +380,7 @@ const BusinessDashboard = () => {
                   <Gift className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-slate-900 mb-2">Welcome to Woofy! 🎉</h3>
+                  <h3 className="font-display font-semibold text-slate-900 mb-2">Welcome to Wooffy! 🎉</h3>
                   <p className="text-slate-600 text-sm mb-3">
                     Here's how to get started with your first redemption:
                   </p>
@@ -391,7 +391,7 @@ const BusinessDashboard = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">2</span>
-                      <span>When a customer shows their Woofy card, scan their QR code or enter their member ID below</span>
+                      <span>When a customer shows their Wooffy card, scan their QR code or enter their member ID below</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">3</span>

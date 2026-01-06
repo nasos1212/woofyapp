@@ -151,14 +151,14 @@ const RedemptionHistory = () => {
   return (
     <>
       <Helmet>
-        <title>Redemption History | Woofy</title>
+        <title>Redemption History | Wooffy</title>
         <meta
           name="description"
-          content="View your Woofy redemption history and track your savings."
+          content="View your Wooffy redemption history and track your savings."
         />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-woofy-light to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4">
@@ -178,7 +178,7 @@ const RedemptionHistory = () => {
               Redemption History
             </h1>
             <p className="text-muted-foreground">
-              Track your savings and see how much you've benefited from Woofy
+              Track your savings and see how much you've benefited from Wooffy
             </p>
           </div>
 
@@ -261,17 +261,17 @@ const RedemptionHistory = () => {
               )}
               {stats.totalSaved >= 100 && stats.totalSaved < 250 && (
                 <p className="text-sm text-primary flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
-                  🚀 You're on fire! Keep using your Woofy card to reach the next milestone.
+                  🚀 You're on fire! Keep using your Wooffy card to reach the next milestone.
                 </p>
               )}
               {stats.totalSaved >= 250 && stats.totalSaved < 500 && (
                 <p className="text-sm text-amber-600 flex items-center gap-2 bg-amber-50 p-3 rounded-lg">
-                  ⭐ Halfway to €500! You're a Woofy power user.
+                  ⭐ Halfway to €500! You're a Wooffy power user.
                 </p>
               )}
               {stats.totalSaved >= 500 && (
                 <p className="text-sm text-rose-600 flex items-center gap-2 bg-rose-50 p-3 rounded-lg">
-                  🏆 Incredible! You've saved over €500 with Woofy!
+                  🏆 Incredible! You've saved over €500 with Wooffy!
                 </p>
               )}
             </div>
@@ -292,7 +292,7 @@ const RedemptionHistory = () => {
                   No redemptions yet
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Start using your Woofy card at partner businesses to see your history here
+                  Start using your Wooffy card at partner businesses to see your history here
                 </p>
                 <Link to="/member/offers">
                   <button className="text-primary font-medium hover:underline">

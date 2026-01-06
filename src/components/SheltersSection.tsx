@@ -74,7 +74,7 @@ const SheltersSection = () => {
   };
 
   return (
-    <section id="shelters" className="py-20 bg-gradient-to-b from-woofy-soft to-background">
+    <section id="shelters" className="py-20 bg-gradient-to-b from-wooffy-soft to-background">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
@@ -86,7 +86,7 @@ const SheltersSection = () => {
             10% Goes to <span className="text-rose-500">Dog Shelters</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Every Woofy membership directly supports whitelisted dog shelters. 
+            Every Wooffy membership directly supports whitelisted dog shelters. 
             Together, we've helped rehome over 3,400 dogs and counting.
           </p>
         </div>
@@ -157,7 +157,7 @@ const SheltersSection = () => {
           <DialogHeader>
             <DialogTitle className="font-display text-xl">Apply as a Shelter Partner</DialogTitle>
             <DialogDescription>
-              Join our whitelist and share in 10% of all Woofy membership proceeds, split amongst our shelter partners. Fill out the form below and we'll review your application.
+              Join our whitelist and share in 10% of all Wooffy membership proceeds, split amongst our shelter partners. Fill out the form below and we'll review your application.
             </DialogDescription>
           </DialogHeader>
           
@@ -279,7 +279,7 @@ const SheltersSection = () => {
                 rows={4}
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Describe your mission, services, and why you'd like to partner with Woofy..."
+                placeholder="Describe your mission, services, and why you'd like to partner with Wooffy..."
               />
             </div>
 

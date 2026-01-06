@@ -61,13 +61,13 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        woofy: {
-          blue: "hsl(var(--woofy-blue))",
-          sky: "hsl(var(--woofy-sky))",
-          light: "hsl(var(--woofy-light))",
-          dark: "hsl(var(--woofy-dark))",
-          accent: "hsl(var(--woofy-accent))",
-          soft: "hsl(var(--woofy-soft))",
+        wooffy: {
+          blue: "hsl(var(--wooffy-blue))",
+          sky: "hsl(var(--wooffy-sky))",
+          light: "hsl(var(--wooffy-light))",
+          dark: "hsl(var(--wooffy-dark))",
+          accent: "hsl(var(--wooffy-accent))",
+          soft: "hsl(var(--wooffy-soft))",
         },
       },
       borderRadius: {

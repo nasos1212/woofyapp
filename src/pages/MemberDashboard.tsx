@@ -267,11 +267,11 @@ const MemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>My Woofy Dashboard | Member Area</title>
-        <meta name="description" content="Access your Woofy membership card, view savings, and discover nearby pet deals." />
+        <title>My Wooffy Dashboard | Member Area</title>
+        <meta name="description" content="Access your Wooffy membership card, view savings, and discover nearby pet deals." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-woofy-light to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -349,7 +349,7 @@ const MemberDashboard = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
               Welcome back, {firstName}! 👋
             </h1>
-            <p className="text-muted-foreground">Here's your Woofy membership overview</p>
+            <p className="text-muted-foreground">Here's your Wooffy membership overview</p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">

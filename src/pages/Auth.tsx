@@ -190,7 +190,7 @@ const Auth = () => {
           
           toast({
             title: "Account Created!",
-            description: "Welcome to Woofy!",
+            description: "Welcome to Wooffy!",
           });
         }
       }
@@ -225,7 +225,7 @@ const Auth = () => {
                 <Dog className="w-8 h-8 text-primary-foreground" />
               </div>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                Welcome to Woofy
+                Welcome to Wooffy
               </h1>
               <p className="text-muted-foreground mt-2">
                 How would you like to continue?
@@ -398,7 +398,7 @@ const Auth = () => {
               )}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome Back" : "Join Woofy"}
+              {isLogin ? "Welcome Back" : "Join Wooffy"}
             </h1>
             <p className="text-muted-foreground mt-2">
               {isBusiness 

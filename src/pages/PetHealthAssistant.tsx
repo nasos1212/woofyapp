@@ -179,11 +179,11 @@ const PetHealthAssistant = () => {
   return (
     <>
       <Helmet>
-        <title>AI Pet Health Assistant | Woofy</title>
+        <title>AI Pet Health Assistant | Wooffy</title>
         <meta name="description" content="Get instant pet health advice from our AI-powered assistant." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-woofy-soft to-background flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background flex flex-col">
         {/* Header */}
         <header className="bg-white/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
           <div className="container mx-auto px-4 py-4">
