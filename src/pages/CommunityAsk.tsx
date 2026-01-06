@@ -74,6 +74,25 @@ const CommunityAsk = () => {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
 
+  const playWarningSound = useCallback(() => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime + 0.2);
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
+  }, []);
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate('/auth');
@@ -274,12 +293,15 @@ const CommunityAsk = () => {
                     <Button
                       type="button"
                       className={cn(
-                        'flex flex-col h-auto py-3 text-white animate-pulse',
+                        'flex flex-col h-auto py-3 text-white animate-pulse-slow',
                         urgency === 'urgent' 
                           ? 'bg-red-600 hover:bg-red-700 ring-2 ring-red-400 ring-offset-2' 
                           : 'bg-red-500 hover:bg-red-600'
                       )}
-                      onClick={() => setUrgency('urgent')}
+                      onClick={() => {
+                        setUrgency('urgent');
+                        playWarningSound();
+                      }}
                     >
                       <AlertCircle className="w-5 h-5 mb-1" />
                       <span className="text-xs font-medium">Urgent</span>
