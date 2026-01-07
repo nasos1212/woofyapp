@@ -853,6 +853,13 @@ export type Database = {
             referencedRelation: "lost_pet_alerts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "lost_pet_sightings_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "lost_pet_alerts_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       membership_shares: {
@@ -1702,8 +1709,86 @@ export type Database = {
         }
         Relationships: []
       }
+      lost_pet_alerts_public: {
+        Row: {
+          additional_info: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string | null
+          id: string | null
+          last_seen_date: string | null
+          last_seen_latitude: number | null
+          last_seen_location: string | null
+          last_seen_longitude: number | null
+          owner_user_id: string | null
+          pet_breed: string | null
+          pet_description: string | null
+          pet_id: string | null
+          pet_name: string | null
+          pet_photo_url: string | null
+          resolved_at: string | null
+          reward_offered: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          additional_info?: string | null
+          contact_email?: never
+          contact_phone?: never
+          created_at?: string | null
+          id?: string | null
+          last_seen_date?: string | null
+          last_seen_latitude?: number | null
+          last_seen_location?: string | null
+          last_seen_longitude?: number | null
+          owner_user_id?: string | null
+          pet_breed?: string | null
+          pet_description?: string | null
+          pet_id?: string | null
+          pet_name?: string | null
+          pet_photo_url?: string | null
+          resolved_at?: string | null
+          reward_offered?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          additional_info?: string | null
+          contact_email?: never
+          contact_phone?: never
+          created_at?: string | null
+          id?: string | null
+          last_seen_date?: string | null
+          last_seen_latitude?: number | null
+          last_seen_location?: string | null
+          last_seen_longitude?: number | null
+          owner_user_id?: string | null
+          pet_breed?: string | null
+          pet_description?: string | null
+          pet_id?: string | null
+          pet_name?: string | null
+          pet_photo_url?: string | null
+          resolved_at?: string | null
+          reward_offered?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lost_pet_alerts_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      can_view_lost_pet_contact: {
+        Args: { alert_id: string; alert_owner_id: string }
+        Returns: boolean
+      }
       create_family_invite_notification: {
         Args: { _invitee_user_id: string; _share_code: string }
         Returns: undefined
