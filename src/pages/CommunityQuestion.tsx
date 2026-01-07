@@ -333,31 +333,33 @@ const CommunityQuestion = () => {
               <Separator className="my-4" />
 
               {/* Actions */}
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
-                    {question.view_count} views
+                    <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    {question.view_count}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
-                    {answers.length} answers
+                    <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    {answers.length}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Heart className="w-4 h-4" />
-                    {question.helped_count} helped
+                    <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    {question.helped_count}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleHelped}
                     disabled={isOwner}
+                    className="text-xs sm:text-sm"
                   >
-                    <Heart className="w-4 h-4 mr-1" />
-                    This helped me
+                    <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                    <span className="hidden sm:inline">This helped me</span>
+                    <span className="sm:hidden">Helped</span>
                   </Button>
                   <Button
                     variant="outline"
@@ -365,29 +367,30 @@ const CommunityQuestion = () => {
                     onClick={handleSaveToggle}
                     className={question.is_saved ? 'text-primary' : ''}
                   >
-                    <Bookmark className={`w-4 h-4 ${question.is_saved ? 'fill-current' : ''}`} />
+                    <Bookmark className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${question.is_saved ? 'fill-current' : ''}`} />
                   </Button>
                   <Button
                     variant={question.is_following ? "default" : "outline"}
                     size="sm"
                     onClick={handleFollowToggle}
+                    className="text-xs sm:text-sm"
                   >
                     {question.is_following ? (
                       <>
-                        <BellOff className="w-4 h-4 mr-1" />
-                        Unfollow
+                        <BellOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
+                        <span className="hidden sm:inline">Unfollow</span>
                       </>
                     ) : (
                       <>
-                        <Bell className="w-4 h-4 mr-1" />
-                        Follow
+                        <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
+                        <span className="hidden sm:inline">Follow</span>
                       </>
                     )}
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="sm">
-                        <MoreVertical className="w-4 h-4" />
+                        <MoreVertical className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

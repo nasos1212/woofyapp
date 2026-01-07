@@ -228,24 +228,24 @@ const PetProfile = () => {
           </Card>
 
           {/* Info Cards */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
             <Card>
-              <CardContent className="pt-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                    <Cake className="w-5 h-5 text-pink-600" />
+              <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                    <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Birthday</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
                     {isEditing ? (
                       <Input
                         type="date"
                         value={editedBirthday}
                         onChange={(e) => setEditedBirthday(e.target.value)}
-                        className="mt-1"
+                        className="mt-1 text-sm"
                       />
                     ) : (
-                      <p className="font-medium">
+                      <p className="font-medium text-sm sm:text-base truncate">
                         {pet.birthday ? format(new Date(pet.birthday), "MMM d, yyyy") : "Not set"}
                       </p>
                     )}
@@ -255,14 +255,14 @@ const PetProfile = () => {
             </Card>
 
             <Card>
-              <CardContent className="pt-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Heart className="w-5 h-5 text-blue-600" />
+              <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Age</p>
-                    <p className="font-medium">
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
+                    <p className="font-medium text-sm sm:text-base truncate">
                       {pet.birthday ? calculateAge(pet.birthday) : "Unknown"}
                     </p>
                   </div>
@@ -289,24 +289,24 @@ const PetProfile = () => {
 
 
           {/* Quick Actions - Health Records & Vaccinations */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
             <Button
               variant="default"
               size="lg"
               onClick={() => navigate("/member/health-records")}
-              className="h-auto py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
-              <FileText className="w-6 h-6" />
-              <span className="font-semibold">Health Records</span>
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="font-semibold text-xs sm:text-sm">Health Records</span>
             </Button>
             <Button
               variant="default"
               size="lg"
               onClick={() => navigate("/member/vaccinations")}
-              className="h-auto py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
             >
-              <Syringe className="w-6 h-6" />
-              <span className="font-semibold">Vaccinations</span>
+              <Syringe className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="font-semibold text-xs sm:text-sm">Vaccinations</span>
             </Button>
           </div>
 

@@ -4,9 +4,9 @@ const Footer = () => {
   return (
     <footer className="bg-wooffy-dark text-white py-16">
       <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-4 col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 bg-wooffy-blue/20 rounded-xl flex items-center justify-center">
                 <Dog className="w-6 h-6 text-wooffy-sky" />
@@ -17,15 +17,15 @@ const Footer = () => {
               The ultimate membership for pet lovers. Unlock discounts, connect with community, 
               and make every moment with your pet special.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
-                <Instagram className="w-5 h-5" />
+            <div className="flex gap-3">
+              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+                <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
-                <Facebook className="w-5 h-5" />
+              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+                <Facebook className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+                <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </div>
           </div>

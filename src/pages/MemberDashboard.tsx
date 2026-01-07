@@ -255,78 +255,78 @@ const MemberDashboard = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow group">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <Link to="/member/history" className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft hover:shadow-md transition-shadow group">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-2xl font-display font-bold text-primary">€{stats.totalSaved}</span>
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Percent className="w-4 h-4 text-primary" />
+                    <span className="text-xl sm:text-2xl font-display font-bold text-primary">€{stats.totalSaved}</span>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Percent className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">Total Saved</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">Click to view history</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Total Saved</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">Click to view history</p>
                 </Link>
-                <Link to="/member/history" className="bg-white rounded-2xl p-4 shadow-soft hover:shadow-md transition-shadow group">
+                <Link to="/member/history" className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft hover:shadow-md transition-shadow group">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-2xl font-display font-bold text-yellow-500">{stats.dealsUsed}</span>
-                    <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
-                      <Gift className="w-4 h-4 text-yellow-500" />
+                    <span className="text-xl sm:text-2xl font-display font-bold text-yellow-500">{stats.dealsUsed}</span>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
+                      <Gift className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500" />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">Deals Used</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">{stats.dealsUsed === 0 ? "Start saving today!" : "Keep it up!"}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Deals Used</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{stats.dealsUsed === 0 ? "Start saving today!" : "Keep it up!"}</p>
                 </Link>
-                <div className="bg-white rounded-2xl p-4 shadow-soft">
+                <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`}>{daysLeft}</span>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                      <Clock className={`w-4 h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
+                    <span className={`text-xl sm:text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`}>{daysLeft}</span>
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-green-100'}`}>
+                      <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">Days Left</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">{daysLeft <= 30 ? "Renew soon!" : "Plenty of time"}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Days Left</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{daysLeft <= 30 ? "Renew soon!" : "Plenty of time"}</p>
                 </div>
-                <div className="bg-white rounded-2xl p-4 shadow-soft">
+                <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</span>
-                    <div className="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center">
-                      <Shield className="w-4 h-4 text-rose-500" />
+                    <span className="text-xl sm:text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</span>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-rose-100 rounded-full flex items-center justify-center">
+                      <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground">To Shelters</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">5% of your savings</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">To Shelters</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">5% of your savings</p>
                 </div>
               </div>
 
               {/* Your Pets - Most Important */}
-              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-8 shadow-lg border border-cyan-200">
-                <h3 className="font-display text-xl font-bold text-teal-800 mb-6 flex items-center gap-3">
-                  <div className="w-10 h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                    <span className="text-xl">🐾</span>
+              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-cyan-200">
+                <h3 className="font-display text-lg sm:text-xl font-bold text-teal-800 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                    <span className="text-lg sm:text-xl">🐾</span>
                   </div>
                   Your Pets
                 </h3>
                 {pets.length > 0 ? (
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-4 p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
-                          <div className="w-16 h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-3xl shadow-sm">
+                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0">
                             🐕
                           </div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-teal-800 text-lg">{pet.pet_name}</p>
-                            <p className="text-sm text-teal-600/70">{pet.pet_breed || "Mixed breed"}</p>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-teal-800 text-base sm:text-lg truncate">{pet.pet_name}</p>
+                            <p className="text-xs sm:text-sm text-teal-600/70 truncate">{pet.pet_breed || "Mixed breed"}</p>
                           </div>
-                          <div className="text-teal-500 text-xl">→</div>
+                          <div className="text-teal-500 text-lg sm:text-xl shrink-0">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 bg-white rounded-xl border border-cyan-100">
-                    <div className="text-5xl mb-3">🐶</div>
-                    <p className="text-teal-600/70 text-lg">No pets added yet</p>
+                  <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
+                    <div className="text-4xl sm:text-5xl mb-3">🐶</div>
+                    <p className="text-teal-600/70 text-base sm:text-lg">No pets added yet</p>
                   </div>
                 )}
               </div>
