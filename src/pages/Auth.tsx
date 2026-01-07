@@ -68,8 +68,15 @@ const Auth = () => {
           // User has a business, redirect to dashboard
           navigate("/business");
         } else {
-          // User doesn't have a business, redirect to registration
-          navigate("/partner-register");
+          // User doesn't have a business - sign them out and show error
+          toast({
+            title: "No Business Account Found",
+            description: "This email is not registered as a business partner. Please register your business or log in as a pet owner.",
+            variant: "destructive",
+          });
+          // Sign out and reset to account type selection
+          await supabase.auth.signOut();
+          setAccountType(null);
         }
         return;
       }
