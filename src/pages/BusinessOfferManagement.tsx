@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Plus,
   Edit2,
@@ -15,9 +15,9 @@ import {
   Clock,
   Calendar,
 } from "lucide-react";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
+import BusinessHeader from "@/components/BusinessHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -270,31 +270,23 @@ const BusinessOfferManagement = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Breadcrumbs 
-              items={[
-                { label: "Partner Dashboard", href: "/business" },
-                { label: "Manage Offers" }
-              ]} 
-            />
-            <Button onClick={openCreateDialog} className="gap-2">
+        <BusinessHeader />
+
+        <main className="container mx-auto px-4 py-8 pt-24 md:pt-28 max-w-4xl">
+          {/* Page Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+                Manage Offers
+              </h1>
+              <p className="text-slate-500">
+                Create, edit, and manage your discount offers for Wooffy members
+              </p>
+            </div>
+            <Button onClick={openCreateDialog} className="gap-2 w-fit">
               <Plus className="w-4 h-4" />
               Create Offer
             </Button>
-          </div>
-        </header>
-
-        <main className="container mx-auto px-4 py-8 max-w-4xl">
-          {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              Manage Offers
-            </h1>
-            <p className="text-slate-500">
-              Create, edit, and manage your discount offers for Wooffy members
-            </p>
           </div>
 
           {/* Offers List */}

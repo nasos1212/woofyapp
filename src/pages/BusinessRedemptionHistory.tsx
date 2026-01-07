@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
+import BusinessHeader from "@/components/BusinessHeader";
 import {
   Select,
   SelectContent,
@@ -210,26 +210,9 @@ const BusinessRedemptionHistory = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Breadcrumbs items={[
-              { label: "Partner Dashboard", href: "/business" },
-              { label: "Redemption History" }
-            ]} />
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-slate-700 to-slate-900 rounded-lg flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-white" />
-              </div>
-              <div className="hidden sm:block">
-                <p className="font-medium text-slate-900 text-sm">{business?.business_name || 'Your Business'}</p>
-                <p className="text-xs text-slate-500">Partner</p>
-              </div>
-            </div>
-          </div>
-        </header>
+        <BusinessHeader />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
           {/* Back Link & Title */}
           <div className="mb-6">
             <Link 
