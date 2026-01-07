@@ -263,37 +263,37 @@ const CommunityAsk = () => {
                 {/* Urgency */}
                 <div className="space-y-2">
                   <Label>How urgent is this?</Label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <Button
                       type="button"
                       className={cn(
-                        'flex flex-col h-auto py-3 text-white',
+                        'flex flex-col h-auto py-2 sm:py-3 text-white',
                         urgency === 'general' 
                           ? 'bg-green-600 hover:bg-green-700 ring-2 ring-green-400 ring-offset-2' 
                           : 'bg-green-500 hover:bg-green-600'
                       )}
                       onClick={() => setUrgency('general')}
                     >
-                      <HelpCircle className="w-5 h-5 mb-1" />
-                      <span className="text-xs font-medium">General</span>
+                      <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
+                      <span className="text-[10px] sm:text-xs font-medium">General</span>
                     </Button>
                     <Button
                       type="button"
                       className={cn(
-                        'flex flex-col h-auto py-3 text-white',
+                        'flex flex-col h-auto py-2 sm:py-3 text-white',
                         urgency === 'concerned' 
                           ? 'bg-yellow-500 hover:bg-yellow-600 ring-2 ring-yellow-400 ring-offset-2' 
                           : 'bg-yellow-500 hover:bg-yellow-600'
                       )}
                       onClick={() => setUrgency('concerned')}
                     >
-                      <AlertTriangle className="w-5 h-5 mb-1" />
-                      <span className="text-xs font-medium">Concerned</span>
+                      <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
+                      <span className="text-[10px] sm:text-xs font-medium">Concerned</span>
                     </Button>
                     <Button
                       type="button"
                       className={cn(
-                        'flex flex-col h-auto py-3 text-white',
+                        'flex flex-col h-auto py-2 sm:py-3 text-white',
                         urgency === 'urgent' 
                           ? 'bg-red-600 hover:bg-red-700 ring-2 ring-red-400 ring-offset-2' 
                           : 'bg-red-500 hover:bg-red-600'
@@ -303,8 +303,8 @@ const CommunityAsk = () => {
                         playWarningSound();
                       }}
                     >
-                      <AlertCircle className="w-5 h-5 mb-1" />
-                      <span className="text-xs font-medium">Urgent</span>
+                      <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
+                      <span className="text-[10px] sm:text-xs font-medium">Urgent</span>
                     </Button>
                   </div>
                   {urgency === 'urgent' && (

@@ -347,7 +347,7 @@ const MemberOffers = () => {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
               {filteredOffers.map((offer) => {
                 const timeIndicator = getTimeIndicator(offer);
                 
@@ -355,62 +355,62 @@ const MemberOffers = () => {
                   <button
                     key={offer.id}
                     onClick={() => setSelectedOffer(offer as OfferWithDetails)}
-                    className={`bg-white rounded-2xl p-5 shadow-soft border transition-all hover:shadow-card text-left w-full ${
+                    className={`bg-white rounded-2xl p-4 sm:p-5 shadow-soft border transition-all hover:shadow-card text-left w-full ${
                       offer.isRedeemed
                         ? "border-muted opacity-75"
                         : "border-transparent hover:border-primary/30"
                     }`}
                   >
                     {/* Header */}
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                          <Building2 className="w-5 h-5 text-primary" />
+                    <div className="flex items-start justify-between mb-3 gap-2">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                          <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                             <Link 
                               to={`/business/${offer.business.id}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="font-medium text-foreground text-sm hover:text-primary hover:underline transition-colors"
+                              className="font-medium text-foreground text-xs sm:text-sm hover:text-primary hover:underline transition-colors truncate"
                             >
                               {offer.business.business_name}
                             </Link>
                             {isReturningCustomer(offer.business.id) && (
-                              <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200 gap-1">
-                                <RotateCcw className="w-2.5 h-2.5" />
-                                Returning
+                              <Badge variant="secondary" className="text-[10px] sm:text-xs bg-purple-100 text-purple-700 border-purple-200 gap-0.5 sm:gap-1 px-1.5 py-0">
+                                <RotateCcw className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
+                                <span className="hidden sm:inline">Returning</span>
                               </Badge>
                             )}
                           </div>
-                          <p className="text-xs text-muted-foreground flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            {offer.business.city || "Location TBD"}
+                          <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+                            <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                            <span className="truncate">{offer.business.city || "Location TBD"}</span>
                             {getRedemptionCount(offer.business.id) > 0 && (
-                              <span className="ml-1 text-primary">
+                              <span className="ml-1 text-primary hidden sm:inline">
                                 • {getRedemptionCount(offer.business.id)} visits
                               </span>
                             )}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleFavorite(offer.id);
                           }}
-                          className="p-1.5 hover:bg-muted rounded-lg transition-colors"
+                          className="p-1 sm:p-1.5 hover:bg-muted rounded-lg transition-colors"
                         >
                           <Heart
-                            className={`w-4 h-4 transition-colors ${
+                            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${
                               isFavorite(offer.id)
                                 ? "fill-rose-500 text-rose-500"
                                 : "text-muted-foreground hover:text-rose-500"
                             }`}
                           />
                         </button>
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-[10px] sm:text-xs hidden sm:inline-flex">
                           {getCategoryLabel(offer.business.category)}
                         </Badge>
                       </div>

@@ -410,11 +410,11 @@ const PetHealthRecords = () => {
 
               {/* All Records */}
               <Tabs defaultValue="all">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="all">All Records</TabsTrigger>
-                  <TabsTrigger value="vaccination">Vaccinations</TabsTrigger>
-                  <TabsTrigger value="vet_visit">Vet Visits</TabsTrigger>
-                  <TabsTrigger value="medication">Medications</TabsTrigger>
+                <TabsList className="mb-4 w-full flex flex-wrap h-auto gap-1 p-1">
+                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">All</TabsTrigger>
+                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">Vaccines</TabsTrigger>
+                  <TabsTrigger value="vet_visit" className="flex-1 text-xs sm:text-sm">Visits</TabsTrigger>
+                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">Meds</TabsTrigger>
                 </TabsList>
 
                 {Object.keys(recordTypeConfig).map((type) => (
