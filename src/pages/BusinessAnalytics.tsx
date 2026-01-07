@@ -12,6 +12,7 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BusinessMobileNav from "@/components/BusinessMobileNav";
 import DogLoader from "@/components/DogLoader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -506,6 +507,8 @@ const BusinessAnalytics = () => {
             )}
           </div>
         </main>
+        <div className="pb-20 md:pb-0" />
+        <BusinessMobileNav />
       </div>
     </>
   );

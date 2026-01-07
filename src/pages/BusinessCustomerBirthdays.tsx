@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper } from "lucide-react";
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
 import DogLoader from "@/components/DogLoader";
+import BusinessMobileNav from "@/components/BusinessMobileNav";
 
 interface CustomerPet {
   pet_id: string;
@@ -484,9 +485,11 @@ const BusinessCustomerBirthdays = () => {
             </>
           )}
         </div>
+        <div className="pb-20 md:pb-0" />
       </main>
 
       <Footer />
+      <BusinessMobileNav />
     </>
   );
 };

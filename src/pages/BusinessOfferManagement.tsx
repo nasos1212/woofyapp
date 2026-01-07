@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
+import BusinessMobileNav from "@/components/BusinessMobileNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -537,6 +538,8 @@ const BusinessOfferManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <div className="pb-20 md:pb-0" />
+      <BusinessMobileNav />
     </>
   );
 };

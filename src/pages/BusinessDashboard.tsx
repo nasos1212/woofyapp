@@ -11,7 +11,7 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ConfettiCelebration from "@/components/ConfettiCelebration";
 import { useSuccessSound } from "@/hooks/useSuccessSound";
-
+import BusinessMobileNav from "@/components/BusinessMobileNav";
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited';
   memberName?: string;
@@ -851,6 +851,8 @@ const BusinessDashboard = () => {
             </div>
           </div>
         </main>
+        <div className="pb-20 md:pb-0" />
+        <BusinessMobileNav />
       </div>
     </>
   );
