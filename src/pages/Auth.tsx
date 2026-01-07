@@ -49,13 +49,30 @@ const Auth = () => {
     const checkAndRedirect = async () => {
       if (!user || !accountType) return;
       
-      if (accountType === "business") {
-        navigate("/partner-register");
-        return;
-      }
-      
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 100));
+      
+      if (accountType === "business") {
+        // Check if user has a registered business
+        const { data: business, error } = await supabase
+          .from("businesses")
+          .select("id, verification_status")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        
+        if (error) {
+          console.error("Error checking business:", error);
+        }
+        
+        if (business) {
+          // User has a business, redirect to dashboard
+          navigate("/business");
+        } else {
+          // User doesn't have a business, redirect to registration
+          navigate("/partner-register");
+        }
+        return;
+      }
       
       // Check if user already has a membership
       const { data: membership, error } = await supabase
