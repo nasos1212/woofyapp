@@ -383,8 +383,8 @@ const BusinessOfferManagement = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>
               {editingOffer ? "Edit Offer" : "Create New Offer"}
             </DialogTitle>
@@ -395,7 +395,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
             <div className="space-y-2">
               <Label htmlFor="title">Offer Title *</Label>
               <Input
@@ -498,7 +498,7 @@ const BusinessOfferManagement = () => {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="flex-shrink-0 border-t pt-4">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
