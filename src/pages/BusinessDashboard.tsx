@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -41,7 +42,8 @@ interface Redemption {
 }
 
 const BusinessDashboard = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const { playSuccessSound } = useSuccessSound();
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
@@ -54,16 +56,23 @@ const BusinessDashboard = () => {
   const [selectedOfferId, setSelectedOfferId] = useState<string>("");
   const [recentRedemptions, setRecentRedemptions] = useState<Redemption[]>([]);
   const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0, discountsGiven: 0 });
+  const [isCheckingBusiness, setIsCheckingBusiness] = useState(true);
 
   useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth?type=business");
+      return;
+    }
     if (user) {
       fetchBusinessData();
     }
-  }, [user]);
+  }, [user, loading, navigate]);
 
   const fetchBusinessData = async () => {
     if (!user) return;
 
+    setIsCheckingBusiness(true);
+    
     // Fetch business
     const { data: businessData } = await supabase
       .from('businesses')
@@ -71,67 +80,72 @@ const BusinessDashboard = () => {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (businessData) {
-      setBusiness(businessData);
+    if (!businessData) {
+      // User doesn't have a business - redirect to registration
+      navigate("/partner-register");
+      return;
+    }
+    
+    setBusiness(businessData);
+    setIsCheckingBusiness(false);
 
-      // Fetch active offers for the business
-      const { data: offersData, error: offersError } = await supabase
-        .from('offers')
-        .select('id, title, discount_value, discount_type, is_active')
-        .eq('business_id', businessData.id)
-        .eq('is_active', true);
+    // Fetch active offers for the business
+    const { data: offersData, error: offersError } = await supabase
+      .from('offers')
+      .select('id, title, discount_value, discount_type, is_active')
+      .eq('business_id', businessData.id)
+      .eq('is_active', true);
 
-      console.log('Offers query result:', { offersData, offersError, businessId: businessData.id });
+    console.log('Offers query result:', { offersData, offersError, businessId: businessData.id });
 
-      if (offersError) {
-        console.error('Error fetching offers:', offersError);
-      }
+    if (offersError) {
+      console.error('Error fetching offers:', offersError);
+    }
 
-      if (offersData && offersData.length > 0) {
-        setOffers(offersData);
-        setSelectedOfferId(offersData[0].id);
-      } else {
-        setOffers([]);
-      }
+    if (offersData && offersData.length > 0) {
+      setOffers(offersData);
+      setSelectedOfferId(offersData[0].id);
+    } else {
+      setOffers([]);
+    }
 
-      // Fetch recent redemptions - now with stored member/pet data
-      const { data: redemptionsData } = await supabase
-        .from('offer_redemptions')
-        .select(`
-          id,
-          redeemed_at,
-          member_name,
-          pet_names,
-          member_number,
-          offer:offers(title, discount_value, discount_type)
-        `)
-        .eq('business_id', businessData.id)
-        .order('redeemed_at', { ascending: false })
-        .limit(10);
+    // Fetch recent redemptions - now with stored member/pet data
+    const { data: redemptionsData } = await supabase
+      .from('offer_redemptions')
+      .select(`
+        id,
+        redeemed_at,
+        member_name,
+        pet_names,
+        member_number,
+        offer:offers(title, discount_value, discount_type)
+      `)
+      .eq('business_id', businessData.id)
+      .order('redeemed_at', { ascending: false })
+      .limit(10);
 
-      if (redemptionsData) {
-        setRecentRedemptions(redemptionsData as unknown as Redemption[]);
-        
-        // Calculate stats
-        const thisMonth = new Date();
-        thisMonth.setDate(1);
-        thisMonth.setHours(0, 0, 0, 0);
-        
-        const monthlyRedemptions = redemptionsData.filter(r => 
-          new Date(r.redeemed_at) >= thisMonth
-        );
-        
-        const totalDiscount = monthlyRedemptions.reduce((sum, r) => {
-          const offer = r.offer as unknown as { discount_value: number };
-          return sum + (offer?.discount_value || 0);
-        }, 0);
-        
-        setStats({
-          redemptions: monthlyRedemptions.length,
-          newCustomers: Math.floor(monthlyRedemptions.length * 0.3),
-          discountsGiven: totalDiscount
-        });
-      }
+    if (redemptionsData) {
+      setRecentRedemptions(redemptionsData as unknown as Redemption[]);
+      
+      // Calculate stats
+      const thisMonth = new Date();
+      thisMonth.setDate(1);
+      thisMonth.setHours(0, 0, 0, 0);
+      
+      const monthlyRedemptions = redemptionsData.filter(r => 
+        new Date(r.redeemed_at) >= thisMonth
+      );
+      
+      const totalDiscount = monthlyRedemptions.reduce((sum, r) => {
+        const offer = r.offer as unknown as { discount_value: number };
+        return sum + (offer?.discount_value || 0);
+      }, 0);
+      
+      setStats({
+        redemptions: monthlyRedemptions.length,
+        newCustomers: Math.floor(monthlyRedemptions.length * 0.3),
+        discountsGiven: totalDiscount
+      });
     }
   };
 
@@ -351,6 +365,18 @@ const BusinessDashboard = () => {
       });
     }
   };
+
+  // Show loading while checking for business
+  if (loading || isCheckingBusiness) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
