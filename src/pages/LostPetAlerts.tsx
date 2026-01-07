@@ -84,8 +84,9 @@ const LostPetAlerts = () => {
 
   const fetchAlerts = async () => {
     try {
+      // Use public view that masks contact info based on user's notification preferences
       const { data, error } = await supabase
-        .from("lost_pet_alerts")
+        .from("lost_pet_alerts_public")
         .select("*")
         .order("created_at", { ascending: false });
 
