@@ -239,12 +239,28 @@ const BusinessDashboard = () => {
     setIsVerifying(true);
     
     try {
+      // Get the current session to ensure we have a valid access token
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+      
+      if (!accessToken) {
+        toast({
+          title: "Session Expired",
+          description: "Please log in again to continue.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Use edge function to confirm redemption and send notification
       const { data, error } = await supabase.functions.invoke('confirm-redemption', {
         body: {
           membershipId: scanResult.membershipId,
           offerId: scanResult.offerId,
           businessId: business.id,
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
