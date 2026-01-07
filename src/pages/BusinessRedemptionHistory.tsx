@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import BusinessMobileNav from "@/components/BusinessMobileNav";
 import {
   Select,
   SelectContent,
@@ -387,6 +388,8 @@ const BusinessRedemptionHistory = () => {
             )}
           </div>
         </main>
+        <div className="pb-20 md:pb-0" />
+        <BusinessMobileNav />
       </div>
     </>
   );
