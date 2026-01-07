@@ -74,21 +74,24 @@ const BusinessDashboard = () => {
     if (businessData) {
       setBusiness(businessData);
 
-      // Fetch offers - include inactive offers for business owner view
+      // Fetch active offers for the business
       const { data: offersData, error: offersError } = await supabase
         .from('offers')
-        .select('id, title, discount_value, discount_type')
-        .eq('business_id', businessData.id);
+        .select('id, title, discount_value, discount_type, is_active')
+        .eq('business_id', businessData.id)
+        .eq('is_active', true);
+
+      console.log('Offers query result:', { offersData, offersError, businessId: businessData.id });
 
       if (offersError) {
         console.error('Error fetching offers:', offersError);
       }
 
       if (offersData && offersData.length > 0) {
-        // Filter active offers for the selector
-        const activeOffers = offersData.filter((o: { id: string }) => offersData.find(offer => offer.id === o.id));
         setOffers(offersData);
         setSelectedOfferId(offersData[0].id);
+      } else {
+        setOffers([]);
       }
 
       // Fetch recent redemptions - now with stored member/pet data
