@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -65,29 +66,6 @@ const checkRateLimit = (identifier: string): { allowed: boolean; remaining: numb
   // Add current request
   entry.requests.push(now);
   return { allowed: true, remaining: remaining - 1, resetIn: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
-};
-
-// Extract identifier for rate limiting (user ID from auth header or IP)
-const getRateLimitIdentifier = (req: Request): string => {
-  // Try to get user ID from authorization header
-  const authHeader = req.headers.get('authorization');
-  if (authHeader) {
-    // Use a hash of the auth token to identify users
-    const token = authHeader.replace('Bearer ', '');
-    // Simple hash for identification (not cryptographic, just for rate limit keying)
-    let hash = 0;
-    for (let i = 0; i < Math.min(token.length, 100); i++) {
-      hash = ((hash << 5) - hash) + token.charCodeAt(i);
-      hash |= 0;
-    }
-    return `auth:${hash}`;
-  }
-  
-  // Fallback to IP address
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  const realIp = req.headers.get('x-real-ip');
-  const ip = forwardedFor?.split(',')[0]?.trim() || realIp || 'unknown';
-  return `ip:${ip}`;
 };
 
 const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI pet health assistant for Wooffy members. You have deep knowledge of your user and their pets.
@@ -267,8 +245,34 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Check rate limit before processing
-  const rateLimitId = getRateLimitIdentifier(req);
+  // Verify user authentication
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    console.log('No authorization header provided');
+    return new Response(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+  const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+  const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } }
+  });
+
+  const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+  if (userError || !user) {
+    console.log('Invalid authentication token:', userError?.message);
+    return new Response(
+      JSON.stringify({ error: 'Invalid authentication token' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Use authenticated user ID for rate limiting
+  const rateLimitId = `user:${user.id}`;
   const rateLimit = checkRateLimit(rateLimitId);
   
   if (!rateLimit.allowed) {
