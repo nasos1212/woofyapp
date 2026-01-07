@@ -404,53 +404,53 @@ const BusinessDashboard = () => {
           )}
 
           {/* Quick Navigation */}
-          <div className="grid sm:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
             <Link 
               to="/business/offers" 
-              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <Tag className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900">Manage Offers</h3>
-                <p className="text-sm text-slate-500">{offers.length} active</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Offers</h3>
+                <p className="text-xs sm:text-sm text-slate-500">{offers.length} active</p>
               </div>
             </Link>
             <Link 
               to="/business/history" 
-              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
             >
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                <Clock className="w-6 h-6 text-green-600" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900">Redemptions</h3>
-                <p className="text-sm text-slate-500">View all history</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Redemptions</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">View history</p>
               </div>
             </Link>
             <Link 
               to="/business/analytics" 
-              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group"
+              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <BarChart3 className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900">Analytics</h3>
-                <p className="text-sm text-slate-500">Performance insights</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Analytics</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Insights</p>
               </div>
             </Link>
             <Link 
               to="/business/birthdays" 
-              className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 hover:border-pink-400 hover:shadow-md transition-all group"
+              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-pink-400 hover:shadow-md transition-all group text-center sm:text-left"
             >
-              <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                <Cake className="w-6 h-6 text-pink-500" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900">Pet Birthdays</h3>
-                <p className="text-sm text-slate-500">Celebrate customers</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Birthdays</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Celebrate</p>
               </div>
             </Link>
           </div>

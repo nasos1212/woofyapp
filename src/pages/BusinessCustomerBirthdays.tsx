@@ -284,19 +284,19 @@ const BusinessCustomerBirthdays = () => {
             Back to Dashboard
           </Button>
 
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
             <div>
-              <h1 className="text-3xl font-bold flex items-center gap-3">
-                <Cake className="h-8 w-8 text-pink-500" />
-                Customer Pet Birthdays
+              <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-2 sm:gap-3">
+                <Cake className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
+                Pet Birthdays
               </h1>
-              <p className="text-muted-foreground mt-2">
-                Celebrate your customers' pets and build loyalty
+              <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
+                Celebrate your customers' pets
               </p>
             </div>
-            <Button variant="outline" onClick={() => setShowSettings(!showSettings)}>
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
+            <Button variant="outline" size="sm" onClick={() => setShowSettings(!showSettings)}>
+              <Settings className="mr-1 sm:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Settings</span>
             </Button>
           </div>
 
@@ -348,36 +348,36 @@ const BusinessCustomerBirthdays = () => {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <Users className="h-8 w-8 text-primary" />
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                   <div>
-                    <p className="text-2xl font-bold">{customerPets.length}</p>
-                    <p className="text-sm text-muted-foreground">Customer Pets</p>
+                    <p className="text-lg sm:text-2xl font-bold">{customerPets.length}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Pets</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card className={upcomingBirthdays.filter(b => b.daysUntil <= 7).length > 0 ? "border-pink-500" : ""}>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <Cake className="h-8 w-8 text-pink-500" />
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+                  <Cake className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
                   <div>
-                    <p className="text-2xl font-bold">{upcomingBirthdays.filter(b => b.daysUntil <= 7).length}</p>
-                    <p className="text-sm text-muted-foreground">This Week</p>
+                    <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.filter(b => b.daysUntil <= 7).length}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">This Week</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center gap-3">
-                  <Gift className="h-8 w-8 text-amber-500" />
+              <CardContent className="p-3 sm:pt-6 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
+                  <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-amber-500" />
                   <div>
-                    <p className="text-2xl font-bold">{upcomingBirthdays.length}</p>
-                    <p className="text-sm text-muted-foreground">This Month</p>
+                    <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.length}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">This Month</p>
                   </div>
                 </div>
               </CardContent>
