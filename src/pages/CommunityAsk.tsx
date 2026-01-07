@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Category } from '@/hooks/useCommunity';
 import { supabase } from '@/integrations/supabase/client';
+import { validateImageFile } from '@/lib/fileValidation';
+import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
@@ -123,8 +125,18 @@ const CommunityAsk = () => {
 
   const handlePhotoAdd = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    
+    // Validate each file before adding
+    for (const file of files) {
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        toast.error(validation.error || 'Invalid file');
+        return;
+      }
+    }
+    
     if (photos.length + files.length > 5) {
-      alert('Maximum 5 photos allowed');
+      toast.error('Maximum 5 photos allowed');
       return;
     }
 

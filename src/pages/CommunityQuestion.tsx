@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
+import { validateImageFile } from '@/lib/fileValidation';
+import { toast } from 'sonner';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
@@ -176,8 +178,18 @@ const CommunityQuestion = () => {
 
   const handlePhotoAdd = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    
+    // Validate each file before adding
+    for (const file of files) {
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        toast.error(validation.error || 'Invalid file');
+        return;
+      }
+    }
+    
     if (answerPhotos.length + files.length > 3) {
-      alert('Maximum 3 photos allowed per answer');
+      toast.error('Maximum 3 photos allowed per answer');
       return;
     }
 
