@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +17,7 @@ import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper } from "l
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
+import BusinessHeader from "@/components/BusinessHeader";
 
 interface CustomerPet {
   pet_id: string;
@@ -272,12 +272,12 @@ const BusinessCustomerBirthdays = () => {
         <meta name="description" content="Track your customers' pet birthdays and send special offers." />
       </Helmet>
 
-      <Header />
+      <BusinessHeader />
       
-      <main className="min-h-screen bg-background pt-24 pb-16">
+      <main className="min-h-screen bg-background pt-24 md:pt-28 pb-16">
         <div className="container max-w-4xl mx-auto px-4">
           <Button 
-            variant="ghost" 
+            variant="ghost"
             onClick={() => navigate("/business")}
             className="mb-6"
           >

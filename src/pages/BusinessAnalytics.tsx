@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   TrendingUp,
   Users,
@@ -11,9 +11,9 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
-import Breadcrumbs from "@/components/Breadcrumbs";
-import BusinessMobileNav from "@/components/BusinessMobileNav";
 import DogLoader from "@/components/DogLoader";
+import BusinessMobileNav from "@/components/BusinessMobileNav";
+import BusinessHeader from "@/components/BusinessHeader";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -298,23 +298,9 @@ const BusinessAnalytics = () => {
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-        {/* Header */}
-        <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <Breadcrumbs 
-              items={[
-                { label: "Partner Dashboard", href: "/business" },
-                { label: "Analytics" }
-              ]} 
-            />
-            <Button variant="outline" onClick={exportData} className="gap-2">
-              <Download className="w-4 h-4" />
-              Export CSV
-            </Button>
-          </div>
-        </header>
+        <BusinessHeader />
 
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
@@ -324,21 +310,27 @@ const BusinessAnalytics = () => {
               <p className="text-sm sm:text-base text-slate-500">Track your Wooffy performance</p>
             </div>
 
-            {/* Date Range Selector */}
-            <div className="flex items-center gap-1 sm:gap-2 bg-white rounded-lg p-1 border border-slate-200 w-fit">
-              {(["7d", "30d", "month"] as const).map((range) => (
-                <button
-                  key={range}
-                  onClick={() => setDateRange(range)}
-                  className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                    dateRange === range
-                      ? "bg-primary text-primary-foreground"
-                      : "text-slate-600 hover:bg-slate-100"
-                  }`}
-                >
-                  {range === "7d" ? "7D" : range === "30d" ? "30D" : "Month"}
-                </button>
-              ))}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Date Range Selector */}
+              <div className="flex items-center gap-1 sm:gap-2 bg-white rounded-lg p-1 border border-slate-200 w-fit">
+                {(["7d", "30d", "month"] as const).map((range) => (
+                  <button
+                    key={range}
+                    onClick={() => setDateRange(range)}
+                    className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
+                      dateRange === range
+                        ? "bg-primary text-primary-foreground"
+                        : "text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    {range === "7d" ? "7D" : range === "30d" ? "30D" : "Month"}
+                  </button>
+                ))}
+              </div>
+              <Button variant="outline" onClick={exportData} className="gap-2" size="sm">
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">Export</span>
+              </Button>
             </div>
           </div>
 
