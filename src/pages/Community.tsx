@@ -126,24 +126,24 @@ const Community = () => {
         className="hover:shadow-lg transition-all cursor-pointer group"
         onClick={() => navigate(`/community/question/${question.id}`)}
       >
-        <CardContent className="p-4">
-          <div className="flex gap-4">
-            {/* Author Avatar */}
-            <Avatar className="h-10 w-10 shrink-0">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex gap-3 sm:gap-4">
+            {/* Author Avatar - hidden on very small screens */}
+            <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 hidden xs:flex">
               <AvatarImage src={question.author?.avatar_url || ''} />
-              <AvatarFallback className="bg-primary/10 text-primary">
+              <AvatarFallback className="bg-primary/10 text-primary text-sm">
                 {question.author?.full_name?.charAt(0) || 'U'}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex-1 min-w-0">
               {/* Title and badges */}
-              <div className="flex items-start gap-2 mb-2">
-                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-2">
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1 text-sm sm:text-base">
                   {question.is_pinned && <span className="text-primary mr-1">📌</span>}
                   {question.title}
                 </h3>
-                <div className="flex gap-1 shrink-0">
+                <div className="flex gap-1 shrink-0 flex-wrap">
                   <Badge className={`${urgency.color} text-white text-xs`}>
                     <UrgencyIcon className="w-3 h-3 mr-1" />
                     {urgency.label}
@@ -155,24 +155,24 @@ const Community = () => {
               </div>
 
               {/* Content preview */}
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-2 sm:mb-3">
                 {question.content}
               </p>
 
               {/* Pet and category info */}
-              <div className="flex flex-wrap items-center gap-2 mb-3">
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
                 {question.pet && (
                   <Badge variant="outline" className="text-xs">
-                    🐕 {question.pet.pet_name} {question.pet.pet_breed && `(${question.pet.pet_breed})`}
+                    🐕 {question.pet.pet_name}
                   </Badge>
                 )}
                 {question.category && (
                   <Badge variant="secondary" className="text-xs">
-                    {question.category.icon} {question.category.name}
+                    {question.category.icon} <span className="hidden sm:inline">{question.category.name}</span>
                   </Badge>
                 )}
-                {question.breed_tags?.map(tag => (
-                  <Badge key={tag} variant="outline" className="text-xs">
+                {question.breed_tags?.slice(0, 2).map(tag => (
+                  <Badge key={tag} variant="outline" className="text-xs hidden sm:inline-flex">
                     {tag}
                   </Badge>
                 ))}
@@ -180,18 +180,18 @@ const Community = () => {
 
               {/* Photos preview */}
               {question.photos && question.photos.length > 0 && (
-                <div className="flex gap-2 mb-3">
-                  {question.photos.slice(0, 3).map((photo, idx) => (
+                <div className="flex gap-1 sm:gap-2 mb-2 sm:mb-3">
+                  {question.photos.slice(0, 2).map((photo, idx) => (
                     <img
                       key={photo.id}
                       src={photo.photo_url}
                       alt=""
-                      className="w-16 h-16 object-cover rounded-lg"
+                      className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
                     />
                   ))}
-                  {question.photos.length > 3 && (
-                    <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center text-sm text-muted-foreground">
-                      +{question.photos.length - 3}
+                  {question.photos.length > 2 && (
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-lg flex items-center justify-center text-xs sm:text-sm text-muted-foreground">
+                      +{question.photos.length - 2}
                     </div>
                   )}
                 </div>
@@ -199,27 +199,27 @@ const Community = () => {
 
               {/* Stats and actions */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground flex-wrap">
                   <span className="flex items-center gap-1">
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                     {question.view_count}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                     {question.answer_count || 0}
                   </span>
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 hidden sm:flex">
                     <CheckCircle2 className="w-4 h-4" />
                     {question.helped_count} helped
                   </span>
-                  <span>
+                  <span className="hidden xs:inline">
                     {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
                   </span>
                 </div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={question.is_saved ? 'text-primary' : ''}
+                  className={`${question.is_saved ? 'text-primary' : ''} h-8 w-8 p-0`}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSaveToggle(question);
@@ -300,9 +300,9 @@ const Community = () => {
                 className="pl-10"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <Filter className="w-4 h-4 mr-2" />
                   <SelectValue placeholder="Urgency" />
                 </SelectTrigger>
@@ -314,7 +314,7 @@ const Community = () => {
                 </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-full sm:w-40">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -338,15 +338,14 @@ const Community = () => {
             </div>
           </div>
 
-          {/* Main Content */}
-          <div className="grid lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Questions List */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 order-2 lg:order-1">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-4">
-                  <TabsTrigger value="all">All Questions</TabsTrigger>
-                  <TabsTrigger value="my">My Questions</TabsTrigger>
-                  <TabsTrigger value="saved">Saved</TabsTrigger>
+                <TabsList className="mb-4 w-full sm:w-auto flex">
+                  <TabsTrigger value="all" className="flex-1 sm:flex-none text-xs sm:text-sm">All</TabsTrigger>
+                  <TabsTrigger value="my" className="flex-1 sm:flex-none text-xs sm:text-sm">My Questions</TabsTrigger>
+                  <TabsTrigger value="saved" className="flex-1 sm:flex-none text-xs sm:text-sm">Saved</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all" className="space-y-4">
@@ -400,8 +399,8 @@ const Community = () => {
               </Tabs>
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
+            {/* Sidebar - shows first on mobile */}
+            <div className="space-y-6 order-1 lg:order-2">
               {/* Stats Card */}
               <Card>
                 <CardHeader className="pb-2">
