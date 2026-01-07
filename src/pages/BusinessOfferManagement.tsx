@@ -318,65 +318,66 @@ const BusinessOfferManagement = () => {
                     offer.is_active ? "border-slate-200" : "border-amber-200 bg-amber-50/30"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-display font-semibold text-slate-900">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                        <h3 className="font-display font-semibold text-slate-900 text-sm sm:text-base">
                           {offer.title}
                         </h3>
                         {!offer.is_active && (
-                          <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full flex items-center gap-1">
-                            <Pause className="w-3 h-3" />
+                          <span className="text-[10px] sm:text-xs bg-amber-100 text-amber-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
+                            <Pause className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             Paused
                           </span>
                         )}
                       </div>
                       {offer.description && (
-                        <p className="text-sm text-slate-600 mb-3">{offer.description}</p>
+                        <p className="text-xs sm:text-sm text-slate-600 mb-2 sm:mb-3 line-clamp-2">{offer.description}</p>
                       )}
-                      <div className="flex items-center gap-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <span className="flex items-center gap-1 text-primary font-medium">
-                          <Percent className="w-4 h-4" />
+                          <Percent className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                           {offer.discount_value}
                           {offer.discount_type === "percentage" ? "%" : "€"} off
                         </span>
                         <span className="text-slate-500">
-                          {offer.redemption_count} redemption
-                          {offer.redemption_count !== 1 ? "s" : ""}
+                          {offer.redemption_count} redemption{offer.redemption_count !== 1 ? "s" : ""}
                         </span>
                       </div>
                       {offer.terms && (
-                        <p className="text-xs text-slate-400 mt-2">Terms: {offer.terms}</p>
+                        <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">Terms: {offer.terms}</p>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-auto">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 sm:h-10 sm:w-10"
                         onClick={() => toggleOfferStatus(offer)}
                         title={offer.is_active ? "Pause offer" : "Activate offer"}
                       >
                         {offer.is_active ? (
-                          <Pause className="w-4 h-4 text-amber-500" />
+                          <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
                         ) : (
-                          <Play className="w-4 h-4 text-green-500" />
+                          <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500" />
                         )}
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 sm:h-10 sm:w-10"
                         onClick={() => openEditDialog(offer)}
                       >
-                        <Edit2 className="w-4 h-4 text-slate-500" />
+                        <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 sm:h-10 sm:w-10"
                         onClick={() => setDeleteOfferId(offer.id)}
-                        className="text-destructive hover:text-destructive"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-destructive" />
                       </Button>
                     </div>
                   </div>

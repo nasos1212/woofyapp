@@ -315,78 +315,78 @@ const BusinessAnalytics = () => {
 
         <main className="container mx-auto px-4 py-8">
           {/* Page Header */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
+              <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-1 sm:mb-2">
                 Analytics Dashboard
               </h1>
-              <p className="text-slate-500">Track your Wooffy performance and customer insights</p>
+              <p className="text-sm sm:text-base text-slate-500">Track your Wooffy performance</p>
             </div>
 
             {/* Date Range Selector */}
-            <div className="flex items-center gap-2 bg-white rounded-lg p-1 border border-slate-200">
+            <div className="flex items-center gap-1 sm:gap-2 bg-white rounded-lg p-1 border border-slate-200 w-fit">
               {(["7d", "30d", "month"] as const).map((range) => (
                 <button
                   key={range}
                   onClick={() => setDateRange(range)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium transition-colors ${
                     dateRange === range
                       ? "bg-primary text-primary-foreground"
                       : "text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  {range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : "This Month"}
+                  {range === "7d" ? "7D" : range === "30d" ? "30D" : "Month"}
                 </button>
               ))}
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between mb-2">
-                <Tag className="w-5 h-5 text-primary" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 <span
-                  className={`text-xs font-medium flex items-center gap-1 ${
+                  className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 ${
                     monthChange >= 0 ? "text-green-600" : "text-red-600"
                   }`}
                 >
                   {monthChange >= 0 ? (
-                    <ArrowUpRight className="w-3 h-3" />
+                    <ArrowUpRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   ) : (
-                    <ArrowDownRight className="w-3 h-3" />
+                    <ArrowDownRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                   )}
                   {Math.abs(monthChange)}%
                 </span>
               </div>
-              <div className="text-3xl font-display font-bold text-slate-900">
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.thisMonth}
               </div>
-              <p className="text-sm text-slate-500">This Month</p>
+              <p className="text-xs sm:text-sm text-slate-500">This Month</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-              <Users className="w-5 h-5 text-blue-500 mb-2" />
-              <div className="text-3xl font-display font-bold text-slate-900">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.uniqueCustomers}
               </div>
-              <p className="text-sm text-slate-500">Unique Customers</p>
+              <p className="text-xs sm:text-sm text-slate-500">Customers</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-              <TrendingUp className="w-5 h-5 text-green-500 mb-2" />
-              <div className="text-3xl font-display font-bold text-slate-900">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.avgPerCustomer}
               </div>
-              <p className="text-sm text-slate-500">Avg Visits/Customer</p>
+              <p className="text-xs sm:text-sm text-slate-500">Avg Visits</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
-              <BarChart3 className="w-5 h-5 text-purple-500 mb-2" />
-              <div className="text-3xl font-display font-bold text-slate-900">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 €{stats.totalDiscountsGiven}
               </div>
-              <p className="text-sm text-slate-500">Discounts Given</p>
+              <p className="text-xs sm:text-sm text-slate-500">Discounts</p>
             </div>
           </div>
 

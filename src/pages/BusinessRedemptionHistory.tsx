@@ -245,79 +245,82 @@ const BusinessRedemptionHistory = () => {
           </div>
 
           {/* Stats Summary */}
-          <div className="grid sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <p className="text-slate-500 text-sm">Total Redemptions</p>
-              <p className="font-display text-2xl font-bold text-slate-900">{filteredRedemptions.length}</p>
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+            <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
+              <p className="text-slate-500 text-xs sm:text-sm">Redemptions</p>
+              <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">{filteredRedemptions.length}</p>
             </div>
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <p className="text-slate-500 text-sm">Total Discounts Given</p>
-              <p className="font-display text-2xl font-bold text-primary">€{calculateTotalSavings()}</p>
+            <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
+              <p className="text-slate-500 text-xs sm:text-sm">Discounts</p>
+              <p className="font-display text-lg sm:text-2xl font-bold text-primary">€{calculateTotalSavings()}</p>
             </div>
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <p className="text-slate-500 text-sm">Unique Members</p>
-              <p className="font-display text-2xl font-bold text-slate-900">
+            <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
+              <p className="text-slate-500 text-xs sm:text-sm">Members</p>
+              <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">
                 {new Set(filteredRedemptions.map(r => r.member_number).filter(Boolean)).size}
               </p>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-xl p-4 border border-slate-200 mb-6">
-            <div className="flex flex-col lg:flex-row gap-4">
+          <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200 mb-6">
+            <div className="flex flex-col gap-3 sm:gap-4">
               {/* Search */}
-              <div className="flex-1 relative">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder="Search by member name, email, or ID..."
+                  placeholder="Search member..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
                 />
               </div>
 
-              {/* Offer Filter */}
-              <Select value={selectedOffer} onValueChange={setSelectedOffer}>
-                <SelectTrigger className="w-full lg:w-[200px]">
-                  <Filter className="w-4 h-4 mr-2 text-slate-400" />
-                  <SelectValue placeholder="All Offers" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Offers</SelectItem>
-                  {offers.map(offer => (
-                    <SelectItem key={offer.id} value={offer.id}>
-                      {offer.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                {/* Offer Filter */}
+                <Select value={selectedOffer} onValueChange={setSelectedOffer}>
+                  <SelectTrigger className="w-full sm:w-[180px]">
+                    <Filter className="w-4 h-4 mr-2 text-slate-400" />
+                    <SelectValue placeholder="All Offers" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Offers</SelectItem>
+                    {offers.map(offer => (
+                      <SelectItem key={offer.id} value={offer.id}>
+                        {offer.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              {/* Date Filter */}
-              <Select value={dateRange} onValueChange={setDateRange}>
-                <SelectTrigger className="w-full lg:w-[180px]">
-                  <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-                  <SelectValue placeholder="All Time" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Time</SelectItem>
-                  <SelectItem value="today">Today</SelectItem>
-                  <SelectItem value="week">Last 7 Days</SelectItem>
-                  <SelectItem value="month">This Month</SelectItem>
-                  <SelectItem value="30days">Last 30 Days</SelectItem>
-                  <SelectItem value="90days">Last 90 Days</SelectItem>
-                </SelectContent>
-              </Select>
+                {/* Date Filter */}
+                <Select value={dateRange} onValueChange={setDateRange}>
+                  <SelectTrigger className="w-full sm:w-[160px]">
+                    <Calendar className="w-4 h-4 mr-2 text-slate-400" />
+                    <SelectValue placeholder="All Time" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Time</SelectItem>
+                    <SelectItem value="today">Today</SelectItem>
+                    <SelectItem value="week">Last 7 Days</SelectItem>
+                    <SelectItem value="month">This Month</SelectItem>
+                    <SelectItem value="30days">Last 30 Days</SelectItem>
+                    <SelectItem value="90days">Last 90 Days</SelectItem>
+                  </SelectContent>
+                </Select>
 
-              {/* Export Button */}
-              <Button 
-                variant="outline" 
-                onClick={exportToCSV}
-                disabled={filteredRedemptions.length === 0}
-                className="gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Export CSV
-              </Button>
+                {/* Export Button */}
+                <Button 
+                  variant="outline" 
+                  onClick={exportToCSV}
+                  disabled={filteredRedemptions.length === 0}
+                  className="gap-2 w-full sm:w-auto"
+                  size="sm"
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="sm:inline">Export</span>
+                </Button>
+              </div>
             </div>
           </div>
 
