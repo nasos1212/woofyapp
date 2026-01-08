@@ -162,8 +162,21 @@ export const useCommunity = () => {
     const { data, error } = await query;
     if (error) throw error;
 
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    // Fetch author profiles separately
+    const userIds = [...new Set(data.map(q => q.user_id))];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('user_id, full_name, avatar_url')
+      .in('user_id', userIds);
+
+    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+
     // Get saved and following status for current user
-    if (user && data) {
+    if (user) {
       const questionIds = data.map(q => q.id);
       
       const [savedRes, followingRes] = await Promise.all([
@@ -184,14 +197,16 @@ export const useCommunity = () => {
 
       return data.map(q => ({
         ...q,
+        author: profileMap.get(q.user_id) || null,
         answer_count: 0,
         is_saved: savedIds.has(q.id),
         is_following: followingIds.has(q.id)
       })) as unknown as Question[];
     }
 
-    return (data || []).map(q => ({
+    return data.map(q => ({
       ...q,
+      author: profileMap.get(q.user_id) || null,
       answer_count: 0
     })) as unknown as Question[];
   }, [user]);
@@ -208,6 +223,13 @@ export const useCommunity = () => {
       .single();
 
     if (error) throw error;
+
+    // Fetch author profile separately
+    const { data: authorProfile } = await supabase
+      .from('profiles')
+      .select('full_name, avatar_url')
+      .eq('user_id', data.user_id)
+      .maybeSingle();
 
     // Increment view count
     await supabase
@@ -238,13 +260,17 @@ export const useCommunity = () => {
 
       return {
         ...data,
+        author: authorProfile || null,
         is_saved: !!savedRes.data,
         is_following: !!followingRes.data,
         answer_count: answersRes.count || 0
       } as unknown as Question;
     }
 
-    return data as unknown as Question;
+    return {
+      ...data,
+      author: authorProfile || null
+    } as unknown as Question;
   }, [user]);
 
   const createQuestion = useCallback(async (question: {
@@ -320,9 +346,19 @@ export const useCommunity = () => {
       .order('created_at', { ascending: true });
 
     if (error) throw error;
+    if (!data || data.length === 0) return [];
+
+    // Fetch author profiles separately
+    const userIds = [...new Set(data.map(a => a.user_id))];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('user_id, full_name, avatar_url')
+      .in('user_id', userIds);
+
+    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
 
     // Get user votes
-    if (user && data) {
+    if (user) {
       const answerIds = data.map(a => a.id);
       const { data: votes } = await supabase
         .from('community_votes')
@@ -334,11 +370,15 @@ export const useCommunity = () => {
 
       return data.map(a => ({
         ...a,
+        author: profileMap.get(a.user_id) || null,
         user_vote: voteMap.get(a.id) as 'up' | 'down' | null
       })) as unknown as Answer[];
     }
 
-    return data as unknown as Answer[];
+    return data.map(a => ({
+      ...a,
+      author: profileMap.get(a.user_id) || null
+    })) as unknown as Answer[];
   }, [user]);
 
   const createAnswer = useCallback(async (
@@ -582,9 +622,20 @@ export const useCommunity = () => {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
+    if (!data || data.length === 0) return [];
 
-    return (data || []).map(q => ({
+    // Fetch author profiles separately
+    const userIds = [...new Set(data.map(q => q.user_id))];
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('user_id, full_name, avatar_url')
+      .in('user_id', userIds);
+
+    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+
+    return data.map(q => ({
       ...q,
+      author: profileMap.get(q.user_id) || null,
       answer_count: 0,
       is_saved: true
     })) as unknown as Question[];

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell } from "lucide-react";
+import { Gift, MapPin, Clock, Percent, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell, PlusCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
@@ -238,10 +238,21 @@ const MemberDashboard = () => {
             <div className="lg:col-span-2 space-y-8">
               {/* Membership Card */}
               <div>
-                <h2 className="font-display text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <QrCode className="w-5 h-5 text-primary" />
-                  Your Membership Card
-                </h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-display text-lg font-semibold text-foreground flex items-center gap-2">
+                    <QrCode className="w-5 h-5 text-primary" />
+                    Your Membership Card
+                  </h2>
+                  {membership && membership.plan_type !== 'family' && (
+                    <Link to="/member/upgrade">
+                      <Button variant="outline" size="sm" className="gap-1.5">
+                        <Sparkles className="w-4 h-4" />
+                        <span className="hidden sm:inline">Upgrade Plan</span>
+                        <span className="sm:hidden">Upgrade</span>
+                      </Button>
+                    </Link>
+                  )}
+                </div>
                 <MembershipCardFull 
                   memberName={profile?.full_name || "Member"}
                   petName={pets[0]?.pet_name || "Your Pet"}
@@ -300,12 +311,22 @@ const MemberDashboard = () => {
 
               {/* Your Pets - Most Important */}
               <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-cyan-200">
-                <h3 className="font-display text-lg sm:text-xl font-bold text-teal-800 mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
-                    <span className="text-lg sm:text-xl">🐾</span>
-                  </div>
-                  Your Pets
-                </h3>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-teal-800 flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                      <span className="text-lg sm:text-xl">🐾</span>
+                    </div>
+                    Your Pets
+                  </h3>
+                  {membership && pets.length < membership.max_pets && (
+                    <Link to="/member/onboarding">
+                      <Button variant="outline" size="sm" className="gap-1.5 border-teal-300 text-teal-700 hover:bg-teal-50">
+                        <PlusCircle className="w-4 h-4" />
+                        <span className="hidden sm:inline">Add Pet</span>
+                      </Button>
+                    </Link>
+                  )}
+                </div>
                 {pets.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {pets.map((pet) => (
@@ -327,6 +348,26 @@ const MemberDashboard = () => {
                   <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
                     <div className="text-4xl sm:text-5xl mb-3">🐶</div>
                     <p className="text-teal-600/70 text-base sm:text-lg">No pets added yet</p>
+                  </div>
+                )}
+                
+                {/* Upgrade prompt when at max pets */}
+                {membership && pets.length >= membership.max_pets && membership.plan_type !== 'family' && (
+                  <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl border border-primary/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
+                        <Sparkles className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-foreground text-sm">Got another furry friend?</p>
+                        <p className="text-xs text-muted-foreground">Upgrade your plan to add more pets and unlock family benefits!</p>
+                      </div>
+                      <Link to="/member/upgrade">
+                        <Button size="sm" variant="hero" className="shrink-0">
+                          Upgrade
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
