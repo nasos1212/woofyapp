@@ -243,15 +243,13 @@ const MemberDashboard = () => {
                     <QrCode className="w-5 h-5 text-primary" />
                     Your Membership Card
                   </h2>
-                  {membership && membership.plan_type !== 'family' && (
-                    <Link to="/member/upgrade">
-                      <Button variant="outline" size="sm" className="gap-1.5">
-                        <Sparkles className="w-4 h-4" />
-                        <span className="hidden sm:inline">Upgrade Plan</span>
-                        <span className="sm:hidden">Upgrade</span>
-                      </Button>
-                    </Link>
-                  )}
+                  <Link to="/member/upgrade">
+                    <Button variant="outline" size="sm" className="gap-1.5">
+                      <Sparkles className="w-4 h-4" />
+                      <span className="hidden sm:inline">Upgrade Plan</span>
+                      <span className="sm:hidden">Upgrade</span>
+                    </Button>
+                  </Link>
                 </div>
                 <MembershipCardFull 
                   memberName={profile?.full_name || "Member"}
@@ -319,7 +317,7 @@ const MemberDashboard = () => {
                     Your Pets
                   </h3>
                   {membership && pets.length < membership.max_pets && (
-                    <Link to="/member/onboarding">
+                    <Link to="/member/add-pet">
                       <Button variant="outline" size="sm" className="gap-1.5 border-teal-300 text-teal-700 hover:bg-teal-50">
                         <PlusCircle className="w-4 h-4" />
                         <span className="hidden sm:inline">Add Pet</span>
@@ -352,7 +350,7 @@ const MemberDashboard = () => {
                 )}
                 
                 {/* Upgrade prompt when at max pets */}
-                {membership && pets.length >= membership.max_pets && membership.plan_type !== 'family' && (
+                {membership && pets.length >= membership.max_pets && (
                   <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl border border-primary/20">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
