@@ -1,30 +1,42 @@
+import { Link, useLocation } from "react-router-dom";
 import { Dog, Mail, Phone, MapPin, Instagram, Facebook, Twitter } from "lucide-react";
 
 const Footer = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
+  const scrollToSection = (sectionId: string) => {
+    if (isHomePage) {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.location.href = `/#${sectionId}`;
+    }
+  };
+
   return (
     <footer className="bg-wooffy-dark text-white py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
           {/* Brand */}
           <div className="space-y-4 col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2">
               <div className="w-10 h-10 bg-wooffy-blue/20 rounded-xl flex items-center justify-center">
                 <Dog className="w-6 h-6 text-wooffy-sky" />
               </div>
               <span className="font-display font-bold text-xl text-wooffy-sky">Wooffy</span>
-            </div>
+            </Link>
             <p className="text-white/70 text-sm">
               The ultimate membership for pet lovers. Unlock discounts, connect with community, 
               and make every moment with your pet special.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+              <a href="https://instagram.com/wooffy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
                 <Instagram className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
-              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+              <a href="https://facebook.com/wooffy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
                 <Facebook className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
-              <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
+              <a href="https://twitter.com/wooffy" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
                 <Twitter className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </div>
@@ -34,10 +46,10 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Quick Links</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><a href="#benefits" className="hover:text-wooffy-sky transition-colors">Benefits</a></li>
-              <li><a href="#partners" className="hover:text-wooffy-sky transition-colors">Partners</a></li>
-              <li><a href="#hub" className="hover:text-wooffy-sky transition-colors">Pet Hub</a></li>
-              <li><a href="#pricing" className="hover:text-wooffy-sky transition-colors">Pricing</a></li>
+              <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">Benefits</button></li>
+              <li><button onClick={() => scrollToSection("partners")} className="hover:text-wooffy-sky transition-colors">Partners</button></li>
+              <li><button onClick={() => scrollToSection("hub")} className="hover:text-wooffy-sky transition-colors">Pet Hub</button></li>
+              <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">Pricing</button></li>
             </ul>
           </div>
 
@@ -45,10 +57,10 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Support</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><a href="#" className="hover:text-wooffy-sky transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-wooffy-sky transition-colors">Partner Program</a></li>
-              <li><a href="#" className="hover:text-wooffy-sky transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-wooffy-sky transition-colors">Terms of Service</a></li>
+              <li><a href="mailto:hello@wooffy.app?subject=Help Request" className="hover:text-wooffy-sky transition-colors">Help Center</a></li>
+              <li><Link to="/partner-register" className="hover:text-wooffy-sky transition-colors">Partner Program</Link></li>
+              <li><a href="mailto:hello@wooffy.app?subject=Privacy Policy Inquiry" className="hover:text-wooffy-sky transition-colors">Privacy Policy</a></li>
+              <li><a href="mailto:hello@wooffy.app?subject=Terms of Service Inquiry" className="hover:text-wooffy-sky transition-colors">Terms of Service</a></li>
             </ul>
           </div>
 
