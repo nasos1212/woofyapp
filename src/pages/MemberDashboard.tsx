@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, Percent, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell, PlusCircle, Sparkles } from "lucide-react";
+import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell, PlusCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
@@ -62,7 +62,7 @@ const MemberDashboard = () => {
   const [membership, setMembership] = useState<Membership | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
-  const [stats, setStats] = useState({ totalSaved: 0, dealsUsed: 0, toShelters: 0 });
+  const [stats, setStats] = useState({ dealsUsed: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
   
@@ -131,19 +131,8 @@ const MemberDashboard = () => {
             }));
             setRedemptions(transformed);
 
-            // Calculate stats
-            const totalSaved = transformed.reduce((sum, r) => {
-              const value = r.offer?.discount_value || 0;
-              if (r.offer?.discount_type === "percentage") {
-                return sum + (value / 100) * 50; // Estimate €50 avg transaction
-              }
-              return sum + value;
-            }, 0);
-
             setStats({
-              totalSaved: Math.round(totalSaved),
               dealsUsed: transformed.length,
-              toShelters: Math.round(totalSaved * 0.05), // 5% donation estimate
             });
           }
         }
@@ -264,26 +253,16 @@ const MemberDashboard = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 <Link to="/member/history" className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft hover:shadow-md transition-shadow group">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xl sm:text-2xl font-display font-bold text-primary">€{stats.totalSaved}</span>
+                    <span className="text-xl sm:text-2xl font-display font-bold text-primary">{stats.dealsUsed}</span>
                     <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                      <Percent className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Total Saved</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">Click to view history</p>
-                </Link>
-                <Link to="/member/history" className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft hover:shadow-md transition-shadow group">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xl sm:text-2xl font-display font-bold text-yellow-500">{stats.dealsUsed}</span>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-yellow-100 rounded-full flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
-                      <Gift className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500" />
+                      <Gift className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">Deals Used</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{stats.dealsUsed === 0 ? "Start saving today!" : "Keep it up!"}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{stats.dealsUsed === 0 ? "Start saving!" : "View history"}</p>
                 </Link>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
@@ -297,13 +276,13 @@ const MemberDashboard = () => {
                 </div>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xl sm:text-2xl font-display font-bold text-rose-500">€{stats.toShelters}</span>
+                    <span className="text-xl sm:text-2xl font-display font-bold text-rose-500">10%</span>
                     <div className="w-7 h-7 sm:w-8 sm:h-8 bg-rose-100 rounded-full flex items-center justify-center">
                       <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">To Shelters</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">5% of your savings</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">From your fee</p>
                 </div>
               </div>
 
@@ -474,7 +453,7 @@ const MemberDashboard = () => {
                   {nearbyOffers.map((offer, index) => (
                     <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer">
                       <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Percent className="w-5 h-5 text-primary" />
+                        <Gift className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-foreground text-sm">{offer.business}</p>
