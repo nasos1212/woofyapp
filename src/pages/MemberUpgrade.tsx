@@ -38,6 +38,14 @@ interface PlanOption {
   highlight?: boolean;
 }
 
+const sharedFeatures = [
+  "Access to all partner discounts",
+  "AI Health Assistant",
+  "Vaccination reminders",
+  "Community access",
+  "Priority support",
+];
+
 const plans: PlanOption[] = [
   {
     id: "single",
@@ -46,12 +54,7 @@ const plans: PlanOption[] = [
     renewalPrice: 49,
     maxPets: 1,
     icon: Dog,
-    features: [
-      "1 pet included",
-      "Access to all partner discounts",
-      "AI Health Assistant",
-      "Vaccination reminders",
-    ],
+    features: ["1 pet included", ...sharedFeatures],
   },
   {
     id: "duo",
@@ -60,13 +63,7 @@ const plans: PlanOption[] = [
     renewalPrice: 79,
     maxPets: 2,
     icon: Users,
-    features: [
-      "2 pets included",
-      "Access to all partner discounts",
-      "AI Health Assistant",
-      "Vaccination reminders",
-      "Priority support",
-    ],
+    features: ["2 pets included", ...sharedFeatures],
     highlight: true,
   },
   {
@@ -76,14 +73,7 @@ const plans: PlanOption[] = [
     renewalPrice: 99,
     maxPets: 5,
     icon: Crown,
-    features: [
-      "Up to 5 pets",
-      "Access to all partner discounts",
-      "AI Health Assistant",
-      "Vaccination reminders",
-      "Priority support",
-      "Exclusive family events",
-    ],
+    features: ["Up to 5 pets", ...sharedFeatures],
   },
 ];
 
@@ -407,12 +397,12 @@ const MemberUpgrade = () => {
                       )
                     ) : isDowngrade ? (
                       <Button 
-                        variant="outline" 
-                        className="w-full"
+                        variant="ghost" 
+                        className="w-full text-muted-foreground hover:text-foreground"
                         onClick={() => handleDowngradeClick(plan)}
                       >
                         <ArrowDown className="w-4 h-4 mr-2" />
-                        Downgrade
+                        Downgrade to this plan
                       </Button>
                     ) : isUpgrade ? (
                       showRenewalPrice ? (
