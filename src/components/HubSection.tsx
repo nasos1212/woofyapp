@@ -1,5 +1,6 @@
 import { Dog, Calendar, MessageSquare, MapPin, Bell, Award } from "lucide-react";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 const hubFeatures = [
   {
@@ -41,6 +42,12 @@ const hubFeatures = [
 ];
 
 const HubSection = () => {
+  const navigate = useNavigate();
+
+  const handleJoinWaitlist = () => {
+    navigate("/auth?type=member");
+  };
+
   return (
     <section id="hub" className="py-20 lg:py-32 bg-gradient-warm">
       <div className="container mx-auto px-4">
@@ -85,7 +92,7 @@ const HubSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <Button variant="hero" size="xl">
+          <Button variant="hero" size="xl" onClick={handleJoinWaitlist}>
             Join the Waitlist for Hub Access
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
