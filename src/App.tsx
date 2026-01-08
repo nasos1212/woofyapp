@@ -32,6 +32,7 @@ import Community from "./pages/Community";
 import CommunityAsk from "./pages/CommunityAsk";
 import CommunityQuestion from "./pages/CommunityQuestion";
 import CommunityLeaderboard from "./pages/CommunityLeaderboard";
+import MemberUpgrade from "./pages/MemberUpgrade";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/member/vaccinations" element={<VaccinationReminders />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/member/notifications" element={<Notifications />} />
+              <Route path="/member/upgrade" element={<MemberUpgrade />} />
               <Route path="/community" element={<Community />} />
               <Route path="/community/ask" element={<CommunityAsk />} />
               <Route path="/community/question/:id" element={<CommunityQuestion />} />
