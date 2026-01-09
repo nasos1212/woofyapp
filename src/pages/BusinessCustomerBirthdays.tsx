@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -488,7 +487,6 @@ const BusinessCustomerBirthdays = () => {
         <div className="pb-20 md:pb-0" />
       </main>
 
-      <Footer />
       <BusinessMobileNav />
     </>
   );

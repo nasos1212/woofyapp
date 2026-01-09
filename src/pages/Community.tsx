@@ -4,7 +4,6 @@ import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -474,8 +473,6 @@ const Community = () => {
             </div>
           </div>
         </main>
-
-        <Footer />
       </div>
     </>
   );

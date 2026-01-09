@@ -6,7 +6,6 @@ import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
 import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -639,8 +638,6 @@ const CommunityQuestion = () => {
             </div>
           )}
         </main>
-
-        <Footer />
       </div>
     </>
   );

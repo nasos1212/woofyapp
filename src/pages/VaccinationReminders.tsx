@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -424,8 +423,6 @@ const VaccinationReminders = () => {
           )}
         </div>
       </main>
-
-      <Footer />
 
       {/* Add Vaccination Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
