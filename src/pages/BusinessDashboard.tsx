@@ -14,7 +14,7 @@ import { useSuccessSound } from "@/hooks/useSuccessSound";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
 interface ScanResult {
-  status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited';
+  status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited' | 'limit_reached';
   memberName?: string;
   petName?: string;
   memberId?: string;
@@ -26,6 +26,7 @@ interface ScanResult {
   attemptsRemaining?: number;
   lockoutExpiresAt?: string;
   remainingMinutes?: number;
+  message?: string;
 }
 
 interface Redemption {
@@ -602,12 +603,14 @@ const BusinessDashboard = () => {
                     scanResult.status === 'valid' ? 'bg-green-50 border border-green-200' :
                     scanResult.status === 'expired' ? 'bg-amber-50 border border-amber-200' :
                     scanResult.status === 'already_redeemed' ? 'bg-orange-50 border border-orange-200' :
+                    scanResult.status === 'limit_reached' ? 'bg-purple-50 border border-purple-200' :
                     'bg-red-50 border border-red-200'
                   }`}>
                     <div className="flex items-start gap-4">
                       {scanResult.status === 'valid' && <CheckCircle2 className="w-8 h-8 text-green-500 flex-shrink-0" />}
                       {scanResult.status === 'expired' && <Clock className="w-8 h-8 text-amber-500 flex-shrink-0" />}
                       {scanResult.status === 'already_redeemed' && <AlertCircle className="w-8 h-8 text-orange-500 flex-shrink-0" />}
+                      {scanResult.status === 'limit_reached' && <AlertCircle className="w-8 h-8 text-purple-500 flex-shrink-0" />}
                       {scanResult.status === 'invalid' && <XCircle className="w-8 h-8 text-red-500 flex-shrink-0" />}
                       
                       <div className="flex-1">
@@ -615,11 +618,13 @@ const BusinessDashboard = () => {
                           scanResult.status === 'valid' ? 'text-green-700' :
                           scanResult.status === 'expired' ? 'text-amber-700' :
                           scanResult.status === 'already_redeemed' ? 'text-orange-700' :
+                          scanResult.status === 'limit_reached' ? 'text-purple-700' :
                           'text-red-700'
                         }`}>
                           {scanResult.status === 'valid' && '✓ Valid Membership'}
                           {scanResult.status === 'expired' && '⚠ Membership Expired'}
                           {scanResult.status === 'already_redeemed' && '⚠ Offer Already Redeemed'}
+                          {scanResult.status === 'limit_reached' && '⚠ Offer Limit Reached'}
                           {scanResult.status === 'invalid' && '✗ Invalid Member ID'}
                         </h3>
 
@@ -666,6 +671,14 @@ const BusinessDashboard = () => {
                           <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                             <p className="text-orange-800 text-sm">
                               This member has already redeemed "{scanResult.offerTitle}". Each offer can only be used once.
+                            </p>
+                          </div>
+                        )}
+
+                        {scanResult.status === 'limit_reached' && (
+                          <div className="mt-4 p-3 bg-purple-100 rounded-lg">
+                            <p className="text-purple-800 text-sm">
+                              "{scanResult.offerTitle}" has reached its maximum redemption limit. Consider creating a new offer or increasing the limit.
                             </p>
                           </div>
                         )}

@@ -1042,6 +1042,7 @@ export type Database = {
           is_active: boolean
           is_limited_time: boolean | null
           limited_time_label: string | null
+          max_redemptions: number | null
           terms: string | null
           title: string
           updated_at: string
@@ -1058,6 +1059,7 @@ export type Database = {
           is_active?: boolean
           is_limited_time?: boolean | null
           limited_time_label?: string | null
+          max_redemptions?: number | null
           terms?: string | null
           title: string
           updated_at?: string
@@ -1074,6 +1076,7 @@ export type Database = {
           is_active?: boolean
           is_limited_time?: boolean | null
           limited_time_label?: string | null
+          max_redemptions?: number | null
           terms?: string | null
           title?: string
           updated_at?: string
