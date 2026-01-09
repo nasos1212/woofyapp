@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Bell, X, Syringe, Gift, Tag, Lightbulb, AlertTriangle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,6 +30,9 @@ const priorityColors: Record<string, string> = {
   low: "bg-gray-50 border-gray-200 text-gray-700",
 };
 
+// Track if alerts have been generated this session to prevent duplicates
+const generatedThisSession = new Set<string>();
+
 export const AIProactiveAlerts = () => {
   const { user } = useAuth();
   const [alerts, setAlerts] = useState<ProactiveAlert[]>([]);
@@ -38,7 +41,11 @@ export const AIProactiveAlerts = () => {
   useEffect(() => {
     if (user) {
       fetchAlerts();
-      generateNewAlerts();
+      // Only generate alerts once per user per session
+      if (!generatedThisSession.has(user.id)) {
+        generatedThisSession.add(user.id);
+        generateNewAlerts();
+      }
     }
   }, [user]);
 
