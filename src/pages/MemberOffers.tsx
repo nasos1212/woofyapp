@@ -450,7 +450,11 @@ const MemberOffers = () => {
                     {/* Discount Badge */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Percent className="w-4 h-4 text-primary" />
+                        {offer.discount_type === "percentage" ? (
+                          <Percent className="w-4 h-4 text-primary" />
+                        ) : (
+                          <Tag className="w-4 h-4 text-primary" />
+                        )}
                         <span className="font-semibold text-primary">
                           {formatDiscount(offer)}
                         </span>
