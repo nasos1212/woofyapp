@@ -180,13 +180,12 @@ serve(async (req) => {
       }
     }
 
-    // Check for existing alerts to avoid duplicates
+    // Check for existing alerts to avoid duplicates (check ALL non-dismissed alerts, not just recent ones)
     const { data: existingAlerts } = await supabase
       .from('ai_proactive_alerts')
       .select('alert_type, data')
       .eq('user_id', userId)
-      .eq('is_dismissed', false)
-      .gte('created_at', new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString());
+      .eq('is_dismissed', false);
 
     // Filter out duplicate alerts
     const newAlerts = alerts.filter(alert => {
