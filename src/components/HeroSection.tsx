@@ -8,7 +8,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   const handleGetPass = () => {
-    navigate("/auth");
+    navigate("/auth?type=member");
   };
 
   const handleExploreBenefits = () => {
