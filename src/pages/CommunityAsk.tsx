@@ -7,7 +7,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -507,8 +506,6 @@ const CommunityAsk = () => {
             </CardContent>
           </Card>
         </main>
-
-        <Footer />
       </div>
     </>
   );

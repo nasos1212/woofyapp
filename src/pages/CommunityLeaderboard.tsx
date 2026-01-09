@@ -5,7 +5,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, ExpertStats } from '@/hooks/useCommunity';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import DogLoader from '@/components/DogLoader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -378,8 +377,6 @@ const CommunityLeaderboard = () => {
             </Card>
           </div>
         </main>
-
-        <Footer />
       </div>
     </>
   );
