@@ -33,7 +33,7 @@ const CTASection = () => {
             </div>
             <div className="flex items-center gap-2 text-wooffy-light/90">
               <Clock className="w-5 h-5 text-wooffy-accent" />
-              <span>Cancel anytime</span>
+              <span>Try it today - wooff!</span>
             </div>
           </div>
 
