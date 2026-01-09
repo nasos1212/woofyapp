@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Percent, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, RotateCcw } from "lucide-react";
+import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, RotateCcw, ArrowUpDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
-import { formatDistanceToNow, isPast } from "date-fns";
+import { formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { useReturningCustomer } from "@/hooks/useReturningCustomer";
@@ -24,6 +25,7 @@ interface Offer {
   valid_until: string | null;
   is_limited_time: boolean;
   limited_time_label: string | null;
+  created_at: string;
   business: {
     id: string;
     business_name: string;
@@ -32,6 +34,8 @@ interface Offer {
   };
   isRedeemed: boolean;
 }
+
+type SortOption = "newest" | "discount_high" | "discount_low" | "expiry" | "business_name";
 
 const categories = [
   { id: "all", label: "All" },
@@ -53,6 +57,7 @@ const MemberOffers = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showRedeemed, setShowRedeemed] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [isLoading, setIsLoading] = useState(true);
   const [membershipId, setMembershipId] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
@@ -73,8 +78,8 @@ const MemberOffers = () => {
   }, [user]);
 
   useEffect(() => {
-    filterOffers();
-  }, [offers, searchQuery, selectedCategory, showRedeemed, showFavoritesOnly, isFavorite]);
+    filterAndSortOffers();
+  }, [offers, searchQuery, selectedCategory, showRedeemed, showFavoritesOnly, sortBy, isFavorite]);
 
   const fetchOffers = async () => {
     if (!user) return;
@@ -118,6 +123,7 @@ const MemberOffers = () => {
           valid_until,
           is_limited_time,
           limited_time_label,
+          created_at,
           business:businesses_public(id, business_name, category, city)
         `)
         .eq("is_active", true);
@@ -149,6 +155,7 @@ const MemberOffers = () => {
           valid_until: offer.valid_until,
           is_limited_time: offer.is_limited_time || false,
           limited_time_label: offer.limited_time_label,
+          created_at: offer.created_at,
           business: offer.business as unknown as Offer["business"],
           isRedeemed: redeemedOfferIds.includes(offer.id),
         }));
@@ -161,7 +168,7 @@ const MemberOffers = () => {
     }
   };
 
-  const filterOffers = () => {
+  const filterAndSortOffers = () => {
     let filtered = [...offers];
 
     // Search filter
@@ -192,7 +199,32 @@ const MemberOffers = () => {
       filtered = filtered.filter((offer) => isFavorite(offer.id));
     }
 
+    // Sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case "discount_high":
+          return (b.discount_value || 0) - (a.discount_value || 0);
+        case "discount_low":
+          return (a.discount_value || 0) - (b.discount_value || 0);
+        case "expiry":
+          if (!a.valid_until && !b.valid_until) return 0;
+          if (!a.valid_until) return 1;
+          if (!b.valid_until) return -1;
+          return new Date(a.valid_until).getTime() - new Date(b.valid_until).getTime();
+        case "business_name":
+          return a.business.business_name.localeCompare(b.business.business_name);
+        default:
+          return 0;
+      }
+    });
+
     setFilteredOffers(filtered);
+  };
+
+  const isNewOffer = (createdAt: string) => {
+    return differenceInDays(new Date(), new Date(createdAt)) <= 7;
   };
 
   const formatDiscount = (offer: Offer) => {
@@ -296,7 +328,7 @@ const MemberOffers = () => {
               ))}
             </div>
 
-            {/* Filter Toggles */}
+            {/* Filter Toggles and Sort */}
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => setShowRedeemed(!showRedeemed)}
@@ -326,12 +358,28 @@ const MemberOffers = () => {
                 {showFavoritesOnly ? "Favorites only" : "Show favorites"}
               </button>
               
-              {offers.filter(o => o.isRedeemed).length > 0 && (
-                <span className="text-sm text-muted-foreground ml-auto">
-                  <Check className="w-4 h-4 inline mr-1 text-green-500" />
-                  {offers.filter(o => o.isRedeemed).length} redeemed
-                </span>
-              )}
+              <div className="flex items-center gap-2 ml-auto">
+                {offers.filter(o => o.isRedeemed).length > 0 && (
+                  <span className="text-sm text-muted-foreground hidden sm:inline">
+                    <Check className="w-4 h-4 inline mr-1 text-green-500" />
+                    {offers.filter(o => o.isRedeemed).length} redeemed
+                  </span>
+                )}
+                
+                <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+                  <SelectTrigger className="w-[160px] h-9">
+                    <ArrowUpDown className="w-3.5 h-3.5 mr-2" />
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest First</SelectItem>
+                    <SelectItem value="discount_high">Highest Discount</SelectItem>
+                    <SelectItem value="discount_low">Lowest Discount</SelectItem>
+                    <SelectItem value="expiry">Expiring Soon</SelectItem>
+                    <SelectItem value="business_name">Business Name</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -416,24 +464,32 @@ const MemberOffers = () => {
                       </div>
                     </div>
 
-                    {/* Time indicator */}
-                    {timeIndicator && (
-                      <Badge 
-                        variant={timeIndicator.type === "expiring" ? "destructive" : "secondary"}
-                        className={`mb-3 gap-1 ${
-                          timeIndicator.type === "expired" ? "bg-muted text-muted-foreground" :
-                          timeIndicator.type === "expiring" ? "bg-orange-100 text-orange-700 border-orange-200" :
-                          "bg-rose-100 text-rose-700 border-rose-200"
-                        }`}
-                      >
-                        {timeIndicator.type === "expiring" ? (
-                          <AlertTriangle className="w-3 h-3" />
-                        ) : (
-                          <Clock className="w-3 h-3" />
-                        )}
-                        {timeIndicator.label}
-                      </Badge>
-                    )}
+                    {/* Time indicator or New badge */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {isNewOffer(offer.created_at) && (
+                        <Badge className="gap-1 bg-emerald-100 text-emerald-700 border-emerald-200">
+                          <Sparkles className="w-3 h-3" />
+                          New
+                        </Badge>
+                      )}
+                      {timeIndicator && (
+                        <Badge 
+                          variant={timeIndicator.type === "expiring" ? "destructive" : "secondary"}
+                          className={`gap-1 ${
+                            timeIndicator.type === "expired" ? "bg-muted text-muted-foreground" :
+                            timeIndicator.type === "expiring" ? "bg-orange-100 text-orange-700 border-orange-200" :
+                            "bg-rose-100 text-rose-700 border-rose-200"
+                          }`}
+                        >
+                          {timeIndicator.type === "expiring" ? (
+                            <AlertTriangle className="w-3 h-3" />
+                          ) : (
+                            <Clock className="w-3 h-3" />
+                          )}
+                          {timeIndicator.label}
+                        </Badge>
+                      )}
+                    </div>
 
                     {/* Offer Details */}
                     <div className="mb-4">

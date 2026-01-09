@@ -144,8 +144,8 @@ const PartnerRegister = () => {
           role: "business" as const,
         });
       
-      // Create offers
-      const validOffers = offers.filter(o => o.title.trim());
+      // Create offers - only include offers with both title and discount value
+      const validOffers = offers.filter(o => o.title.trim() && o.discountValue && parseFloat(o.discountValue) > 0);
       if (validOffers.length > 0) {
         const { error: offersError } = await supabase
           .from("offers")
@@ -155,7 +155,7 @@ const PartnerRegister = () => {
               title: o.title,
               description: o.description,
               discount_type: o.discountType,
-              discount_value: o.discountValue ? parseFloat(o.discountValue) : null,
+              discount_value: parseFloat(o.discountValue),
               terms: o.terms,
             }))
           );
@@ -439,12 +439,13 @@ const PartnerRegister = () => {
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label>Value {offer.discountType === "percentage" ? "(%)" : "(€)"}</Label>
+                        <Label>Value * {offer.discountType === "percentage" ? "(%)" : "(€)"}</Label>
                         <Input
                           type="number"
                           placeholder={offer.discountType === "percentage" ? "15" : "10"}
                           value={offer.discountValue}
                           onChange={(e) => updateOffer(offer.id, "discountValue", e.target.value)}
+                          required
                         />
                       </div>
                     </div>

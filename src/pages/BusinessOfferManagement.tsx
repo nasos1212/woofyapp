@@ -186,6 +186,11 @@ const BusinessOfferManagement = () => {
       return;
     }
 
+    if (!formData.discount_value || parseFloat(formData.discount_value) <= 0) {
+      toast.error("Please enter a valid discount value");
+      return;
+    }
+
     try {
       const offerData = {
         business_id: businessId,
@@ -419,7 +424,7 @@ const BusinessOfferManagement = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="discount_value">Discount Value</Label>
+                <Label htmlFor="discount_value">Discount Value *</Label>
                 <Input
                   id="discount_value"
                   type="number"
@@ -428,6 +433,7 @@ const BusinessOfferManagement = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, discount_value: e.target.value })
                   }
+                  required
                 />
               </div>
               <div className="space-y-2">
