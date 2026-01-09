@@ -92,8 +92,8 @@ const HubSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <Button variant="hero" size="xl" onClick={handleJoinWaitlist}>
-            Join the Waitlist for Hub Access
+        <Button variant="hero" size="xl" onClick={handleJoinWaitlist}>
+            Sign up today
           </Button>
           <p className="text-sm text-muted-foreground mt-4">
             All Wooffy members get early access to new features
