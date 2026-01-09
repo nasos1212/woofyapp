@@ -108,6 +108,7 @@ const MemberOffers = () => {
 
       // Fetch all active offers from approved businesses
       // Use businesses_public view to avoid exposing sensitive business owner data
+      const now = new Date().toISOString();
       const { data: offersData, error } = await supabase
         .from("offers")
         .select(`
@@ -124,7 +125,8 @@ const MemberOffers = () => {
           created_at,
           business:businesses_public(id, business_name, category, city)
         `)
-        .eq("is_active", true);
+        .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${now}`);
 
       if (error) throw error;
 
