@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Bell, BellRing, Calendar, Syringe, AlertTriangle, CheckCircle, Clock, Plus } from "lucide-react";
+import { ArrowLeft, Bell, BellRing, Calendar, Syringe, AlertTriangle, CheckCircle, Clock, Plus, Pencil, Trash2 } from "lucide-react";
 import { format, differenceInDays, isPast, isToday, addDays } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import {
@@ -64,6 +64,8 @@ const VaccinationReminders = () => {
   const [upcomingVaccinations, setUpcomingVaccinations] = useState<UpcomingVaccination[]>([]);
   const [loading, setLoading] = useState(true);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null);
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [vaccineName, setVaccineName] = useState("");
   const [nextDueDate, setNextDueDate] = useState("");
@@ -182,9 +184,7 @@ const VaccinationReminders = () => {
       });
 
       setAddDialogOpen(false);
-      setSelectedPet("");
-      setVaccineName("");
-      setNextDueDate("");
+      resetForm();
       fetchData();
     } catch (error: any) {
       toast({
@@ -225,6 +225,87 @@ const VaccinationReminders = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const openEditDialog = (record: HealthRecord) => {
+    setEditingRecord(record);
+    setSelectedPet(record.pet_id);
+    setVaccineName(record.title);
+    setNextDueDate(record.next_due_date || "");
+    setEditDialogOpen(true);
+  };
+
+  const handleEditVaccination = async () => {
+    if (!editingRecord || !selectedPet || !vaccineName || !nextDueDate) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("pet_health_records")
+        .update({
+          pet_id: selectedPet,
+          title: vaccineName,
+          next_due_date: nextDueDate,
+        })
+        .eq("id", editingRecord.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Vaccination updated",
+        description: "Your vaccination reminder has been updated",
+      });
+
+      setEditDialogOpen(false);
+      setEditingRecord(null);
+      resetForm();
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update vaccination reminder",
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteVaccination = async (recordId: string, title: string) => {
+    try {
+      const { error } = await supabase
+        .from("pet_health_records")
+        .delete()
+        .eq("id", recordId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Vaccination deleted",
+        description: `${title} reminder has been removed`,
+      });
+
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete vaccination reminder",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setSelectedPet("");
+    setVaccineName("");
+    setNextDueDate("");
   };
 
   const getStatusBadge = (status: UpcomingVaccination['status']) => {
@@ -406,15 +487,31 @@ const VaccinationReminders = () => {
                           </p>
                         )}
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => markAsCompleted(item.record.id, item.pet.pet_name)}
-                        className="shrink-0"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Mark Done
-                      </Button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditDialog(item.record)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteVaccination(item.record.id, item.record.title)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => markAsCompleted(item.record.id, item.pet.pet_name)}
+                        >
+                          <CheckCircle className="mr-2 h-4 w-4" />
+                          Mark Done
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -425,7 +522,10 @@ const VaccinationReminders = () => {
       </main>
 
       {/* Add Vaccination Dialog */}
-      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+      <Dialog open={addDialogOpen} onOpenChange={(open) => {
+        setAddDialogOpen(open);
+        if (!open) resetForm();
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add Vaccination Reminder</DialogTitle>
@@ -474,6 +574,67 @@ const VaccinationReminders = () => {
             </Button>
             <Button onClick={handleAddVaccination} disabled={saving}>
               {saving ? "Adding..." : "Add Reminder"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Vaccination Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={(open) => {
+        setEditDialogOpen(open);
+        if (!open) {
+          setEditingRecord(null);
+          resetForm();
+        }
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Vaccination Reminder</DialogTitle>
+            <DialogDescription>
+              Update the vaccination details or due date.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-pet">Pet</Label>
+              <Select value={selectedPet} onValueChange={setSelectedPet}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a pet" />
+                </SelectTrigger>
+                <SelectContent>
+                  {pets.map((pet) => (
+                    <SelectItem key={pet.id} value={pet.id}>
+                      {pet.pet_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-vaccine">Vaccination Name</Label>
+              <Input
+                id="edit-vaccine"
+                placeholder="e.g., Rabies, DHPP, Bordetella"
+                value={vaccineName}
+                onChange={(e) => setVaccineName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-dueDate">Due Date</Label>
+              <Input
+                id="edit-dueDate"
+                type="date"
+                value={nextDueDate}
+                onChange={(e) => setNextDueDate(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEditVaccination} disabled={saving}>
+              {saving ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
