@@ -44,7 +44,7 @@ const includedFeatures = [
   "Pet-friendly location finder",
   "Priority event booking",
   "Smart reminders & notifications",
-  "Cancel anytime guarantee",
+  "Satisfaction guaranteed",
 ];
 
 const PricingSection = () => {

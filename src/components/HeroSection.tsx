@@ -104,8 +104,8 @@ const HeroSection = () => {
                 <span className="text-green-600 text-lg">✓</span>
               </div>
               <div>
-                <p className="font-medium text-sm text-foreground">Cancel anytime</p>
-                <p className="text-xs text-muted-foreground">No questions asked</p>
+                <p className="font-medium text-sm text-foreground">Try it today - wooff!</p>
+                <p className="text-xs text-muted-foreground">Join the pack</p>
               </div>
             </div>
           </div>
