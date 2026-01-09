@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, RotateCcw, ArrowUpDown, Sparkles } from "lucide-react";
+import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, ArrowUpDown, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,6 @@ import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDia
 import { formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
-import { useReturningCustomer } from "@/hooks/useReturningCustomer";
 interface Offer {
   id: string;
   title: string;
@@ -63,7 +62,6 @@ const MemberOffers = () => {
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
   
   const { isFavorite, toggleFavorite } = useFavoriteOffers();
-  const { isReturningCustomer, getRedemptionCount } = useReturningCustomer();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -424,21 +422,10 @@ const MemberOffers = () => {
                             >
                               {offer.business.business_name}
                             </Link>
-                            {isReturningCustomer(offer.business.id) && (
-                              <Badge variant="secondary" className="text-[10px] sm:text-xs bg-purple-100 text-purple-700 border-purple-200 gap-0.5 sm:gap-1 px-1.5 py-0">
-                                <RotateCcw className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
-                                <span className="hidden sm:inline">Returning</span>
-                              </Badge>
-                            )}
                           </div>
                           <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
                             <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             <span className="truncate">{offer.business.city || "Location TBD"}</span>
-                            {getRedemptionCount(offer.business.id) > 0 && (
-                              <span className="ml-1 text-primary hidden sm:inline">
-                                • {getRedemptionCount(offer.business.id)} visits
-                              </span>
-                            )}
                           </p>
                         </div>
                       </div>
