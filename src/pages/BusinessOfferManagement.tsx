@@ -60,6 +60,7 @@ interface Offer {
   valid_until: string | null;
   is_limited_time: boolean;
   limited_time_label: string | null;
+  max_redemptions: number | null;
 }
 
 const BusinessOfferManagement = () => {
@@ -82,6 +83,7 @@ const BusinessOfferManagement = () => {
     valid_until: "",
     is_limited_time: false,
     limited_time_label: "",
+    max_redemptions: "",
   });
 
   useEffect(() => {
@@ -119,7 +121,7 @@ const BusinessOfferManagement = () => {
       // Get offers with redemption counts
       const { data: offersData, error } = await supabase
         .from("offers")
-        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label")
+        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions")
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -161,6 +163,7 @@ const BusinessOfferManagement = () => {
       valid_until: "",
       is_limited_time: false,
       limited_time_label: "",
+      max_redemptions: "",
     });
     setIsDialogOpen(true);
   };
@@ -176,6 +179,7 @@ const BusinessOfferManagement = () => {
       valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : "",
       is_limited_time: offer.is_limited_time || false,
       limited_time_label: offer.limited_time_label || "",
+      max_redemptions: (offer as any).max_redemptions?.toString() || "",
     });
     setIsDialogOpen(true);
   };
@@ -202,6 +206,7 @@ const BusinessOfferManagement = () => {
         valid_until: formData.valid_until ? new Date(formData.valid_until).toISOString() : null,
         is_limited_time: formData.is_limited_time,
         limited_time_label: formData.limited_time_label.trim() || null,
+        max_redemptions: formData.max_redemptions ? parseInt(formData.max_redemptions) : null,
       };
 
       if (editingOffer) {
@@ -339,8 +344,13 @@ const BusinessOfferManagement = () => {
                           {offer.discount_type === "percentage" ? "%" : "€"} off
                         </span>
                         <span className="text-slate-500">
-                          {offer.redemption_count} redemption{offer.redemption_count !== 1 ? "s" : ""}
+                          {offer.redemption_count}{offer.max_redemptions ? `/${offer.max_redemptions}` : ''} redemption{offer.redemption_count !== 1 ? "s" : ""}
                         </span>
+                        {offer.max_redemptions && offer.redemption_count >= offer.max_redemptions && (
+                          <span className="text-[10px] sm:text-xs bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded-full">
+                            Limit reached
+                          </span>
+                        )}
                       </div>
                       {offer.terms && (
                         <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">Terms: {offer.terms}</p>
@@ -452,14 +462,27 @@ const BusinessOfferManagement = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="terms">Terms & Conditions</Label>
-              <Input
-                id="terms"
-                placeholder="e.g., Valid for new customers only"
-                value={formData.terms}
-                onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="terms">Terms & Conditions</Label>
+                <Input
+                  id="terms"
+                  placeholder="e.g., Valid for new customers only"
+                  value={formData.terms}
+                  onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="max_redemptions">Max Redemptions</Label>
+                <Input
+                  id="max_redemptions"
+                  type="number"
+                  placeholder="Unlimited"
+                  value={formData.max_redemptions}
+                  onChange={(e) => setFormData({ ...formData, max_redemptions: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">Leave empty for unlimited</p>
+              </div>
             </div>
 
             {/* Time-sensitive options */}

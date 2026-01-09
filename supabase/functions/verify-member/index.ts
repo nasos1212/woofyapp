@@ -190,10 +190,10 @@ serve(async (req) => {
       .eq('offer_id', offerId)
       .maybeSingle();
 
-    // Get offer details
+    // Get offer details including max_redemptions
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type')
+      .select('id, title, discount_value, discount_type, max_redemptions')
       .eq('id', offerId)
       .single();
 
@@ -203,6 +203,28 @@ serve(async (req) => {
       .select('full_name')
       .eq('user_id', membership.user_id)
       .maybeSingle();
+
+    // Check if offer has reached max redemptions
+    if (offer?.max_redemptions !== null && offer?.max_redemptions !== undefined) {
+      const { count: redemptionCount } = await supabaseAdmin
+        .from('offer_redemptions')
+        .select('id', { count: 'exact', head: true })
+        .eq('offer_id', offerId);
+
+      if (redemptionCount !== null && redemptionCount >= offer.max_redemptions) {
+        return new Response(
+          JSON.stringify({
+            status: 'limit_reached',
+            memberName: profile?.full_name || 'Member',
+            petName: petNames,
+            memberId: membership.member_number,
+            offerTitle: offer?.title,
+            message: 'This offer has reached its maximum redemption limit.',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     if (existingRedemption) {
       return new Response(
