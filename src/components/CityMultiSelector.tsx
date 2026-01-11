@@ -18,33 +18,52 @@ interface CityMultiSelectorProps {
   description?: string;
 }
 
+const WHOLE_ISLAND_KEY = "Whole Island";
+
 const CityMultiSelector = ({
   selectedLocations,
   onLocationsChange,
   label = "Select Cities/Areas",
   description,
 }: CityMultiSelectorProps) => {
+  const isWholeIslandSelected = selectedLocations.includes(WHOLE_ISLAND_KEY);
+
   const isLocationSelected = (city: string, area?: string): boolean => {
+    if (isWholeIslandSelected) return true;
     if (area) {
       return selectedLocations.includes(`${city} > ${area}`);
     }
-    // Check if the whole city is selected
     return selectedLocations.includes(city);
   };
 
   const isCityFullySelected = (city: CyprusArea): boolean => {
-    return selectedLocations.includes(city.name);
+    return isWholeIslandSelected || selectedLocations.includes(city.name);
+  };
+
+  const toggleWholeIsland = () => {
+    if (isWholeIslandSelected) {
+      onLocationsChange([]);
+    } else {
+      onLocationsChange([WHOLE_ISLAND_KEY]);
+    }
   };
 
   const toggleCity = (cityName: string) => {
+    // If whole island is selected, switch to individual city selection
+    if (isWholeIslandSelected) {
+      const allCitiesExceptThis = cyprusCities
+        .filter((c) => c.name !== cityName)
+        .map((c) => c.name);
+      onLocationsChange(allCitiesExceptThis);
+      return;
+    }
+
     if (selectedLocations.includes(cityName)) {
-      // Remove city and all its areas
       const filtered = selectedLocations.filter(
         (loc) => loc !== cityName && !loc.startsWith(`${cityName} > `)
       );
       onLocationsChange(filtered);
     } else {
-      // Add the whole city, remove individual areas
       const filtered = selectedLocations.filter(
         (loc) => !loc.startsWith(`${cityName} > `)
       );
@@ -55,8 +74,8 @@ const CityMultiSelector = ({
   const toggleArea = (cityName: string, areaName: string) => {
     const areaKey = `${cityName} > ${areaName}`;
 
-    // If whole city is selected, we don't toggle individual areas
-    if (selectedLocations.includes(cityName)) {
+    // If whole island or whole city is selected, don't toggle individual areas
+    if (isWholeIslandSelected || selectedLocations.includes(cityName)) {
       return;
     }
 
@@ -72,6 +91,9 @@ const CityMultiSelector = ({
   };
 
   const getDisplayName = (location: string): string => {
+    if (location === WHOLE_ISLAND_KEY) {
+      return "🇨🇾 Whole Island";
+    }
     if (location.includes(" > ")) {
       const [city, area] = location.split(" > ");
       // Shorten city name for display
@@ -116,6 +138,22 @@ const CityMultiSelector = ({
 
       {/* City/Area selection accordion */}
       <div className="border rounded-lg overflow-hidden">
+        {/* Whole Island option */}
+        <div className="flex items-center gap-2 px-4 py-3 border-b bg-muted/30">
+          <Checkbox
+            id="whole-island"
+            checked={isWholeIslandSelected}
+            onCheckedChange={toggleWholeIsland}
+            className="data-[state=checked]:bg-primary"
+          />
+          <label
+            htmlFor="whole-island"
+            className="text-sm font-medium cursor-pointer flex items-center gap-2"
+          >
+            🇨🇾 Whole Island (All Cities)
+          </label>
+        </div>
+
         <Accordion type="multiple" className="w-full">
           {cyprusCities.map((city) => (
             <AccordionItem key={city.name} value={city.name} className="border-b last:border-b-0">
