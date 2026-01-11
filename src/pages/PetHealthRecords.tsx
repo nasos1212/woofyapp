@@ -228,22 +228,19 @@ const PetHealthRecords = () => {
     if (!user) return null;
     
     const fileExt = file.name.split('.').pop()?.toLowerCase();
-    const fileName = `${user.id}/${recordId}/${Date.now()}.${fileExt}`;
+    const filePath = `${user.id}/${recordId}/${Date.now()}.${fileExt}`;
     
     const { error: uploadError } = await supabase.storage
       .from('health-documents')
-      .upload(fileName, file);
+      .upload(filePath, file);
     
     if (uploadError) {
       console.error('Upload error:', uploadError);
       throw new Error('Failed to upload document');
     }
     
-    const { data: urlData } = supabase.storage
-      .from('health-documents')
-      .getPublicUrl(fileName);
-    
-    return urlData.publicUrl;
+    // Store just the file path, not the full URL (bucket is private)
+    return filePath;
   };
 
   const handleAddRecord = async (e: React.FormEvent) => {
@@ -317,35 +314,19 @@ const PetHealthRecords = () => {
     }
   };
 
-  const getDocumentUrl = async (recordId: string, documentPath: string): Promise<string | null> => {
-    // Extract the file path from the full URL or use as-is
-    const pathMatch = documentPath.match(/health-documents\/(.+)$/);
-    const filePath = pathMatch ? pathMatch[1] : documentPath;
-    
-    const { data, error } = await supabase.storage
-      .from('health-documents')
-      .createSignedUrl(filePath, 3600); // 1 hour expiry
-    
-    if (error) {
-      console.error('Error getting signed URL:', error);
-      return null;
-    }
-    
-    return data.signedUrl;
-  };
-
   const handleViewDocument = async (record: HealthRecord) => {
     if (!record.document_url) return;
     
     try {
-      // Extract the file path from the stored URL
+      // document_url can be a full URL (legacy) or just a path (new)
+      let filePath = record.document_url;
+      
+      // If it's a full URL, extract the path
       const pathMatch = record.document_url.match(/health-documents\/(.+)$/);
-      if (!pathMatch) {
-        toast.error("Invalid document path");
-        return;
+      if (pathMatch) {
+        filePath = pathMatch[1];
       }
       
-      const filePath = pathMatch[1];
       const { data, error } = await supabase.storage
         .from('health-documents')
         .createSignedUrl(filePath, 3600);
