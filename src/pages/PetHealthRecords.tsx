@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil, Upload, X, ExternalLink, File } from "lucide-react";
+import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil, Upload, X, ExternalLink, File, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -104,6 +104,8 @@ const PetHealthRecords = () => {
   const [activeTab, setActiveTab] = useState("reminders");
   const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null);
   const [removeExistingDocument, setRemoveExistingDocument] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<{ url: string; title: string; type: string } | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
   // Form state
   const [recordType, setRecordType] = useState("vaccination");
@@ -317,8 +319,7 @@ const PetHealthRecords = () => {
   const handleViewDocument = async (record: HealthRecord) => {
     if (!record.document_url) return;
     
-    // Open window synchronously to avoid popup blocker
-    const newWindow = window.open('about:blank', '_blank');
+    setIsLoadingPreview(true);
     
     try {
       // document_url can be a full URL (legacy) or just a path (new)
@@ -336,16 +337,22 @@ const PetHealthRecords = () => {
       
       if (error) throw error;
       
-      if (newWindow) {
-        newWindow.location.href = data.signedUrl;
-      } else {
-        // Fallback: use direct link if popup was blocked
-        window.location.href = data.signedUrl;
-      }
+      // Determine file type from path
+      const extension = filePath.split('.').pop()?.toLowerCase() || '';
+      const fileType = ['pdf'].includes(extension) ? 'pdf' 
+        : ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension) ? 'image' 
+        : 'other';
+      
+      setPreviewDocument({
+        url: data.signedUrl,
+        title: record.title,
+        type: fileType
+      });
     } catch (err) {
       console.error("Error accessing document:", err);
-      if (newWindow) newWindow.close();
       toast.error("Failed to access document");
+    } finally {
+      setIsLoadingPreview(false);
     }
   };
 
@@ -1308,6 +1315,78 @@ const PetHealthRecords = () => {
             </>
           )}
         </main>
+
+        {/* Document Preview Modal */}
+        <Dialog open={!!previewDocument} onOpenChange={(open) => !open && setPreviewDocument(null)}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+              <div className="flex items-center justify-between pr-8">
+                <DialogTitle className="text-lg font-semibold truncate">
+                  {previewDocument?.title} - Document
+                </DialogTitle>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => previewDocument && window.open(previewDocument.url, '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Open in New Tab
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    asChild
+                  >
+                    <a href={previewDocument?.url} download>
+                      <Download className="w-4 h-4" />
+                      Download
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden bg-muted/30">
+              {isLoadingPreview ? (
+                <div className="h-full flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : previewDocument?.type === 'pdf' ? (
+                <iframe
+                  src={previewDocument.url}
+                  className="w-full h-full border-0"
+                  title="Document Preview"
+                />
+              ) : previewDocument?.type === 'image' ? (
+                <div className="h-full flex items-center justify-center p-4 overflow-auto">
+                  <img
+                    src={previewDocument.url}
+                    alt="Document"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
+                  <File className="w-16 h-16 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium text-foreground mb-1">Preview not available</p>
+                    <p className="text-sm text-muted-foreground">
+                      This file type cannot be previewed. Download the file to view it.
+                    </p>
+                  </div>
+                  <Button asChild>
+                    <a href={previewDocument?.url} download className="gap-2">
+                      <Download className="w-4 h-4" />
+                      Download File
+                    </a>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
