@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -231,6 +231,16 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate("/member")}
+          className="mb-4 gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </Button>
+
         <Breadcrumbs items={[{ label: "Admin Dashboard" }]} />
         
         <div className="flex items-center gap-3 mb-8">

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
@@ -552,6 +552,16 @@ const PetHealthAssistant = () => {
         {/* Main Content */}
         <main className="flex-1 container mx-auto px-4 py-6 pt-24 flex flex-col max-w-3xl">
           {/* Title & Pet Selector */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/member")}
+            className="mb-4 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
+
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-3">

@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Clock,
   Calendar,
+  ArrowLeft,
 } from "lucide-react";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
@@ -283,6 +284,16 @@ const BusinessOfferManagement = () => {
         <BusinessHeader />
 
         <main className="container mx-auto px-4 py-8 pt-24 md:pt-28 max-w-4xl">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/business")}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
+
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>

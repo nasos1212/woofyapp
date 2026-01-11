@@ -20,8 +20,10 @@ import {
   CheckCircle2,
   Shield,
   TrendingUp,
-  Users
+  Users,
+  ArrowLeft
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface LeaderboardEntry extends ExpertStats {
   profile?: {
@@ -136,6 +138,16 @@ const CommunityLeaderboard = () => {
         <Header />
         
         <main className="container mx-auto px-4 py-8 pt-24">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/community')}
+            className="mb-4 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Community
+          </Button>
+
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold flex items-center justify-center gap-2 mb-2">
