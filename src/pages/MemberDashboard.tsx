@@ -5,7 +5,7 @@ import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusC
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
-import ReferralSection from "@/components/ReferralSection";
+
 import RatingPromptDialog from "@/components/RatingPromptDialog";
 import Header from "@/components/Header";
 import { useAuth } from "@/hooks/useAuth";
@@ -432,9 +432,6 @@ const MemberDashboard = () => {
                   </Link>
                 </div>
               </div>
-
-              {/* Referral Section */}
-              <ReferralSection userName={profile?.full_name || "Member"} />
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-primary" />
