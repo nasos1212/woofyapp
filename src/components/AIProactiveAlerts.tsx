@@ -97,6 +97,18 @@ export const AIProactiveAlerts = () => {
     setAlerts(prev => prev.filter(a => a.id !== alertId));
   };
 
+  const dismissAllAlerts = async () => {
+    if (!user || alerts.length === 0) return;
+    
+    await supabase
+      .from("ai_proactive_alerts")
+      .update({ is_dismissed: true })
+      .eq("user_id", user.id)
+      .eq("is_dismissed", false);
+
+    setAlerts([]);
+  };
+
   const markAsRead = async (alertId: string) => {
     await supabase
       .from("ai_proactive_alerts")
@@ -112,10 +124,22 @@ export const AIProactiveAlerts = () => {
 
   return (
     <div className="mb-6">
-      <div className="flex items-center gap-2 mb-3">
-        <Bell className="w-4 h-4 text-primary" />
-        <h3 className="font-semibold text-sm">Wooffy Reminders</h3>
-        <span className="text-xs text-muted-foreground">({alerts.length})</span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <Bell className="w-4 h-4 text-primary" />
+          <h3 className="font-semibold text-sm">Wooffy Reminders</h3>
+          <span className="text-xs text-muted-foreground">({alerts.length})</span>
+        </div>
+        {alerts.length > 1 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+            onClick={dismissAllAlerts}
+          >
+            Clear all
+          </Button>
+        )}
       </div>
       
       <div className="space-y-2">
