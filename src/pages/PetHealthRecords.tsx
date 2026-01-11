@@ -102,6 +102,8 @@ const PetHealthRecords = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [activeTab, setActiveTab] = useState("reminders");
+  const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null);
+  const [removeExistingDocument, setRemoveExistingDocument] = useState(false);
 
   // Form state
   const [recordType, setRecordType] = useState("vaccination");
@@ -424,8 +426,120 @@ const PetHealthRecords = () => {
     setCustomDays("365");
     setSelectedPreset("");
     setDocumentFile(null);
+    setEditingRecord(null);
+    setRemoveExistingDocument(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const openEditDialog = (record: HealthRecord) => {
+    setEditingRecord(record);
+    setRecordType(record.record_type);
+    setTitle(record.title);
+    setDescription(record.description || "");
+    setDateAdministered(record.date_administered || "");
+    setNextDueDate(record.next_due_date || "");
+    setVetName(record.veterinarian_name || "");
+    setClinicName(record.clinic_name || "");
+    setNotes(record.notes || "");
+    setIntervalType(record.reminder_interval_type || "yearly");
+    setCustomDays(String(record.reminder_interval_days || 365));
+    setSelectedPreset("");
+    setDocumentFile(null);
+    setRemoveExistingDocument(false);
+    setShowAddDialog(true);
+  };
+
+  const handleUpdateRecord = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user || !editingRecord) return;
+
+    if (!title) {
+      toast.error("Please enter a title");
+      return;
+    }
+
+    // For vaccinations/medications, auto-calculate next_due_date
+    let calculatedNextDueDate: string | null = null;
+    const hasInterval = recordType === 'vaccination' || recordType === 'medication';
+    
+    if (hasInterval && dateAdministered && intervalType !== 'once') {
+      const intervalDays = getIntervalDays();
+      calculatedNextDueDate = format(addDays(new Date(dateAdministered), intervalDays), "yyyy-MM-dd");
+    } else if (!hasInterval) {
+      calculatedNextDueDate = nextDueDate || null;
+    }
+
+    setIsAdding(true);
+    try {
+      let documentUrl = editingRecord.document_url;
+
+      // Handle document changes
+      if (removeExistingDocument && editingRecord.document_url) {
+        // Delete the old document from storage
+        const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
+        if (pathMatch) {
+          await supabase.storage.from('health-documents').remove([pathMatch[1]]);
+        }
+        documentUrl = null;
+      }
+
+      // Upload new document if provided
+      if (documentFile) {
+        setIsUploading(true);
+        try {
+          // Delete old document first if exists
+          if (editingRecord.document_url) {
+            const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
+            if (pathMatch) {
+              await supabase.storage.from('health-documents').remove([pathMatch[1]]);
+            }
+          }
+          documentUrl = await uploadDocument(documentFile, editingRecord.id);
+        } catch (uploadErr) {
+          console.error("Document upload failed:", uploadErr);
+          toast.error("Failed to upload new document");
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      const { error } = await supabase.from("pet_health_records")
+        .update({
+          record_type: recordType,
+          title,
+          description: description || null,
+          date_administered: dateAdministered || null,
+          next_due_date: calculatedNextDueDate,
+          veterinarian_name: vetName || null,
+          clinic_name: clinicName || null,
+          notes: notes || null,
+          document_url: documentUrl,
+          reminder_interval_type: hasInterval ? intervalType : null,
+          reminder_interval_days: hasInterval ? getIntervalDays() : null,
+        })
+        .eq("id", editingRecord.id);
+
+      if (error) throw error;
+
+      toast.success("Health record updated!");
+      setShowAddDialog(false);
+      resetForm();
+      fetchRecords();
+    } catch (error) {
+      console.error("Error updating record:", error);
+      toast.error("Failed to update record");
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    if (editingRecord) {
+      handleUpdateRecord(e);
+    } else {
+      handleAddRecord(e);
     }
   };
 
@@ -516,21 +630,26 @@ const PetHealthRecords = () => {
               </p>
             </div>
 
-            <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+            <Dialog open={showAddDialog} onOpenChange={(open) => {
+              setShowAddDialog(open);
+              if (!open) resetForm();
+            }}>
               <DialogTrigger asChild>
-                <Button className="gap-2" disabled={!selectedPet}>
+                <Button className="gap-2" disabled={!selectedPet} onClick={() => resetForm()}>
                   <Plus className="w-4 h-4" />
                   Add Record
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Add Health Record</DialogTitle>
+                  <DialogTitle>{editingRecord ? "Edit Health Record" : "Add Health Record"}</DialogTitle>
                   <DialogDescription>
-                    Add a vaccination, medication, or other health record for your pet.
+                    {editingRecord 
+                      ? "Update this health record's details and attached document."
+                      : "Add a vaccination, medication, or other health record for your pet."}
                   </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={handleAddRecord} className="space-y-4 pt-4">
+                <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                   <div className="space-y-2">
                     <Label>Record Type</Label>
                     <Select value={recordType} onValueChange={(v) => {
@@ -718,6 +837,48 @@ const PetHealthRecords = () => {
                   {/* Document Upload */}
                   <div className="space-y-2">
                     <Label>Attach Document (Optional)</Label>
+                    
+                    {/* Show existing document when editing */}
+                    {editingRecord?.document_url && !removeExistingDocument && !documentFile && (
+                      <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                        <File className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm flex-1">Current document attached</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs"
+                          onClick={() => handleViewDocument(editingRecord)}
+                        >
+                          View
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs text-destructive hover:text-destructive"
+                          onClick={() => setRemoveExistingDocument(true)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {removeExistingDocument && !documentFile && (
+                      <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
+                        <span className="text-sm text-destructive flex-1">Document will be removed</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs"
+                          onClick={() => setRemoveExistingDocument(false)}
+                        >
+                          Undo
+                        </Button>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center gap-2">
                       <input
                         ref={fileInputRef}
@@ -734,7 +895,7 @@ const PetHealthRecords = () => {
                         className="gap-2"
                       >
                         <Upload className="w-4 h-4" />
-                        {documentFile ? "Change File" : "Upload File"}
+                        {documentFile ? "Change File" : editingRecord?.document_url ? "Replace File" : "Upload File"}
                       </Button>
                       {documentFile && (
                         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -760,7 +921,9 @@ const PetHealthRecords = () => {
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isAdding || isUploading}>
-                    {isAdding || isUploading ? (isUploading ? "Uploading..." : "Adding...") : "Add Record"}
+                    {isAdding || isUploading 
+                      ? (isUploading ? "Uploading..." : "Saving...") 
+                      : (editingRecord ? "Update Record" : "Add Record")}
                   </Button>
                 </form>
               </DialogContent>
@@ -894,7 +1057,15 @@ const PetHealthRecords = () => {
                                 </Button>
                               )}
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-1 shrink-0">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-muted-foreground hover:text-primary"
+                                onClick={() => openEditDialog(reminder)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -946,14 +1117,24 @@ const PetHealthRecords = () => {
                                   <p className="text-sm text-muted-foreground">{record.description}</p>
                                 )}
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-muted-foreground hover:text-red-500"
-                                onClick={() => deleteRecord(record.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-muted-foreground hover:text-primary"
+                                  onClick={() => openEditDialog(record)}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-muted-foreground hover:text-red-500"
+                                  onClick={() => deleteRecord(record.id)}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
@@ -1029,6 +1210,14 @@ const PetHealthRecords = () => {
                                 <Button
                                   variant="ghost"
                                   size="icon"
+                                  className="text-muted-foreground hover:text-primary"
+                                  onClick={() => openEditDialog(record)}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
                                   className="text-muted-foreground hover:text-red-500"
                                   onClick={() => deleteRecord(record.id)}
                                 >
@@ -1093,6 +1282,14 @@ const PetHealthRecords = () => {
                                     Done
                                   </Button>
                                 )}
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="text-muted-foreground hover:text-primary"
+                                  onClick={() => openEditDialog(record)}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
                                 <Button
                                   variant="ghost"
                                   size="icon"
