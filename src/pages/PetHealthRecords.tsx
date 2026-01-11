@@ -253,6 +253,18 @@ const PetHealthRecords = () => {
       return;
     }
 
+    // For vaccinations/medications, auto-calculate next_due_date from date_administered + interval
+    let calculatedNextDueDate: string | null = null;
+    const hasInterval = recordType === 'vaccination' || recordType === 'medication';
+    
+    if (hasInterval && dateAdministered && intervalType !== 'once') {
+      const intervalDays = getIntervalDays();
+      calculatedNextDueDate = format(addDays(new Date(dateAdministered), intervalDays), "yyyy-MM-dd");
+    } else if (!hasInterval) {
+      // For other record types, use the manually entered next due date
+      calculatedNextDueDate = nextDueDate || null;
+    }
+
     setIsAdding(true);
     try {
       // First, insert the record to get an ID
@@ -263,12 +275,12 @@ const PetHealthRecords = () => {
         title,
         description: description || null,
         date_administered: dateAdministered || null,
-        next_due_date: nextDueDate || null,
+        next_due_date: calculatedNextDueDate,
         veterinarian_name: vetName || null,
         clinic_name: clinicName || null,
         notes: notes || null,
-        reminder_interval_type: (recordType === 'vaccination' || recordType === 'medication') ? intervalType : null,
-        reminder_interval_days: (recordType === 'vaccination' || recordType === 'medication') ? getIntervalDays() : null,
+        reminder_interval_type: hasInterval ? intervalType : null,
+        reminder_interval_days: hasInterval ? getIntervalDays() : null,
       }).select().single();
 
       if (error) throw error;
@@ -602,24 +614,39 @@ const PetHealthRecords = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  {/* For vaccinations/medications: just show date administered, next due is auto-calculated */}
+                  {(recordType === 'vaccination' || recordType === 'medication') ? (
                     <div className="space-y-2">
-                      <Label>Date Administered</Label>
+                      <Label>Date Given</Label>
                       <Input
                         type="date"
                         value={dateAdministered}
                         onChange={(e) => setDateAdministered(e.target.value)}
                       />
+                      <p className="text-xs text-muted-foreground">
+                        Next due date will be auto-calculated based on the interval below
+                      </p>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Next Due Date</Label>
-                      <Input
-                        type="date"
-                        value={nextDueDate}
-                        onChange={(e) => setNextDueDate(e.target.value)}
-                      />
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Date</Label>
+                        <Input
+                          type="date"
+                          value={dateAdministered}
+                          onChange={(e) => setDateAdministered(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Next Due Date (Optional)</Label>
+                        <Input
+                          type="date"
+                          value={nextDueDate}
+                          onChange={(e) => setNextDueDate(e.target.value)}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Interval options for vaccinations and medications */}
                   {(recordType === 'vaccination' || recordType === 'medication') && (
@@ -638,9 +665,11 @@ const PetHealthRecords = () => {
                             ))}
                           </SelectContent>
                         </Select>
-                        <p className="text-xs text-muted-foreground">
-                          How often this treatment needs to be repeated
-                        </p>
+                        {intervalType !== 'once' && (
+                          <p className="text-xs text-primary">
+                            ✓ This will appear in your Reminders tab
+                          </p>
+                        )}
                       </div>
                       {intervalType === 'custom' && (
                         <div className="space-y-2">
