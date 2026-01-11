@@ -22,7 +22,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
 import LostPetAlerts from "./pages/LostPetAlerts";
 import PetHealthRecords from "./pages/PetHealthRecords";
-import VaccinationReminders from "./pages/VaccinationReminders";
+
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
 import BusinessRedemptionHistory from "./pages/BusinessRedemptionHistory";
 import ResetPassword from "./pages/ResetPassword";
@@ -56,7 +56,7 @@ const App = () => (
               <Route path="/member/health-assistant" element={<PetHealthAssistant />} />
               <Route path="/member/lost-pets" element={<LostPetAlerts />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
-              <Route path="/member/vaccinations" element={<VaccinationReminders />} />
+              <Route path="/member/vaccinations" element={<PetHealthRecords />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/member/notifications" element={<Notifications />} />
               <Route path="/member/upgrade" element={<MemberUpgrade />} />
