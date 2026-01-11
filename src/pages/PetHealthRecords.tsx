@@ -317,6 +317,9 @@ const PetHealthRecords = () => {
   const handleViewDocument = async (record: HealthRecord) => {
     if (!record.document_url) return;
     
+    // Open window synchronously to avoid popup blocker
+    const newWindow = window.open('about:blank', '_blank');
+    
     try {
       // document_url can be a full URL (legacy) or just a path (new)
       let filePath = record.document_url;
@@ -333,9 +336,15 @@ const PetHealthRecords = () => {
       
       if (error) throw error;
       
-      window.open(data.signedUrl, '_blank');
+      if (newWindow) {
+        newWindow.location.href = data.signedUrl;
+      } else {
+        // Fallback: use direct link if popup was blocked
+        window.location.href = data.signedUrl;
+      }
     } catch (err) {
       console.error("Error accessing document:", err);
+      if (newWindow) newWindow.close();
       toast.error("Failed to access document");
     }
   };
