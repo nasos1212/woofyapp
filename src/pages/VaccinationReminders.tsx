@@ -46,6 +46,8 @@ interface HealthRecord {
   description: string | null;
   veterinarian_name: string | null;
   clinic_name: string | null;
+  reminder_interval_type: string | null;
+  reminder_interval_days: number | null;
 }
 
 interface UpcomingVaccination {
@@ -54,6 +56,14 @@ interface UpcomingVaccination {
   daysUntilDue: number;
   status: 'overdue' | 'due-today' | 'due-soon' | 'upcoming';
 }
+
+const INTERVAL_OPTIONS = [
+  { value: 'monthly', label: 'Monthly (30 days)', days: 30 },
+  { value: 'quarterly', label: 'Every 3 months (90 days)', days: 90 },
+  { value: 'biannually', label: 'Every 6 months (180 days)', days: 180 },
+  { value: 'yearly', label: 'Yearly (365 days)', days: 365 },
+  { value: 'custom', label: 'Custom interval', days: 0 },
+] as const;
 
 const VaccinationReminders = () => {
   const { user, loading: authLoading } = useAuth();
@@ -69,6 +79,8 @@ const VaccinationReminders = () => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [vaccineName, setVaccineName] = useState("");
   const [nextDueDate, setNextDueDate] = useState("");
+  const [intervalType, setIntervalType] = useState<string>("yearly");
+  const [customDays, setCustomDays] = useState<string>("365");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -156,6 +168,14 @@ const VaccinationReminders = () => {
     }
   };
 
+  const getIntervalDays = () => {
+    if (intervalType === 'custom') {
+      return parseInt(customDays) || 30;
+    }
+    const option = INTERVAL_OPTIONS.find(o => o.value === intervalType);
+    return option?.days || 365;
+  };
+
   const handleAddVaccination = async () => {
     if (!selectedPet || !vaccineName || !nextDueDate) {
       toast({
@@ -174,6 +194,8 @@ const VaccinationReminders = () => {
         title: vaccineName,
         record_type: "vaccination",
         next_due_date: nextDueDate,
+        reminder_interval_type: intervalType,
+        reminder_interval_days: getIntervalDays(),
       });
 
       if (error) throw error;
@@ -197,24 +219,31 @@ const VaccinationReminders = () => {
     }
   };
 
-  const markAsCompleted = async (recordId: string, petName: string) => {
+  const markAsCompleted = async (record: HealthRecord, petName: string) => {
     try {
-      const today = format(new Date(), "yyyy-MM-dd");
-      const nextYear = format(addDays(new Date(), 365), "yyyy-MM-dd");
+      const today = new Date();
+      const intervalDays = record.reminder_interval_days || 365;
+      const nextDue = format(addDays(today, intervalDays), "yyyy-MM-dd");
 
       const { error } = await supabase
         .from("pet_health_records")
         .update({
-          date_administered: today,
-          next_due_date: nextYear,
+          date_administered: format(today, "yyyy-MM-dd"),
+          next_due_date: nextDue,
         })
-        .eq("id", recordId);
+        .eq("id", record.id);
 
       if (error) throw error;
 
+      const intervalLabel = record.reminder_interval_type === 'monthly' ? '1 month' :
+        record.reminder_interval_type === 'quarterly' ? '3 months' :
+        record.reminder_interval_type === 'biannually' ? '6 months' :
+        record.reminder_interval_type === 'yearly' ? '1 year' :
+        `${intervalDays} days`;
+
       toast({
         title: "Marked as completed!",
-        description: `${petName}'s vaccination has been recorded. Next due in 1 year.`,
+        description: `${petName}'s treatment has been recorded. Next due in ${intervalLabel}.`,
       });
 
       fetchData();
@@ -232,6 +261,8 @@ const VaccinationReminders = () => {
     setSelectedPet(record.pet_id);
     setVaccineName(record.title);
     setNextDueDate(record.next_due_date || "");
+    setIntervalType(record.reminder_interval_type || "yearly");
+    setCustomDays(String(record.reminder_interval_days || 365));
     setEditDialogOpen(true);
   };
 
@@ -253,6 +284,8 @@ const VaccinationReminders = () => {
           pet_id: selectedPet,
           title: vaccineName,
           next_due_date: nextDueDate,
+          reminder_interval_type: intervalType,
+          reminder_interval_days: getIntervalDays(),
         })
         .eq("id", editingRecord.id);
 
@@ -306,6 +339,8 @@ const VaccinationReminders = () => {
     setSelectedPet("");
     setVaccineName("");
     setNextDueDate("");
+    setIntervalType("yearly");
+    setCustomDays("365");
   };
 
   const getStatusBadge = (status: UpcomingVaccination['status']) => {
@@ -472,6 +507,14 @@ const VaccinationReminders = () => {
                             <Calendar className="h-4 w-4" />
                             Due: {format(new Date(item.record.next_due_date!), "MMM d, yyyy")}
                           </span>
+                          <span className="text-xs">
+                            ({item.record.reminder_interval_type === 'monthly' ? 'Monthly' :
+                              item.record.reminder_interval_type === 'quarterly' ? 'Every 3 mo' :
+                              item.record.reminder_interval_type === 'biannually' ? 'Every 6 mo' :
+                              item.record.reminder_interval_type === 'yearly' ? 'Yearly' :
+                              item.record.reminder_interval_type === 'custom' ? `Every ${item.record.reminder_interval_days} days` :
+                              'Yearly'})
+                          </span>
                           {item.record.clinic_name && (
                             <span>Clinic: {item.record.clinic_name}</span>
                           )}
@@ -506,7 +549,7 @@ const VaccinationReminders = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => markAsCompleted(item.record.id, item.pet.pet_name)}
+                          onClick={() => markAsCompleted(item.record, item.pet.pet_name)}
                         >
                           <CheckCircle className="mr-2 h-4 w-4" />
                           Mark Done
@@ -567,6 +610,38 @@ const VaccinationReminders = () => {
                 onChange={(e) => setNextDueDate(e.target.value)}
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="interval">Reminder Interval</Label>
+              <Select value={intervalType} onValueChange={setIntervalType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select interval" />
+                </SelectTrigger>
+                <SelectContent>
+                  {INTERVAL_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                How often this treatment needs to be repeated
+              </p>
+            </div>
+            {intervalType === 'custom' && (
+              <div className="space-y-2">
+                <Label htmlFor="customDays">Custom Interval (days)</Label>
+                <Input
+                  id="customDays"
+                  type="number"
+                  min="1"
+                  max="730"
+                  value={customDays}
+                  onChange={(e) => setCustomDays(e.target.value)}
+                  placeholder="Enter number of days"
+                />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
@@ -628,6 +703,38 @@ const VaccinationReminders = () => {
                 onChange={(e) => setNextDueDate(e.target.value)}
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-interval">Reminder Interval</Label>
+              <Select value={intervalType} onValueChange={setIntervalType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select interval" />
+                </SelectTrigger>
+                <SelectContent>
+                  {INTERVAL_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                How often this treatment needs to be repeated
+              </p>
+            </div>
+            {intervalType === 'custom' && (
+              <div className="space-y-2">
+                <Label htmlFor="edit-customDays">Custom Interval (days)</Label>
+                <Input
+                  id="edit-customDays"
+                  type="number"
+                  min="1"
+                  max="730"
+                  value={customDays}
+                  onChange={(e) => setCustomDays(e.target.value)}
+                  placeholder="Enter number of days"
+                />
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
