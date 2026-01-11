@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil } from "lucide-react";
+import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil, Upload, X, ExternalLink, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import Header from "@/components/Header";
 import { format, isPast, addDays, differenceInDays, isToday } from "date-fns";
 import DogLoader from "@/components/DogLoader";
+import { validateDocumentFile, MAX_DOCUMENT_SIZE, VALID_DOCUMENT_EXTENSIONS } from "@/lib/fileValidation";
 
 interface HealthRecord {
   id: string;
@@ -28,6 +29,7 @@ interface HealthRecord {
   veterinarian_name: string | null;
   clinic_name: string | null;
   notes: string | null;
+  document_url: string | null;
   reminder_interval_type: string | null;
   reminder_interval_days: number | null;
   created_at: string;
@@ -113,6 +115,9 @@ const PetHealthRecords = () => {
   const [intervalType, setIntervalType] = useState("yearly");
   const [customDays, setCustomDays] = useState("365");
   const [selectedPreset, setSelectedPreset] = useState("");
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -201,6 +206,44 @@ const PetHealthRecords = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validation = validateDocumentFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      return;
+    }
+
+    setDocumentFile(file);
+  };
+
+  const uploadDocument = async (file: File, recordId: string): Promise<string | null> => {
+    if (!user) return null;
+    
+    const fileExt = file.name.split('.').pop()?.toLowerCase();
+    const fileName = `${user.id}/${recordId}/${Date.now()}.${fileExt}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('health-documents')
+      .upload(fileName, file);
+    
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      throw new Error('Failed to upload document');
+    }
+    
+    const { data: urlData } = supabase.storage
+      .from('health-documents')
+      .getPublicUrl(fileName);
+    
+    return urlData.publicUrl;
+  };
+
   const handleAddRecord = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user || !selectedPet) return;
@@ -212,7 +255,8 @@ const PetHealthRecords = () => {
 
     setIsAdding(true);
     try {
-      const { error } = await supabase.from("pet_health_records").insert({
+      // First, insert the record to get an ID
+      const { data: newRecord, error } = await supabase.from("pet_health_records").insert({
         pet_id: selectedPet.id,
         owner_user_id: user.id,
         record_type: recordType,
@@ -225,9 +269,27 @@ const PetHealthRecords = () => {
         notes: notes || null,
         reminder_interval_type: (recordType === 'vaccination' || recordType === 'medication') ? intervalType : null,
         reminder_interval_days: (recordType === 'vaccination' || recordType === 'medication') ? getIntervalDays() : null,
-      });
+      }).select().single();
 
       if (error) throw error;
+
+      // If there's a document to upload, upload it and update the record
+      if (documentFile && newRecord) {
+        setIsUploading(true);
+        try {
+          const documentUrl = await uploadDocument(documentFile, newRecord.id);
+          if (documentUrl) {
+            await supabase.from("pet_health_records")
+              .update({ document_url: documentUrl })
+              .eq("id", newRecord.id);
+          }
+        } catch (uploadErr) {
+          console.error("Document upload failed:", uploadErr);
+          toast.error("Record saved but document upload failed");
+        } finally {
+          setIsUploading(false);
+        }
+      }
 
       toast.success("Health record added!");
       setShowAddDialog(false);
@@ -238,6 +300,48 @@ const PetHealthRecords = () => {
       toast.error("Failed to add record");
     } finally {
       setIsAdding(false);
+    }
+  };
+
+  const getDocumentUrl = async (recordId: string, documentPath: string): Promise<string | null> => {
+    // Extract the file path from the full URL or use as-is
+    const pathMatch = documentPath.match(/health-documents\/(.+)$/);
+    const filePath = pathMatch ? pathMatch[1] : documentPath;
+    
+    const { data, error } = await supabase.storage
+      .from('health-documents')
+      .createSignedUrl(filePath, 3600); // 1 hour expiry
+    
+    if (error) {
+      console.error('Error getting signed URL:', error);
+      return null;
+    }
+    
+    return data.signedUrl;
+  };
+
+  const handleViewDocument = async (record: HealthRecord) => {
+    if (!record.document_url) return;
+    
+    try {
+      // Extract the file path from the stored URL
+      const pathMatch = record.document_url.match(/health-documents\/(.+)$/);
+      if (!pathMatch) {
+        toast.error("Invalid document path");
+        return;
+      }
+      
+      const filePath = pathMatch[1];
+      const { data, error } = await supabase.storage
+        .from('health-documents')
+        .createSignedUrl(filePath, 3600);
+      
+      if (error) throw error;
+      
+      window.open(data.signedUrl, '_blank');
+    } catch (err) {
+      console.error("Error accessing document:", err);
+      toast.error("Failed to access document");
     }
   };
 
@@ -307,6 +411,10 @@ const PetHealthRecords = () => {
     setIntervalType("yearly");
     setCustomDays("365");
     setSelectedPreset("");
+    setDocumentFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   // Get reminders with status
@@ -578,8 +686,52 @@ const PetHealthRecords = () => {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isAdding}>
-                    {isAdding ? "Adding..." : "Add Record"}
+                  {/* Document Upload */}
+                  <div className="space-y-2">
+                    <Label>Attach Document (Optional)</Label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                        onChange={handleFileSelect}
+                        className="hidden"
+                        id="document-upload"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        {documentFile ? "Change File" : "Upload File"}
+                      </Button>
+                      {documentFile && (
+                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                          <span className="text-sm text-muted-foreground truncate">{documentFile.name}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 shrink-0"
+                            onClick={() => {
+                              setDocumentFile(null);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      PDF, images, or Word docs up to 10MB. Great for vet receipts & certificates.
+                    </p>
+                  </div>
+
+                  <Button type="submit" className="w-full" disabled={isAdding || isUploading}>
+                    {isAdding || isUploading ? (isUploading ? "Uploading..." : "Adding...") : "Add Record"}
                   </Button>
                 </form>
               </DialogContent>
@@ -701,6 +853,17 @@ const PetHealthRecords = () => {
                                   {Math.abs(reminder.daysUntil)} days overdue
                                 </p>
                               )}
+                              {reminder.document_url && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="mt-1 gap-1 h-7 text-xs px-2"
+                                  onClick={() => handleViewDocument(reminder)}
+                                >
+                                  <File className="w-3 h-3" />
+                                  Document
+                                </Button>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <Button
@@ -773,6 +936,18 @@ const PetHealthRecords = () => {
                               {record.veterinarian_name && <span>Vet: {record.veterinarian_name}</span>}
                               {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
                             </div>
+                            {record.document_url && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="mt-2 gap-2"
+                                onClick={() => handleViewDocument(record)}
+                              >
+                                <File className="w-4 h-4" />
+                                View Document
+                                <ExternalLink className="w-3 h-3" />
+                              </Button>
+                            )}
                           </div>
                         </div>
                       ))}
