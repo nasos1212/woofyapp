@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, Bell, PlusCircle, Sparkles } from "lucide-react";
+import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
@@ -412,22 +412,13 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">Ask pet health questions</p>
                     </div>
                   </Link>
-                  <Link to="/member/vaccinations" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
-                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">Vaccination Reminders</p>
-                      <p className="text-xs text-muted-foreground">Never miss a due date</p>
-                    </div>
-                  </Link>
                   <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                       <Syringe className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="font-medium text-foreground text-sm">Health Records</p>
-                      <p className="text-xs text-muted-foreground">Vaccinations & vet visits</p>
+                      <p className="text-xs text-muted-foreground">Vaccinations, reminders & vet visits</p>
                     </div>
                   </Link>
                   <Link to="/member/lost-pets" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">

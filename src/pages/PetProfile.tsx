@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Syringe } from "lucide-react";
+import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -288,25 +288,16 @@ const PetProfile = () => {
           </Card>
 
 
-          {/* Quick Actions - Health Records & Vaccinations */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+          {/* Quick Actions - Health Records */}
+          <div className="mb-6">
             <Button
               variant="default"
               size="lg"
               onClick={() => navigate("/member/health-records")}
-              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              className="w-full h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-xs sm:text-sm">Health Records</span>
-            </Button>
-            <Button
-              variant="default"
-              size="lg"
-              onClick={() => navigate("/member/vaccinations")}
-              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-1.5 sm:gap-2 bg-gradient-to-br from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-            >
-              <Syringe className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-xs sm:text-sm">Vaccinations</span>
+              <span className="font-semibold text-sm sm:text-base">Health Records & Reminders</span>
             </Button>
           </div>
 
