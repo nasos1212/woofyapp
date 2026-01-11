@@ -44,7 +44,8 @@ import {
   ChevronsUpDown,
   Send,
   Info,
-  Dog
+  Dog,
+  ArrowLeft
 } from 'lucide-react';
 import { dogBreeds } from '@/data/dogBreeds';
 import { cn } from '@/lib/utils';
@@ -218,6 +219,16 @@ const CommunityAsk = () => {
         <Header />
         
         <main className="container mx-auto px-4 py-8 pt-24 max-w-3xl">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/community")}
+            className="mb-4 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Community
+          </Button>
+
           <Card className="mt-2">
             <CardHeader>
               <CardTitle className="text-2xl">Ask the Community</CardTitle>

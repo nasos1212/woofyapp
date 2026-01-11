@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3 } from "lucide-react";
+import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -162,6 +163,16 @@ const RedemptionHistory = () => {
         <Header />
 
         <main className="container mx-auto px-4 py-8 pt-24">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/member")}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
+
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">

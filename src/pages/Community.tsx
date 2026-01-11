@@ -32,7 +32,8 @@ import {
   AlertTriangle,
   AlertCircle,
   Users,
-  Trophy
+  Trophy,
+  ArrowLeft
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -244,6 +245,15 @@ const Community = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto px-4 py-8 pt-24">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/member')}
+            className="mb-4 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Dashboard
+          </Button>
 
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
