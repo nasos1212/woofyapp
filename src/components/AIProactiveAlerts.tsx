@@ -78,6 +78,15 @@ export const AIProactiveAlerts = () => {
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isHidden, setIsHidden] = useState(() => {
+    // Check sessionStorage - resets on new browser session/login
+    return sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
+  });
+
+  const hideWidget = () => {
+    sessionStorage.setItem('wooffy_reminders_hidden', 'true');
+    setIsHidden(true);
+  };
 
   useEffect(() => {
     if (user) {
@@ -263,15 +272,16 @@ export const AIProactiveAlerts = () => {
   const overdueCount = reminders.filter(r => r.status === "overdue").length;
   const todayCount = reminders.filter(r => r.status === "today").length;
 
-  // If no reminders, show nothing
+  // If no reminders or hidden, show nothing
   if (reminders.length === 0 && alerts.length === 0) return null;
+  if (isHidden) return null;
 
   return (
     <Card className={cn(
       "mb-6 overflow-hidden transition-all duration-300",
       hasUrgentItems 
         ? "border-2 border-primary/50 shadow-lg shadow-primary/10" 
-        : "border border-border"
+        : "border-2 border-cyan-200 shadow-md"
     )}>
       {/* Header */}
       <div 
@@ -279,14 +289,14 @@ export const AIProactiveAlerts = () => {
           "px-4 py-3 flex items-center justify-between cursor-pointer transition-colors",
           hasUrgentItems 
             ? "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" 
-            : "bg-muted/30"
+            : "bg-gradient-to-r from-cyan-50 via-teal-50 to-emerald-50"
         )}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <div className="flex items-center gap-3">
           <div className={cn(
             "p-2 rounded-full",
-            hasUrgentItems ? "bg-primary text-primary-foreground" : "bg-muted"
+            hasUrgentItems ? "bg-primary text-primary-foreground" : "bg-gradient-to-br from-cyan-400 to-teal-500 text-white"
           )}>
             <Sparkles className="w-4 h-4" />
           </div>
@@ -320,6 +330,17 @@ export const AIProactiveAlerts = () => {
               Clear alerts
             </Button>
           )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              hideWidget();
+            }}
+          >
+            Hide
+          </Button>
           <ChevronRight className={cn(
             "w-4 h-4 text-muted-foreground transition-transform",
             !isCollapsed && "rotate-90"
