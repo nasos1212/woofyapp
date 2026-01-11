@@ -317,19 +317,6 @@ export const AIProactiveAlerts = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {alerts.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                dismissAllAlerts();
-              }}
-            >
-              Clear alerts
-            </Button>
-          )}
           <Button
             variant="ghost"
             size="sm"
