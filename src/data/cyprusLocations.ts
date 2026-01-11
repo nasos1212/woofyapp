@@ -80,14 +80,6 @@ export const cyprusCities: CyprusArea[] = [
       "Xylofagou",
     ],
   },
-  {
-    name: "Kyrenia (Girne) District - Free Areas",
-    areas: [
-      "Agios Amvrosios",
-      "Asomatos",
-      "Akanthou",
-    ],
-  },
 ];
 
 // Flat list of all cities for simple selection
