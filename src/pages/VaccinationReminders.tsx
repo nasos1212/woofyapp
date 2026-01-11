@@ -58,6 +58,7 @@ interface UpcomingVaccination {
 }
 
 const INTERVAL_OPTIONS = [
+  { value: 'once', label: 'One-time only', days: 0 },
   { value: 'monthly', label: 'Monthly (30 days)', days: 30 },
   { value: 'quarterly', label: 'Every 3 months (90 days)', days: 90 },
   { value: 'biannually', label: 'Every 6 months (180 days)', days: 180 },
@@ -255,8 +256,11 @@ const VaccinationReminders = () => {
   const markAsCompleted = async (record: HealthRecord, petName: string) => {
     try {
       const today = new Date();
+      const isOneTime = record.reminder_interval_type === 'once';
       const intervalDays = record.reminder_interval_days || 365;
-      const nextDue = format(addDays(today, intervalDays), "yyyy-MM-dd");
+      
+      // For one-time treatments, set next_due_date to null (removes from upcoming list)
+      const nextDue = isOneTime ? null : format(addDays(today, intervalDays), "yyyy-MM-dd");
 
       const { error } = await supabase
         .from("pet_health_records")
@@ -268,16 +272,23 @@ const VaccinationReminders = () => {
 
       if (error) throw error;
 
-      const intervalLabel = record.reminder_interval_type === 'monthly' ? '1 month' :
-        record.reminder_interval_type === 'quarterly' ? '3 months' :
-        record.reminder_interval_type === 'biannually' ? '6 months' :
-        record.reminder_interval_type === 'yearly' ? '1 year' :
-        `${intervalDays} days`;
+      if (isOneTime) {
+        toast({
+          title: "Treatment completed! ✓",
+          description: `${petName}'s one-time treatment has been recorded.`,
+        });
+      } else {
+        const intervalLabel = record.reminder_interval_type === 'monthly' ? '1 month' :
+          record.reminder_interval_type === 'quarterly' ? '3 months' :
+          record.reminder_interval_type === 'biannually' ? '6 months' :
+          record.reminder_interval_type === 'yearly' ? '1 year' :
+          `${intervalDays} days`;
 
-      toast({
-        title: "Marked as completed!",
-        description: `${petName}'s treatment has been recorded. Next due in ${intervalLabel}.`,
-      });
+        toast({
+          title: "Marked as completed!",
+          description: `${petName}'s treatment has been recorded. Next due in ${intervalLabel}.`,
+        });
+      }
 
       fetchData();
     } catch (error: any) {
@@ -561,7 +572,8 @@ const VaccinationReminders = () => {
                             Due: {format(new Date(item.record.next_due_date!), "MMM d, yyyy")}
                           </span>
                           <span className="text-xs">
-                            ({item.record.reminder_interval_type === 'monthly' ? 'Monthly' :
+                            ({item.record.reminder_interval_type === 'once' ? 'One-time' :
+                              item.record.reminder_interval_type === 'monthly' ? 'Monthly' :
                               item.record.reminder_interval_type === 'quarterly' ? 'Every 3 mo' :
                               item.record.reminder_interval_type === 'biannually' ? 'Every 6 mo' :
                               item.record.reminder_interval_type === 'yearly' ? 'Yearly' :
