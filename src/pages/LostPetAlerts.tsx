@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, X } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
+import LocationSelector from "@/components/LocationSelector";
+import CityMultiSelector from "@/components/CityMultiSelector";
+import { formatLocation } from "@/data/cyprusLocations";
 import { formatDistanceToNow } from "date-fns";
 
 interface LostPetAlert {
@@ -60,7 +63,6 @@ const LostPetAlerts = () => {
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreferences | null>(null);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [selectedCities, setSelectedCities] = useState<string[]>([]);
-  const [newCity, setNewCity] = useState("");
   const [isSavingPrefs, setIsSavingPrefs] = useState(false);
 
   // Form state
@@ -68,7 +70,9 @@ const LostPetAlerts = () => {
   const [petName, setPetName] = useState("");
   const [petDescription, setPetDescription] = useState("");
   const [petBreed, setPetBreed] = useState("");
-  const [lastSeenLocation, setLastSeenLocation] = useState("");
+  const [lastSeenCity, setLastSeenCity] = useState("");
+  const [lastSeenArea, setLastSeenArea] = useState("");
+  const [lastSeenDetails, setLastSeenDetails] = useState("");
   const [lastSeenDate, setLastSeenDate] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -176,17 +180,6 @@ const LostPetAlerts = () => {
     }
   };
 
-  const addCity = () => {
-    const trimmedCity = newCity.trim();
-    if (trimmedCity && !selectedCities.includes(trimmedCity)) {
-      setSelectedCities([...selectedCities, trimmedCity]);
-      setNewCity("");
-    }
-  };
-
-  const removeCity = (city: string) => {
-    setSelectedCities(selectedCities.filter((c) => c !== city));
-  };
 
   const handlePetSelect = (petId: string) => {
     setSelectedPetId(petId);
@@ -204,10 +197,17 @@ const LostPetAlerts = () => {
       return;
     }
 
-    if (!petName || !petDescription || !lastSeenLocation || !lastSeenDate) {
+    if (!petName || !petDescription || !lastSeenCity || !lastSeenDate) {
       toast.error("Please fill in all required fields");
       return;
     }
+
+    // Build location string
+    const locationParts = [formatLocation(lastSeenCity, lastSeenArea === "all-areas" ? "" : lastSeenArea)];
+    if (lastSeenDetails.trim()) {
+      locationParts.push(lastSeenDetails.trim());
+    }
+    const lastSeenLocation = locationParts.join(" - ");
 
     setIsCreating(true);
     try {
@@ -244,7 +244,9 @@ const LostPetAlerts = () => {
     setPetName("");
     setPetDescription("");
     setPetBreed("");
-    setLastSeenLocation("");
+    setLastSeenCity("");
+    setLastSeenArea("");
+    setLastSeenDetails("");
     setLastSeenDate("");
     setContactPhone("");
     setContactEmail("");
@@ -354,57 +356,16 @@ const LostPetAlerts = () => {
 
                       {notificationsEnabled && (
                         <div className="space-y-4">
-                          <div>
-                            <Label className="text-base font-medium">Your Cities</Label>
-                            <p className="text-sm text-muted-foreground mb-3">
-                              Add cities where you'd like to help find lost pets
-                            </p>
-                            
-                            <div className="flex gap-2 mb-3">
-                              <Input
-                                placeholder="Enter city name..."
-                                value={newCity}
-                                onChange={(e) => setNewCity(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    addCity();
-                                  }
-                                }}
-                              />
-                              <Button type="button" onClick={addCity} disabled={!newCity.trim()}>
-                                Add
-                              </Button>
-                            </div>
-
-                            {selectedCities.length > 0 ? (
-                              <div className="flex flex-wrap gap-2">
-                                {selectedCities.map((city) => (
-                                  <Badge
-                                    key={city}
-                                    variant="secondary"
-                                    className="pl-3 pr-1 py-1.5 flex items-center gap-1"
-                                  >
-                                    {city}
-                                    <button
-                                      onClick={() => removeCity(city)}
-                                      className="ml-1 hover:bg-muted rounded-full p-0.5"
-                                    >
-                                      <X className="w-3 h-3" />
-                                    </button>
-                                  </Badge>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground italic">
-                                No cities added yet. Add at least one city to see contact information.
-                              </p>
-                            )}
-                          </div>
+                          <CityMultiSelector
+                            selectedLocations={selectedCities}
+                            onLocationsChange={setSelectedCities}
+                            label="Your Cities/Areas"
+                            description="Select cities or specific areas where you'd like to help find lost pets"
+                          />
 
                           <div className="bg-primary/10 rounded-lg p-4">
                             <p className="text-sm text-foreground">
-                              <strong>Privacy Note:</strong> By enabling notifications and adding cities, 
+                              <strong>Privacy Note:</strong> By enabling notifications and selecting locations, 
                               you'll be able to see contact information for lost pet alerts to help reunite pets with their families.
                             </p>
                           </div>
@@ -482,13 +443,23 @@ const LostPetAlerts = () => {
                       />
                     </div>
 
+                    <LocationSelector
+                      selectedCity={lastSeenCity}
+                      selectedArea={lastSeenArea}
+                      onCityChange={setLastSeenCity}
+                      onAreaChange={setLastSeenArea}
+                      showAreaSelector={true}
+                      required={true}
+                      cityLabel="Last Seen City"
+                      areaLabel="Area"
+                    />
+
                     <div className="space-y-2">
-                      <Label>Last Seen Location *</Label>
+                      <Label>Additional Location Details</Label>
                       <Input
-                        value={lastSeenLocation}
-                        onChange={(e) => setLastSeenLocation(e.target.value)}
-                        placeholder="e.g., Central Park, near the fountain"
-                        required
+                        value={lastSeenDetails}
+                        onChange={(e) => setLastSeenDetails(e.target.value)}
+                        placeholder="e.g., Near the central park, by the fountain"
                       />
                     </div>
 
