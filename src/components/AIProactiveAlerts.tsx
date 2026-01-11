@@ -338,7 +338,7 @@ export const AIProactiveAlerts = () => {
                 "relative p-3 rounded-lg border transition-all cursor-pointer hover:shadow-md",
                 statusConfig[reminder.status].bgClass
               )}
-              onClick={() => navigate("/member/vaccinations")}
+              onClick={() => navigate("/member/health-records")}
             >
               <div className="flex items-center gap-3">
                 <div className={cn(
@@ -379,7 +379,7 @@ export const AIProactiveAlerts = () => {
             <Button
               variant="ghost"
               className="w-full text-sm text-primary hover:text-primary/80"
-              onClick={() => navigate("/member/vaccinations")}
+              onClick={() => navigate("/member/health-records")}
             >
               View all {reminders.length} reminders
               <ChevronRight className="w-4 h-4 ml-1" />
