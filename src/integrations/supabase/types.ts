@@ -1191,6 +1191,8 @@ export type Database = {
           owner_user_id: string
           pet_id: string
           record_type: string
+          reminder_interval_days: number | null
+          reminder_interval_type: string | null
           title: string
           updated_at: string
           veterinarian_name: string | null
@@ -1207,6 +1209,8 @@ export type Database = {
           owner_user_id: string
           pet_id: string
           record_type: string
+          reminder_interval_days?: number | null
+          reminder_interval_type?: string | null
           title: string
           updated_at?: string
           veterinarian_name?: string | null
@@ -1223,6 +1227,8 @@ export type Database = {
           owner_user_id?: string
           pet_id?: string
           record_type?: string
+          reminder_interval_days?: number | null
+          reminder_interval_type?: string | null
           title?: string
           updated_at?: string
           veterinarian_name?: string | null
