@@ -65,6 +65,38 @@ const INTERVAL_OPTIONS = [
   { value: 'custom', label: 'Custom interval', days: 0 },
 ] as const;
 
+interface TreatmentPreset {
+  id: string;
+  name: string;
+  category: 'prevention' | 'vaccine' | 'medication';
+  intervalType: string;
+  intervalDays: number;
+  description: string;
+}
+
+const TREATMENT_PRESETS: TreatmentPreset[] = [
+  // Prevention treatments (monthly)
+  { id: 'flea-tick', name: 'Flea & Tick Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly topical or oral flea and tick prevention' },
+  { id: 'heartworm', name: 'Heartworm Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly heartworm preventative medication' },
+  
+  // Quarterly treatments
+  { id: 'deworming', name: 'Deworming Treatment', category: 'medication', intervalType: 'quarterly', intervalDays: 90, description: 'Intestinal parasite prevention' },
+  
+  // Biannual treatments
+  { id: 'bordetella', name: 'Bordetella (Kennel Cough)', category: 'vaccine', intervalType: 'biannually', intervalDays: 180, description: 'Kennel cough vaccine, often required for boarding' },
+  { id: 'leptospirosis', name: 'Leptospirosis Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Bacterial infection vaccine' },
+  
+  // Annual vaccines
+  { id: 'rabies', name: 'Rabies Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Required by law in most areas' },
+  { id: 'dhpp', name: 'DHPP/DAPP (Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Distemper, Hepatitis, Parvo, Parainfluenza' },
+  { id: 'lyme', name: 'Lyme Disease Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Tick-borne disease prevention' },
+  { id: 'canine-influenza', name: 'Canine Influenza (Dog Flu)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'H3N2 and H3N8 strains' },
+  
+  // Cat vaccines (yearly)
+  { id: 'fvrcp', name: 'FVRCP (Cat Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Feline viral rhinotracheitis, calicivirus, panleukopenia' },
+  { id: 'feline-leukemia', name: 'Feline Leukemia (FeLV)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Recommended for outdoor cats' },
+];
+
 const VaccinationReminders = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -81,6 +113,7 @@ const VaccinationReminders = () => {
   const [nextDueDate, setNextDueDate] = useState("");
   const [intervalType, setIntervalType] = useState<string>("yearly");
   const [customDays, setCustomDays] = useState<string>("365");
+  const [selectedPreset, setSelectedPreset] = useState<string>("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -341,6 +374,26 @@ const VaccinationReminders = () => {
     setNextDueDate("");
     setIntervalType("yearly");
     setCustomDays("365");
+    setSelectedPreset("");
+  };
+
+  const handlePresetSelect = (presetId: string) => {
+    setSelectedPreset(presetId);
+    
+    if (presetId === "custom") {
+      // User wants to enter custom treatment
+      setVaccineName("");
+      setIntervalType("yearly");
+      setCustomDays("365");
+      return;
+    }
+
+    const preset = TREATMENT_PRESETS.find(p => p.id === presetId);
+    if (preset) {
+      setVaccineName(preset.name);
+      setIntervalType(preset.intervalType);
+      setCustomDays(String(preset.intervalDays));
+    }
   };
 
   const getStatusBadge = (status: UpcomingVaccination['status']) => {
@@ -383,8 +436,8 @@ const VaccinationReminders = () => {
   return (
     <>
       <Helmet>
-        <title>Vaccination Reminders | Wooffy</title>
-        <meta name="description" content="Keep track of your pet's vaccination schedule and never miss a due date." />
+        <title>Pet Health Reminders | Wooffy</title>
+        <meta name="description" content="Track vaccinations, medications, and treatments for your pets. Never miss a due date." />
       </Helmet>
 
       <Header />
@@ -404,15 +457,15 @@ const VaccinationReminders = () => {
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
                 <Syringe className="h-8 w-8 text-primary" />
-                Vaccination Reminders
+                Health Reminders
               </h1>
               <p className="text-muted-foreground mt-2">
-                Never miss a vaccination date for your pets
+                Track vaccinations, medications & treatments for your pets
               </p>
             </div>
             <Button onClick={() => setAddDialogOpen(true)} disabled={pets.length === 0}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Reminder
+              Add Treatment
             </Button>
           </div>
 
@@ -564,16 +617,16 @@ const VaccinationReminders = () => {
         </div>
       </main>
 
-      {/* Add Vaccination Dialog */}
+      {/* Add Treatment Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={(open) => {
         setAddDialogOpen(open);
         if (!open) resetForm();
       }}>
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add Vaccination Reminder</DialogTitle>
+            <DialogTitle>Add Health Reminder</DialogTitle>
             <DialogDescription>
-              Add a vaccination due date to get reminders when it's time.
+              Add a vaccination, medication, or treatment reminder for your pet.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -592,13 +645,55 @@ const VaccinationReminders = () => {
                 </SelectContent>
               </Select>
             </div>
+            
+            {/* Treatment Presets */}
             <div className="space-y-2">
-              <Label htmlFor="vaccine">Vaccination Name</Label>
+              <Label>Quick Select (Optional)</Label>
+              <Select value={selectedPreset} onValueChange={handlePresetSelect}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a common treatment..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="custom">✏️ Enter Custom Treatment</SelectItem>
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
+                  {TREATMENT_PRESETS.filter(p => p.category === 'prevention').map((preset) => (
+                    <SelectItem key={preset.id} value={preset.id}>
+                      💊 {preset.name}
+                    </SelectItem>
+                  ))}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Medications</div>
+                  {TREATMENT_PRESETS.filter(p => p.category === 'medication').map((preset) => (
+                    <SelectItem key={preset.id} value={preset.id}>
+                      💉 {preset.name}
+                    </SelectItem>
+                  ))}
+                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Vaccines</div>
+                  {TREATMENT_PRESETS.filter(p => p.category === 'vaccine').map((preset) => (
+                    <SelectItem key={preset.id} value={preset.id}>
+                      🛡️ {preset.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedPreset && selectedPreset !== 'custom' && (
+                <p className="text-xs text-muted-foreground">
+                  {TREATMENT_PRESETS.find(p => p.id === selectedPreset)?.description}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="vaccine">Treatment Name</Label>
               <Input
                 id="vaccine"
-                placeholder="e.g., Rabies, DHPP, Bordetella"
+                placeholder="e.g., Rabies, DHPP, Flea & Tick"
                 value={vaccineName}
-                onChange={(e) => setVaccineName(e.target.value)}
+                onChange={(e) => {
+                  setVaccineName(e.target.value);
+                  if (selectedPreset && selectedPreset !== 'custom') {
+                    setSelectedPreset('custom');
+                  }
+                }}
               />
             </div>
             <div className="space-y-2">
