@@ -324,17 +324,21 @@ export const AIProactiveAlerts = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
-            onClick={(e) => {
-              e.stopPropagation();
-              hideWidget();
-            }}
-          >
-            Hide
-          </Button>
+          {isCollapsed ? (
+            <span className="text-xs text-muted-foreground">Show More</span>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                hideWidget();
+              }}
+            >
+              Hide
+            </Button>
+          )}
           <ChevronRight className={cn(
             "w-4 h-4 text-muted-foreground transition-transform",
             !isCollapsed && "rotate-90"
