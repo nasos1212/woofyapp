@@ -254,7 +254,28 @@ const PetProfile = () => {
                     <p className="text-white/80">{pet.pet_breed || "Breed not specified"}</p>
                   )}
                 </div>
-                {!isEditing && (
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={handleSave}
+                      disabled={isSaving}
+                      className="bg-white/20 hover:bg-white/30 text-white gap-1"
+                    >
+                      {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
+                      Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={handleCancel}
+                      className="bg-white/20 hover:bg-white/30 text-white gap-1"
+                    >
+                      <X className="w-4 h-4" />
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
                   <Button
                     variant="secondary"
                     size="icon"
@@ -304,7 +325,10 @@ const PetProfile = () => {
                   <div className="min-w-0">
                     <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
                     <p className="font-medium text-sm sm:text-base truncate">
-                      {pet.birthday ? calculateAge(pet.birthday) : "Unknown"}
+                      {isEditing 
+                        ? (editedBirthday ? calculateAge(editedBirthday) : "Set birthday")
+                        : (pet.birthday ? calculateAge(pet.birthday) : "Unknown")
+                      }
                     </p>
                   </div>
                 </div>
