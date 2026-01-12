@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText } from "lucide-react";
+import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
 import { format, differenceInYears, differenceInMonths } from "date-fns";
 
@@ -36,6 +47,7 @@ const PetProfile = () => {
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [editedNotes, setEditedNotes] = useState("");
   const [editedName, setEditedName] = useState("");
   const [editedBreed, setEditedBreed] = useState("");
@@ -129,6 +141,35 @@ const PetProfile = () => {
       return `${years} year${years !== 1 ? "s" : ""} old`;
     }
     return `${years} year${years !== 1 ? "s" : ""}, ${months} month${months !== 1 ? "s" : ""} old`;
+  };
+
+  const handleDelete = async () => {
+    if (!pet) return;
+    setIsDeleting(true);
+
+    try {
+      // First delete related health records
+      await supabase
+        .from("pet_health_records")
+        .delete()
+        .eq("pet_id", pet.id);
+
+      // Then delete the pet
+      const { error } = await supabase
+        .from("pets")
+        .delete()
+        .eq("id", pet.id);
+
+      if (error) throw error;
+
+      toast.success(`${pet.pet_name} has been removed`);
+      navigate("/member");
+    } catch (error) {
+      console.error("Error deleting pet:", error);
+      toast.error("Failed to delete pet");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   if (authLoading || isLoading) {
@@ -389,6 +430,39 @@ const PetProfile = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Delete Pet Section */}
+          <div className="mt-8 pt-6 border-t border-destructive/20">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive gap-2"
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? <DogLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
+                  Remove {pet.pet_name} from your account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Remove {pet.pet_name}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete {pet.pet_name}'s profile and all associated health records. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Yes, remove {pet.pet_name}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </main>
       </div>
     </>
