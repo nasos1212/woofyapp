@@ -619,17 +619,109 @@ const PetHealthAssistant = () => {
     setSelectedPet(pet);
     
     // Update userContext with new selected pet
-    if (userContext) {
-      setUserContext({
-        ...userContext,
-        selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
-      });
+    const updatedContext = userContext ? {
+      ...userContext,
+      selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
+    } : null;
+    
+    if (updatedContext) {
+      setUserContext(updatedContext);
     }
     
     // Start a new conversation for this pet
-    await createNewSession();
+    const newSessionId = await createNewSession();
     toast.success(`Switched to ${pet.pet_name}'s chat`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
+    
+    // Send an automatic greeting to establish context for the new pet
+    if (newSessionId) {
+      const greetingMessage = `I want to talk about ${pet.pet_name}${pet.pet_breed ? ` (${pet.pet_breed})` : ''}.`;
+      
+      // Add user message to UI
+      const userMessage: Message = { role: "user", content: greetingMessage };
+      setMessages([userMessage]);
+      setIsLoading(true);
+      
+      // Save user message
+      await saveMessageToSession(newSessionId, "user", greetingMessage, true);
+      
+      let assistantContent = "";
+      
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.access_token) {
+          throw new Error("Not authenticated");
+        }
+        
+        const contextToSend = {
+          ...updatedContext,
+          selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
+        };
+        
+        const resp = await fetch(CHAT_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            messages: [userMessage],
+            userContext: contextToSend,
+            petInfo: { name: pet.pet_name, breed: pet.pet_breed },
+          }),
+        });
+        
+        if (!resp.ok || !resp.body) {
+          throw new Error("Failed to get response");
+        }
+        
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let textBuffer = "";
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          textBuffer += decoder.decode(value, { stream: true });
+          
+          let newlineIndex: number;
+          while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+            let line = textBuffer.slice(0, newlineIndex);
+            textBuffer = textBuffer.slice(newlineIndex + 1);
+            
+            if (line.endsWith("\r")) line = line.slice(0, -1);
+            if (line.startsWith(":") || line.trim() === "") continue;
+            if (!line.startsWith("data: ")) continue;
+            
+            const jsonStr = line.slice(6).trim();
+            if (jsonStr === "[DONE]") break;
+            
+            try {
+              const parsed = JSON.parse(jsonStr);
+              const content = parsed.choices?.[0]?.delta?.content;
+              if (content) {
+                assistantContent += content;
+                setMessages([userMessage, { role: "assistant", content: assistantContent }]);
+              }
+            } catch {
+              textBuffer = line + "\n" + textBuffer;
+              break;
+            }
+          }
+        }
+        
+        if (assistantContent) {
+          await saveMessageToSession(newSessionId, "assistant", assistantContent, false);
+        }
+      } catch (error) {
+        console.error("Pet switch greeting error:", error);
+        const errorMessage = `Hi! I'm ready to help you with ${pet.pet_name}. What would you like to know? 🐾`;
+        setMessages([userMessage, { role: "assistant", content: errorMessage }]);
+        await saveMessageToSession(newSessionId, "assistant", errorMessage, false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   if (loading) {
