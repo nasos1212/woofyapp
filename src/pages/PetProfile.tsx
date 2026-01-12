@@ -438,7 +438,6 @@ const PetProfile = () => {
                     {[
                       { value: "male" as const, label: "♂ Male" },
                       { value: "female" as const, label: "♀ Female" },
-                      { value: "unknown" as const, label: "Unknown" },
                     ].map((option) => (
                         <button
                           key={option.value}

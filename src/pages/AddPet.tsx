@@ -239,7 +239,6 @@ const AddPet = () => {
                     {[
                       { value: "male" as const, label: "♂ Male", color: "bg-blue-100 border-blue-300 text-blue-700" },
                       { value: "female" as const, label: "♀ Female", color: "bg-pink-100 border-pink-300 text-pink-700" },
-                      { value: "unknown" as const, label: "Unknown", color: "bg-gray-100 border-gray-300 text-gray-700" },
                     ].map((option) => (
                       <button
                         key={option.value}
