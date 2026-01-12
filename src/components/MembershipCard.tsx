@@ -1,4 +1,4 @@
-import { Dog, Star, Crown } from "lucide-react";
+import { Dog, Crown } from "lucide-react";
 
 interface MembershipCardProps {
   memberName?: string;
@@ -52,12 +52,6 @@ const MembershipCard = ({
             </div>
           </div>
 
-          {/* Stars */}
-          <div className="flex gap-1 pt-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-wooffy-accent text-wooffy-accent" />
-            ))}
-          </div>
         </div>
 
         {/* Card number */}
