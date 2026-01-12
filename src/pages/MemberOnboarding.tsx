@@ -1,19 +1,26 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Plus, Trash2, Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Dog, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { dogBreeds } from "@/data/dogBreeds";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 import DogLoader from "@/components/DogLoader";
 import Header from "@/components/Header";
 
@@ -66,9 +73,10 @@ const plans: PlanOption[] = [
 const MemberOnboarding = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [step, setStep] = useState<"plan" | "pets">("plan");
+  const [step, setStep] = useState<"plan" | "pets" | "location">("plan");
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
   const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "" }]);
+  const [selectedCity, setSelectedCity] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [membershipId, setMembershipId] = useState<string | null>(null);
 
@@ -123,16 +131,20 @@ const MemberOnboarding = () => {
     setStep("pets");
   };
 
-  const handlePetsSubmit = async () => {
-    if (!user || !selectedPlan) return;
-
+  const handlePetsSubmit = () => {
     // Validate at least one pet has a name
     const validPets = pets.filter((p) => p.name.trim());
     if (validPets.length === 0) {
       toast.error("Please add at least one pet with a name");
       return;
     }
+    setStep("location");
+  };
 
+  const handleFinalSubmit = async () => {
+    if (!user || !selectedPlan) return;
+
+    const validPets = pets.filter((p) => p.name.trim());
     setIsSubmitting(true);
 
     try {
@@ -180,6 +192,14 @@ const MemberOnboarding = () => {
 
       if (petsError) throw petsError;
 
+      // Save preferred city if selected
+      if (selectedCity) {
+        await supabase
+          .from("profiles")
+          .update({ preferred_city: selectedCity })
+          .eq("user_id", user.id);
+      }
+
       toast.success("Welcome to Wooffy! 🎉");
       navigate("/member");
     } catch (error: any) {
@@ -207,19 +227,26 @@ const MemberOnboarding = () => {
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
         <Header />
         <div className="container max-w-4xl mx-auto px-4 py-8 pt-24">
-          <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-12">
             <div className={`flex items-center gap-2 ${step === "plan" ? "text-primary" : "text-muted-foreground"}`}>
               <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "plan" ? "bg-primary text-primary-foreground" : "bg-green-500 text-white"}`}>
                 {step !== "plan" ? <Check className="w-4 h-4" /> : "1"}
               </div>
               <span className="text-sm font-medium hidden sm:inline">Choose Plan</span>
             </div>
-            <div className="w-8 h-0.5 bg-border" />
+            <div className="w-4 sm:w-8 h-0.5 bg-border" />
             <div className={`flex items-center gap-2 ${step === "pets" ? "text-primary" : "text-muted-foreground"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                2
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : step === "location" ? "bg-green-500 text-white" : "bg-muted"}`}>
+                {step === "location" ? <Check className="w-4 h-4" /> : "2"}
               </div>
               <span className="text-sm font-medium hidden sm:inline">Add Pets</span>
+            </div>
+            <div className="w-4 sm:w-8 h-0.5 bg-border" />
+            <div className={`flex items-center gap-2 ${step === "location" ? "text-primary" : "text-muted-foreground"}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "location" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                3
+              </div>
+              <span className="text-sm font-medium hidden sm:inline">Your City</span>
             </div>
           </div>
 
@@ -425,7 +452,85 @@ const MemberOnboarding = () => {
                       size="lg"
                       className="w-full"
                       onClick={handlePetsSubmit}
-                      disabled={isSubmitting || !pets.some((p) => p.name.trim())}
+                      disabled={!pets.some((p) => p.name.trim())}
+                    >
+                      Continue
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Step 3: Location */}
+          {step === "location" && selectedPlan && (
+            <div className="space-y-8">
+              <div className="text-center">
+                <Button variant="ghost" onClick={() => setStep("pets")} className="mb-4">
+                  ← Back to pets
+                </Button>
+                <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
+                  Where Are You Located?
+                </h1>
+                <p className="text-muted-foreground text-lg">
+                  We'll show you offers from businesses near you
+                </p>
+              </div>
+
+              <Card className="max-w-xl mx-auto">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Select Your City
+                  </CardTitle>
+                  <CardDescription>
+                    Your location is never tracked. You choose what to share.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between gap-2 h-12 text-left"
+                      >
+                        <span className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                          {selectedCity || "Select your city..."}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[320px] max-h-[300px] overflow-y-auto bg-card z-50">
+                      {cyprusCityNames.map((city) => (
+                        <DropdownMenuItem 
+                          key={city}
+                          onClick={() => setSelectedCity(city)}
+                          className="flex items-center justify-between cursor-pointer"
+                        >
+                          {city}
+                          {selectedCity === city && (
+                            <Check className="w-4 h-4 text-primary" />
+                          )}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <div className="pt-4 border-t">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="font-medium">Total</span>
+                      <span className="text-2xl font-display font-bold text-gradient">
+                        €{selectedPlan.price}/year
+                      </span>
+                    </div>
+                    <Button
+                      variant="hero"
+                      size="lg"
+                      className="w-full"
+                      onClick={handleFinalSubmit}
+                      disabled={isSubmitting}
                     >
                       {isSubmitting ? (
                         "Setting up..."
@@ -439,6 +544,17 @@ const MemberOnboarding = () => {
                     <p className="text-center text-sm text-muted-foreground mt-3">
                       You'll be redirected to complete payment
                     </p>
+                    {!selectedCity && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full mt-2 text-muted-foreground"
+                        onClick={handleFinalSubmit}
+                        disabled={isSubmitting}
+                      >
+                        Skip for now
+                      </Button>
+                    )}
                   </div>
                 </CardContent>
               </Card>
