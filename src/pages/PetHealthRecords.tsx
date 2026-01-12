@@ -1068,14 +1068,6 @@ const PetHealthRecords = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-muted-foreground hover:text-primary"
-                                onClick={() => openEditDialog(reminder)}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
                                 className="text-muted-foreground hover:text-destructive"
                                 onClick={() => deleteRecord(reminder.id)}
                               >
