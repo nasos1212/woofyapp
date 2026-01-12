@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import {
@@ -30,6 +31,8 @@ interface Pet {
   pet_name: string;
   pet_breed: string | null;
   birthday: string | null;
+  gender: "male" | "female" | "unknown" | null;
+  age_years: number | null;
   notes: string | null;
   created_at: string;
   owner_user_id: string;
@@ -52,6 +55,9 @@ const PetProfile = () => {
   const [editedName, setEditedName] = useState("");
   const [editedBreed, setEditedBreed] = useState("");
   const [editedBirthday, setEditedBirthday] = useState("");
+  const [editedGender, setEditedGender] = useState<"male" | "female" | "unknown">("unknown");
+  const [editedAgeYears, setEditedAgeYears] = useState<number | "">("");
+  const [knowsBirthday, setKnowsBirthday] = useState(true);
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -67,11 +73,20 @@ const PetProfile = () => {
         if (petError) throw petError;
 
         if (petData) {
-          setPet(petData);
+          const genderValue = (petData.gender === "male" || petData.gender === "female" || petData.gender === "unknown") 
+            ? petData.gender 
+            : "unknown";
+          setPet({
+            ...petData,
+            gender: genderValue,
+          } as Pet);
           setEditedNotes(petData.notes || "");
           setEditedName(petData.pet_name);
           setEditedBreed(petData.pet_breed || "");
           setEditedBirthday(petData.birthday || "");
+          setEditedGender(genderValue);
+          setEditedAgeYears(petData.age_years ?? "");
+          setKnowsBirthday(!!petData.birthday || !petData.age_years);
         }
       } catch (error) {
         console.error("Error fetching pet:", error);
@@ -96,7 +111,9 @@ const PetProfile = () => {
         .update({
           pet_name: editedName.trim(),
           pet_breed: editedBreed.trim() || null,
-          birthday: editedBirthday || null,
+          birthday: knowsBirthday && editedBirthday ? editedBirthday : null,
+          gender: editedGender,
+          age_years: !knowsBirthday && editedAgeYears !== "" ? editedAgeYears : null,
           notes: editedNotes.trim() || null,
         })
         .eq("id", pet.id);
@@ -107,7 +124,9 @@ const PetProfile = () => {
         ...pet,
         pet_name: editedName.trim(),
         pet_breed: editedBreed.trim() || null,
-        birthday: editedBirthday || null,
+        birthday: knowsBirthday && editedBirthday ? editedBirthday : null,
+        gender: editedGender,
+        age_years: !knowsBirthday && editedAgeYears !== "" ? editedAgeYears : null,
         notes: editedNotes.trim() || null,
       });
       setIsEditing(false);
@@ -126,21 +145,37 @@ const PetProfile = () => {
       setEditedName(pet.pet_name);
       setEditedBreed(pet.pet_breed || "");
       setEditedBirthday(pet.birthday || "");
+      setEditedGender(pet.gender || "unknown");
+      setEditedAgeYears(pet.age_years ?? "");
+      setKnowsBirthday(!!pet.birthday || !pet.age_years);
     }
     setIsEditing(false);
   };
 
-  const calculateAge = (birthday: string) => {
-    const birthDate = new Date(birthday);
-    const years = differenceInYears(new Date(), birthDate);
-    const months = differenceInMonths(new Date(), birthDate) % 12;
-    
-    if (years === 0) {
-      return `${months} month${months !== 1 ? "s" : ""} old`;
-    } else if (months === 0) {
-      return `${years} year${years !== 1 ? "s" : ""} old`;
+  const calculateAge = (birthday: string | null, ageYears: number | null) => {
+    if (birthday) {
+      const birthDate = new Date(birthday);
+      const years = differenceInYears(new Date(), birthDate);
+      const months = differenceInMonths(new Date(), birthDate) % 12;
+      
+      if (years === 0) {
+        return `${months} month${months !== 1 ? "s" : ""} old`;
+      } else if (months === 0) {
+        return `${years} year${years !== 1 ? "s" : ""} old`;
+      }
+      return `${years} year${years !== 1 ? "s" : ""}, ${months} month${months !== 1 ? "s" : ""} old`;
+    } else if (ageYears !== null) {
+      return `~${ageYears} year${ageYears !== 1 ? "s" : ""} old`;
     }
-    return `${years} year${years !== 1 ? "s" : ""}, ${months} month${months !== 1 ? "s" : ""} old`;
+    return "Unknown";
+  };
+
+  const getGenderDisplay = (gender: string | null) => {
+    switch (gender) {
+      case "male": return { label: "♂ Male", color: "bg-blue-100 text-blue-700" };
+      case "female": return { label: "♀ Female", color: "bg-pink-100 text-pink-700" };
+      default: return { label: "Unknown", color: "bg-gray-100 text-gray-700" };
+    }
   };
 
   const handleDelete = async () => {
@@ -290,25 +325,70 @@ const PetProfile = () => {
           </Card>
 
           {/* Info Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+            {/* Birthday Card */}
             <Card>
               <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
                     <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday / Age</p>
                     {isEditing ? (
-                      <Input
-                        type="date"
-                        value={editedBirthday}
-                        onChange={(e) => setEditedBirthday(e.target.value)}
-                        className="mt-1 text-sm"
-                      />
+                      <div className="mt-1 space-y-2">
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setKnowsBirthday(true)}
+                            className={cn(
+                              "text-xs px-2 py-1 rounded",
+                              knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                            )}
+                          >
+                            Date
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setKnowsBirthday(false)}
+                            className={cn(
+                              "text-xs px-2 py-1 rounded",
+                              !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                            )}
+                          >
+                            Age
+                          </button>
+                        </div>
+                        {knowsBirthday ? (
+                          <Input
+                            type="date"
+                            value={editedBirthday}
+                            onChange={(e) => setEditedBirthday(e.target.value)}
+                            className="text-sm h-8"
+                            max={new Date().toISOString().split('T')[0]}
+                          />
+                        ) : (
+                          <div className="flex items-center gap-1">
+                            <Input
+                              type="number"
+                              min="0"
+                              max="30"
+                              value={editedAgeYears}
+                              onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                              className="text-sm h-8 w-16"
+                              placeholder="Age"
+                            />
+                            <span className="text-xs text-muted-foreground">yrs</span>
+                          </div>
+                        )}
+                      </div>
                     ) : (
                       <p className="font-medium text-sm sm:text-base truncate">
-                        {pet.birthday ? format(new Date(pet.birthday), "MMM d, yyyy") : "Not set"}
+                        {pet.birthday 
+                          ? format(new Date(pet.birthday), "MMM d, yyyy") 
+                          : pet.age_years 
+                            ? `~${pet.age_years} years` 
+                            : "Not set"}
                       </p>
                     )}
                   </div>
@@ -316,6 +396,7 @@ const PetProfile = () => {
               </CardContent>
             </Card>
 
+            {/* Age Card */}
             <Card>
               <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -326,8 +407,10 @@ const PetProfile = () => {
                     <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
                     <p className="font-medium text-sm sm:text-base truncate">
                       {isEditing 
-                        ? (editedBirthday ? calculateAge(editedBirthday) : "Set birthday")
-                        : (pet.birthday ? calculateAge(pet.birthday) : "Unknown")
+                        ? (knowsBirthday 
+                            ? (editedBirthday ? calculateAge(editedBirthday, null) : "Set birthday") 
+                            : (editedAgeYears !== "" ? `~${editedAgeYears} years old` : "Set age"))
+                        : calculateAge(pet.birthday, pet.age_years)
                       }
                     </p>
                   </div>
@@ -335,6 +418,52 @@ const PetProfile = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Gender Card */}
+          <Card className="mb-6">
+            <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={cn(
+                  "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0",
+                  pet.gender === "male" ? "bg-blue-100" : pet.gender === "female" ? "bg-pink-100" : "bg-gray-100"
+                )}>
+                  <span className="text-lg">
+                    {pet.gender === "male" ? "♂" : pet.gender === "female" ? "♀" : "?"}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Gender</p>
+                  {isEditing ? (
+                    <div className="flex gap-1 mt-1">
+                      {[
+                        { value: "male" as const, label: "♂ Male" },
+                        { value: "female" as const, label: "♀ Female" },
+                        { value: "unknown" as const, label: "?" },
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => setEditedGender(option.value)}
+                          className={cn(
+                            "text-xs px-2 py-1 rounded border transition-all",
+                            editedGender === option.value
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "bg-muted border-border hover:border-primary/50"
+                          )}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className={cn("font-medium text-sm sm:text-base", getGenderDisplay(pet.gender).color.replace("bg-", "text-").replace("-100", "-700"))}>
+                      {getGenderDisplay(pet.gender).label}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card className="mb-6">
             <CardContent className="pt-4">

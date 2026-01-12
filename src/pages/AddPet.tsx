@@ -22,6 +22,10 @@ const AddPet = () => {
   const navigate = useNavigate();
   const [petName, setPetName] = useState("");
   const [petBreed, setPetBreed] = useState("");
+  const [petGender, setPetGender] = useState<"male" | "female" | "unknown">("unknown");
+  const [petBirthday, setPetBirthday] = useState("");
+  const [petAgeYears, setPetAgeYears] = useState<number | "">("");
+  const [knowsBirthday, setKnowsBirthday] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [membership, setMembership] = useState<{ id: string; max_pets: number } | null>(null);
   const [currentPetCount, setCurrentPetCount] = useState(0);
@@ -98,6 +102,9 @@ const AddPet = () => {
         owner_user_id: user.id,
         pet_name: petName.trim(),
         pet_breed: petBreed.trim() || null,
+        gender: petGender,
+        birthday: knowsBirthday && petBirthday ? petBirthday : null,
+        age_years: !knowsBirthday && petAgeYears !== "" ? petAgeYears : null,
       });
 
       if (error) throw error;
@@ -223,6 +230,94 @@ const AddPet = () => {
                       </Command>
                     </PopoverContent>
                   </Popover>
+                </div>
+
+                {/* Gender Selection */}
+                <div className="space-y-2">
+                  <Label>Gender</Label>
+                  <div className="flex gap-2">
+                    {[
+                      { value: "male" as const, label: "♂ Male", color: "bg-blue-100 border-blue-300 text-blue-700" },
+                      { value: "female" as const, label: "♀ Female", color: "bg-pink-100 border-pink-300 text-pink-700" },
+                      { value: "unknown" as const, label: "Unknown", color: "bg-gray-100 border-gray-300 text-gray-700" },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setPetGender(option.value)}
+                        className={cn(
+                          "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                          petGender === option.value
+                            ? option.color + " ring-2 ring-offset-2 ring-primary/50"
+                            : "bg-background border-border hover:border-primary/50"
+                        )}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Birthday / Age Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Label>Birthday / Age</Label>
+                  </div>
+                  
+                  <div className="flex gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => setKnowsBirthday(true)}
+                      className={cn(
+                        "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                        knowsBirthday
+                          ? "bg-primary/10 border-primary text-primary"
+                          : "bg-background border-border hover:border-primary/50"
+                      )}
+                    >
+                      I know the birthday
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setKnowsBirthday(false)}
+                      className={cn(
+                        "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                        !knowsBirthday
+                          ? "bg-primary/10 border-primary text-primary"
+                          : "bg-background border-border hover:border-primary/50"
+                      )}
+                    >
+                      I know approximate age
+                    </button>
+                  </div>
+
+                  {knowsBirthday ? (
+                    <div className="space-y-2">
+                      <Input
+                        type="date"
+                        value={petBirthday}
+                        onChange={(e) => setPetBirthday(e.target.value)}
+                        max={new Date().toISOString().split('T')[0]}
+                      />
+                      <p className="text-xs text-muted-foreground">Select your pet's date of birth</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          type="number"
+                          min="0"
+                          max="30"
+                          value={petAgeYears}
+                          onChange={(e) => setPetAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                          placeholder="e.g., 3"
+                          className="w-24"
+                        />
+                        <span className="text-muted-foreground">years old</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Enter approximate age in years</p>
+                    </div>
+                  )}
                 </div>
 
                 <Button
