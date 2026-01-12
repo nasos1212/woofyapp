@@ -1,23 +1,31 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3, ArrowLeft } from "lucide-react";
+import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Redemption {
   id: string;
   redeemed_at: string;
   offer: {
     title: string;
+    description: string | null;
     discount_value: number | null;
     discount_type: string;
   };
   business: {
+    id: string;
     business_name: string;
     category: string;
   };
@@ -28,6 +36,7 @@ const RedemptionHistory = () => {
   const navigate = useNavigate();
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedRedemption, setSelectedRedemption] = useState<Redemption | null>(null);
   const [stats, setStats] = useState({
     totalSaved: 0,
     totalRedemptions: 0,
@@ -83,8 +92,8 @@ const RedemptionHistory = () => {
         .select(`
           id,
           redeemed_at,
-          offer:offers(title, discount_value, discount_type),
-          business:businesses(business_name, category)
+          offer:offers(title, description, discount_value, discount_type),
+          business:businesses(id, business_name, category)
         `)
         .eq("membership_id", effectiveMembershipId)
         .order("redeemed_at", { ascending: false });
@@ -304,9 +313,10 @@ const RedemptionHistory = () => {
             ) : (
               <div className="divide-y divide-border">
                 {redemptions.map((redemption) => (
-                  <div
+                  <button
                     key={redemption.id}
-                    className="p-4 hover:bg-muted/30 transition-colors"
+                    onClick={() => setSelectedRedemption(redemption)}
+                    className="w-full p-4 hover:bg-muted/30 transition-colors text-left"
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -330,11 +340,83 @@ const RedemptionHistory = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
           </div>
+
+          {/* Redemption Detail Dialog */}
+          <Dialog open={!!selectedRedemption} onOpenChange={() => setSelectedRedemption(null)}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-primary" />
+                  Redemption Details
+                </DialogTitle>
+              </DialogHeader>
+              
+              {selectedRedemption && (
+                <div className="space-y-4">
+                  {/* Offer Info */}
+                  <div className="bg-muted/50 rounded-xl p-4 space-y-3">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Offer</p>
+                      <p className="font-semibold text-lg">{selectedRedemption.offer?.title || "Offer"}</p>
+                    </div>
+                    
+                    {selectedRedemption.offer?.description && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Description</p>
+                        <p className="text-foreground">{selectedRedemption.offer.description}</p>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Discount</p>
+                        <p className="font-semibold text-green-600 text-lg">
+                          {formatDiscount(selectedRedemption.offer)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-muted-foreground">Redeemed</p>
+                        <p className="font-medium">
+                          {format(new Date(selectedRedemption.redeemed_at), "MMM d, yyyy")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Business Info */}
+                  <div className="bg-primary/5 rounded-xl p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Building2 className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{selectedRedemption.business?.business_name || "Business"}</p>
+                        <p className="text-sm text-muted-foreground capitalize">
+                          {selectedRedemption.business?.category?.replace(/_/g, " ") || "Partner"}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      className="w-full gap-2" 
+                      onClick={() => {
+                        setSelectedRedemption(null);
+                        navigate(`/business/${selectedRedemption.business?.id}`);
+                      }}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Visit Company
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </>
