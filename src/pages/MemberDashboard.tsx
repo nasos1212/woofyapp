@@ -242,7 +242,7 @@ const MemberDashboard = () => {
                 </div>
                 <MembershipCardFull 
                   memberName={profile?.full_name || "Member"}
-                  petName={pets[0]?.pet_name || "Your Pet"}
+                  petNames={pets.map(p => p.pet_name)}
                   memberId={membership?.member_number || "N/A"}
                   expiryDate={expiryFormatted}
                   memberSince={memberSince}

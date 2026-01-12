@@ -4,6 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 interface MembershipCardFullProps {
   memberName?: string;
   petName?: string;
+  petNames?: string[];
   memberSince?: string;
   memberId?: string;
   expiryDate?: string;
@@ -12,12 +13,24 @@ interface MembershipCardFullProps {
 const MembershipCardFull = ({ 
   memberName = "John Smith", 
   petName = "Max",
+  petNames,
   memberSince = "2024",
   memberId = "WF-2026-XXXX-XXXX",
   expiryDate = "Dec 25, 2025"
 }: MembershipCardFullProps) => {
   // Generate a verification URL for the QR code
   const verificationUrl = `https://wooffy.app/verify/${memberId}`;
+
+  // Format pet display - use petNames array if provided, otherwise fallback to petName
+  const formatPetDisplay = () => {
+    if (petNames && petNames.length > 0) {
+      if (petNames.length === 1) {
+        return petNames[0];
+      }
+      return `${petNames[0]} + ${petNames.length - 1} more`;
+    }
+    return petName;
+  };
 
   return (
     <div className="relative w-full max-w-lg mx-auto group">
@@ -52,8 +65,10 @@ const MembershipCardFull = ({
             
             <div className="flex justify-between items-end">
               <div>
-                <p className="text-wooffy-light/70 text-sm">Furry Friend</p>
-                <p className="font-display font-semibold text-lg text-wooffy-sky">{petName}</p>
+                <p className="text-wooffy-light/70 text-sm">
+                  {petNames && petNames.length > 1 ? "Furry Friends" : "Furry Friend"}
+                </p>
+                <p className="font-display font-semibold text-lg text-wooffy-sky">{formatPetDisplay()}</p>
               </div>
               <div className="text-right">
                 <p className="text-wooffy-light/70 text-sm">Since</p>
