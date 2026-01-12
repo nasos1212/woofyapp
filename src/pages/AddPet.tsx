@@ -57,8 +57,13 @@ const AddPet = () => {
 
         // Check if at max pets
         if ((count || 0) >= membershipData.max_pets) {
-          toast.error("You've reached your pet limit. Upgrade your plan to add more pets!");
-          navigate("/member/upgrade");
+          // Check if already on highest plan (Pack Leader with 5 pets)
+          if (membershipData.max_pets >= 5) {
+            toast.error("You've reached the maximum of 5 pets allowed.");
+          } else {
+            toast.error("You've reached your pet limit. Upgrade your plan to add more pets!");
+          }
+          navigate("/member");
           return;
         }
       } catch (error) {
