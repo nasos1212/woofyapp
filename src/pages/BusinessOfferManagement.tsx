@@ -356,9 +356,11 @@ const BusinessOfferManagement = () => {
                       )}
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <span className="flex items-center gap-1 text-primary font-medium">
-                          <Percent className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                          {offer.discount_value}
-                          {offer.discount_type === "percentage" ? "%" : "€"} off
+                          {offer.discount_type === "percentage" ? (
+                            <>{offer.discount_value}% off</>
+                          ) : (
+                            <>€{offer.discount_value} off</>
+                          )}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
                           offer.offer_type === 'per_pet' 
