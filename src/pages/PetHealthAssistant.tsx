@@ -36,10 +36,13 @@ interface UserContext {
   pets: Pet[];
   selectedPet: { name: string; breed: string | null } | null;
   healthRecords: any[];
+  upcomingReminders: any[];
   redemptions: any[];
   favoriteOffers: any[];
   recentActivity: any[];
   communityQuestions: any[];
+  lostPetAlerts: any[];
+  pendingBirthdays: any[];
 }
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
@@ -252,10 +255,13 @@ const PetHealthAssistant = () => {
           pets: [],
           selectedPet: null,
           healthRecords: [],
+          upcomingReminders: [],
           redemptions: [],
           favoriteOffers: [],
           recentActivity,
           communityQuestions,
+          lostPetAlerts: [],
+          pendingBirthdays: [],
         });
         return;
       }
@@ -304,17 +310,89 @@ const PetHealthAssistant = () => {
         setSelectedPet(petsData[0]);
       }
 
-      // Fetch health records for all pets
+      // Fetch health records and upcoming reminders for all pets
       let healthRecords: any[] = [];
+      let upcomingReminders: any[] = [];
+      let pendingBirthdays: any[] = [];
+      
       if (petsData.length > 0) {
         const petIds = petsData.map(p => p.id);
+        
+        // Fetch all health records
         const healthResult = await supabase
           .from("pet_health_records")
-          .select("*")
+          .select("*, pets!inner(pet_name, pet_breed)")
           .in("pet_id", petIds)
           .order("date_administered", { ascending: false })
-          .limit(30);
+          .limit(50);
         healthRecords = healthResult.data || [];
+        
+        // Calculate upcoming reminders from health records
+        const now = new Date();
+        upcomingReminders = healthRecords
+          .filter((r: any) => r.next_due_date)
+          .map((r: any) => {
+            const dueDate = new Date(r.next_due_date);
+            const daysUntil = Math.ceil((dueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            return {
+              pet_name: r.pets?.pet_name,
+              pet_breed: r.pets?.pet_breed,
+              record_type: r.record_type,
+              title: r.title,
+              next_due_date: r.next_due_date,
+              days_until: daysUntil,
+              is_overdue: daysUntil < 0,
+              is_urgent: daysUntil >= 0 && daysUntil <= 7,
+              reminder_interval_type: r.reminder_interval_type,
+              preferred_time: r.preferred_time,
+            };
+          })
+          .filter((r: any) => r.days_until <= 30) // Only include next 30 days
+          .sort((a: any, b: any) => a.days_until - b.days_until);
+        
+        // Calculate upcoming birthdays
+        pendingBirthdays = petsData
+          .filter(p => p.birthday)
+          .map(p => {
+            const birthday = new Date(p.birthday!);
+            const thisYear = new Date(now.getFullYear(), birthday.getMonth(), birthday.getDate());
+            if (thisYear < now) {
+              thisYear.setFullYear(thisYear.getFullYear() + 1);
+            }
+            const daysUntil = Math.ceil((thisYear.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+            const age = now.getFullYear() - birthday.getFullYear();
+            return {
+              pet_name: p.pet_name,
+              pet_breed: p.pet_breed,
+              birthday: p.birthday,
+              days_until: daysUntil,
+              upcoming_age: daysUntil <= 0 ? age : age + 1,
+            };
+          })
+          .filter(p => p.days_until <= 60)
+          .sort((a, b) => a.days_until - b.days_until);
+      }
+      
+      // Fetch active lost pet alerts the user has created
+      let lostPetAlerts: any[] = [];
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const lostPetData = await (supabase as any)
+          .from("lost_pet_alerts")
+          .select("pet_name, pet_breed, last_seen_location, status, created_at")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .limit(5);
+        
+        lostPetAlerts = ((lostPetData?.data as any[]) || []).map((alert: any) => ({
+          pet_name: alert.pet_name,
+          pet_breed: alert.pet_breed,
+          last_seen_location: alert.last_seen_location,
+          status: alert.status,
+          created_at: alert.created_at,
+        }));
+      } catch (e) {
+        console.debug("Lost pet alerts not available:", e);
       }
 
       // Fetch relevant community questions based on user's pet breeds
@@ -389,10 +467,13 @@ const PetHealthAssistant = () => {
         pets: petsData,
         selectedPet: petsData[0] ? { name: petsData[0].pet_name, breed: petsData[0].pet_breed } : null,
         healthRecords,
+        upcomingReminders,
         redemptions: redemptionsResult.data || [],
         favoriteOffers: favoritesResult.data || [],
         recentActivity,
         communityQuestions: relevantCommunityQuestions,
+        lostPetAlerts,
+        pendingBirthdays,
       });
     } catch (error) {
       console.error("Error fetching user context:", error);
@@ -531,6 +612,26 @@ const PetHealthAssistant = () => {
     setShowHistory(false);
   };
 
+  // Handle pet change - start a new conversation for the new pet
+  const handlePetChange = async (pet: Pet) => {
+    if (pet.id === selectedPet?.id) return;
+    
+    setSelectedPet(pet);
+    
+    // Update userContext with new selected pet
+    if (userContext) {
+      setUserContext({
+        ...userContext,
+        selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
+      });
+    }
+    
+    // Start a new conversation for this pet
+    await createNewSession();
+    toast.success(`Switched to ${pet.pet_name}'s chat`);
+    trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -602,7 +703,7 @@ const PetHealthAssistant = () => {
                 {pets.map((pet) => (
                   <button
                     key={pet.id}
-                    onClick={() => setSelectedPet(pet)}
+                    onClick={() => handlePetChange(pet)}
                     className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                       selectedPet?.id === pet.id
                         ? "bg-primary text-primary-foreground"
