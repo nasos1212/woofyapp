@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,12 @@ import ConfettiCelebration from "@/components/ConfettiCelebration";
 import { useSuccessSound } from "@/hooks/useSuccessSound";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+
+interface AvailablePet {
+  id: string;
+  name: string;
+}
+
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited' | 'limit_reached';
   memberName?: string;
@@ -27,6 +33,10 @@ interface ScanResult {
   lockoutExpiresAt?: string;
   remainingMinutes?: number;
   message?: string;
+  offerType?: 'per_member' | 'per_pet';
+  availablePets?: AvailablePet[];
+  totalPets?: number;
+  redeemedPetsCount?: number;
 }
 
 interface Redemption {
@@ -58,6 +68,7 @@ const BusinessDashboard = () => {
   const [recentRedemptions, setRecentRedemptions] = useState<Redemption[]>([]);
   const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0, discountsGiven: 0 });
   const [isCheckingBusiness, setIsCheckingBusiness] = useState(true);
+  const [selectedPetId, setSelectedPetId] = useState<string>("");
 
   useEffect(() => {
     if (!loading && !user) {
@@ -259,10 +270,19 @@ const BusinessDashboard = () => {
   const confirmRedemption = async () => {
     if (!scanResult || scanResult.status !== 'valid' || !business || !user) return;
 
+    // For per-pet offers, require pet selection
+    if (scanResult.offerType === 'per_pet' && !selectedPetId) {
+      toast({
+        title: "Select a Pet",
+        description: "Please select which pet is using this offer.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsVerifying(true);
     
     try {
-      // Get the current session to ensure we have a valid access token
       const { data: sessionData } = await supabase.auth.getSession();
       const accessToken = sessionData?.session?.access_token;
       
@@ -275,12 +295,12 @@ const BusinessDashboard = () => {
         return;
       }
 
-      // Use edge function to confirm redemption and send notification
       const { data, error } = await supabase.functions.invoke('confirm-redemption', {
         body: {
           membershipId: scanResult.membershipId,
           offerId: scanResult.offerId,
           businessId: business.id,
+          petId: scanResult.offerType === 'per_pet' ? selectedPetId : null,
         },
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -316,7 +336,8 @@ const BusinessDashboard = () => {
 
       setScanResult(null);
       setMemberIdInput("");
-      fetchBusinessData(); // Refresh data
+      setSelectedPetId("");
+      fetchBusinessData();
 
     } catch (error) {
       console.error('Redemption error:', error);
@@ -656,6 +677,36 @@ const BusinessDashboard = () => {
                             <p className="text-green-800 font-medium">
                               🎁 Apply discount: {scanResult.discount}
                             </p>
+                            {scanResult.offerType === 'per_pet' && scanResult.availablePets && (
+                              <p className="text-green-700 text-sm mt-1">
+                                🐕 Per-pet offer: {scanResult.redeemedPetsCount}/{scanResult.totalPets} pets have used this
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Pet selector for per-pet offers */}
+                        {scanResult.status === 'valid' && scanResult.offerType === 'per_pet' && scanResult.availablePets && (
+                          <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
+                            <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
+                              <Dog className="w-4 h-4" />
+                              Select which pet is using this offer:
+                            </label>
+                            <div className="grid grid-cols-2 gap-2">
+                              {scanResult.availablePets.map((pet) => (
+                                <button
+                                  key={pet.id}
+                                  onClick={() => setSelectedPetId(pet.id)}
+                                  className={`p-3 rounded-lg border-2 text-left transition-all ${
+                                    selectedPetId === pet.id
+                                      ? 'border-teal-500 bg-teal-100 text-teal-800'
+                                      : 'border-teal-200 bg-white hover:border-teal-300'
+                                  }`}
+                                >
+                                  <span className="font-medium">{pet.name}</span>
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         )}
 

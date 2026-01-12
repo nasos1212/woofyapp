@@ -54,7 +54,7 @@ serve(async (req) => {
       );
     }
 
-    const { membershipId, offerId, businessId } = body;
+    const { membershipId, offerId, businessId, petId } = body;
     
     // Validate required fields exist
     if (!membershipId || !offerId || !businessId) {
@@ -82,6 +82,14 @@ serve(async (req) => {
     if (!isValidUUID(businessId)) {
       return new Response(
         JSON.stringify({ error: 'Invalid business ID format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate petId if provided
+    if (petId && !isValidUUID(petId)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid pet ID format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -118,7 +126,7 @@ serve(async (req) => {
     // Fetch pets for this membership
     const { data: petsData } = await supabaseAdmin
       .from('pets')
-      .select('pet_name')
+      .select('id, pet_name')
       .eq('membership_id', membershipId);
     
     const petNames = petsData && petsData.length > 0 
@@ -134,10 +142,10 @@ serve(async (req) => {
     
     const memberName = profileData?.full_name || 'Member';
 
-    // Get offer details
+    // Get offer details including offer_type
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type, business_id')
+      .select('id, title, discount_value, discount_type, business_id, offer_type')
       .eq('id', offerId)
       .single();
 
@@ -148,83 +156,183 @@ serve(async (req) => {
       );
     }
 
-    // Check if already redeemed
-    const { data: existingRedemption } = await supabaseAdmin
-      .from('offer_redemptions')
-      .select('id')
-      .eq('membership_id', membershipId)
-      .eq('offer_id', offerId)
-      .maybeSingle();
+    const offerType = offer.offer_type || 'per_member';
 
-    if (existingRedemption) {
-      return new Response(
-        JSON.stringify({ error: 'Offer already redeemed' }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Check redemption based on offer type
+    if (offerType === 'per_pet') {
+      // For per-pet offers, petId is required
+      if (!petId) {
+        return new Response(
+          JSON.stringify({ error: 'Pet selection required for this offer', code: 'PET_REQUIRED' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
 
-    // Insert the redemption
-    const { data: redemption, error: redemptionError } = await supabaseAdmin
-      .from('offer_redemptions')
-      .insert({
-        membership_id: membershipId,
-        offer_id: offerId,
-        business_id: businessId,
-        redeemed_by_user_id: user.id,
-        member_name: memberName,
-        pet_names: petNames,
-        member_number: membership.member_number,
-      })
-      .select()
-      .single();
+      // Check if this specific pet already redeemed
+      const { data: existingRedemption } = await supabaseAdmin
+        .from('offer_redemptions')
+        .select('id')
+        .eq('membership_id', membershipId)
+        .eq('offer_id', offerId)
+        .eq('pet_id', petId)
+        .maybeSingle();
 
-    if (redemptionError) {
-      console.error('Redemption error:', redemptionError.message);
-      return new Response(
-        JSON.stringify({ error: 'Failed to process redemption. Please try again.' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+      if (existingRedemption) {
+        return new Response(
+          JSON.stringify({ error: 'This pet has already used this offer', code: 'ALREADY_REDEEMED' }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
 
-    // Create notification for the member
-    const discountText = offer.discount_type === 'percentage' 
-      ? `${offer.discount_value}%` 
-      : `€${offer.discount_value}`;
+      // Get pet name for the notification
+      const selectedPet = petsData?.find(p => p.id === petId);
+      const petNameForNotification = selectedPet?.pet_name || 'Your pet';
 
-    await supabaseAdmin
-      .from('notifications')
-      .insert({
-        user_id: membership.user_id,
-        type: 'redemption',
-        title: 'Offer Redeemed! 🎉',
-        message: `You saved ${discountText} with "${offer.title}" at ${business.business_name}!`,
-        data: {
-          redemption_id: redemption.id,
+      // Insert the redemption with pet_id
+      const { data: redemption, error: redemptionError } = await supabaseAdmin
+        .from('offer_redemptions')
+        .insert({
+          membership_id: membershipId,
           offer_id: offerId,
-          offer_title: offer.title,
           business_id: businessId,
-          business_name: business.business_name,
-          discount_value: offer.discount_value,
-          discount_type: offer.discount_type,
-        }
-      });
+          redeemed_by_user_id: user.id,
+          member_name: memberName,
+          pet_names: petNameForNotification,
+          member_number: membership.member_number,
+          pet_id: petId,
+        })
+        .select()
+        .single();
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        redemption: {
-          id: redemption.id,
-          offer_title: offer.title,
-          discount: discountText,
-          business_name: business.business_name,
-          redeemed_at: redemption.redeemed_at,
+      if (redemptionError) {
+        console.error('Redemption error:', redemptionError.message);
+        return new Response(
+          JSON.stringify({ error: 'Failed to process redemption. Please try again.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Create notification for the member
+      const discountText = offer.discount_type === 'percentage' 
+        ? `${offer.discount_value}%` 
+        : `€${offer.discount_value}`;
+
+      await supabaseAdmin
+        .from('notifications')
+        .insert({
+          user_id: membership.user_id,
+          type: 'redemption',
+          title: 'Offer Redeemed! 🎉',
+          message: `${petNameForNotification} saved ${discountText} with "${offer.title}" at ${business.business_name}!`,
+          data: {
+            redemption_id: redemption.id,
+            offer_id: offerId,
+            offer_title: offer.title,
+            business_id: businessId,
+            business_name: business.business_name,
+            discount_value: offer.discount_value,
+            discount_type: offer.discount_type,
+            pet_id: petId,
+            pet_name: petNameForNotification,
+          }
+        });
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          redemption: {
+            id: redemption.id,
+            offer_title: offer.title,
+            discount: discountText,
+            business_name: business.business_name,
+            redeemed_at: redemption.redeemed_at,
+            member_name: memberName,
+            pet_names: petNameForNotification,
+            member_number: membership.member_number,
+          }
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+
+    } else {
+      // Per-member: original logic
+      const { data: existingRedemption } = await supabaseAdmin
+        .from('offer_redemptions')
+        .select('id')
+        .eq('membership_id', membershipId)
+        .eq('offer_id', offerId)
+        .maybeSingle();
+
+      if (existingRedemption) {
+        return new Response(
+          JSON.stringify({ error: 'Offer already redeemed', code: 'ALREADY_REDEEMED' }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Insert the redemption
+      const { data: redemption, error: redemptionError } = await supabaseAdmin
+        .from('offer_redemptions')
+        .insert({
+          membership_id: membershipId,
+          offer_id: offerId,
+          business_id: businessId,
+          redeemed_by_user_id: user.id,
           member_name: memberName,
           pet_names: petNames,
           member_number: membership.member_number,
-        }
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+        })
+        .select()
+        .single();
+
+      if (redemptionError) {
+        console.error('Redemption error:', redemptionError.message);
+        return new Response(
+          JSON.stringify({ error: 'Failed to process redemption. Please try again.' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Create notification for the member
+      const discountText = offer.discount_type === 'percentage' 
+        ? `${offer.discount_value}%` 
+        : `€${offer.discount_value}`;
+
+      await supabaseAdmin
+        .from('notifications')
+        .insert({
+          user_id: membership.user_id,
+          type: 'redemption',
+          title: 'Offer Redeemed! 🎉',
+          message: `You saved ${discountText} with "${offer.title}" at ${business.business_name}!`,
+          data: {
+            redemption_id: redemption.id,
+            offer_id: offerId,
+            offer_title: offer.title,
+            business_id: businessId,
+            business_name: business.business_name,
+            discount_value: offer.discount_value,
+            discount_type: offer.discount_type,
+          }
+        });
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          redemption: {
+            id: redemption.id,
+            offer_title: offer.title,
+            discount: discountText,
+            business_name: business.business_name,
+            redeemed_at: redemption.redeemed_at,
+            member_name: memberName,
+            pet_names: petNames,
+            member_number: membership.member_number,
+          }
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
   } catch (error) {
     console.error('confirm-redemption error:', error instanceof Error ? error.message : 'Unknown error');

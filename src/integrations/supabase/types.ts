@@ -974,6 +974,7 @@ export type Database = {
           member_number: string | null
           membership_id: string
           offer_id: string
+          pet_id: string | null
           pet_names: string | null
           redeemed_at: string
           redeemed_by_user_id: string
@@ -985,6 +986,7 @@ export type Database = {
           member_number?: string | null
           membership_id: string
           offer_id: string
+          pet_id?: string | null
           pet_names?: string | null
           redeemed_at?: string
           redeemed_by_user_id: string
@@ -996,6 +998,7 @@ export type Database = {
           member_number?: string | null
           membership_id?: string
           offer_id?: string
+          pet_id?: string | null
           pet_names?: string | null
           redeemed_at?: string
           redeemed_by_user_id?: string
@@ -1029,6 +1032,13 @@ export type Database = {
             referencedRelation: "offers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "offer_redemptions_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
         ]
       }
       offers: {
@@ -1043,6 +1053,7 @@ export type Database = {
           is_limited_time: boolean | null
           limited_time_label: string | null
           max_redemptions: number | null
+          offer_type: string
           terms: string | null
           title: string
           updated_at: string
@@ -1060,6 +1071,7 @@ export type Database = {
           is_limited_time?: boolean | null
           limited_time_label?: string | null
           max_redemptions?: number | null
+          offer_type?: string
           terms?: string | null
           title: string
           updated_at?: string
@@ -1077,6 +1089,7 @@ export type Database = {
           is_limited_time?: boolean | null
           limited_time_label?: string | null
           max_redemptions?: number | null
+          offer_type?: string
           terms?: string | null
           title?: string
           updated_at?: string

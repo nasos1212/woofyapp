@@ -155,7 +155,7 @@ serve(async (req) => {
     // Fetch pets for this membership
     const { data: pets } = await supabaseAdmin
       .from('pets')
-      .select('pet_name')
+      .select('id, pet_name')
       .eq('membership_id', membership.id);
     
     const petNames = pets && pets.length > 0 
@@ -182,18 +182,10 @@ serve(async (req) => {
       );
     }
 
-    // Check if offer has already been redeemed
-    const { data: existingRedemption } = await supabaseAdmin
-      .from('offer_redemptions')
-      .select('id')
-      .eq('membership_id', membership.id)
-      .eq('offer_id', offerId)
-      .maybeSingle();
-
-    // Get offer details including max_redemptions
+    // Get offer details including offer_type
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type, max_redemptions')
+      .select('id, title, discount_value, discount_type, max_redemptions, offer_type')
       .eq('id', offerId)
       .single();
 
@@ -226,35 +218,94 @@ serve(async (req) => {
       }
     }
 
-    if (existingRedemption) {
+    // Handle per-pet vs per-member redemption logic
+    const offerType = offer?.offer_type || 'per_member';
+    
+    if (offerType === 'per_pet') {
+      // For per-pet offers, check which pets have already redeemed
+      const { data: existingRedemptions } = await supabaseAdmin
+        .from('offer_redemptions')
+        .select('pet_id')
+        .eq('membership_id', membership.id)
+        .eq('offer_id', offerId);
+
+      const redeemedPetIds = new Set((existingRedemptions || []).map(r => r.pet_id));
+      const availablePets = (pets || []).filter(pet => !redeemedPetIds.has(pet.id));
+
+      if (availablePets.length === 0) {
+        return new Response(
+          JSON.stringify({
+            status: 'already_redeemed',
+            memberName: profile?.full_name || 'Member',
+            petName: petNames,
+            memberId: membership.member_number,
+            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            offerTitle: offer?.title,
+            message: 'All pets have already used this offer.',
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Valid - return available pets for selection
       return new Response(
         JSON.stringify({
-          status: 'already_redeemed',
+          status: 'valid',
           memberName: profile?.full_name || 'Member',
           petName: petNames,
           memberId: membership.member_number,
+          membershipId: membership.id,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
+          offerId: offerId,
           offerTitle: offer?.title,
+          offerType: 'per_pet',
+          availablePets: availablePets.map(p => ({ id: p.id, name: p.pet_name })),
+          totalPets: pets?.length || 0,
+          redeemedPetsCount: redeemedPetIds.size,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else {
+      // Per-member: check if already redeemed (original logic)
+      const { data: existingRedemption } = await supabaseAdmin
+        .from('offer_redemptions')
+        .select('id')
+        .eq('membership_id', membership.id)
+        .eq('offer_id', offerId)
+        .maybeSingle();
+
+      if (existingRedemption) {
+        return new Response(
+          JSON.stringify({
+            status: 'already_redeemed',
+            memberName: profile?.full_name || 'Member',
+            petName: petNames,
+            memberId: membership.member_number,
+            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            offerTitle: offer?.title,
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Valid membership for per-member offer
+      return new Response(
+        JSON.stringify({
+          status: 'valid',
+          memberName: profile?.full_name || 'Member',
+          petName: petNames,
+          memberId: membership.member_number,
+          membershipId: membership.id,
+          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
+          offerId: offerId,
+          offerTitle: offer?.title,
+          offerType: 'per_member',
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-
-    // Valid membership
-    return new Response(
-      JSON.stringify({
-        status: 'valid',
-        memberName: profile?.full_name || 'Member',
-        petName: petNames,
-        memberId: membership.member_number,
-        membershipId: membership.id,
-        expiryDate: new Date(membership.expires_at).toLocaleDateString(),
-        discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
-        offerId: offerId,
-        offerTitle: offer?.title,
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
 
   } catch (error) {
     console.error('verify-member error:', error instanceof Error ? error.message : 'Unknown error');
