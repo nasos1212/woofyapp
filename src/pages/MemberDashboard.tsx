@@ -123,7 +123,20 @@ const MemberDashboard = () => {
             .select("id, pet_name, pet_breed")
             .eq("membership_id", membershipData.id);
 
-          if (petsData) setPets(petsData);
+          if (petsData) {
+            // Sort pets so last viewed pet comes first
+            const lastViewedPetId = localStorage.getItem('lastViewedPetId');
+            if (lastViewedPetId) {
+              const sortedPets = [...petsData].sort((a, b) => {
+                if (a.id === lastViewedPetId) return -1;
+                if (b.id === lastViewedPetId) return 1;
+                return 0;
+              });
+              setPets(sortedPets);
+            } else {
+              setPets(petsData);
+            }
+          }
 
           // Fetch redemptions for this membership
           const { data: redemptionsData } = await supabase

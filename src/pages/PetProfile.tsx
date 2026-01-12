@@ -73,6 +73,9 @@ const PetProfile = () => {
         if (petError) throw petError;
 
         if (petData) {
+          // Store last viewed pet ID for ordering on dashboard
+          localStorage.setItem('lastViewedPetId', petData.id);
+          
           const genderValue = (petData.gender === "male" || petData.gender === "female" || petData.gender === "unknown") 
             ? petData.gender 
             : "unknown";
