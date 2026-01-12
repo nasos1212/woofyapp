@@ -9,9 +9,6 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { format, differenceInDays, isPast, isToday } from "date-fns";
 
-// Track login session to reset hidden state on new login
-let lastLoginTimestamp: number | null = null;
-
 interface ProactiveAlert {
   id: string;
   alert_type: string;
@@ -78,53 +75,55 @@ export const AIProactiveAlerts = () => {
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true); // Start collapsed by default
-  const [hasFetched, setHasFetched] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-
-  // Listen for auth state changes to reset hidden state on new login
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        // New login - always show reminders
-        const currentTimestamp = Date.now();
-        if (lastLoginTimestamp !== currentTimestamp) {
-          lastLoginTimestamp = currentTimestamp;
-          sessionStorage.removeItem('wooffy_reminders_hidden');
-          setIsHidden(false);
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Check hidden state from sessionStorage on mount
-  useEffect(() => {
-    if (user) {
-      setIsHidden(sessionStorage.getItem('wooffy_reminders_hidden') === 'true');
-    }
-  }, [user]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const hideWidget = () => {
     sessionStorage.setItem('wooffy_reminders_hidden', 'true');
     setIsHidden(true);
   };
 
+  // Listen for auth state changes to reset hidden state on new login
   useEffect(() => {
-    // Prevent duplicate fetches on mobile where effects can fire multiple times
-    if (!user || hasFetched) return;
-    
-    setHasFetched(true);
-    fetchAlerts();
-    fetchHealthRecords();
-    
-    // Only generate alerts once per session using sessionStorage
-    const alertsGeneratedKey = `wooffy_alerts_generated_${user.id}`;
-    if (!sessionStorage.getItem(alertsGeneratedKey)) {
-      sessionStorage.setItem(alertsGeneratedKey, 'true');
-      generateNewAlerts();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        // New login - always show reminders and reset fetch state
+        sessionStorage.removeItem('wooffy_reminders_hidden');
+        sessionStorage.removeItem('wooffy_alerts_generated');
+        setIsHidden(false);
+        setIsLoading(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch data when user is available
+  useEffect(() => {
+    if (!user) {
+      setIsLoading(false);
+      return;
     }
-  }, [user, hasFetched]);
+
+    // Check hidden state - but only if not just logged in
+    const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
+    setIsHidden(hiddenState);
+    
+    // Fetch data
+    const fetchData = async () => {
+      setIsLoading(true);
+      await Promise.all([fetchAlerts(), fetchHealthRecords()]);
+      
+      // Generate alerts once per session
+      if (!sessionStorage.getItem('wooffy_alerts_generated')) {
+        sessionStorage.setItem('wooffy_alerts_generated', 'true');
+        await generateNewAlerts();
+      }
+      setIsLoading(false);
+    };
+    
+    fetchData();
+  }, [user]);
 
   const fetchHealthRecords = async () => {
     if (!user) return;
@@ -303,9 +302,12 @@ export const AIProactiveAlerts = () => {
   const overdueCount = reminders.filter(r => r.status === "overdue").length;
   const todayCount = reminders.filter(r => r.status === "today").length;
 
-  // If no reminders or hidden, show nothing
-  if (reminders.length === 0 && alerts.length === 0) return null;
+  // If hidden by user, show nothing
   if (isHidden) return null;
+  
+  // If still loading or no reminders, show nothing
+  if (isLoading) return null;
+  if (reminders.length === 0 && alerts.length === 0) return null;
 
   return (
     <Card className={cn(
