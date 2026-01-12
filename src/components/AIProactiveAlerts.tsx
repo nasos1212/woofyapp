@@ -84,29 +84,37 @@ export const AIProactiveAlerts = () => {
     setIsHidden(true);
   };
 
+  // Listen for auth state changes - clear session data on logout
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') {
+        // Clear all wooffy session data on logout
+        sessionStorage.removeItem('wooffy_reminders_hidden');
+        sessionStorage.removeItem('wooffy_alerts_generated');
+        sessionStorage.removeItem('wooffy_current_user_id');
+        setIsHidden(false);
+        setDataFetched(false);
+        setReminders([]);
+        setAlerts([]);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Fetch data when user is available
   useEffect(() => {
     if (!user) {
       setIsLoading(false);
-      setDataFetched(false);
       return;
     }
 
-    // Check if this is a fresh login by comparing user IDs
-    const previousUserId = sessionStorage.getItem('wooffy_current_user_id');
-    const isNewLogin = previousUserId !== user.id;
+    // Check hidden state from storage (will be cleared on logout)
+    const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
+    setIsHidden(hiddenState);
     
-    if (isNewLogin) {
-      // Clear hidden state for new login
-      sessionStorage.removeItem('wooffy_reminders_hidden');
-      sessionStorage.removeItem('wooffy_alerts_generated');
-      sessionStorage.setItem('wooffy_current_user_id', user.id);
-      setIsHidden(false);
-    } else {
-      // Check hidden state from storage
-      const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
-      setIsHidden(hiddenState);
-    }
+    // Store current user ID
+    sessionStorage.setItem('wooffy_current_user_id', user.id);
 
     // Prevent duplicate fetches
     if (dataFetched) {
