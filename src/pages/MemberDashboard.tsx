@@ -328,8 +328,8 @@ const MemberDashboard = () => {
                   </div>
                 )}
                 
-                {/* Upgrade prompt when at max pets */}
-                {membership && pets.length >= membership.max_pets && (
+                {/* Upgrade prompt when at max pets but not on highest plan */}
+                {membership && pets.length >= membership.max_pets && membership.max_pets < 5 && (
                   <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl border border-primary/20">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
