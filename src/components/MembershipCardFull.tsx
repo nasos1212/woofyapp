@@ -1,4 +1,4 @@
-import { Dog, Star, Crown, Shield } from "lucide-react";
+import { Dog, Crown, Shield } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 interface MembershipCardFullProps {
@@ -59,13 +59,6 @@ const MembershipCardFull = ({
                 <p className="text-wooffy-light/70 text-sm">Since</p>
                 <p className="font-display font-semibold text-wooffy-sky">{memberSince}</p>
               </div>
-            </div>
-
-            {/* Stars */}
-            <div className="flex gap-1 pt-2">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-wooffy-accent text-wooffy-accent" />
-              ))}
             </div>
 
             {/* Validity */}
