@@ -53,24 +53,55 @@ const Auth = () => {
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Always check if user has a business first (regardless of accountType)
-      const { data: business, error: businessError } = await supabase
-        .from("businesses")
-        .select("id, verification_status")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      // Check both business and membership status in parallel
+      const [businessResult, membershipResult] = await Promise.all([
+        supabase
+          .from("businesses")
+          .select("id, verification_status")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("memberships")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle()
+      ]);
+      
+      const { data: business, error: businessError } = businessResult;
+      const { data: membership, error: membershipError } = membershipResult;
       
       if (businessError) {
         console.error("Error checking business:", businessError);
       }
+      if (membershipError) {
+        console.error("Error checking membership:", membershipError);
+      }
       
-      // If user has a business, redirect to business dashboard
-      if (business) {
+      const hasBusiness = !!business;
+      const hasMembership = !!membership;
+      
+      // CASE 1: User has a business account - always redirect to business
+      if (hasBusiness) {
         navigate("/business");
         return;
       }
       
-      // If user selected business account type but has no business registered
+      // CASE 2: User has a membership (pet owner) - always redirect to member dashboard
+      // This handles the case where someone clicks "business" but is actually a pet owner
+      if (hasMembership) {
+        if (accountType === "business") {
+          // User clicked business but they're a pet owner - inform them
+          toast({
+            title: "Pet Owner Account Found",
+            description: "You're registered as a pet owner. Redirecting to your dashboard.",
+          });
+        }
+        navigate("/member");
+        return;
+      }
+      
+      // CASE 3: User has neither business nor membership - they're new
+      // If they selected business type but have no business, show error
       if (accountType === "business") {
         toast({
           title: "No Business Account Found",
@@ -82,23 +113,13 @@ const Auth = () => {
         return;
       }
       
-      // For member flow, check if they have a membership
-      const { data: membership, error: membershipError } = await supabase
-        .from("memberships")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      
-      if (membershipError) {
-        console.error("Error checking membership:", membershipError);
-      }
-      
-      if (membership) {
-        navigate("/member");
-      } else if (accountType === "member") {
+      // If they selected member type and have no membership, go to onboarding
+      if (accountType === "member") {
         navigate("/member/onboarding");
+        return;
       }
-      // If no accountType selected yet, don't redirect - let user pick
+      
+      // No accountType selected yet - don't redirect, let user pick
     };
     
     checkAndRedirect();
