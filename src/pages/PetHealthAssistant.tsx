@@ -9,6 +9,7 @@ import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { useActivityTracking } from "@/hooks/useActivityTracking";
 import { toast } from "sonner";
+import LanguageSelector from "@/components/LanguageSelector";
 
 interface Message {
   role: "user" | "assistant";
@@ -72,6 +73,7 @@ const PetHealthAssistant = () => {
   const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [preferredLanguage, setPreferredLanguage] = useState<string>("en");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -226,6 +228,11 @@ const PetHealthAssistant = () => {
       const userProfile = profileResult.data;
       const membership = membershipResult.data;
       const recentActivity = activityResult.data || [];
+      
+      // Set preferred language from profile
+      if (userProfile?.preferred_language) {
+        setPreferredLanguage(userProfile.preferred_language);
+      }
 
       // Fetch relevant community questions
       const { data: communityData } = await supabase
@@ -800,6 +807,22 @@ const PetHealthAssistant = () => {
                 </div>
               </div>
               <div className="flex gap-2">
+                {user && (
+                  <LanguageSelector
+                    currentLanguage={preferredLanguage}
+                    userId={user.id}
+                    onLanguageChange={(lang) => {
+                      setPreferredLanguage(lang);
+                      // Update userContext with new language
+                      if (userContext?.userProfile) {
+                        setUserContext({
+                          ...userContext,
+                          userProfile: { ...userContext.userProfile, preferred_language: lang },
+                        });
+                      }
+                    }}
+                  />
+                )}
                 <Button
                   variant="outline"
                   size="sm"
