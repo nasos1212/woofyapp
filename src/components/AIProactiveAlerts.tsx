@@ -77,37 +77,42 @@ export const AIProactiveAlerts = () => {
   const [isCollapsed, setIsCollapsed] = useState(true); // Start collapsed by default
   const [isHidden, setIsHidden] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [dataFetched, setDataFetched] = useState(false);
 
   const hideWidget = () => {
     sessionStorage.setItem('wooffy_reminders_hidden', 'true');
     setIsHidden(true);
   };
 
-  // Listen for auth state changes to reset hidden state on new login
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        // New login - always show reminders and reset fetch state
-        sessionStorage.removeItem('wooffy_reminders_hidden');
-        sessionStorage.removeItem('wooffy_alerts_generated');
-        setIsHidden(false);
-        setIsLoading(true);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   // Fetch data when user is available
   useEffect(() => {
     if (!user) {
       setIsLoading(false);
+      setDataFetched(false);
       return;
     }
 
-    // Check hidden state - but only if not just logged in
-    const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
-    setIsHidden(hiddenState);
+    // Check if this is a fresh login by comparing user IDs
+    const previousUserId = sessionStorage.getItem('wooffy_current_user_id');
+    const isNewLogin = previousUserId !== user.id;
+    
+    if (isNewLogin) {
+      // Clear hidden state for new login
+      sessionStorage.removeItem('wooffy_reminders_hidden');
+      sessionStorage.removeItem('wooffy_alerts_generated');
+      sessionStorage.setItem('wooffy_current_user_id', user.id);
+      setIsHidden(false);
+    } else {
+      // Check hidden state from storage
+      const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
+      setIsHidden(hiddenState);
+    }
+
+    // Prevent duplicate fetches
+    if (dataFetched) {
+      setIsLoading(false);
+      return;
+    }
     
     // Fetch data
     const fetchData = async () => {
@@ -120,10 +125,11 @@ export const AIProactiveAlerts = () => {
         await generateNewAlerts();
       }
       setIsLoading(false);
+      setDataFetched(true);
     };
     
     fetchData();
-  }, [user]);
+  }, [user, dataFetched]);
 
   const fetchHealthRecords = async () => {
     if (!user) return;
