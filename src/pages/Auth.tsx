@@ -202,6 +202,61 @@ const Auth = () => {
           });
         }
       } else {
+        // Check if email already exists with a different account type
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("user_id")
+          .eq("email", email.trim().toLowerCase())
+          .maybeSingle();
+
+        if (existingProfile) {
+          // Check what type of account exists
+          const [businessResult, membershipResult] = await Promise.all([
+            supabase
+              .from("businesses")
+              .select("id")
+              .eq("user_id", existingProfile.user_id)
+              .maybeSingle(),
+            supabase
+              .from("memberships")
+              .select("id")
+              .eq("user_id", existingProfile.user_id)
+              .maybeSingle()
+          ]);
+
+          const hasBusiness = !!businessResult.data;
+          const hasMembership = !!membershipResult.data;
+
+          if (accountType === "member" && hasBusiness) {
+            toast({
+              title: "Email Already Registered",
+              description: "This email is registered as a Business Partner. Please use a different email or log in to your business account.",
+              variant: "destructive",
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          if (accountType === "business" && hasMembership) {
+            toast({
+              title: "Email Already Registered",
+              description: "This email is registered as a Pet Owner. Please use a different email or log in to your pet owner account.",
+              variant: "destructive",
+            });
+            setIsLoading(false);
+            return;
+          }
+
+          // If email exists but no specific account type, they should just log in
+          toast({
+            title: "Account Exists",
+            description: "This email is already registered. Try logging in instead.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         const { error, data } = await signUp(email, password, fullName);
         if (error) {
           if (error.message.includes("already registered")) {
