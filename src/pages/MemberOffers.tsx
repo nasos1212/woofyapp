@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, ArrowUpDown, Sparkles } from "lucide-react";
+import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, ArrowUpDown, Sparkles, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -13,6 +19,7 @@ import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDia
 import { formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 interface Offer {
   id: string;
   title: string;
@@ -54,6 +61,7 @@ const MemberOffers = () => {
   const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCity, setSelectedCity] = useState<string>("all");
   const [showRedeemed, setShowRedeemed] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
@@ -72,12 +80,26 @@ const MemberOffers = () => {
   useEffect(() => {
     if (user) {
       fetchOffers();
+      fetchUserCity();
     }
   }, [user]);
 
   useEffect(() => {
     filterAndSortOffers();
-  }, [offers, searchQuery, selectedCategory, showRedeemed, showFavoritesOnly, sortBy, isFavorite]);
+  }, [offers, searchQuery, selectedCategory, selectedCity, showRedeemed, showFavoritesOnly, sortBy, isFavorite]);
+
+  const fetchUserCity = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("preferred_city")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    
+    if (data?.preferred_city) {
+      setSelectedCity(data.preferred_city);
+    }
+  };
 
   const fetchOffers = async () => {
     if (!user) return;
@@ -186,6 +208,14 @@ const MemberOffers = () => {
     if (selectedCategory !== "all") {
       filtered = filtered.filter(
         (offer) => offer.business.category === selectedCategory
+      );
+    }
+
+    // City filter
+    if (selectedCity !== "all") {
+      const citySearch = selectedCity.split(" (")[0].toLowerCase();
+      filtered = filtered.filter(
+        (offer) => offer.business.city?.toLowerCase().includes(citySearch)
       );
     }
 
@@ -326,6 +356,51 @@ const MemberOffers = () => {
                   {category.label}
                 </button>
               ))}
+            </div>
+
+            {/* City Filter */}
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-muted-foreground" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="justify-between gap-2 min-w-[180px]"
+                  >
+                    <span className="truncate">
+                      {selectedCity === "all" ? "All Cities" : selectedCity}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[280px] max-h-[300px] overflow-y-auto bg-card z-50">
+                  <DropdownMenuItem 
+                    onClick={() => setSelectedCity("all")}
+                    className="flex items-center justify-between cursor-pointer"
+                  >
+                    All Cities
+                    {selectedCity === "all" && (
+                      <Check className="w-4 h-4 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                  {cyprusCityNames.map((city) => (
+                    <DropdownMenuItem 
+                      key={city}
+                      onClick={() => setSelectedCity(city)}
+                      className="flex items-center justify-between cursor-pointer"
+                    >
+                      {city}
+                      {selectedCity === city && (
+                        <Check className="w-4 h-4 text-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                Filter by location
+              </p>
             </div>
 
             {/* Filter Toggles and Sort */}
