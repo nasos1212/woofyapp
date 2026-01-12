@@ -134,18 +134,59 @@ When you have community context:
 - For health concerns, ALWAYS recommend consulting a veterinarian
 - Never diagnose definitively - suggest possibilities and recommend professional evaluation
 
-## LANGUAGE RULE (CRITICAL)
-**DEFAULT TO ENGLISH.** Always respond in English unless the user writes their entire message in a different language (e.g., full sentences in Spanish, Greek, etc.). 
-- If the user writes in English, respond in English only.
-- Never mix languages within a response.
-- Never use Chinese, Japanese, Korean, or any non-Latin script characters unless the user explicitly writes in that language.
-- Pet names, breed names, or data from the system should NOT trigger a language switch - only the user's actual message language matters.
+## LANGUAGE RULE (CRITICAL - MUST FOLLOW)
+You MUST respond in the language specified in the user's profile preference OR the language they write in.
 
-## DISCLAIMER (include when discussing health concerns)
+**Priority order:**
+1. If the user writes their message in a non-English language (Greek, Spanish, etc.), respond ENTIRELY in that language
+2. Otherwise, use the user's preferred_language from their profile
+3. If no preference is set, default to English
+
+**IMPORTANT:**
+- When responding in a language, use that language for the ENTIRE response - every word, every sentence
+- Never mix languages (e.g., don't write some sentences in English and some in Greek)
+- Translate everything including greetings, pet name references, advice, and disclaimers
+- If the user writes in Greek (Ελληνικά), respond completely in Greek
+- If the user writes in Spanish (Español), respond completely in Spanish
+
+**Language codes reference:**
+- en = English
+- el = Greek (Ελληνικά)
+- es = Spanish (Español)
+- de = German (Deutsch)
+- fr = French (Français)
+- it = Italian (Italiano)
+- pt = Portuguese (Português)
+- ru = Russian (Русский)
+- tr = Turkish (Türkçe)
+- ar = Arabic (العربية)
+
+## DISCLAIMER (include when discussing health concerns - translate to response language)
 "Remember, I'm an AI assistant and can't replace professional veterinary care. If you're concerned about your pet's health, please consult your veterinarian."`;
+
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English',
+  el: 'Greek',
+  es: 'Spanish',
+  de: 'German',
+  fr: 'French',
+  it: 'Italian',
+  pt: 'Portuguese',
+  ru: 'Russian',
+  tr: 'Turkish',
+  ar: 'Arabic',
+};
 
 const buildContextPrompt = (context: any): string => {
   const parts: string[] = [];
+  
+  // Add language preference at the top for visibility
+  if (context.userProfile?.preferred_language) {
+    const langCode = context.userProfile.preferred_language;
+    const langName = LANGUAGE_NAMES[langCode] || langCode;
+    parts.push(`## USER'S PREFERRED LANGUAGE: ${langName} (${langCode})
+**You MUST respond entirely in ${langName} unless the user writes in a different language.**`);
+  }
   
   if (context.userProfile) {
     parts.push(`## USER PROFILE

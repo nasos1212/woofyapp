@@ -1315,6 +1315,7 @@ export type Database = {
           id: string
           phone: string | null
           preferred_city: string | null
+          preferred_language: string | null
           updated_at: string
           user_id: string
         }
@@ -1326,6 +1327,7 @@ export type Database = {
           id?: string
           phone?: string | null
           preferred_city?: string | null
+          preferred_language?: string | null
           updated_at?: string
           user_id: string
         }
@@ -1337,6 +1339,7 @@ export type Database = {
           id?: string
           phone?: string | null
           preferred_city?: string | null
+          preferred_language?: string | null
           updated_at?: string
           user_id?: string
         }
