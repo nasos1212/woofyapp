@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2, ArrowLeft } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2, ArrowLeft, Dog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
@@ -28,6 +28,8 @@ interface ChatSession {
   title: string | null;
   created_at: string;
   updated_at: string;
+  pet_name: string | null;
+  pet_breed: string | null;
 }
 
 interface UserContext {
@@ -107,14 +109,20 @@ const PetHealthAssistant = () => {
     }
   };
 
-  const createNewSession = async () => {
+  const createNewSession = async (petName?: string, petBreed?: string | null) => {
     if (!user) return null;
+
+    const petToUse = petName || selectedPet?.pet_name;
+    const breedToUse = petBreed !== undefined ? petBreed : selectedPet?.pet_breed;
+    const title = petToUse ? `Chat about ${petToUse}` : "New conversation";
 
     const { data, error } = await supabase
       .from("ai_chat_sessions")
       .insert({
         user_id: user.id,
-        title: "New conversation",
+        title,
+        pet_name: petToUse || null,
+        pet_breed: breedToUse || null,
       })
       .select()
       .single();
@@ -629,7 +637,7 @@ const PetHealthAssistant = () => {
     }
     
     // Start a new conversation for this pet
-    const newSessionId = await createNewSession();
+    const newSessionId = await createNewSession(pet.pet_name, pet.pet_breed);
     toast.success(`Switched to ${pet.pet_name}'s chat`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
     
@@ -828,8 +836,17 @@ const PetHealthAssistant = () => {
                         className="flex-1 min-w-0"
                         onClick={() => loadSession(session.id)}
                       >
-                        <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
+                          {session.pet_name && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
+                              <Dog className="w-3 h-3" />
+                              {session.pet_name}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-xs text-muted-foreground">
+                          {session.pet_breed && <span className="mr-2">{session.pet_breed}</span>}
                           {new Date(session.updated_at).toLocaleDateString()}
                         </p>
                       </div>
