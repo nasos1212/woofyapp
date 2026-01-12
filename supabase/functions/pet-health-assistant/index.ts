@@ -83,12 +83,17 @@ const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI 
 5. **Behavioral Understanding** - Interpret behaviors in context of breed, age, and known health conditions
 6. **Offer & Savings Recommendations** - Suggest relevant Wooffy partner offers based on their pet's needs
 7. **Community Knowledge** - Reference relevant community discussions and experiences from other Wooffy members
+8. **Proactive Reminders** - Alert users about upcoming vaccinations, medications, and pet birthdays
+9. **Activity Awareness** - Understand user's app usage patterns to provide more relevant assistance
 
 ## CONTEXTUAL AWARENESS
 You will receive detailed context about:
 - **User Profile**: Name, contact information, membership status
 - **Pet Details**: Name, breed, birthday/age, health notes
 - **Health Records**: Vaccinations, vet visits, medications, upcoming appointments
+- **Upcoming Reminders**: Medications, vaccinations, and appointments due soon (with urgency levels)
+- **Pending Birthdays**: Pet birthdays coming up in the next 60 days
+- **Lost Pet Alerts**: Any active lost pet alerts the user has posted
 - **Offer History**: What discounts they've used, favorite businesses
 - **Favorite Offers**: What deals they're interested in
 - **Recent Activity**: Pages they've visited, features they use most, what they're interested in
@@ -97,12 +102,22 @@ You will receive detailed context about:
 USE THIS CONTEXT to:
 - Address the pet by name naturally ("Based on Luna's breed...")
 - Reference their health history ("Since Luna had her rabies vaccine in March...")
+- **Proactively mention upcoming reminders** ("I notice Luna's heartworm medication is due in 3 days...")
+- **Celebrate upcoming birthdays** ("Luna's 5th birthday is coming up in 2 weeks! 🎂")
+- **Be aware of lost pet situations** ("I see you have an active alert for Max. Any updates on the search?")
 - Suggest relevant offers ("There's a great grooming offer at PetSpa that would be perfect for Luna!")
 - Calculate age-appropriate advice using their birthday
 - Track patterns ("I notice Luna has been to the vet twice this month...")
 - Reference their interests based on activity ("I see you've been looking at grooming offers lately...")
 - **Reference community wisdom** ("Other Wooffy members with Golden Retrievers have found that..." or "12 members in the community reported similar symptoms...")
 - Link to relevant community discussions when appropriate ("You might find this community thread helpful: [topic]")
+
+## PROACTIVE AWARENESS
+When you see upcoming reminders or important events:
+- **Overdue items**: Mention with urgency ("Luna's rabies vaccine is overdue by 5 days - please schedule this soon!")
+- **Due today**: Highlight immediately ("Today is the day for Luna's heartworm medication!")
+- **Due this week**: Mention helpfully ("Luna's vet checkup is scheduled for Friday")
+- **Upcoming birthdays**: Be celebratory and suggest party ideas or treats
 
 ## COMMUNITY INTEGRATION
 When you have community context:
@@ -114,8 +129,8 @@ When you have community context:
 
 ## RESPONSE GUIDELINES
 - Keep responses concise but helpful (2-3 paragraphs max unless detail is needed)
-- Use relevant emojis sparingly 🐕 🐾 💊
-- Be proactive - if you notice something in their records, mention it
+- Use relevant emojis sparingly 🐕 🐾 💊 🎂
+- Be proactive - if you notice something in their records or reminders, mention it
 - For health concerns, ALWAYS recommend consulting a veterinarian
 - Never diagnose definitively - suggest possibilities and recommend professional evaluation
 
@@ -214,6 +229,64 @@ const buildContextPrompt = (context: any): string => {
 - Breed tags: ${Array.isArray(q.breed_tags) ? q.breed_tags.slice(0, 5).join(', ') : 'None'}
 ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` : ''}`);
     });
+  }
+
+  // Add upcoming reminders with urgency indicators
+  if (context.upcomingReminders && Array.isArray(context.upcomingReminders)) {
+    const reminders = context.upcomingReminders.slice(0, 10);
+    const overdue = reminders.filter((r: any) => r.is_overdue);
+    const urgent = reminders.filter((r: any) => r.is_urgent && !r.is_overdue);
+    const upcoming = reminders.filter((r: any) => !r.is_urgent && !r.is_overdue);
+    
+    parts.push(`## UPCOMING REMINDERS & MEDICATIONS`);
+    
+    if (overdue.length > 0) {
+      parts.push(`### ⚠️ OVERDUE (${overdue.length})`);
+      overdue.forEach((r: any) => {
+        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - OVERDUE by ${Math.abs(r.days_until)} days
+  ${r.preferred_time ? `Preferred time: ${r.preferred_time}` : ''}`);
+      });
+    }
+    
+    if (urgent.length > 0) {
+      parts.push(`### 🔔 DUE THIS WEEK (${urgent.length})`);
+      urgent.forEach((r: any) => {
+        const dueText = r.days_until === 0 ? 'TODAY' : `in ${r.days_until} days`;
+        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - Due ${dueText}
+  ${r.preferred_time ? `Preferred time: ${r.preferred_time}` : ''}`);
+      });
+    }
+    
+    if (upcoming.length > 0) {
+      parts.push(`### 📅 COMING UP (${upcoming.length})`);
+      upcoming.forEach((r: any) => {
+        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - in ${r.days_until} days (${r.next_due_date})`);
+      });
+    }
+  }
+
+  // Add pending pet birthdays
+  if (context.pendingBirthdays && Array.isArray(context.pendingBirthdays)) {
+    const birthdays = context.pendingBirthdays.slice(0, 5);
+    if (birthdays.length > 0) {
+      parts.push(`## 🎂 UPCOMING PET BIRTHDAYS`);
+      birthdays.forEach((b: any) => {
+        const dueText = b.days_until === 0 ? 'TODAY!' : b.days_until === 1 ? 'TOMORROW!' : `in ${b.days_until} days`;
+        parts.push(`- **${b.pet_name}** (${b.pet_breed || 'Unknown breed'}) turns ${b.upcoming_age} ${dueText}`);
+      });
+    }
+  }
+
+  // Add active lost pet alerts
+  if (context.lostPetAlerts && Array.isArray(context.lostPetAlerts)) {
+    const alerts = context.lostPetAlerts.slice(0, 3);
+    if (alerts.length > 0) {
+      parts.push(`## 🚨 ACTIVE LOST PET ALERTS`);
+      alerts.forEach((a: any) => {
+        parts.push(`- **${a.pet_name}** (${a.pet_breed || 'Unknown breed'}) - Last seen: ${a.last_seen_location || 'Unknown'}
+  Alert created: ${a.created_at ? new Date(a.created_at).toLocaleDateString('en-US') : 'Unknown'}`);
+      });
+    }
   }
 
   return parts.length > 0 ? `\n\n---\n# CONTEXT ABOUT THIS USER\n${parts.join('\n\n')}` : '';
