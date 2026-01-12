@@ -428,18 +428,18 @@ const PetProfile = () => {
                   pet.gender === "male" ? "bg-blue-100" : pet.gender === "female" ? "bg-pink-100" : "bg-gray-100"
                 )}>
                   <span className="text-lg">
-                    {pet.gender === "male" ? "♂" : pet.gender === "female" ? "♀" : "?"}
+                    {pet.gender === "male" ? "♂" : pet.gender === "female" ? "♀" : "—"}
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs sm:text-sm text-muted-foreground">Gender</p>
                   {isEditing ? (
                     <div className="flex gap-1 mt-1">
-                      {[
-                        { value: "male" as const, label: "♂ Male" },
-                        { value: "female" as const, label: "♀ Female" },
-                        { value: "unknown" as const, label: "?" },
-                      ].map((option) => (
+                    {[
+                      { value: "male" as const, label: "♂ Male" },
+                      { value: "female" as const, label: "♀ Female" },
+                      { value: "unknown" as const, label: "Unknown" },
+                    ].map((option) => (
                         <button
                           key={option.value}
                           type="button"
