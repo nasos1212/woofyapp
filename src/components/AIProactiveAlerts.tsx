@@ -9,6 +9,9 @@ import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { format, differenceInDays, isPast, isToday } from "date-fns";
 
+// Track login session to reset hidden state on new login
+let lastLoginTimestamp: number | null = null;
+
 interface ProactiveAlert {
   id: string;
   alert_type: string;
@@ -78,20 +81,27 @@ export const AIProactiveAlerts = () => {
   const [hasFetched, setHasFetched] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
-  // Reset hidden state on new login (user change)
+  // Listen for auth state changes to reset hidden state on new login
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN') {
+        // New login - always show reminders
+        const currentTimestamp = Date.now();
+        if (lastLoginTimestamp !== currentTimestamp) {
+          lastLoginTimestamp = currentTimestamp;
+          sessionStorage.removeItem('wooffy_reminders_hidden');
+          setIsHidden(false);
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Check hidden state from sessionStorage on mount
   useEffect(() => {
     if (user) {
-      const lastUserId = sessionStorage.getItem('wooffy_last_user_id');
-      
-      // If different user or new session, reset the hidden state
-      if (lastUserId !== user.id) {
-        sessionStorage.removeItem('wooffy_reminders_hidden');
-        sessionStorage.setItem('wooffy_last_user_id', user.id);
-        setIsHidden(false);
-      } else {
-        // Same user, check if they previously hid it this session
-        setIsHidden(sessionStorage.getItem('wooffy_reminders_hidden') === 'true');
-      }
+      setIsHidden(sessionStorage.getItem('wooffy_reminders_hidden') === 'true');
     }
   }, [user]);
 
