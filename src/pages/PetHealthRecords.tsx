@@ -32,6 +32,7 @@ interface HealthRecord {
   document_url: string | null;
   reminder_interval_type: string | null;
   reminder_interval_days: number | null;
+  preferred_time: string | null;
   created_at: string;
 }
 
@@ -126,6 +127,7 @@ const PetHealthRecords = () => {
   const [selectedPreset, setSelectedPreset] = useState("");
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [preferredTime, setPreferredTime] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -287,6 +289,7 @@ const PetHealthRecords = () => {
         notes: notes || null,
         reminder_interval_type: hasInterval ? intervalType : null,
         reminder_interval_days: hasInterval ? getIntervalDays() : null,
+        preferred_time: (recordType === 'medication' && intervalType === 'daily' && preferredTime) ? preferredTime : null,
       }).select().single();
 
       if (error) throw error;
@@ -430,6 +433,7 @@ const PetHealthRecords = () => {
     setDocumentFile(null);
     setEditingRecord(null);
     setRemoveExistingDocument(false);
+    setPreferredTime("");
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -448,6 +452,7 @@ const PetHealthRecords = () => {
     setIntervalType(record.reminder_interval_type || "yearly");
     setCustomDays(String(record.reminder_interval_days || 365));
     setSelectedPreset("");
+    setPreferredTime(record.preferred_time || "");
     setDocumentFile(null);
     setRemoveExistingDocument(false);
     setShowAddDialog(true);
@@ -520,6 +525,7 @@ const PetHealthRecords = () => {
           document_url: documentUrl,
           reminder_interval_type: hasInterval ? intervalType : null,
           reminder_interval_days: hasInterval ? getIntervalDays() : null,
+          preferred_time: (recordType === 'medication' && intervalType === 'daily' && preferredTime) ? preferredTime : null,
         })
         .eq("id", editingRecord.id);
 
@@ -830,6 +836,20 @@ const PetHealthRecords = () => {
                           />
                         </div>
                       )}
+                      {/* Preferred time for daily medications */}
+                      {intervalType === 'daily' && (
+                        <div className="space-y-2">
+                          <Label>Preferred Time (Cyprus/Athens timezone)</Label>
+                          <Input
+                            type="time"
+                            value={preferredTime}
+                            onChange={(e) => setPreferredTime(e.target.value)}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Set a reminder time for this daily medication
+                          </p>
+                        </div>
+                      )}
                     </>
                   )}
 
@@ -1064,6 +1084,11 @@ const PetHealthRecords = () => {
                                 {reminder.reminder_interval_type && (
                                   <span className="text-xs">
                                     ({getIntervalLabel(reminder.reminder_interval_type, reminder.reminder_interval_days)})
+                                  </span>
+                                )}
+                                {reminder.preferred_time && reminder.reminder_interval_type === 'daily' && (
+                                  <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                                    ⏰ {reminder.preferred_time.slice(0, 5)}
                                   </span>
                                 )}
                               </div>
