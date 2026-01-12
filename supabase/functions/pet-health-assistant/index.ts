@@ -145,9 +145,14 @@ You MUST respond in the language specified in the user's profile preference OR t
 **IMPORTANT:**
 - When responding in a language, use that language for the ENTIRE response - every word, every sentence
 - Never mix languages (e.g., don't write some sentences in English and some in Greek)
-- Translate everything including greetings, pet name references, advice, and disclaimers
+- Translate everything including greetings, advice, and disclaimers
 - If the user writes in Greek (Ελληνικά), respond completely in Greek
 - If the user writes in Spanish (Español), respond completely in Spanish
+
+**EXCEPTION - KEEP IN ENGLISH:**
+- Pet names (e.g., "Kobe", "Falafel", "Luna") - ALWAYS keep pet names exactly as they are in English
+- Breed names (e.g., "Golden Retriever", "French Bulldog", "Labrador") - ALWAYS keep breed names in English
+- These should NOT be translated, even when the rest of the response is in another language
 
 **Language codes reference:**
 - en = English
@@ -158,7 +163,6 @@ You MUST respond in the language specified in the user's profile preference OR t
 - it = Italian (Italiano)
 - pt = Portuguese (Português)
 - ru = Russian (Русский)
-- tr = Turkish (Türkçe)
 - ar = Arabic (العربية)
 
 ## DISCLAIMER (include when discussing health concerns - translate to response language)

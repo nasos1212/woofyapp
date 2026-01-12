@@ -25,7 +25,6 @@ const LANGUAGES: Language[] = [
   { code: "it", name: "Italian", nativeName: "Italiano" },
   { code: "pt", name: "Portuguese", nativeName: "Português" },
   { code: "ru", name: "Russian", nativeName: "Русский" },
-  { code: "tr", name: "Turkish", nativeName: "Türkçe" },
   { code: "ar", name: "Arabic", nativeName: "العربية" },
 ];
 
@@ -66,9 +65,10 @@ const LanguageSelector = ({ currentLanguage, userId, onLanguageChange }: Languag
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" disabled={isUpdating} className="gap-2">
+        <Button variant="outline" size="sm" disabled={isUpdating} className="gap-2 border-dashed">
           <Globe className="w-4 h-4" />
           <span className="hidden sm:inline">{currentLang.nativeName}</span>
+          <span className="text-xs text-muted-foreground">▼</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
