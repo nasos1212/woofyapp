@@ -529,9 +529,19 @@ const PetHealthAssistant = () => {
     };
 
     try {
-      // Build context with selected pet info and activity
+      // Build context with selected pet info - filter records to only selected pet
+      const filteredHealthRecords = selectedPet && userContext?.healthRecords
+        ? userContext.healthRecords.filter((r: any) => r.pet_id === selectedPet.id)
+        : userContext?.healthRecords || [];
+      
+      const filteredReminders = selectedPet && userContext?.upcomingReminders
+        ? userContext.upcomingReminders.filter((r: any) => r.pet_name === selectedPet.pet_name)
+        : userContext?.upcomingReminders || [];
+      
       const contextToSend = userContext ? {
         ...userContext,
+        healthRecords: filteredHealthRecords,
+        upcomingReminders: filteredReminders,
         selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
       } : null;
 
@@ -661,8 +671,19 @@ const PetHealthAssistant = () => {
           throw new Error("Not authenticated");
         }
         
+        // Filter records to only the selected pet
+        const filteredHealthRecords = updatedContext?.healthRecords
+          ? updatedContext.healthRecords.filter((r: any) => r.pet_id === pet.id)
+          : [];
+        
+        const filteredReminders = updatedContext?.upcomingReminders
+          ? updatedContext.upcomingReminders.filter((r: any) => r.pet_name === pet.pet_name)
+          : [];
+        
         const contextToSend = {
           ...updatedContext,
+          healthRecords: filteredHealthRecords,
+          upcomingReminders: filteredReminders,
           selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
         };
         
