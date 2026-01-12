@@ -74,7 +74,7 @@ export const AIProactiveAlerts = () => {
   const [alerts, setAlerts] = useState<ProactiveAlert[]>([]);
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true); // Start collapsed by default
   const [hasFetched, setHasFetched] = useState(false);
   const [isHidden, setIsHidden] = useState(() => {
     // Check sessionStorage - resets on new browser session/login
