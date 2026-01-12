@@ -774,7 +774,7 @@ const PetHealthAssistant = () => {
                     Wooffy Assistant
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    Ask me anything about your pet's health! 🐾
+                    Ask me anything about your pet!
                   </p>
                 </div>
               </div>
