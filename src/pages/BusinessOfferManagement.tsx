@@ -62,6 +62,7 @@ interface Offer {
   is_limited_time: boolean;
   limited_time_label: string | null;
   max_redemptions: number | null;
+  offer_type: 'per_member' | 'per_pet';
 }
 
 const BusinessOfferManagement = () => {
@@ -85,6 +86,7 @@ const BusinessOfferManagement = () => {
     is_limited_time: false,
     limited_time_label: "",
     max_redemptions: "",
+    offer_type: "per_member" as 'per_member' | 'per_pet',
   });
 
   useEffect(() => {
@@ -122,7 +124,7 @@ const BusinessOfferManagement = () => {
       // Get offers with redemption counts
       const { data: offersData, error } = await supabase
         .from("offers")
-        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions")
+        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions, offer_type")
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -139,8 +141,9 @@ const BusinessOfferManagement = () => {
         redemptionCounts[r.offer_id] = (redemptionCounts[r.offer_id] || 0) + 1;
       });
 
-      const transformedOffers = (offersData || []).map((offer) => ({
+      const transformedOffers: Offer[] = (offersData || []).map((offer) => ({
         ...offer,
+        offer_type: (offer.offer_type as 'per_member' | 'per_pet') || 'per_member',
         redemption_count: redemptionCounts[offer.id] || 0,
       }));
 
@@ -165,6 +168,7 @@ const BusinessOfferManagement = () => {
       is_limited_time: false,
       limited_time_label: "",
       max_redemptions: "",
+      offer_type: "per_member",
     });
     setIsDialogOpen(true);
   };
@@ -180,7 +184,8 @@ const BusinessOfferManagement = () => {
       valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : "",
       is_limited_time: offer.is_limited_time || false,
       limited_time_label: offer.limited_time_label || "",
-      max_redemptions: (offer as any).max_redemptions?.toString() || "",
+      max_redemptions: offer.max_redemptions?.toString() || "",
+      offer_type: offer.offer_type || "per_member",
     });
     setIsDialogOpen(true);
   };
@@ -208,6 +213,7 @@ const BusinessOfferManagement = () => {
         is_limited_time: formData.is_limited_time,
         limited_time_label: formData.limited_time_label.trim() || null,
         max_redemptions: formData.max_redemptions ? parseInt(formData.max_redemptions) : null,
+        offer_type: formData.offer_type,
       };
 
       if (editingOffer) {
@@ -354,6 +360,13 @@ const BusinessOfferManagement = () => {
                           {offer.discount_value}
                           {offer.discount_type === "percentage" ? "%" : "€"} off
                         </span>
+                        <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
+                          offer.offer_type === 'per_pet' 
+                            ? 'bg-teal-100 text-teal-700' 
+                            : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {offer.offer_type === 'per_pet' ? '🐕 Per Pet' : '👤 Per Member'}
+                        </span>
                         <span className="text-slate-500">
                           {offer.redemption_count}{offer.max_redemptions ? `/${offer.max_redemptions}` : ''} redemption{offer.redemption_count !== 1 ? "s" : ""}
                         </span>
@@ -494,6 +507,27 @@ const BusinessOfferManagement = () => {
                 />
                 <p className="text-xs text-muted-foreground">Leave empty for unlimited</p>
               </div>
+            </div>
+
+            {/* Offer Type */}
+            <div className="space-y-2">
+              <Label htmlFor="offer_type">Redemption Type</Label>
+              <select
+                id="offer_type"
+                value={formData.offer_type}
+                onChange={(e) =>
+                  setFormData({ ...formData, offer_type: e.target.value as 'per_member' | 'per_pet' })
+                }
+                className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                <option value="per_member">Per Member (1 redemption per membership)</option>
+                <option value="per_pet">Per Pet (1 redemption per pet owned)</option>
+              </select>
+              <p className="text-xs text-muted-foreground">
+                {formData.offer_type === 'per_pet' 
+                  ? '🐕 Each pet can use this offer once (e.g., grooming, vet visits)' 
+                  : '👤 One use per member, regardless of pets (e.g., store discounts)'}
+              </p>
             </div>
 
             {/* Time-sensitive options */}
