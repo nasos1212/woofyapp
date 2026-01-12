@@ -1203,6 +1203,7 @@ export type Database = {
           notes: string | null
           owner_user_id: string
           pet_id: string
+          preferred_time: string | null
           record_type: string
           reminder_interval_days: number | null
           reminder_interval_type: string | null
@@ -1221,6 +1222,7 @@ export type Database = {
           notes?: string | null
           owner_user_id: string
           pet_id: string
+          preferred_time?: string | null
           record_type: string
           reminder_interval_days?: number | null
           reminder_interval_type?: string | null
@@ -1239,6 +1241,7 @@ export type Database = {
           notes?: string | null
           owner_user_id?: string
           pet_id?: string
+          preferred_time?: string | null
           record_type?: string
           reminder_interval_days?: number | null
           reminder_interval_type?: string | null
