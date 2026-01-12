@@ -21,13 +21,10 @@ const MembershipCardFull = ({
   // Generate a verification URL for the QR code
   const verificationUrl = `https://wooffy.app/verify/${memberId}`;
 
-  // Format pet display - use petNames array if provided, otherwise fallback to petName
+  // Format pet display - show all pet names
   const formatPetDisplay = () => {
     if (petNames && petNames.length > 0) {
-      if (petNames.length === 1) {
-        return petNames[0];
-      }
-      return `${petNames[0]} + ${petNames.length - 1} more`;
+      return petNames.join(", ");
     }
     return petName;
   };
