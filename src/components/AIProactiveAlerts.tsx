@@ -68,9 +68,6 @@ const statusConfig: Record<string, { label: string; className: string; bgClass: 
   },
 };
 
-// Track if alerts have been generated this session to prevent duplicates
-const generatedThisSession = new Set<string>();
-
 export const AIProactiveAlerts = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -78,6 +75,7 @@ export const AIProactiveAlerts = () => {
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
   const [isHidden, setIsHidden] = useState(() => {
     // Check sessionStorage - resets on new browser session/login
     return sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
@@ -89,16 +87,20 @@ export const AIProactiveAlerts = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchAlerts();
-      fetchHealthRecords();
-      // Only generate alerts once per user per session
-      if (!generatedThisSession.has(user.id)) {
-        generatedThisSession.add(user.id);
-        generateNewAlerts();
-      }
+    // Prevent duplicate fetches on mobile where effects can fire multiple times
+    if (!user || hasFetched) return;
+    
+    setHasFetched(true);
+    fetchAlerts();
+    fetchHealthRecords();
+    
+    // Only generate alerts once per session using sessionStorage
+    const alertsGeneratedKey = `wooffy_alerts_generated_${user.id}`;
+    if (!sessionStorage.getItem(alertsGeneratedKey)) {
+      sessionStorage.setItem(alertsGeneratedKey, 'true');
+      generateNewAlerts();
     }
-  }, [user]);
+  }, [user, hasFetched]);
 
   const fetchHealthRecords = async () => {
     if (!user) return;
@@ -198,7 +200,12 @@ export const AIProactiveAlerts = () => {
       return a.daysUntil - b.daysUntil;
     });
 
-    setReminders(upcomingReminders);
+    // Deduplicate reminders by unique ID + type combination
+    const uniqueReminders = upcomingReminders.filter((reminder, index, self) =>
+      index === self.findIndex(r => r.id === reminder.id && r.type === reminder.type)
+    );
+
+    setReminders(uniqueReminders);
   };
 
   const fetchAlerts = async () => {
