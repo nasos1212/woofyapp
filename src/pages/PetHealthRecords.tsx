@@ -692,7 +692,6 @@ const PetHealthRecords = () => {
                           <SelectValue placeholder="Choose a common treatment..." />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="custom">✏️ Enter Custom Treatment</SelectItem>
                           {recordType === 'medication' && (
                             <>
                               <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
@@ -725,6 +724,8 @@ const PetHealthRecords = () => {
                               ))}
                             </>
                           )}
+                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-1"></div>
+                          <SelectItem value="custom">✏️ Other</SelectItem>
                         </SelectContent>
                       </Select>
                       {selectedPreset && selectedPreset !== 'custom' && (
