@@ -325,7 +325,17 @@ export const AIProactiveAlerts = () => {
         </div>
         <div className="flex items-center gap-2">
           {isCollapsed ? (
-            <span className="text-xs text-muted-foreground hover:text-primary cursor-pointer transition-colors">Show More</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsCollapsed(false);
+              }}
+            >
+              Show More
+            </Button>
           ) : (
             <Button
               variant="ghost"
