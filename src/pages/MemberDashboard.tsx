@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles } from "lucide-react";
+import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import RatingPromptDialog from "@/components/RatingPromptDialog";
 import Header from "@/components/Header";
@@ -14,6 +20,7 @@ import { format } from "date-fns";
 import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 
 interface Pet {
   id: string;
@@ -34,6 +41,7 @@ interface Membership {
 interface Profile {
   full_name: string | null;
   email: string;
+  preferred_city: string | null;
 }
 
 interface Redemption {
@@ -49,11 +57,17 @@ interface Redemption {
   };
 }
 
-const nearbyOffers = [
-  { business: "Bark & Brew Café", distance: "0.3 km", offer: "Free puppuccino" },
-  { business: "Canine Academy", distance: "1.2 km", offer: "20% off classes" },
-  { business: "PetMed Clinic", distance: "2.1 km", offer: "Free checkup" },
-];
+interface NearbyOffer {
+  id: string;
+  title: string;
+  discount_value: number | null;
+  discount_type: string;
+  business: {
+    id: string;
+    business_name: string;
+    city: string | null;
+  };
+}
 
 const MemberDashboard = () => {
   const { user, loading, signOut } = useAuth();
@@ -62,9 +76,11 @@ const MemberDashboard = () => {
   const [membership, setMembership] = useState<Membership | null>(null);
   const [pets, setPets] = useState<Pet[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
+  const [nearbyOffers, setNearbyOffers] = useState<NearbyOffer[]>([]);
   const [stats, setStats] = useState({ dealsUsed: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
+  const [isSavingCity, setIsSavingCity] = useState(false);
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
   const { favoriteIds } = useFavoriteOffers();
@@ -85,7 +101,7 @@ const MemberDashboard = () => {
         // Fetch profile
         const { data: profileData } = await supabase
           .from("profiles")
-          .select("full_name, email")
+          .select("full_name, email, preferred_city")
           .eq("user_id", user.id)
           .maybeSingle();
 
@@ -147,6 +163,71 @@ const MemberDashboard = () => {
       fetchData();
     }
   }, [user, loading]);
+
+  // Fetch nearby offers when preferred city changes
+  useEffect(() => {
+    const fetchNearbyOffers = async () => {
+      if (!profile?.preferred_city) {
+        setNearbyOffers([]);
+        return;
+      }
+
+      try {
+        // Extract the main city name (before parenthesis)
+        const citySearch = profile.preferred_city.split(" (")[0];
+        
+        const { data, error } = await supabase
+          .from("offers")
+          .select(`
+            id,
+            title,
+            discount_value,
+            discount_type,
+            business:businesses!inner(id, business_name, city)
+          `)
+          .eq("is_active", true)
+          .ilike("business.city", `%${citySearch}%`)
+          .limit(5);
+
+        if (error) throw error;
+
+        const transformedOffers = (data || []).map((offer) => ({
+          id: offer.id,
+          title: offer.title,
+          discount_value: offer.discount_value,
+          discount_type: offer.discount_type,
+          business: offer.business as unknown as NearbyOffer["business"],
+        }));
+
+        setNearbyOffers(transformedOffers);
+      } catch (error) {
+        console.error("Error fetching nearby offers:", error);
+        setNearbyOffers([]);
+      }
+    };
+
+    fetchNearbyOffers();
+  }, [profile?.preferred_city]);
+
+  const handleCityChange = async (city: string) => {
+    if (!user) return;
+    setIsSavingCity(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ preferred_city: city })
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      setProfile((prev) => prev ? { ...prev, preferred_city: city } : null);
+    } catch (error) {
+      console.error("Error saving city preference:", error);
+    } finally {
+      setIsSavingCity(false);
+    }
+  };
 
   const firstName = profile?.full_name?.split(" ")[0] || "Member";
   const initials = profile?.full_name
@@ -433,25 +514,85 @@ const MemberDashboard = () => {
                 </div>
               </div>
               <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  Nearby Offers
-                </h3>
-                <div className="space-y-4">
-                  {nearbyOffers.map((offer, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors cursor-pointer">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Gift className="w-5 h-5 text-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground text-sm">{offer.business}</p>
-                        <p className="text-xs text-muted-foreground">{offer.distance} away</p>
-                      </div>
-                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                        {offer.offer}
-                      </span>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    Nearby Offers
+                  </h3>
+                </div>
+                
+                {/* City Selector */}
+                <div className="mb-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-between gap-2 bg-muted/50"
+                        disabled={isSavingCity}
+                      >
+                        <span className="flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-muted-foreground" />
+                          {profile?.preferred_city || "Select your city"}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[280px] max-h-[300px] overflow-y-auto bg-card z-50">
+                      {cyprusCityNames.map((city) => (
+                        <DropdownMenuItem 
+                          key={city}
+                          onClick={() => handleCityChange(city)}
+                          className="flex items-center justify-between cursor-pointer"
+                        >
+                          {city}
+                          {profile?.preferred_city === city && (
+                            <Check className="w-4 h-4 text-primary" />
+                          )}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Your location is never tracked. You choose what to share.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {!profile?.preferred_city ? (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <MapPin className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">Select your city above to see nearby offers</p>
                     </div>
-                  ))}
+                  ) : nearbyOffers.length === 0 ? (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No offers in {profile.preferred_city} yet</p>
+                      <Link to="/member/offers" className="text-primary text-sm hover:underline">
+                        Browse all offers
+                      </Link>
+                    </div>
+                  ) : (
+                    nearbyOffers.slice(0, 3).map((offer) => (
+                      <Link 
+                        key={offer.id} 
+                        to={`/business/${offer.business.id}`}
+                        className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl hover:bg-muted transition-colors"
+                      >
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <Gift className="w-5 h-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-foreground text-sm truncate">{offer.business.business_name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{offer.title}</p>
+                        </div>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full whitespace-nowrap">
+                          {offer.discount_type === "percentage" 
+                            ? `${offer.discount_value}% off` 
+                            : `€${offer.discount_value} off`}
+                        </span>
+                      </Link>
+                    ))
+                  )}
                 </div>
                 <Link to="/member/offers">
                   <Button variant="outline" size="sm" className="w-full mt-4">
