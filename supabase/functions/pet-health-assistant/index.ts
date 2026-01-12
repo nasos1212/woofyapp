@@ -222,9 +222,13 @@ const buildContextPrompt = (context: any): string => {
     const pets = context.pets.slice(0, MAX_CONTEXT_ITEMS);
     parts.push(`## PETS (${pets.length} total)`);
     pets.forEach((pet: any, idx: number) => {
-      const age = pet.birthday ? calculateAge(pet.birthday) : 'Unknown';
+      const age = pet.birthday 
+        ? calculateAge(pet.birthday) 
+        : (pet.age_years ? `~${pet.age_years} years` : 'Unknown');
+      const gender = pet.gender === 'male' ? 'Male' : pet.gender === 'female' ? 'Female' : 'Unknown';
       parts.push(`### Pet ${idx + 1}: ${String(pet.pet_name || 'Unknown').substring(0, 100)}
 - Breed: ${String(pet.pet_breed || 'Mixed/Unknown').substring(0, 100)}
+- Gender: ${gender}
 - Birthday: ${pet.birthday || 'Not set'}
 - Age: ${age}
 - Notes: ${String(pet.notes || 'None').substring(0, 500)}`);
