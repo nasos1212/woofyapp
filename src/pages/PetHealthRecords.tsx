@@ -52,6 +52,7 @@ const recordTypeConfig: Record<string, { icon: React.ReactNode; label: string; c
 
 const INTERVAL_OPTIONS = [
   { value: 'once', label: 'One-time only', days: 0 },
+  { value: 'daily', label: 'Daily (1 day)', days: 1 },
   { value: 'monthly', label: 'Monthly (30 days)', days: 30 },
   { value: 'quarterly', label: 'Every 3 months (90 days)', days: 90 },
   { value: 'biannually', label: 'Every 6 months (180 days)', days: 180 },
@@ -70,6 +71,10 @@ interface TreatmentPreset {
 }
 
 const TREATMENT_PRESETS: TreatmentPreset[] = [
+  // Daily medications
+  { id: 'allopurinol', name: 'Allopurinol (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily medication for leishmaniasis treatment', recordType: 'medication' },
+  { id: 'milteforan', name: 'Milteforan (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily oral treatment for leishmaniasis', recordType: 'medication' },
+  
   // Prevention treatments (monthly)
   { id: 'flea-tick', name: 'Flea & Tick Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly topical or oral flea and tick prevention', recordType: 'medication' },
   { id: 'heartworm', name: 'Heartworm Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly heartworm preventative medication', recordType: 'medication' },
@@ -77,7 +82,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
   // Quarterly treatments
   { id: 'deworming', name: 'Deworming Treatment', category: 'medication', intervalType: 'quarterly', intervalDays: 90, description: 'Intestinal parasite prevention', recordType: 'medication' },
   
-  // Biannual treatments
+  // Biannual treatments (vaccines)
   { id: 'bordetella', name: 'Bordetella (Kennel Cough)', category: 'vaccine', intervalType: 'biannually', intervalDays: 180, description: 'Kennel cough vaccine, often required for boarding', recordType: 'vaccination' },
   
   // Annual vaccines
@@ -678,7 +683,7 @@ const PetHealthRecords = () => {
                     </Select>
                   </div>
 
-                  {/* Show presets for vaccinations and medications */}
+                  {/* Show presets for vaccinations and medications - filtered by record type */}
                   {(recordType === 'vaccination' || recordType === 'medication') && (
                     <div className="space-y-2">
                       <Label>Quick Select (Optional)</Label>
@@ -688,24 +693,38 @@ const PetHealthRecords = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="custom">✏️ Enter Custom Treatment</SelectItem>
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
-                          {TREATMENT_PRESETS.filter(p => p.category === 'prevention').map((preset) => (
-                            <SelectItem key={preset.id} value={preset.id}>
-                              💊 {preset.name}
-                            </SelectItem>
-                          ))}
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Medications</div>
-                          {TREATMENT_PRESETS.filter(p => p.category === 'medication').map((preset) => (
-                            <SelectItem key={preset.id} value={preset.id}>
-                              💉 {preset.name}
-                            </SelectItem>
-                          ))}
-                          <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Vaccines</div>
-                          {TREATMENT_PRESETS.filter(p => p.category === 'vaccine').map((preset) => (
-                            <SelectItem key={preset.id} value={preset.id}>
-                              🛡️ {preset.name}
-                            </SelectItem>
-                          ))}
+                          {recordType === 'medication' && (
+                            <>
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
+                              {TREATMENT_PRESETS.filter(p => p.recordType === 'medication' && p.intervalType === 'daily').map((preset) => (
+                                <SelectItem key={preset.id} value={preset.id}>
+                                  💊 {preset.name}
+                                </SelectItem>
+                              ))}
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
+                              {TREATMENT_PRESETS.filter(p => p.category === 'prevention').map((preset) => (
+                                <SelectItem key={preset.id} value={preset.id}>
+                                  💊 {preset.name}
+                                </SelectItem>
+                              ))}
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Other Medications</div>
+                              {TREATMENT_PRESETS.filter(p => p.recordType === 'medication' && p.category === 'medication' && p.intervalType !== 'daily').map((preset) => (
+                                <SelectItem key={preset.id} value={preset.id}>
+                                  💉 {preset.name}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
+                          {recordType === 'vaccination' && (
+                            <>
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Vaccines</div>
+                              {TREATMENT_PRESETS.filter(p => p.recordType === 'vaccination').map((preset) => (
+                                <SelectItem key={preset.id} value={preset.id}>
+                                  🛡️ {preset.name}
+                                </SelectItem>
+                              ))}
+                            </>
+                          )}
                         </SelectContent>
                       </Select>
                       {selectedPreset && selectedPreset !== 'custom' && (
