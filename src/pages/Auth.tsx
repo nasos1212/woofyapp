@@ -48,60 +48,61 @@ const Auth = () => {
 
   useEffect(() => {
     const checkAndRedirect = async () => {
-      if (!user || !accountType) return;
+      if (!user) return;
       
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 100));
       
-      if (accountType === "business") {
-        // Check if user has a registered business
-        const { data: business, error } = await supabase
-          .from("businesses")
-          .select("id, verification_status")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        
-        if (error) {
-          console.error("Error checking business:", error);
-        }
-        
-        if (business) {
-          // User has a business, redirect to dashboard
-          navigate("/business");
-        } else {
-          // User doesn't have a business - sign them out and show error
-          toast({
-            title: "No Business Account Found",
-            description: "This email is not registered as a business partner. Please register your business or log in as a pet owner.",
-            variant: "destructive",
-          });
-          // Sign out and reset to account type selection
-          await supabase.auth.signOut();
-          setAccountType(null);
-        }
+      // Always check if user has a business first (regardless of accountType)
+      const { data: business, error: businessError } = await supabase
+        .from("businesses")
+        .select("id, verification_status")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (businessError) {
+        console.error("Error checking business:", businessError);
+      }
+      
+      // If user has a business, redirect to business dashboard
+      if (business) {
+        navigate("/business");
         return;
       }
       
-      // Check if user already has a membership
-      const { data: membership, error } = await supabase
+      // If user selected business account type but has no business registered
+      if (accountType === "business") {
+        toast({
+          title: "No Business Account Found",
+          description: "This email is not registered as a business partner. Please register your business or log in as a pet owner.",
+          variant: "destructive",
+        });
+        await supabase.auth.signOut();
+        setAccountType(null);
+        return;
+      }
+      
+      // For member flow, check if they have a membership
+      const { data: membership, error: membershipError } = await supabase
         .from("memberships")
         .select("id")
         .eq("user_id", user.id)
         .maybeSingle();
       
-      if (error) {
-        console.error("Error checking membership:", error);
+      if (membershipError) {
+        console.error("Error checking membership:", membershipError);
       }
       
       if (membership) {
         navigate("/member");
-      } else {
+      } else if (accountType === "member") {
         navigate("/member/onboarding");
       }
+      // If no accountType selected yet, don't redirect - let user pick
     };
     
     checkAndRedirect();
-  }, [user, navigate, accountType]);
+  }, [user, navigate, accountType, toast]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
