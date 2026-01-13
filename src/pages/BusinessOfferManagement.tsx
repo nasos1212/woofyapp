@@ -511,6 +511,7 @@ const BusinessOfferManagement = () => {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
+                className="text-base"
               />
               {!formData.title.trim() && (
                 <p className="text-xs text-destructive">Title is required</p>
