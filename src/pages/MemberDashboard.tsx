@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check } from "lucide-react";
+import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
 import DogLoader from "@/components/DogLoader";
@@ -536,6 +536,15 @@ const MemberDashboard = () => {
                     <div>
                       <p className="font-medium text-foreground text-sm">Lost Pet Alerts</p>
                       <p className="text-xs text-muted-foreground">Community lost & found</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/history" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <History className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Redemption History</p>
+                      <p className="text-xs text-muted-foreground">View your savings & activity</p>
                     </div>
                   </Link>
                 </div>
