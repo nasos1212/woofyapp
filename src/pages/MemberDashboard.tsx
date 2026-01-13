@@ -330,8 +330,17 @@ const MemberDashboard = () => {
                   <Link to="/member/upgrade">
                     <Button variant="outline" size="sm" className="gap-1.5">
                       <Sparkles className="w-4 h-4" />
-                      <span className="hidden sm:inline">Upgrade Plan</span>
-                      <span className="sm:hidden">Upgrade</span>
+                      {membership?.plan_type === "family" ? (
+                        <>
+                          <span className="hidden sm:inline">View Plans</span>
+                          <span className="sm:hidden">Plans</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="hidden sm:inline">Upgrade Plan</span>
+                          <span className="sm:hidden">Upgrade</span>
+                        </>
+                      )}
                     </Button>
                   </Link>
                 </div>
