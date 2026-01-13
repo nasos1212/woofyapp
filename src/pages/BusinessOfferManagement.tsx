@@ -499,13 +499,17 @@ const BusinessOfferManagement = () => {
 
           <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
             <div className="space-y-2">
-              <Label htmlFor="title">Offer Title *</Label>
+              <Label htmlFor="title">Offer Title <span className="text-destructive">*</span></Label>
               <Input
                 id="title"
                 placeholder="e.g., First Grooming Free"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
               />
+              {!formData.title.trim() && (
+                <p className="text-xs text-destructive">Title is required</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -521,17 +525,34 @@ const BusinessOfferManagement = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="discount_value">Discount Value *</Label>
+                <Label htmlFor="discount_value">Discount Value <span className="text-destructive">*</span></Label>
                 <Input
                   id="discount_value"
                   type="number"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  min="0"
+                  step="any"
                   placeholder="e.g., 15"
                   value={formData.discount_value}
-                  onChange={(e) =>
-                    setFormData({ ...formData, discount_value: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Only allow numbers and decimal point
+                    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                      setFormData({ ...formData, discount_value: value });
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    // Prevent non-numeric input
+                    if (['e', 'E', '+', '-'].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   required
                 />
+                {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) && (
+                  <p className="text-xs text-destructive">Please enter a valid discount value</p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="discount_type">Discount Type</Label>
@@ -757,7 +778,10 @@ const BusinessOfferManagement = () => {
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit}>
+            <Button 
+              onClick={handleSubmit}
+              disabled={!formData.title.trim() || !formData.discount_value || parseFloat(formData.discount_value) <= 0}
+            >
               {editingOffer ? "Save Changes" : "Create Offer"}
             </Button>
           </DialogFooter>
