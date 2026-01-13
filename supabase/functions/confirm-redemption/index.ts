@@ -142,10 +142,10 @@ serve(async (req) => {
     
     const memberName = profileData?.full_name || 'Member';
 
-    // Get offer details including offer_type
+    // Get offer details including redemption rules
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type, business_id, offer_type')
+      .select('id, title, discount_value, discount_type, business_id, offer_type, redemption_scope, redemption_frequency')
       .eq('id', offerId)
       .single();
 
@@ -156,10 +156,36 @@ serve(async (req) => {
       );
     }
 
-    const offerType = offer.offer_type || 'per_member';
+    // Use new redemption_scope field, fallback to offer_type for backward compatibility
+    const redemptionScope = offer.redemption_scope || offer.offer_type || 'per_member';
+    const redemptionFrequency = offer.redemption_frequency || 'one_time';
+
+    // Helper function to get the date filter based on frequency
+    const getFrequencyDateFilter = (frequency: string): Date | null => {
+      const now = new Date();
+      switch (frequency) {
+        case 'daily':
+          return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        case 'weekly':
+          const dayOfWeek = now.getDay();
+          const monday = new Date(now);
+          monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+          monday.setHours(0, 0, 0, 0);
+          return monday;
+        case 'monthly':
+          return new Date(now.getFullYear(), now.getMonth(), 1);
+        case 'unlimited':
+          return null; // No date filter - always allow
+        case 'one_time':
+        default:
+          return new Date(0); // Check all time
+      }
+    };
+
+    const frequencyDateFilter = getFrequencyDateFilter(redemptionFrequency);
 
     // Check redemption based on offer type
-    if (offerType === 'per_pet') {
+    if (redemptionScope === 'per_pet') {
       // For per-pet offers, petId is required
       if (!petId) {
         return new Response(
@@ -168,20 +194,31 @@ serve(async (req) => {
         );
       }
 
-      // Check if this specific pet already redeemed
-      const { data: existingRedemption } = await supabaseAdmin
-        .from('offer_redemptions')
-        .select('id')
-        .eq('membership_id', membershipId)
-        .eq('offer_id', offerId)
-        .eq('pet_id', petId)
-        .maybeSingle();
+      // Check if this specific pet already redeemed within the frequency period (unless unlimited)
+      if (redemptionFrequency !== 'unlimited') {
+        let redemptionQuery = supabaseAdmin
+          .from('offer_redemptions')
+          .select('id')
+          .eq('membership_id', membershipId)
+          .eq('offer_id', offerId)
+          .eq('pet_id', petId);
+        
+        if (frequencyDateFilter !== null) {
+          redemptionQuery = redemptionQuery.gte('redeemed_at', frequencyDateFilter.toISOString());
+        }
 
-      if (existingRedemption) {
-        return new Response(
-          JSON.stringify({ error: 'This pet has already used this offer', code: 'ALREADY_REDEEMED' }),
-          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        const { data: existingRedemption } = await redemptionQuery.maybeSingle();
+
+        if (existingRedemption) {
+          const frequencyMessage = redemptionFrequency === 'one_time' 
+            ? 'This pet has already used this offer'
+            : `This pet has already used this offer this ${redemptionFrequency === 'daily' ? 'day' : redemptionFrequency === 'weekly' ? 'week' : 'month'}`;
+          
+          return new Response(
+            JSON.stringify({ error: frequencyMessage, code: 'ALREADY_REDEEMED' }),
+            { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
       }
 
       // Get pet name for the notification
@@ -255,19 +292,30 @@ serve(async (req) => {
       );
 
     } else {
-      // Per-member: original logic
-      const { data: existingRedemption } = await supabaseAdmin
-        .from('offer_redemptions')
-        .select('id')
-        .eq('membership_id', membershipId)
-        .eq('offer_id', offerId)
-        .maybeSingle();
+      // Per-member: check if already redeemed within the frequency period (unless unlimited)
+      if (redemptionFrequency !== 'unlimited') {
+        let redemptionQuery = supabaseAdmin
+          .from('offer_redemptions')
+          .select('id')
+          .eq('membership_id', membershipId)
+          .eq('offer_id', offerId);
+        
+        if (frequencyDateFilter !== null) {
+          redemptionQuery = redemptionQuery.gte('redeemed_at', frequencyDateFilter.toISOString());
+        }
 
-      if (existingRedemption) {
-        return new Response(
-          JSON.stringify({ error: 'Offer already redeemed', code: 'ALREADY_REDEEMED' }),
-          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        const { data: existingRedemption } = await redemptionQuery.maybeSingle();
+
+        if (existingRedemption) {
+          const frequencyMessage = redemptionFrequency === 'one_time' 
+            ? 'Offer already redeemed'
+            : `You have already used this offer this ${redemptionFrequency === 'daily' ? 'day' : redemptionFrequency === 'weekly' ? 'week' : 'month'}`;
+          
+          return new Response(
+            JSON.stringify({ error: frequencyMessage, code: 'ALREADY_REDEEMED' }),
+            { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
       }
 
       // Insert the redemption
