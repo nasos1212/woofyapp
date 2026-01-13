@@ -1277,6 +1277,7 @@ export type Database = {
           owner_user_id: string
           pet_breed: string | null
           pet_name: string
+          photo_url: string | null
         }
         Insert: {
           age_years?: number | null
@@ -1289,6 +1290,7 @@ export type Database = {
           owner_user_id: string
           pet_breed?: string | null
           pet_name: string
+          photo_url?: string | null
         }
         Update: {
           age_years?: number | null
@@ -1301,6 +1303,7 @@ export type Database = {
           owner_user_id?: string
           pet_breed?: string | null
           pet_name?: string
+          photo_url?: string | null
         }
         Relationships: [
           {

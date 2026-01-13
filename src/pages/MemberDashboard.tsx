@@ -26,6 +26,7 @@ interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  photo_url: string | null;
 }
 
 interface Membership {
@@ -120,7 +121,7 @@ const MemberDashboard = () => {
           // Fetch pets for this membership
           const { data: petsData } = await supabase
             .from("pets")
-            .select("id, pet_name, pet_breed")
+            .select("id, pet_name, pet_breed, photo_url")
             .eq("membership_id", membershipData.id);
 
           if (petsData) {
@@ -403,8 +404,12 @@ const MemberDashboard = () => {
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
                         <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0">
-                            🐕
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0 overflow-hidden">
+                            {pet.photo_url ? (
+                              <img src={pet.photo_url} alt={pet.pet_name} className="w-full h-full object-cover" />
+                            ) : (
+                              "🐕"
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-teal-800 text-base sm:text-lg truncate">{pet.pet_name}</p>
