@@ -15,6 +15,7 @@ import {
   Clock,
   Calendar as CalendarIcon,
   ArrowLeft,
+  Info,
 } from "lucide-react";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
@@ -551,10 +552,42 @@ const BusinessOfferManagement = () => {
 
             {/* Redemption Settings */}
             <div className="border-t pt-4 mt-4">
-              <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                <Tag className="w-4 h-4" />
-                Redemption Rules
-              </h4>
+              <div className="flex items-center gap-2 mb-3">
+                <h4 className="font-medium text-sm flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  Redemption Rules
+                </h4>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button type="button" className="text-muted-foreground hover:text-foreground transition-colors">
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 text-sm" align="start">
+                    <div className="space-y-3">
+                      <p className="font-medium">How to set up your offer:</p>
+                      <div className="space-y-2 text-muted-foreground">
+                        <div className="flex gap-2">
+                          <span className="font-medium text-foreground">🐕 Per Pet + Monthly:</span>
+                          <span>"20% off grooming" - each pet once/month</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="font-medium text-foreground">👤 Per Member + One-time:</span>
+                          <span>"Free first visit" - member uses once ever</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="font-medium text-foreground">👤 Per Member + Unlimited:</span>
+                          <span>"10% on treats" - use anytime, no limits</span>
+                        </div>
+                        <div className="flex gap-2">
+                          <span className="font-medium text-foreground">🐕 Per Pet + One-time:</span>
+                          <span>"First grooming free" - each pet uses once</span>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
               
               <div className="space-y-4">
                 {/* Redemption Scope */}
