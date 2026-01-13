@@ -490,8 +490,8 @@ const BusinessOfferManagement = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
-          <DialogHeader className="flex-shrink-0">
+        <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[95vw] sm:w-full">
+          <DialogHeader className="flex-shrink-0 pb-2">
             <DialogTitle>
               {editingOffer ? "Edit Offer" : "Create New Offer"}
             </DialogTitle>
@@ -502,7 +502,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 pr-2 -mr-2">
             <div className="space-y-2">
               <Label htmlFor="title">Offer Title <span className="text-destructive">*</span></Label>
               <Input
@@ -781,12 +781,13 @@ const BusinessOfferManagement = () => {
             </div>
           </div>
 
-          <DialogFooter className="flex-shrink-0 border-t pt-4">
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+          <DialogFooter className="flex-shrink-0 border-t pt-4 mt-2 gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button 
               onClick={handleSubmit}
+              className="w-full sm:w-auto"
               disabled={
                 !formData.title.trim() || 
                 !formData.discount_value || 
