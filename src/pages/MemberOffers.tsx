@@ -625,7 +625,7 @@ const MemberOffers = () => {
                         </span>
                       </div>
 
-                      {offer.isRedeemed ? (
+                      {offer.isRedeemed && offer.redemption_frequency === 'one_time' ? (
                         <Badge
                           variant="outline"
                           className="bg-green-50 text-green-700 border-green-200"
