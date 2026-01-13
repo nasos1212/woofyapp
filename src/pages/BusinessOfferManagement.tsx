@@ -502,7 +502,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 pr-2 -mr-2">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-1 -mx-1">
             <div className="space-y-2">
               <Label htmlFor="title">Offer Title <span className="text-destructive">*</span></Label>
               <Input
