@@ -13,7 +13,7 @@ import {
   Check,
   AlertCircle,
   Clock,
-  Calendar,
+  Calendar as CalendarIcon,
   ArrowLeft,
 } from "lucide-react";
 import DogLoader from "@/components/DogLoader";
@@ -24,9 +24,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -87,7 +94,8 @@ const BusinessOfferManagement = () => {
     discount_value: "",
     discount_type: "percentage",
     terms: "",
-    valid_until: "",
+    valid_from: undefined as Date | undefined,
+    valid_until: undefined as Date | undefined,
     is_limited_time: false,
     limited_time_label: "",
     max_redemptions: "",
@@ -179,7 +187,8 @@ const BusinessOfferManagement = () => {
       discount_value: "",
       discount_type: "percentage",
       terms: "",
-      valid_until: "",
+      valid_from: undefined,
+      valid_until: undefined,
       is_limited_time: false,
       limited_time_label: "",
       max_redemptions: "",
@@ -201,7 +210,8 @@ const BusinessOfferManagement = () => {
       discount_value: offer.discount_value?.toString() || "",
       discount_type: offer.discount_type,
       terms: offer.terms || "",
-      valid_until: offer.valid_until ? offer.valid_until.split('T')[0] : "",
+      valid_from: offer.valid_from ? new Date(offer.valid_from) : undefined,
+      valid_until: offer.valid_until ? new Date(offer.valid_until) : undefined,
       is_limited_time: offer.is_limited_time || false,
       limited_time_label: offer.limited_time_label || "",
       max_redemptions: offer.max_redemptions?.toString() || "",
@@ -234,7 +244,8 @@ const BusinessOfferManagement = () => {
         discount_value: formData.discount_value ? parseFloat(formData.discount_value) : null,
         discount_type: formData.discount_type,
         terms: formData.terms.trim() || null,
-        valid_until: formData.valid_until ? new Date(formData.valid_until).toISOString() : null,
+        valid_from: formData.valid_from ? formData.valid_from.toISOString() : null,
+        valid_until: formData.valid_until ? formData.valid_until.toISOString() : null,
         is_limited_time: formData.is_limited_time,
         limited_time_label: formData.limited_time_label.trim() || null,
         max_redemptions: formData.max_redemptions ? parseInt(formData.max_redemptions) : null,
@@ -621,6 +632,72 @@ const BusinessOfferManagement = () => {
               </h4>
               
               <div className="space-y-4">
+                {/* Date Range */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Start Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !formData.valid_from && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.valid_from ? format(formData.valid_from, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.valid_from}
+                          onSelect={(date) => setFormData({ ...formData, valid_from: date })}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>End Date</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !formData.valid_until && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {formData.valid_until ? format(formData.valid_until, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={formData.valid_until}
+                          onSelect={(date) => setFormData({ ...formData, valid_until: date })}
+                          disabled={(date) => formData.valid_from ? date < formData.valid_from : false}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+                {(formData.valid_from || formData.valid_until) && (
+                  <p className="text-xs text-muted-foreground">
+                    📅 {formData.valid_from && formData.valid_until 
+                      ? `Valid from ${format(formData.valid_from, "MMM d, yyyy")} to ${format(formData.valid_until, "MMM d, yyyy")}`
+                      : formData.valid_from 
+                        ? `Starts ${format(formData.valid_from, "MMM d, yyyy")}`
+                        : `Ends ${format(formData.valid_until!, "MMM d, yyyy")}`}
+                  </p>
+                )}
+
                 {/* Valid Days */}
                 <div className="space-y-2">
                   <Label>Valid Days</Label>
