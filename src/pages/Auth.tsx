@@ -609,18 +609,6 @@ const Auth = () => {
             </button>
           </div>
 
-          {/* Family share code for members */}
-          {!isBusiness && (
-            <div className="mt-4 pt-4 border-t border-border text-center">
-              <button
-                type="button"
-                onClick={() => navigate("/member/join-family")}
-                className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
-              >
-                Have a family share code?
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>
