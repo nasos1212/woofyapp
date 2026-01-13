@@ -39,6 +39,8 @@ const RedemptionHistory = () => {
   const [selectedRedemption, setSelectedRedemption] = useState<Redemption | null>(null);
   const [stats, setStats] = useState({
     totalSaved: 0,
+    avgPercentage: 0,
+    percentageCount: 0,
     totalRedemptions: 0,
     thisMonth: 0,
     avgPerRedemption: 0,
@@ -109,15 +111,22 @@ const RedemptionHistory = () => {
 
       setRedemptions(transformedRedemptions);
 
-      // Calculate stats
-      const totalSaved = transformedRedemptions.reduce((sum, r) => {
+      // Calculate stats - separate fixed amounts and percentages
+      let fixedTotal = 0;
+      let percentageTotal = 0;
+      let percentageCount = 0;
+
+      transformedRedemptions.forEach((r) => {
         const value = r.offer?.discount_value || 0;
-        // Estimate actual savings (for percentage, assume average transaction of €50)
         if (r.offer?.discount_type === "percentage") {
-          return sum + (value / 100) * 50;
+          percentageTotal += value;
+          percentageCount++;
+        } else {
+          fixedTotal += value;
         }
-        return sum + value;
-      }, 0);
+      });
+
+      const avgPercentage = percentageCount > 0 ? Math.round(percentageTotal / percentageCount) : 0;
 
       const thisMonth = new Date();
       thisMonth.setDate(1);
@@ -127,13 +136,20 @@ const RedemptionHistory = () => {
         (r) => new Date(r.redeemed_at) >= thisMonth
       );
 
+      // Count fixed redemptions for average calculation
+      const fixedRedemptions = transformedRedemptions.filter(
+        (r) => r.offer?.discount_type !== "percentage"
+      );
+
       setStats({
-        totalSaved: Math.round(totalSaved),
+        totalSaved: Math.round(fixedTotal),
+        avgPercentage,
+        percentageCount,
         totalRedemptions: transformedRedemptions.length,
         thisMonth: monthlyRedemptions.length,
         avgPerRedemption:
-          transformedRedemptions.length > 0
-            ? Math.round(totalSaved / transformedRedemptions.length)
+          fixedRedemptions.length > 0
+            ? Math.round(fixedTotal / fixedRedemptions.length)
             : 0,
       });
     } catch (error) {
@@ -197,28 +213,30 @@ const RedemptionHistory = () => {
             <div className="bg-gradient-hero rounded-2xl p-5 text-white">
               <PiggyBank className="w-6 h-6 mb-2 opacity-80" />
               <div className="text-3xl font-display font-bold">€{stats.totalSaved}</div>
-              <p className="text-sm opacity-80">Total Saved</p>
+              <p className="text-sm opacity-80">Fixed Savings</p>
+            </div>
+            <div className="bg-white rounded-2xl p-5 shadow-soft border-2 border-primary/20">
+              <TrendingUp className="w-6 h-6 mb-2 text-primary" />
+              <div className="text-3xl font-display font-bold text-foreground">
+                {stats.avgPercentage > 0 ? `${stats.avgPercentage}%` : '-'}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Avg % Discount {stats.percentageCount > 0 && `(${stats.percentageCount}x)`}
+              </p>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow-soft">
-              <Tag className="w-6 h-6 mb-2 text-primary" />
+              <Tag className="w-6 h-6 mb-2 text-green-500" />
               <div className="text-3xl font-display font-bold text-foreground">
                 {stats.totalRedemptions}
               </div>
               <p className="text-sm text-muted-foreground">Total Redemptions</p>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow-soft">
-              <TrendingUp className="w-6 h-6 mb-2 text-green-500" />
+              <Calendar className="w-6 h-6 mb-2 text-yellow-500" />
               <div className="text-3xl font-display font-bold text-foreground">
                 {stats.thisMonth}
               </div>
               <p className="text-sm text-muted-foreground">This Month</p>
-            </div>
-            <div className="bg-white rounded-2xl p-5 shadow-soft">
-              <BarChart3 className="w-6 h-6 mb-2 text-yellow-500" />
-              <div className="text-3xl font-display font-bold text-foreground">
-                €{stats.avgPerRedemption}
-              </div>
-              <p className="text-sm text-muted-foreground">Avg Savings</p>
             </div>
           </div>
 
