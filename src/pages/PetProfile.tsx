@@ -328,17 +328,88 @@ const PetProfile = () => {
           </Card>
 
           {/* Info Cards */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
-            {/* Birthday Card */}
+          <div className={`grid gap-3 sm:gap-4 mb-4 ${isEditing || pet.birthday ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {/* Birthday Card - only show if editing OR if pet has a birthday */}
+            {(isEditing || pet.birthday) && (
+              <Card>
+                <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                      <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
+                      {isEditing ? (
+                        <div className="mt-1 space-y-2">
+                          <div className="flex gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setKnowsBirthday(true)}
+                              className={cn(
+                                "text-xs px-2 py-1 rounded",
+                                knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                              )}
+                            >
+                              Date
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setKnowsBirthday(false)}
+                              className={cn(
+                                "text-xs px-2 py-1 rounded",
+                                !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                              )}
+                            >
+                              Age
+                            </button>
+                          </div>
+                          {knowsBirthday ? (
+                            <Input
+                              type="date"
+                              value={editedBirthday}
+                              onChange={(e) => setEditedBirthday(e.target.value)}
+                              className="text-sm h-8"
+                              max={new Date().toISOString().split('T')[0]}
+                            />
+                          ) : (
+                            <div className="flex items-center gap-1">
+                              <Input
+                                type="number"
+                                min="0"
+                                max="30"
+                                value={editedAgeYears}
+                                onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                                className="text-sm h-8 w-16"
+                                placeholder="Age"
+                              />
+                              <span className="text-xs text-muted-foreground">yrs</span>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <p className="font-medium text-sm sm:text-base truncate">
+                          {pet.birthday 
+                            ? format(new Date(pet.birthday), "MMM d, yyyy") 
+                            : "Not set"}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Age Card */}
             <Card>
               <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
-                    <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
-                    {isEditing ? (
+                    <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
+                    {/* Show age input when editing and user chose age instead of birthday */}
+                    {isEditing && !knowsBirthday && !pet.birthday ? (
                       <div className="mt-1 space-y-2">
                         <div className="flex gap-1">
                           <button
@@ -362,60 +433,29 @@ const PetProfile = () => {
                             Age
                           </button>
                         </div>
-                        {knowsBirthday ? (
+                        <div className="flex items-center gap-1">
                           <Input
-                            type="date"
-                            value={editedBirthday}
-                            onChange={(e) => setEditedBirthday(e.target.value)}
-                            className="text-sm h-8"
-                            max={new Date().toISOString().split('T')[0]}
+                            type="number"
+                            min="0"
+                            max="30"
+                            value={editedAgeYears}
+                            onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                            className="text-sm h-8 w-16"
+                            placeholder="Age"
                           />
-                        ) : (
-                          <div className="flex items-center gap-1">
-                            <Input
-                              type="number"
-                              min="0"
-                              max="30"
-                              value={editedAgeYears}
-                              onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
-                              className="text-sm h-8 w-16"
-                              placeholder="Age"
-                            />
-                            <span className="text-xs text-muted-foreground">yrs</span>
-                          </div>
-                        )}
+                          <span className="text-xs text-muted-foreground">yrs</span>
+                        </div>
                       </div>
                     ) : (
                       <p className="font-medium text-sm sm:text-base truncate">
-                        {pet.birthday 
-                          ? format(new Date(pet.birthday), "MMM d, yyyy") 
-                          : pet.age_years 
-                            ? `~${pet.age_years} years` 
-                            : "Not set"}
+                        {isEditing 
+                          ? (knowsBirthday 
+                              ? (editedBirthday ? calculateAge(editedBirthday, null) : "Set birthday") 
+                              : (editedAgeYears !== "" ? `~${editedAgeYears} years old` : "Set age"))
+                          : calculateAge(pet.birthday, pet.age_years)
+                        }
                       </p>
                     )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Age Card */}
-            <Card>
-              <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
-                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
-                    <p className="font-medium text-sm sm:text-base truncate">
-                      {isEditing 
-                        ? (knowsBirthday 
-                            ? (editedBirthday ? calculateAge(editedBirthday, null) : "Set birthday") 
-                            : (editedAgeYears !== "" ? `~${editedAgeYears} years old` : "Set age"))
-                        : calculateAge(pet.birthday, pet.age_years)
-                      }
-                    </p>
                   </div>
                 </div>
               </CardContent>
