@@ -244,6 +244,11 @@ const BusinessOfferManagement = () => {
       return;
     }
 
+    if (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100) {
+      toast.error("Percentage discount cannot exceed 100%");
+      return;
+    }
+
     try {
       const offerData = {
         business_id: businessId,
@@ -550,9 +555,11 @@ const BusinessOfferManagement = () => {
                   }}
                   required
                 />
-                {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) && (
+                {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) ? (
                   <p className="text-xs text-destructive">Please enter a valid discount value</p>
-                )}
+                ) : formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100 ? (
+                  <p className="text-xs text-destructive">Percentage cannot exceed 100%</p>
+                ) : null}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="discount_type">Discount Type</Label>
@@ -780,7 +787,12 @@ const BusinessOfferManagement = () => {
             </Button>
             <Button 
               onClick={handleSubmit}
-              disabled={!formData.title.trim() || !formData.discount_value || parseFloat(formData.discount_value) <= 0}
+              disabled={
+                !formData.title.trim() || 
+                !formData.discount_value || 
+                parseFloat(formData.discount_value) <= 0 ||
+                (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100)
+              }
             >
               {editingOffer ? "Save Changes" : "Create Offer"}
             </Button>
