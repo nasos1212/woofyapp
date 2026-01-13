@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2 } from "lucide-react";
+import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
 import { format, differenceInYears, differenceInMonths } from "date-fns";
+import { validateImageFile } from "@/lib/fileValidation";
 
 interface Pet {
   id: string;
@@ -34,6 +35,7 @@ interface Pet {
   gender: "male" | "female" | "unknown" | null;
   age_years: number | null;
   notes: string | null;
+  photo_url: string | null;
   created_at: string;
   owner_user_id: string;
   membership_id: string;
@@ -58,6 +60,8 @@ const PetProfile = () => {
   const [editedGender, setEditedGender] = useState<"male" | "female" | "unknown">("unknown");
   const [editedAgeYears, setEditedAgeYears] = useState<number | "">("");
   const [knowsBirthday, setKnowsBirthday] = useState(true);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchPet = async () => {
@@ -181,6 +185,61 @@ const PetProfile = () => {
     }
   };
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !pet) return;
+
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setIsUploadingPhoto(true);
+    try {
+      // Delete old photo if exists
+      if (pet.photo_url) {
+        const oldPath = pet.photo_url.split('/pet-photos/')[1];
+        if (oldPath) {
+          await supabase.storage.from('pet-photos').remove([oldPath]);
+        }
+      }
+
+      // Upload new photo
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const filePath = `${user.id}/${pet.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('pet-photos')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('pet-photos')
+        .getPublicUrl(filePath);
+
+      // Update pet record
+      const { error: updateError } = await supabase
+        .from('pets')
+        .update({ photo_url: publicUrl })
+        .eq('id', pet.id);
+
+      if (updateError) throw updateError;
+
+      setPet({ ...pet, photo_url: publicUrl });
+      toast.success('Photo updated!');
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast.error('Failed to upload photo');
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleDelete = async () => {
     if (!pet) return;
     setIsDeleting(true);
@@ -268,8 +327,37 @@ const PetProfile = () => {
           <Card className="mb-6 overflow-hidden">
             <div className="bg-gradient-hero p-6 text-white">
               <div className="flex items-center gap-4">
-                <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
-                  <Dog className="w-10 h-10" />
+                {/* Pet Photo with Upload */}
+                <div className="relative">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                    id="pet-photo-upload"
+                  />
+                  <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                    {isUploadingPhoto ? (
+                      <Loader2 className="w-8 h-8 animate-spin" />
+                    ) : pet.photo_url ? (
+                      <img 
+                        src={pet.photo_url} 
+                        alt={pet.pet_name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Dog className="w-10 h-10" />
+                    )}
+                  </div>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingPhoto}
+                    className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+                    title="Upload photo"
+                  >
+                    <Camera className="w-4 h-4 text-gray-700" />
+                  </button>
                 </div>
                 <div className="flex-1">
                   {isEditing ? (
