@@ -563,28 +563,13 @@ const BusinessOfferManagement = () => {
                       <Info className="w-4 h-4" />
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80 text-sm" align="start">
-                    <div className="space-y-3">
-                      <p className="font-medium">How to set up your offer:</p>
-                      <div className="space-y-2 text-muted-foreground">
-                        <div className="flex gap-2">
-                          <span className="font-medium text-foreground">🐕 Per Pet + Monthly:</span>
-                          <span>"20% off grooming" - each pet once/month</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span className="font-medium text-foreground">👤 Per Member + One-time:</span>
-                          <span>"Free first visit" - member uses once ever</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span className="font-medium text-foreground">👤 Per Member + Unlimited:</span>
-                          <span>"10% on treats" - use anytime, no limits</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <span className="font-medium text-foreground">🐕 Per Pet + One-time:</span>
-                          <span>"First grooming free" - each pet uses once</span>
-                        </div>
-                      </div>
-                    </div>
+                  <PopoverContent className="w-72 text-xs" align="start">
+                    <p className="font-medium mb-2">Examples:</p>
+                    <ul className="space-y-1.5 text-muted-foreground">
+                      <li><span className="text-foreground">Per Pet + Monthly</span> → 20% grooming, each pet once/month</li>
+                      <li><span className="text-foreground">Per Member + One-time</span> → Free first visit</li>
+                      <li><span className="text-foreground">Per Member + Unlimited</span> → 10% on treats, no limits</li>
+                    </ul>
                   </PopoverContent>
                 </Popover>
               </div>
