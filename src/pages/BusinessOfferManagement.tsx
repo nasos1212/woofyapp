@@ -566,10 +566,10 @@ const BusinessOfferManagement = () => {
                   <PopoverContent className="w-72 text-xs" align="start">
                     <p className="font-medium mb-2">Examples:</p>
                     <ul className="space-y-1.5 text-muted-foreground">
-                      <li><span className="text-foreground">Per Pet + Monthly</span> → 20% grooming, each pet once/month</li>
-                      <li><span className="text-foreground">Per Pet + One-time</span> → First grooming free, each pet once</li>
-                      <li><span className="text-foreground">Per Member + One-time</span> → Free first visit, member once ever</li>
-                      <li><span className="text-foreground">Per Member + Unlimited</span> → 10% on treats, no limits</li>
+                      <li><span className="text-foreground">Per Pet + Monthly</span> → "20% off grooming" - each pet once/month</li>
+                      <li><span className="text-foreground">Per Member + One-time</span> → "Free first visit" - member uses once ever</li>
+                      <li><span className="text-foreground">Per Member + Unlimited</span> → "10% on treats" - use anytime, no limits</li>
+                      <li><span className="text-foreground">Per Pet + One-time</span> → "First grooming free" - each pet uses once</li>
                     </ul>
                   </PopoverContent>
                 </Popover>
