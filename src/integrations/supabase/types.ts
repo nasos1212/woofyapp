@@ -1060,10 +1060,15 @@ export type Database = {
           limited_time_label: string | null
           max_redemptions: number | null
           offer_type: string
+          redemption_frequency: string | null
+          redemption_scope: string | null
           terms: string | null
           title: string
           updated_at: string
+          valid_days: number[] | null
           valid_from: string | null
+          valid_hours_end: string | null
+          valid_hours_start: string | null
           valid_until: string | null
         }
         Insert: {
@@ -1078,10 +1083,15 @@ export type Database = {
           limited_time_label?: string | null
           max_redemptions?: number | null
           offer_type?: string
+          redemption_frequency?: string | null
+          redemption_scope?: string | null
           terms?: string | null
           title: string
           updated_at?: string
+          valid_days?: number[] | null
           valid_from?: string | null
+          valid_hours_end?: string | null
+          valid_hours_start?: string | null
           valid_until?: string | null
         }
         Update: {
@@ -1096,10 +1106,15 @@ export type Database = {
           limited_time_label?: string | null
           max_redemptions?: number | null
           offer_type?: string
+          redemption_frequency?: string | null
+          redemption_scope?: string | null
           terms?: string | null
           title?: string
           updated_at?: string
+          valid_days?: number[] | null
           valid_from?: string | null
+          valid_hours_end?: string | null
+          valid_hours_start?: string | null
           valid_until?: string | null
         }
         Relationships: [

@@ -21,6 +21,11 @@ export interface OfferWithDetails {
   valid_until?: string | null;
   is_limited_time?: boolean;
   limited_time_label?: string | null;
+  redemption_scope?: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_frequency?: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
+  valid_days?: number[] | null;
+  valid_hours_start?: string | null;
+  valid_hours_end?: string | null;
   business: {
     id: string;
     business_name: string;
@@ -198,6 +203,54 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                   ) : null}
                 </span>
               </div>
+            </div>
+          )}
+
+          {/* Redemption Rules */}
+          {(offer.redemption_scope || offer.redemption_frequency || offer.valid_days?.length || offer.valid_hours_start) && (
+            <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+              <h4 className="font-medium text-foreground text-sm">Redemption Rules</h4>
+              <div className="flex flex-wrap gap-2">
+                {offer.redemption_scope && offer.redemption_scope !== 'per_member' && (
+                  <Badge variant="outline" className={
+                    offer.redemption_scope === 'per_pet' 
+                      ? 'bg-teal-50 text-teal-700 border-teal-200' 
+                      : 'bg-purple-50 text-purple-700 border-purple-200'
+                  }>
+                    {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : '♾️ Unlimited'}
+                  </Badge>
+                )}
+                {offer.redemption_frequency && offer.redemption_frequency !== 'one_time' && (
+                  <Badge variant="outline" className={
+                    offer.redemption_frequency === 'unlimited' 
+                      ? 'bg-green-50 text-green-700 border-green-200' 
+                      : 'bg-blue-50 text-blue-700 border-blue-200'
+                  }>
+                    {offer.redemption_frequency === 'daily' ? '📅 Daily' :
+                     offer.redemption_frequency === 'weekly' ? '📆 Weekly' :
+                     offer.redemption_frequency === 'monthly' ? '🗓️ Monthly' : '♾️ Anytime'}
+                  </Badge>
+                )}
+                {offer.valid_days && offer.valid_days.length > 0 && (
+                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                    {offer.valid_days.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}
+                  </Badge>
+                )}
+                {offer.valid_hours_start && offer.valid_hours_end && (
+                  <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                    ⏰ {offer.valid_hours_start} - {offer.valid_hours_end}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {offer.redemption_scope === 'per_pet' && offer.redemption_frequency === 'monthly'
+                  ? 'Each of your pets can use this offer once per month'
+                  : offer.redemption_scope === 'unlimited' && offer.redemption_frequency === 'unlimited'
+                    ? 'Use this offer anytime with no limits!'
+                    : offer.redemption_frequency === 'one_time'
+                      ? 'This is a one-time offer'
+                      : null}
+              </p>
             </div>
           )}
 
