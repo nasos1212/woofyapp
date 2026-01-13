@@ -63,6 +63,11 @@ interface Offer {
   limited_time_label: string | null;
   max_redemptions: number | null;
   offer_type: 'per_member' | 'per_pet';
+  redemption_scope: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_frequency: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
+  valid_days: number[] | null;
+  valid_hours_start: string | null;
+  valid_hours_end: string | null;
 }
 
 const BusinessOfferManagement = () => {
@@ -87,6 +92,11 @@ const BusinessOfferManagement = () => {
     limited_time_label: "",
     max_redemptions: "",
     offer_type: "per_member" as 'per_member' | 'per_pet',
+    redemption_scope: "per_member" as 'per_member' | 'per_pet' | 'unlimited',
+    redemption_frequency: "one_time" as 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited',
+    valid_days: [] as number[],
+    valid_hours_start: "",
+    valid_hours_end: "",
   });
 
   useEffect(() => {
@@ -124,7 +134,7 @@ const BusinessOfferManagement = () => {
       // Get offers with redemption counts
       const { data: offersData, error } = await supabase
         .from("offers")
-        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions, offer_type")
+        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions, offer_type, redemption_scope, redemption_frequency, valid_days, valid_hours_start, valid_hours_end")
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -144,6 +154,11 @@ const BusinessOfferManagement = () => {
       const transformedOffers: Offer[] = (offersData || []).map((offer) => ({
         ...offer,
         offer_type: (offer.offer_type as 'per_member' | 'per_pet') || 'per_member',
+        redemption_scope: (offer.redemption_scope as 'per_member' | 'per_pet' | 'unlimited') || 'per_member',
+        redemption_frequency: (offer.redemption_frequency as 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited') || 'one_time',
+        valid_days: offer.valid_days || null,
+        valid_hours_start: offer.valid_hours_start || null,
+        valid_hours_end: offer.valid_hours_end || null,
         redemption_count: redemptionCounts[offer.id] || 0,
       }));
 
@@ -169,6 +184,11 @@ const BusinessOfferManagement = () => {
       limited_time_label: "",
       max_redemptions: "",
       offer_type: "per_member",
+      redemption_scope: "per_member",
+      redemption_frequency: "one_time",
+      valid_days: [],
+      valid_hours_start: "",
+      valid_hours_end: "",
     });
     setIsDialogOpen(true);
   };
@@ -186,6 +206,11 @@ const BusinessOfferManagement = () => {
       limited_time_label: offer.limited_time_label || "",
       max_redemptions: offer.max_redemptions?.toString() || "",
       offer_type: offer.offer_type || "per_member",
+      redemption_scope: offer.redemption_scope || "per_member",
+      redemption_frequency: offer.redemption_frequency || "one_time",
+      valid_days: offer.valid_days || [],
+      valid_hours_start: offer.valid_hours_start || "",
+      valid_hours_end: offer.valid_hours_end || "",
     });
     setIsDialogOpen(true);
   };
@@ -214,6 +239,11 @@ const BusinessOfferManagement = () => {
         limited_time_label: formData.limited_time_label.trim() || null,
         max_redemptions: formData.max_redemptions ? parseInt(formData.max_redemptions) : null,
         offer_type: formData.offer_type,
+        redemption_scope: formData.redemption_scope,
+        redemption_frequency: formData.redemption_frequency,
+        valid_days: formData.valid_days.length > 0 ? formData.valid_days : null,
+        valid_hours_start: formData.valid_hours_start || null,
+        valid_hours_end: formData.valid_hours_end || null,
       };
 
       if (editingOffer) {
@@ -363,11 +393,25 @@ const BusinessOfferManagement = () => {
                           )}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
-                          offer.offer_type === 'per_pet' 
+                          offer.redemption_scope === 'per_pet' 
                             ? 'bg-teal-100 text-teal-700' 
-                            : 'bg-slate-100 text-slate-600'
+                            : offer.redemption_scope === 'unlimited'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.offer_type === 'per_pet' ? '🐕 Per Pet' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : offer.redemption_scope === 'unlimited' ? '♾️ Unlimited' : '👤 Per Member'}
+                        </span>
+                        <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
+                          offer.redemption_frequency === 'unlimited' 
+                            ? 'bg-green-100 text-green-700' 
+                            : offer.redemption_frequency === 'one_time'
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-blue-100 text-blue-700'
+                        }`}>
+                          {offer.redemption_frequency === 'one_time' ? '1x' : 
+                           offer.redemption_frequency === 'daily' ? '📅 Daily' :
+                           offer.redemption_frequency === 'weekly' ? '📆 Weekly' :
+                           offer.redemption_frequency === 'monthly' ? '🗓️ Monthly' : '♾️ Anytime'}
                         </span>
                         <span className="text-slate-500">
                           {offer.redemption_count}{offer.max_redemptions ? `/${offer.max_redemptions}` : ''} redemption{offer.redemption_count !== 1 ? "s" : ""}
@@ -511,25 +555,84 @@ const BusinessOfferManagement = () => {
               </div>
             </div>
 
-            {/* Offer Type */}
-            <div className="space-y-2">
-              <Label htmlFor="offer_type">Redemption Type</Label>
-              <select
-                id="offer_type"
-                value={formData.offer_type}
-                onChange={(e) =>
-                  setFormData({ ...formData, offer_type: e.target.value as 'per_member' | 'per_pet' })
-                }
-                className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="per_member">Per Member (1 redemption per membership)</option>
-                <option value="per_pet">Per Pet (1 redemption per pet owned)</option>
-              </select>
-              <p className="text-xs text-muted-foreground">
-                {formData.offer_type === 'per_pet' 
-                  ? '🐕 Each pet can use this offer once (e.g., grooming, vet visits)' 
-                  : '👤 One use per member, regardless of pets (e.g., store discounts)'}
-              </p>
+            {/* Redemption Settings */}
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
+                <Tag className="w-4 h-4" />
+                Redemption Rules
+              </h4>
+              
+              <div className="space-y-4">
+                {/* Redemption Scope */}
+                <div className="space-y-2">
+                  <Label htmlFor="redemption_scope">Who can redeem?</Label>
+                  <select
+                    id="redemption_scope"
+                    value={formData.redemption_scope}
+                    onChange={(e) =>
+                      setFormData({ ...formData, redemption_scope: e.target.value as 'per_member' | 'per_pet' | 'unlimited' })
+                    }
+                    className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="per_member">Per Member - Track per membership</option>
+                    <option value="per_pet">Per Pet - Each pet can redeem</option>
+                    <option value="unlimited">Unlimited - No tracking (anyone, anytime)</option>
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    {formData.redemption_scope === 'per_pet' 
+                      ? '🐕 Each pet on the membership can redeem (e.g., grooming)' 
+                      : formData.redemption_scope === 'unlimited'
+                        ? '♾️ No limit on who or how many times (e.g., treat discounts)'
+                        : '👤 Track redemptions per membership'}
+                  </p>
+                </div>
+
+                {/* Redemption Frequency */}
+                <div className="space-y-2">
+                  <Label htmlFor="redemption_frequency">How often can they redeem?</Label>
+                  <select
+                    id="redemption_frequency"
+                    value={formData.redemption_frequency}
+                    onChange={(e) =>
+                      setFormData({ ...formData, redemption_frequency: e.target.value as 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited' })
+                    }
+                    className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="one_time">One-time only</option>
+                    <option value="daily">Daily (resets each day)</option>
+                    <option value="weekly">Weekly (resets each week)</option>
+                    <option value="monthly">Monthly (resets each month)</option>
+                    <option value="unlimited">Unlimited (no frequency limit)</option>
+                  </select>
+                  <p className="text-xs text-muted-foreground">
+                    {formData.redemption_frequency === 'one_time' 
+                      ? '1️⃣ Can only be used once ever' 
+                      : formData.redemption_frequency === 'daily'
+                        ? '📅 Resets every day at midnight'
+                        : formData.redemption_frequency === 'weekly'
+                          ? '📆 Resets every Monday'
+                          : formData.redemption_frequency === 'monthly'
+                            ? '🗓️ Resets on the 1st of each month'
+                            : '♾️ Can be used as many times as they want'}
+                  </p>
+                </div>
+
+                {/* Example summary */}
+                <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                  <p className="font-medium text-foreground mb-1">Example:</p>
+                  <p className="text-muted-foreground">
+                    {formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'monthly'
+                      ? '"20% grooming" → Each pet can use once per month'
+                      : formData.redemption_scope === 'unlimited' && formData.redemption_frequency === 'unlimited'
+                        ? '"10% on treats" → Anyone can use anytime, no limits'
+                        : formData.redemption_scope === 'per_member' && formData.redemption_frequency === 'one_time'
+                          ? '"Free first visit" → Member uses once ever'
+                          : formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'one_time'
+                            ? '"First grooming free" → Each pet uses once ever'
+                            : `${formData.redemption_scope === 'per_pet' ? 'Each pet' : formData.redemption_scope === 'per_member' ? 'Each member' : 'Anyone'} can redeem ${formData.redemption_frequency === 'unlimited' ? 'unlimited times' : formData.redemption_frequency.replace('_', ' ')}`}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Time-sensitive options */}
@@ -570,6 +673,64 @@ const BusinessOfferManagement = () => {
                     />
                   </div>
                 )}
+
+                {/* Valid Days */}
+                <div className="space-y-2">
+                  <Label>Valid Days (optional)</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                      <button
+                        key={day}
+                        type="button"
+                        onClick={() => {
+                          const newDays = formData.valid_days.includes(index)
+                            ? formData.valid_days.filter(d => d !== index)
+                            : [...formData.valid_days, index];
+                          setFormData({ ...formData, valid_days: newDays });
+                        }}
+                        className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+                          formData.valid_days.includes(index)
+                            ? 'bg-primary text-primary-foreground border-primary'
+                            : 'bg-background border-input hover:bg-muted'
+                        }`}
+                      >
+                        {day}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {formData.valid_days.length === 0 
+                      ? 'Valid all days (leave empty)' 
+                      : `Valid on: ${formData.valid_days.sort().map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}`}
+                  </p>
+                </div>
+
+                {/* Valid Hours */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="valid_hours_start">Valid From (time)</Label>
+                    <Input
+                      id="valid_hours_start"
+                      type="time"
+                      value={formData.valid_hours_start}
+                      onChange={(e) => setFormData({ ...formData, valid_hours_start: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="valid_hours_end">Valid Until (time)</Label>
+                    <Input
+                      id="valid_hours_end"
+                      type="time"
+                      value={formData.valid_hours_end}
+                      onChange={(e) => setFormData({ ...formData, valid_hours_end: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {formData.valid_hours_start && formData.valid_hours_end 
+                    ? `⏰ Valid between ${formData.valid_hours_start} - ${formData.valid_hours_end}` 
+                    : 'Leave empty for all hours'}
+                </p>
               </div>
             </div>
           </div>

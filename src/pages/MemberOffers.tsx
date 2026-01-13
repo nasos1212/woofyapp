@@ -32,6 +32,11 @@ interface Offer {
   is_limited_time: boolean;
   limited_time_label: string | null;
   created_at: string;
+  redemption_scope: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_frequency: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
+  valid_days: number[] | null;
+  valid_hours_start: string | null;
+  valid_hours_end: string | null;
   business: {
     id: string;
     business_name: string;
@@ -145,6 +150,11 @@ const MemberOffers = () => {
           is_limited_time,
           limited_time_label,
           created_at,
+          redemption_scope,
+          redemption_frequency,
+          valid_days,
+          valid_hours_start,
+          valid_hours_end,
           business:businesses_public(id, business_name, category, city)
         `)
         .eq("is_active", true)
@@ -178,6 +188,11 @@ const MemberOffers = () => {
           is_limited_time: offer.is_limited_time || false,
           limited_time_label: offer.limited_time_label,
           created_at: offer.created_at,
+          redemption_scope: (offer.redemption_scope as Offer['redemption_scope']) || 'per_member',
+          redemption_frequency: (offer.redemption_frequency as Offer['redemption_frequency']) || 'one_time',
+          valid_days: offer.valid_days || null,
+          valid_hours_start: offer.valid_hours_start || null,
+          valid_hours_end: offer.valid_hours_end || null,
           business: offer.business as unknown as Offer["business"],
           isRedeemed: redeemedOfferIds.includes(offer.id),
         }));
@@ -562,6 +577,41 @@ const MemberOffers = () => {
                           )}
                           {timeIndicator.label}
                         </Badge>
+                      )}
+                      {/* Redemption rules badges */}
+                      {(offer.redemption_scope !== 'per_member' || offer.redemption_frequency !== 'one_time') && (
+                        <>
+                          {offer.redemption_scope === 'per_pet' && (
+                            <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200 text-[10px]">
+                              🐕 Per Pet
+                            </Badge>
+                          )}
+                          {offer.redemption_scope === 'unlimited' && (
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-[10px]">
+                              ♾️ Unlimited
+                            </Badge>
+                          )}
+                          {offer.redemption_frequency === 'monthly' && (
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
+                              🗓️ Monthly
+                            </Badge>
+                          )}
+                          {offer.redemption_frequency === 'weekly' && (
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
+                              📆 Weekly
+                            </Badge>
+                          )}
+                          {offer.redemption_frequency === 'daily' && (
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
+                              📅 Daily
+                            </Badge>
+                          )}
+                          {offer.redemption_frequency === 'unlimited' && (
+                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-[10px]">
+                              ♾️ Anytime
+                            </Badge>
+                          )}
+                        </>
                       )}
                     </div>
 
