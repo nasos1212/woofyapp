@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil, Upload, X, ExternalLink, File, Download, Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,6 +101,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 const PetHealthRecords = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>([]);
   const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
   const [records, setRecords] = useState<HealthRecord[]>([]);
@@ -165,7 +166,15 @@ const PetHealthRecords = () => {
 
       if (petsData && petsData.length > 0) {
         setPets(petsData);
-        setSelectedPet(petsData[0]);
+        
+        // Check for pet query parameter to auto-select specific pet
+        const petIdFromUrl = searchParams.get('pet');
+        if (petIdFromUrl) {
+          const targetPet = petsData.find(p => p.id === petIdFromUrl);
+          setSelectedPet(targetPet || petsData[0]);
+        } else {
+          setSelectedPet(petsData[0]);
+        }
       }
     }
     setIsLoading(false);

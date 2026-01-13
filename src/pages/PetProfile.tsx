@@ -337,7 +337,7 @@ const PetProfile = () => {
                     <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday / Age</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
                     {isEditing ? (
                       <div className="mt-1 space-y-2">
                         <div className="flex gap-1">
@@ -489,7 +489,7 @@ const PetProfile = () => {
             <Button
               variant="default"
               size="lg"
-              onClick={() => navigate("/member/health-records")}
+              onClick={() => navigate(`/member/health-records?pet=${pet.id}`)}
               className="w-full h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
