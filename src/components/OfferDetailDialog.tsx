@@ -21,7 +21,7 @@ export interface OfferWithDetails {
   valid_until?: string | null;
   is_limited_time?: boolean;
   limited_time_label?: string | null;
-  redemption_scope?: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_scope?: 'per_member' | 'per_pet';
   redemption_frequency?: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
   valid_days?: number[] | null;
   valid_hours_start?: string | null;
@@ -245,7 +245,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
               <p className="text-xs text-muted-foreground">
                 {offer.redemption_scope === 'per_pet' && offer.redemption_frequency === 'monthly'
                   ? 'Each of your pets can use this offer once per month'
-                  : offer.redemption_scope === 'unlimited' && offer.redemption_frequency === 'unlimited'
+                  : offer.redemption_frequency === 'unlimited'
                     ? 'Use this offer anytime with no limits!'
                     : offer.redemption_frequency === 'one_time'
                       ? 'This is a one-time offer'

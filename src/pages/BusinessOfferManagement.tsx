@@ -70,7 +70,7 @@ interface Offer {
   limited_time_label: string | null;
   max_redemptions: number | null;
   offer_type: 'per_member' | 'per_pet';
-  redemption_scope: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_scope: 'per_member' | 'per_pet';
   redemption_frequency: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
   valid_days: number[] | null;
   valid_hours_start: string | null;
@@ -159,16 +159,23 @@ const BusinessOfferManagement = () => {
         redemptionCounts[r.offer_id] = (redemptionCounts[r.offer_id] || 0) + 1;
       });
 
-      const transformedOffers: Offer[] = (offersData || []).map((offer) => ({
-        ...offer,
-        offer_type: (offer.offer_type as 'per_member' | 'per_pet') || 'per_member',
-        redemption_scope: (offer.redemption_scope as 'per_member' | 'per_pet' | 'unlimited') || 'per_member',
-        redemption_frequency: (offer.redemption_frequency as 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited') || 'one_time',
-        valid_days: offer.valid_days || null,
-        valid_hours_start: offer.valid_hours_start || null,
-        valid_hours_end: offer.valid_hours_end || null,
-        redemption_count: redemptionCounts[offer.id] || 0,
-      }));
+      const transformedOffers: Offer[] = (offersData || []).map((offer) => {
+        // Convert 'unlimited' scope to 'per_member' for backward compatibility
+        let scope = offer.redemption_scope as 'per_member' | 'per_pet';
+        if (offer.redemption_scope === 'unlimited') {
+          scope = 'per_member';
+        }
+        return {
+          ...offer,
+          offer_type: (offer.offer_type as 'per_member' | 'per_pet') || 'per_member',
+          redemption_scope: scope,
+          redemption_frequency: (offer.redemption_frequency as 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited') || 'one_time',
+          valid_days: offer.valid_days || null,
+          valid_hours_start: offer.valid_hours_start || null,
+          valid_hours_end: offer.valid_hours_end || null,
+          redemption_count: redemptionCounts[offer.id] || 0,
+        };
+      });
 
       setOffers(transformedOffers);
     } catch (error) {
@@ -406,11 +413,9 @@ const BusinessOfferManagement = () => {
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
                           offer.redemption_scope === 'per_pet' 
                             ? 'bg-teal-100 text-teal-700' 
-                            : offer.redemption_scope === 'unlimited'
-                              ? 'bg-purple-100 text-purple-700'
-                              : 'bg-slate-100 text-slate-600'
+                            : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : offer.redemption_scope === 'unlimited' ? '🎉 Open to All' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : '👤 Per Member'}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
                           offer.redemption_frequency === 'unlimited' 
@@ -559,20 +564,17 @@ const BusinessOfferManagement = () => {
                     id="redemption_scope"
                     value={formData.redemption_scope}
                     onChange={(e) =>
-                      setFormData({ ...formData, redemption_scope: e.target.value as 'per_member' | 'per_pet' | 'unlimited' })
+                      setFormData({ ...formData, redemption_scope: e.target.value as 'per_member' | 'per_pet' })
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <option value="per_member">Per Member</option>
                     <option value="per_pet">Per Pet</option>
-                    <option value="unlimited">Open to All</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' 
                       ? '🐕 Each pet on the membership can redeem (e.g., grooming)' 
-                      : formData.redemption_scope === 'unlimited'
-                        ? '🎉 No individual tracking - great for general discounts'
-                        : '👤 Track redemptions per membership'}
+                      : '👤 Track redemptions per membership'}
                   </p>
                 </div>
 

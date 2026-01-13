@@ -32,7 +32,7 @@ interface Offer {
   is_limited_time: boolean;
   limited_time_label: string | null;
   created_at: string;
-  redemption_scope: 'per_member' | 'per_pet' | 'unlimited';
+  redemption_scope: 'per_member' | 'per_pet';
   redemption_frequency: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited';
   valid_days: number[] | null;
   valid_hours_start: string | null;
@@ -584,11 +584,6 @@ const MemberOffers = () => {
                           {offer.redemption_scope === 'per_pet' && (
                             <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200 text-[10px]">
                               🐕 Per Pet
-                            </Badge>
-                          )}
-                          {offer.redemption_scope === 'unlimited' && (
-                            <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-[10px]">
-                              ♾️ Unlimited
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'monthly' && (
