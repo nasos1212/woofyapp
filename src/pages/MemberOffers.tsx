@@ -459,12 +459,6 @@ const MemberOffers = () => {
               </button>
               
               <div className="flex items-center gap-2 ml-auto">
-                {offers.filter(o => o.isRedeemed).length > 0 && (
-                  <span className="text-sm text-muted-foreground hidden sm:inline">
-                    <Check className="w-4 h-4 inline mr-1 text-green-500" />
-                    {offers.filter(o => o.isRedeemed).length} redeemed
-                  </span>
-                )}
                 
                 <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                   <SelectTrigger className="w-[160px] h-9">
