@@ -399,7 +399,7 @@ const BusinessOfferManagement = () => {
                               ? 'bg-purple-100 text-purple-700'
                               : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : offer.redemption_scope === 'unlimited' ? '♾️ Unlimited' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : offer.redemption_scope === 'unlimited' ? '🎉 Open to All' : '👤 Per Member'}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
                           offer.redemption_frequency === 'unlimited' 
@@ -532,28 +532,6 @@ const BusinessOfferManagement = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="terms">Terms & Conditions</Label>
-                <Input
-                  id="terms"
-                  placeholder="e.g., Valid for new customers only"
-                  value={formData.terms}
-                  onChange={(e) => setFormData({ ...formData, terms: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="max_redemptions">Max Redemptions</Label>
-                <Input
-                  id="max_redemptions"
-                  type="number"
-                  placeholder="Unlimited"
-                  value={formData.max_redemptions}
-                  onChange={(e) => setFormData({ ...formData, max_redemptions: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground">Leave empty for unlimited</p>
-              </div>
-            </div>
 
             {/* Redemption Settings */}
             <div className="border-t pt-4 mt-4">
@@ -574,15 +552,15 @@ const BusinessOfferManagement = () => {
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <option value="per_member">Per Member - Track per membership</option>
-                    <option value="per_pet">Per Pet - Each pet can redeem</option>
-                    <option value="unlimited">Unlimited - No tracking (anyone, anytime)</option>
+                    <option value="per_member">Per Member</option>
+                    <option value="per_pet">Per Pet</option>
+                    <option value="unlimited">Open to All</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' 
                       ? '🐕 Each pet on the membership can redeem (e.g., grooming)' 
                       : formData.redemption_scope === 'unlimited'
-                        ? '♾️ No limit on who or how many times (e.g., treat discounts)'
+                        ? '🎉 No individual tracking - great for general discounts'
                         : '👤 Track redemptions per membership'}
                   </p>
                 </div>
@@ -639,44 +617,13 @@ const BusinessOfferManagement = () => {
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                Time-Sensitive Options
+                Time Restrictions (Optional)
               </h4>
               
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="valid_until">Expiry Date (optional)</Label>
-                  <Input
-                    id="valid_until"
-                    type="date"
-                    value={formData.valid_until}
-                    onChange={(e) => setFormData({ ...formData, valid_until: e.target.value })}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="is_limited_time" className="cursor-pointer">Mark as Limited Time Offer</Label>
-                  <Switch
-                    id="is_limited_time"
-                    checked={formData.is_limited_time}
-                    onCheckedChange={(checked) => setFormData({ ...formData, is_limited_time: checked })}
-                  />
-                </div>
-
-                {formData.is_limited_time && (
-                  <div className="space-y-2">
-                    <Label htmlFor="limited_time_label">Custom Label (optional)</Label>
-                    <Input
-                      id="limited_time_label"
-                      placeholder="e.g., 1 week only, January special"
-                      value={formData.limited_time_label}
-                      onChange={(e) => setFormData({ ...formData, limited_time_label: e.target.value })}
-                    />
-                  </div>
-                )}
-
                 {/* Valid Days */}
                 <div className="space-y-2">
-                  <Label>Valid Days (optional)</Label>
+                  <Label>Valid Days</Label>
                   <div className="flex flex-wrap gap-2">
                     {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
                       <button
@@ -704,33 +651,6 @@ const BusinessOfferManagement = () => {
                       : `Valid on: ${formData.valid_days.sort().map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}`}
                   </p>
                 </div>
-
-                {/* Valid Hours */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="valid_hours_start">Valid From (time)</Label>
-                    <Input
-                      id="valid_hours_start"
-                      type="time"
-                      value={formData.valid_hours_start}
-                      onChange={(e) => setFormData({ ...formData, valid_hours_start: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="valid_hours_end">Valid Until (time)</Label>
-                    <Input
-                      id="valid_hours_end"
-                      type="time"
-                      value={formData.valid_hours_end}
-                      onChange={(e) => setFormData({ ...formData, valid_hours_end: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {formData.valid_hours_start && formData.valid_hours_end 
-                    ? `⏰ Valid between ${formData.valid_hours_start} - ${formData.valid_hours_end}` 
-                    : 'Leave empty for all hours'}
-                </p>
               </div>
             </div>
           </div>
