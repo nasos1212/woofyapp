@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { TrendingUp, Calendar, Building2, Tag, PiggyBank, BarChart3, ArrowLeft, ExternalLink } from "lucide-react";
+import { TrendingUp, Calendar, Building2, Tag, PiggyBank, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -43,7 +43,6 @@ const RedemptionHistory = () => {
     percentageCount: 0,
     totalRedemptions: 0,
     thisMonth: 0,
-    avgPerRedemption: 0,
   });
 
   useEffect(() => {
@@ -136,21 +135,12 @@ const RedemptionHistory = () => {
         (r) => new Date(r.redeemed_at) >= thisMonth
       );
 
-      // Count fixed redemptions for average calculation
-      const fixedRedemptions = transformedRedemptions.filter(
-        (r) => r.offer?.discount_type !== "percentage"
-      );
-
       setStats({
         totalSaved: Math.round(fixedTotal),
         avgPercentage,
         percentageCount,
         totalRedemptions: transformedRedemptions.length,
         thisMonth: monthlyRedemptions.length,
-        avgPerRedemption:
-          fixedRedemptions.length > 0
-            ? Math.round(fixedTotal / fixedRedemptions.length)
-            : 0,
       });
     } catch (error) {
       console.error("Error fetching redemptions:", error);
@@ -237,71 +227,6 @@ const RedemptionHistory = () => {
                 {stats.thisMonth}
               </div>
               <p className="text-sm text-muted-foreground">This Month</p>
-            </div>
-          </div>
-
-          {/* Savings Progress */}
-          <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display font-semibold text-foreground">
-                Your Savings Journey
-              </h2>
-              {stats.totalSaved >= 100 && (
-                <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">
-                  🌟 Super Saver
-                </span>
-              )}
-            </div>
-            <div className="relative pt-2">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-muted-foreground">Progress to €500 milestone</span>
-                <span className="text-sm font-medium text-primary">
-                  {Math.min(100, Math.round((stats.totalSaved / 500) * 100))}%
-                </span>
-              </div>
-              <div className="h-3 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-hero rounded-full transition-all duration-500"
-                  style={{
-                    width: `${Math.min(100, (stats.totalSaved / 500) * 100)}%`,
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                <span>€0</span>
-                <div className="flex items-center gap-1">
-                  <span className={stats.totalSaved >= 59 ? 'text-green-500 font-medium' : ''}>
-                    €59
-                  </span>
-                  {stats.totalSaved >= 59 && <span className="text-green-500">✓</span>}
-                </div>
-                <span>€250</span>
-                <span>€500</span>
-              </div>
-            </div>
-            
-            {/* Milestone messages */}
-            <div className="mt-4 space-y-2">
-              {stats.totalSaved >= 59 && (
-                <p className="text-sm text-green-600 font-medium flex items-center gap-2 bg-green-50 p-3 rounded-lg">
-                  🎉 You've already saved more than your membership cost!
-                </p>
-              )}
-              {stats.totalSaved >= 100 && stats.totalSaved < 250 && (
-                <p className="text-sm text-primary flex items-center gap-2 bg-primary/5 p-3 rounded-lg">
-                  🚀 You're on fire! Keep using your Wooffy card to reach the next milestone.
-                </p>
-              )}
-              {stats.totalSaved >= 250 && stats.totalSaved < 500 && (
-                <p className="text-sm text-amber-600 flex items-center gap-2 bg-amber-50 p-3 rounded-lg">
-                  ⭐ Halfway to €500! You're a Wooffy power user.
-                </p>
-              )}
-              {stats.totalSaved >= 500 && (
-                <p className="text-sm text-rose-600 flex items-center gap-2 bg-rose-50 p-3 rounded-lg">
-                  🏆 Incredible! You've saved over €500 with Wooffy!
-                </p>
-              )}
             </div>
           </div>
 
