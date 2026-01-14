@@ -54,7 +54,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Join 10,000+ happy pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
+              Join 250+ happy pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
               Plus access our community hub for tips, events & connections.
             </p>
 
@@ -69,7 +69,7 @@ const HeroSection = () => {
                 <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
               </div>
               <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">10k+</p>
+                <p className="font-display font-bold text-3xl text-foreground">250+</p>
                 <p className="text-sm text-muted-foreground">Happy Members</p>
               </div>
             </div>
