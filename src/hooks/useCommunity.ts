@@ -350,12 +350,19 @@ export const useCommunity = () => {
 
     // Fetch author profiles separately
     const userIds = [...new Set(data.map(a => a.user_id))];
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('user_id, full_name, avatar_url')
-      .in('user_id', userIds);
+    const [profilesRes, expertStatsRes] = await Promise.all([
+      supabase
+        .from('profiles')
+        .select('user_id, full_name, avatar_url')
+        .in('user_id', userIds),
+      supabase
+        .from('community_expert_stats')
+        .select('user_id, total_answers, accepted_answers, total_upvotes, reputation_score')
+        .in('user_id', userIds)
+    ]);
 
-    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+    const profileMap = new Map(profilesRes.data?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+    const expertStatsMap = new Map(expertStatsRes.data?.map(e => [e.user_id, e]) || []);
 
     // Get user votes
     if (user) {
@@ -371,13 +378,15 @@ export const useCommunity = () => {
       return data.map(a => ({
         ...a,
         author: profileMap.get(a.user_id) || null,
+        expert_stats: expertStatsMap.get(a.user_id) || null,
         user_vote: voteMap.get(a.id) as 'up' | 'down' | null
       })) as unknown as Answer[];
     }
 
     return data.map(a => ({
       ...a,
-      author: profileMap.get(a.user_id) || null
+      author: profileMap.get(a.user_id) || null,
+      expert_stats: expertStatsMap.get(a.user_id) || null
     })) as unknown as Answer[];
   }, [user]);
 

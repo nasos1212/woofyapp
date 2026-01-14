@@ -7,6 +7,7 @@ import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
 import DogLoader from '@/components/DogLoader';
+import ContributorBadges from '@/components/ContributorBadges';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -487,9 +488,15 @@ const CommunityQuestion = () => {
                                     </Badge>
                                   )}
                                 </div>
-                                <span className="text-xs text-muted-foreground">
-                                  {formatDistanceToNow(new Date(answer.created_at), { addSuffix: true })}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-muted-foreground">
+                                    {formatDistanceToNow(new Date(answer.created_at), { addSuffix: true })}
+                                  </span>
+                                  <ContributorBadges 
+                                    totalAnswers={answer.expert_stats?.total_answers}
+                                    acceptedAnswers={answer.expert_stats?.accepted_answers}
+                                  />
+                                </div>
                               </div>
                             </div>
 
