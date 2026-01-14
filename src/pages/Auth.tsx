@@ -53,7 +53,7 @@ const Auth = () => {
       if (!user) return;
       
       // Small delay to ensure session is fully established for RLS
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       // Check both business and membership status in parallel
       const [businessResult, membershipResult] = await Promise.all([
