@@ -12,6 +12,7 @@ import {
 } from "./ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import NotificationBell from "./NotificationBell";
 
 const Header = () => {
@@ -21,7 +22,11 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { hasMembership } = useMembership();
   const isHomePage = location.pathname === "/";
+  
+  // Determine correct dashboard path based on membership status
+  const dashboardPath = hasMembership ? "/member" : "/member/free";
 
   const handleSignOut = async () => {
     await signOut();
@@ -75,7 +80,7 @@ const Header = () => {
 
   // Navigation links - filter out landing page sections for logged-in users
   const navLinks = user ? [
-    { name: "Dashboard", href: "/member", isRoute: true },
+    { name: "Dashboard", href: dashboardPath, isRoute: true },
     { name: "Offers", href: "/member/offers", isRoute: true },
     { name: "Community", href: "/community", isRoute: true },
   ] : [
@@ -88,7 +93,7 @@ const Header = () => {
   ];
 
   // Logo links to dashboard when logged in, home when not
-  const logoDestination = user ? "/member" : "/";
+  const logoDestination = user ? dashboardPath : "/";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -167,7 +172,7 @@ const Header = () => {
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate("/member")}>
+                  <DropdownMenuItem onClick={() => navigate(dashboardPath)}>
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
@@ -276,7 +281,7 @@ const Header = () => {
                   </Button>
                 </Link>
               )}
-              <Link to="/member" onClick={() => setIsMenuOpen(false)}>
+              <Link to={dashboardPath} onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2">
                   <User className="w-4 h-4" />
                   My Account
