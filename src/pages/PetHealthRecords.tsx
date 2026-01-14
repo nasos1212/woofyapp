@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -100,6 +101,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 
 const PetHealthRecords = () => {
   const { user, loading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -134,8 +136,10 @@ const PetHealthRecords = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth?type=member");
+    } else if (!loading && !membershipLoading && user && !hasMembership) {
+      navigate("/member/free");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, navigate]);
 
   useEffect(() => {
     if (user) {

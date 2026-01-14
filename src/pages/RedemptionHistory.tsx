@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { TrendingUp, Calendar, Building2, Tag, PiggyBank, ArrowLeft, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import Header from "@/components/Header";
@@ -33,6 +34,7 @@ interface Redemption {
 
 const RedemptionHistory = () => {
   const { user, loading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,8 +50,10 @@ const RedemptionHistory = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth?type=member");
+    } else if (!loading && !membershipLoading && user && !hasMembership) {
+      navigate("/member/free");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, navigate]);
 
   useEffect(() => {
     if (user) {

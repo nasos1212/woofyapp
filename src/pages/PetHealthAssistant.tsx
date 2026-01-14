@@ -4,6 +4,7 @@ import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2,
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
@@ -62,6 +63,7 @@ const suggestedQuestions = [
 
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const { trackAIChat, trackFeatureUse } = useActivityTracking();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -79,8 +81,10 @@ const PetHealthAssistant = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth?type=member");
+    } else if (!loading && !membershipLoading && user && !hasMembership) {
+      navigate("/member/free");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, navigate]);
 
   useEffect(() => {
     if (user) {
