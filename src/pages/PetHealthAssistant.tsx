@@ -103,15 +103,29 @@ const PetHealthAssistant = () => {
   const fetchChatSessions = async () => {
     if (!user) return;
     
-    const { data } = await supabase
+    // Fetch sessions that have more than 2 messages (meaning real conversation, not just greeting)
+    const { data: sessions } = await supabase
       .from("ai_chat_sessions")
       .select("*")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false })
       .limit(20);
 
-    if (data) {
-      setChatSessions(data);
+    if (sessions) {
+      // Filter out sessions with only greeting messages (auto-generated when switching pets)
+      const sessionsWithCounts = await Promise.all(
+        sessions.map(async (session) => {
+          const { count } = await supabase
+            .from("ai_chat_messages")
+            .select("*", { count: "exact", head: true })
+            .eq("session_id", session.id);
+          return { ...session, messageCount: count || 0 };
+        })
+      );
+      
+      // Only show sessions with more than 2 messages (greeting + response + at least one real message)
+      const meaningfulSessions = sessionsWithCounts.filter(s => s.messageCount > 2);
+      setChatSessions(meaningfulSessions);
     }
   };
 
@@ -572,6 +586,8 @@ const PetHealthAssistant = () => {
           messages: [...messages, userMessage],
           userContext: contextToSend,
           petInfo: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
+          // Send the actual message text so AI can detect language from it
+          latestMessageText: messageText.trim(),
         }),
       });
 
