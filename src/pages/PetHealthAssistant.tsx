@@ -981,9 +981,10 @@ const PetHealthAssistant = () => {
                               e.stopPropagation();
                               startEditingTitle(session);
                             }}
-                            className="h-7 w-7 p-0"
+                            className="h-auto px-2 py-1"
                           >
                             <Pencil className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground ml-1">Edit</span>
                           </Button>
                           <Button
                             variant="ghost"
@@ -992,9 +993,10 @@ const PetHealthAssistant = () => {
                               e.stopPropagation();
                               deleteSession(session.id);
                             }}
-                            className="h-7 w-7 p-0"
+                            className="h-auto px-2 py-1"
                           >
                             <Trash2 className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground ml-1">Delete</span>
                           </Button>
                         </div>
                       )}
