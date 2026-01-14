@@ -443,7 +443,7 @@ serve(async (req) => {
       );
     }
 
-    const { messages, petInfo, userContext, latestMessageText } = body;
+    const { messages, petInfo, userContext, latestMessageText, generateGreeting, preferredLanguage } = body;
     
     // Validate messages
     if (!messages || !Array.isArray(messages)) {
@@ -454,10 +454,18 @@ serve(async (req) => {
     }
 
     // Limit messages to prevent abuse
-    const sanitizedMessages = messages.slice(-MAX_MESSAGES).map((msg: any) => ({
+    let sanitizedMessages = messages.slice(-MAX_MESSAGES).map((msg: any) => ({
       role: String(msg.role || 'user').substring(0, 20),
       content: String(msg.content || '').substring(0, MAX_MESSAGE_LENGTH)
     }));
+
+    // If this is a greeting generation request, replace the system message content
+    if (generateGreeting && preferredLanguage) {
+      sanitizedMessages = [{
+        role: 'user',
+        content: `Generate a brief, friendly greeting in ${preferredLanguage} language. Welcome me and ask how you can help with my pet today. Keep it short - max 2 sentences. Do NOT include any system prefixes or brackets.`
+      }];
+    }
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
@@ -471,9 +479,11 @@ serve(async (req) => {
     // Build contextual system prompt with all user data
     let contextualSystemPrompt = SYSTEM_PROMPT;
     
-    // Add explicit language instruction based on latest message
-    // This takes priority over profile preference when user switches language mid-chat
-    if (latestMessageText) {
+    // Add explicit language instruction based on preferred language or latest message
+    if (preferredLanguage) {
+      contextualSystemPrompt += `\n\n## LANGUAGE INSTRUCTION
+**IMPORTANT**: Respond ENTIRELY in ${preferredLanguage} language. This is the user's selected language preference.`;
+    } else if (latestMessageText) {
       const messageText = String(latestMessageText).trim();
       contextualSystemPrompt += `\n\n## CURRENT MESSAGE LANGUAGE DETECTION
 The user's latest message is: "${messageText.substring(0, 200)}"
