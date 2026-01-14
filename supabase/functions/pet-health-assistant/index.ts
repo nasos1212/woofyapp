@@ -443,7 +443,7 @@ serve(async (req) => {
       );
     }
 
-    const { messages, petInfo, userContext } = body;
+    const { messages, petInfo, userContext, latestMessageText } = body;
     
     // Validate messages
     if (!messages || !Array.isArray(messages)) {
@@ -470,6 +470,17 @@ serve(async (req) => {
 
     // Build contextual system prompt with all user data
     let contextualSystemPrompt = SYSTEM_PROMPT;
+    
+    // Add explicit language instruction based on latest message
+    // This takes priority over profile preference when user switches language mid-chat
+    if (latestMessageText) {
+      const messageText = String(latestMessageText).trim();
+      contextualSystemPrompt += `\n\n## CURRENT MESSAGE LANGUAGE DETECTION
+The user's latest message is: "${messageText.substring(0, 200)}"
+**IMPORTANT**: Detect what language this message is written in and respond ENTIRELY in that same language.
+If the message is in Greek, respond in Greek. If in English, respond in English. If in Spanish, respond in Spanish.
+The language of the current message takes PRIORITY over the profile preference.`;
+    }
     
     if (userContext && typeof userContext === 'object') {
       contextualSystemPrompt += buildContextPrompt(userContext);
