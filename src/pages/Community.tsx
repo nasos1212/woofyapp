@@ -464,10 +464,11 @@ const Community = () => {
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => navigate('/member/health-assistant')}
+                    className="w-full justify-start opacity-50 cursor-not-allowed"
+                    disabled
                   >
-                    🤖 Ask Wooffy AI
+                    🔒 Ask Wooffy AI
+                    <Badge variant="secondary" className="ml-auto text-xs">Premium</Badge>
                   </Button>
                 </CardContent>
               </Card>
