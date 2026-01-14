@@ -529,8 +529,8 @@ const MemberDashboard = () => {
                       <Bot className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">AI Health Assistant</p>
-                      <p className="text-xs text-muted-foreground">Ask pet health questions</p>
+                      <p className="font-medium text-foreground text-sm">AI Pet Assistant</p>
+                      <p className="text-xs text-muted-foreground">Ask pet questions</p>
                     </div>
                   </Link>
                   <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">

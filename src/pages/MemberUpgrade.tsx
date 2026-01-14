@@ -40,7 +40,7 @@ interface PlanOption {
 
 const sharedFeatures = [
   "Access to all partner discounts",
-  "AI Health Assistant",
+  "AI Pet Assistant",
   "Vaccination reminders",
   "Community access",
   "Priority support",
