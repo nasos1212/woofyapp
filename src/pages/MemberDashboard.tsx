@@ -411,9 +411,9 @@ const MemberDashboard = () => {
                     </div>
                     Your Pets
                   </h3>
-                  {membership && pets.length < membership.max_pets && (
+{membership && pets.length < membership.max_pets && (
                     <Link to="/member/add-pet">
-                      <Button variant="outline" size="sm" className="gap-1.5 border-teal-300 text-teal-700 hover:bg-teal-50">
+                      <Button variant="outline" size="sm" className="gap-1.5 border-teal-300 text-teal-700 bg-white hover:bg-teal-100 hover:border-teal-400">
                         <PlusCircle className="w-4 h-4" />
                         <span className="hidden sm:inline">Add Pet</span>
                       </Button>
