@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Plus, Trash2, ArrowLeft, Dog } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Trash2, ArrowLeft, Dog, Pencil, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
@@ -673,24 +673,27 @@ const PetHealthAssistant = () => {
       setUserContext(updatedContext);
     }
     
-    // Start a new conversation for this pet
-    const newSessionId = await createNewSession(pet.pet_name, pet.pet_breed);
+    // Start a new conversation for this pet with empty messages
+    await createNewSession(pet.pet_name, pet.pet_breed);
     toast.success(`Switched to ${pet.pet_name}'s chat`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
+  };
+
+  // Handle language change - generate greeting in the new language
+  const handleLanguageChange = async (lang: string) => {
+    setPreferredLanguage(lang);
     
-    // Send an automatic greeting to establish context for the new pet
-    if (newSessionId) {
-      const greetingMessage = `I want to talk about ${pet.pet_name}${pet.pet_breed ? ` (${pet.pet_breed})` : ''}.`;
-      
-      // Add user message to UI
-      const userMessage: Message = { role: "user", content: greetingMessage };
-      setMessages([userMessage]);
+    // Update userContext with new language
+    if (userContext?.userProfile) {
+      setUserContext({
+        ...userContext,
+        userProfile: { ...userContext.userProfile, preferred_language: lang },
+      });
+    }
+    
+    // If there are no messages yet, generate a greeting in the selected language
+    if (messages.length === 0 && user) {
       setIsLoading(true);
-      
-      // Save user message
-      await saveMessageToSession(newSessionId, "user", greetingMessage, true);
-      
-      let assistantContent = "";
       
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -698,21 +701,28 @@ const PetHealthAssistant = () => {
           throw new Error("Not authenticated");
         }
         
-        // Filter records to only the selected pet
-        const filteredHealthRecords = updatedContext?.healthRecords
-          ? updatedContext.healthRecords.filter((r: any) => r.pet_id === pet.id)
-          : [];
+        // Ensure we have a session
+        let sessionId = currentSessionId;
+        if (!sessionId) {
+          sessionId = await createNewSession();
+          if (!sessionId) {
+            throw new Error("Failed to create session");
+          }
+        }
         
-        const filteredReminders = updatedContext?.upcomingReminders
-          ? updatedContext.upcomingReminders.filter((r: any) => r.pet_name === pet.pet_name)
-          : [];
+        const contextToSend = userContext ? {
+          ...userContext,
+          userProfile: { ...userContext.userProfile, preferred_language: lang },
+          selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
+        } : null;
         
-        const contextToSend = {
-          ...updatedContext,
-          healthRecords: filteredHealthRecords,
-          upcomingReminders: filteredReminders,
-          selectedPet: { name: pet.pet_name, breed: pet.pet_breed },
+        // Send a system request to generate greeting
+        const greetingRequest: Message = { 
+          role: "user", 
+          content: `[SYSTEM: Generate a brief, friendly greeting for the user in ${lang} language. Welcome them and ask how you can help with their pet today. Keep it short - max 2 sentences.]` 
         };
+        
+        let assistantContent = "";
         
         const resp = await fetch(CHAT_URL, {
           method: "POST",
@@ -721,9 +731,11 @@ const PetHealthAssistant = () => {
             Authorization: `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({
-            messages: [userMessage],
+            messages: [greetingRequest],
             userContext: contextToSend,
-            petInfo: { name: pet.pet_name, breed: pet.pet_breed },
+            petInfo: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
+            generateGreeting: true,
+            preferredLanguage: lang,
           }),
         });
         
@@ -757,7 +769,7 @@ const PetHealthAssistant = () => {
               const content = parsed.choices?.[0]?.delta?.content;
               if (content) {
                 assistantContent += content;
-                setMessages([userMessage, { role: "assistant", content: assistantContent }]);
+                setMessages([{ role: "assistant", content: assistantContent }]);
               }
             } catch {
               textBuffer = line + "\n" + textBuffer;
@@ -767,17 +779,46 @@ const PetHealthAssistant = () => {
         }
         
         if (assistantContent) {
-          await saveMessageToSession(newSessionId, "assistant", assistantContent, false);
+          await saveMessageToSession(sessionId, "assistant", assistantContent, false);
         }
       } catch (error) {
-        console.error("Pet switch greeting error:", error);
-        const errorMessage = `Hi! I'm ready to help you with ${pet.pet_name}. What would you like to know? 🐾`;
-        setMessages([userMessage, { role: "assistant", content: errorMessage }]);
-        await saveMessageToSession(newSessionId, "assistant", errorMessage, false);
+        console.error("Language greeting error:", error);
       } finally {
         setIsLoading(false);
       }
     }
+  };
+
+  // Edit session title
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+
+  const startEditingTitle = (session: ChatSession) => {
+    setEditingSessionId(session.id);
+    setEditingTitle(session.title || "");
+  };
+
+  const saveSessionTitle = async (sessionId: string) => {
+    if (!editingTitle.trim()) {
+      setEditingSessionId(null);
+      return;
+    }
+
+    await supabase
+      .from("ai_chat_sessions")
+      .update({ title: editingTitle.trim() })
+      .eq("id", sessionId);
+
+    setChatSessions(prev =>
+      prev.map(s => s.id === sessionId ? { ...s, title: editingTitle.trim() } : s)
+    );
+    setEditingSessionId(null);
+    toast.success("Title updated");
+  };
+
+  const cancelEditingTitle = () => {
+    setEditingSessionId(null);
+    setEditingTitle("");
   };
 
   if (loading) {
@@ -831,16 +872,7 @@ const PetHealthAssistant = () => {
                   <LanguageSelector
                     currentLanguage={preferredLanguage}
                     userId={user.id}
-                    onLanguageChange={(lang) => {
-                      setPreferredLanguage(lang);
-                      // Update userContext with new language
-                      if (userContext?.userProfile) {
-                        setUserContext({
-                          ...userContext,
-                          userProfile: { ...userContext.userProfile, preferred_language: lang },
-                        });
-                      }
-                    }}
+                    onLanguageChange={handleLanguageChange}
                   />
                 )}
                 <Button
@@ -850,14 +882,6 @@ const PetHealthAssistant = () => {
                 >
                   <History className="w-4 h-4 mr-1" />
                   History
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={startNewChat}
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  New
                 </Button>
               </div>
             </div>
@@ -898,32 +922,82 @@ const PetHealthAssistant = () => {
                     >
                       <div
                         className="flex-1 min-w-0"
-                        onClick={() => loadSession(session.id)}
+                        onClick={() => editingSessionId !== session.id && loadSession(session.id)}
                       >
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
-                          {session.pet_name && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
-                              <Dog className="w-3 h-3" />
-                              {session.pet_name}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {session.pet_breed && <span className="mr-2">{session.pet_breed}</span>}
-                          {new Date(session.updated_at).toLocaleDateString()}
-                        </p>
+                        {editingSessionId === session.id ? (
+                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="text"
+                              value={editingTitle}
+                              onChange={(e) => setEditingTitle(e.target.value)}
+                              className="flex-1 text-sm px-2 py-1 border rounded bg-background"
+                              autoFocus
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") saveSessionTitle(session.id);
+                                if (e.key === "Escape") cancelEditingTitle();
+                              }}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => saveSessionTitle(session.id)}
+                              className="h-7 w-7 p-0"
+                            >
+                              <Check className="w-3 h-3 text-green-600" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={cancelEditingTitle}
+                              className="h-7 w-7 p-0"
+                            >
+                              <X className="w-3 h-3 text-muted-foreground" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
+                              {session.pet_name && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
+                                  <Dog className="w-3 h-3" />
+                                  {session.pet_name}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {session.pet_breed && <span className="mr-2">{session.pet_breed}</span>}
+                              {new Date(session.updated_at).toLocaleDateString()}
+                            </p>
+                          </>
+                        )}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteSession(session.id);
-                        }}
-                      >
-                        <Trash2 className="w-3 h-3 text-muted-foreground" />
-                      </Button>
+                      {editingSessionId !== session.id && (
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startEditingTitle(session);
+                            }}
+                            className="h-7 w-7 p-0"
+                          >
+                            <Pencil className="w-3 h-3 text-muted-foreground" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteSession(session.id);
+                            }}
+                            className="h-7 w-7 p-0"
+                          >
+                            <Trash2 className="w-3 h-3 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
