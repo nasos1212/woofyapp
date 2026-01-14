@@ -181,7 +181,6 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           {/* Discount */}
           <div className="text-center py-4 bg-primary/10 rounded-xl">
             <div className="flex items-center justify-center gap-2 text-2xl font-bold text-primary">
-              {offer.discount_type !== "percentage" && <Percent className="w-6 h-6" />}
               {formatDiscount()}
             </div>
             {showRedemptionStatus && offer.isRedeemed && (
