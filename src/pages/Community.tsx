@@ -248,11 +248,11 @@ const Community = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/member')}
+            onClick={() => navigate(-1)}
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            Back
           </Button>
 
           {/* Header */}
