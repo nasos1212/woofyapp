@@ -678,9 +678,8 @@ const PetHealthAssistant = () => {
     toast.success(`Switched to ${pet.pet_name}'s chat`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
   };
-
-  // Handle language change - generate greeting in the new language
-  const handleLanguageChange = async (lang: string) => {
+  // Handle language change - just update the preference, no greeting
+  const handleLanguageChange = (lang: string) => {
     setPreferredLanguage(lang);
     
     // Update userContext with new language
@@ -689,103 +688,6 @@ const PetHealthAssistant = () => {
         ...userContext,
         userProfile: { ...userContext.userProfile, preferred_language: lang },
       });
-    }
-    
-    // If there are no messages yet, generate a greeting in the selected language
-    if (messages.length === 0 && user) {
-      setIsLoading(true);
-      
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-          throw new Error("Not authenticated");
-        }
-        
-        // Ensure we have a session
-        let sessionId = currentSessionId;
-        if (!sessionId) {
-          sessionId = await createNewSession();
-          if (!sessionId) {
-            throw new Error("Failed to create session");
-          }
-        }
-        
-        const contextToSend = userContext ? {
-          ...userContext,
-          userProfile: { ...userContext.userProfile, preferred_language: lang },
-          selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
-        } : null;
-        
-        // Send a system request to generate greeting
-        const greetingRequest: Message = { 
-          role: "user", 
-          content: `[SYSTEM: Generate a brief, friendly greeting for the user in ${lang} language. Welcome them and ask how you can help with their pet today. Keep it short - max 2 sentences.]` 
-        };
-        
-        let assistantContent = "";
-        
-        const resp = await fetch(CHAT_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            messages: [greetingRequest],
-            userContext: contextToSend,
-            petInfo: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
-            generateGreeting: true,
-            preferredLanguage: lang,
-          }),
-        });
-        
-        if (!resp.ok || !resp.body) {
-          throw new Error("Failed to get response");
-        }
-        
-        const reader = resp.body.getReader();
-        const decoder = new TextDecoder();
-        let textBuffer = "";
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          textBuffer += decoder.decode(value, { stream: true });
-          
-          let newlineIndex: number;
-          while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-            let line = textBuffer.slice(0, newlineIndex);
-            textBuffer = textBuffer.slice(newlineIndex + 1);
-            
-            if (line.endsWith("\r")) line = line.slice(0, -1);
-            if (line.startsWith(":") || line.trim() === "") continue;
-            if (!line.startsWith("data: ")) continue;
-            
-            const jsonStr = line.slice(6).trim();
-            if (jsonStr === "[DONE]") break;
-            
-            try {
-              const parsed = JSON.parse(jsonStr);
-              const content = parsed.choices?.[0]?.delta?.content;
-              if (content) {
-                assistantContent += content;
-                setMessages([{ role: "assistant", content: assistantContent }]);
-              }
-            } catch {
-              textBuffer = line + "\n" + textBuffer;
-              break;
-            }
-          }
-        }
-        
-        if (assistantContent) {
-          await saveMessageToSession(sessionId, "assistant", assistantContent, false);
-        }
-      } catch (error) {
-        console.error("Language greeting error:", error);
-      } finally {
-        setIsLoading(false);
-      }
     }
   };
 
