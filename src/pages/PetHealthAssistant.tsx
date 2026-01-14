@@ -51,93 +51,15 @@ interface UserContext {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
 
-const suggestedQuestionsByLanguage: Record<string, string[]> = {
-  en: [
-    "What vaccines does my dog need?",
-    "How often should I groom my pet?",
-    "My dog is scratching a lot, what could it be?",
-    "What human foods are toxic to dogs?",
-    "How much exercise does my breed need?",
-    "What offers would be good for my pet?",
-    "When is my pet's next vaccination due?",
-  ],
-  el: [
-    "Ποια εμβόλια χρειάζεται ο σκύλος μου;",
-    "Πόσο συχνά πρέπει να περιποιούμαι το κατοικίδιό μου;",
-    "Ο σκύλος μου ξύνεται πολύ, τι μπορεί να είναι;",
-    "Ποιες ανθρώπινες τροφές είναι τοξικές για σκύλους;",
-    "Πόση άσκηση χρειάζεται η ράτσα μου;",
-    "Ποιες προσφορές θα ήταν καλές για το κατοικίδιό μου;",
-    "Πότε είναι το επόμενο εμβόλιο του κατοικίδιου μου;",
-  ],
-  es: [
-    "¿Qué vacunas necesita mi perro?",
-    "¿Con qué frecuencia debo cuidar a mi mascota?",
-    "Mi perro se rasca mucho, ¿qué puede ser?",
-    "¿Qué alimentos humanos son tóxicos para los perros?",
-    "¿Cuánto ejercicio necesita mi raza?",
-    "¿Qué ofertas serían buenas para mi mascota?",
-    "¿Cuándo es la próxima vacuna de mi mascota?",
-  ],
-  de: [
-    "Welche Impfungen braucht mein Hund?",
-    "Wie oft sollte ich mein Haustier pflegen?",
-    "Mein Hund kratzt sich viel, was könnte das sein?",
-    "Welche menschlichen Lebensmittel sind giftig für Hunde?",
-    "Wie viel Bewegung braucht meine Rasse?",
-    "Welche Angebote wären gut für mein Haustier?",
-    "Wann ist die nächste Impfung meines Haustieres fällig?",
-  ],
-  fr: [
-    "De quels vaccins mon chien a-t-il besoin?",
-    "À quelle fréquence dois-je toiletter mon animal?",
-    "Mon chien se gratte beaucoup, qu'est-ce que ça peut être?",
-    "Quels aliments humains sont toxiques pour les chiens?",
-    "De combien d'exercice ma race a-t-elle besoin?",
-    "Quelles offres seraient bonnes pour mon animal?",
-    "Quand est la prochaine vaccination de mon animal?",
-  ],
-  it: [
-    "Di quali vaccini ha bisogno il mio cane?",
-    "Con che frequenza devo curare il mio animale?",
-    "Il mio cane si gratta molto, cosa potrebbe essere?",
-    "Quali cibi umani sono tossici per i cani?",
-    "Quanto esercizio ha bisogno la mia razza?",
-    "Quali offerte sarebbero buone per il mio animale?",
-    "Quando è il prossimo vaccino del mio animale?",
-  ],
-  pt: [
-    "Quais vacinas meu cachorro precisa?",
-    "Com que frequência devo cuidar do meu pet?",
-    "Meu cachorro está se coçando muito, o que pode ser?",
-    "Quais alimentos humanos são tóxicos para cães?",
-    "Quanto exercício minha raça precisa?",
-    "Quais ofertas seriam boas para meu pet?",
-    "Quando é a próxima vacinação do meu pet?",
-  ],
-  ru: [
-    "Какие прививки нужны моей собаке?",
-    "Как часто нужно ухаживать за питомцем?",
-    "Моя собака много чешется, что это может быть?",
-    "Какие продукты токсичны для собак?",
-    "Сколько упражнений нужно моей породе?",
-    "Какие предложения подойдут для моего питомца?",
-    "Когда следующая вакцинация моего питомца?",
-  ],
-  ar: [
-    "ما هي اللقاحات التي يحتاجها كلبي؟",
-    "كم مرة يجب أن أعتني بحيواني الأليف؟",
-    "كلبي يحك كثيراً، ما السبب؟",
-    "ما هي الأطعمة البشرية السامة للكلاب؟",
-    "كم من التمارين تحتاج سلالتي؟",
-    "ما هي العروض المناسبة لحيواني الأليف؟",
-    "متى موعد التطعيم القادم لحيواني الأليف؟",
-  ],
-};
-
-const getSuggestedQuestions = (lang: string): string[] => {
-  return suggestedQuestionsByLanguage[lang] || suggestedQuestionsByLanguage.en;
-};
+const suggestedQuestions = [
+  "What vaccines does my dog need?",
+  "How often should I groom my pet?",
+  "My dog is scratching a lot, what could it be?",
+  "What human foods are toxic to dogs?",
+  "How much exercise does my breed need?",
+  "What offers would be good for my pet?",
+  "When is my pet's next vaccination due?",
+];
 
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
@@ -910,8 +832,8 @@ const PetHealthAssistant = () => {
   return (
     <>
       <Helmet>
-        <title>AI Pet Health Assistant | Wooffy</title>
-        <meta name="description" content="Get instant pet health advice from our AI-powered assistant." />
+        <title>AI Pet Assistant | Wooffy</title>
+        <meta name="description" content="Get instant pet advice from our AI-powered assistant." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background flex flex-col">
@@ -1099,7 +1021,7 @@ const PetHealthAssistant = () => {
 
                 {/* Suggested Questions */}
                 <div className="flex flex-wrap justify-center gap-2">
-                  {getSuggestedQuestions(preferredLanguage).slice(0, 3).map((q, i) => (
+                  {suggestedQuestions.slice(0, 3).map((q, i) => (
                     <button
                       key={i}
                       onClick={() => sendMessage(q)}

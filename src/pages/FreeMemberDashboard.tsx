@@ -98,7 +98,7 @@ const FreeMemberDashboard = () => {
                 </h1>
                 <p className="text-muted-foreground max-w-xl">
                   You have free access to our Community Hub. Upgrade to unlock exclusive discounts, 
-                  pet profiles, AI health assistant, and more!
+                  pet profiles, AI pet assistant, and more!
                 </p>
               </div>
               <Button 
@@ -238,10 +238,10 @@ const FreeMemberDashboard = () => {
                 benefit="Store photos, health info, and track your pet's milestones"
               />
               <LockedFeatureCard
-                title="AI Health Assistant"
-                description="24/7 pet health advice"
+                title="AI Pet Assistant"
+                description="24/7 pet advice"
                 icon={<Bot className="w-5 h-5 text-violet-500" />}
-                benefit="Get instant answers to health questions from our AI vet"
+                benefit="Get instant answers to pet questions from our AI assistant"
               />
               <LockedFeatureCard
                 title="Health Records"
