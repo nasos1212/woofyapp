@@ -115,9 +115,9 @@ const Auth = () => {
         return;
       }
       
-      // If they selected member type and have no membership, go to onboarding
+      // If they selected member type and have no membership, go to free member dashboard
       if (accountType === "member") {
-        navigate("/member/onboarding");
+        navigate("/member/free");
         return;
       }
       
@@ -275,26 +275,13 @@ const Auth = () => {
             });
           }
         } else {
-          // For member accounts, create a membership record
-          if (accountType === "member" && data?.user) {
-            const expiryDate = new Date();
-            expiryDate.setFullYear(expiryDate.getFullYear() + 1);
-            
-            const { data: memberNumber } = await supabase.rpc('generate_member_number');
-            
-            await supabase.from('memberships').insert({
-              user_id: data.user.id,
-              member_number: memberNumber || `WF-${Date.now()}`,
-              expires_at: expiryDate.toISOString(),
-              is_active: true,
-              pet_name: '',
-              pet_breed: '',
-            });
-          }
+          // For member accounts, DON'T create membership automatically
+          // User will be a "free member" with community access only
+          // They can upgrade to paid membership later via onboarding
           
           toast({
             title: "Account Created!",
-            description: "Welcome to Wooffy!",
+            description: "Welcome to Wooffy! Explore our community hub.",
           });
         }
       }

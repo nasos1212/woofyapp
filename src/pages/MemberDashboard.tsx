@@ -82,6 +82,7 @@ const MemberDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
   const [isSavingCity, setIsSavingCity] = useState(false);
+  const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
   const { favoriteIds } = useFavoriteOffers();
@@ -115,56 +116,62 @@ const MemberDashboard = () => {
           .eq("user_id", user.id)
           .maybeSingle();
 
-        if (membershipData) {
-          setMembership(membershipData);
+        // Check if user has a valid membership
+        if (!membershipData) {
+          setHasMembership(false);
+          setIsLoading(false);
+          return;
+        }
 
-          // Fetch pets for this membership
-          const { data: petsData } = await supabase
-            .from("pets")
-            .select("id, pet_name, pet_breed, photo_url")
-            .eq("membership_id", membershipData.id);
+        setHasMembership(true);
+        setMembership(membershipData);
 
-          if (petsData) {
-            // Sort pets so last viewed pet comes first
-            const lastViewedPetId = localStorage.getItem('lastViewedPetId');
-            if (lastViewedPetId) {
-              const sortedPets = [...petsData].sort((a, b) => {
-                if (a.id === lastViewedPetId) return -1;
-                if (b.id === lastViewedPetId) return 1;
-                return 0;
-              });
-              setPets(sortedPets);
-            } else {
-              setPets(petsData);
-            }
-          }
+        // Fetch pets for this membership
+        const { data: petsData } = await supabase
+          .from("pets")
+          .select("id, pet_name, pet_breed, photo_url")
+          .eq("membership_id", membershipData.id);
 
-          // Fetch redemptions for this membership
-          const { data: redemptionsData } = await supabase
-            .from("offer_redemptions")
-            .select(`
-              id,
-              redeemed_at,
-              offer:offers(title, discount_value, discount_type),
-              business:businesses(business_name)
-            `)
-            .eq("membership_id", membershipData.id)
-            .order("redeemed_at", { ascending: false })
-            .limit(5);
-
-          if (redemptionsData) {
-            const transformed = redemptionsData.map((r) => ({
-              id: r.id,
-              redeemed_at: r.redeemed_at,
-              offer: r.offer as unknown as Redemption["offer"],
-              business: r.business as unknown as Redemption["business"],
-            }));
-            setRedemptions(transformed);
-
-            setStats({
-              dealsUsed: transformed.length,
+        if (petsData) {
+          // Sort pets so last viewed pet comes first
+          const lastViewedPetId = localStorage.getItem('lastViewedPetId');
+          if (lastViewedPetId) {
+            const sortedPets = [...petsData].sort((a, b) => {
+              if (a.id === lastViewedPetId) return -1;
+              if (b.id === lastViewedPetId) return 1;
+              return 0;
             });
+            setPets(sortedPets);
+          } else {
+            setPets(petsData);
           }
+        }
+
+        // Fetch redemptions for this membership
+        const { data: redemptionsData } = await supabase
+          .from("offer_redemptions")
+          .select(`
+            id,
+            redeemed_at,
+            offer:offers(title, discount_value, discount_type),
+            business:businesses(business_name)
+          `)
+          .eq("membership_id", membershipData.id)
+          .order("redeemed_at", { ascending: false })
+          .limit(5);
+
+        if (redemptionsData) {
+          const transformed = redemptionsData.map((r) => ({
+            id: r.id,
+            redeemed_at: r.redeemed_at,
+            offer: r.offer as unknown as Redemption["offer"],
+            business: r.business as unknown as Redemption["business"],
+          }));
+          setRedemptions(transformed);
+
+          setStats({
+            dealsUsed: transformed.length,
+          });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -275,7 +282,12 @@ const MemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  if (isLoading) {
+  // Redirect free users to the free member dashboard
+  if (hasMembership === false) {
+    return <Navigate to="/member/free" replace />;
+  }
+
+  if (isLoading || hasMembership === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />

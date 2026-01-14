@@ -9,6 +9,7 @@ import BackToTop from "./components/BackToTop";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MemberDashboard from "./pages/MemberDashboard";
+import FreeMemberDashboard from "./pages/FreeMemberDashboard";
 import BusinessDashboard from "./pages/BusinessDashboard";
 import Auth from "./pages/Auth";
 import PartnerRegister from "./pages/PartnerRegister";
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/member" element={<MemberDashboard />} />
+              <Route path="/member/free" element={<FreeMemberDashboard />} />
               <Route path="/member/onboarding" element={<MemberOnboarding />} />
               <Route path="/member/offers" element={<MemberOffers />} />
               <Route path="/member/history" element={<RedemptionHistory />} />
