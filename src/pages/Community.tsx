@@ -456,14 +456,6 @@ const Community = () => {
                   </Button>
                   <Button 
                     variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => navigate('/community/leaderboard')}
-                  >
-                    <Trophy className="w-4 h-4 mr-2" />
-                    View Leaderboard
-                  </Button>
-                  <Button 
-                    variant="outline" 
                     className="w-full justify-start opacity-50 cursor-not-allowed"
                     disabled
                   >
