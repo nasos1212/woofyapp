@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { format, formatDistanceToNow, isPast, isFuture } from "date-fns";
-import { Building2, MapPin, Percent, Check, ExternalLink, Clock, AlertTriangle } from "lucide-react";
+import { Building2, MapPin, Percent, Check, ExternalLink, Clock, AlertTriangle, Lock, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useMembership } from "@/hooks/useMembership";
 
 export interface OfferWithDetails {
   id: string;
@@ -59,6 +60,9 @@ const categories: Record<string, string> = {
 };
 
 const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: OfferDetailDialogProps) => {
+  const { hasMembership } = useMembership();
+  const navigate = useNavigate();
+  
   if (!offer) return null;
 
   const formatDiscount = () => {
@@ -274,12 +278,38 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
             </div>
           )}
 
+          {/* Upgrade CTA for Free Members */}
+          {!hasMembership && (
+            <div className="bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl p-4 border border-primary/20">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground">Upgrade to Redeem</h4>
+                  <p className="text-sm text-muted-foreground">Become a member to use this offer</p>
+                </div>
+              </div>
+              <Button 
+                className="w-full" 
+                variant="hero"
+                onClick={() => {
+                  onClose();
+                  navigate("/member/upgrade");
+                }}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                Upgrade Now
+              </Button>
+            </div>
+          )}
+
           {/* View Business Button */}
           <Link
             to={`/business/${offer.business.id}`}
             onClick={onClose}
           >
-            <Button className="w-full" variant="default">
+            <Button className="w-full" variant={hasMembership ? "default" : "outline"}>
               <Building2 className="w-4 h-4 mr-2" />
               View Business Profile
             </Button>
