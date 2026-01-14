@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
@@ -61,6 +62,7 @@ const categories = [
 
 const MemberOffers = () => {
   const { user, loading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
@@ -79,8 +81,10 @@ const MemberOffers = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth?type=member");
+    } else if (!loading && !membershipLoading && user && !hasMembership) {
+      navigate("/member/free");
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, navigate]);
 
   useEffect(() => {
     if (user) {

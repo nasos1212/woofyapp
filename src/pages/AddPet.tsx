@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { dogBreeds } from "@/data/dogBreeds";
@@ -19,6 +20,7 @@ import Header from "@/components/Header";
 
 const AddPet = () => {
   const { user, loading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [petName, setPetName] = useState("");
   const [petBreed, setPetBreed] = useState("");
@@ -119,7 +121,7 @@ const AddPet = () => {
     }
   };
 
-  if (loading || isLoading) {
+  if (loading || isLoading || membershipLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -129,6 +131,10 @@ const AddPet = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  if (!hasMembership) {
+    return <Navigate to="/member/free" replace />;
   }
 
   return (
