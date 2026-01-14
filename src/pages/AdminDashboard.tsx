@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import PromoCodeManager from "@/components/admin/PromoCodeManager";
 import InfluencerMemberships from "@/components/admin/InfluencerMemberships";
 import UserAnalytics from "@/components/admin/UserAnalytics";
 import BulkNotifications from "@/components/admin/BulkNotifications";
+import MembershipManager from "@/components/admin/MembershipManager";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -306,6 +307,10 @@ const AdminDashboard = () => {
               <BarChart3 className="w-4 h-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="memberships" className="gap-1">
+              <CreditCard className="w-4 h-4" />
+              Memberships
+            </TabsTrigger>
             <TabsTrigger value="influencers" className="gap-1">
               <Crown className="w-4 h-4" />
               Influencers
@@ -327,6 +332,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="analytics">
             <UserAnalytics />
+          </TabsContent>
+
+          <TabsContent value="memberships">
+            <MembershipManager />
           </TabsContent>
 
           <TabsContent value="influencers">
