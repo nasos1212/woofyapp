@@ -32,6 +32,7 @@ const AddPet = () => {
   const [membership, setMembership] = useState<{ id: string; max_pets: number } | null>(null);
   const [currentPetCount, setCurrentPetCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [breedPopoverOpen, setBreedPopoverOpen] = useState(false);
 
   useEffect(() => {
     const checkMembership = async () => {
@@ -185,7 +186,7 @@ const AddPet = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="pet-breed">Breed (optional)</Label>
-                  <Popover>
+                  <Popover open={breedPopoverOpen} onOpenChange={setBreedPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -220,7 +221,10 @@ const AddPet = () => {
                               <CommandItem
                                 key={breed}
                                 value={breed}
-                                onSelect={() => setPetBreed(breed)}
+                                onSelect={() => {
+                                  setPetBreed(breed);
+                                  setBreedPopoverOpen(false);
+                                }}
                               >
                                 <Check
                                   className={cn(
