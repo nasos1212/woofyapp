@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, ArrowUpDown, Sparkles, ChevronDown, ArrowLeft } from "lucide-react";
+import { Search, Filter, MapPin, Check, Tag, Building2, X, Clock, AlertTriangle, Heart, ArrowUpDown, Sparkles, ChevronDown, ArrowLeft, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -81,10 +81,9 @@ const MemberOffers = () => {
   useEffect(() => {
     if (!loading && !user) {
       navigate("/auth?type=member");
-    } else if (!loading && !membershipLoading && user && !hasMembership) {
-      navigate("/member/free");
     }
-  }, [user, loading, hasMembership, membershipLoading, navigate]);
+    // Allow free members to browse - they'll see upgrade prompts
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     if (user) {
@@ -335,12 +334,36 @@ const MemberOffers = () => {
           {/* Back Button */}
           <Button
             variant="ghost"
-            onClick={() => navigate("/member")}
+            onClick={() => navigate(hasMembership ? "/member" : "/member/free")}
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Button>
+
+          {/* Free Member Banner */}
+          {!membershipLoading && !hasMembership && (
+            <div className="bg-gradient-to-r from-primary/10 to-amber-100 rounded-2xl p-4 mb-6 border border-primary/20">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
+                    <Tag className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Preview Mode</h3>
+                    <p className="text-sm text-muted-foreground">Upgrade to redeem these exclusive offers</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="hero" 
+                  size="sm"
+                  onClick={() => navigate("/member/upgrade")}
+                >
+                  Upgrade Now
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Page Header */}
           <div className="mb-8">
@@ -629,7 +652,12 @@ const MemberOffers = () => {
                         </span>
                       </div>
 
-                      {offer.isRedeemed && offer.redemption_frequency === 'one_time' ? (
+                      {!hasMembership ? (
+                        <Badge className="bg-amber-100 text-amber-700 border-amber-200">
+                          <Lock className="w-3 h-3 mr-1" />
+                          Upgrade to Redeem
+                        </Badge>
+                      ) : offer.isRedeemed && offer.redemption_frequency === 'one_time' ? (
                         <Badge
                           variant="outline"
                           className="bg-green-50 text-green-700 border-green-200"
