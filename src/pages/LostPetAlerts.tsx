@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,7 @@ import DogLoader from "@/components/DogLoader";
 import LocationSelector from "@/components/LocationSelector";
 import CityMultiSelector from "@/components/CityMultiSelector";
 import { formatLocation } from "@/data/cyprusLocations";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 
 interface LostPetAlert {
   id: string;
@@ -74,9 +74,13 @@ const LostPetAlerts = () => {
   const [lastSeenArea, setLastSeenArea] = useState("");
   const [lastSeenDetails, setLastSeenDetails] = useState("");
   const [lastSeenDate, setLastSeenDate] = useState("");
+  const [lastSeenTime, setLastSeenTime] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [rewardOffered, setRewardOffered] = useState("");
+  const [petPhoto, setPetPhoto] = useState<File | null>(null);
+  const [petPhotoPreview, setPetPhotoPreview] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
   useEffect(() => {
     fetchAlerts();
@@ -190,6 +194,32 @@ const LostPetAlerts = () => {
     }
   };
 
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image must be less than 5MB");
+        return;
+      }
+      setPetPhoto(file);
+      setPetPhotoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const clearPhotoSelection = () => {
+    setPetPhoto(null);
+    if (petPhotoPreview) {
+      URL.revokeObjectURL(petPhotoPreview);
+    }
+    setPetPhotoPreview(null);
+  };
+
   const handleCreateAlert = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -197,8 +227,13 @@ const LostPetAlerts = () => {
       return;
     }
 
-    if (!petName || !petDescription || !lastSeenCity || !lastSeenDate) {
-      toast.error("Please fill in all required fields");
+    if (!petName || !petDescription || !lastSeenCity || !lastSeenDate || !contactPhone) {
+      toast.error("Please fill in all required fields including contact phone");
+      return;
+    }
+
+    if (!petPhoto) {
+      toast.error("Please upload a photo of your pet");
       return;
     }
 
@@ -209,17 +244,45 @@ const LostPetAlerts = () => {
     }
     const lastSeenLocation = locationParts.join(" - ");
 
+    // Build the date/time - time is optional
+    let lastSeenDateTime: Date;
+    if (lastSeenTime) {
+      lastSeenDateTime = new Date(`${lastSeenDate}T${lastSeenTime}`);
+    } else {
+      lastSeenDateTime = new Date(`${lastSeenDate}T12:00:00`);
+    }
+
     setIsCreating(true);
     try {
+      // Upload photo first
+      setIsUploadingPhoto(true);
+      const fileExt = petPhoto.name.split(".").pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const filePath = `lost-pets/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("lost-pet-photos")
+        .upload(filePath, petPhoto);
+
+      if (uploadError) throw uploadError;
+
+      const { data: urlData } = supabase.storage
+        .from("lost-pet-photos")
+        .getPublicUrl(filePath);
+
+      const photoUrl = urlData.publicUrl;
+      setIsUploadingPhoto(false);
+
       const { error } = await supabase.from("lost_pet_alerts").insert({
         owner_user_id: user.id,
         pet_id: selectedPetId || null,
         pet_name: petName,
         pet_description: petDescription,
         pet_breed: petBreed || null,
+        pet_photo_url: photoUrl,
         last_seen_location: lastSeenLocation,
-        last_seen_date: new Date(lastSeenDate).toISOString(),
-        contact_phone: contactPhone || null,
+        last_seen_date: lastSeenDateTime.toISOString(),
+        contact_phone: contactPhone,
         contact_email: contactEmail || null,
         reward_offered: rewardOffered || null,
         status: "active",
@@ -236,6 +299,7 @@ const LostPetAlerts = () => {
       toast.error("Failed to create alert");
     } finally {
       setIsCreating(false);
+      setIsUploadingPhoto(false);
     }
   };
 
@@ -248,9 +312,11 @@ const LostPetAlerts = () => {
     setLastSeenArea("");
     setLastSeenDetails("");
     setLastSeenDate("");
+    setLastSeenTime("");
     setContactPhone("");
     setContactEmail("");
     setRewardOffered("");
+    clearPhotoSelection();
   };
 
   const markAsFound = async (alertId: string) => {
@@ -473,23 +539,70 @@ const LostPetAlerts = () => {
                       />
                     </div>
 
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Last Seen Date *</Label>
+                        <Input
+                          type="date"
+                          value={lastSeenDate}
+                          onChange={(e) => setLastSeenDate(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Time (optional)</Label>
+                        <Input
+                          type="time"
+                          value={lastSeenTime}
+                          onChange={(e) => setLastSeenTime(e.target.value)}
+                          step="60"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Photo upload - compulsory */}
                     <div className="space-y-2">
-                      <Label>Last Seen Date/Time *</Label>
-                      <Input
-                        type="datetime-local"
-                        value={lastSeenDate}
-                        onChange={(e) => setLastSeenDate(e.target.value)}
-                        required
-                      />
+                      <Label>Pet Photo * (helps others identify your pet)</Label>
+                      {petPhotoPreview ? (
+                        <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+                          <img
+                            src={petPhotoPreview}
+                            alt="Pet preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 h-8 w-8"
+                            onClick={clearPhotoSelection}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                          <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                          <span className="text-sm text-muted-foreground">Click to upload photo</span>
+                          <span className="text-xs text-muted-foreground mt-1">Max 5MB, JPG/PNG</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoSelect}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>Contact Phone</Label>
+                        <Label>Contact Phone *</Label>
                         <Input
                           value={contactPhone}
                           onChange={(e) => setContactPhone(e.target.value)}
                           placeholder="Your phone"
+                          required
                         />
                       </div>
                       <div className="space-y-2">
@@ -512,8 +625,8 @@ const LostPetAlerts = () => {
                       />
                     </div>
 
-                    <Button type="submit" className="w-full" disabled={isCreating}>
-                      {isCreating ? "Creating..." : "Create Alert"}
+                    <Button type="submit" className="w-full" disabled={isCreating || isUploadingPhoto}>
+                      {isUploadingPhoto ? "Uploading photo..." : isCreating ? "Creating..." : "Create Alert"}
                     </Button>
                   </form>
                 </DialogContent>
@@ -592,87 +705,118 @@ const LostPetAlerts = () => {
                 {activeAlerts.map((alert) => (
                   <div
                     key={alert.id}
-                    className="bg-white rounded-2xl p-5 shadow-soft border-l-4 border-l-red-500"
+                    className="bg-white rounded-2xl shadow-soft border-l-4 border-l-red-500 overflow-hidden"
                   >
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="font-display font-semibold text-foreground text-lg">
-                          {alert.pet_name}
-                        </h3>
-                        {alert.pet_breed && (
-                          <p className="text-sm text-muted-foreground">{alert.pet_breed}</p>
+                    {/* Pet Photo */}
+                    {alert.pet_photo_url && (
+                      <div className="w-full h-48 bg-muted">
+                        <img
+                          src={alert.pet_photo_url}
+                          alt={alert.pet_name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    
+                    <div className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-display font-semibold text-foreground text-lg">
+                            {alert.pet_name}
+                          </h3>
+                          {alert.pet_breed && (
+                            <p className="text-sm text-muted-foreground">{alert.pet_breed}</p>
+                          )}
+                        </div>
+                        {alert.reward_offered && (
+                          <Badge className="bg-green-100 text-green-700 border-green-200">
+                            Reward: {alert.reward_offered}
+                          </Badge>
                         )}
                       </div>
-                      {alert.reward_offered && (
-                        <Badge className="bg-green-100 text-green-700 border-green-200">
-                          Reward: {alert.reward_offered}
-                        </Badge>
+
+                      {/* Full description - no truncation */}
+                      <p className="text-sm text-foreground mb-4">
+                        {alert.pet_description}
+                      </p>
+
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-start gap-2 text-muted-foreground">
+                          <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                          <span>{alert.last_seen_location}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span>{format(new Date(alert.last_seen_date), "dd/MM/yyyy HH:mm")}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Clock className="w-4 h-4 flex-shrink-0" />
+                          <span>{formatDistanceToNow(new Date(alert.last_seen_date), { addSuffix: true })}</span>
+                        </div>
+                      </div>
+
+                      {/* Contact info - only show to users with notifications enabled */}
+                      {(canSeeContactInfo || alert.owner_user_id === user?.id) ? (
+                        <div className="mt-4 pt-4 border-t space-y-2">
+                          {alert.contact_phone && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="w-4 h-4 text-primary" />
+                              <a href={`tel:${alert.contact_phone}`} className="text-primary hover:underline font-medium">
+                                {alert.contact_phone}
+                              </a>
+                            </div>
+                          )}
+                          {alert.contact_email && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="w-4 h-4 text-muted-foreground" />
+                              <a href={`mailto:${alert.contact_email}`} className="text-foreground hover:underline">
+                                {alert.contact_email}
+                              </a>
+                            </div>
+                          )}
+                          <div className="flex gap-2 pt-2">
+                            <a
+                              href={`tel:${alert.contact_phone}`}
+                              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium"
+                            >
+                              <Phone className="w-4 h-4" />
+                              Call Now
+                            </a>
+                            {alert.contact_email && (
+                              <a
+                                href={`mailto:${alert.contact_email}`}
+                                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium"
+                              >
+                                <Mail className="w-4 h-4" />
+                                Email
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mt-4 pt-4 border-t">
+                          <button
+                            onClick={() => user ? setShowSettingsDialog(true) : navigate("/auth")}
+                            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-muted text-muted-foreground rounded-lg text-sm"
+                          >
+                            <Bell className="w-4 h-4" />
+                            Enable notifications to see contact info
+                          </button>
+                        </div>
+                      )}
+
+                      {user && alert.owner_user_id === user.id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full mt-3 text-green-600 border-green-600 hover:bg-green-50"
+                          onClick={() => markAsFound(alert.id)}
+                        >
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Mark as Found
+                        </Button>
                       )}
                     </div>
-
-                    <p className="text-sm text-foreground mb-4 line-clamp-2">
-                      {alert.pet_description}
-                    </p>
-
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <MapPin className="w-4 h-4 text-primary" />
-                        {alert.last_seen_location}
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4" />
-                        {formatDistanceToNow(new Date(alert.last_seen_date), { addSuffix: true })}
-                      </div>
-                    </div>
-
-                    {/* Contact info - only show to users with notifications enabled */}
-                    {(canSeeContactInfo || alert.owner_user_id === user?.id) ? (
-                      <div className="flex gap-2 mt-4 pt-4 border-t">
-                        {alert.contact_phone && (
-                          <a
-                            href={`tel:${alert.contact_phone}`}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium"
-                          >
-                            <Phone className="w-4 h-4" />
-                            Call
-                          </a>
-                        )}
-                        {alert.contact_email && (
-                          <a
-                            href={`mailto:${alert.contact_email}`}
-                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg text-sm font-medium"
-                          >
-                            <Mail className="w-4 h-4" />
-                            Email
-                          </a>
-                        )}
-                        {!alert.contact_phone && !alert.contact_email && (
-                          <p className="text-sm text-muted-foreground italic">No contact info provided</p>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="mt-4 pt-4 border-t">
-                        <button
-                          onClick={() => user ? setShowSettingsDialog(true) : navigate("/auth")}
-                          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-muted text-muted-foreground rounded-lg text-sm"
-                        >
-                          <Bell className="w-4 h-4" />
-                          Enable notifications to see contact info
-                        </button>
-                      </div>
-                    )}
-
-                    {user && alert.owner_user_id === user.id && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full mt-3 text-green-600 border-green-600 hover:bg-green-50"
-                        onClick={() => markAsFound(alert.id)}
-                      >
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        Mark as Found
-                      </Button>
-                    )}
                   </div>
                 ))}
               </div>
