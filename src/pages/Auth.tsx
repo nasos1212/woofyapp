@@ -103,15 +103,9 @@ const Auth = () => {
       }
       
       // CASE 3: User has neither business nor membership - they're new
-      // If they selected business type but have no business, show error
+      // If they selected business type but have no business, redirect to partner registration
       if (accountType === "business") {
-        toast({
-          title: "No Business Account Found",
-          description: "This email is not registered as a business partner. Please register your business or log in as a pet owner.",
-          variant: "destructive",
-        });
-        await supabase.auth.signOut();
-        setAccountType(null);
+        navigate("/partner-register");
         return;
       }
       
@@ -275,14 +269,22 @@ const Auth = () => {
             });
           }
         } else {
-          // For member accounts, DON'T create membership automatically
-          // User will be a "free member" with community access only
-          // They can upgrade to paid membership later via onboarding
-          
-          toast({
-            title: "Account Created!",
-            description: "Welcome to Wooffy! Explore our community hub.",
-          });
+          // For business accounts, redirect to partner registration
+          if (accountType === "business") {
+            toast({
+              title: "Account Created!",
+              description: "Now let's register your business.",
+            });
+            navigate("/partner-register");
+          } else {
+            // For member accounts, DON'T create membership automatically
+            // User will be a "free member" with community access only
+            // They can upgrade to paid membership later via onboarding
+            toast({
+              title: "Account Created!",
+              description: "Welcome to Wooffy! Explore our community hub.",
+            });
+          }
         }
       }
     } catch (error) {
