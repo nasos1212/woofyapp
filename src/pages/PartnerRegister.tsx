@@ -61,10 +61,9 @@ const PartnerRegister = () => {
   const [website, setWebsite] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   
-  // Offers
-  const [offers, setOffers] = useState<Offer[]>([
-    { id: "1", title: "", description: "", discountType: "percentage", discountValue: "", terms: "" }
-  ]);
+  // Offers (optional)
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [showOffers, setShowOffers] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -98,12 +97,6 @@ const PartnerRegister = () => {
       ...offers,
       { id: Date.now().toString(), title: "", description: "", discountType: "percentage", discountValue: "", terms: "" }
     ]);
-  };
-
-  const removeOffer = (id: string) => {
-    if (offers.length > 1) {
-      setOffers(offers.filter(o => o.id !== id));
-    }
   };
 
   const updateOffer = (id: string, field: keyof Offer, value: string) => {
@@ -200,7 +193,7 @@ const PartnerRegister = () => {
           Back to Home
         </Button>
 
-        {/* Progress */}
+        {/* Progress - simplified to 2 steps */}
         <div className="flex items-center gap-4 mb-8">
           <div className={`flex items-center gap-2 ${step >= 1 ? "text-primary" : "text-muted-foreground"}`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
@@ -213,16 +206,7 @@ const PartnerRegister = () => {
           </div>
           <div className={`flex items-center gap-2 ${step >= 2 ? "text-primary" : "text-muted-foreground"}`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-              {step > 2 ? <Check className="w-4 h-4" /> : "2"}
-            </div>
-            <span className="font-medium hidden sm:inline">Your Offers</span>
-          </div>
-          <div className="flex-1 h-1 bg-muted rounded">
-            <div className={`h-full bg-primary rounded transition-all ${step >= 3 ? "w-full" : "w-0"}`} />
-          </div>
-          <div className={`flex items-center gap-2 ${step >= 3 ? "text-primary" : "text-muted-foreground"}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-              3
+              2
             </div>
             <span className="font-medium hidden sm:inline">Review</span>
           </div>
@@ -374,130 +358,14 @@ const PartnerRegister = () => {
                   onClick={() => setStep(2)}
                   disabled={!businessName || !category}
                 >
-                  Continue to Offers
+                  Review & Submit
                 </Button>
               </div>
             </>
           )}
 
-          {/* Step 2: Offers */}
+          {/* Step 2: Review */}
           {step === 2 && (
-            <>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center">
-                  <span className="text-2xl">🎁</span>
-                </div>
-                <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">Your Offers</h1>
-                  <p className="text-muted-foreground">Set discounts for Wooffy members</p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {offers.map((offer, index) => (
-                  <div key={offer.id} className="p-4 bg-muted/50 rounded-xl space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-foreground">Offer {index + 1}</span>
-                      {offers.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeOffer(offer.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Offer Title *</Label>
-                      <Input
-                        placeholder="e.g., 15% off all grooming services"
-                        value={offer.title}
-                        onChange={(e) => updateOffer(offer.id, "title", e.target.value)}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Discount Type</Label>
-                        <Select
-                          value={offer.discountType}
-                          onValueChange={(v) => updateOffer(offer.id, "discountType", v)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {discountTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Value * {offer.discountType === "percentage" ? "(%)" : "(€)"}</Label>
-                        <Input
-                          type="number"
-                          placeholder={offer.discountType === "percentage" ? "15" : "10"}
-                          value={offer.discountValue}
-                          onChange={(e) => updateOffer(offer.id, "discountValue", e.target.value)}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Description</Label>
-                      <Textarea
-                        placeholder="Describe what's included..."
-                        value={offer.description}
-                        onChange={(e) => updateOffer(offer.id, "description", e.target.value)}
-                        rows={2}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Terms & Conditions</Label>
-                      <Input
-                        placeholder="e.g., Valid once per month, not combinable with other offers"
-                        value={offer.terms}
-                        onChange={(e) => updateOffer(offer.id, "terms", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                ))}
-
-                <Button
-                  variant="outline"
-                  onClick={addOffer}
-                  className="w-full gap-2"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Another Offer
-                </Button>
-              </div>
-
-              <div className="mt-8 flex justify-between">
-                <Button variant="ghost" onClick={() => setStep(1)}>
-                  Back
-                </Button>
-                <Button
-                  variant="hero"
-                  onClick={() => setStep(3)}
-                  disabled={!offers.some(o => o.title.trim())}
-                >
-                  Review Application
-                </Button>
-              </div>
-            </>
-          )}
-
-          {/* Step 3: Review */}
-          {step === 3 && (
             <>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center">
@@ -531,17 +399,118 @@ const PartnerRegister = () => {
                   </div>
                 </div>
 
-                {/* Offers Summary */}
+                {/* Optional Offers Section */}
                 <div className="p-4 bg-muted/50 rounded-xl">
-                  <h3 className="font-semibold text-foreground mb-3">Your Offers ({offers.filter(o => o.title).length})</h3>
-                  <div className="space-y-2">
-                    {offers.filter(o => o.title).map((offer, i) => (
-                      <div key={offer.id} className="flex items-center gap-2 text-sm">
-                        <span className="text-primary">✓</span>
-                        <span>{offer.title}</span>
-                      </div>
-                    ))}
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-foreground">Special Offers (Optional)</h3>
+                    {!showOffers && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setShowOffers(true);
+                          if (offers.length === 0) {
+                            setOffers([{ id: "1", title: "", description: "", discountType: "percentage", discountValue: "", terms: "" }]);
+                          }
+                        }}
+                        className="gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add Offers
+                      </Button>
+                    )}
                   </div>
+                  
+                  {!showOffers ? (
+                    <p className="text-sm text-muted-foreground">
+                      You can add special offers for Wooffy members now or later from your dashboard.
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {offers.map((offer, index) => (
+                        <div key={offer.id} className="p-3 bg-background rounded-lg space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-sm">Offer {index + 1}</span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const newOffers = offers.filter(o => o.id !== offer.id);
+                                setOffers(newOffers);
+                                if (newOffers.length === 0) {
+                                  setShowOffers(false);
+                                }
+                              }}
+                              className="text-destructive hover:text-destructive h-6 w-6 p-0"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <Label className="text-xs">Offer Title</Label>
+                            <Input
+                              placeholder="e.g., 15% off all grooming services"
+                              value={offer.title}
+                              onChange={(e) => updateOffer(offer.id, "title", e.target.value)}
+                              className="h-9"
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                              <Label className="text-xs">Discount Type</Label>
+                              <Select
+                                value={offer.discountType}
+                                onValueChange={(v) => updateOffer(offer.id, "discountType", v)}
+                              >
+                                <SelectTrigger className="h-9">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {discountTypes.map((type) => (
+                                    <SelectItem key={type.value} value={type.value}>
+                                      {type.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs">Value {offer.discountType === "percentage" ? "(%)" : "(€)"}</Label>
+                              <Input
+                                type="number"
+                                placeholder={offer.discountType === "percentage" ? "15" : "10"}
+                                value={offer.discountValue}
+                                onChange={(e) => updateOffer(offer.id, "discountValue", e.target.value)}
+                                className="h-9"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <Label className="text-xs">Terms (optional)</Label>
+                            <Input
+                              placeholder="e.g., Valid once per month"
+                              value={offer.terms}
+                              onChange={(e) => updateOffer(offer.id, "terms", e.target.value)}
+                              className="h-9"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={addOffer}
+                        className="w-full gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Add Another Offer
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Verification Notice */}
@@ -558,7 +527,7 @@ const PartnerRegister = () => {
               </div>
 
               <div className="mt-8 flex justify-between">
-                <Button variant="ghost" onClick={() => setStep(2)}>
+                <Button variant="ghost" onClick={() => setStep(1)}>
                   Back
                 </Button>
                 <Button
