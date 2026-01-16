@@ -61,22 +61,13 @@ const plans: PlanOption[] = [
     features: ["Everything in Solo Paw", "Both pets covered", "Save €19 vs 2 single memberships"],
   },
   {
-    id: "pack",
-    name: "Pack Leader",
-    pets: 3,
-    price: 129,
-    pricePerPet: 43,
-    description: "Great for 3 pets",
-    features: ["Everything in Dynamic Duo", "All 3 pets covered", "Save €48 vs 3 single memberships"],
-  },
-  {
     id: "family",
-    name: "Family Pack",
+    name: "Pack Leader",
     pets: 5,
-    price: 179,
-    pricePerPet: 35.8,
-    description: "Best value for large families",
-    features: ["Everything in Pack Leader", "Up to 5 pets covered", "Save €116 vs 5 single memberships"],
+    price: 129,
+    pricePerPet: 25.8,
+    description: "Best value for 3-5 pets",
+    features: ["Everything in Dynamic Duo", "Up to 5 pets covered", "Save up to €166 vs single memberships"],
   },
 ];
 
