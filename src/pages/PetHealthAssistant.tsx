@@ -43,6 +43,7 @@ interface UserContext {
   upcomingReminders: any[];
   redemptions: any[];
   favoriteOffers: any[];
+  availableOffers: any[];
   recentActivity: any[];
   communityQuestions: any[];
   lostPetAlerts: any[];
@@ -291,6 +292,7 @@ const PetHealthAssistant = () => {
           upcomingReminders: [],
           redemptions: [],
           favoriteOffers: [],
+          availableOffers: [],
           recentActivity,
           communityQuestions,
           lostPetAlerts: [],
@@ -299,11 +301,12 @@ const PetHealthAssistant = () => {
         return;
       }
 
-      // Fetch pets, health records, redemptions, and favorites in parallel
+      // Fetch pets, health records, redemptions, favorites, and available offers in parallel
       const [
         petsResult,
         redemptionsResult,
         favoritesResult,
+        offersResult,
       ] = await Promise.all([
         supabase
           .from("pets")
@@ -333,7 +336,36 @@ const PetHealthAssistant = () => {
           `)
           .eq("user_id", user.id)
           .limit(10),
+        // Fetch all active offers from the database
+        supabase
+          .from("offers")
+          .select(`
+            id,
+            title,
+            description,
+            discount_type,
+            discount_value,
+            pet_type,
+            businesses:business_id (id, business_name, category, city)
+          `)
+          .eq("is_active", true)
+          .limit(50),
       ]);
+
+      // Process available offers for AI context
+      const availableOffers = (offersResult.data || []).map((offer: any) => ({
+        title: offer.title,
+        description: offer.description,
+        discount: offer.discount_type === 'percentage' 
+          ? `${offer.discount_value}% off` 
+          : offer.discount_type === 'fixed' 
+            ? `€${offer.discount_value} off`
+            : offer.discount_type,
+        pet_type: offer.pet_type,
+        business_name: offer.businesses?.business_name,
+        business_category: offer.businesses?.category,
+        city: offer.businesses?.city,
+      }));
 
       const petsData = petsResult.data || [];
       setPets(petsData);
@@ -503,6 +535,7 @@ const PetHealthAssistant = () => {
         upcomingReminders,
         redemptions: redemptionsResult.data || [],
         favoriteOffers: favoritesResult.data || [],
+        availableOffers,
         recentActivity,
         communityQuestions: relevantCommunityQuestions,
         lostPetAlerts,
@@ -554,7 +587,7 @@ const PetHealthAssistant = () => {
     };
 
     try {
-      // Build context with selected pet info - filter records to only selected pet
+      // Build context with ONLY selected pet info - filter everything to the selected pet
       const filteredHealthRecords = selectedPet && userContext?.healthRecords
         ? userContext.healthRecords.filter((r: any) => r.pet_id === selectedPet.id)
         : userContext?.healthRecords || [];
@@ -563,10 +596,19 @@ const PetHealthAssistant = () => {
         ? userContext.upcomingReminders.filter((r: any) => r.pet_name === selectedPet.pet_name)
         : userContext?.upcomingReminders || [];
       
+      const filteredBirthdays = selectedPet && userContext?.pendingBirthdays
+        ? userContext.pendingBirthdays.filter((b: any) => b.pet_name === selectedPet.pet_name)
+        : userContext?.pendingBirthdays || [];
+      
+      // Only include the selected pet, not all pets
+      const filteredPets = selectedPet ? [selectedPet] : [];
+      
       const contextToSend = userContext ? {
         ...userContext,
+        pets: filteredPets,
         healthRecords: filteredHealthRecords,
         upcomingReminders: filteredReminders,
+        pendingBirthdays: filteredBirthdays,
         selectedPet: selectedPet ? { name: selectedPet.pet_name, breed: selectedPet.pet_breed } : null,
       } : null;
 
