@@ -196,6 +196,29 @@ const Auth = () => {
             description: error.message,
             variant: "destructive",
           });
+        } else {
+          // Check if this is the first login by checking login_count
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name, login_count")
+            .eq("email", email.trim().toLowerCase())
+            .maybeSingle();
+          
+          const isFirstLogin = !profile?.login_count || profile.login_count === 0;
+          const userName = profile?.full_name || "there";
+          
+          // Increment login count
+          if (profile) {
+            await supabase
+              .from("profiles")
+              .update({ login_count: (profile.login_count || 0) + 1 })
+              .eq("email", email.trim().toLowerCase());
+          }
+          
+          toast({
+            title: isFirstLogin ? `Welcome ${userName} 👋` : `Welcome back ${userName}`,
+            description: isFirstLogin ? "Great to have you here!" : "Good to see you again!",
+          });
         }
       } else {
         // Check if email already exists with a different account type
