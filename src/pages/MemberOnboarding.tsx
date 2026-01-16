@@ -148,11 +148,10 @@ const MemberOnboarding = () => {
     setIsSubmitting(true);
 
     try {
-      // Get or create membership
+      // Check for existing membership first
       let membership = membershipId;
       
       if (!membership) {
-        // Check for existing membership
         const { data: existingMembership } = await supabase
           .from("memberships")
           .select("id")
@@ -164,21 +163,35 @@ const MemberOnboarding = () => {
         }
       }
 
+      // If no membership exists, create one (demo/free mode - no payment required)
       if (!membership) {
-        toast.error("No membership found. Please contact support.");
-        return;
+        const { data: newMembership, error: createError } = await supabase
+          .from("memberships")
+          .insert({
+            user_id: user.id,
+            plan_type: selectedPlan.id,
+            max_pets: selectedPlan.pets,
+            member_number: `WF-${new Date().getFullYear()}-${Math.floor(Math.random() * 999999).toString().padStart(6, '0')}`,
+            expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
+            is_active: true,
+          })
+          .select("id")
+          .single();
+
+        if (createError) throw createError;
+        membership = newMembership.id;
+      } else {
+        // Update existing membership with plan details
+        const { error: updateError } = await supabase
+          .from("memberships")
+          .update({
+            plan_type: selectedPlan.id,
+            max_pets: selectedPlan.pets,
+          })
+          .eq("id", membership);
+
+        if (updateError) throw updateError;
       }
-
-      // Update membership with plan details
-      const { error: updateError } = await supabase
-        .from("memberships")
-        .update({
-          plan_type: selectedPlan.id,
-          max_pets: selectedPlan.pets,
-        })
-        .eq("id", membership);
-
-      if (updateError) throw updateError;
 
       // Insert pets
       const petsToInsert = validPets.map((p) => ({
