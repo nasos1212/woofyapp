@@ -101,16 +101,23 @@ const PetHealthAssistant = () => {
   // Track if we need to save the last message after streaming completes
   const pendingSaveRef = useRef<{ role: string; content: string } | null>(null);
 
-  const fetchChatSessions = async () => {
+  const fetchChatSessions = async (petNameFilter?: string) => {
     if (!user) return;
     
     // Fetch sessions that have more than 2 messages (meaning real conversation, not just greeting)
-    const { data: sessions } = await supabase
+    let query = supabase
       .from("ai_chat_sessions")
       .select("*")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false })
-      .limit(20);
+      .limit(50);
+    
+    // Filter by pet name if provided
+    if (petNameFilter) {
+      query = query.eq("pet_name", petNameFilter);
+    }
+    
+    const { data: sessions } = await query;
 
     if (sessions) {
       // Filter out sessions with only greeting messages (auto-generated when switching pets)
@@ -135,7 +142,13 @@ const PetHealthAssistant = () => {
 
     const petToUse = petName || selectedPet?.pet_name;
     const breedToUse = petBreed !== undefined ? petBreed : selectedPet?.pet_breed;
-    const title = petToUse ? `Chat about ${petToUse}` : "New conversation";
+    // Create a timestamped title with pet name for easy identification
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const title = petToUse 
+      ? `${petToUse} - ${dateStr} ${timeStr}` 
+      : `Chat - ${dateStr} ${timeStr}`;
 
     const { data, error } = await supabase
       .from("ai_chat_sessions")
@@ -153,7 +166,8 @@ const PetHealthAssistant = () => {
       return null;
     }
 
-    setChatSessions(prev => [data, ...prev]);
+    // Refresh sessions for the current pet
+    await fetchChatSessions(petToUse || undefined);
     setCurrentSessionId(data.id);
     setMessages([]);
     trackFeatureUse("ai_new_chat");
@@ -186,9 +200,19 @@ const PetHealthAssistant = () => {
         content,
       });
 
-    // Update session title based on first user message
+    // Update session title based on first user message - include pet name for clarity
     if (isFirstMessage && role === "user") {
-      const title = content.slice(0, 50) + (content.length > 50 ? "..." : "");
+      // Get the session to check pet name
+      const { data: sessionData } = await supabase
+        .from("ai_chat_sessions")
+        .select("pet_name")
+        .eq("id", sessionId)
+        .single();
+      
+      const petPrefix = sessionData?.pet_name ? `${sessionData.pet_name}: ` : "";
+      const questionSummary = content.slice(0, 40) + (content.length > 40 ? "..." : "");
+      const title = petPrefix + questionSummary;
+      
       await supabase
         .from("ai_chat_sessions")
         .update({ title, updated_at: new Date().toISOString() })
@@ -699,7 +723,7 @@ const PetHealthAssistant = () => {
     setShowHistory(false);
   };
 
-  // Handle pet change - start a new conversation for the new pet
+  // Handle pet change - switch to that pet's chat history
   const handlePetChange = async (pet: Pet) => {
     if (pet.id === selectedPet?.id) return;
     
@@ -715,9 +739,14 @@ const PetHealthAssistant = () => {
       setUserContext(updatedContext);
     }
     
-    // Start a new conversation for this pet with empty messages
-    await createNewSession(pet.pet_name, pet.pet_breed);
-    toast.success(`Switched to ${pet.pet_name}'s chat`);
+    // Fetch chat history ONLY for this pet
+    await fetchChatSessions(pet.pet_name);
+    
+    // Start a new blank conversation for this pet
+    setCurrentSessionId(null);
+    setMessages([]);
+    
+    toast.success(`Viewing ${pet.pet_name}'s chats`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
   };
   // Handle language change - just update the preference, no greeting
@@ -852,9 +881,13 @@ const PetHealthAssistant = () => {
           {/* Chat History Panel */}
           {showHistory && (
             <div className="mb-4 bg-white rounded-xl shadow-soft border border-border/50 p-4 max-h-64 overflow-y-auto">
-              <h3 className="font-semibold text-sm mb-3">Previous Conversations</h3>
+              <h3 className="font-semibold text-sm mb-3">
+                {selectedPet ? `${selectedPet.pet_name}'s Conversations` : "Previous Conversations"}
+              </h3>
               {chatSessions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No previous conversations</p>
+                <p className="text-sm text-muted-foreground">
+                  {selectedPet ? `No previous conversations about ${selectedPet.pet_name}` : "No previous conversations"}
+                </p>
               ) : (
                 <div className="space-y-2">
                   {chatSessions.map((session) => (
