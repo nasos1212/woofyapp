@@ -78,9 +78,10 @@ const LostPetAlerts = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [rewardOffered, setRewardOffered] = useState("");
-  const [petPhoto, setPetPhoto] = useState<File | null>(null);
-  const [petPhotoPreview, setPetPhotoPreview] = useState<string | null>(null);
+  const [petPhotos, setPetPhotos] = useState<File[]>([]);
+  const [petPhotoPreviews, setPetPhotoPreviews] = useState<string[]>([]);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const MAX_PHOTOS = 3;
 
   useEffect(() => {
     fetchAlerts();
@@ -195,29 +196,52 @@ const LostPetAlerts = () => {
   };
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = e.target.files;
+    if (!files) return;
+    
+    const newFiles: File[] = [];
+    const newPreviews: string[] = [];
+    
+    for (let i = 0; i < files.length; i++) {
+      if (petPhotos.length + newFiles.length >= MAX_PHOTOS) {
+        toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+        break;
+      }
+      
+      const file = files[i];
+      
       // Validate file type
       if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
+        toast.error("Please select image files only");
+        continue;
       }
       // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image must be less than 5MB");
-        return;
+        toast.error(`${file.name} is too large (max 5MB)`);
+        continue;
       }
-      setPetPhoto(file);
-      setPetPhotoPreview(URL.createObjectURL(file));
+      
+      newFiles.push(file);
+      newPreviews.push(URL.createObjectURL(file));
     }
+    
+    setPetPhotos(prev => [...prev, ...newFiles]);
+    setPetPhotoPreviews(prev => [...prev, ...newPreviews]);
+    
+    // Reset input so same file can be selected again
+    e.target.value = "";
   };
 
-  const clearPhotoSelection = () => {
-    setPetPhoto(null);
-    if (petPhotoPreview) {
-      URL.revokeObjectURL(petPhotoPreview);
-    }
-    setPetPhotoPreview(null);
+  const removePhoto = (index: number) => {
+    URL.revokeObjectURL(petPhotoPreviews[index]);
+    setPetPhotos(prev => prev.filter((_, i) => i !== index));
+    setPetPhotoPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const clearAllPhotos = () => {
+    petPhotoPreviews.forEach(preview => URL.revokeObjectURL(preview));
+    setPetPhotos([]);
+    setPetPhotoPreviews([]);
   };
 
   const handleCreateAlert = async (e: React.FormEvent) => {
@@ -232,8 +256,8 @@ const LostPetAlerts = () => {
       return;
     }
 
-    if (!petPhoto) {
-      toast.error("Please upload a photo of your pet");
+    if (petPhotos.length === 0) {
+      toast.error("Please upload at least one photo of your pet");
       return;
     }
 
@@ -254,41 +278,62 @@ const LostPetAlerts = () => {
 
     setIsCreating(true);
     try {
-      // Upload photo first
+      // Upload all photos first
       setIsUploadingPhoto(true);
-      const fileExt = petPhoto.name.split(".").pop();
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const filePath = `lost-pets/${fileName}`;
+      const uploadedPhotoUrls: string[] = [];
+      
+      for (let i = 0; i < petPhotos.length; i++) {
+        const photo = petPhotos[i];
+        const fileExt = photo.name.split(".").pop();
+        const fileName = `${user.id}-${Date.now()}-${i}.${fileExt}`;
+        const filePath = `lost-pets/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("lost-pet-photos")
-        .upload(filePath, petPhoto);
+        const { error: uploadError } = await supabase.storage
+          .from("lost-pet-photos")
+          .upload(filePath, photo);
 
-      if (uploadError) throw uploadError;
+        if (uploadError) throw uploadError;
 
-      const { data: urlData } = supabase.storage
-        .from("lost-pet-photos")
-        .getPublicUrl(filePath);
+        const { data: urlData } = supabase.storage
+          .from("lost-pet-photos")
+          .getPublicUrl(filePath);
 
-      const photoUrl = urlData.publicUrl;
+        uploadedPhotoUrls.push(urlData.publicUrl);
+      }
+      
       setIsUploadingPhoto(false);
+      
+      // Use first photo as the main photo_url for backwards compatibility
+      const mainPhotoUrl = uploadedPhotoUrls[0];
 
-      const { error } = await supabase.from("lost_pet_alerts").insert({
+      // Create the alert with main photo
+      const { data: alertData, error } = await supabase.from("lost_pet_alerts").insert({
         owner_user_id: user.id,
         pet_id: selectedPetId || null,
         pet_name: petName,
         pet_description: petDescription,
         pet_breed: petBreed || null,
-        pet_photo_url: photoUrl,
+        pet_photo_url: mainPhotoUrl,
         last_seen_location: lastSeenLocation,
         last_seen_date: lastSeenDateTime.toISOString(),
         contact_phone: contactPhone,
         contact_email: contactEmail || null,
         reward_offered: rewardOffered || null,
         status: "active",
-      });
+      }).select("id").single();
 
       if (error) throw error;
+      
+      // Insert additional photos into the photos table
+      if (alertData && uploadedPhotoUrls.length > 0) {
+        const photoInserts = uploadedPhotoUrls.map((url, index) => ({
+          alert_id: alertData.id,
+          photo_url: url,
+          display_order: index,
+        }));
+        
+        await supabase.from("lost_pet_alert_photos").insert(photoInserts);
+      }
 
       toast.success("Alert created! The community will help find your pet.");
       setShowCreateDialog(false);
@@ -316,7 +361,7 @@ const LostPetAlerts = () => {
     setContactPhone("");
     setContactEmail("");
     setRewardOffered("");
-    clearPhotoSelection();
+    clearAllPhotos();
   };
 
   const markAsFound = async (alertId: string) => {
@@ -575,34 +620,53 @@ const LostPetAlerts = () => {
                       </div>
                     </div>
 
-                    {/* Photo upload - compulsory */}
+                    {/* Photo upload - up to 3 photos */}
                     <div className="space-y-2">
-                      <Label>Pet Photo * (helps others identify your pet)</Label>
-                      {petPhotoPreview ? (
-                        <div className="relative w-full h-48 rounded-lg overflow-hidden border">
-                          <img
-                            src={petPhotoPreview}
-                            alt="Pet preview"
-                            className="w-full h-full object-cover"
-                          />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2 h-8 w-8"
-                            onClick={clearPhotoSelection}
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
+                      <Label>Pet Photos * (up to {MAX_PHOTOS} photos - helps others identify your pet)</Label>
+                      
+                      {/* Photo previews grid */}
+                      {petPhotoPreviews.length > 0 && (
+                        <div className="grid grid-cols-3 gap-2 mb-2">
+                          {petPhotoPreviews.map((preview, index) => (
+                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
+                              <img
+                                src={preview}
+                                alt={`Pet photo ${index + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="absolute top-1 right-1 h-6 w-6"
+                                onClick={() => removePhoto(index)}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                              {index === 0 && (
+                                <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded">
+                                  Main
+                                </span>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ) : (
-                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-                          <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                          <span className="text-sm text-muted-foreground">Click to upload photo</span>
-                          <span className="text-xs text-muted-foreground mt-1">Max 5MB, JPG/PNG</span>
+                      )}
+                      
+                      {/* Add more photos button */}
+                      {petPhotoPreviews.length < MAX_PHOTOS && (
+                        <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                          <Upload className="w-6 h-6 text-muted-foreground mb-1" />
+                          <span className="text-sm text-muted-foreground">
+                            {petPhotoPreviews.length === 0 
+                              ? "Click to upload photos" 
+                              : `Add more (${petPhotoPreviews.length}/${MAX_PHOTOS})`}
+                          </span>
+                          <span className="text-xs text-muted-foreground mt-1">Max 5MB each, JPG/PNG</span>
                           <input
                             type="file"
                             accept="image/*"
+                            multiple
                             onChange={handlePhotoSelect}
                             className="hidden"
                           />

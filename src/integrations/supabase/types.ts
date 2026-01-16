@@ -713,6 +713,45 @@ export type Database = {
           },
         ]
       }
+      lost_pet_alert_photos: {
+        Row: {
+          alert_id: string
+          created_at: string
+          display_order: number | null
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          alert_id: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          alert_id?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lost_pet_alert_photos_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "lost_pet_alerts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lost_pet_alert_photos_alert_id_fkey"
+            columns: ["alert_id"]
+            isOneToOne: false
+            referencedRelation: "lost_pet_alerts_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lost_pet_alerts: {
         Row: {
           additional_info: string | null
