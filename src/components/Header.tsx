@@ -18,6 +18,7 @@ import NotificationBell from "./NotificationBell";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isBusiness, setIsBusiness] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,8 +26,8 @@ const Header = () => {
   const { hasMembership } = useMembership();
   const isHomePage = location.pathname === "/";
   
-  // Determine correct dashboard path based on membership status
-  const dashboardPath = hasMembership ? "/member" : "/member/free";
+  // Determine correct dashboard path based on role and membership status
+  const dashboardPath = isBusiness ? "/business" : (hasMembership ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
     await signOut();
@@ -46,9 +47,11 @@ const Header = () => {
   useEffect(() => {
     if (user) {
       checkAdminStatus();
+      checkBusinessStatus();
       fetchProfile();
     } else {
       setIsAdmin(false);
+      setIsBusiness(false);
       setProfile(null);
     }
   }, [user]);
@@ -75,6 +78,19 @@ const Header = () => {
       setIsAdmin(!!data);
     } catch {
       setIsAdmin(false);
+    }
+  };
+
+  const checkBusinessStatus = async () => {
+    if (!user) return;
+    try {
+      const { data } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "business",
+      });
+      setIsBusiness(!!data);
+    } catch {
+      setIsBusiness(false);
     }
   };
 
