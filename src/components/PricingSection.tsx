@@ -25,12 +25,12 @@ const plans = [
   {
     id: "pack",
     name: "Pack Leader",
-    pets: 3,
+    pets: 5,
     price: 129,
-    pricePerPet: 43,
-    description: "Best value for 3+ pets",
+    pricePerPet: 25.8,
+    description: "Best value for 3-5 pets",
     popular: false,
-    savings: 48,
+    savings: 166,
   },
 ];
 
