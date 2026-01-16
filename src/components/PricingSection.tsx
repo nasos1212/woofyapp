@@ -18,7 +18,7 @@ const plans = [
     pets: 2,
     price: 99,
     pricePerPet: 49.5,
-    description: "Ideal for multi-pet households",
+    description: "Ideal for households with two pets",
     popular: true,
     savings: 19,
   },
@@ -26,11 +26,11 @@ const plans = [
     id: "pack",
     name: "Pack Leader",
     pets: 5,
-    price: 129,
-    pricePerPet: 25.8,
+    price: 139,
+    pricePerPet: 27.8,
     description: "Best value for 3-5 pets",
     popular: false,
-    savings: 166,
+    savings: 156,
   },
 ];
 
