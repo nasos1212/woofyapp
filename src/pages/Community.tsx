@@ -163,7 +163,7 @@ const Community = () => {
               <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
                 {question.pet && (
                   <Badge variant="outline" className="text-xs">
-                    🐕 {question.pet.pet_name}
+                    🐾 {question.pet.pet_name}
                   </Badge>
                 )}
                 {question.category && (

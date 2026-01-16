@@ -7,7 +7,7 @@ const hubFeatures = [
     icon: Dog,
     title: "Pet Profiles",
     description: "Create detailed profiles for all your pets. Track health records, birthdays, and milestones.",
-    image: "🐕",
+    image: "🐾",
   },
   {
     icon: Calendar,

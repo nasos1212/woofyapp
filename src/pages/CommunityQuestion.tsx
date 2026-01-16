@@ -329,7 +329,7 @@ const CommunityQuestion = () => {
               <div className="flex flex-wrap gap-2 mb-4">
                 {question.pet && (
                   <Badge variant="outline">
-                    🐕 {question.pet.pet_name} {question.pet.pet_breed && `(${question.pet.pet_breed})`}
+                    🐾 {question.pet.pet_name} {question.pet.pet_breed && `(${question.pet.pet_breed})`}
                   </Badge>
                 )}
                 {question.category && (

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2 } from "lucide-react";
+import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -28,10 +28,13 @@ import Header from "@/components/Header";
 import { format, differenceInYears, differenceInMonths } from "date-fns";
 import { validateImageFile } from "@/lib/fileValidation";
 
+import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
+
 interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  pet_type: PetType;
   birthday: string | null;
   gender: "male" | "female" | "unknown" | null;
   age_years: number | null;
@@ -356,6 +359,8 @@ const PetProfile = () => {
                         alt={pet.pet_name}
                         className="w-full h-full object-cover"
                       />
+                    ) : pet.pet_type === "cat" ? (
+                      <Cat className="w-10 h-10" />
                     ) : (
                       <Dog className="w-10 h-10" />
                     )}

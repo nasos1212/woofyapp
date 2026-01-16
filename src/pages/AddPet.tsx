@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Dog, Cat, Check, ArrowRight, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { dogBreeds } from "@/data/dogBreeds";
+import { getBreedsByPetType, PetType, getPetTypeEmoji } from "@/data/petBreeds";
 import DogLoader from "@/components/DogLoader";
 import Header from "@/components/Header";
 
@@ -22,6 +22,7 @@ const AddPet = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
+  const [petType, setPetType] = useState<PetType>("dog");
   const [petName, setPetName] = useState("");
   const [petBreed, setPetBreed] = useState("");
   const [petGender, setPetGender] = useState<"male" | "female" | "unknown">("unknown");
@@ -33,6 +34,14 @@ const AddPet = () => {
   const [currentPetCount, setCurrentPetCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [breedPopoverOpen, setBreedPopoverOpen] = useState(false);
+
+  // Get breeds based on selected pet type
+  const breeds = getBreedsByPetType(petType);
+
+  // Reset breed when pet type changes
+  useEffect(() => {
+    setPetBreed("");
+  }, [petType]);
 
   useEffect(() => {
     const checkMembership = async () => {
@@ -105,6 +114,7 @@ const AddPet = () => {
         owner_user_id: user.id,
         pet_name: petName.trim(),
         pet_breed: petBreed.trim() || null,
+        pet_type: petType,
         gender: petGender,
         birthday: knowsBirthday && petBirthday ? petBirthday : null,
         age_years: !knowsBirthday && petAgeYears !== "" ? petAgeYears : null,
@@ -154,7 +164,11 @@ const AddPet = () => {
 
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Dog className="w-8 h-8 text-primary" />
+              {petType === "dog" ? (
+                <Dog className="w-8 h-8 text-primary" />
+              ) : (
+                <Cat className="w-8 h-8 text-primary" />
+              )}
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-2">
               Add a New Pet
@@ -167,12 +181,38 @@ const AddPet = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
-                <span className="text-2xl">🐕</span>
+                <span className="text-2xl">{getPetTypeEmoji(petType)}</span>
                 Pet Details
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Pet Type Selection */}
+                <div className="space-y-2">
+                  <Label>Pet Type</Label>
+                  <div className="flex gap-2">
+                    {[
+                      { value: "dog" as PetType, label: "🐕 Dog", icon: Dog },
+                      { value: "cat" as PetType, label: "🐱 Cat", icon: Cat },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setPetType(option.value)}
+                        className={cn(
+                          "flex-1 py-3 px-4 rounded-lg border-2 font-medium transition-all text-sm flex items-center justify-center gap-2",
+                          petType === option.value
+                            ? "bg-primary/10 border-primary text-primary ring-2 ring-offset-2 ring-primary/50"
+                            : "bg-background border-border hover:border-primary/50"
+                        )}
+                      >
+                        <option.icon className="w-5 h-5" />
+                        {option.value === "dog" ? "Dog" : "Cat"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="pet-name">Pet Name *</Label>
                   <Input
@@ -205,7 +245,7 @@ const AddPet = () => {
                         <CommandInput
                           placeholder="Search or type breed..."
                           onValueChange={(value) => {
-                            if (value && !dogBreeds.includes(value)) {
+                            if (value && !breeds.includes(value)) {
                               setPetBreed(value);
                             }
                           }}
@@ -217,7 +257,7 @@ const AddPet = () => {
                             </span>
                           </CommandEmpty>
                           <CommandGroup className="max-h-[200px] overflow-auto">
-                            {dogBreeds.map((breed) => (
+                            {breeds.map((breed) => (
                               <CommandItem
                                 key={breed}
                                 value={breed}
