@@ -197,34 +197,18 @@ const Auth = () => {
             variant: "destructive",
           });
         } else {
-          // Check if this is the first login by checking login_count
-          const { data: profile, error: profileError } = await supabase
+          // Get user's name for welcome message
+          const { data: profile } = await supabase
             .from("profiles")
-            .select("full_name, login_count")
+            .select("full_name")
             .eq("email", email.trim().toLowerCase())
             .maybeSingle();
           
-          console.log("Login profile query result:", { profile, profileError, emailUsed: email.trim().toLowerCase() });
-          
-          // First login is when login_count is 0, null, or undefined
-          // login_count tracks how many times the user has logged in BEFORE this login
-          const currentLoginCount = profile?.login_count ?? 0;
-          const isFirstLogin = currentLoginCount === 0;
           const userName = profile?.full_name || "there";
           
-          console.log("Login count check:", { currentLoginCount, isFirstLogin, userName });
-          
-          // Increment login count AFTER checking
-          if (profile) {
-            await supabase
-              .from("profiles")
-              .update({ login_count: currentLoginCount + 1 })
-              .eq("email", email.trim().toLowerCase());
-          }
-          
           toast({
-            title: isFirstLogin ? `Welcome ${userName} 👋` : `Welcome back ${userName}`,
-            description: isFirstLogin ? "Great to have you here!" : "Good to see you again!",
+            title: `Hello ${userName}! 👋`,
+            description: "Great to have you here!",
           });
         }
       } else {
