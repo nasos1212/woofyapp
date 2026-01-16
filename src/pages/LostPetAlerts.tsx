@@ -550,12 +550,27 @@ const LostPetAlerts = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>Time (optional)</Label>
+                        <Label>Time (optional) - 24h format</Label>
                         <Input
-                          type="time"
+                          type="text"
+                          placeholder="HH:MM (e.g. 14:30)"
                           value={lastSeenTime}
-                          onChange={(e) => setLastSeenTime(e.target.value)}
-                          step="60"
+                          onChange={(e) => {
+                            // Allow only valid 24h time format
+                            const value = e.target.value;
+                            if (value === "" || /^([0-1]?[0-9]|2[0-3])?:?[0-5]?[0-9]?$/.test(value)) {
+                              setLastSeenTime(value);
+                            }
+                          }}
+                          onBlur={(e) => {
+                            // Format on blur to ensure HH:MM format
+                            const value = e.target.value;
+                            if (value && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
+                              const [hours, mins] = value.split(":");
+                              setLastSeenTime(`${hours.padStart(2, "0")}:${mins}`);
+                            }
+                          }}
+                          maxLength={5}
                         />
                       </div>
                     </div>
