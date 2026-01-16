@@ -11,16 +11,16 @@ const testimonials = [
   {
     name: "Michael K.",
     pet: "Owner of Max & Bella",
-    avatar: "🐕",
+    avatar: "🐾",
     rating: 5,
-    text: "The community events are amazing. My dogs have made so many friends, and so have I! Best €59 I've ever spent.",
+    text: "The community events are amazing. My pets have made so many friends, and so have I! Best €59 I've ever spent.",
   },
   {
     name: "Emma L.",
-    pet: "Owner of Charlie",
-    avatar: "🦮",
+    pet: "Owner of Whiskers",
+    avatar: "🐱",
     rating: 5,
-    text: "Free monthly training sessions? Yes please! The trainers are fantastic and Charlie has learned so much.",
+    text: "Free monthly training sessions? Yes please! The trainers are fantastic and my cat has become so well-behaved.",
   },
 ];
 

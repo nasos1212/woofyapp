@@ -106,7 +106,7 @@ const Notifications = () => {
       case "redemption":
         return "✅";
       case "lost_pet_alert":
-        return "🐕";
+        return "🐾";
       case "community_answer":
         return "💬";
       case "community_follow_activity":

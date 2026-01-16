@@ -1292,6 +1292,7 @@ export type Database = {
           owner_user_id: string
           pet_breed: string | null
           pet_name: string
+          pet_type: string
           photo_url: string | null
         }
         Insert: {
@@ -1305,6 +1306,7 @@ export type Database = {
           owner_user_id: string
           pet_breed?: string | null
           pet_name: string
+          pet_type?: string
           photo_url?: string | null
         }
         Update: {
@@ -1318,6 +1320,7 @@ export type Database = {
           owner_user_id?: string
           pet_breed?: string | null
           pet_name?: string
+          pet_type?: string
           photo_url?: string | null
         }
         Relationships: [

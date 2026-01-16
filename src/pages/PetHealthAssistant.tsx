@@ -52,10 +52,10 @@ interface UserContext {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
 
 const suggestedQuestions = [
-  "What vaccines does my dog need?",
+  "What vaccines does my pet need?",
   "How often should I groom my pet?",
-  "My dog is scratching a lot, what could it be?",
-  "What human foods are toxic to dogs?",
+  "My pet is scratching a lot, what could it be?",
+  "What human foods are toxic to pets?",
   "How much exercise does my breed need?",
   "What offers would be good for my pet?",
   "When is my pet's next vaccination due?",

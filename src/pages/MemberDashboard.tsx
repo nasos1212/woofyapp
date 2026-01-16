@@ -22,10 +22,13 @@ import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 
+import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
+
 interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  pet_type: PetType;
   photo_url: string | null;
 }
 
@@ -129,21 +132,25 @@ const MemberDashboard = () => {
         // Fetch pets for this membership
         const { data: petsData } = await supabase
           .from("pets")
-          .select("id, pet_name, pet_breed, photo_url")
+          .select("id, pet_name, pet_breed, pet_type, photo_url")
           .eq("membership_id", membershipData.id);
 
         if (petsData) {
-          // Sort pets so last viewed pet comes first
+          // Cast pet_type to PetType and sort pets so last viewed pet comes first
+          const typedPets = petsData.map(p => ({
+            ...p,
+            pet_type: (p.pet_type === 'cat' ? 'cat' : 'dog') as PetType
+          }));
           const lastViewedPetId = localStorage.getItem('lastViewedPetId');
           if (lastViewedPetId) {
-            const sortedPets = [...petsData].sort((a, b) => {
+            const sortedPets = [...typedPets].sort((a, b) => {
               if (a.id === lastViewedPetId) return -1;
               if (b.id === lastViewedPetId) return 1;
               return 0;
             });
             setPets(sortedPets);
           } else {
-            setPets(petsData);
+            setPets(typedPets);
           }
         }
 
@@ -430,7 +437,7 @@ const MemberDashboard = () => {
                             {pet.photo_url ? (
                               <img src={pet.photo_url} alt={pet.pet_name} className="w-full h-full object-cover" />
                             ) : (
-                              "🐕"
+                              getPetTypeEmoji(pet.pet_type)
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -444,7 +451,7 @@ const MemberDashboard = () => {
                   </div>
                 ) : (
                   <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
-                    <div className="text-4xl sm:text-5xl mb-3">🐶</div>
+                    <div className="text-4xl sm:text-5xl mb-3">🐾</div>
                     <p className="text-teal-600/70 text-base sm:text-lg">No pets added yet</p>
                   </div>
                 )}

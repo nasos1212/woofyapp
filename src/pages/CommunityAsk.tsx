@@ -483,7 +483,7 @@ const CommunityAsk = () => {
                   </h4>
                   <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
                     <li>Be specific about when the issue started</li>
-                    <li>Include your dog's age, breed, and any relevant health history</li>
+                    <li>Include your pet's age, breed, and any relevant health history</li>
                     <li>Describe what you've already tried</li>
                     <li>Add photos if they help illustrate the problem</li>
                   </ul>
