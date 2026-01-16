@@ -198,17 +198,21 @@ const Auth = () => {
           });
         } else {
           // Check if this is the first login by checking login_count
-          const { data: profile } = await supabase
+          const { data: profile, error: profileError } = await supabase
             .from("profiles")
             .select("full_name, login_count")
             .eq("email", email.trim().toLowerCase())
             .maybeSingle();
+          
+          console.log("Login profile query result:", { profile, profileError, emailUsed: email.trim().toLowerCase() });
           
           // First login is when login_count is 0, null, or undefined
           // login_count tracks how many times the user has logged in BEFORE this login
           const currentLoginCount = profile?.login_count ?? 0;
           const isFirstLogin = currentLoginCount === 0;
           const userName = profile?.full_name || "there";
+          
+          console.log("Login count check:", { currentLoginCount, isFirstLogin, userName });
           
           // Increment login count AFTER checking
           if (profile) {
