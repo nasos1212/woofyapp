@@ -69,8 +69,8 @@ const plans: PlanOption[] = [
   {
     id: "family",
     name: "Pack Leader",
-    price: 129,
-    renewalPrice: 99,
+    price: 139,
+    renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
     features: ["Up to 5 pets", ...sharedFeatures],
