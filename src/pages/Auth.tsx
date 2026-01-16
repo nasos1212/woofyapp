@@ -204,14 +204,17 @@ const Auth = () => {
             .eq("email", email.trim().toLowerCase())
             .maybeSingle();
           
-          const isFirstLogin = !profile?.login_count || profile.login_count === 0;
+          // First login is when login_count is 0, null, or undefined
+          // login_count tracks how many times the user has logged in BEFORE this login
+          const currentLoginCount = profile?.login_count ?? 0;
+          const isFirstLogin = currentLoginCount === 0;
           const userName = profile?.full_name || "there";
           
-          // Increment login count
+          // Increment login count AFTER checking
           if (profile) {
             await supabase
               .from("profiles")
-              .update({ login_count: (profile.login_count || 0) + 1 })
+              .update({ login_count: currentLoginCount + 1 })
               .eq("email", email.trim().toLowerCase());
           }
           
