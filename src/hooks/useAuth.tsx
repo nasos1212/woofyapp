@@ -56,10 +56,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    
+    // If login successful, ensure profile exists (handles cases where profile was deleted)
+    if (!error && data.user) {
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+      
+      if (!existingProfile) {
+        // Create profile if it doesn't exist
+        await supabase.from("profiles").insert({
+          user_id: data.user.id,
+          email: data.user.email || email,
+          full_name: data.user.user_metadata?.full_name || "",
+        });
+      }
+    }
+    
     return { error };
   };
 
