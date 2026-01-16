@@ -29,6 +29,10 @@ interface Pet {
   name: string;
   breed: string;
   petType: PetType;
+  gender: "male" | "female" | "unknown";
+  birthday: string;
+  ageYears: number | "";
+  knowsBirthday: boolean;
 }
 
 interface PlanOption {
@@ -76,7 +80,8 @@ const MemberOnboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<"plan" | "pets" | "location">("plan");
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
-  const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "", petType: "dog" }]);
+  const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "", petType: "dog", gender: "unknown", birthday: "", ageYears: "", knowsBirthday: true }]);
+  const [breedPopoverOpen, setBreedPopoverOpen] = useState<Record<string, boolean>>({});
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [membershipId, setMembershipId] = useState<string | null>(null);
@@ -109,7 +114,7 @@ const MemberOnboarding = () => {
 
   const addPet = () => {
     if (selectedPlan && pets.length < selectedPlan.pets) {
-      setPets([...pets, { id: Date.now().toString(), name: "", breed: "", petType: "dog" }]);
+      setPets([...pets, { id: Date.now().toString(), name: "", breed: "", petType: "dog", gender: "unknown", birthday: "", ageYears: "", knowsBirthday: true }]);
     }
   };
 
@@ -119,7 +124,7 @@ const MemberOnboarding = () => {
     }
   };
 
-  const updatePet = (id: string, field: "name" | "breed" | "petType", value: string) => {
+  const updatePet = (id: string, field: keyof Pet, value: string | number | boolean) => {
     setPets(pets.map((p) => {
       if (p.id === id) {
         // If changing pet type, reset breed
@@ -210,6 +215,9 @@ const MemberOnboarding = () => {
         pet_name: p.name.trim(),
         pet_breed: p.breed.trim() || null,
         pet_type: p.petType,
+        gender: p.gender,
+        birthday: p.knowsBirthday && p.birthday ? p.birthday : null,
+        age_years: !p.knowsBirthday && p.ageYears !== "" ? p.ageYears : null,
       }));
 
       const { error: petsError } = await supabase.from("pets").insert(petsToInsert);
@@ -430,7 +438,10 @@ const MemberOnboarding = () => {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor={`breed-${pet.id}`}>Breed (optional)</Label>
-                          <Popover>
+                          <Popover 
+                            open={breedPopoverOpen[pet.id] || false} 
+                            onOpenChange={(open) => setBreedPopoverOpen(prev => ({ ...prev, [pet.id]: open }))}
+                          >
                             <PopoverTrigger asChild>
                               <Button
                                 variant="outline"
@@ -444,7 +455,7 @@ const MemberOnboarding = () => {
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-full p-0" align="start">
+                            <PopoverContent className="w-full p-0 bg-background z-50" align="start">
                               <Command>
                                 <CommandInput 
                                   placeholder="Search or type breed..." 
@@ -466,7 +477,10 @@ const MemberOnboarding = () => {
                                       <CommandItem
                                         key={breed}
                                         value={breed}
-                                        onSelect={() => updatePet(pet.id, "breed", breed)}
+                                        onSelect={(currentValue) => {
+                                          updatePet(pet.id, "breed", currentValue);
+                                          setBreedPopoverOpen(prev => ({ ...prev, [pet.id]: false }));
+                                        }}
                                       >
                                         <Check
                                           className={cn(
@@ -483,6 +497,97 @@ const MemberOnboarding = () => {
                             </PopoverContent>
                           </Popover>
                         </div>
+                      </div>
+
+                      {/* Gender Selection */}
+                      <div className="space-y-2">
+                        <Label>Gender</Label>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => updatePet(pet.id, "gender", "male")}
+                            className={cn(
+                              "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                              pet.gender === "male"
+                                ? "bg-blue-100 border-blue-300 text-blue-700 ring-2 ring-offset-2 ring-primary/50"
+                                : "bg-background border-border hover:border-primary/50"
+                            )}
+                          >
+                            ♂ Male
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => updatePet(pet.id, "gender", "female")}
+                            className={cn(
+                              "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                              pet.gender === "female"
+                                ? "bg-pink-100 border-pink-300 text-pink-700 ring-2 ring-offset-2 ring-primary/50"
+                                : "bg-background border-border hover:border-primary/50"
+                            )}
+                          >
+                            ♀ Female
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Birthday / Age Section */}
+                      <div className="space-y-3">
+                        <Label>Birthday / Age</Label>
+                        
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => updatePet(pet.id, "knowsBirthday", true)}
+                            className={cn(
+                              "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                              pet.knowsBirthday
+                                ? "bg-primary/10 border-primary text-primary"
+                                : "bg-background border-border hover:border-primary/50"
+                            )}
+                          >
+                            I know the birthday
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => updatePet(pet.id, "knowsBirthday", false)}
+                            className={cn(
+                              "flex-1 py-2 px-3 rounded-lg border-2 font-medium transition-all text-sm",
+                              !pet.knowsBirthday
+                                ? "bg-primary/10 border-primary text-primary"
+                                : "bg-background border-border hover:border-primary/50"
+                            )}
+                          >
+                            I know approximate age
+                          </button>
+                        </div>
+
+                        {pet.knowsBirthday ? (
+                          <div className="space-y-2">
+                            <Input
+                              type="date"
+                              value={pet.birthday}
+                              onChange={(e) => updatePet(pet.id, "birthday", e.target.value)}
+                              max={new Date().toISOString().split('T')[0]}
+                            />
+                            <p className="text-xs text-muted-foreground">Select your pet's date of birth</p>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                max="30"
+                                value={pet.ageYears}
+                                onChange={(e) => updatePet(pet.id, "ageYears", e.target.value ? parseInt(e.target.value) : "")}
+                                placeholder="e.g., 3"
+                                className="w-24"
+                              />
+                              <span className="text-muted-foreground">years old</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">Enter approximate age in years</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                     );
