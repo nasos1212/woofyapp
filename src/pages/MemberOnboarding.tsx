@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown } from "lucide-react";
+import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +19,7 @@ import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { dogBreeds } from "@/data/dogBreeds";
+import { PetType, getBreedsByPetType } from "@/data/petBreeds";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import DogLoader from "@/components/DogLoader";
 import Header from "@/components/Header";
@@ -28,6 +28,7 @@ interface Pet {
   id: string;
   name: string;
   breed: string;
+  petType: PetType;
 }
 
 interface PlanOption {
@@ -65,8 +66,17 @@ const plans: PlanOption[] = [
     pets: 3,
     price: 129,
     pricePerPet: 43,
-    description: "Best value for 3+ pets",
-    features: ["Everything in Dynamic Duo", "All pets covered", "Save €48 vs 3 single memberships"],
+    description: "Great for 3 pets",
+    features: ["Everything in Dynamic Duo", "All 3 pets covered", "Save €48 vs 3 single memberships"],
+  },
+  {
+    id: "family",
+    name: "Family Pack",
+    pets: 5,
+    price: 179,
+    pricePerPet: 35.8,
+    description: "Best value for large families",
+    features: ["Everything in Pack Leader", "Up to 5 pets covered", "Save €116 vs 5 single memberships"],
   },
 ];
 
@@ -75,7 +85,7 @@ const MemberOnboarding = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<"plan" | "pets" | "location">("plan");
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
-  const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "" }]);
+  const [pets, setPets] = useState<Pet[]>([{ id: "1", name: "", breed: "", petType: "dog" }]);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [membershipId, setMembershipId] = useState<string | null>(null);
@@ -108,7 +118,7 @@ const MemberOnboarding = () => {
 
   const addPet = () => {
     if (selectedPlan && pets.length < selectedPlan.pets) {
-      setPets([...pets, { id: Date.now().toString(), name: "", breed: "" }]);
+      setPets([...pets, { id: Date.now().toString(), name: "", breed: "", petType: "dog" }]);
     }
   };
 
@@ -118,8 +128,17 @@ const MemberOnboarding = () => {
     }
   };
 
-  const updatePet = (id: string, field: "name" | "breed", value: string) => {
-    setPets(pets.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+  const updatePet = (id: string, field: "name" | "breed" | "petType", value: string) => {
+    setPets(pets.map((p) => {
+      if (p.id === id) {
+        // If changing pet type, reset breed
+        if (field === "petType") {
+          return { ...p, petType: value as PetType, breed: "" };
+        }
+        return { ...p, [field]: value };
+      }
+      return p;
+    }));
   };
 
   const handlePlanSelect = (plan: PlanOption) => {
@@ -199,6 +218,7 @@ const MemberOnboarding = () => {
         owner_user_id: user.id,
         pet_name: p.name.trim(),
         pet_breed: p.breed.trim() || null,
+        pet_type: p.petType,
       }));
 
       const { error: petsError } = await supabase.from("pets").insert(petsToInsert);
@@ -360,7 +380,9 @@ const MemberOnboarding = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {pets.map((pet, index) => (
+                  {pets.map((pet, index) => {
+                    const breeds = getBreedsByPetType(pet.petType);
+                    return (
                     <div key={pet.id} className="p-4 bg-muted/50 rounded-lg space-y-4">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-sm text-muted-foreground">
@@ -377,12 +399,40 @@ const MemberOnboarding = () => {
                           </Button>
                         )}
                       </div>
+                      
+                      {/* Pet Type Selection */}
+                      <div className="space-y-2">
+                        <Label>Pet Type *</Label>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant={pet.petType === "dog" ? "default" : "outline"}
+                            size="sm"
+                            className="flex-1 gap-2"
+                            onClick={() => updatePet(pet.id, "petType", "dog")}
+                          >
+                            <Dog className="w-4 h-4" />
+                            Dog
+                          </Button>
+                          <Button
+                            type="button"
+                            variant={pet.petType === "cat" ? "default" : "outline"}
+                            size="sm"
+                            className="flex-1 gap-2"
+                            onClick={() => updatePet(pet.id, "petType", "cat")}
+                          >
+                            <Cat className="w-4 h-4" />
+                            Cat
+                          </Button>
+                        </div>
+                      </div>
+                      
                       <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
                           <Label htmlFor={`name-${pet.id}`}>Pet Name *</Label>
                           <Input
                             id={`name-${pet.id}`}
-                            placeholder="e.g., Max"
+                            placeholder={pet.petType === "cat" ? "e.g., Whiskers" : "e.g., Max"}
                             value={pet.name}
                             onChange={(e) => updatePet(pet.id, "name", e.target.value)}
                           />
@@ -409,7 +459,7 @@ const MemberOnboarding = () => {
                                   placeholder="Search or type breed..." 
                                   onValueChange={(value) => {
                                     // Allow custom input - update directly if not selecting from list
-                                    if (value && !dogBreeds.includes(value)) {
+                                    if (value && !breeds.includes(value)) {
                                       updatePet(pet.id, "breed", value);
                                     }
                                   }}
@@ -421,7 +471,7 @@ const MemberOnboarding = () => {
                                     </span>
                                   </CommandEmpty>
                                   <CommandGroup className="max-h-[200px] overflow-auto">
-                                    {dogBreeds.map((breed) => (
+                                    {breeds.map((breed) => (
                                       <CommandItem
                                         key={breed}
                                         value={breed}
@@ -444,7 +494,8 @@ const MemberOnboarding = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
 
                   {pets.length < selectedPlan.pets && (
                     <Button variant="outline" onClick={addPet} className="w-full">
