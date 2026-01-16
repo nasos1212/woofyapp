@@ -56,6 +56,8 @@ import {
 
 import { format } from "date-fns";
 
+import { PetType } from "@/data/petBreeds";
+
 interface Offer {
   id: string;
   title: string;
@@ -76,6 +78,7 @@ interface Offer {
   valid_days: number[] | null;
   valid_hours_start: string | null;
   valid_hours_end: string | null;
+  pet_type: PetType | null;
 }
 
 const BusinessOfferManagement = () => {
@@ -106,6 +109,7 @@ const BusinessOfferManagement = () => {
     valid_days: [] as number[],
     valid_hours_start: "",
     valid_hours_end: "",
+    pet_type: null as PetType | null,
   });
 
   useEffect(() => {
@@ -143,7 +147,7 @@ const BusinessOfferManagement = () => {
       // Get offers with redemption counts
       const { data: offersData, error } = await supabase
         .from("offers")
-        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions, offer_type, redemption_scope, redemption_frequency, valid_days, valid_hours_start, valid_hours_end")
+        .select("id, title, description, discount_value, discount_type, terms, is_active, valid_from, valid_until, is_limited_time, limited_time_label, max_redemptions, offer_type, redemption_scope, redemption_frequency, valid_days, valid_hours_start, valid_hours_end, pet_type")
         .eq("business_id", business.id)
         .order("created_at", { ascending: false });
 
@@ -175,6 +179,7 @@ const BusinessOfferManagement = () => {
           valid_hours_start: offer.valid_hours_start || null,
           valid_hours_end: offer.valid_hours_end || null,
           redemption_count: redemptionCounts[offer.id] || 0,
+          pet_type: (offer.pet_type === 'dog' || offer.pet_type === 'cat') ? offer.pet_type : null,
         };
       });
 
@@ -206,6 +211,7 @@ const BusinessOfferManagement = () => {
       valid_days: [],
       valid_hours_start: "",
       valid_hours_end: "",
+      pet_type: null,
     });
     setIsDialogOpen(true);
   };
@@ -229,6 +235,7 @@ const BusinessOfferManagement = () => {
       valid_days: offer.valid_days || [],
       valid_hours_start: offer.valid_hours_start || "",
       valid_hours_end: offer.valid_hours_end || "",
+      pet_type: offer.pet_type || null,
     });
     setIsDialogOpen(true);
   };
@@ -268,6 +275,7 @@ const BusinessOfferManagement = () => {
         valid_days: formData.valid_days.length > 0 ? formData.valid_days : null,
         valid_hours_start: formData.valid_hours_start || null,
         valid_hours_end: formData.valid_hours_end || null,
+        pet_type: formData.pet_type,
       };
 
       if (editingOffer) {
@@ -421,8 +429,17 @@ const BusinessOfferManagement = () => {
                             ? 'bg-teal-100 text-teal-700' 
                             : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? '🐾 Per Pet' : '👤 Per Member'}
                         </span>
+                        {offer.pet_type && (
+                          <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
+                            offer.pet_type === 'dog' 
+                              ? 'bg-amber-100 text-amber-700' 
+                              : 'bg-purple-100 text-purple-700'
+                          }`}>
+                            {offer.pet_type === 'dog' ? '🐕 Dogs' : '🐱 Cats'}
+                          </span>
+                        )}
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
                           offer.redemption_frequency === 'unlimited' 
                             ? 'bg-green-100 text-green-700' 
@@ -575,6 +592,35 @@ const BusinessOfferManagement = () => {
                   <option value="percentage">Percentage (%)</option>
                   <option value="fixed">Fixed Amount (€)</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Pet Type Filter */}
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
+                🐾 Pet Type (Optional)
+              </h4>
+              <div className="space-y-2">
+                <Label htmlFor="pet_type">Which pets is this offer for?</Label>
+                <select
+                  id="pet_type"
+                  value={formData.pet_type || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, pet_type: e.target.value === "" ? null : e.target.value as PetType })
+                  }
+                  className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="">All Pets (Dogs & Cats)</option>
+                  <option value="dog">🐕 Dogs Only</option>
+                  <option value="cat">🐱 Cats Only</option>
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  {formData.pet_type === 'dog' 
+                    ? '🐕 Only visible to members with dogs' 
+                    : formData.pet_type === 'cat'
+                      ? '🐱 Only visible to members with cats'
+                      : '🐾 Visible to all pet owners'}
+                </p>
               </div>
             </div>
 

@@ -1060,6 +1060,7 @@ export type Database = {
           limited_time_label: string | null
           max_redemptions: number | null
           offer_type: string
+          pet_type: string | null
           redemption_frequency: string | null
           redemption_scope: string | null
           terms: string | null
@@ -1083,6 +1084,7 @@ export type Database = {
           limited_time_label?: string | null
           max_redemptions?: number | null
           offer_type?: string
+          pet_type?: string | null
           redemption_frequency?: string | null
           redemption_scope?: string | null
           terms?: string | null
@@ -1106,6 +1108,7 @@ export type Database = {
           limited_time_label?: string | null
           max_redemptions?: number | null
           offer_type?: string
+          pet_type?: string | null
           redemption_frequency?: string | null
           redemption_scope?: string | null
           terms?: string | null

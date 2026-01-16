@@ -21,6 +21,8 @@ import { formatDistanceToNow, isPast, differenceInDays } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { PetType } from "@/data/petBreeds";
+
 interface Offer {
   id: string;
   title: string;
@@ -38,6 +40,7 @@ interface Offer {
   valid_days: number[] | null;
   valid_hours_start: string | null;
   valid_hours_end: string | null;
+  pet_type: PetType | null;
   business: {
     id: string;
     business_name: string;
@@ -69,12 +72,14 @@ const MemberOffers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
+  const [selectedPetType, setSelectedPetType] = useState<"all" | PetType>("all");
   const [showRedeemed, setShowRedeemed] = useState(true);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortOption>("newest");
   const [isLoading, setIsLoading] = useState(true);
   const [membershipId, setMembershipId] = useState<string | null>(null);
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
+  const [userPetTypes, setUserPetTypes] = useState<PetType[]>([]);
   
   const { isFavorite, toggleFavorite } = useFavoriteOffers();
 
@@ -94,7 +99,7 @@ const MemberOffers = () => {
 
   useEffect(() => {
     filterAndSortOffers();
-  }, [offers, searchQuery, selectedCategory, selectedCity, showRedeemed, showFavoritesOnly, sortBy, isFavorite]);
+  }, [offers, searchQuery, selectedCategory, selectedCity, selectedPetType, showRedeemed, showFavoritesOnly, sortBy, isFavorite]);
 
   const fetchUserCity = async () => {
     if (!user) return;
@@ -158,6 +163,7 @@ const MemberOffers = () => {
           valid_days,
           valid_hours_start,
           valid_hours_end,
+          pet_type,
           business:businesses_public(id, business_name, category, city)
         `)
         .eq("is_active", true)
@@ -196,6 +202,7 @@ const MemberOffers = () => {
           valid_days: offer.valid_days || null,
           valid_hours_start: offer.valid_hours_start || null,
           valid_hours_end: offer.valid_hours_end || null,
+          pet_type: (offer.pet_type === 'dog' || offer.pet_type === 'cat') ? offer.pet_type : null,
           business: offer.business as unknown as Offer["business"],
           isRedeemed: redeemedOfferIds.includes(offer.id),
         }));
@@ -234,6 +241,13 @@ const MemberOffers = () => {
       const citySearch = selectedCity.split(" (")[0].toLowerCase();
       filtered = filtered.filter(
         (offer) => offer.business.city?.toLowerCase().includes(citySearch)
+      );
+    }
+
+    // Pet type filter
+    if (selectedPetType !== "all") {
+      filtered = filtered.filter(
+        (offer) => offer.pet_type === null || offer.pet_type === selectedPetType
       );
     }
 
@@ -455,6 +469,30 @@ const MemberOffers = () => {
               </p>
             </div>
 
+            {/* Pet Type Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-lg">🐾</span>
+              <div className="flex gap-1">
+                {[
+                  { value: "all" as const, label: "All Pets" },
+                  { value: "dog" as const, label: "🐕 Dogs" },
+                  { value: "cat" as const, label: "🐱 Cats" },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setSelectedPetType(option.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      selectedPetType === option.value
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Filter Toggles and Sort */}
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -600,11 +638,20 @@ const MemberOffers = () => {
                         </Badge>
                       )}
                       {/* Redemption rules badges */}
+                      {offer.pet_type && (
+                        <Badge variant="outline" className={`text-[10px] ${
+                          offer.pet_type === 'dog' 
+                            ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                            : 'bg-purple-50 text-purple-700 border-purple-200'
+                        }`}>
+                          {offer.pet_type === 'dog' ? '🐕 Dogs Only' : '🐱 Cats Only'}
+                        </Badge>
+                      )}
                       {(offer.redemption_scope !== 'per_member' || offer.redemption_frequency !== 'one_time') && (
                         <>
                           {offer.redemption_scope === 'per_pet' && (
                             <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200 text-[10px]">
-                              🐕 Per Pet
+                              🐾 Per Pet
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'monthly' && (
