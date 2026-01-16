@@ -46,6 +46,7 @@ interface Profile {
   full_name: string | null;
   email: string;
   preferred_city: string | null;
+  login_count: number | null;
 }
 
 interface Redemption {
@@ -106,7 +107,7 @@ const MemberDashboard = () => {
         // Fetch profile
         const { data: profileData } = await supabase
           .from("profiles")
-          .select("full_name, email, preferred_city")
+          .select("full_name, email, preferred_city, login_count")
           .eq("user_id", user.id)
           .maybeSingle();
 
@@ -331,7 +332,7 @@ const MemberDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Hello, {firstName}! 👋
+              {(profile?.login_count ?? 0) <= 1 ? `Hello, ${firstName}!` : `Hello again, ${firstName}!`} 👋
             </h1>
             <p className="text-muted-foreground">Here's your Wooffy membership overview</p>
           </div>
