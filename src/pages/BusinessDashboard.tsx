@@ -425,6 +425,36 @@ const BusinessDashboard = () => {
             <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
           </div>
 
+          {/* Quick Tips Section */}
+          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200/50 rounded-2xl p-4 sm:p-6 mb-8">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-display font-semibold text-slate-900 mb-2">Quick Tips 💡</h3>
+                <ul className="text-sm text-slate-600 space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 font-bold">•</span>
+                    <span>Scan the member's QR code or enter their ID manually to verify</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 font-bold">•</span>
+                    <span>Create multiple offers to attract different pet owners</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 font-bold">•</span>
+                    <span>Check <Link to="/business/analytics" className="text-primary font-medium hover:underline">Analytics</Link> to see your most popular offers</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500 font-bold">•</span>
+                    <span>Use <Link to="/business/birthdays" className="text-primary font-medium hover:underline">Pet Birthdays</Link> to send special offers</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           {/* Onboarding Tips - Show when no redemptions */}
           {recentRedemptions.length === 0 && (
             <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-6 mb-8">

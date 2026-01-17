@@ -32,7 +32,24 @@ const FreeMemberDashboard = () => {
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [businessRedirectPath, setBusinessRedirectPath] = useState<string | null>(null);
-  const [checkingBusiness, setCheckingBusiness] = useState(true); // Start true to prevent flash
+  const [checkingBusiness, setCheckingBusiness] = useState(true);
+  const [profileName, setProfileName] = useState<string | null>(null);
+
+  // Fetch profile name
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data?.full_name) {
+        setProfileName(data.full_name.split(" ")[0]);
+      }
+    };
+    fetchProfile();
+  }, [user]);
 
   // When user is detected as business, check if they have a business record
   useEffect(() => {
@@ -112,7 +129,7 @@ const FreeMemberDashboard = () => {
           {/* Welcome Header - Simple & Clean */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
-              Welcome back! 🐾
+              Hello, {profileName || "Friend"}! 🐾
             </h1>
             <p className="text-muted-foreground">
               Connect with the Wooffy pet community
