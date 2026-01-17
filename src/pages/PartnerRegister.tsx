@@ -241,21 +241,21 @@ const PartnerRegister = () => {
     );
   }
 
-  const handleBackClick = () => {
+  const handleBackClick = async () => {
     if (step > 1) {
       setStep(step - 1);
     } else if (hasUnsavedChanges) {
       setPendingNavigation("/");
       setShowExitDialog(true);
     } else {
-      navigate("/");
+      // Sign out and redirect to home
+      await signOut();
     }
   };
 
-  const confirmNavigation = () => {
-    if (pendingNavigation) {
-      navigate(pendingNavigation);
-    }
+  const confirmNavigation = async () => {
+    // Sign out and redirect to home
+    await signOut();
     setShowExitDialog(false);
     setPendingNavigation(null);
   };
