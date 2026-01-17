@@ -105,7 +105,15 @@ const Auth = () => {
       // CASE 3: User has neither business nor membership - they're new
       // If they selected business type but have no business, redirect to partner registration
       if (accountType === "business") {
-        navigate("/partner-register");
+        // Fetch user's name from profile to pre-fill business name
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        
+        const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
+        navigate(`/partner-register${nameParam}`);
         return;
       }
       
