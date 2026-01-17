@@ -83,8 +83,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    console.log("signOut called - starting sign out process");
     try {
       const { error } = await supabase.auth.signOut();
+      console.log("supabase.auth.signOut completed", error ? `with error: ${error.message}` : "successfully");
       // Even if signOut fails (e.g., session already expired), clear local state
       if (error) {
         console.warn("Sign out warning:", error.message);
@@ -92,10 +94,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
       console.warn("Sign out error:", err);
     } finally {
+      console.log("signOut - clearing local state and redirecting");
       // Always clear local state and redirect
       setUser(null);
       setSession(null);
-      window.location.href = "/";
+      // Use replace to prevent back navigation to authenticated pages
+      window.location.replace("/");
     }
   };
 
