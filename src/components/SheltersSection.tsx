@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Heart, Home, PawPrint } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Heart, Home, PawPrint, LogIn } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Shelter {
   id: string;
@@ -18,8 +19,11 @@ interface Shelter {
 }
 
 const SheltersSection = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [existingShelter, setExistingShelter] = useState<{ id: string; verification_status: string } | null>(null);
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [formData, setFormData] = useState({
     shelterName: "",
@@ -50,8 +54,52 @@ const SheltersSection = () => {
     fetchShelters();
   }, []);
 
+  // Check if user already has a shelter application
+  useEffect(() => {
+    const checkExistingShelter = async () => {
+      if (!user) {
+        setExistingShelter(null);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("shelters")
+        .select("id, verification_status")
+        .eq("user_id", user.id)
+        .single();
+
+      if (data) {
+        setExistingShelter(data);
+      }
+    };
+
+    checkExistingShelter();
+  }, [user]);
+
+  const handleApplyClick = () => {
+    if (!user) {
+      // Redirect to auth with return URL
+      navigate('/auth?redirect=/#shelters&action=shelter-apply');
+      return;
+    }
+
+    if (existingShelter) {
+      // User already has a shelter, redirect to dashboard
+      navigate('/shelter-dashboard');
+      return;
+    }
+
+    setIsDialogOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast.error("Please log in to submit an application");
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -67,7 +115,19 @@ const SheltersSection = () => {
           dogs_in_care: formData.dogsCount,
           years_operating: formData.yearsOperating,
           description: formData.description,
+          user_id: user.id, // Link to user account
         });
+
+      if (error) {
+        console.error("Error submitting shelter application:", error);
+        toast.error("Failed to submit application. Please try again.");
+        return;
+      }
+
+      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
+      setIsDialogOpen(false);
+      // Redirect to shelter dashboard
+      navigate('/shelter-dashboard');
 
       if (error) {
         console.error("Error submitting shelter application:", error);
@@ -192,13 +252,24 @@ const SheltersSection = () => {
           <p className="text-muted-foreground mb-4">
             Are you a registered dog shelter? Apply to join our whitelist.
           </p>
-          <button 
-            onClick={() => setIsDialogOpen(true)}
-            className="text-rose-500 font-medium hover:underline inline-flex items-center gap-2"
-          >
-            Apply as a Shelter Partner
-            <span>→</span>
-          </button>
+          {existingShelter ? (
+            <Button 
+              onClick={() => navigate('/shelter-dashboard')}
+              variant="outline"
+              className="gap-2"
+            >
+              <Home className="w-4 h-4" />
+              Go to Shelter Dashboard
+            </Button>
+          ) : (
+            <button 
+              onClick={handleApplyClick}
+              className="text-rose-500 font-medium hover:underline inline-flex items-center gap-2"
+            >
+              {user ? "Apply as a Shelter Partner" : "Login to Apply as Shelter Partner"}
+              {user ? <span>→</span> : <LogIn className="w-4 h-4" />}
+            </button>
+          )}
         </div>
       </div>
 
