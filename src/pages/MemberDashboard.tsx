@@ -339,7 +339,7 @@ const MemberDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-              {(profile?.login_count ?? 0) <= 1 ? `Hello, ${firstName}!` : `Hello again, ${firstName}!`} 👋
+              Hello, {firstName}! 👋
             </h1>
             <p className="text-muted-foreground">Here's your Wooffy membership overview</p>
           </div>
