@@ -14,7 +14,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
-import ShelterPhotoUpload from "@/components/ShelterPhotoUpload";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import { 
   Home, 
@@ -28,7 +27,6 @@ import {
   Facebook,
   Instagram,
   ExternalLink,
-  Camera,
   ImageIcon
 } from "lucide-react";
 
@@ -309,10 +307,6 @@ const ShelterDashboard = () => {
                     <ImageIcon className="h-3 w-3" />
                     Branding
                   </TabsTrigger>
-                  <TabsTrigger value="photos" className="gap-1">
-                    <Camera className="h-3 w-3" />
-                    Photos
-                  </TabsTrigger>
                 </TabsList>
 
                 <form onSubmit={handleSubmit}>
@@ -492,10 +486,6 @@ const ShelterDashboard = () => {
                       currentLogoUrl={shelter.logo_url}
                       currentCoverUrl={shelter.cover_photo_url}
                     />
-                  </TabsContent>
-
-                  <TabsContent value="photos">
-                    <ShelterPhotoUpload shelterId={shelter.id} />
                   </TabsContent>
 
                   <div className="flex justify-end mt-6 pt-4 border-t">
