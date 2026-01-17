@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle } from "lucide-react";
+import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -56,7 +56,11 @@ const PartnerRegister = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
+  
+  const handleSignOut = async () => {
+    await signOut();
+  };
   
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -285,14 +289,25 @@ const PartnerRegister = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        <Button
-          variant="ghost"
-          onClick={handleBackClick}
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {step > 1 ? "Back to Business Info" : "Back to Home"}
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            onClick={handleBackClick}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {step > 1 ? "Back to Business Info" : "Back to Home"}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            onClick={handleSignOut}
+            className="gap-2 text-destructive hover:text-destructive"
+          >
+            <LogOut className="w-4 h-4" />
+            Sign Out
+          </Button>
+        </div>
 
         {/* Progress - simplified to 2 steps */}
         <div className="flex items-center gap-4 mb-8">
