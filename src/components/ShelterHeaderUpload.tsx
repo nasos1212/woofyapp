@@ -206,25 +206,25 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
               </div>
               
               {/* Position Adjustment */}
-              <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+              <div className="space-y-3 p-4 bg-muted/50 rounded-lg border">
                 <div className="flex items-center gap-2 text-sm font-medium">
                   <Move className="h-4 w-4" />
-                  Adjust Position
+                  Adjust Position (drag slider to reposition)
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">Top</span>
+                <div className="flex items-center gap-3 py-2">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Top</span>
                   <Slider
                     value={[coverPosition]}
                     onValueChange={(value) => setCoverPosition(value[0])}
                     min={0}
                     max={100}
                     step={1}
-                    className="flex-1"
+                    className="flex-1 touch-pan-x"
                   />
-                  <span className="text-xs text-muted-foreground">Bottom</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Bottom</span>
                 </div>
                 <Button 
-                  size="sm" 
+                  size="default" 
                   onClick={handleSavePosition}
                   disabled={savingPosition || coverPosition === (currentCoverPosition ?? 50)}
                   className="w-full"
