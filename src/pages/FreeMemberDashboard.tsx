@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { 
@@ -22,13 +23,35 @@ import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { supabase } from "@/integrations/supabase/client";
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
+  const [isBusiness, setIsBusiness] = useState<boolean | null>(null);
 
-  if (authLoading || membershipLoading) {
+  // Check if user is a business account
+  useEffect(() => {
+    const checkBusiness = async () => {
+      if (!user) {
+        setIsBusiness(false);
+        return;
+      }
+      
+      const { data } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      setIsBusiness(!!data);
+    };
+    
+    checkBusiness();
+  }, [user]);
+
+  if (authLoading || membershipLoading || isBusiness === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -38,6 +61,11 @@ const FreeMemberDashboard = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Business users should never see the freemium dashboard
+  if (isBusiness) {
+    return <Navigate to="/business" replace />;
   }
 
   if (hasMembership) {
