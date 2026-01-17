@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, ChevronDown, ChevronUp } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,16 +69,6 @@ const BusinessDashboard = () => {
   const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0, discountsGiven: 0 });
   const [isCheckingBusiness, setIsCheckingBusiness] = useState(true);
   const [selectedPetId, setSelectedPetId] = useState<string>("");
-  const [showQuickTips, setShowQuickTips] = useState(() => {
-    const saved = localStorage.getItem('wooffy-business-quick-tips');
-    return saved !== 'hidden';
-  });
-
-  const toggleQuickTips = () => {
-    const newValue = !showQuickTips;
-    setShowQuickTips(newValue);
-    localStorage.setItem('wooffy-business-quick-tips', newValue ? 'visible' : 'hidden');
-  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -433,48 +423,6 @@ const BusinessDashboard = () => {
               Partner Dashboard
             </h1>
             <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
-          </div>
-
-          {/* Quick Tips Section - Collapsible */}
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200/50 rounded-2xl mb-8 overflow-hidden">
-            <button 
-              onClick={toggleQuickTips}
-              className="w-full p-4 sm:p-6 flex items-center justify-between hover:bg-blue-50/50 transition-colors"
-            >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                </div>
-                <h3 className="font-display font-semibold text-slate-900">Quick Tips 💡</h3>
-              </div>
-              {showQuickTips ? (
-                <ChevronUp className="w-5 h-5 text-slate-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-slate-400" />
-              )}
-            </button>
-            {showQuickTips && (
-              <div className="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
-                <ul className="text-sm text-slate-600 space-y-2 ml-14 sm:ml-16">
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span>Scan the member's QR code or enter their ID manually to verify</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span>Create multiple offers to attract different pet owners</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span>Check <Link to="/business/analytics" className="text-primary font-medium hover:underline">Analytics</Link> to see your most popular offers</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span>Use <Link to="/business/birthdays" className="text-primary font-medium hover:underline">Pet Birthdays</Link> to send special offers</span>
-                  </li>
-                </ul>
-              </div>
-            )}
           </div>
 
           {/* Onboarding Tips - Show when no redemptions */}
