@@ -108,16 +108,36 @@ const PartnerRegister = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    const checkExistingBusiness = async () => {
+    const checkExistingBusinessAndEnsureRole = async () => {
       if (!user) return;
       
-      const { data } = await supabase
-        .from("businesses")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
+      // Check for existing business and ensure business role exists in parallel
+      const [businessResult, roleResult] = await Promise.all([
+        supabase
+          .from("businesses")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("role", "business")
+          .maybeSingle()
+      ]);
       
-      if (data) {
+      // If user is on this page, they MUST have a business role
+      // Insert it if missing (handles users who signed up before role logic was added)
+      if (!roleResult.data) {
+        await supabase
+          .from("user_roles")
+          .upsert(
+            { user_id: user.id, role: "business" as const },
+            { onConflict: "user_id,role" }
+          );
+      }
+      
+      if (businessResult.data) {
         setExistingBusiness(true);
         navigate("/business");
       } else {
@@ -125,7 +145,7 @@ const PartnerRegister = () => {
       }
     };
     
-    checkExistingBusiness();
+    checkExistingBusinessAndEnsureRole();
   }, [user, navigate]);
 
   const addOffer = () => {
