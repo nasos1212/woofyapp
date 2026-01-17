@@ -83,24 +83,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
-    console.log("signOut called - starting sign out process");
+    console.log("signOut called");
     try {
-      const { error } = await supabase.auth.signOut();
-      console.log("supabase.auth.signOut completed", error ? `with error: ${error.message}` : "successfully");
-      // Even if signOut fails (e.g., session already expired), clear local state
-      if (error) {
-        console.warn("Sign out warning:", error.message);
-      }
+      // Try to sign out from Supabase (may fail if session already expired)
+      await supabase.auth.signOut({ scope: 'local' });
     } catch (err) {
       console.warn("Sign out error:", err);
-    } finally {
-      console.log("signOut - clearing local state and redirecting");
-      // Always clear local state and redirect
-      setUser(null);
-      setSession(null);
-      // Use replace to prevent back navigation to authenticated pages
-      window.location.replace("/");
     }
+    
+    // Always clear local state regardless of API result
+    setUser(null);
+    setSession(null);
+    
+    // Clear any cached auth data from localStorage
+    const storageKey = `sb-qvdrwfltbqhlwkqndpdp-auth-token`;
+    localStorage.removeItem(storageKey);
+    
+    // Force navigation to home
+    window.location.href = "/";
   };
 
   return (
