@@ -84,10 +84,20 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
         .getPublicUrl(fileName);
 
       // Update shelter record
-      const updateField = type === 'logo' ? 'logo_url' : 'cover_photo_url';
+      const updateData: Record<string, any> = {
+        updated_at: new Date().toISOString()
+      };
+      
+      if (type === 'logo') {
+        updateData.logo_url = publicUrl;
+      } else {
+        updateData.cover_photo_url = publicUrl;
+        updateData.cover_photo_position = coverPosition;
+      }
+      
       const { error: dbError } = await supabase
         .from('shelters')
-        .update({ [updateField]: publicUrl, updated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('id', shelterId);
 
       if (dbError) throw dbError;
@@ -170,22 +180,44 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
         </CardHeader>
         <CardContent>
           {coverPreview ? (
-            <div className="space-y-3">
-              <div className="relative">
+            <div className="space-y-4">
+              <div className="relative overflow-hidden rounded-lg h-40">
                 <img
                   src={coverPreview}
                   alt="Cover preview"
-                  className="w-full h-40 object-cover rounded-lg"
+                  className="w-full h-[200%] object-cover absolute left-0"
+                  style={{ top: `${-(coverPosition)}%` }}
                 />
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="absolute top-2 right-2"
+                  className="absolute top-2 right-2 z-10"
                   onClick={() => clearSelection('cover')}
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
+              
+              {/* Position Adjustment for Preview */}
+              <div className="space-y-3 p-4 bg-muted/50 rounded-lg border">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Move className="h-4 w-4" />
+                  Adjust Position (drag slider to reposition)
+                </div>
+                <div className="flex items-center gap-3 py-2">
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Top</span>
+                  <Slider
+                    value={[coverPosition]}
+                    onValueChange={(value) => setCoverPosition(value[0])}
+                    min={0}
+                    max={100}
+                    step={1}
+                    className="flex-1 touch-pan-x"
+                  />
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">Bottom</span>
+                </div>
+              </div>
+
               <Button
                 onClick={() => handleUpload('cover')}
                 disabled={uploadingCover}
