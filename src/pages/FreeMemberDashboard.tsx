@@ -254,12 +254,7 @@ const FreeMemberDashboard = () => {
                   </div>
                   <Button 
                     variant="outline"
-                    onClick={() => {
-                      navigate("/");
-                      setTimeout(() => {
-                        document.getElementById("shelters")?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    }}
+                    onClick={() => navigate("/?shelters=1#shelters")}
                     className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2"
                   >
                     View Shelters

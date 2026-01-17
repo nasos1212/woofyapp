@@ -576,12 +576,7 @@ const MemberDashboard = () => {
                     </div>
                   </Link>
                   <button 
-                    onClick={() => {
-                      navigate("/");
-                      setTimeout(() => {
-                        document.getElementById("shelters")?.scrollIntoView({ behavior: "smooth" });
-                      }, 100);
-                    }}
+                    onClick={() => navigate("/?shelters=1#shelters")}
                     className="flex items-center gap-3 p-3 bg-rose-50 rounded-xl hover:bg-rose-100 transition-colors w-full text-left"
                   >
                     <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
