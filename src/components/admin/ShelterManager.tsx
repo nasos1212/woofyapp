@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ensureHttps } from "@/lib/utils";
 
 interface Shelter {
   id: string;
@@ -204,7 +205,7 @@ const ShelterManager = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => window.open(shelter.website!, "_blank")}
+                          onClick={() => window.open(ensureHttps(shelter.website!), "_blank")}
                         >
                           <ExternalLink className="w-4 h-4 mr-1" />
                           Website
@@ -342,7 +343,7 @@ const ShelterManager = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => window.open(shelter.website!, "_blank")}
+                            onClick={() => window.open(ensureHttps(shelter.website!), "_blank")}
                           >
                             <ExternalLink className="w-4 h-4 mr-1" />
                             Website
