@@ -35,9 +35,6 @@ const ShelterOnboarding = () => {
   const [dogsInCare, setDogsInCare] = useState("");
   const [yearsOperating, setYearsOperating] = useState("");
 
-  // Track if initial data has been loaded
-  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
-
   useEffect(() => {
     const checkExistingShelter = async () => {
       if (!user) {
@@ -61,25 +58,9 @@ const ShelterOnboarding = () => {
         }
       }
       
-      // Only pre-fill data once on initial load
-      if (!initialDataLoaded) {
-        // Pre-fill email from user
-        if (user.email) {
-          setEmail(user.email);
-        }
-        
-        // Get profile for contact name
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        
-        if (profile?.full_name) {
-          setContactName(profile.full_name);
-        }
-        
-        setInitialDataLoaded(true);
+      // Pre-fill email from user
+      if (user.email) {
+        setEmail(user.email);
       }
       
       setIsCheckingStatus(false);
@@ -88,7 +69,7 @@ const ShelterOnboarding = () => {
     if (!authLoading) {
       checkExistingShelter();
     }
-  }, [user, authLoading, navigate, initialDataLoaded]);
+  }, [user, authLoading, navigate]);
 
   // Redirect if not logged in
   useEffect(() => {
