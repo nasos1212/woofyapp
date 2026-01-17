@@ -93,18 +93,18 @@ const MemberOnboarding = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    // Check if user already has a membership set up
+    // Check if user already has an active membership set up
     const checkExistingSetup = async () => {
       if (!user) return;
       
       const { data: membership } = await supabase
         .from("memberships")
-        .select("id, plan_type, max_pets")
+        .select("id, plan_type, max_pets, is_active")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (membership) {
-        // User already has a membership - redirect to dashboard
+      if (membership && membership.is_active) {
+        // User already has an active membership - redirect to dashboard
         navigate("/member");
       }
     };
