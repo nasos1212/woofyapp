@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { 
   Users, 
   Gift, 
@@ -8,53 +8,20 @@ import {
   AlertTriangle, 
   Syringe, 
   Lock, 
-  Sparkles,
   ArrowRight,
   MessageSquarePlus,
   Crown,
-  Shield
+  Shield,
+  HelpCircle,
+  Trophy,
+  Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
-
-interface LockedFeatureCardProps {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  benefit: string;
-}
-
-const LockedFeatureCard = ({ title, description, icon, benefit }: LockedFeatureCardProps) => (
-  <Card className="relative overflow-hidden group hover:shadow-lg transition-all">
-    <div className="absolute inset-0 bg-gradient-to-br from-muted/50 to-muted/80 backdrop-blur-[1px] z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-      <div className="text-center p-4">
-        <Lock className="w-8 h-8 text-primary mx-auto mb-2" />
-        <p className="text-sm font-medium text-foreground">Upgrade to unlock</p>
-      </div>
-    </div>
-    <CardHeader className="pb-2">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-          {icon}
-        </div>
-        <div>
-          <CardTitle className="text-base">{title}</CardTitle>
-          <p className="text-xs text-muted-foreground">{description}</p>
-        </div>
-      </div>
-    </CardHeader>
-    <CardContent>
-      <p className="text-sm text-muted-foreground">{benefit}</p>
-    </CardContent>
-    <div className="absolute top-2 right-2">
-      <Lock className="w-4 h-4 text-muted-foreground" />
-    </div>
-  </Card>
-);
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -73,7 +40,6 @@ const FreeMemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // If user has membership, redirect to full dashboard
   if (hasMembership) {
     return <Navigate to="/member" replace />;
   }
@@ -81,261 +47,189 @@ const FreeMemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Welcome to Wooffy | Free Member</title>
-        <meta name="description" content="Join the Wooffy community and explore what's available for members." />
+        <title>Community Hub | Wooffy</title>
+        <meta name="description" content="Join the Wooffy pet community - ask questions, share experiences, and connect with pet parents." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background">
         <Header />
 
         <main className="container mx-auto px-4 py-8 pt-24">
-          {/* Welcome Banner */}
-          <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-amber-100/50 rounded-2xl p-6 md:p-8 mb-8 border border-primary/20">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div>
-                <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                  Welcome to Wooffy! 🐾
-                </h1>
-                <p className="text-muted-foreground max-w-xl">
-                  You have free access to our Community Hub. Upgrade to unlock exclusive discounts, 
-                  pet profiles, AI pet assistant, and more!
-                </p>
-              </div>
-              <Button 
-                variant="hero" 
-                size="lg" 
-                className="shrink-0 gap-2"
-                onClick={() => navigate("/member/onboarding")}
-              >
-                <Crown className="w-5 h-5" />
-                Upgrade Now
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
+          {/* Welcome Header - Simple & Clean */}
+          <div className="mb-8">
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
+              Welcome back! 🐾
+            </h1>
+            <p className="text-muted-foreground">
+              Connect with the Wooffy pet community
+            </p>
           </div>
 
-          {/* Community Hub - Full Access */}
-          <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-                  <Users className="w-6 h-6 text-primary" />
-                  Community Hub
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-normal">
-                    Full Access
-                  </span>
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Connect with fellow pet owners, ask questions, and share experiences
-                </p>
-              </div>
-            </div>
-
-            <Card className="bg-gradient-to-br from-cyan-50 to-teal-50 border-cyan-200 hover:shadow-lg transition-all">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-teal-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <MessageSquarePlus className="w-8 h-8 text-white" />
+          {/* Main Community Hub Section - Hero Focus */}
+          <div className="mb-8">
+            <Card className="bg-gradient-to-br from-cyan-500 to-teal-600 border-0 shadow-xl overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
+                      <Users className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-display font-bold text-lg text-teal-800">
-                        Join the Conversation
-                      </h3>
-                      <p className="text-teal-600/80 text-sm">
-                        Ask questions, share tips, help other pet parents
+                      <h2 className="font-display text-xl md:text-2xl font-bold text-white">
+                        Community Hub
+                      </h2>
+                      <p className="text-white/80 text-sm">
+                        Your pet parenting questions, answered
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-2 w-full md:w-auto">
+
+                  <p className="text-white/90 mb-6 max-w-lg">
+                    Get advice from experienced pet owners, share your knowledge, and be part of Cyprus's most helpful pet community.
+                  </p>
+
+                  <div className="flex flex-wrap gap-3">
                     <Button 
+                      size="lg"
                       onClick={() => navigate("/community")}
-                      className="flex-1 md:flex-none bg-teal-600 hover:bg-teal-700"
+                      className="bg-white text-teal-700 hover:bg-white/90 gap-2"
                     >
+                      <MessageSquarePlus className="w-5 h-5" />
                       Browse Questions
                     </Button>
                     <Button 
+                      size="lg"
                       variant="outline"
                       onClick={() => navigate("/community/ask")}
-                      className="flex-1 md:flex-none border-teal-300 text-teal-700 hover:bg-teal-50"
+                      className="border-white/40 text-white hover:bg-white/10 gap-2"
                     >
+                      <HelpCircle className="w-5 h-5" />
                       Ask a Question
                     </Button>
                   </div>
                 </div>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-cyan-200">
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-teal-700">∞</p>
-                    <p className="text-xs text-teal-600/70">Questions</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-teal-700">∞</p>
-                    <p className="text-xs text-teal-600/70">Answers</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-teal-700">250+</p>
-                    <p className="text-xs text-teal-600/70">Pet Parents</p>
-                  </div>
-                </div>
-              </CardContent>
-          </Card>
-          </div>
-
-          {/* Lost Pet Alerts - Full Access */}
-          <div className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
-                  <AlertTriangle className="w-6 h-6 text-amber-500" />
-                  Lost Pet Alerts
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-normal">
-                    Full Access
-                  </span>
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Help reunite lost pets with their families across Cyprus
-                </p>
-              </div>
-            </div>
-
-            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 hover:shadow-lg transition-all">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                      <AlertTriangle className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-display font-bold text-lg text-amber-800">
-                        Community Pet Network
-                      </h3>
-                      <p className="text-amber-600/80 text-sm">
-                        Report lost pets, help neighbors find theirs
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 w-full md:w-auto">
-                    <Button 
-                      onClick={() => navigate("/lost-pet-alerts")}
-                      className="flex-1 md:flex-none bg-amber-600 hover:bg-amber-700"
-                    >
-                      View Alerts
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-amber-200">
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-amber-700">📢</p>
-                    <p className="text-xs text-amber-600/70">Report Lost</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-amber-700">🔔</p>
-                    <p className="text-xs text-amber-600/70">Get Alerts</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="font-bold text-2xl text-amber-700">🤝</p>
-                    <p className="text-xs text-amber-600/70">Help Find</p>
-                  </div>
+                {/* Quick Actions Row */}
+                <div className="bg-white/10 backdrop-blur px-6 py-4 flex flex-wrap gap-4 md:gap-8">
+                  <button 
+                    onClick={() => navigate("/community")}
+                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+                  >
+                    <MessageSquarePlus className="w-4 h-4" />
+                    <span className="text-sm font-medium">Latest Questions</span>
+                  </button>
+                  <button 
+                    onClick={() => navigate("/community/leaderboard")}
+                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+                  >
+                    <Trophy className="w-4 h-4" />
+                    <span className="text-sm font-medium">Top Contributors</span>
+                  </button>
+                  <button 
+                    onClick={() => navigate("/community")}
+                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+                  >
+                    <Bookmark className="w-4 h-4" />
+                    <span className="text-sm font-medium">Saved Questions</span>
+                  </button>
                 </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* Upgrade CTA */}
-          <div className="bg-gradient-to-r from-primary to-amber-500 rounded-2xl p-6 md:p-8 mb-8 text-white">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur">
-                  <Sparkles className="w-7 h-7" />
-                </div>
-                <div>
-                  <h3 className="font-display font-bold text-xl">Unlock All Features</h3>
-                  <p className="text-white/80">
-                    Get €500+ in yearly savings, pet profiles, AI assistant & more
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <p className="text-3xl font-bold">€59</p>
-                  <p className="text-white/70 text-sm">/year</p>
-                </div>
-                <Button 
-                  variant="secondary" 
-                  size="lg"
-                  className="bg-white text-primary hover:bg-white/90"
-                  onClick={() => navigate("/member/onboarding")}
-                >
-                  Get Your Pass
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Locked Features Grid */}
+          {/* Lost Pet Alerts - Secondary Feature */}
           <div className="mb-8">
-            <h2 className="font-display text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-              <Lock className="w-5 h-5 text-muted-foreground" />
-              Member-Only Features
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Upgrade your account to unlock these exclusive benefits
-            </p>
+            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
+              <CardContent className="p-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                      <AlertTriangle className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Lost Pet Alerts</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Help reunite pets with their families
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate("/member/lost-pets")}
+                    className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2"
+                  >
+                    View Alerts
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <LockedFeatureCard
-                title="Exclusive Offers"
-                description="500+ partner businesses"
-                icon={<Gift className="w-5 h-5 text-primary" />}
-                benefit="Get 10-50% off at pet shops, groomers, hotels, vets & more"
-              />
-              <LockedFeatureCard
-                title="Pet Profiles"
-                description="Digital pet passports"
-                icon={<Heart className="w-5 h-5 text-rose-500" />}
-                benefit="Store photos, health info, and track your pet's milestones"
-              />
-              <LockedFeatureCard
-                title="AI Pet Assistant"
-                description="24/7 pet advice"
-                icon={<Bot className="w-5 h-5 text-violet-500" />}
-                benefit="Get instant answers to pet questions from our AI assistant"
-              />
-              <LockedFeatureCard
-                title="Health Records"
-                description="Vaccination tracking"
-                icon={<Syringe className="w-5 h-5 text-blue-500" />}
-                benefit="Never miss a vaccination with smart reminders"
-              />
-              <LockedFeatureCard
-                title="10% to Shelters"
-                description="Support animals in need"
-                icon={<Shield className="w-5 h-5 text-green-500" />}
-                benefit="10% of your membership fee goes to local animal shelters"
-              />
+          {/* Subtle Upgrade Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-muted-foreground">
+                Want more features?
+              </p>
+              <Button 
+                variant="link" 
+                size="sm" 
+                className="text-primary gap-1 p-0 h-auto"
+                onClick={() => navigate("/member/onboarding")}
+              >
+                See membership benefits
+                <ArrowRight className="w-3 h-3" />
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { icon: Gift, label: "Partner Discounts", color: "text-primary" },
+                { icon: Heart, label: "Pet Profiles", color: "text-rose-500" },
+                { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
+                { icon: Syringe, label: "Health Records", color: "text-blue-500" },
+                { icon: Shield, label: "Shelter Support", color: "text-green-500" },
+              ].map(({ icon: Icon, label, color }) => (
+                <button
+                  key={label}
+                  onClick={() => navigate("/member/onboarding")}
+                  className="group p-3 rounded-xl bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all text-center"
+                >
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="relative">
+                      <Icon className={`w-5 h-5 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
+                      <Lock className="w-3 h-3 text-muted-foreground absolute -bottom-1 -right-1" />
+                    </div>
+                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                      {label}
+                    </span>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Final CTA */}
-          <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">
-              Ready to unlock all the benefits?
-            </p>
-            <Button 
-              variant="hero" 
-              size="xl"
-              className="gap-2"
-              onClick={() => navigate("/member/onboarding")}
-            >
-              <Crown className="w-5 h-5" />
-              Upgrade to Full Membership
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </div>
+          {/* Minimal Upgrade Banner */}
+          <Card className="border-primary/20 bg-primary/5">
+            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <Crown className="w-5 h-5 text-primary hidden sm:block" />
+                <p className="text-sm text-foreground">
+                  <span className="font-medium">Upgrade to unlock</span>
+                  <span className="text-muted-foreground"> exclusive discounts, pet profiles & more</span>
+                </p>
+              </div>
+              <Button 
+                size="sm"
+                onClick={() => navigate("/member/onboarding")}
+                className="gap-2 shrink-0"
+              >
+                <Crown className="w-4 h-4" />
+                Upgrade · €59/year
+              </Button>
+            </CardContent>
+          </Card>
         </main>
       </div>
     </>
