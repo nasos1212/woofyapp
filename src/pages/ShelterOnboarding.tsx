@@ -442,12 +442,13 @@ const ShelterOnboarding = () => {
                   
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="dogsInCare">Dogs Currently in Care</Label>
+                      <Label htmlFor="dogsInCare">Dogs Currently in Care *</Label>
                       <Input
                         id="dogsInCare"
                         placeholder="e.g., 25"
                         value={dogsInCare}
                         onChange={(e) => setDogsInCare(e.target.value)}
+                        required
                       />
                     </div>
                     <div className="grid gap-2">
@@ -494,7 +495,7 @@ const ShelterOnboarding = () => {
                   </Button>
                   <Button 
                     onClick={handleSubmit}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !dogsInCare}
                     className="bg-rose-500 hover:bg-rose-600"
                   >
                     {isSubmitting ? (

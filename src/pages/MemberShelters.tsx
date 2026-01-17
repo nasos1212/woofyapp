@@ -182,9 +182,11 @@ const MemberShelters = () => {
                       )}
 
                       <div className="flex items-center justify-between pt-3 border-t">
-                        <div className="text-xs text-muted-foreground">
-                          <span className="font-medium text-rose-600">{shelter.dogs_helped_count || 0}</span> dogs helped
-                        </div>
+                        {shelter.dogs_in_care && (
+                          <div className="text-xs text-muted-foreground">
+                            <span className="font-medium text-primary">{shelter.dogs_in_care}</span> dogs in care
+                          </div>
+                        )}
                         {shelter.website && (
                           <Button
                             variant="ghost"
