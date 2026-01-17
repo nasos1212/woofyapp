@@ -36,6 +36,7 @@ import CommunityLeaderboard from "./pages/CommunityLeaderboard";
 import MemberUpgrade from "./pages/MemberUpgrade";
 import AddPet from "./pages/AddPet";
 import ShelterProfile from "./pages/ShelterProfile";
+import ShelterDashboard from "./pages/ShelterDashboard";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
               <Route path="/business/:id" element={<BusinessProfile />} />
               <Route path="/partner-register" element={<PartnerRegister />} />
               <Route path="/shelter/:id" element={<ShelterProfile />} />
+              <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
