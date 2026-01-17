@@ -56,12 +56,18 @@ const Auth = () => {
       await new Promise(resolve => setTimeout(resolve, 300));
       
       // Check business role, business record, membership status, and shelter in parallel
-      const [businessRoleResult, businessResult, membershipResult, shelterResult] = await Promise.all([
+      const [businessRoleResult, shelterRoleResult, businessResult, membershipResult, shelterResult] = await Promise.all([
         supabase
           .from("user_roles")
           .select("id")
           .eq("user_id", user.id)
           .eq("role", "business")
+          .maybeSingle(),
+        supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("role", "shelter")
           .maybeSingle(),
         supabase
           .from("businesses")
@@ -81,12 +87,16 @@ const Auth = () => {
       ]);
       
       const { data: businessRole, error: roleError } = businessRoleResult;
+      const { data: shelterRole, error: shelterRoleError } = shelterRoleResult;
       const { data: business, error: businessError } = businessResult;
       const { data: membership, error: membershipError } = membershipResult;
       const { data: shelter, error: shelterError } = shelterResult;
       
       if (roleError) {
         console.error("Error checking business role:", roleError);
+      }
+      if (shelterRoleError) {
+        console.error("Error checking shelter role:", shelterRoleError);
       }
       if (businessError) {
         console.error("Error checking business:", businessError);
@@ -99,13 +109,20 @@ const Auth = () => {
       }
       
       const hasBusinessRole = !!businessRole;
+      const hasShelterRole = !!shelterRole;
       const hasBusiness = !!business;
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
       
-      // CASE 0: User has a shelter - redirect to shelter dashboard
+      // CASE 0: User has a shelter OR shelter role - redirect appropriately
       if (hasShelter) {
         navigate("/shelter-dashboard");
+        return;
+      }
+      
+      // User has shelter role but no shelter record - redirect to apply
+      if (hasShelterRole) {
+        navigate("/#shelters");
         return;
       }
       
@@ -354,6 +371,24 @@ const Auth = () => {
             });
             // Pass the full name to pre-fill business name
             navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
+          } else if (accountType === "shelter") {
+            // For shelter accounts, add shelter role and redirect to homepage shelters section
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData?.user) {
+              await supabase
+                .from("user_roles")
+                .insert({
+                  user_id: userData.user.id,
+                  role: "shelter" as const,
+                });
+            }
+            
+            toast({
+              title: "Account Created!",
+              description: "Now apply to become a partner shelter.",
+            });
+            // Redirect to shelters section to complete application
+            navigate("/#shelters");
           } else {
             // For member accounts, DON'T create membership automatically
             // User will be a "free member" with community access only
