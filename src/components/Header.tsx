@@ -30,9 +30,9 @@ const Header = () => {
   const dashboardPath = isBusiness ? "/business" : (hasMembership ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
-    await signOut();
     setIsMenuOpen(false);
-    navigate("/");
+    await signOut();
+    // signOut already handles redirect via window.location.href
   };
 
   const getInitials = (name: string) => {
