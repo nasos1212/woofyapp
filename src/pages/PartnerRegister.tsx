@@ -21,6 +21,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import CityMultiSelector from "@/components/CityMultiSelector";
+import { ensureHttps } from "@/lib/utils";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
@@ -149,8 +150,8 @@ const PartnerRegister = () => {
           city: cities.join(", "), // Store as comma-separated string
           phone,
           email: email || user.email || "",
-          website,
-          google_maps_url: googleMapsUrl || null,
+          website: website ? ensureHttps(website) : null,
+          google_maps_url: googleMapsUrl ? ensureHttps(googleMapsUrl) : null,
         })
         .select()
         .single();

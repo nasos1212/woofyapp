@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { ensureHttps } from "@/lib/utils";
 import { 
   Home, 
   Clock, 
@@ -94,12 +95,19 @@ const ShelterDashboard = () => {
   // Update mutation
   const updateMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
+      // Normalize all URL fields to ensure they have https://
+      const normalizedData = {
+        ...data,
+        website: data.website ? ensureHttps(data.website) : null,
+        donation_link: data.donation_link ? ensureHttps(data.donation_link) : null,
+        facebook_url: data.facebook_url ? ensureHttps(data.facebook_url) : null,
+        instagram_url: data.instagram_url ? ensureHttps(data.instagram_url) : null,
+        updated_at: new Date().toISOString(),
+      };
+      
       const { error } = await supabase
         .from('shelters')
-        .update({
-          ...data,
-          updated_at: new Date().toISOString(),
-        })
+        .update(normalizedData)
         .eq('id', shelter?.id);
       
       if (error) throw error;
