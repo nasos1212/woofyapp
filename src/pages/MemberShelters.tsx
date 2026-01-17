@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate } from "react-router-dom";
-import { ArrowLeft, Heart, MapPin, Globe, ExternalLink, Users } from "lucide-react";
+import { ArrowLeft, Heart, MapPin, Globe, Euro } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
@@ -97,28 +97,31 @@ const MemberShelters = () => {
             </div>
           </div>
 
-          {/* Impact Stats */}
-          <Card className="bg-gradient-to-r from-rose-500 to-pink-600 border-0 text-white mb-8">
-            <CardContent className="p-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center">
-                    <Users className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <p className="text-white/80 text-sm">Total Dogs Helped</p>
-                    <p className="text-3xl font-bold">
-                      {shelters.reduce((acc, s) => acc + (s.dogs_helped_count || 0), 0).toLocaleString()}+
-                    </p>
-                  </div>
+          {/* Stats Bar */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <Card className="bg-gradient-to-br from-primary to-teal-600 border-0 text-white">
+              <CardContent className="p-5 flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Heart className="w-6 h-6" />
                 </div>
-                <div className="text-center md:text-right">
+                <div>
                   <p className="text-white/80 text-sm">Partner Shelters</p>
-                  <p className="text-3xl font-bold">{shelters.length}</p>
+                  <p className="text-2xl md:text-3xl font-bold">{shelters.length}</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+            <Card className="bg-gradient-to-br from-teal-500 to-cyan-600 border-0 text-white">
+              <CardContent className="p-5 flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Euro className="w-6 h-6" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-sm">Donated So Far</p>
+                  <p className="text-2xl md:text-3xl font-bold">€1,250+</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Shelters Grid */}
           {isLoading ? (
