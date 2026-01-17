@@ -1616,6 +1616,122 @@ export type Database = {
         }
         Relationships: []
       }
+      shelter_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          photo_url: string
+          shelter_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url: string
+          shelter_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          photo_url?: string
+          shelter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shelter_photos_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shelters: {
+        Row: {
+          address: string | null
+          city: string | null
+          contact_name: string
+          cover_photo_url: string | null
+          created_at: string
+          description: string | null
+          dogs_helped_count: number | null
+          dogs_in_care: string | null
+          donation_link: string | null
+          email: string
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          location: string
+          logo_url: string | null
+          mission_statement: string | null
+          phone: string | null
+          shelter_name: string
+          updated_at: string
+          user_id: string | null
+          verification_status: Database["public"]["Enums"]["verification_status"]
+          verified_at: string | null
+          website: string | null
+          years_operating: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          contact_name: string
+          cover_photo_url?: string | null
+          created_at?: string
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          email: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          location: string
+          logo_url?: string | null
+          mission_statement?: string | null
+          phone?: string | null
+          shelter_name: string
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          contact_name?: string
+          cover_photo_url?: string | null
+          created_at?: string
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          email?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          location?: string
+          logo_url?: string | null
+          mission_statement?: string | null
+          phone?: string | null
+          shelter_name?: string
+          updated_at?: string
+          user_id?: string | null
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
+        }
+        Relationships: []
+      }
       user_achievements: {
         Row: {
           achievement_data: Json | null

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Heart, Home, PawPrint } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -7,37 +7,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
-const shelters = [
-  {
-    name: "Happy Tails Rescue",
-    location: "Dublin, Ireland",
-    dogsHelped: 1240,
-    image: "🏠"
-  },
-  {
-    name: "Second Chance Sanctuary",
-    location: "Cork, Ireland", 
-    dogsHelped: 890,
-    image: "🏠"
-  },
-  {
-    name: "Furever Friends Foundation",
-    location: "Galway, Ireland",
-    dogsHelped: 560,
-    image: "🏠"
-  },
-  {
-    name: "Paws of Hope",
-    location: "Belfast, UK",
-    dogsHelped: 720,
-    image: "🏠"
-  }
-];
+interface Shelter {
+  id: string;
+  shelter_name: string;
+  location: string;
+  dogs_helped_count: number;
+}
 
 const SheltersSection = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shelters, setShelters] = useState<Shelter[]>([]);
   const [formData, setFormData] = useState({
     shelterName: "",
     contactName: "",
@@ -50,28 +32,71 @@ const SheltersSection = () => {
     description: "",
   });
 
+  // Fetch approved shelters from database
+  useEffect(() => {
+    const fetchShelters = async () => {
+      const { data, error } = await supabase
+        .from("shelters")
+        .select("id, shelter_name, location, dogs_helped_count")
+        .eq("verification_status", "approved")
+        .order("dogs_helped_count", { ascending: false });
+
+      if (!error && data) {
+        setShelters(data);
+      }
+    };
+
+    fetchShelters();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
-    setIsDialogOpen(false);
-    setFormData({
-      shelterName: "",
-      contactName: "",
-      email: "",
-      phone: "",
-      location: "",
-      website: "",
-      dogsCount: "",
-      yearsOperating: "",
-      description: "",
-    });
-    setIsSubmitting(false);
+    try {
+      const { error } = await supabase
+        .from("shelters")
+        .insert({
+          shelter_name: formData.shelterName,
+          contact_name: formData.contactName,
+          email: formData.email,
+          phone: formData.phone || null,
+          location: formData.location,
+          website: formData.website || null,
+          dogs_in_care: formData.dogsCount,
+          years_operating: formData.yearsOperating,
+          description: formData.description,
+        });
+
+      if (error) {
+        console.error("Error submitting shelter application:", error);
+        toast.error("Failed to submit application. Please try again.");
+        return;
+      }
+
+      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
+      setIsDialogOpen(false);
+      setFormData({
+        shelterName: "",
+        contactName: "",
+        email: "",
+        phone: "",
+        location: "",
+        website: "",
+        dogsCount: "",
+        yearsOperating: "",
+        description: "",
+      });
+    } catch (err) {
+      console.error("Error:", err);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  // Calculate total stats
+  const totalDogsHelped = shelters.reduce((sum, s) => sum + (s.dogs_helped_count || 0), 0);
 
   return (
     <section id="shelters" className="py-20 bg-gradient-to-b from-wooffy-soft to-background">
@@ -87,7 +112,7 @@ const SheltersSection = () => {
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Every Wooffy membership directly supports whitelisted dog shelters. 
-            Together, we've helped rehome over 3,400 dogs and counting.
+            Together, we're making a difference for dogs in need.
           </p>
         </div>
 
@@ -98,11 +123,15 @@ const SheltersSection = () => {
             <p className="text-muted-foreground text-sm">Donated This Year</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">3,400+</div>
+            <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">
+              {totalDogsHelped > 0 ? `${totalDogsHelped.toLocaleString()}+` : "3,400+"}
+            </div>
             <p className="text-muted-foreground text-sm">Dogs Rehomed</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">12</div>
+            <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">
+              {shelters.length > 0 ? shelters.length : 12}
+            </div>
             <p className="text-muted-foreground text-sm">Partner Shelters</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
@@ -117,22 +146,42 @@ const SheltersSection = () => {
             Our Whitelisted Shelter Partners
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {shelters.map((shelter, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
-              >
-                <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                  <Home className="w-8 h-8 text-rose-500" />
+            {shelters.length > 0 ? (
+              shelters.map((shelter) => (
+                <div 
+                  key={shelter.id}
+                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
+                >
+                  <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Home className="w-8 h-8 text-rose-500" />
+                  </div>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
+                  <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <PawPrint className="w-4 h-4 text-primary" />
+                    <span className="text-foreground font-medium">{shelter.dogs_helped_count || 0} dogs helped</span>
+                  </div>
                 </div>
-                <h4 className="font-display font-semibold text-foreground mb-1">{shelter.name}</h4>
-                <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
-                <div className="flex items-center gap-2 text-sm">
-                  <PawPrint className="w-4 h-4 text-primary" />
-                  <span className="text-foreground font-medium">{shelter.dogsHelped} dogs helped</span>
+              ))
+            ) : (
+              // Show placeholder cards if no shelters yet
+              [...Array(4)].map((_, index) => (
+                <div 
+                  key={index}
+                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
+                >
+                  <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Home className="w-8 h-8 text-rose-500" />
+                  </div>
+                  <h4 className="font-display font-semibold text-foreground mb-1">Coming Soon</h4>
+                  <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
+                  <div className="flex items-center gap-2 text-sm">
+                    <PawPrint className="w-4 h-4 text-primary" />
+                    <span className="text-foreground font-medium">Join us!</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 
@@ -204,7 +253,7 @@ const SheltersSection = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+353 1 234 5678"
+                  placeholder="+357 99 123 456"
                 />
               </div>
             </div>
@@ -217,7 +266,7 @@ const SheltersSection = () => {
                   required
                   value={formData.location}
                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                  placeholder="Dublin, Ireland"
+                  placeholder="Nicosia, Cyprus"
                 />
               </div>
               <div className="space-y-2">

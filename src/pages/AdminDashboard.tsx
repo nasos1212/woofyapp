@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import InfluencerMemberships from "@/components/admin/InfluencerMemberships";
 import UserAnalytics from "@/components/admin/UserAnalytics";
 import BulkNotifications from "@/components/admin/BulkNotifications";
 import MembershipManager from "@/components/admin/MembershipManager";
+import ShelterManager from "@/components/admin/ShelterManager";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -326,6 +327,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="pending" className="gap-1">
               Pending ({pendingBusinesses.length})
             </TabsTrigger>
+            <TabsTrigger value="shelters" className="gap-1">
+              <Home className="w-4 h-4" />
+              Shelters
+            </TabsTrigger>
             <TabsTrigger value="businesses">Businesses</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
@@ -348,6 +353,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="notifications">
             <BulkNotifications />
+          </TabsContent>
+
+          <TabsContent value="shelters">
+            <ShelterManager />
           </TabsContent>
 
           <TabsContent value="pending" className="space-y-4">
