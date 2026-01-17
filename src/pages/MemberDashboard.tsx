@@ -575,7 +575,15 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">View your savings & activity</p>
                     </div>
                   </Link>
-                  <Link to="/#shelters" className="flex items-center gap-3 p-3 bg-rose-50 rounded-xl hover:bg-rose-100 transition-colors">
+                  <button 
+                    onClick={() => {
+                      navigate("/");
+                      setTimeout(() => {
+                        document.getElementById("shelters")?.scrollIntoView({ behavior: "smooth" });
+                      }, 100);
+                    }}
+                    className="flex items-center gap-3 p-3 bg-rose-50 rounded-xl hover:bg-rose-100 transition-colors w-full text-left"
+                  >
                     <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
                       <Heart className="w-5 h-5 text-rose-600" />
                     </div>
@@ -583,7 +591,7 @@ const MemberDashboard = () => {
                       <p className="font-medium text-foreground text-sm">Shelters</p>
                       <p className="text-xs text-muted-foreground">Support local pet shelters</p>
                     </div>
-                  </Link>
+                  </button>
                 </div>
               </div>
               <div className="bg-white rounded-2xl p-6 shadow-soft">
