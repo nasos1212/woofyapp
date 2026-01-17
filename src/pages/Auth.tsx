@@ -120,9 +120,9 @@ const Auth = () => {
         return;
       }
       
-      // User has shelter role but no shelter record - redirect to apply
+      // User has shelter role but no shelter record - redirect to onboarding
       if (hasShelterRole) {
-        navigate("/#shelters");
+        navigate("/shelter-onboarding");
         return;
       }
       
@@ -157,9 +157,9 @@ const Auth = () => {
         return;
       }
       
-      // CASE 3: User selected shelter type - redirect to homepage shelters section to apply
+      // CASE 3: User selected shelter type - redirect to shelter onboarding
       if (accountType === "shelter") {
-        navigate("/#shelters");
+        navigate("/shelter-onboarding");
         return;
       }
       
@@ -372,23 +372,27 @@ const Auth = () => {
             // Pass the full name to pre-fill business name
             navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
           } else if (accountType === "shelter") {
-            // For shelter accounts, add shelter role and redirect to homepage shelters section
+            // For shelter accounts, add shelter role and redirect to shelter onboarding
             const { data: userData } = await supabase.auth.getUser();
             if (userData?.user) {
-              await supabase
+              const { error: roleError } = await supabase
                 .from("user_roles")
                 .insert({
                   user_id: userData.user.id,
                   role: "shelter" as const,
                 });
+              
+              if (roleError) {
+                console.error("Error adding shelter role:", roleError);
+              }
             }
             
             toast({
               title: "Account Created!",
-              description: "Now apply to become a partner shelter.",
+              description: "Now complete your shelter application.",
             });
-            // Redirect to shelters section to complete application
-            navigate("/#shelters");
+            // Navigate to shelter onboarding
+            navigate("/shelter-onboarding");
           } else {
             // For member accounts, DON'T create membership automatically
             // User will be a "free member" with community access only
