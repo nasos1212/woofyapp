@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +43,7 @@ const discountTypes = [
 
 const PartnerRegister = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const { user, loading } = useAuth();
   
@@ -50,8 +51,11 @@ const PartnerRegister = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [existingBusiness, setExistingBusiness] = useState<boolean | null>(null);
   
-  // Business info
-  const [businessName, setBusinessName] = useState("");
+  // Business info - pre-fill from URL param if available
+  const [businessName, setBusinessName] = useState(() => {
+    const nameFromUrl = searchParams.get("name");
+    return nameFromUrl || "";
+  });
   const [category, setCategory] = useState<BusinessCategory | "">("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
@@ -186,11 +190,17 @@ const PartnerRegister = () => {
       <div className="max-w-2xl mx-auto">
         <Button
           variant="ghost"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            if (step > 1) {
+              setStep(step - 1);
+            } else {
+              navigate("/auth?type=business");
+            }
+          }}
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Home
+          {step > 1 ? "Back to Business Info" : "Back to Login"}
         </Button>
 
         {/* Progress - simplified to 2 steps */}
