@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
+import ShelterPhotoUpload from "@/components/ShelterPhotoUpload";
 import { 
   Home, 
   Clock, 
@@ -22,12 +23,11 @@ import {
   Save, 
   LogOut, 
   Heart,
-  Dog,
   Globe,
   Facebook,
   Instagram,
   ExternalLink,
-  ImagePlus
+  Camera
 } from "lucide-react";
 
 const ShelterDashboard = () => {
@@ -271,14 +271,7 @@ const ShelterDashboard = () => {
 
           {/* Stats */}
           {isApproved && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-              <Card>
-                <CardContent className="py-4 text-center">
-                  <Dog className="h-6 w-6 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{shelter.dogs_helped_count || 0}</div>
-                  <div className="text-sm text-muted-foreground">Dogs Helped</div>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-2 gap-4 mb-6">
               <Card>
                 <CardContent className="py-4 text-center">
                   <Heart className="h-6 w-6 text-rose-500 mx-auto mb-2" />
@@ -286,7 +279,7 @@ const ShelterDashboard = () => {
                   <div className="text-sm text-muted-foreground">Dogs in Care</div>
                 </CardContent>
               </Card>
-              <Card className="col-span-2 md:col-span-1">
+              <Card>
                 <CardContent className="py-4 text-center">
                   <Globe className="h-6 w-6 text-blue-500 mx-auto mb-2" />
                   <div className="text-2xl font-bold">{shelter.years_operating || '-'}</div>
@@ -310,6 +303,10 @@ const ShelterDashboard = () => {
                   <TabsTrigger value="basic">Basic Info</TabsTrigger>
                   <TabsTrigger value="about">About</TabsTrigger>
                   <TabsTrigger value="social">Social & Links</TabsTrigger>
+                  <TabsTrigger value="photos" className="gap-1">
+                    <Camera className="h-3 w-3" />
+                    Photos
+                  </TabsTrigger>
                 </TabsList>
 
                 <form onSubmit={handleSubmit}>
@@ -481,6 +478,10 @@ const ShelterDashboard = () => {
                         />
                       </div>
                     </div>
+                  </TabsContent>
+
+                  <TabsContent value="photos">
+                    <ShelterPhotoUpload shelterId={shelter.id} />
                   </TabsContent>
 
                   <div className="flex justify-end mt-6 pt-4 border-t">
