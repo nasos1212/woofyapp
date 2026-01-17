@@ -283,13 +283,14 @@ const Auth = () => {
             });
           }
         } else {
-          // For business accounts, redirect to partner registration
+          // For business accounts, redirect to partner registration with the name
           if (accountType === "business") {
             toast({
               title: "Account Created!",
               description: "Now let's register your business.",
             });
-            navigate("/partner-register");
+            // Pass the full name to pre-fill business name
+            navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
           } else {
             // For member accounts, DON'T create membership automatically
             // User will be a "free member" with community access only
