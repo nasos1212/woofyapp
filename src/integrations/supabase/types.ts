@@ -1656,6 +1656,7 @@ export type Database = {
           address: string | null
           city: string | null
           contact_name: string
+          cover_photo_position: number | null
           cover_photo_url: string | null
           created_at: string
           description: string | null
@@ -1682,6 +1683,7 @@ export type Database = {
           address?: string | null
           city?: string | null
           contact_name: string
+          cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string
           description?: string | null
@@ -1708,6 +1710,7 @@ export type Database = {
           address?: string | null
           city?: string | null
           contact_name?: string
+          cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string
           description?: string | null
