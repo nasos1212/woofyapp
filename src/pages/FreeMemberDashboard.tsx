@@ -180,6 +180,68 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
               </CardContent>
+          </Card>
+          </div>
+
+          {/* Lost Pet Alerts - Full Access */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="font-display text-xl font-bold text-foreground flex items-center gap-2">
+                  <AlertTriangle className="w-6 h-6 text-amber-500" />
+                  Lost Pet Alerts
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-normal">
+                    Full Access
+                  </span>
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Help reunite lost pets with their families across Cyprus
+                </p>
+              </div>
+            </div>
+
+            <Card className="bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200 hover:shadow-lg transition-all">
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                      <AlertTriangle className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-display font-bold text-lg text-amber-800">
+                        Community Pet Network
+                      </h3>
+                      <p className="text-amber-600/80 text-sm">
+                        Report lost pets, help neighbors find theirs
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 w-full md:w-auto">
+                    <Button 
+                      onClick={() => navigate("/lost-pet-alerts")}
+                      className="flex-1 md:flex-none bg-amber-600 hover:bg-amber-700"
+                    >
+                      View Alerts
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Features */}
+                <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-amber-200">
+                  <div className="text-center">
+                    <p className="font-bold text-2xl text-amber-700">📢</p>
+                    <p className="text-xs text-amber-600/70">Report Lost</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-2xl text-amber-700">🔔</p>
+                    <p className="text-xs text-amber-600/70">Get Alerts</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-bold text-2xl text-amber-700">🤝</p>
+                    <p className="text-xs text-amber-600/70">Help Find</p>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           </div>
 
@@ -248,12 +310,6 @@ const FreeMemberDashboard = () => {
                 description="Vaccination tracking"
                 icon={<Syringe className="w-5 h-5 text-blue-500" />}
                 benefit="Never miss a vaccination with smart reminders"
-              />
-              <LockedFeatureCard
-                title="Lost Pet Alerts"
-                description="Community network"
-                icon={<AlertTriangle className="w-5 h-5 text-amber-500" />}
-                benefit="Instant alerts to 250+ pet owners if your pet goes missing"
               />
               <LockedFeatureCard
                 title="10% to Shelters"
