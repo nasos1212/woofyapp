@@ -32,14 +32,24 @@ const FreeMemberDashboard = () => {
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [businessRedirectPath, setBusinessRedirectPath] = useState<string | null>(null);
-  const [checkingBusiness, setCheckingBusiness] = useState(false);
+  const [checkingBusiness, setCheckingBusiness] = useState(true); // Start true to prevent flash
 
   // When user is detected as business, check if they have a business record
   useEffect(() => {
     const checkBusinessRecord = async () => {
-      if (!user || !isBusiness || accountTypeLoading) return;
+      // Wait for account type check to complete
+      if (accountTypeLoading) return;
       
-      setCheckingBusiness(true);
+      // If not a business user, no need to check further
+      if (!isBusiness) {
+        setCheckingBusiness(false);
+        return;
+      }
+      
+      if (!user) {
+        setCheckingBusiness(false);
+        return;
+      }
       
       const { data: business } = await supabase
         .from("businesses")
