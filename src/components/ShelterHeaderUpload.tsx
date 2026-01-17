@@ -2,24 +2,28 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { Upload, X, Image as ImageIcon, User } from "lucide-react";
+import { Upload, X, Image as ImageIcon, User, Move } from "lucide-react";
 import { validateImageFile } from "@/lib/fileValidation";
 
 interface ShelterHeaderUploadProps {
   shelterId: string;
   currentLogoUrl: string | null;
   currentCoverUrl: string | null;
+  currentCoverPosition?: number | null;
 }
 
-const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl }: ShelterHeaderUploadProps) => {
+const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, currentCoverPosition }: ShelterHeaderUploadProps) => {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [savingPosition, setSavingPosition] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPosition, setCoverPosition] = useState(currentCoverPosition ?? 50);
   const queryClient = useQueryClient();
 
   const handleFileSelect = (
@@ -128,6 +132,29 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl }: She
     }
   };
 
+  const handleSavePosition = async () => {
+    setSavingPosition(true);
+    try {
+      const { error } = await supabase
+        .from('shelters')
+        .update({ 
+          cover_photo_position: coverPosition, 
+          updated_at: new Date().toISOString() 
+        })
+        .eq('id', shelterId);
+
+      if (error) throw error;
+
+      toast.success("Cover position saved!");
+      queryClient.invalidateQueries({ queryKey: ['my-shelter'] });
+    } catch (error: any) {
+      console.error('Position save error:', error);
+      toast.error("Failed to save position");
+    } finally {
+      setSavingPosition(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Cover Photo Upload */}
@@ -168,14 +195,44 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl }: She
               </Button>
             </div>
           ) : currentCoverUrl ? (
-            <div className="space-y-3">
-              <div className="relative">
+            <div className="space-y-4">
+              <div className="relative overflow-hidden rounded-lg h-40">
                 <img
                   src={currentCoverUrl}
                   alt="Current cover"
-                  className="w-full h-40 object-cover rounded-lg"
+                  className="w-full h-[200%] object-cover absolute left-0"
+                  style={{ top: `${-(coverPosition)}%` }}
                 />
               </div>
+              
+              {/* Position Adjustment */}
+              <div className="space-y-2 p-3 bg-muted/50 rounded-lg">
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <Move className="h-4 w-4" />
+                  Adjust Position
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground">Top</span>
+                  <Slider
+                    value={[coverPosition]}
+                    onValueChange={(value) => setCoverPosition(value[0])}
+                    min={0}
+                    max={100}
+                    step={1}
+                    className="flex-1"
+                  />
+                  <span className="text-xs text-muted-foreground">Bottom</span>
+                </div>
+                <Button 
+                  size="sm" 
+                  onClick={handleSavePosition}
+                  disabled={savingPosition || coverPosition === (currentCoverPosition ?? 50)}
+                  className="w-full"
+                >
+                  {savingPosition ? "Saving..." : "Save Position"}
+                </Button>
+              </div>
+
               <div className="flex gap-2">
                 <label className="flex-1">
                   <Button variant="outline" className="w-full" asChild>

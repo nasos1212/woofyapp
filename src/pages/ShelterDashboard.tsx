@@ -485,6 +485,7 @@ const ShelterDashboard = () => {
                       shelterId={shelter.id} 
                       currentLogoUrl={shelter.logo_url}
                       currentCoverUrl={shelter.cover_photo_url}
+                      currentCoverPosition={shelter.cover_photo_position}
                     />
                   </TabsContent>
 
