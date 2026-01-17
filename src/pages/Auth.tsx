@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff } from "lucide-react";
+import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,7 @@ const authSchema = z.object({
 });
 
 const Auth = () => {
-  const [accountType, setAccountType] = useState<"member" | "business" | null>(null);
+  const [accountType, setAccountType] = useState<"member" | "business" | "shelter" | null>(null);
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ const Auth = () => {
   // Check URL params for account type
   useEffect(() => {
     const typeParam = searchParams.get("type");
-    if (typeParam === "business" || typeParam === "member") {
+    if (typeParam === "business" || typeParam === "member" || typeParam === "shelter") {
       setAccountType(typeParam);
     }
   }, [searchParams]);
@@ -55,8 +55,8 @@ const Auth = () => {
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Check business role, business record, and membership status in parallel
-      const [businessRoleResult, businessResult, membershipResult] = await Promise.all([
+      // Check business role, business record, membership status, and shelter in parallel
+      const [businessRoleResult, businessResult, membershipResult, shelterResult] = await Promise.all([
         supabase
           .from("user_roles")
           .select("id")
@@ -72,12 +72,18 @@ const Auth = () => {
           .from("memberships")
           .select("id")
           .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("shelters")
+          .select("id, verification_status")
+          .eq("user_id", user.id)
           .maybeSingle()
       ]);
       
       const { data: businessRole, error: roleError } = businessRoleResult;
       const { data: business, error: businessError } = businessResult;
       const { data: membership, error: membershipError } = membershipResult;
+      const { data: shelter, error: shelterError } = shelterResult;
       
       if (roleError) {
         console.error("Error checking business role:", roleError);
@@ -88,10 +94,20 @@ const Auth = () => {
       if (membershipError) {
         console.error("Error checking membership:", membershipError);
       }
+      if (shelterError) {
+        console.error("Error checking shelter:", shelterError);
+      }
       
       const hasBusinessRole = !!businessRole;
       const hasBusiness = !!business;
       const hasMembership = !!membership;
+      const hasShelter = !!shelter;
+      
+      // CASE 0: User has a shelter - redirect to shelter dashboard
+      if (hasShelter) {
+        navigate("/shelter-dashboard");
+        return;
+      }
       
       // CASE 1: User has business role OR business account - redirect to business
       // This catches users who started business registration but didn't complete it
@@ -124,7 +140,13 @@ const Auth = () => {
         return;
       }
       
-      // CASE 3: User has neither business role nor membership - they're new
+      // CASE 3: User selected shelter type - redirect to homepage shelters section to apply
+      if (accountType === "shelter") {
+        navigate("/#shelters");
+        return;
+      }
+      
+      // CASE 4: User has neither business role nor membership - they're new
       // If they selected business type, add role and redirect to partner registration
       if (accountType === "business") {
         // Fetch user's name from profile to pre-fill business name
@@ -415,6 +437,25 @@ const Auth = () => {
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
                       Partner with us to reach thousands of pet owners
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => setAccountType("shelter")}
+                className="group p-6 rounded-xl border-2 border-border hover:border-rose-400 bg-card hover:bg-rose-50 transition-all duration-300 text-left"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-rose-100 flex items-center justify-center group-hover:scale-110 transition-transform group-hover:bg-rose-500">
+                    <Home className="w-7 h-7 text-rose-500 group-hover:text-white transition-colors" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-semibold text-lg text-foreground">
+                      I'm a Shelter
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Apply to receive 10% of membership proceeds
                     </p>
                   </div>
                 </div>
