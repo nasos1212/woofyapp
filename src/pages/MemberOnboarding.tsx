@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown } from "lucide-react";
+import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,6 +75,14 @@ const plans: PlanOption[] = [
   },
 ];
 
+interface ExistingMembership {
+  id: string;
+  plan_type: string;
+  max_pets: number;
+  is_active: boolean;
+  expires_at: string;
+}
+
 const MemberOnboarding = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -85,6 +93,8 @@ const MemberOnboarding = () => {
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [membershipId, setMembershipId] = useState<string | null>(null);
+  const [existingMembership, setExistingMembership] = useState<ExistingMembership | null>(null);
+  const [isReactivating, setIsReactivating] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -93,24 +103,55 @@ const MemberOnboarding = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    // Check if user already has an active membership set up
+    // Check if user already has a membership set up
     const checkExistingSetup = async () => {
       if (!user) return;
       
       const { data: membership } = await supabase
         .from("memberships")
-        .select("id, plan_type, max_pets, is_active")
+        .select("id, plan_type, max_pets, is_active, expires_at")
         .eq("user_id", user.id)
         .maybeSingle();
 
-      if (membership && membership.is_active) {
-        // User already has an active membership - redirect to dashboard
-        navigate("/member");
+      if (membership) {
+        if (membership.is_active) {
+          // User has an active membership - redirect to dashboard
+          navigate("/member");
+        } else {
+          // User has an inactive/expired membership - show reactivation option
+          setExistingMembership(membership);
+          setMembershipId(membership.id);
+        }
       }
     };
 
     checkExistingSetup();
   }, [user, navigate]);
+
+  const handleReactivate = async () => {
+    if (!user || !existingMembership) return;
+    
+    setIsReactivating(true);
+    try {
+      const { error } = await supabase
+        .from("memberships")
+        .update({
+          is_active: true,
+          expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
+        })
+        .eq("id", existingMembership.id);
+
+      if (error) throw error;
+
+      toast.success("Welcome back! Your membership has been reactivated 🎉");
+      navigate("/member");
+    } catch (error: any) {
+      console.error("Reactivation error:", error);
+      toast.error(error.message || "Failed to reactivate membership");
+    } finally {
+      setIsReactivating(false);
+    }
+  };
 
   const addPet = () => {
     if (selectedPlan && pets.length < selectedPlan.pets) {
@@ -259,31 +300,91 @@ const MemberOnboarding = () => {
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
         <Header />
         <div className="container max-w-4xl mx-auto px-4 py-8 pt-24">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-12">
-            <div className={`flex items-center gap-2 ${step === "plan" ? "text-primary" : "text-muted-foreground"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "plan" ? "bg-primary text-primary-foreground" : "bg-green-500 text-white"}`}>
-                {step !== "plan" ? <Check className="w-4 h-4" /> : "1"}
+          {/* Only show step indicators when not in reactivation flow */}
+          {!existingMembership && (
+            <div className="flex items-center justify-center gap-2 sm:gap-4 mb-12">
+              <div className={`flex items-center gap-2 ${step === "plan" ? "text-primary" : "text-muted-foreground"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "plan" ? "bg-primary text-primary-foreground" : "bg-green-500 text-white"}`}>
+                  {step !== "plan" ? <Check className="w-4 h-4" /> : "1"}
+                </div>
+                <span className="text-sm font-medium hidden sm:inline">Choose Plan</span>
               </div>
-              <span className="text-sm font-medium hidden sm:inline">Choose Plan</span>
-            </div>
-            <div className="w-4 sm:w-8 h-0.5 bg-border" />
-            <div className={`flex items-center gap-2 ${step === "pets" ? "text-primary" : "text-muted-foreground"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : step === "location" ? "bg-green-500 text-white" : "bg-muted"}`}>
-                {step === "location" ? <Check className="w-4 h-4" /> : "2"}
+              <div className="w-4 sm:w-8 h-0.5 bg-border" />
+              <div className={`flex items-center gap-2 ${step === "pets" ? "text-primary" : "text-muted-foreground"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "pets" ? "bg-primary text-primary-foreground" : step === "location" ? "bg-green-500 text-white" : "bg-muted"}`}>
+                  {step === "location" ? <Check className="w-4 h-4" /> : "2"}
+                </div>
+                <span className="text-sm font-medium hidden sm:inline">Add Pets</span>
               </div>
-              <span className="text-sm font-medium hidden sm:inline">Add Pets</span>
-            </div>
-            <div className="w-4 sm:w-8 h-0.5 bg-border" />
-            <div className={`flex items-center gap-2 ${step === "location" ? "text-primary" : "text-muted-foreground"}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "location" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                3
+              <div className="w-4 sm:w-8 h-0.5 bg-border" />
+              <div className={`flex items-center gap-2 ${step === "location" ? "text-primary" : "text-muted-foreground"}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step === "location" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                  3
+                </div>
+                <span className="text-sm font-medium hidden sm:inline">Your City</span>
               </div>
-              <span className="text-sm font-medium hidden sm:inline">Your City</span>
             </div>
-          </div>
+          )}
+
+          {/* Reactivation Flow for Expired Members */}
+          {existingMembership && (
+            <Card className="max-w-lg mx-auto mb-8 border-primary/30 bg-gradient-to-br from-primary/5 to-accent/5">
+              <CardHeader className="text-center pb-2">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <RefreshCw className="w-8 h-8 text-primary" />
+                </div>
+                <CardTitle className="font-display text-2xl">Welcome Back! 🐾</CardTitle>
+                <CardDescription className="text-base">
+                  Your membership expired on {new Date(existingMembership.expires_at).toLocaleDateString()}. 
+                  Reactivate now to continue enjoying exclusive discounts!
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Previous Plan</span>
+                    <span className="font-medium capitalize">{existingMembership.plan_type}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Pets Covered</span>
+                    <span className="font-medium">{existingMembership.max_pets}</span>
+                  </div>
+                </div>
+                
+                <Button 
+                  variant="hero" 
+                  className="w-full gap-2" 
+                  size="lg"
+                  onClick={handleReactivate}
+                  disabled={isReactivating}
+                >
+                  {isReactivating ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Reactivating...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      Reactivate My Membership
+                    </>
+                  )}
+                </Button>
+                
+                <div className="text-center">
+                  <button 
+                    onClick={() => setExistingMembership(null)}
+                    className="text-sm text-muted-foreground hover:text-foreground underline"
+                  >
+                    Or start fresh with a new plan
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Step 1: Choose Plan */}
-          {step === "plan" && (
+          {step === "plan" && !existingMembership && (
             <div className="space-y-8">
               <div className="text-center">
                 <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">
