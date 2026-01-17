@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import CityMultiSelector from "@/components/CityMultiSelector";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
@@ -69,7 +70,7 @@ const PartnerRegister = () => {
   const [category, setCategory] = useState<BusinessCategory | "">("");
   const [description, setDescription] = useState("");
   const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
+  const [cities, setCities] = useState<string[]>([]);
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
@@ -91,14 +92,14 @@ const PartnerRegister = () => {
       category !== "" ||
       description !== "" ||
       address !== "" ||
-      city !== "" ||
+      cities.length > 0 ||
       phone !== "" ||
       email !== "" ||
       website !== "" ||
       googleMapsUrl !== "" ||
       offers.some(o => o.title || o.description || o.discountValue || o.terms)
     );
-  }, [businessName, initialName, category, description, address, city, phone, email, website, googleMapsUrl, offers]);
+  }, [businessName, initialName, category, description, address, cities, phone, email, website, googleMapsUrl, offers]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -153,7 +154,7 @@ const PartnerRegister = () => {
           category: category as BusinessCategory,
           description,
           address,
-          city,
+          city: cities.join(", "), // Store as comma-separated string
           phone,
           email: email || user.email || "",
           website,
@@ -359,16 +360,15 @@ const PartnerRegister = () => {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      placeholder="City"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                    />
-                  </div>
                 </div>
+
+                {/* Multi-city selector */}
+                <CityMultiSelector
+                  selectedLocations={cities}
+                  onLocationsChange={setCities}
+                  label="Service Locations"
+                  description="Select cities where your business operates. You can select multiple cities or specific areas."
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -470,10 +470,10 @@ const PartnerRegister = () => {
                       <span className="text-muted-foreground">Category:</span>
                       <span className="font-medium">{categories.find(c => c.value === category)?.label}</span>
                     </div>
-                    {city && (
+                    {cities.length > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Location:</span>
-                        <span className="font-medium">{city}</span>
+                        <span className="text-muted-foreground">Locations:</span>
+                        <span className="font-medium text-right max-w-[200px]">{cities.join(", ")}</span>
                       </div>
                     )}
                   </div>
