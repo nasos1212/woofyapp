@@ -93,12 +93,13 @@ const ShelterProfile = () => {
 
       <div className="min-h-screen bg-background">
         {/* Cover Photo */}
-        <div className="relative h-64 md:h-80 bg-gradient-to-br from-primary/20 to-accent/20">
+        <div className="relative h-64 md:h-80 bg-gradient-to-br from-primary/20 to-accent/20 overflow-hidden">
           {shelter.cover_photo_url ? (
             <img 
               src={shelter.cover_photo_url} 
               alt={`${shelter.shelter_name} cover`}
-              className="w-full h-full object-cover"
+              className="w-full h-[200%] object-cover absolute left-0"
+              style={{ top: `${-(shelter.cover_photo_position ?? 50)}%` }}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
