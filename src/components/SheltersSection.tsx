@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Heart, Home, PawPrint } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -148,9 +149,10 @@ const SheltersSection = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {shelters.length > 0 ? (
               shelters.map((shelter) => (
-                <div 
+                <Link 
                   key={shelter.id}
-                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
+                  to={`/shelter/${shelter.id}`}
+                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group cursor-pointer"
                 >
                   <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Home className="w-8 h-8 text-rose-500" />
@@ -161,7 +163,7 @@ const SheltersSection = () => {
                     <PawPrint className="w-4 h-4 text-primary" />
                     <span className="text-foreground font-medium">{shelter.dogs_helped_count || 0} dogs helped</span>
                   </div>
-                </div>
+                </Link>
               ))
             ) : (
               // Show placeholder cards if no shelters yet
