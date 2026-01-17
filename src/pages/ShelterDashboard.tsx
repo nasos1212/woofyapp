@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
 import ShelterPhotoUpload from "@/components/ShelterPhotoUpload";
+import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import { 
   Home, 
   Clock, 
@@ -27,7 +28,8 @@ import {
   Facebook,
   Instagram,
   ExternalLink,
-  Camera
+  Camera,
+  ImageIcon
 } from "lucide-react";
 
 const ShelterDashboard = () => {
@@ -299,10 +301,14 @@ const ShelterDashboard = () => {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="basic">
-                <TabsList className="mb-6">
+                <TabsList className="mb-6 flex-wrap">
                   <TabsTrigger value="basic">Basic Info</TabsTrigger>
                   <TabsTrigger value="about">About</TabsTrigger>
                   <TabsTrigger value="social">Social & Links</TabsTrigger>
+                  <TabsTrigger value="branding" className="gap-1">
+                    <ImageIcon className="h-3 w-3" />
+                    Branding
+                  </TabsTrigger>
                   <TabsTrigger value="photos" className="gap-1">
                     <Camera className="h-3 w-3" />
                     Photos
@@ -478,6 +484,14 @@ const ShelterDashboard = () => {
                         />
                       </div>
                     </div>
+                  </TabsContent>
+
+                  <TabsContent value="branding">
+                    <ShelterHeaderUpload 
+                      shelterId={shelter.id} 
+                      currentLogoUrl={shelter.logo_url}
+                      currentCoverUrl={shelter.cover_photo_url}
+                    />
                   </TabsContent>
 
                   <TabsContent value="photos">
