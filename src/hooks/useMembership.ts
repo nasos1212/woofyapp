@@ -49,7 +49,7 @@ export const useMembership = () => {
     }
   }, [user, authLoading]);
 
-  const hasMembership = !!membership && membership.is_active;
+  const hasMembership = !!membership && membership.is_active === true;
   const isExpired = membership ? new Date(membership.expires_at) < new Date() : false;
 
   return {
