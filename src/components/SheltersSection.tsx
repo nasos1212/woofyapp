@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { ensureHttps } from "@/lib/utils";
 
 interface Shelter {
   id: string;
@@ -111,7 +112,7 @@ const SheltersSection = () => {
           email: formData.email,
           phone: formData.phone || null,
           location: formData.location,
-          website: formData.website || null,
+          website: formData.website ? ensureHttps(formData.website) : null,
           dogs_in_care: formData.dogsCount,
           years_operating: formData.yearsOperating,
           description: formData.description,

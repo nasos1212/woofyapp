@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Helmet } from "react-helmet-async";
+import { ensureHttps } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -163,7 +164,7 @@ const ShelterProfile = () => {
                     
                     {shelter.donation_link && (
                       <Button asChild className="gap-2">
-                        <a href={shelter.donation_link} target="_blank" rel="noopener noreferrer">
+                        <a href={ensureHttps(shelter.donation_link)} target="_blank" rel="noopener noreferrer">
                           <Heart className="h-4 w-4" />
                           Donate Now
                           <ExternalLink className="h-3 w-3" />
@@ -287,7 +288,7 @@ const ShelterProfile = () => {
                     <div>
                       <div className="font-medium">Website</div>
                       <a 
-                        href={shelter.website} 
+                        href={ensureHttps(shelter.website)} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-primary hover:underline"
@@ -304,7 +305,7 @@ const ShelterProfile = () => {
                 <div className="flex gap-3 mt-6 pt-4 border-t">
                   {shelter.facebook_url && (
                     <Button variant="outline" size="sm" asChild>
-                      <a href={shelter.facebook_url} target="_blank" rel="noopener noreferrer">
+                      <a href={ensureHttps(shelter.facebook_url)} target="_blank" rel="noopener noreferrer">
                         <Facebook className="h-4 w-4 mr-2" />
                         Facebook
                       </a>
@@ -312,7 +313,7 @@ const ShelterProfile = () => {
                   )}
                   {shelter.instagram_url && (
                     <Button variant="outline" size="sm" asChild>
-                      <a href={shelter.instagram_url} target="_blank" rel="noopener noreferrer">
+                      <a href={ensureHttps(shelter.instagram_url)} target="_blank" rel="noopener noreferrer">
                         <Instagram className="h-4 w-4 mr-2" />
                         Instagram
                       </a>

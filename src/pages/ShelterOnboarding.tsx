@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { Dog, Loader2 as LoaderIcon } from "lucide-react";
+import { ensureHttps } from "@/lib/utils";
 
 const ShelterOnboarding = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const ShelterOnboarding = () => {
         city: city || null,
         location: city || "Cyprus",
         address: address || null,
-        website: website || null,
+        website: website ? ensureHttps(website) : null,
         description: description || null,
         mission_statement: missionStatement || null,
         dogs_in_care: dogsInCare || null,
