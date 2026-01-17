@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -50,7 +51,15 @@ interface NotificationPreferences {
 
 const LostPetAlerts = () => {
   const { user, loading } = useAuth();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
+
+  // Redirect business users
+  useEffect(() => {
+    if (!loading && !accountTypeLoading && isBusiness) {
+      navigate("/business");
+    }
+  }, [loading, accountTypeLoading, isBusiness, navigate]);
   const [alerts, setAlerts] = useState<LostPetAlert[]>([]);
   const [myPets, setMyPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);

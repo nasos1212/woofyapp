@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
@@ -65,6 +66,7 @@ const suggestedQuestions = [
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const { trackAIChat, trackFeatureUse } = useActivityTracking();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -80,12 +82,16 @@ const PetHealthAssistant = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth?type=member");
-    } else if (!loading && !membershipLoading && user && !hasMembership) {
-      navigate("/member/free");
+    if (!loading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth?type=member");
+      } else if (isBusiness) {
+        navigate("/business");
+      } else if (!membershipLoading && !hasMembership) {
+        navigate("/member/free");
+      }
     }
-  }, [user, loading, hasMembership, membershipLoading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, isBusiness, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (user) {

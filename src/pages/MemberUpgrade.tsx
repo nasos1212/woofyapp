@@ -16,6 +16,7 @@ import {
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { format, differenceInDays, addYears } from "date-fns";
@@ -79,8 +80,16 @@ const plans: PlanOption[] = [
 
 const MemberUpgrade = () => {
   const { user, loading } = useAuth();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Redirect business users
+  useEffect(() => {
+    if (!loading && !accountTypeLoading && isBusiness) {
+      navigate("/business");
+    }
+  }, [loading, accountTypeLoading, isBusiness, navigate]);
   const [membership, setMembership] = useState<Membership | null>(null);
   const [petCount, setPetCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);

@@ -15,6 +15,7 @@ import {
 import RatingPromptDialog from "@/components/RatingPromptDialog";
 import Header from "@/components/Header";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { useRatingPrompts } from "@/hooks/useRatingPrompts";
@@ -76,6 +77,7 @@ interface NearbyOffer {
 
 const MemberDashboard = () => {
   const { user, loading, signOut } = useAuth();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
@@ -278,7 +280,7 @@ const MemberDashboard = () => {
     ? Math.max(0, Math.ceil((new Date(membership.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : 0;
 
-  if (loading) {
+  if (loading || accountTypeLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -288,6 +290,11 @@ const MemberDashboard = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Business users should never see the member dashboard
+  if (isBusiness) {
+    return <Navigate to="/business" replace />;
   }
 
   // Redirect free users to the free member dashboard

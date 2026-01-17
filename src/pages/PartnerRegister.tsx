@@ -165,13 +165,13 @@ const PartnerRegister = () => {
       
       if (businessError) throw businessError;
       
-      // Add business role
+      // Ensure business role exists (upsert in case it wasn't added during signup)
       await supabase
         .from("user_roles")
-        .insert({
+        .upsert({
           user_id: user.id,
           role: "business" as const,
-        });
+        }, { onConflict: 'user_id,role' });
       
       // Create offers - only include offers with both title and discount value
       const validOffers = offers.filter(o => o.title.trim() && o.discountValue && parseFloat(o.discountValue) > 0);

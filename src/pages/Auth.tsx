@@ -291,8 +291,19 @@ const Auth = () => {
             });
           }
         } else {
-          // For business accounts, redirect to partner registration with the name
+          // For business accounts, add business role immediately and redirect to partner registration
           if (accountType === "business") {
+            // Add business role so they're recognized as business users even before completing registration
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData?.user) {
+              await supabase
+                .from("user_roles")
+                .insert({
+                  user_id: userData.user.id,
+                  role: "business" as const,
+                });
+            }
+            
             toast({
               title: "Account Created!",
               description: "Now let's register your business.",

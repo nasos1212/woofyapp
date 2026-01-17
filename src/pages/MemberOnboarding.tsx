@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PetType, getBreedsByPetType } from "@/data/petBreeds";
@@ -85,6 +86,7 @@ interface ExistingMembership {
 
 const MemberOnboarding = () => {
   const { user, loading } = useAuth();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [step, setStep] = useState<"plan" | "pets" | "location">("plan");
   const [selectedPlan, setSelectedPlan] = useState<PlanOption | null>(null);
@@ -97,10 +99,14 @@ const MemberOnboarding = () => {
   const [isReactivating, setIsReactivating] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth?type=member");
+    if (!loading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth?type=member");
+      } else if (isBusiness) {
+        navigate("/business");
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, accountTypeLoading, isBusiness, navigate]);
 
   useEffect(() => {
     // Check if user already has a membership set up
