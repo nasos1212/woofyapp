@@ -554,6 +554,35 @@ const Auth = () => {
   }
 
   const isBusiness = accountType === "business";
+  const isShelter = accountType === "shelter";
+
+  const getAccountIcon = () => {
+    if (isBusiness) return <Building2 className="w-8 h-8 text-primary-foreground" />;
+    if (isShelter) return <Home className="w-8 h-8 text-white" />;
+    return <Dog className="w-8 h-8 text-primary-foreground" />;
+  };
+
+  const getAccountLabel = () => {
+    if (isBusiness) return "Business Account";
+    if (isShelter) return "Shelter Account";
+    return "Pet Owner Account";
+  };
+
+  const getAccountDescription = () => {
+    if (isBusiness) return "Partner with us to reach pet owners";
+    if (isShelter) return "Apply to receive 10% of membership proceeds";
+    return "Your premium pet membership awaits";
+  };
+
+  const getHeaderBgClass = () => {
+    if (isShelter) return "bg-rose-500";
+    return "bg-gradient-hero";
+  };
+
+  const getBadgeBgClass = () => {
+    if (isShelter) return "bg-rose-100 text-rose-700";
+    return "bg-secondary text-secondary-foreground";
+  };
 
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
@@ -570,32 +599,30 @@ const Auth = () => {
         <div className="bg-card rounded-2xl shadow-card p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
-              {isBusiness ? (
-                <Building2 className="w-8 h-8 text-primary-foreground" />
-              ) : (
-                <Dog className="w-8 h-8 text-primary-foreground" />
-              )}
+            <div className={`w-16 h-16 ${getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+              {getAccountIcon()}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
               {isLogin ? "Welcome Back" : "Join Wooffy"}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {isBusiness 
-                ? "Partner with us to reach pet owners"
-                : "Your premium pet membership awaits"
-              }
+              {getAccountDescription()}
             </p>
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary text-sm text-secondary-foreground">
+            <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
               {isBusiness ? (
                 <>
                   <Building2 className="w-4 h-4" />
-                  Business Account
+                  {getAccountLabel()}
+                </>
+              ) : isShelter ? (
+                <>
+                  <Home className="w-4 h-4" />
+                  {getAccountLabel()}
                 </>
               ) : (
                 <>
                   <Dog className="w-4 h-4" />
-                  Pet Owner Account
+                  {getAccountLabel()}
                 </>
               )}
             </div>
