@@ -289,25 +289,14 @@ const PartnerRegister = () => {
           </AlertDialogContent>
         </AlertDialog>
 
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            onClick={handleBackClick}
-            className="gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {step > 1 ? "Back to Business Info" : "Back to Home"}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            onClick={handleSignOut}
-            className="gap-2 text-destructive hover:text-destructive"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={handleBackClick}
+          className="mb-6 gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {step > 1 ? "Back to Business Info" : "Back to Home"}
+        </Button>
 
         {/* Progress - simplified to 2 steps */}
         <div className="flex items-center gap-4 mb-8">
