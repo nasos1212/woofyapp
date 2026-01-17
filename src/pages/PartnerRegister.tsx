@@ -220,10 +220,10 @@ const PartnerRegister = () => {
     if (step > 1) {
       setStep(step - 1);
     } else if (hasUnsavedChanges) {
-      setPendingNavigation("/auth?type=business");
+      setPendingNavigation("/");
       setShowExitDialog(true);
     } else {
-      navigate("/auth?type=business");
+      navigate("/");
     }
   };
 
@@ -270,7 +270,7 @@ const PartnerRegister = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {step > 1 ? "Back to Business Info" : "Back to Login"}
+          {step > 1 ? "Back to Business Info" : "Back to Home"}
         </Button>
 
         {/* Progress - simplified to 2 steps */}
