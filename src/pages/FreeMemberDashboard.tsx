@@ -101,7 +101,7 @@ const FreeMemberDashboard = () => {
                       size="lg"
                       variant="outline"
                       onClick={() => navigate("/community/ask")}
-                      className="border-white/40 text-white hover:bg-white/10 gap-2"
+                      className="border-white/40 bg-white/10 text-teal-700 hover:bg-white/20 gap-2"
                     >
                       <HelpCircle className="w-5 h-5" />
                       Ask a Question
