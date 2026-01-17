@@ -55,8 +55,14 @@ const Auth = () => {
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 300));
       
-      // Check both business and membership status in parallel
-      const [businessResult, membershipResult] = await Promise.all([
+      // Check business role, business record, and membership status in parallel
+      const [businessRoleResult, businessResult, membershipResult] = await Promise.all([
+        supabase
+          .from("user_roles")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("role", "business")
+          .maybeSingle(),
         supabase
           .from("businesses")
           .select("id, verification_status")
@@ -69,9 +75,13 @@ const Auth = () => {
           .maybeSingle()
       ]);
       
+      const { data: businessRole, error: roleError } = businessRoleResult;
       const { data: business, error: businessError } = businessResult;
       const { data: membership, error: membershipError } = membershipResult;
       
+      if (roleError) {
+        console.error("Error checking business role:", roleError);
+      }
       if (businessError) {
         console.error("Error checking business:", businessError);
       }
@@ -79,20 +89,32 @@ const Auth = () => {
         console.error("Error checking membership:", membershipError);
       }
       
+      const hasBusinessRole = !!businessRole;
       const hasBusiness = !!business;
       const hasMembership = !!membership;
       
-      // CASE 1: User has a business account - always redirect to business
-      if (hasBusiness) {
-        navigate("/business");
+      // CASE 1: User has business role OR business account - redirect to business
+      // This catches users who started business registration but didn't complete it
+      if (hasBusinessRole || hasBusiness) {
+        // Fetch user's name from profile to pre-fill business name if needed
+        if (!hasBusiness) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("full_name")
+            .eq("user_id", user.id)
+            .maybeSingle();
+          
+          const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
+          navigate(`/partner-register${nameParam}`);
+        } else {
+          navigate("/business");
+        }
         return;
       }
       
-      // CASE 2: User has a membership (pet owner) - always redirect to member dashboard
-      // This handles the case where someone clicks "business" but is actually a pet owner
+      // CASE 2: User has a membership (pet owner) - redirect to member dashboard
       if (hasMembership) {
         if (accountType === "business") {
-          // User clicked business but they're a pet owner - inform them
           toast({
             title: "Pet Owner Account Found",
             description: "You're registered as a pet owner. Redirecting to your dashboard.",
@@ -102,8 +124,8 @@ const Auth = () => {
         return;
       }
       
-      // CASE 3: User has neither business nor membership - they're new
-      // If they selected business type but have no business, redirect to partner registration
+      // CASE 3: User has neither business role nor membership - they're new
+      // If they selected business type, add role and redirect to partner registration
       if (accountType === "business") {
         // Fetch user's name from profile to pre-fill business name
         const { data: profile } = await supabase
