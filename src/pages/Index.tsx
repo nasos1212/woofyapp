@@ -27,14 +27,14 @@ const Index = () => {
       
       setCheckingMembership(true);
       
-      // Check if user has a membership
+      // Check if user has an active membership
       const { data: membership } = await supabase
         .from("memberships")
-        .select("id")
+        .select("id, is_active")
         .eq("user_id", user.id)
         .maybeSingle();
       
-      if (membership) {
+      if (membership && membership.is_active) {
         navigate("/member");
       } else {
         navigate("/member/free");
