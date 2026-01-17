@@ -25,6 +25,12 @@ const Index = () => {
     const checkAndRedirect = async () => {
       if (!user) return;
       
+      // Don't redirect if user is navigating to a specific section (hash)
+      if (window.location.hash) {
+        setCheckingMembership(false);
+        return;
+      }
+      
       setCheckingMembership(true);
       
       // Check user roles and status in parallel
@@ -77,6 +83,16 @@ const Index = () => {
     }
   }, [user, loading, navigate]);
 
+  // Scroll to hash section after page loads
+  useEffect(() => {
+    if (window.location.hash) {
+      const elementId = window.location.hash.substring(1);
+      setTimeout(() => {
+        document.getElementById(elementId)?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, []);
+
   if (loading || checkingMembership) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -85,7 +101,8 @@ const Index = () => {
     );
   }
 
-  if (user) {
+  // Only return null if redirecting (no hash)
+  if (user && !window.location.hash) {
     return null; // Will redirect
   }
 
