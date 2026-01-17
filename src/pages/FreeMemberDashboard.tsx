@@ -208,8 +208,9 @@ const FreeMemberDashboard = () => {
             </Card>
           </div>
 
-          {/* Lost Pet Alerts - Secondary Feature */}
-          <div className="mb-8">
+          {/* Lost Pet Alerts & Shelters Row */}
+          <div className="grid md:grid-cols-2 gap-4 mb-8">
+            {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
               <CardContent className="p-5">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -230,6 +231,33 @@ const FreeMemberDashboard = () => {
                     className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2"
                   >
                     View Alerts
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Shelters */}
+            <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all">
+              <CardContent className="p-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Pet Shelters</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Support local pet shelters
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate("/#shelters")}
+                    className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2"
+                  >
+                    View Shelters
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
