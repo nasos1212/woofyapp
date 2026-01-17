@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle, LogOut } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,15 +24,6 @@ import CityMultiSelector from "@/components/CityMultiSelector";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
-interface Offer {
-  id: string;
-  title: string;
-  description: string;
-  discountType: string;
-  discountValue: string;
-  terms: string;
-}
-
 const categories: { value: BusinessCategory; label: string }[] = [
   { value: "trainer", label: "Dog Trainer" },
   { value: "pet_shop", label: "Pet Shop" },
@@ -43,13 +34,6 @@ const categories: { value: BusinessCategory; label: string }[] = [
   { value: "food", label: "Pet Food Supplier" },
   { value: "accessories", label: "Pet Accessories" },
   { value: "other", label: "Other" },
-];
-
-const discountTypes = [
-  { value: "percentage", label: "Percentage Off" },
-  { value: "fixed", label: "Fixed Amount Off" },
-  { value: "free_item", label: "Free Item" },
-  { value: "free_session", label: "Free Session" },
 ];
 
 const PartnerRegister = () => {
@@ -80,10 +64,6 @@ const PartnerRegister = () => {
   const [website, setWebsite] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   
-  // Offers (optional)
-  const [offers, setOffers] = useState<Offer[]>([]);
-  const [showOffers, setShowOffers] = useState(false);
-  
   // Navigation confirmation
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
@@ -100,10 +80,9 @@ const PartnerRegister = () => {
       phone !== "" ||
       email !== "" ||
       website !== "" ||
-      googleMapsUrl !== "" ||
-      offers.some(o => o.title || o.description || o.discountValue || o.terms)
+      googleMapsUrl !== ""
     );
-  }, [businessName, initialName, category, description, address, cities, phone, email, website, googleMapsUrl, offers]);
+  }, [businessName, initialName, category, description, address, cities, phone, email, website, googleMapsUrl]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -152,17 +131,6 @@ const PartnerRegister = () => {
     checkExistingBusinessAndEnsureRole();
   }, [user, navigate]);
 
-  const addOffer = () => {
-    setOffers([
-      ...offers,
-      { id: Date.now().toString(), title: "", description: "", discountType: "percentage", discountValue: "", terms: "" }
-    ]);
-  };
-
-  const updateOffer = (id: string, field: keyof Offer, value: string) => {
-    setOffers(offers.map(o => o.id === id ? { ...o, [field]: value } : o));
-  };
-
   const handleSubmit = async () => {
     if (!user || !category) return;
     
@@ -196,25 +164,6 @@ const PartnerRegister = () => {
           user_id: user.id,
           role: "business" as const,
         }, { onConflict: 'user_id,role' });
-      
-      // Create offers - only include offers with both title and discount value
-      const validOffers = offers.filter(o => o.title.trim() && o.discountValue && parseFloat(o.discountValue) > 0);
-      if (validOffers.length > 0) {
-        const { error: offersError } = await supabase
-          .from("offers")
-          .insert(
-            validOffers.map(o => ({
-              business_id: business.id,
-              title: o.title,
-              description: o.description,
-              discount_type: o.discountType,
-              discount_value: parseFloat(o.discountValue),
-              terms: o.terms,
-            }))
-          );
-        
-        if (offersError) throw offersError;
-      }
       
       toast({
         title: "Application Submitted!",
@@ -503,119 +452,6 @@ const PartnerRegister = () => {
                   </div>
                 </div>
 
-                {/* Optional Offers Section */}
-                <div className="p-4 bg-muted/50 rounded-xl">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-foreground">Special Offers (Optional)</h3>
-                    {!showOffers && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setShowOffers(true);
-                          if (offers.length === 0) {
-                            setOffers([{ id: "1", title: "", description: "", discountType: "percentage", discountValue: "", terms: "" }]);
-                          }
-                        }}
-                        className="gap-1"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add Offers
-                      </Button>
-                    )}
-                  </div>
-                  
-                  {!showOffers ? (
-                    <p className="text-sm text-muted-foreground">
-                      You can add special offers for Wooffy members now or later from your dashboard.
-                    </p>
-                  ) : (
-                    <div className="space-y-4">
-                      {offers.map((offer, index) => (
-                        <div key={offer.id} className="p-3 bg-background rounded-lg space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-sm">Offer {index + 1}</span>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                const newOffers = offers.filter(o => o.id !== offer.id);
-                                setOffers(newOffers);
-                                if (newOffers.length === 0) {
-                                  setShowOffers(false);
-                                }
-                              }}
-                              className="text-destructive hover:text-destructive h-6 w-6 p-0"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
-                          
-                          <div className="space-y-2">
-                            <Label className="text-xs">Offer Title</Label>
-                            <Input
-                              placeholder="e.g., 15% off all grooming services"
-                              value={offer.title}
-                              onChange={(e) => updateOffer(offer.id, "title", e.target.value)}
-                              className="h-9"
-                            />
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="space-y-1">
-                              <Label className="text-xs">Discount Type</Label>
-                              <Select
-                                value={offer.discountType}
-                                onValueChange={(v) => updateOffer(offer.id, "discountType", v)}
-                              >
-                                <SelectTrigger className="h-9">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {discountTypes.map((type) => (
-                                    <SelectItem key={type.value} value={type.value}>
-                                      {type.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs">Value {offer.discountType === "percentage" ? "(%)" : "(€)"}</Label>
-                              <Input
-                                type="number"
-                                placeholder={offer.discountType === "percentage" ? "15" : "10"}
-                                value={offer.discountValue}
-                                onChange={(e) => updateOffer(offer.id, "discountValue", e.target.value)}
-                                className="h-9"
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-1">
-                            <Label className="text-xs">Terms (optional)</Label>
-                            <Input
-                              placeholder="e.g., Valid once per month"
-                              value={offer.terms}
-                              onChange={(e) => updateOffer(offer.id, "terms", e.target.value)}
-                              className="h-9"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={addOffer}
-                        className="w-full gap-1"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Add Another Offer
-                      </Button>
-                    </div>
-                  )}
-                </div>
 
                 {/* Verification Notice */}
                 <div className="p-4 bg-paw-peach rounded-xl flex gap-3">
