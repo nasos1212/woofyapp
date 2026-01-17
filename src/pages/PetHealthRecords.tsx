@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
@@ -102,6 +103,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 const PetHealthRecords = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -134,12 +136,16 @@ const PetHealthRecords = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth?type=member");
-    } else if (!loading && !membershipLoading && user && !hasMembership) {
-      navigate("/member/free");
+    if (!loading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth?type=member");
+      } else if (isBusiness) {
+        navigate("/business");
+      } else if (!membershipLoading && !hasMembership) {
+        navigate("/member/free");
+      }
     }
-  }, [user, loading, hasMembership, membershipLoading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, isBusiness, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (user) {

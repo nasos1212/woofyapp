@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getBreedsByPetType, PetType, getPetTypeEmoji } from "@/data/petBreeds";
@@ -21,6 +22,7 @@ import Header from "@/components/Header";
 const AddPet = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [petType, setPetType] = useState<PetType>("dog");
   const [petName, setPetName] = useState("");
@@ -44,6 +46,12 @@ const AddPet = () => {
   }, [petType]);
 
   useEffect(() => {
+    // Redirect business users
+    if (!loading && !accountTypeLoading && isBusiness) {
+      navigate("/business");
+      return;
+    }
+
     const checkMembership = async () => {
       if (!user) return;
 
@@ -73,7 +81,6 @@ const AddPet = () => {
 
         // Check if at max pets
         if ((count || 0) >= membershipData.max_pets) {
-          // Check if already on highest plan (Pack Leader with 5 pets)
           if (membershipData.max_pets >= 5) {
             toast.error("You've reached the maximum of 5 pets allowed.");
           } else {
@@ -91,10 +98,10 @@ const AddPet = () => {
       }
     };
 
-    if (!loading) {
+    if (!loading && !accountTypeLoading && !isBusiness) {
       checkMembership();
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, accountTypeLoading, isBusiness, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

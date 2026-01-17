@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
@@ -66,6 +67,7 @@ const categories = [
 const MemberOffers = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
@@ -84,11 +86,15 @@ const MemberOffers = () => {
   const { isFavorite, toggleFavorite } = useFavoriteOffers();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth?type=member");
+    if (!loading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth?type=member");
+      } else if (isBusiness) {
+        navigate("/business");
+      }
     }
     // Allow free members to browse - they'll see upgrade prompts
-  }, [user, loading, navigate]);
+  }, [user, loading, accountTypeLoading, isBusiness, navigate]);
 
   useEffect(() => {
     if (user) {

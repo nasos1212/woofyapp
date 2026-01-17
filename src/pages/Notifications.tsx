@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAccountType } from "@/hooks/useAccountType";
 import { formatDistanceToNow } from "date-fns";
 import Header from "@/components/Header";
 
@@ -21,15 +22,20 @@ interface Notification {
 
 const Notifications = () => {
   const { user, loading } = useAuth();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/auth");
+    if (!loading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth");
+      } else if (isBusiness) {
+        navigate("/business");
+      }
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, isBusiness, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (!user) return;

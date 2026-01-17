@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,7 @@ const PetProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
+  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [pet, setPet] = useState<Pet | null>(null);
   
@@ -69,12 +71,16 @@ const PetProfile = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      navigate("/auth?type=member");
-    } else if (!authLoading && !membershipLoading && user && !hasMembership) {
-      navigate("/member/free");
+    if (!authLoading && !accountTypeLoading) {
+      if (!user) {
+        navigate("/auth?type=member");
+      } else if (isBusiness) {
+        navigate("/business");
+      } else if (!membershipLoading && !hasMembership) {
+        navigate("/member/free");
+      }
     }
-  }, [user, authLoading, hasMembership, membershipLoading, navigate]);
+  }, [user, authLoading, hasMembership, membershipLoading, isBusiness, accountTypeLoading, navigate]);
 
   useEffect(() => {
     const fetchPet = async () => {
