@@ -1,11 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map } from "lucide-react";
+import { Building2, ArrowLeft, Plus, Trash2, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -68,6 +78,27 @@ const PartnerRegister = () => {
   // Offers (optional)
   const [offers, setOffers] = useState<Offer[]>([]);
   const [showOffers, setShowOffers] = useState(false);
+  
+  // Navigation confirmation
+  const [showExitDialog, setShowExitDialog] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  
+  // Track if form has unsaved changes
+  const initialName = useMemo(() => searchParams.get("name") || "", [searchParams]);
+  const hasUnsavedChanges = useMemo(() => {
+    return (
+      businessName !== initialName ||
+      category !== "" ||
+      description !== "" ||
+      address !== "" ||
+      city !== "" ||
+      phone !== "" ||
+      email !== "" ||
+      website !== "" ||
+      googleMapsUrl !== "" ||
+      offers.some(o => o.title || o.description || o.discountValue || o.terms)
+    );
+  }, [businessName, initialName, category, description, address, city, phone, email, website, googleMapsUrl, offers]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -185,18 +216,57 @@ const PartnerRegister = () => {
     );
   }
 
+  const handleBackClick = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    } else if (hasUnsavedChanges) {
+      setPendingNavigation("/auth?type=business");
+      setShowExitDialog(true);
+    } else {
+      navigate("/auth?type=business");
+    }
+  };
+
+  const confirmNavigation = () => {
+    if (pendingNavigation) {
+      navigate(pendingNavigation);
+    }
+    setShowExitDialog(false);
+    setPendingNavigation(null);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-warm py-8 px-4">
       <div className="max-w-2xl mx-auto">
+        {/* Exit Confirmation Dialog */}
+        <AlertDialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                Unsaved Changes
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                You have unsaved business information. If you leave now, your progress will be lost. Are you sure you want to exit?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setPendingNavigation(null)}>
+                Continue Editing
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmNavigation}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Leave Without Saving
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <Button
           variant="ghost"
-          onClick={() => {
-            if (step > 1) {
-              setStep(step - 1);
-            } else {
-              navigate("/auth?type=business");
-            }
-          }}
+          onClick={handleBackClick}
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
