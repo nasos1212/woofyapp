@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { 
   Users, 
   Gift, 
@@ -23,14 +24,50 @@ import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
+import { supabase } from "@/integrations/supabase/client";
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
+  const [businessRedirectPath, setBusinessRedirectPath] = useState<string | null>(null);
+  const [checkingBusiness, setCheckingBusiness] = useState(false);
 
-  if (authLoading || membershipLoading || accountTypeLoading) {
+  // When user is detected as business, check if they have a business record
+  useEffect(() => {
+    const checkBusinessRecord = async () => {
+      if (!user || !isBusiness || accountTypeLoading) return;
+      
+      setCheckingBusiness(true);
+      
+      const { data: business } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      if (business) {
+        setBusinessRedirectPath("/business");
+      } else {
+        // Business role but no business record - redirect to partner registration
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        
+        const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
+        setBusinessRedirectPath(`/partner-register${nameParam}`);
+      }
+      
+      setCheckingBusiness(false);
+    };
+    
+    checkBusinessRecord();
+  }, [user, isBusiness, accountTypeLoading]);
+
+  if (authLoading || membershipLoading || accountTypeLoading || checkingBusiness) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -43,8 +80,8 @@ const FreeMemberDashboard = () => {
   }
 
   // Business users should never see the freemium dashboard
-  if (isBusiness) {
-    return <Navigate to="/business" replace />;
+  if (isBusiness && businessRedirectPath) {
+    return <Navigate to={businessRedirectPath} replace />;
   }
 
   if (hasMembership) {
