@@ -37,6 +37,7 @@ import MemberUpgrade from "./pages/MemberUpgrade";
 import AddPet from "./pages/AddPet";
 import ShelterProfile from "./pages/ShelterProfile";
 import ShelterDashboard from "./pages/ShelterDashboard";
+import ShelterOnboarding from "./pages/ShelterOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="/partner-register" element={<PartnerRegister />} />
               <Route path="/shelter/:id" element={<ShelterProfile />} />
               <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
+              <Route path="/shelter-onboarding" element={<ShelterOnboarding />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
