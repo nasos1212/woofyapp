@@ -480,7 +480,23 @@ const ShelterDashboard = () => {
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="branding">
+                  <TabsContent value="branding" className="space-y-6">
+                    {/* Preview Button */}
+                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
+                      <div>
+                        <h4 className="font-medium">Preview Your Profile</h4>
+                        <p className="text-sm text-muted-foreground">
+                          See how your shelter appears to visitors
+                        </p>
+                      </div>
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={`/shelter/${shelter.id}`} target="_blank" rel="noopener noreferrer">
+                          View Public Profile
+                          <ExternalLink className="h-3 w-3 ml-2" />
+                        </a>
+                      </Button>
+                    </div>
+
                     <ShelterHeaderUpload 
                       shelterId={shelter.id} 
                       currentLogoUrl={shelter.logo_url}
