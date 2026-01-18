@@ -155,7 +155,7 @@ serve(async (req) => {
     // Fetch pets for this membership
     const { data: pets } = await supabaseAdmin
       .from('pets')
-      .select('id, pet_name')
+      .select('id, pet_name, pet_type')
       .eq('membership_id', membership.id);
     
     const petNames = pets && pets.length > 0 
@@ -182,10 +182,10 @@ serve(async (req) => {
       );
     }
 
-    // Get offer details including redemption rules
+    // Get offer details including redemption rules and pet_type
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type, max_redemptions, offer_type, redemption_scope, redemption_frequency')
+      .select('id, title, discount_value, discount_type, max_redemptions, offer_type, redemption_scope, redemption_frequency, pet_type')
       .eq('id', offerId)
       .single();
 
@@ -247,6 +247,28 @@ serve(async (req) => {
     const frequencyDateFilter = getFrequencyDateFilter(redemptionFrequency);
     
     if (redemptionScope === 'per_pet') {
+      // Filter pets by offer's pet_type if specified
+      const eligiblePets = offer?.pet_type 
+        ? (pets || []).filter(pet => pet.pet_type === offer.pet_type)
+        : (pets || []);
+
+      // If no eligible pets for this offer type
+      if (eligiblePets.length === 0) {
+        const petTypeLabel = offer?.pet_type === 'dog' ? 'dogs' : offer?.pet_type === 'cat' ? 'cats' : 'pets';
+        return new Response(
+          JSON.stringify({
+            status: 'already_redeemed',
+            memberName: profile?.full_name || 'Member',
+            petName: petNames,
+            memberId: membership.member_number,
+            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            offerTitle: offer?.title,
+            message: `This offer is only for ${petTypeLabel}. You don't have any registered ${petTypeLabel}.`,
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       // For per-pet offers, check which pets have already redeemed within the frequency period
       let redemptionQuery = supabaseAdmin
         .from('offer_redemptions')
@@ -261,7 +283,7 @@ serve(async (req) => {
 
       const { data: existingRedemptions } = await redemptionQuery;
 
-      // If unlimited frequency, all pets are always available
+      // If unlimited frequency, all eligible pets are always available
       if (redemptionFrequency === 'unlimited') {
         return new Response(
           JSON.stringify({
@@ -275,9 +297,10 @@ serve(async (req) => {
             offerId: offerId,
             offerTitle: offer?.title,
             offerType: 'per_pet',
+            offerPetType: offer?.pet_type || null,
             redemptionFrequency: redemptionFrequency,
-            availablePets: (pets || []).map(p => ({ id: p.id, name: p.pet_name })),
-            totalPets: pets?.length || 0,
+            availablePets: eligiblePets.map(p => ({ id: p.id, name: p.pet_name })),
+            totalPets: eligiblePets.length,
             redeemedPetsCount: 0,
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -285,12 +308,13 @@ serve(async (req) => {
       }
 
       const redeemedPetIds = new Set((existingRedemptions || []).map(r => r.pet_id));
-      const availablePets = (pets || []).filter(pet => !redeemedPetIds.has(pet.id));
+      const availablePets = eligiblePets.filter(pet => !redeemedPetIds.has(pet.id));
 
       if (availablePets.length === 0) {
+        const petTypeLabel = offer?.pet_type === 'dog' ? 'dogs' : offer?.pet_type === 'cat' ? 'cats' : 'pets';
         const frequencyMessage = redemptionFrequency === 'one_time' 
-          ? 'All pets have already used this offer.'
-          : `All pets have already used this offer this ${redemptionFrequency === 'daily' ? 'day' : redemptionFrequency === 'weekly' ? 'week' : 'month'}.`;
+          ? `All eligible ${petTypeLabel} have already used this offer.`
+          : `All eligible ${petTypeLabel} have already used this offer this ${redemptionFrequency === 'daily' ? 'day' : redemptionFrequency === 'weekly' ? 'week' : 'month'}.`;
         
         return new Response(
           JSON.stringify({
@@ -306,7 +330,7 @@ serve(async (req) => {
         );
       }
 
-      // Valid - return available pets for selection
+      // Valid - return available pets for selection (filtered by pet_type)
       return new Response(
         JSON.stringify({
           status: 'valid',
@@ -319,9 +343,10 @@ serve(async (req) => {
           offerId: offerId,
           offerTitle: offer?.title,
           offerType: 'per_pet',
+          offerPetType: offer?.pet_type || null,
           redemptionFrequency: redemptionFrequency,
           availablePets: availablePets.map(p => ({ id: p.id, name: p.pet_name })),
-          totalPets: pets?.length || 0,
+          totalPets: eligiblePets.length,
           redeemedPetsCount: redeemedPetIds.size,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
