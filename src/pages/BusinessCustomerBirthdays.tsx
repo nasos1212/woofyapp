@@ -462,7 +462,18 @@ const BusinessCustomerBirthdays = () => {
                           )}
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="shrink-0">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="shrink-0"
+                        onClick={() => {
+                          toast({
+                            title: "🎂 Birthday Offer",
+                            description: `Create a special birthday offer for ${pet.pet_name}! Go to Offers to create a personalized discount.`,
+                          });
+                          navigate("/business/offers");
+                        }}
+                      >
                         <Gift className="mr-2 h-4 w-4" />
                         Send Offer
                       </Button>
