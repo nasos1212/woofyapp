@@ -292,22 +292,18 @@ const MemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Business users should never see the member dashboard
-  if (isBusiness) {
-    return <Navigate to="/business" replace />;
-  }
-
-  // Redirect free users to the free member dashboard
-  if (hasMembership === false) {
-    return <Navigate to="/member/free" replace />;
-  }
-
   if (isLoading || hasMembership === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
       </div>
     );
+  }
+
+  // Redirect users without membership to the free member dashboard
+  // Business users without a membership should also go to free dashboard (not back to business)
+  if (hasMembership === false) {
+    return <Navigate to="/member/free" replace />;
   }
 
   return (
