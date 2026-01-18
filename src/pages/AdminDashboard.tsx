@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import InfluencerMemberships from "@/components/admin/InfluencerMemberships";
+import GiftMemberships from "@/components/admin/GiftMemberships";
 import UserAnalytics from "@/components/admin/UserAnalytics";
 import BulkNotifications from "@/components/admin/BulkNotifications";
 import MembershipManager from "@/components/admin/MembershipManager";
@@ -356,7 +356,7 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="gifts">
-            <InfluencerMemberships />
+            <GiftMemberships />
           </TabsContent>
 
           <TabsContent value="notifications">
