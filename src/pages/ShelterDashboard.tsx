@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
+import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import { 
   Home, 
   Clock, 
@@ -503,6 +504,8 @@ const ShelterDashboard = () => {
                       currentCoverUrl={shelter.cover_photo_url}
                       currentCoverPosition={shelter.cover_photo_position}
                     />
+
+                    <ShelterGalleryUpload shelterId={shelter.id} />
                   </TabsContent>
 
                   <div className="flex justify-end mt-6 pt-4 border-t">
