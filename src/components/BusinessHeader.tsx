@@ -169,7 +169,7 @@ const BusinessHeader = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                  onClick={() => business?.id && navigate(`/business/${business.id}`)}
+                  onClick={() => business?.id && navigate(`/business/${business.id}?preview=true`)}
                   disabled={!business?.id}
                 >
                   <Eye className="mr-2 h-4 w-4" />
@@ -244,7 +244,7 @@ const BusinessHeader = () => {
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               {business?.id && (
-                <Link to={`/business/${business.id}`} onClick={() => setIsMenuOpen(false)}>
+                <Link to={`/business/${business.id}?preview=true`} onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <Eye className="w-4 h-4" />
                     Preview as Member

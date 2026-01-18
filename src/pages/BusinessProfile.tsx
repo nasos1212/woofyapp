@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
 import { ensureHttps } from "@/lib/utils";
@@ -86,6 +86,7 @@ const categoryLabels: Record<string, string> = {
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -99,7 +100,12 @@ export default function BusinessProfile() {
   const [existingReview, setExistingReview] = useState<Review | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  
+  // Check if in preview mode (business owner viewing as member)
+  const isPreviewMode = searchParams.get("preview") === "true";
   const isOwner = user && business?.user_id === user.id;
+  // In preview mode, hide all owner-specific actions
+  const showOwnerActions = isOwner && !isPreviewMode;
 
   useEffect(() => {
     if (id) {
@@ -333,16 +339,35 @@ export default function BusinessProfile() {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        {/* Preview Mode Banner */}
+        {isPreviewMode && (
+          <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
+            <p className="text-sm font-medium">
+              👁️ Preview Mode — This is how members see your profile
+            </p>
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              className="mt-2"
+              onClick={() => navigate("/business")}
+            >
+              Exit Preview
+            </Button>
+          </div>
+        )}
+
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate(-1)}
-            className="mb-4 gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Go Back
-          </Button>
+          {!isPreviewMode && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="mb-4 gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Go Back
+            </Button>
+          )}
 
           {/* Breadcrumbs */}
           <Breadcrumbs 
@@ -384,8 +409,8 @@ export default function BusinessProfile() {
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
-                    {/* Edit button for owner */}
-                    {isOwner && (
+                    {/* Edit button for owner - hidden in preview mode */}
+                    {showOwnerActions && (
                       <Button
                         variant="outline"
                         size="sm"
@@ -593,7 +618,7 @@ export default function BusinessProfile() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Write Review - hidden for business owners previewing their own profile */}
+              {/* Write Review - hidden for business owners (including preview mode) */}
               {user && !isOwner && (
                 <div className="mb-6 p-4 bg-muted/50 rounded-xl">
                   <h4 className="font-medium text-foreground mb-3">
@@ -744,8 +769,8 @@ export default function BusinessProfile() {
         </div>
       </div>
 
-      {/* Edit Dialog */}
-      {business && (
+      {/* Edit Dialog - only when not in preview mode */}
+      {business && showOwnerActions && (
         <BusinessEditDialog
           business={business}
           open={showEditDialog}
