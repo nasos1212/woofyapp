@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Gift, Trash2, Search, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Plus, Gift, Trash2, Search, Loader2, AlertCircle, CheckCircle2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,14 +47,22 @@ const InfluencerMemberships = () => {
   const [loading, setLoading] = useState(true);
   const [granting, setGranting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [searchEmail, setSearchEmail] = useState("");
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
   const [existingMembership, setExistingMembership] = useState<Membership | null>(null);
   const [checkingMembership, setCheckingMembership] = useState(false);
+  const [editingMembership, setEditingMembership] = useState<PromoMembership | null>(null);
+  const [updating, setUpdating] = useState(false);
   const [newMembership, setNewMembership] = useState({
     reason: "gift",
     duration_months: "12",
+    plan_type: "family",
+    notes: "",
+  });
+  const [editForm, setEditForm] = useState({
+    extend_months: "0",
     plan_type: "family",
     notes: "",
   });
@@ -78,6 +86,18 @@ const InfluencerMemberships = () => {
       });
     }
   }, [dialogOpen]);
+
+  // Reset edit dialog state when closed
+  useEffect(() => {
+    if (!editDialogOpen) {
+      setEditingMembership(null);
+      setEditForm({
+        extend_months: "0",
+        plan_type: "family",
+        notes: "",
+      });
+    }
+  }, [editDialogOpen]);
 
   const fetchData = async () => {
     try {
@@ -223,6 +243,84 @@ const InfluencerMemberships = () => {
     }
   };
 
+  const openEditDialog = (pm: PromoMembership) => {
+    setEditingMembership(pm);
+    setEditForm({
+      extend_months: "0",
+      plan_type: pm.plan_type || "family",
+      notes: pm.notes || "",
+    });
+    setEditDialogOpen(true);
+  };
+
+  const updateMembership = async () => {
+    if (!editingMembership || !editingMembership.membership_id) {
+      toast.error("Invalid membership");
+      return;
+    }
+
+    setUpdating(true);
+
+    try {
+      const currentExpiry = new Date(editingMembership.expires_at);
+      const extendMonths = parseInt(editForm.extend_months);
+      
+      // Calculate new expiry date
+      let newExpiryDate = currentExpiry;
+      if (extendMonths > 0) {
+        newExpiryDate = new Date(currentExpiry);
+        newExpiryDate.setMonth(newExpiryDate.getMonth() + extendMonths);
+      }
+
+      // Update the membership table
+      const { error: membershipError } = await supabase
+        .from("memberships")
+        .update({
+          plan_type: editForm.plan_type,
+          max_pets: editForm.plan_type === "family" ? 5 : editForm.plan_type === "duo" ? 2 : 1,
+          expires_at: newExpiryDate.toISOString(),
+        })
+        .eq("id", editingMembership.membership_id);
+
+      if (membershipError) throw membershipError;
+
+      // Update the promo membership record
+      const { error: promoError } = await supabase
+        .from("promo_memberships")
+        .update({
+          expires_at: newExpiryDate.toISOString(),
+          notes: editForm.notes || null,
+        })
+        .eq("id", editingMembership.id);
+
+      if (promoError) throw promoError;
+
+      // Notify the user about the update
+      const changes = [];
+      if (extendMonths > 0) changes.push(`extended by ${extendMonths} month(s)`);
+      if (editForm.plan_type !== editingMembership.plan_type) changes.push(`upgraded to ${getPlanLabel(editForm.plan_type)}`);
+      
+      if (changes.length > 0) {
+        await supabase.from("notifications").insert({
+          user_id: editingMembership.user_id,
+          type: "gift_membership_updated",
+          title: "🎁 Your membership was updated!",
+          message: `Your gift membership has been ${changes.join(" and ")}. New expiry: ${newExpiryDate.toLocaleDateString()}.`,
+          data: { plan_type: editForm.plan_type, expires_at: newExpiryDate.toISOString() },
+        });
+      }
+
+      toast.success("Membership updated successfully!");
+      setEditDialogOpen(false);
+      fetchData();
+    } catch (error: any) {
+      console.error("Update error:", error);
+      toast.error(error.message || "Failed to update membership");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const revokeMembership = async (promoId: string, membershipId: string | null) => {
     try {
       // Deactivate the membership if it exists
@@ -274,6 +372,8 @@ const InfluencerMemberships = () => {
     };
     return <Badge className={colors[planType] || "bg-gray-500/20 text-gray-400 border-gray-500/30"}>{getPlanLabel(planType)}</Badge>;
   };
+
+  const isExpired = (expiresAt: string) => new Date(expiresAt) < new Date();
 
   if (loading) return <p className="text-muted-foreground">Loading...</p>;
 
@@ -460,33 +560,148 @@ const InfluencerMemberships = () => {
             {promoMemberships.map((pm) => (
               <div
                 key={pm.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50"
+                className={`flex items-center justify-between p-3 rounded-lg border ${
+                  isExpired(pm.expires_at) 
+                    ? "bg-red-500/5 border-red-500/30" 
+                    : "bg-muted/30 border-border/50"
+                }`}
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="font-medium truncate">{pm.user_name || pm.user_email}</span>
                     {getReasonBadge(pm.reason)}
                     {getPlanBadge(pm.plan_type)}
+                    {isExpired(pm.expires_at) && (
+                      <Badge variant="destructive" className="text-xs">Expired</Badge>
+                    )}
                   </div>
                   <div className="text-xs text-muted-foreground">
                     Expires: {new Date(pm.expires_at).toLocaleDateString()}
                     {pm.notes && <span className="ml-2">• {pm.notes}</span>}
                   </div>
                 </div>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => revokeMembership(pm.id, pm.membership_id)}
-                  className="ml-2 shrink-0"
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Revoke
-                </Button>
+                <div className="flex items-center gap-2 ml-2 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openEditDialog(pm)}
+                  >
+                    <Pencil className="w-4 h-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => revokeMembership(pm.id, pm.membership_id)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Revoke
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </CardContent>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Gift Membership</DialogTitle>
+            <DialogDescription>
+              Extend duration or change plan type for {editingMembership?.user_name || editingMembership?.user_email}
+            </DialogDescription>
+          </DialogHeader>
+          {editingMembership && (
+            <div className="space-y-4 mt-4">
+              <div className="p-3 rounded-md bg-muted/50 border text-sm">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-muted-foreground">Current Expiry:</span>
+                  <span className={isExpired(editingMembership.expires_at) ? "text-red-400" : ""}>
+                    {new Date(editingMembership.expires_at).toLocaleDateString()}
+                    {isExpired(editingMembership.expires_at) && " (Expired)"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Current Plan:</span>
+                  <span>{getPlanLabel(editingMembership.plan_type || "family")}</span>
+                </div>
+              </div>
+
+              <div>
+                <Label>Extend Duration</Label>
+                <Select
+                  value={editForm.extend_months}
+                  onValueChange={(v) => setEditForm({ ...editForm, extend_months: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">No extension</SelectItem>
+                    <SelectItem value="1">+1 Month</SelectItem>
+                    <SelectItem value="3">+3 Months</SelectItem>
+                    <SelectItem value="6">+6 Months</SelectItem>
+                    <SelectItem value="12">+1 Year</SelectItem>
+                    <SelectItem value="24">+2 Years</SelectItem>
+                  </SelectContent>
+                </Select>
+                {parseInt(editForm.extend_months) > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    New expiry: {(() => {
+                      const newDate = new Date(editingMembership.expires_at);
+                      newDate.setMonth(newDate.getMonth() + parseInt(editForm.extend_months));
+                      return newDate.toLocaleDateString();
+                    })()}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label>Plan Type</Label>
+                <Select
+                  value={editForm.plan_type}
+                  onValueChange={(v) => setEditForm({ ...editForm, plan_type: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="single">Solo Paw (1 pet)</SelectItem>
+                    <SelectItem value="duo">Dynamic Duo (2 pets)</SelectItem>
+                    <SelectItem value="family">Pack Leader (3-5 pets)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Notes</Label>
+                <Textarea
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  placeholder="Update notes..."
+                />
+              </div>
+
+              <Button 
+                onClick={updateMembership} 
+                className="w-full" 
+                disabled={updating}
+              >
+                {updating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
