@@ -54,6 +54,14 @@ interface Photo {
   caption: string | null;
 }
 
+interface BusinessLocation {
+  id: string;
+  city: string;
+  address: string | null;
+  phone: string | null;
+  google_maps_url: string | null;
+}
+
 const categoryLabels: Record<string, string> = {
   veterinary: "Veterinary",
   grooming: "Grooming",
@@ -74,6 +82,7 @@ export default function BusinessProfile() {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [locations, setLocations] = useState<BusinessLocation[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [userReview, setUserReview] = useState("");
@@ -174,6 +183,15 @@ export default function BusinessProfile() {
         .order("display_order", { ascending: true });
 
       setPhotos(photosData || []);
+
+      // Fetch locations
+      const { data: locationsData } = await supabase
+        .from("business_locations")
+        .select("*")
+        .eq("business_id", id)
+        .order("display_order", { ascending: true });
+
+      setLocations(locationsData || []);
 
     } catch (error) {
       console.error("Error fetching business:", error);
@@ -397,8 +415,8 @@ export default function BusinessProfile() {
                   )}
                 </div>
 
-                {/* Address */}
-                {(business.address || business.city) && (
+                {/* Primary Address */}
+                {(business.address || business.city) && locations.length === 0 && (
                   <p className="text-sm text-muted-foreground mt-3 flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" />
                     {[business.address, business.city].filter(Boolean).join(", ")}
@@ -407,6 +425,60 @@ export default function BusinessProfile() {
               </div>
             </div>
           </div>
+
+          {/* Store Locations */}
+          {locations.length > 0 && (
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
+                  Store Locations
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {locations.map((location) => (
+                    <div 
+                      key={location.id}
+                      className="p-4 bg-muted/50 rounded-xl border border-border"
+                    >
+                      <h3 className="font-semibold text-foreground mb-2">{location.city}</h3>
+                      
+                      {location.address && (
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {location.address}
+                        </p>
+                      )}
+                      
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {location.phone && (
+                          <a
+                            href={`tel:${location.phone}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                          >
+                            <Phone className="w-3.5 h-3.5" />
+                            {location.phone}
+                          </a>
+                        )}
+                        
+                        {location.google_maps_url && (
+                          <a
+                            href={location.google_maps_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                          >
+                            <MapPin className="w-3.5 h-3.5" />
+                            Directions
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Photos Gallery */}
           {photos.length > 0 && (
