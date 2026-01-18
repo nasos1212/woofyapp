@@ -104,6 +104,14 @@ const ShelterOnboarding = () => {
       
       if (error) throw error;
       
+      // Ensure shelter role exists for this user
+      await supabase
+        .from("user_roles")
+        .upsert(
+          { user_id: user.id, role: "shelter" as const },
+          { onConflict: "user_id,role" }
+        );
+      
       toast({
         title: "Application Submitted! 🎉",
         description: "We'll review your application and get back to you soon.",
