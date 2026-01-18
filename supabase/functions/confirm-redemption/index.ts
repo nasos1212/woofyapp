@@ -123,10 +123,10 @@ serve(async (req) => {
       );
     }
 
-    // Fetch pets for this membership
+    // Fetch pets for this membership (include pet_type for validation)
     const { data: petsData } = await supabaseAdmin
       .from('pets')
-      .select('id, pet_name')
+      .select('id, pet_name, pet_type')
       .eq('membership_id', membershipId);
     
     const petNames = petsData && petsData.length > 0 
@@ -142,10 +142,10 @@ serve(async (req) => {
     
     const memberName = profileData?.full_name || 'Member';
 
-    // Get offer details including redemption rules
+    // Get offer details including redemption rules and pet_type
     const { data: offer } = await supabaseAdmin
       .from('offers')
-      .select('id, title, discount_value, discount_type, business_id, offer_type, redemption_scope, redemption_frequency')
+      .select('id, title, discount_value, discount_type, business_id, offer_type, redemption_scope, redemption_frequency, pet_type')
       .eq('id', offerId)
       .single();
 
@@ -194,6 +194,27 @@ serve(async (req) => {
         );
       }
 
+      // Validate that the selected pet matches the offer's pet_type
+      const selectedPet = petsData?.find(p => p.id === petId);
+      if (!selectedPet) {
+        return new Response(
+          JSON.stringify({ error: 'Selected pet not found', code: 'PET_NOT_FOUND' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // Check if the pet's type matches the offer's pet_type restriction
+      if (offer.pet_type && selectedPet.pet_type !== offer.pet_type) {
+        const petTypeLabel = offer.pet_type === 'dog' ? 'dogs' : 'cats';
+        return new Response(
+          JSON.stringify({ 
+            error: `This offer is only valid for ${petTypeLabel}`, 
+            code: 'PET_TYPE_MISMATCH' 
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       // Check if this specific pet already redeemed within the frequency period (unless unlimited)
       if (redemptionFrequency !== 'unlimited') {
         let redemptionQuery = supabaseAdmin
@@ -222,8 +243,7 @@ serve(async (req) => {
       }
 
       // Get pet name for the notification
-      const selectedPet = petsData?.find(p => p.id === petId);
-      const petNameForNotification = selectedPet?.pet_name || 'Your pet';
+      const petNameForNotification = selectedPet.pet_name || 'Your pet';
 
       // Insert the redemption with pet_id
       const { data: redemption, error: redemptionError } = await supabaseAdmin
