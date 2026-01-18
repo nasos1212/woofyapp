@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Bell, BarChart3, Cake, LayoutDashboard, Settings } from "lucide-react";
+import { Dog, Menu, X, Building2, Eye, Tag, Shield, LogOut, Bell, BarChart3, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -18,7 +18,7 @@ const BusinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
-  const [businessName, setBusinessName] = useState<string | null>(null);
+  const [business, setBusiness] = useState<{ id: string; business_name: string } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -46,7 +46,7 @@ const BusinessHeader = () => {
     } else {
       setIsAdmin(false);
       setProfile(null);
-      setBusinessName(null);
+      setBusiness(null);
     }
   }, [user]);
 
@@ -66,11 +66,11 @@ const BusinessHeader = () => {
     if (!user) return;
     const { data } = await supabase
       .from("businesses")
-      .select("business_name")
+      .select("id, business_name")
       .eq("user_id", user.id)
       .maybeSingle();
     if (data) {
-      setBusinessName(data.business_name);
+      setBusiness(data);
     }
   };
 
@@ -135,19 +135,19 @@ const BusinessHeader = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 gap-2 px-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile?.avatar_url || undefined} alt={businessName || "Business"} />
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={business?.business_name || "Business"} />
                     <AvatarFallback className="bg-slate-700 text-white text-sm font-medium">
                       <Building2 className="w-4 h-4" />
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium text-foreground hidden lg:block max-w-[120px] truncate">
-                    {businessName || "Business"}
+                    {business?.business_name || "Business"}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{businessName || "Your Business"}</p>
+                  <p className="text-sm font-medium">{business?.business_name || "Your Business"}</p>
                   <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
@@ -168,9 +168,12 @@ const BusinessHeader = () => {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("/member")}>
-                  <User className="mr-2 h-4 w-4" />
-                  Member View
+                <DropdownMenuItem 
+                  onClick={() => business?.id && navigate(`/business/${business.id}`)}
+                  disabled={!business?.id}
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Preview as Member
                 </DropdownMenuItem>
                 {isAdmin && (
                   <>
@@ -240,12 +243,14 @@ const BusinessHeader = () => {
               Settings
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
-              <Link to="/member" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2">
-                  <User className="w-4 h-4" />
-                  Member View
-                </Button>
-              </Link>
+              {business?.id && (
+                <Link to={`/business/${business.id}`} onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2">
+                    <Eye className="w-4 h-4" />
+                    Preview as Member
+                  </Button>
+                </Link>
+              )}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2 text-primary">
