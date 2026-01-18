@@ -116,7 +116,8 @@ const BusinessAnalytics = () => {
           id,
           redeemed_at,
           membership_id,
-          membership:memberships(member_number, pet_name),
+          member_number,
+          pet_names,
           offer:offers(title, discount_value, discount_type)
         `)
         .eq("business_id", business.id)
@@ -210,22 +211,19 @@ const BusinessAnalytics = () => {
           }))
       );
 
-      // Calculate customer insights
+      // Calculate customer insights - use member_number and pet_names directly from redemptions
       const customerData: Record<
         string,
         { member_number: string; pet_name: string | null; count: number; lastVisit: string }
       > = {};
 
       redemptions.forEach((r) => {
-        const membership = r.membership as unknown as {
-          member_number: string;
-          pet_name: string | null;
-        };
-        if (membership?.member_number) {
+        const memberNumber = r.member_number;
+        if (memberNumber) {
           if (!customerData[r.membership_id]) {
             customerData[r.membership_id] = {
-              member_number: membership.member_number,
-              pet_name: membership.pet_name,
+              member_number: memberNumber,
+              pet_name: r.pet_names || null,
               count: 0,
               lastVisit: r.redeemed_at,
             };
