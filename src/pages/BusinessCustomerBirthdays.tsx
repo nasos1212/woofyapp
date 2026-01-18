@@ -19,6 +19,7 @@ import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
+import { BirthdayOfferModal } from "@/components/BirthdayOfferModal";
 
 interface CustomerPet {
   pet_id: string;
@@ -27,7 +28,15 @@ interface CustomerPet {
   birthday: string | null;
   owner_name: string | null;
   owner_email: string;
+  owner_user_id: string;
   last_interaction: string;
+}
+
+interface BusinessOffer {
+  id: string;
+  title: string;
+  discount_type: string;
+  discount_value: number | null;
 }
 
 interface BirthdaySettings {
@@ -49,8 +58,10 @@ const BusinessCustomerBirthdays = () => {
   const { toast } = useToast();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [businessId, setBusinessId] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState<string>("");
   const [customerPets, setCustomerPets] = useState<CustomerPet[]>([]);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState<UpcomingBirthday[]>([]);
+  const [businessOffers, setBusinessOffers] = useState<BusinessOffer[]>([]);
   const [settings, setSettings] = useState<BirthdaySettings>({
     enabled: true,
     days_before_reminder: 7,
@@ -59,6 +70,8 @@ const BusinessCustomerBirthdays = () => {
   const [loading, setLoading] = useState(true);
   const [savingSettings, setSavingSettings] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedPetForOffer, setSelectedPetForOffer] = useState<UpcomingBirthday | null>(null);
+  const [offerModalOpen, setOfferModalOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -78,7 +91,7 @@ const BusinessCustomerBirthdays = () => {
       // Get business
       const { data: businessData, error: businessError } = await supabase
         .from("businesses")
-        .select("id")
+        .select("id, business_name")
         .eq("user_id", user!.id)
         .maybeSingle();
 
@@ -94,6 +107,16 @@ const BusinessCustomerBirthdays = () => {
       }
 
       setBusinessId(businessData.id);
+      setBusinessName(businessData.business_name);
+
+      // Fetch active offers for this business
+      const { data: offersData } = await supabase
+        .from("offers")
+        .select("id, title, discount_type, discount_value")
+        .eq("business_id", businessData.id)
+        .eq("is_active", true);
+
+      setBusinessOffers(offersData || []);
 
       // Fetch customer pets using direct query instead of view
       // This gets pets from customers who have redeemed offers at this business
@@ -140,6 +163,7 @@ const BusinessCustomerBirthdays = () => {
             birthday: pet.birthday,
             owner_name: profile?.full_name || null,
             owner_email: profile?.email || "",
+            owner_user_id: pet.owner_user_id,
             last_interaction: lastRedemption?.redeemed_at || "",
           };
         });
@@ -467,11 +491,8 @@ const BusinessCustomerBirthdays = () => {
                         size="sm" 
                         className="shrink-0"
                         onClick={() => {
-                          toast({
-                            title: "🎂 Birthday Offer",
-                            description: `Create a special birthday offer for ${pet.pet_name}! Go to Offers to create a personalized discount.`,
-                          });
-                          navigate("/business/offers");
+                          setSelectedPetForOffer(pet);
+                          setOfferModalOpen(true);
                         }}
                       >
                         <Gift className="mr-2 h-4 w-4" />
@@ -523,6 +544,18 @@ const BusinessCustomerBirthdays = () => {
         </div>
         <div className="pb-20 md:pb-0" />
       </main>
+
+      <BirthdayOfferModal
+        open={offerModalOpen}
+        onOpenChange={setOfferModalOpen}
+        pet={selectedPetForOffer}
+        businessId={businessId || ""}
+        businessName={businessName}
+        existingOffers={businessOffers}
+        onSuccess={() => {
+          setSelectedPetForOffer(null);
+        }}
+      />
 
       <BusinessMobileNav />
     </>
