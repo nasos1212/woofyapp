@@ -593,8 +593,8 @@ export default function BusinessProfile() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Write Review */}
-              {user && (
+              {/* Write Review - hidden for business owners previewing their own profile */}
+              {user && !isOwner && (
                 <div className="mb-6 p-4 bg-muted/50 rounded-xl">
                   <h4 className="font-medium text-foreground mb-3">
                     {existingReview ? "Update your review" : "Write a review"}
