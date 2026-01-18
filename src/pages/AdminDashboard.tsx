@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard, Home, TrendingUp, Clock } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Crown, Bell, ArrowLeft, CreditCard, Home, TrendingUp, Clock, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import PromoCodeManager from "@/components/admin/PromoCodeManager";
 import InfluencerMemberships from "@/components/admin/InfluencerMemberships";
 import UserAnalytics from "@/components/admin/UserAnalytics";
 import BulkNotifications from "@/components/admin/BulkNotifications";
@@ -321,13 +320,9 @@ const AdminDashboard = () => {
               <CreditCard className="w-4 h-4" />
               Memberships
             </TabsTrigger>
-            <TabsTrigger value="influencers" className="gap-1">
-              <Crown className="w-4 h-4" />
-              Influencers
-            </TabsTrigger>
-            <TabsTrigger value="promo" className="gap-1">
-              <Tag className="w-4 h-4" />
-              Promo Codes
+            <TabsTrigger value="gifts" className="gap-1">
+              <Gift className="w-4 h-4" />
+              Gifts
             </TabsTrigger>
             <TabsTrigger value="notifications" className="gap-1">
               <Bell className="w-4 h-4" />
@@ -360,12 +355,8 @@ const AdminDashboard = () => {
             <MembershipManager />
           </TabsContent>
 
-          <TabsContent value="influencers">
+          <TabsContent value="gifts">
             <InfluencerMemberships />
-          </TabsContent>
-
-          <TabsContent value="promo">
-            <PromoCodeManager />
           </TabsContent>
 
           <TabsContent value="notifications">
