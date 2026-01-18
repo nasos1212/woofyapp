@@ -13,6 +13,8 @@ import ConfettiCelebration from "@/components/ConfettiCelebration";
 import { useSuccessSound } from "@/hooks/useSuccessSound";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+import { useBusinessVerification } from "@/hooks/useBusinessVerification";
+import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 
 interface AvailablePet {
   id: string;
@@ -57,6 +59,7 @@ const BusinessDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { playSuccessSound } = useSuccessSound();
+  const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [memberIdInput, setMemberIdInput] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
@@ -389,7 +392,7 @@ const BusinessDashboard = () => {
   };
 
   // Show loading while checking for business
-  if (loading || isCheckingBusiness) {
+  if (loading || isCheckingBusiness || verificationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -417,6 +420,9 @@ const BusinessDashboard = () => {
         <BusinessHeader />
 
         <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
+          {/* Pending Approval Banner */}
+          <PendingApprovalBanner status={verificationStatus} />
+
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
@@ -425,8 +431,8 @@ const BusinessDashboard = () => {
             <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
           </div>
 
-          {/* Onboarding Tips - Show when no redemptions */}
-          {recentRedemptions.length === 0 && (
+          {/* Onboarding Tips - Show when no redemptions and approved */}
+          {recentRedemptions.length === 0 && isApproved && (
             <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-6 mb-8">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -458,54 +464,102 @@ const BusinessDashboard = () => {
 
           {/* Quick Navigation */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
-            <Link 
-              to="/business/offers" 
-              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            {isApproved ? (
+              <Link 
+                to="/business/offers" 
+                className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Offers</h3>
+                  <p className="text-xs sm:text-sm text-slate-500">{offers.length} active</p>
+                </div>
+              </Link>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 text-center sm:text-left opacity-60 cursor-not-allowed">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Offers</h3>
+                  <p className="text-xs sm:text-sm text-slate-400">Pending</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Offers</h3>
-                <p className="text-xs sm:text-sm text-slate-500">{offers.length} active</p>
+            )}
+            {isApproved ? (
+              <Link 
+                to="/business/history" 
+                className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                  <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Redemptions</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">View history</p>
+                </div>
+              </Link>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 text-center sm:text-left opacity-60 cursor-not-allowed">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Redemptions</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                </div>
               </div>
-            </Link>
-            <Link 
-              to="/business/history" 
-              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+            )}
+            {isApproved ? (
+              <Link 
+                to="/business/analytics" 
+                className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Analytics</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Insights</p>
+                </div>
+              </Link>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 text-center sm:text-left opacity-60 cursor-not-allowed">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Analytics</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Redemptions</h3>
-                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">View history</p>
+            )}
+            {isApproved ? (
+              <Link 
+                to="/business/birthdays" 
+                className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-pink-400 hover:shadow-md transition-all group text-center sm:text-left"
+              >
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                  <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Birthdays</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Celebrate</p>
+                </div>
+              </Link>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 text-center sm:text-left opacity-60 cursor-not-allowed">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Birthdays</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                </div>
               </div>
-            </Link>
-            <Link 
-              to="/business/analytics" 
-              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Analytics</h3>
-                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Insights</p>
-              </div>
-            </Link>
-            <Link 
-              to="/business/birthdays" 
-              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-pink-400 hover:shadow-md transition-all group text-center sm:text-left"
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Birthdays</h3>
-                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Celebrate</p>
-              </div>
-            </Link>
+            )}
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
@@ -518,7 +572,19 @@ const BusinessDashboard = () => {
                   Member Verification
                 </h2>
 
-                {/* QR Scanner Modal */}
+                {!isApproved ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Clock className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <h3 className="font-semibold text-slate-600 mb-2">Verification Unavailable</h3>
+                    <p className="text-sm text-slate-500">
+                      Member verification will be available once your business is approved.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* QR Scanner Modal */}
                 {isScannerOpen && (
                   <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
@@ -770,6 +836,8 @@ const BusinessDashboard = () => {
                       </Button>
                     )}
                   </div>
+                )}
+                  </>
                 )}
               </div>
 

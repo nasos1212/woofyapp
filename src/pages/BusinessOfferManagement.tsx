@@ -20,6 +20,7 @@ import {
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +33,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -84,6 +86,7 @@ interface Offer {
 const BusinessOfferManagement = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [isLoading, setIsLoading] = useState(true);
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -333,7 +336,7 @@ const BusinessOfferManagement = () => {
     }
   };
 
-  if (loading || isLoading) {
+  if (loading || isLoading || verificationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -362,6 +365,9 @@ const BusinessOfferManagement = () => {
             Back to Dashboard
           </Button>
 
+          {/* Pending Approval Banner */}
+          <PendingApprovalBanner status={verificationStatus} />
+
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
@@ -372,14 +378,25 @@ const BusinessOfferManagement = () => {
                 Create, edit, and manage your discount offers for Wooffy members
               </p>
             </div>
-            <Button onClick={openCreateDialog} className="gap-2 w-fit">
+            <Button onClick={openCreateDialog} className="gap-2 w-fit" disabled={!isApproved}>
               <Plus className="w-4 h-4" />
               Create Offer
             </Button>
           </div>
 
-          {/* Offers List */}
-          {offers.length === 0 ? (
+          {/* Pending Notice for non-approved */}
+          {!isApproved && (
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+              <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display font-semibold text-lg mb-2">Offer Management Unavailable</h3>
+              <p className="text-slate-500">
+                You'll be able to create and manage offers once your business is approved.
+              </p>
+            </div>
+          )}
+
+          {/* Offers List - Only show when approved */}
+          {isApproved && offers.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
               <h3 className="font-display font-semibold text-lg mb-2">No offers yet</h3>
@@ -391,7 +408,7 @@ const BusinessOfferManagement = () => {
                 Create Your First Offer
               </Button>
             </div>
-          ) : (
+          ) : isApproved && (
             <div className="space-y-4">
               {offers.map((offer) => (
                 <div

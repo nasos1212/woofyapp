@@ -1,13 +1,16 @@
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Clock, Building2, Search, Filter, Download, ArrowLeft, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+import PendingApprovalBanner from "@/components/PendingApprovalBanner";
+import DogLoader from "@/components/DogLoader";
 import {
   Select,
   SelectContent,
@@ -37,7 +40,9 @@ interface Offer {
 }
 
 const BusinessRedemptionHistory = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [filteredRedemptions, setFilteredRedemptions] = useState<Redemption[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -48,6 +53,12 @@ const BusinessRedemptionHistory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOffer, setSelectedOffer] = useState<string>("all");
   const [dateRange, setDateRange] = useState<string>("all");
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      navigate("/auth?type=business");
+    }
+  }, [user, authLoading, navigate]);
 
   useEffect(() => {
     if (user) {
@@ -201,6 +212,36 @@ const BusinessRedemptionHistory = () => {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  if (authLoading || isLoading || verificationLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <DogLoader size="lg" />
+      </div>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <>
+        <Helmet>
+          <title>Redemption History | Wooffy Business</title>
+        </Helmet>
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+          <BusinessHeader />
+          <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
+            <PendingApprovalBanner status={verificationStatus} />
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+              <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display font-semibold text-lg mb-2">Redemption History Unavailable</h3>
+              <p className="text-slate-500">View your redemption history once your business is approved.</p>
+            </div>
+          </main>
+          <BusinessMobileNav />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
