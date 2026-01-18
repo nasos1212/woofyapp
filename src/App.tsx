@@ -19,6 +19,7 @@ import RedemptionHistory from "./pages/RedemptionHistory";
 import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
+import BusinessSettings from "./pages/BusinessSettings";
 import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
 import LostPetAlerts from "./pages/LostPetAlerts";
@@ -77,6 +78,7 @@ const App = () => (
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
               <Route path="/business/birthdays" element={<BusinessCustomerBirthdays />} />
               <Route path="/business/history" element={<BusinessRedemptionHistory />} />
+              <Route path="/business/settings" element={<BusinessSettings />} />
               <Route path="/business/:id" element={<BusinessProfile />} />
               <Route path="/partner-register" element={<PartnerRegister />} />
               <Route path="/shelter/:id" element={<ShelterProfile />} />

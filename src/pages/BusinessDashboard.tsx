@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -560,6 +560,19 @@ const BusinessDashboard = () => {
                 </div>
               </div>
             )}
+            {/* Settings - Always accessible */}
+            <Link 
+              to="/business/settings" 
+              className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
+            >
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Settings</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Profile</p>
+              </div>
+            </Link>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
