@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2 } from "lucide-react";
+import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -26,7 +26,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
-import { format, differenceInYears, differenceInMonths } from "date-fns";
+import { format, differenceInYears, differenceInMonths, differenceInDays } from "date-fns";
 import { validateImageFile } from "@/lib/fileValidation";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
@@ -44,6 +44,7 @@ interface Pet {
   created_at: string;
   owner_user_id: string;
   membership_id: string;
+  birthday_locked: boolean;
 }
 
 
@@ -68,6 +69,8 @@ const PetProfile = () => {
   const [editedAgeYears, setEditedAgeYears] = useState<number | "">("");
   const [knowsBirthday, setKnowsBirthday] = useState(true);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [canEditBirthday, setCanEditBirthday] = useState(true);
+  const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -105,6 +108,7 @@ const PetProfile = () => {
           setPet({
             ...petData,
             gender: genderValue,
+            birthday_locked: petData.birthday_locked ?? false,
           } as Pet);
           setEditedNotes(petData.notes || "");
           setEditedName(petData.pet_name);
@@ -113,6 +117,35 @@ const PetProfile = () => {
           setEditedGender(genderValue);
           setEditedAgeYears(petData.age_years ?? "");
           setKnowsBirthday(!!petData.birthday || !petData.age_years);
+
+          // Check if birthday can be edited
+          const daysSinceCreation = differenceInDays(new Date(), new Date(petData.created_at));
+          const isLocked = petData.birthday_locked ?? false;
+          
+          // Check if any birthday offers have been received
+          const { data: birthdayOffers } = await supabase
+            .from('sent_birthday_offers')
+            .select('id')
+            .eq('pet_id', petData.id)
+            .limit(1);
+          
+          const hasReceivedOffer = (birthdayOffers && birthdayOffers.length > 0);
+          
+          if (isLocked) {
+            setCanEditBirthday(false);
+            setBirthdayLockReason("Birthday has been locked");
+          } else if (hasReceivedOffer) {
+            setCanEditBirthday(false);
+            setBirthdayLockReason("Birthday cannot be changed after receiving a birthday offer");
+          } else if (daysSinceCreation > 14) {
+            setCanEditBirthday(false);
+            const daysAgo = daysSinceCreation - 14;
+            setBirthdayLockReason(`The 14-day edit window has passed (${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago)`);
+          } else {
+            setCanEditBirthday(true);
+            const daysRemaining = 14 - daysSinceCreation;
+            setBirthdayLockReason(`${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left to edit birthday`);
+          }
         }
       } catch (error) {
         console.error("Error fetching pet:", error);
@@ -132,34 +165,46 @@ const PetProfile = () => {
     setIsSaving(true);
 
     try {
+      // If birthday is locked, don't allow birthday changes
+      const birthdayChanged = pet.birthday !== (knowsBirthday && editedBirthday ? editedBirthday : null);
+      const newBirthday = canEditBirthday && knowsBirthday && editedBirthday ? editedBirthday : pet.birthday;
+      const newAgeYears = canEditBirthday && !knowsBirthday && editedAgeYears !== "" ? editedAgeYears : pet.age_years;
+
       const { error } = await supabase
         .from("pets")
         .update({
           pet_name: editedName.trim(),
           pet_breed: editedBreed.trim() || null,
-          birthday: knowsBirthday && editedBirthday ? editedBirthday : null,
+          birthday: newBirthday,
           gender: editedGender,
-          age_years: !knowsBirthday && editedAgeYears !== "" ? editedAgeYears : null,
+          age_years: newAgeYears,
           notes: editedNotes.trim() || null,
         })
         .eq("id", pet.id);
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a birthday lock error from the database trigger
+        if (error.message?.includes('Birthday cannot be changed')) {
+          toast.error(error.message);
+          return;
+        }
+        throw error;
+      }
 
       setPet({
         ...pet,
         pet_name: editedName.trim(),
         pet_breed: editedBreed.trim() || null,
-        birthday: knowsBirthday && editedBirthday ? editedBirthday : null,
+        birthday: newBirthday,
         gender: editedGender,
-        age_years: !knowsBirthday && editedAgeYears !== "" ? editedAgeYears : null,
+        age_years: newAgeYears,
         notes: editedNotes.trim() || null,
       });
       setIsEditing(false);
       toast.success("Pet profile updated!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating pet:", error);
-      toast.error("Failed to update pet profile");
+      toast.error(error.message || "Failed to update pet profile");
     } finally {
       setIsSaving(false);
     }
@@ -447,54 +492,79 @@ const PetProfile = () => {
                       <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
+                      <div className="flex items-center gap-1">
+                        <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
+                        {!canEditBirthday && (
+                          <Lock className="w-3 h-3 text-muted-foreground" />
+                        )}
+                      </div>
                       {isEditing ? (
-                        <div className="mt-1 space-y-2">
-                          <div className="flex gap-1">
-                            <button
-                              type="button"
-                              onClick={() => setKnowsBirthday(true)}
-                              className={cn(
-                                "text-xs px-2 py-1 rounded",
-                                knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
-                              )}
-                            >
-                              Date
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setKnowsBirthday(false)}
-                              className={cn(
-                                "text-xs px-2 py-1 rounded",
-                                !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
-                              )}
-                            >
-                              Age
-                            </button>
-                          </div>
-                          {knowsBirthday ? (
-                            <Input
-                              type="date"
-                              value={editedBirthday}
-                              onChange={(e) => setEditedBirthday(e.target.value)}
-                              className="text-sm h-8"
-                              max={new Date().toISOString().split('T')[0]}
-                            />
-                          ) : (
-                            <div className="flex items-center gap-1">
-                              <Input
-                                type="number"
-                                min="0"
-                                max="30"
-                                value={editedAgeYears}
-                                onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
-                                className="text-sm h-8 w-16"
-                                placeholder="Age"
-                              />
-                              <span className="text-xs text-muted-foreground">yrs</span>
+                        canEditBirthday ? (
+                          <div className="mt-1 space-y-2">
+                            <div className="flex gap-1">
+                              <button
+                                type="button"
+                                onClick={() => setKnowsBirthday(true)}
+                                className={cn(
+                                  "text-xs px-2 py-1 rounded",
+                                  knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                                )}
+                              >
+                                Date
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setKnowsBirthday(false)}
+                                className={cn(
+                                  "text-xs px-2 py-1 rounded",
+                                  !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                                )}
+                              >
+                                Age
+                              </button>
                             </div>
-                          )}
-                        </div>
+                            {knowsBirthday ? (
+                              <Input
+                                type="date"
+                                value={editedBirthday}
+                                onChange={(e) => setEditedBirthday(e.target.value)}
+                                className="text-sm h-8"
+                                max={new Date().toISOString().split('T')[0]}
+                              />
+                            ) : (
+                              <div className="flex items-center gap-1">
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  max="30"
+                                  value={editedAgeYears}
+                                  onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                                  className="text-sm h-8 w-16"
+                                  placeholder="Age"
+                                />
+                                <span className="text-xs text-muted-foreground">yrs</span>
+                              </div>
+                            )}
+                            {canEditBirthday && birthdayLockReason && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {birthdayLockReason}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="mt-1">
+                            <p className="font-medium text-sm sm:text-base truncate">
+                              {pet.birthday 
+                                ? format(new Date(pet.birthday), "MMM d, yyyy") 
+                                : "Not set"}
+                            </p>
+                            <p className="text-xs text-amber-600 flex items-center gap-1 mt-1">
+                              <Lock className="w-3 h-3" />
+                              {birthdayLockReason}
+                            </p>
+                          </div>
+                        )
                       ) : (
                         <p className="font-medium text-sm sm:text-base truncate">
                           {pet.birthday 

@@ -1544,6 +1544,7 @@ export type Database = {
         Row: {
           age_years: number | null
           birthday: string | null
+          birthday_locked: boolean | null
           created_at: string
           gender: string | null
           id: string
@@ -1558,6 +1559,7 @@ export type Database = {
         Insert: {
           age_years?: number | null
           birthday?: string | null
+          birthday_locked?: boolean | null
           created_at?: string
           gender?: string | null
           id?: string
@@ -1572,6 +1574,7 @@ export type Database = {
         Update: {
           age_years?: number | null
           birthday?: string | null
+          birthday_locked?: boolean | null
           created_at?: string
           gender?: string | null
           id?: string
@@ -2377,6 +2380,7 @@ export type Database = {
       }
     }
     Functions: {
+      can_edit_pet_birthday: { Args: { _pet_id: string }; Returns: boolean }
       can_view_lost_pet_contact: {
         Args: { alert_id: string; alert_owner_id: string }
         Returns: boolean
