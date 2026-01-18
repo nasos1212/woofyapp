@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Cake, Gift, Send, Sparkles, User, Dog } from "lucide-react";
+import { Cake, Gift, Send, Sparkles, User, Dog, Percent, Euro } from "lucide-react";
 
 interface BirthdayPet {
   pet_id: string;
@@ -50,18 +50,22 @@ export function BirthdayOfferModal({
   const { toast } = useToast();
   const [sending, setSending] = useState(false);
   const [offerType, setOfferType] = useState<"existing" | "custom">("custom");
+  const [discountMode, setDiscountMode] = useState<"percentage" | "fixed">("percentage");
   const [selectedOfferId, setSelectedOfferId] = useState<string>("");
   const [customDiscount, setCustomDiscount] = useState("15");
+  const [fixedAmount, setFixedAmount] = useState("5");
   const [message, setMessage] = useState("");
 
   // Reset form when pet changes
   const resetForm = () => {
     setOfferType("custom");
+    setDiscountMode("percentage");
     setSelectedOfferId("");
     setCustomDiscount("15");
+    setFixedAmount("5");
     if (pet) {
       setMessage(
-        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you ${customDiscount}% off your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
+        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you 15% off your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
       );
     }
   };
@@ -73,13 +77,24 @@ export function BirthdayOfferModal({
   };
 
   // Update message when discount changes
-  const updateMessageWithDiscount = (discount: string) => {
-    setCustomDiscount(discount);
+  const updateMessageWithDiscount = (discount: string, mode: "percentage" | "fixed" = discountMode) => {
+    if (mode === "percentage") {
+      setCustomDiscount(discount);
+    } else {
+      setFixedAmount(discount);
+    }
     if (pet) {
+      const discountText = mode === "percentage" ? `${discount}% off` : `€${discount} off`;
       setMessage(
-        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you ${discount}% off your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
+        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you ${discountText} your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
       );
     }
+  };
+
+  const handleDiscountModeChange = (mode: "percentage" | "fixed") => {
+    setDiscountMode(mode);
+    const value = mode === "percentage" ? customDiscount : fixedAmount;
+    updateMessageWithDiscount(value, mode);
   };
 
   const handleSend = async () => {
@@ -89,9 +104,7 @@ export function BirthdayOfferModal({
     try {
       // Build notification data
       const selectedOffer = existingOffers.find(o => o.id === selectedOfferId);
-      const discountText = offerType === "existing" && selectedOffer
-        ? `${selectedOffer.discount_value}% off - ${selectedOffer.title}`
-        : `${customDiscount}% off birthday special`;
+      const discountValue = discountMode === "percentage" ? parseInt(customDiscount) : parseInt(fixedAmount);
 
       // Create notification for the pet owner
       const { error } = await supabase.from("notifications").insert({
@@ -104,7 +117,8 @@ export function BirthdayOfferModal({
           business_name: businessName,
           pet_name: pet.pet_name,
           pet_id: pet.pet_id,
-          discount: offerType === "existing" ? selectedOffer?.discount_value : parseInt(customDiscount),
+          discount: offerType === "existing" ? selectedOffer?.discount_value : discountValue,
+          discount_type: offerType === "existing" ? selectedOffer?.discount_type : discountMode,
           offer_id: offerType === "existing" ? selectedOfferId : null,
           offer_type: offerType,
         },
@@ -207,30 +221,89 @@ export function BirthdayOfferModal({
 
           {/* Discount Configuration */}
           {offerType === "custom" ? (
-            <div className="space-y-2">
-              <Label htmlFor="discount">Birthday Discount (%)</Label>
-              <div className="flex gap-2">
-                {["10", "15", "20", "25"].map((val) => (
+            <div className="space-y-4">
+              {/* Discount Mode Toggle */}
+              <div className="space-y-2">
+                <Label>Discount Type</Label>
+                <div className="flex gap-2">
                   <Button
-                    key={val}
                     type="button"
-                    variant={customDiscount === val ? "default" : "outline"}
+                    variant={discountMode === "percentage" ? "default" : "outline"}
                     size="sm"
-                    onClick={() => updateMessageWithDiscount(val)}
+                    onClick={() => handleDiscountModeChange("percentage")}
                   >
-                    {val}%
+                    <Percent className="h-4 w-4 mr-1" />
+                    Percentage
                   </Button>
-                ))}
-                <Input
-                  id="discount"
-                  type="number"
-                  min="1"
-                  max="100"
-                  value={customDiscount}
-                  onChange={(e) => updateMessageWithDiscount(e.target.value)}
-                  className="w-20"
-                />
+                  <Button
+                    type="button"
+                    variant={discountMode === "fixed" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleDiscountModeChange("fixed")}
+                  >
+                    <Euro className="h-4 w-4 mr-1" />
+                    Fixed Amount
+                  </Button>
+                </div>
               </div>
+
+              {/* Discount Value */}
+              {discountMode === "percentage" ? (
+                <div className="space-y-2">
+                  <Label htmlFor="discount">Birthday Discount (%)</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {["10", "15", "20", "25"].map((val) => (
+                      <Button
+                        key={val}
+                        type="button"
+                        variant={customDiscount === val ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => updateMessageWithDiscount(val, "percentage")}
+                      >
+                        {val}%
+                      </Button>
+                    ))}
+                    <Input
+                      id="discount"
+                      type="number"
+                      min="1"
+                      max="100"
+                      value={customDiscount}
+                      onChange={(e) => updateMessageWithDiscount(e.target.value, "percentage")}
+                      className="w-20"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="fixedAmount">Birthday Gift (€)</Label>
+                  <div className="flex gap-2 flex-wrap">
+                    {["5", "10", "15", "20"].map((val) => (
+                      <Button
+                        key={val}
+                        type="button"
+                        variant={fixedAmount === val ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => updateMessageWithDiscount(val, "fixed")}
+                      >
+                        €{val}
+                      </Button>
+                    ))}
+                    <div className="relative">
+                      <Euro className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="fixedAmount"
+                        type="number"
+                        min="1"
+                        max="500"
+                        value={fixedAmount}
+                        onChange={(e) => updateMessageWithDiscount(e.target.value, "fixed")}
+                        className="w-24 pl-7"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-2">
