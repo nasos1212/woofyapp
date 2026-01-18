@@ -153,16 +153,15 @@ const AdminDashboard = () => {
         if (deleteError) throw deleteError;
       }
 
-      // Add new role if not "none"
-      if (newRole !== "none") {
-        const { error: insertError } = await supabase
-          .from("user_roles")
-          .insert([{ user_id: userId, role: newRole as "admin" | "member" | "business" }]);
+      // Always add a role (default to member)
+      const roleToInsert = newRole || "member";
+      const { error: insertError } = await supabase
+        .from("user_roles")
+        .insert([{ user_id: userId, role: roleToInsert as "admin" | "member" | "business" | "shelter" }]);
 
-        if (insertError) throw insertError;
-      }
+      if (insertError) throw insertError;
 
-      toast.success(`User role updated to ${newRole === "none" ? "no role" : newRole}`);
+      toast.success(`User role updated to ${roleToInsert}`);
       fetchData();
     } catch (error: any) {
       console.error("Error updating user role:", error);
@@ -552,12 +551,12 @@ const AdminDashboard = () => {
                             <label className="sr-only">Change user role</label>
                             <select
                               className="h-10 w-full rounded-md border-2 border-primary/50 bg-background px-3 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                              value={userItem.roles[0]?.role || "none"}
+                              value={userItem.roles[0]?.role || "member"}
                               onChange={(e) => updateUserRole(userItem.user_id, userItem.roles, e.target.value)}
                             >
-                              <option value="none">No role</option>
                               <option value="member">Member</option>
                               <option value="business">Business</option>
+                              <option value="shelter">Shelter</option>
                               <option value="admin">Admin</option>
                             </select>
                           </div>
