@@ -308,6 +308,7 @@ const BusinessAnalytics = () => {
               <p className="text-slate-500">Analytics will be available once your business is approved.</p>
             </div>
           </main>
+          <div className="pb-20 md:pb-0" />
           <BusinessMobileNav />
         </div>
       </>

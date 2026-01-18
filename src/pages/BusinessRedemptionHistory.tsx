@@ -237,6 +237,7 @@ const BusinessRedemptionHistory = () => {
               <p className="text-slate-500">View your redemption history once your business is approved.</p>
             </div>
           </main>
+          <div className="pb-20 md:pb-0" />
           <BusinessMobileNav />
         </div>
       </>
