@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,11 +13,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper } from "lucide-react";
+import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper, Clock } from "lucide-react";
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 
 interface CustomerPet {
   pet_id: string;
@@ -45,6 +47,7 @@ const BusinessCustomerBirthdays = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [customerPets, setCustomerPets] = useState<CustomerPet[]>([]);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState<UpcomingBirthday[]>([]);
@@ -256,11 +259,33 @@ const BusinessCustomerBirthdays = () => {
     }
   };
 
-  if (authLoading) {
+  if (authLoading || verificationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
       </div>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <>
+        <Helmet>
+          <title>Customer Pet Birthdays | Business Dashboard</title>
+        </Helmet>
+        <BusinessHeader />
+        <main className="min-h-screen bg-background pt-24 md:pt-28 pb-16">
+          <div className="container max-w-4xl mx-auto px-4">
+            <PendingApprovalBanner status={verificationStatus} />
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+              <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display font-semibold text-lg mb-2">Birthday Tracking Unavailable</h3>
+              <p className="text-slate-500">Track customer pet birthdays once your business is approved.</p>
+            </div>
+          </div>
+        </main>
+        <BusinessMobileNav />
+      </>
     );
   }
 

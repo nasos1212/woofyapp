@@ -11,12 +11,15 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   ArrowLeft,
+  Clock,
 } from "lucide-react";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
+import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
@@ -43,6 +46,7 @@ interface CustomerInsight {
 const BusinessAnalytics = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [isLoading, setIsLoading] = useState(true);
   const [businessId, setBusinessId] = useState<string | null>(null);
   const [stats, setStats] = useState({
@@ -280,11 +284,33 @@ const BusinessAnalytics = () => {
 
   const maxRedemptions = Math.max(...dailyData.map((d) => d.redemptions), 1);
 
-  if (loading || isLoading) {
+  if (loading || isLoading || verificationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
       </div>
+    );
+  }
+
+  if (!isApproved) {
+    return (
+      <>
+        <Helmet>
+          <title>Analytics | Wooffy Business</title>
+        </Helmet>
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+          <BusinessHeader />
+          <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
+            <PendingApprovalBanner status={verificationStatus} />
+            <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+              <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-display font-semibold text-lg mb-2">Analytics Unavailable</h3>
+              <p className="text-slate-500">Analytics will be available once your business is approved.</p>
+            </div>
+          </main>
+          <BusinessMobileNav />
+        </div>
+      </>
     );
   }
 
