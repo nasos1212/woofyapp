@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import AdoptionInquiryDialog from "@/components/AdoptionInquiryDialog";
 import { 
   ArrowLeft, 
   Heart, 
@@ -19,11 +21,13 @@ import {
   Calendar,
   Dog,
   ExternalLink,
-  PawPrint
+  PawPrint,
+  MessageSquare
 } from "lucide-react";
 
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
 
   const { data: shelter, isLoading: shelterLoading } = useQuery({
     queryKey: ['shelter', id],
@@ -71,6 +75,29 @@ const ShelterProfile = () => {
     },
     enabled: !!id,
   });
+
+  // Fetch photos for all pets
+  const { data: petPhotos } = useQuery({
+    queryKey: ['shelter-adoptable-pet-photos-public', id],
+    queryFn: async () => {
+      if (!adoptablePets || adoptablePets.length === 0) return [];
+      const petIds = adoptablePets.map(p => p.id);
+      const { data, error } = await supabase
+        .from('shelter_adoptable_pet_photos')
+        .select('*')
+        .in('pet_id', petIds)
+        .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!adoptablePets && adoptablePets.length > 0,
+  });
+
+  const getPetMainPhoto = (pet: { id: string; photo_url: string | null }) => {
+    const photos = petPhotos?.filter(p => p.pet_id === pet.id) || [];
+    return photos[0]?.photo_url || pet.photo_url;
+  };
 
   if (shelterLoading) {
     return (
@@ -247,54 +274,66 @@ const ShelterProfile = () => {
                   Pets Available for Adoption
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {adoptablePets.map((pet) => (
-                    <div 
-                      key={pet.id} 
-                      className="rounded-lg overflow-hidden bg-muted border"
-                    >
-                      <div className="aspect-square relative">
-                        {pet.photo_url ? (
-                          <img 
-                            src={pet.photo_url} 
-                            alt={pet.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-muted">
-                            <PawPrint className="h-12 w-12 text-muted-foreground" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3">
-                        <h3 className="font-medium">{pet.name}</h3>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          <Badge variant="secondary" className="text-xs capitalize">
-                            {pet.pet_type}
-                          </Badge>
-                          {pet.breed && (
-                            <Badge variant="outline" className="text-xs">
-                              {pet.breed}
-                            </Badge>
-                          )}
-                          {pet.age && (
-                            <Badge variant="outline" className="text-xs">
-                              {pet.age}
-                            </Badge>
-                          )}
-                          {pet.gender && (
-                            <Badge variant="outline" className="text-xs capitalize">
-                              {pet.gender}
-                            </Badge>
+                  {adoptablePets.map((pet) => {
+                    const mainPhoto = getPetMainPhoto(pet);
+                    return (
+                      <div 
+                        key={pet.id} 
+                        className="rounded-lg overflow-hidden bg-muted border group"
+                      >
+                        <div className="aspect-square relative">
+                          {mainPhoto ? (
+                            <img 
+                              src={mainPhoto} 
+                              alt={pet.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-muted">
+                              <PawPrint className="h-12 w-12 text-muted-foreground" />
+                            </div>
                           )}
                         </div>
-                        {pet.description && (
-                          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                            {pet.description}
-                          </p>
-                        )}
+                        <div className="p-3">
+                          <h3 className="font-medium">{pet.name}</h3>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            <Badge variant="secondary" className="text-xs capitalize">
+                              {pet.pet_type}
+                            </Badge>
+                            {pet.breed && (
+                              <Badge variant="outline" className="text-xs">
+                                {pet.breed}
+                              </Badge>
+                            )}
+                            {pet.age && (
+                              <Badge variant="outline" className="text-xs">
+                                {pet.age}
+                              </Badge>
+                            )}
+                            {pet.gender && (
+                              <Badge variant="outline" className="text-xs capitalize">
+                                {pet.gender}
+                              </Badge>
+                            )}
+                          </div>
+                          {pet.description && (
+                            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                              {pet.description}
+                            </p>
+                          )}
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="w-full mt-3 gap-2"
+                            onClick={() => setSelectedPet({ id: pet.id, name: pet.name, shelter_id: pet.shelter_id })}
+                          >
+                            <MessageSquare className="h-4 w-4" />
+                            Inquire About {pet.name}
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
@@ -412,6 +451,16 @@ const ShelterProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Adoption Inquiry Dialog */}
+      {selectedPet && (
+        <AdoptionInquiryDialog
+          open={!!selectedPet}
+          onOpenChange={(open) => !open && setSelectedPet(null)}
+          pet={selectedPet}
+          shelterName={shelter.shelter_name}
+        />
+      )}
     </>
   );
 };

@@ -17,6 +17,7 @@ import { ensureHttps } from "@/lib/utils";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
+import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
 import { 
   Home, 
   Clock, 
@@ -312,6 +313,9 @@ const ShelterDashboard = () => {
                   <TabsTrigger value="adoptable-pets" className="gap-1">
                     Adoptable Pets
                   </TabsTrigger>
+                  <TabsTrigger value="inquiries" className="gap-1">
+                    Inquiries
+                  </TabsTrigger>
                 </TabsList>
 
                 <form onSubmit={handleSubmit}>
@@ -514,6 +518,10 @@ const ShelterDashboard = () => {
 
                   <TabsContent value="adoptable-pets">
                     <ShelterAdoptablePets shelterId={shelter.id} />
+                  </TabsContent>
+
+                  <TabsContent value="inquiries">
+                    <ShelterAdoptionInquiries shelterId={shelter.id} />
                   </TabsContent>
 
                   <div className="flex justify-end mt-6 pt-4 border-t">

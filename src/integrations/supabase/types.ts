@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      adoption_inquiries: {
+        Row: {
+          created_at: string
+          id: string
+          inquirer_email: string
+          inquirer_name: string
+          inquirer_phone: string | null
+          message: string
+          pet_id: string
+          shelter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inquirer_email: string
+          inquirer_name: string
+          inquirer_phone?: string | null
+          message: string
+          pet_id: string
+          shelter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inquirer_email?: string
+          inquirer_name?: string
+          inquirer_phone?: string | null
+          message?: string
+          pet_id?: string
+          shelter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adoption_inquiries_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "shelter_adoptable_pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "adoption_inquiries_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_chat_messages: {
         Row: {
           content: string
@@ -1615,6 +1669,38 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      shelter_adoptable_pet_photos: {
+        Row: {
+          created_at: string
+          display_order: number | null
+          id: string
+          pet_id: string
+          photo_url: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          pet_id: string
+          photo_url: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          pet_id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shelter_adoptable_pet_photos_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "shelter_adoptable_pets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shelter_adoptable_pets: {
         Row: {
