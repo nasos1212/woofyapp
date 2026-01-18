@@ -71,14 +71,15 @@ interface BusinessHour {
 }
 
 const categoryLabels: Record<string, string> = {
-  veterinary: "Veterinary",
+  trainer: "Dog Trainer",
+  pet_shop: "Pet Shop",
+  hotel: "Pet Hotel / Boarding",
   grooming: "Grooming",
-  pet_store: "Pet Store",
-  training: "Training",
-  boarding: "Boarding",
+  vet: "Veterinary",
   daycare: "Daycare",
-  pet_food: "Pet Food",
+  physio: "Physiotherapy",
   accessories: "Accessories",
+  food: "Pet Food",
   other: "Other"
 };
 
