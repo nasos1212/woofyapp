@@ -37,6 +37,7 @@ import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PhotoUpload } from "@/components/PhotoUpload";
+import { BusinessHoursManager } from "@/components/BusinessHoursManager";
 import { validateImageFile, MAX_IMAGE_SIZE } from "@/lib/fileValidation";
 import { Database } from "@/integrations/supabase/types";
 
@@ -342,14 +343,18 @@ const BusinessSettings = () => {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="profile" className="gap-2">
                 <Building2 className="w-4 h-4" />
                 Profile
               </TabsTrigger>
+              <TabsTrigger value="hours" className="gap-2">
+                <Clock className="w-4 h-4" />
+                Hours
+              </TabsTrigger>
               <TabsTrigger value="photos" className="gap-2">
                 <ImageIcon className="w-4 h-4" />
-                Photos ({photos.length})
+                Photos
               </TabsTrigger>
             </TabsList>
 
@@ -555,6 +560,20 @@ const BusinessSettings = () => {
                       {isSaving ? "Saving..." : "Save Changes"}
                     </Button>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="hours">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Business Hours</CardTitle>
+                  <CardDescription>
+                    Set your opening hours so customers know when to visit
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <BusinessHoursManager businessId={formData.id} />
                 </CardContent>
               </Card>
             </TabsContent>
