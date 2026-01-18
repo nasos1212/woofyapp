@@ -112,8 +112,9 @@ export default function BusinessProfile() {
       // This excludes sensitive data like email, phone, user_id
       let businessData: Business | null = null;
       
-      // If user is logged in, check if they're the owner first
+      // If user is logged in, check if they're the owner or admin first
       if (user) {
+        // Check if owner
         const { data: ownerCheck } = await supabase
           .from("businesses")
           .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url")
@@ -123,10 +124,28 @@ export default function BusinessProfile() {
         
         if (ownerCheck) {
           businessData = ownerCheck;
+        } else {
+          // Check if admin - admins can view all businesses including pending
+          const { data: isAdmin } = await supabase.rpc("has_role", {
+            _user_id: user.id,
+            _role: "admin",
+          });
+          
+          if (isAdmin) {
+            const { data: adminCheck } = await supabase
+              .from("businesses")
+              .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url")
+              .eq("id", id)
+              .maybeSingle();
+            
+            if (adminCheck) {
+              businessData = adminCheck;
+            }
+          }
         }
       }
       
-      // If not owner or not logged in, use the public view
+      // If not owner/admin or not logged in, use the public view
       if (!businessData) {
         const { data: publicData, error: publicError } = await supabase
           .from("businesses_public")
