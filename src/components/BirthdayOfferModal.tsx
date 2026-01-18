@@ -105,9 +105,11 @@ export function BirthdayOfferModal({
       // Build notification data
       const selectedOffer = existingOffers.find(o => o.id === selectedOfferId);
       const discountValue = discountMode === "percentage" ? parseInt(customDiscount) : parseInt(fixedAmount);
+      const finalDiscountType = offerType === "existing" ? selectedOffer?.discount_type || "percentage" : discountMode;
+      const finalDiscountValue = offerType === "existing" ? (selectedOffer?.discount_value || 0) : discountValue;
 
       // Create notification for the pet owner
-      const { error } = await supabase.from("notifications").insert({
+      const { error: notifError } = await supabase.from("notifications").insert({
         user_id: pet.owner_user_id,
         title: `🎂 Birthday Surprise from ${businessName}!`,
         message: message,
@@ -117,14 +119,31 @@ export function BirthdayOfferModal({
           business_name: businessName,
           pet_name: pet.pet_name,
           pet_id: pet.pet_id,
-          discount: offerType === "existing" ? selectedOffer?.discount_value : discountValue,
-          discount_type: offerType === "existing" ? selectedOffer?.discount_type : discountMode,
+          discount: finalDiscountValue,
+          discount_type: finalDiscountType,
           offer_id: offerType === "existing" ? selectedOfferId : null,
           offer_type: offerType,
         },
       });
 
-      if (error) throw error;
+      if (notifError) throw notifError;
+
+      // Also save to sent_birthday_offers for tracking
+      const { error: trackError } = await supabase.from("sent_birthday_offers").insert({
+        business_id: businessId,
+        pet_id: pet.pet_id,
+        pet_name: pet.pet_name,
+        owner_user_id: pet.owner_user_id,
+        owner_name: pet.owner_name,
+        discount_value: finalDiscountValue,
+        discount_type: finalDiscountType,
+        message: message,
+      });
+
+      if (trackError) {
+        console.error("Failed to track sent offer:", trackError);
+        // Don't throw - notification was sent successfully
+      }
 
       toast({
         title: "🎉 Birthday offer sent!",
