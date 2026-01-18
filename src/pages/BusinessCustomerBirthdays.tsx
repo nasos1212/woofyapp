@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper, Clock } from "lucide-react";
+import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper, Clock, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
@@ -52,6 +52,16 @@ interface UpcomingBirthday extends CustomerPet {
   age: number;
 }
 
+interface SentBirthdayOffer {
+  id: string;
+  pet_name: string;
+  owner_name: string | null;
+  discount_value: number;
+  discount_type: string;
+  message: string;
+  sent_at: string;
+}
+
 const BusinessCustomerBirthdays = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -62,6 +72,7 @@ const BusinessCustomerBirthdays = () => {
   const [customerPets, setCustomerPets] = useState<CustomerPet[]>([]);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState<UpcomingBirthday[]>([]);
   const [businessOffers, setBusinessOffers] = useState<BusinessOffer[]>([]);
+  const [sentOffers, setSentOffers] = useState<SentBirthdayOffer[]>([]);
   const [settings, setSettings] = useState<BirthdaySettings>({
     enabled: true,
     days_before_reminder: 7,
@@ -72,6 +83,7 @@ const BusinessCustomerBirthdays = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [selectedPetForOffer, setSelectedPetForOffer] = useState<UpcomingBirthday | null>(null);
   const [offerModalOpen, setOfferModalOpen] = useState(false);
+  const [showSentOffers, setShowSentOffers] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -117,6 +129,16 @@ const BusinessCustomerBirthdays = () => {
         .eq("is_active", true);
 
       setBusinessOffers(offersData || []);
+
+      // Fetch sent birthday offers
+      const { data: sentOffersData } = await supabase
+        .from("sent_birthday_offers")
+        .select("*")
+        .eq("business_id", businessData.id)
+        .order("sent_at", { ascending: false })
+        .limit(50);
+
+      setSentOffers(sentOffersData || []);
 
       // Fetch customer pets using direct query instead of view
       // This gets pets from customers who have redeemed offers at this business
@@ -541,6 +563,56 @@ const BusinessCustomerBirthdays = () => {
               </div>
             </>
           )}
+
+          {/* Sent Birthday Offers */}
+          {sentOffers.length > 0 && (
+            <>
+              <div 
+                className="flex items-center justify-between mt-8 mb-4 cursor-pointer"
+                onClick={() => setShowSentOffers(!showSentOffers)}
+              >
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <Send className="h-5 w-5" />
+                  Sent Birthday Offers
+                  <Badge variant="secondary" className="ml-2">{sentOffers.length}</Badge>
+                </h2>
+                <Button variant="ghost" size="sm">
+                  {showSentOffers ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+              </div>
+              
+              {showSentOffers && (
+                <div className="space-y-3">
+                  {sentOffers.map((offer) => (
+                    <Card key={offer.id} className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20">
+                      <CardContent className="py-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold">{offer.pet_name}</h3>
+                              <Badge variant="outline" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                                {offer.discount_type === "percentage" ? `${offer.discount_value}% off` : `€${offer.discount_value} off`}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mb-2">
+                              To: {offer.owner_name || "Pet Owner"}
+                            </p>
+                            <p className="text-sm text-muted-foreground line-clamp-2 italic">
+                              "{offer.message.substring(0, 100)}{offer.message.length > 100 ? "..." : ""}"
+                            </p>
+                          </div>
+                          <div className="text-right text-xs text-muted-foreground shrink-0">
+                            <p>{format(new Date(offer.sent_at), "MMM d, yyyy")}</p>
+                            <p>{format(new Date(offer.sent_at), "h:mm a")}</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
         <div className="pb-20 md:pb-0" />
       </main>
@@ -554,6 +626,18 @@ const BusinessCustomerBirthdays = () => {
         existingOffers={businessOffers}
         onSuccess={() => {
           setSelectedPetForOffer(null);
+          // Refresh sent offers
+          if (businessId) {
+            supabase
+              .from("sent_birthday_offers")
+              .select("*")
+              .eq("business_id", businessId)
+              .order("sent_at", { ascending: false })
+              .limit(50)
+              .then(({ data }) => {
+                if (data) setSentOffers(data);
+              });
+          }
         }}
       />
 

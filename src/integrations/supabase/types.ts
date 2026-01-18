@@ -1834,6 +1834,67 @@ export type Database = {
         }
         Relationships: []
       }
+      sent_birthday_offers: {
+        Row: {
+          business_id: string
+          discount_type: string
+          discount_value: number
+          id: string
+          message: string
+          owner_name: string | null
+          owner_user_id: string
+          pet_id: string
+          pet_name: string
+          sent_at: string
+        }
+        Insert: {
+          business_id: string
+          discount_type?: string
+          discount_value: number
+          id?: string
+          message: string
+          owner_name?: string | null
+          owner_user_id: string
+          pet_id: string
+          pet_name: string
+          sent_at?: string
+        }
+        Update: {
+          business_id?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          message?: string
+          owner_name?: string | null
+          owner_user_id?: string
+          pet_id?: string
+          pet_name?: string
+          sent_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sent_birthday_offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shelter_adoptable_pet_photos: {
         Row: {
           created_at: string
