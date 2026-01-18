@@ -236,8 +236,9 @@ const BusinessSettings = () => {
     setIsUploadingLogo(true);
     try {
       const fileExt = file.name.split(".").pop();
-      const fileName = `${formData.id}-logo-${Date.now()}.${fileExt}`;
-      const filePath = `logos/${fileName}`;
+      const fileName = `logo-${Date.now()}.${fileExt}`;
+      // Path must start with user's auth.uid() to satisfy RLS policy
+      const filePath = `${user?.id}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from("business-photos")
