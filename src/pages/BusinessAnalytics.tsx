@@ -60,7 +60,7 @@ const BusinessAnalytics = () => {
   const [dailyData, setDailyData] = useState<DailyData[]>([]);
   const [topOffers, setTopOffers] = useState<TopOffer[]>([]);
   const [customers, setCustomers] = useState<CustomerInsight[]>([]);
-  const [dateRange, setDateRange] = useState<"7d" | "30d" | "month">("30d");
+  const [dateRange, setDateRange] = useState<"7d" | "30d" | "6m">("30d");
 
   useEffect(() => {
     if (!loading && !user) {
@@ -102,7 +102,7 @@ const BusinessAnalytics = () => {
       } else if (dateRange === "30d") {
         startDate = subDays(now, 30);
       } else {
-        startDate = startOfMonth(now);
+        startDate = subDays(now, 180); // 6 months
       }
 
       const thisMonthStart = startOfMonth(now);
@@ -351,7 +351,7 @@ const BusinessAnalytics = () => {
             <div className="flex flex-wrap items-center gap-2">
               {/* Date Range Selector */}
               <div className="flex items-center gap-1 sm:gap-2 bg-white rounded-lg p-1 border border-slate-200 w-fit">
-                {(["7d", "30d", "month"] as const).map((range) => (
+                {(["7d", "30d", "6m"] as const).map((range) => (
                   <button
                     key={range}
                     onClick={() => setDateRange(range)}
@@ -361,7 +361,7 @@ const BusinessAnalytics = () => {
                         : "text-slate-600 hover:bg-slate-100"
                     }`}
                   >
-                    {range === "7d" ? "7D" : range === "30d" ? "30D" : "Month"}
+                    {range === "7d" ? "7D" : range === "30d" ? "30D" : "6M"}
                   </button>
                 ))}
               </div>
