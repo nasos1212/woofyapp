@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 
 interface Business {
   id: string;
@@ -88,6 +89,7 @@ export default function BusinessProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { trackBusinessView } = useAnalyticsTracking();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -106,6 +108,13 @@ export default function BusinessProfile() {
   const isOwner = user && business?.user_id === user.id;
   // In preview mode, hide all owner-specific actions
   const showOwnerActions = isOwner && !isPreviewMode;
+
+  // Track business view when data is loaded
+  useEffect(() => {
+    if (business && id && !isOwner) {
+      trackBusinessView(id, business.business_name);
+    }
+  }, [business, id, isOwner, trackBusinessView]);
 
   useEffect(() => {
     if (id) {
