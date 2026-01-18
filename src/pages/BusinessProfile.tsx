@@ -62,6 +62,14 @@ interface BusinessLocation {
   google_maps_url: string | null;
 }
 
+interface BusinessHour {
+  id: string;
+  day_of_week: number;
+  is_closed: boolean;
+  open_time: string | null;
+  close_time: string | null;
+}
+
 const categoryLabels: Record<string, string> = {
   veterinary: "Veterinary",
   grooming: "Grooming",
@@ -83,6 +91,7 @@ export default function BusinessProfile() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [locations, setLocations] = useState<BusinessLocation[]>([]);
+  const [businessHours, setBusinessHours] = useState<BusinessHour[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRating, setUserRating] = useState(0);
   const [userReview, setUserReview] = useState("");
@@ -192,6 +201,15 @@ export default function BusinessProfile() {
         .order("display_order", { ascending: true });
 
       setLocations(locationsData || []);
+
+      // Fetch business hours
+      const { data: hoursData } = await supabase
+        .from("business_hours")
+        .select("*")
+        .eq("business_id", id)
+        .order("day_of_week", { ascending: true });
+
+      setBusinessHours(hoursData || []);
 
     } catch (error) {
       console.error("Error fetching business:", error);
@@ -648,7 +666,7 @@ export default function BusinessProfile() {
             </CardContent>
           </Card>
 
-          {/* Business Hours - Placeholder */}
+          {/* Business Hours */}
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -657,9 +675,50 @@ export default function BusinessProfile() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground text-sm">
-                Contact the business directly for their current operating hours.
-              </p>
+              {businessHours.length > 0 ? (
+                <div className="space-y-2">
+                  {[
+                    { value: 0, label: "Sunday" },
+                    { value: 1, label: "Monday" },
+                    { value: 2, label: "Tuesday" },
+                    { value: 3, label: "Wednesday" },
+                    { value: 4, label: "Thursday" },
+                    { value: 5, label: "Friday" },
+                    { value: 6, label: "Saturday" },
+                  ].map((day) => {
+                    const hours = businessHours.find((h) => h.day_of_week === day.value);
+                    const today = new Date().getDay();
+                    const isToday = day.value === today;
+                    
+                    return (
+                      <div
+                        key={day.value}
+                        className={`flex justify-between items-center py-2 px-3 rounded-lg ${
+                          isToday ? "bg-primary/10 font-medium" : ""
+                        }`}
+                      >
+                        <span className={`text-sm ${isToday ? "text-primary" : "text-foreground"}`}>
+                          {day.label}
+                          {isToday && <span className="ml-2 text-xs">(Today)</span>}
+                        </span>
+                        <span className={`text-sm ${hours?.is_closed ? "text-muted-foreground" : isToday ? "text-primary" : "text-foreground"}`}>
+                          {!hours ? (
+                            "—"
+                          ) : hours.is_closed ? (
+                            "Closed"
+                          ) : (
+                            `${hours.open_time?.slice(0, 5)} - ${hours.close_time?.slice(0, 5)}`
+                          )}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-sm">
+                  Contact the business directly for their current operating hours.
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>
