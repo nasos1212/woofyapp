@@ -52,6 +52,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
       },
     });
+    
+    // Auto-assign member role for new users
+    if (!error && data.user) {
+      await supabase
+        .from("user_roles")
+        .upsert(
+          { user_id: data.user.id, role: "member" as const },
+          { onConflict: "user_id,role" }
+        );
+    }
+    
     return { error, data: data ? { user: data.user } : null };
   };
 
