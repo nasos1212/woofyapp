@@ -406,7 +406,7 @@ const BusinessDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Partner Dashboard | Wooffy Business Portal</title>
+        <title>{business?.business_name || "Partner Dashboard"} | Wooffy Business Portal</title>
         <meta name="description" content="Verify Wooffy members and track redemptions at your business." />
       </Helmet>
 
@@ -426,7 +426,7 @@ const BusinessDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              Partner Dashboard
+              {business?.business_name || "Partner Dashboard"}
             </h1>
             <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
           </div>

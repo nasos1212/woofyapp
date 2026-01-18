@@ -1,13 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Tag, BarChart3, History, Cake } from "lucide-react";
+import { LayoutDashboard, Tag, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "/business", icon: LayoutDashboard, label: "Dashboard" },
   { path: "/business/offers", icon: Tag, label: "Offers" },
   { path: "/business/analytics", icon: BarChart3, label: "Analytics" },
-  { path: "/business/history", icon: History, label: "History" },
-  { path: "/business/birthdays", icon: Cake, label: "Birthdays" },
+  { path: "/business/settings", icon: Settings, label: "Settings" },
 ];
 
 const BusinessMobileNav = () => {

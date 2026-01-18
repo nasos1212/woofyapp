@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Bell, BarChart3, History, Cake, LayoutDashboard } from "lucide-react";
+import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Bell, BarChart3, Cake, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -91,7 +91,6 @@ const BusinessHeader = () => {
     { name: "Dashboard", href: "/business", icon: LayoutDashboard },
     { name: "Offers", href: "/business/offers", icon: Tag },
     { name: "Analytics", href: "/business/analytics", icon: BarChart3 },
-    { name: "History", href: "/business/history", icon: History },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -164,9 +163,9 @@ const BusinessHeader = () => {
                   <BarChart3 className="mr-2 h-4 w-4" />
                   Analytics
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/business/birthdays")}>
-                  <Cake className="mr-2 h-4 w-4" />
-                  Customer Birthdays
+                <DropdownMenuItem onClick={() => navigate("/business/settings")}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/member")}>
@@ -229,16 +228,16 @@ const BusinessHeader = () => {
               </Link>
             ))}
             <Link
-              to="/business/birthdays"
+              to="/business/settings"
               className={`font-medium transition-colors py-3 flex items-center gap-3 rounded-lg px-3 ${
-                isActive("/business/birthdays")
+                isActive("/business/settings")
                   ? "text-primary bg-primary/10"
                   : "text-foreground hover:text-primary hover:bg-muted"
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              <Cake className="w-5 h-5" />
-              Birthdays
+              <Settings className="w-5 h-5" />
+              Settings
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               <Link to="/member" onClick={() => setIsMenuOpen(false)}>
