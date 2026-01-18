@@ -74,7 +74,7 @@ const plans: PlanOption[] = [
     renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
-    features: ["Up to 5 pets", ...sharedFeatures],
+    features: ["3-5 pets included", ...sharedFeatures],
   },
 ];
 
