@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Crown, Trash2, Search } from "lucide-react";
+import { Plus, Gift, Trash2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,7 @@ const InfluencerMemberships = () => {
   const [searchEmail, setSearchEmail] = useState("");
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
   const [newMembership, setNewMembership] = useState({
-    reason: "influencer",
+    reason: "gift",
     duration_months: "12",
     plan_type: "family",
     notes: "",
@@ -132,7 +132,7 @@ const InfluencerMemberships = () => {
       setSelectedUser(null);
       setSearchEmail("");
       setNewMembership({
-        reason: "influencer",
+        reason: "gift",
         duration_months: "12",
         plan_type: "family",
         notes: "",
@@ -166,11 +166,12 @@ const InfluencerMemberships = () => {
 
   const getReasonBadge = (reason: string) => {
     const colors: Record<string, string> = {
-      influencer: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+      gift: "bg-purple-500/20 text-purple-400 border-purple-500/30",
       partner: "bg-blue-500/20 text-blue-400 border-blue-500/30",
       contest_winner: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
       employee: "bg-green-500/20 text-green-400 border-green-500/30",
       other: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+      influencer: "bg-purple-500/20 text-purple-400 border-purple-500/30", // legacy support
     };
     return <Badge className={colors[reason] || colors.other}>{reason.replace("_", " ")}</Badge>;
   };
@@ -181,8 +182,8 @@ const InfluencerMemberships = () => {
     <Card className="border-border/50">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="flex items-center gap-2">
-          <Crown className="w-5 h-5" />
-          Influencer / Free Memberships
+          <Gift className="w-5 h-5" />
+          Gift Memberships
         </CardTitle>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
@@ -224,7 +225,7 @@ const InfluencerMemberships = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="influencer">Influencer</SelectItem>
+                    <SelectItem value="gift">Gift</SelectItem>
                     <SelectItem value="partner">Partner</SelectItem>
                     <SelectItem value="contest_winner">Contest Winner</SelectItem>
                     <SelectItem value="employee">Employee</SelectItem>
