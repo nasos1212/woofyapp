@@ -23,16 +23,12 @@ import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
-import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
-  
-  const [checkingBusiness, setCheckingBusiness] = useState(true);
   const [profileName, setProfileName] = useState<string | null>(null);
 
   // Fetch profile name
@@ -51,13 +47,8 @@ const FreeMemberDashboard = () => {
     fetchProfile();
   }, [user]);
 
-  // Business users can now view the free member dashboard when they explicitly navigate here
-  // This allows them to access community features as members too
-  useEffect(() => {
-    setCheckingBusiness(false);
-  }, [user, isBusiness, accountTypeLoading]);
 
-  if (authLoading || membershipLoading || accountTypeLoading || checkingBusiness) {
+  if (authLoading || membershipLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -69,7 +60,7 @@ const FreeMemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Business users can now access member features too - no redirect
+  
 
   if (hasMembership) {
     return <Navigate to="/member" replace />;
