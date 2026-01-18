@@ -575,9 +575,9 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">View your savings & activity</p>
                     </div>
                   </Link>
-                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-rose-50 rounded-xl hover:bg-rose-100 transition-colors">
-                    <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-rose-600" />
+                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
+                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-amber-600" />
                     </div>
                     <div>
                       <p className="font-medium text-foreground text-sm">Shelters</p>
