@@ -1616,6 +1616,59 @@ export type Database = {
         }
         Relationships: []
       }
+      shelter_adoptable_pets: {
+        Row: {
+          age: string | null
+          breed: string | null
+          created_at: string
+          description: string | null
+          gender: string | null
+          id: string
+          is_available: boolean
+          name: string
+          pet_type: string
+          photo_url: string | null
+          shelter_id: string
+          updated_at: string
+        }
+        Insert: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          is_available?: boolean
+          name: string
+          pet_type?: string
+          photo_url?: string | null
+          shelter_id: string
+          updated_at?: string
+        }
+        Update: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          is_available?: boolean
+          name?: string
+          pet_type?: string
+          photo_url?: string | null
+          shelter_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shelter_adoptable_pets_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       shelter_photos: {
         Row: {
           caption: string | null

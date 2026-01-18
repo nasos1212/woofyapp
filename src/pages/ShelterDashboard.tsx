@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
+import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import { 
   Home, 
   Clock, 
@@ -308,6 +309,9 @@ const ShelterDashboard = () => {
                     <ImageIcon className="h-3 w-3" />
                     Branding
                   </TabsTrigger>
+                  <TabsTrigger value="adoptable-pets" className="gap-1">
+                    Adoptable Pets
+                  </TabsTrigger>
                 </TabsList>
 
                 <form onSubmit={handleSubmit}>
@@ -506,6 +510,10 @@ const ShelterDashboard = () => {
                     />
 
                     <ShelterGalleryUpload shelterId={shelter.id} />
+                  </TabsContent>
+
+                  <TabsContent value="adoptable-pets">
+                    <ShelterAdoptablePets shelterId={shelter.id} />
                   </TabsContent>
 
                   <div className="flex justify-end mt-6 pt-4 border-t">
