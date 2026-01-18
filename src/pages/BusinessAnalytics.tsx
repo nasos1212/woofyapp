@@ -38,6 +38,7 @@ interface TopOffer {
 interface CustomerInsight {
   member_id: string;
   member_number: string;
+  member_name: string | null;
   pet_name: string | null;
   total_redemptions: number;
   last_visit: string;
@@ -117,6 +118,7 @@ const BusinessAnalytics = () => {
           redeemed_at,
           membership_id,
           member_number,
+          member_name,
           pet_names,
           offer:offers(title, discount_value, discount_type)
         `)
@@ -211,10 +213,10 @@ const BusinessAnalytics = () => {
           }))
       );
 
-      // Calculate customer insights - use member_number and pet_names directly from redemptions
+      // Calculate customer insights - use member_number, member_name and pet_names directly from redemptions
       const customerData: Record<
         string,
-        { member_number: string; pet_name: string | null; count: number; lastVisit: string }
+        { member_number: string; member_name: string | null; pet_name: string | null; count: number; lastVisit: string }
       > = {};
 
       redemptions.forEach((r) => {
@@ -223,6 +225,7 @@ const BusinessAnalytics = () => {
           if (!customerData[r.membership_id]) {
             customerData[r.membership_id] = {
               member_number: memberNumber,
+              member_name: r.member_name || null,
               pet_name: r.pet_names || null,
               count: 0,
               lastVisit: r.redeemed_at,
@@ -240,6 +243,7 @@ const BusinessAnalytics = () => {
           .map(([id, data]) => ({
             member_id: id,
             member_number: data.member_number,
+            member_name: data.member_name,
             pet_name: data.pet_name,
             total_redemptions: data.count,
             last_visit: data.lastVisit,
@@ -476,9 +480,14 @@ const BusinessAnalytics = () => {
                     {customers.map((customer) => (
                       <tr key={customer.member_id} className="hover:bg-slate-50">
                         <td className="px-6 py-4">
-                          <span className="text-sm font-mono text-slate-900">
-                            {customer.member_number}
-                          </span>
+                          <div>
+                            <p className="text-sm font-medium text-slate-900">
+                              {customer.member_name || "Unknown"}
+                            </p>
+                            <p className="text-xs font-mono text-slate-500">
+                              {customer.member_number}
+                            </p>
+                          </div>
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-sm text-slate-600">
