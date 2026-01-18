@@ -2296,6 +2296,7 @@ export type Database = {
         | "food"
         | "accessories"
         | "other"
+        | "physio"
       verification_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -2435,6 +2436,7 @@ export const Constants = {
         "food",
         "accessories",
         "other",
+        "physio",
       ],
       verification_status: ["pending", "approved", "rejected"],
     },

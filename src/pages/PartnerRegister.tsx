@@ -32,7 +32,7 @@ const categories: { value: BusinessCategory; label: string }[] = [
   { value: "grooming", label: "Grooming Salon" },
   { value: "vet", label: "Veterinary Clinic" },
   { value: "daycare", label: "Doggy Daycare" },
-  { value: "food", label: "Pet Food Supplier" },
+  { value: "physio", label: "Pet Physiotherapy" },
   { value: "accessories", label: "Pet Accessories" },
   { value: "other", label: "Other" },
 ];
@@ -57,6 +57,7 @@ const PartnerRegister = () => {
     return nameFromUrl || "";
   });
   const [category, setCategory] = useState<BusinessCategory | "">("");
+  const [otherCategoryDescription, setOtherCategoryDescription] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
@@ -82,6 +83,7 @@ const PartnerRegister = () => {
     return (
       businessName !== initialName ||
       category !== "" ||
+      otherCategoryDescription !== "" ||
       description !== "" ||
       primaryLocation.city !== "" ||
       primaryLocation.address !== "" ||
@@ -91,7 +93,7 @@ const PartnerRegister = () => {
       email !== "" ||
       website !== ""
     );
-  }, [businessName, initialName, category, description, primaryLocation, additionalLocations, email, website]);
+  }, [businessName, initialName, category, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -148,12 +150,18 @@ const PartnerRegister = () => {
 
   const handleSubmit = async () => {
     if (!user || !category || !primaryLocation.city) return;
+    if (category === "other" && !otherCategoryDescription.trim()) return;
     
     setIsSubmitting(true);
     
     try {
       // Collect all cities for the main business record
       const allCities = allLocations.map(loc => loc.city);
+      
+      // Build description - prepend "other" category type if selected
+      const fullDescription = category === "other" && otherCategoryDescription
+        ? `[${otherCategoryDescription.trim()}] ${description}`.trim()
+        : description;
       
       // Create business with primary location info
       const { data: business, error: businessError } = await supabase
@@ -162,7 +170,7 @@ const PartnerRegister = () => {
           user_id: user.id,
           business_name: businessName,
           category: category as BusinessCategory,
-          description,
+          description: fullDescription,
           address: primaryLocation.address,
           city: allCities.join(", "),
           phone: primaryLocation.phone,
@@ -333,7 +341,12 @@ const PartnerRegister = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
-                  <Select value={category} onValueChange={(v) => setCategory(v as BusinessCategory)}>
+                  <Select value={category} onValueChange={(v) => {
+                    setCategory(v as BusinessCategory);
+                    if (v !== "other") {
+                      setOtherCategoryDescription("");
+                    }
+                  }}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your business category" />
                     </SelectTrigger>
@@ -346,6 +359,19 @@ const PartnerRegister = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {category === "other" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="otherCategoryDescription">What type of business or service? *</Label>
+                    <Input
+                      id="otherCategoryDescription"
+                      placeholder="e.g., Pet Photography, Dog Walking, Pet Transport..."
+                      value={otherCategoryDescription}
+                      onChange={(e) => setOtherCategoryDescription(e.target.value)}
+                      required
+                    />
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
@@ -407,7 +433,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || !category || !primaryLocation.city}
+                  disabled={!businessName || !category || !primaryLocation.city || (category === "other" && !otherCategoryDescription.trim())}
                 >
                   Review & Submit
                 </Button>
@@ -439,7 +465,11 @@ const PartnerRegister = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Category:</span>
-                      <span className="font-medium">{categories.find(c => c.value === category)?.label}</span>
+                      <span className="font-medium">
+                        {category === "other" && otherCategoryDescription 
+                          ? `Other: ${otherCategoryDescription}` 
+                          : categories.find(c => c.value === category)?.label}
+                      </span>
                     </div>
                   </div>
                 </div>

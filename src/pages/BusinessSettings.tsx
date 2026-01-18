@@ -76,7 +76,7 @@ const categoryOptions = [
   { value: "grooming", label: "Grooming" },
   { value: "vet", label: "Veterinary" },
   { value: "daycare", label: "Daycare" },
-  { value: "food", label: "Pet Food" },
+  { value: "physio", label: "Physiotherapy" },
   { value: "accessories", label: "Accessories" },
   { value: "other", label: "Other" },
 ];
