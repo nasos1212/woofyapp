@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard, Home } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Tag, Crown, Bell, ArrowLeft, CreditCard, Home, TrendingUp, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,8 @@ import UserAnalytics from "@/components/admin/UserAnalytics";
 import BulkNotifications from "@/components/admin/BulkNotifications";
 import MembershipManager from "@/components/admin/MembershipManager";
 import ShelterManager from "@/components/admin/ShelterManager";
+import ExpiringMembershipsPanel from "@/components/admin/ExpiringMembershipsPanel";
+import EngagementAnalytics from "@/components/admin/EngagementAnalytics";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
@@ -307,6 +309,14 @@ const AdminDashboard = () => {
               <BarChart3 className="w-4 h-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="engagement" className="gap-1">
+              <TrendingUp className="w-4 h-4" />
+              Engagement
+            </TabsTrigger>
+            <TabsTrigger value="expiring" className="gap-1">
+              <Clock className="w-4 h-4" />
+              Expiring
+            </TabsTrigger>
             <TabsTrigger value="memberships" className="gap-1">
               <CreditCard className="w-4 h-4" />
               Memberships
@@ -336,6 +346,14 @@ const AdminDashboard = () => {
 
           <TabsContent value="analytics">
             <UserAnalytics />
+          </TabsContent>
+
+          <TabsContent value="engagement">
+            <EngagementAnalytics />
+          </TabsContent>
+
+          <TabsContent value="expiring">
+            <ExpiringMembershipsPanel />
           </TabsContent>
 
           <TabsContent value="memberships">

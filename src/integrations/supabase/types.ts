@@ -172,6 +172,39 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string | null
+          event_type: string
+          id: string
+          metadata: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string | null
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string | null
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       business_birthday_settings: {
         Row: {
           business_id: string
@@ -1053,6 +1086,41 @@ export type Database = {
             columns: ["alert_id"]
             isOneToOne: false
             referencedRelation: "lost_pet_alerts_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_expiry_notifications: {
+        Row: {
+          days_until_expiry: number
+          id: string
+          membership_id: string
+          notification_type: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          days_until_expiry: number
+          id?: string
+          membership_id: string
+          notification_type: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          days_until_expiry?: number
+          id?: string
+          membership_id?: string
+          notification_type?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_expiry_notifications_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "memberships"
             referencedColumns: ["id"]
           },
         ]
