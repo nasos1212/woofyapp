@@ -38,6 +38,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { PhotoUpload } from "@/components/PhotoUpload";
 import { BusinessHoursManager } from "@/components/BusinessHoursManager";
+import BusinessLocationManager, { BusinessLocation } from "@/components/BusinessLocationManager";
 import { validateImageFile, MAX_IMAGE_SIZE } from "@/lib/fileValidation";
 import { Database } from "@/integrations/supabase/types";
 
@@ -91,6 +92,8 @@ const BusinessSettings = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
+  const [locations, setLocations] = useState<BusinessLocation[]>([]);
+  const [isSavingLocations, setIsSavingLocations] = useState(false);
   
   const [formData, setFormData] = useState<BusinessData>({
     id: "",
@@ -158,6 +161,21 @@ const BusinessSettings = () => {
         .order("display_order", { ascending: true });
 
       setPhotos(photosData || []);
+
+      // Fetch locations
+      const { data: locationsData } = await supabase
+        .from("business_locations")
+        .select("id, city, address, phone, google_maps_url")
+        .eq("business_id", business.id)
+        .order("display_order", { ascending: true });
+
+      setLocations(locationsData?.map(loc => ({
+        id: loc.id,
+        city: loc.city,
+        address: loc.address || "",
+        phone: loc.phone || "",
+        google_maps_url: loc.google_maps_url || "",
+      })) || []);
     } catch (error) {
       console.error("Error fetching business:", error);
       toast.error("Failed to load business data");
@@ -284,6 +302,60 @@ const BusinessSettings = () => {
     }
   };
 
+  const handleSaveLocations = async () => {
+    if (!formData.id) return;
+    
+    setIsSavingLocations(true);
+    
+    try {
+      // Delete existing locations
+      await supabase
+        .from("business_locations")
+        .delete()
+        .eq("business_id", formData.id);
+      
+      // Insert new locations
+      if (locations.length > 0) {
+        const locationsToInsert = locations
+          .filter(loc => loc.city) // Only save locations with a city
+          .map((loc, index) => ({
+            business_id: formData.id,
+            city: loc.city,
+            address: loc.address || null,
+            phone: loc.phone || null,
+            google_maps_url: loc.google_maps_url || null,
+            display_order: index,
+          }));
+        
+        if (locationsToInsert.length > 0) {
+          const { error } = await supabase
+            .from("business_locations")
+            .insert(locationsToInsert);
+          
+          if (error) throw error;
+        }
+      }
+      
+      // Update main business city field with all cities
+      const allCities = locations.filter(loc => loc.city).map(loc => loc.city);
+      if (allCities.length > 0) {
+        await supabase
+          .from("businesses")
+          .update({ city: allCities.join(", ") })
+          .eq("id", formData.id);
+        
+        setFormData(prev => ({ ...prev, city: allCities.join(", ") }));
+      }
+      
+      toast.success("Locations saved successfully");
+    } catch (error: any) {
+      console.error("Error saving locations:", error);
+      toast.error(error.message || "Failed to save locations");
+    } finally {
+      setIsSavingLocations(false);
+    }
+  };
+
   if (authLoading || isLoading || verificationLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -343,18 +415,22 @@ const BusinessSettings = () => {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="profile" className="gap-2">
                 <Building2 className="w-4 h-4" />
-                Profile
+                <span className="hidden sm:inline">Profile</span>
+              </TabsTrigger>
+              <TabsTrigger value="locations" className="gap-2">
+                <MapPin className="w-4 h-4" />
+                <span className="hidden sm:inline">Locations</span>
               </TabsTrigger>
               <TabsTrigger value="hours" className="gap-2">
                 <Clock className="w-4 h-4" />
-                Hours
+                <span className="hidden sm:inline">Hours</span>
               </TabsTrigger>
               <TabsTrigger value="photos" className="gap-2">
                 <ImageIcon className="w-4 h-4" />
-                Photos
+                <span className="hidden sm:inline">Photos</span>
               </TabsTrigger>
             </TabsList>
 
@@ -558,6 +634,30 @@ const BusinessSettings = () => {
                     <Button onClick={handleSave} disabled={isSaving} className="gap-2">
                       <Save className="w-4 h-4" />
                       {isSaving ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="locations">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Store Locations</CardTitle>
+                  <CardDescription>
+                    Manage your business locations so customers can find you
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <BusinessLocationManager
+                    locations={locations}
+                    onLocationsChange={setLocations}
+                  />
+                  
+                  <div className="flex justify-end pt-4">
+                    <Button onClick={handleSaveLocations} disabled={isSavingLocations} className="gap-2">
+                      <Save className="w-4 h-4" />
+                      {isSavingLocations ? "Saving..." : "Save Locations"}
                     </Button>
                   </div>
                 </CardContent>
