@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Check, Clock, MapPin, Phone, Globe, Mail, Map, AlertTriangle } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import CityMultiSelector from "@/components/CityMultiSelector";
+import BusinessLocationManager, { BusinessLocation } from "@/components/BusinessLocationManager";
 import { ensureHttps } from "@/lib/utils";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
@@ -58,12 +58,19 @@ const PartnerRegister = () => {
   });
   const [category, setCategory] = useState<BusinessCategory | "">("");
   const [description, setDescription] = useState("");
-  const [address, setAddress] = useState("");
-  const [cities, setCities] = useState<string[]>([]);
-  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
-  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  
+  // Primary location
+  const [primaryLocation, setPrimaryLocation] = useState({
+    city: "",
+    address: "",
+    phone: "",
+    google_maps_url: "",
+  });
+  
+  // Additional locations
+  const [additionalLocations, setAdditionalLocations] = useState<BusinessLocation[]>([]);
   
   // Navigation confirmation
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -76,14 +83,15 @@ const PartnerRegister = () => {
       businessName !== initialName ||
       category !== "" ||
       description !== "" ||
-      address !== "" ||
-      cities.length > 0 ||
-      phone !== "" ||
+      primaryLocation.city !== "" ||
+      primaryLocation.address !== "" ||
+      primaryLocation.phone !== "" ||
+      primaryLocation.google_maps_url !== "" ||
+      additionalLocations.length > 0 ||
       email !== "" ||
-      website !== "" ||
-      googleMapsUrl !== ""
+      website !== ""
     );
-  }, [businessName, initialName, category, description, address, cities, phone, email, website, googleMapsUrl]);
+  }, [businessName, initialName, category, description, primaryLocation, additionalLocations, email, website]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -132,13 +140,22 @@ const PartnerRegister = () => {
     checkExistingBusinessAndEnsureRole();
   }, [user, navigate]);
 
+  // Combine all locations for display and storage
+  const allLocations = [
+    ...(primaryLocation.city ? [primaryLocation] : []),
+    ...additionalLocations.filter(loc => loc.city),
+  ];
+
   const handleSubmit = async () => {
-    if (!user || !category) return;
+    if (!user || !category || !primaryLocation.city) return;
     
     setIsSubmitting(true);
     
     try {
-      // Create business
+      // Collect all cities for the main business record
+      const allCities = allLocations.map(loc => loc.city);
+      
+      // Create business with primary location info
       const { data: business, error: businessError } = await supabase
         .from("businesses")
         .insert({
@@ -146,17 +163,38 @@ const PartnerRegister = () => {
           business_name: businessName,
           category: category as BusinessCategory,
           description,
-          address,
-          city: cities.join(", "), // Store as comma-separated string
-          phone,
+          address: primaryLocation.address,
+          city: allCities.join(", "),
+          phone: primaryLocation.phone,
           email: email || user.email || "",
           website: website ? ensureHttps(website) : null,
-          google_maps_url: googleMapsUrl ? ensureHttps(googleMapsUrl) : null,
+          google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
         })
         .select()
         .single();
       
       if (businessError) throw businessError;
+      
+      // Insert all locations into business_locations table
+      if (business && allLocations.length > 0) {
+        const locationsToInsert = allLocations.map((loc, index) => ({
+          business_id: business.id,
+          city: loc.city,
+          address: loc.address || null,
+          phone: loc.phone || null,
+          google_maps_url: loc.google_maps_url ? ensureHttps(loc.google_maps_url) : null,
+          display_order: index,
+        }));
+        
+        const { error: locationsError } = await supabase
+          .from("business_locations")
+          .insert(locationsToInsert);
+        
+        if (locationsError) {
+          console.error("Error inserting locations:", locationsError);
+          // Don't throw - business was created successfully
+        }
+      }
       
       // Ensure business role exists (upsert in case it wasn't added during signup)
       await supabase
@@ -320,44 +358,21 @@ const PartnerRegister = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Address</Label>
-                    <div className="relative">
-                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="address"
-                        placeholder="Street address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
+                {/* Store Locations */}
+                <div className="space-y-2">
+                  <Label className="font-semibold">Store Locations *</Label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Add your store locations with their specific address and phone number.
+                  </p>
+                  <BusinessLocationManager
+                    locations={additionalLocations}
+                    onLocationsChange={setAdditionalLocations}
+                    primaryLocation={primaryLocation}
+                    onPrimaryLocationChange={setPrimaryLocation}
+                  />
                 </div>
 
-                {/* Multi-city selector */}
-                <CityMultiSelector
-                  selectedLocations={cities}
-                  onLocationsChange={setCities}
-                  label="Service Locations"
-                  description="Select cities where your business operates. You can select multiple cities or specific areas."
-                />
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="phone"
-                        placeholder="+353 1 234 5678"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Business Email</Label>
                     <div className="relative">
@@ -372,37 +387,19 @@ const PartnerRegister = () => {
                       />
                     </div>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="website">Website (optional)</Label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="website"
-                      placeholder="https://www.yourbusiness.com"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                      className="pl-10"
-                    />
+                  <div className="space-y-2">
+                    <Label htmlFor="website">Website (optional)</Label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input
+                        id="website"
+                        placeholder="https://www.yourbusiness.com"
+                        value={website}
+                        onChange={(e) => setWebsite(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="googleMapsUrl">Google Maps Link (optional)</Label>
-                  <div className="relative">
-                    <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input
-                      id="googleMapsUrl"
-                      placeholder="https://maps.google.com/..."
-                      value={googleMapsUrl}
-                      onChange={(e) => setGoogleMapsUrl(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Paste your Google Maps share link so customers can find you easily
-                  </p>
                 </div>
               </div>
 
@@ -410,7 +407,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || !category}
+                  disabled={!businessName || !category || !primaryLocation.city}
                 >
                   Review & Submit
                 </Button>
@@ -444,12 +441,28 @@ const PartnerRegister = () => {
                       <span className="text-muted-foreground">Category:</span>
                       <span className="font-medium">{categories.find(c => c.value === category)?.label}</span>
                     </div>
-                    {cities.length > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Locations:</span>
-                        <span className="font-medium text-right max-w-[200px]">{cities.join(", ")}</span>
+                  </div>
+                </div>
+
+                {/* Locations Summary */}
+                <div className="p-4 bg-muted/50 rounded-xl">
+                  <h3 className="font-semibold text-foreground mb-3">Store Locations</h3>
+                  <div className="space-y-3">
+                    {allLocations.map((loc, index) => (
+                      <div key={index} className="p-3 bg-background rounded-lg border">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-5 h-5 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
+                            {index + 1}
+                          </div>
+                          <span className="font-medium">{loc.city}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground space-y-1 ml-7">
+                          {loc.address && <div>📍 {loc.address}</div>}
+                          {loc.phone && <div>📞 {loc.phone}</div>}
+                          {loc.google_maps_url && <div>🗺️ Google Maps link added</div>}
+                        </div>
                       </div>
-                    )}
+                    ))}
                   </div>
                 </div>
 

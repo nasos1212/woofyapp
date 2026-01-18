@@ -217,6 +217,54 @@ export type Database = {
           },
         ]
       }
+      business_locations: {
+        Row: {
+          address: string | null
+          business_id: string
+          city: string
+          created_at: string
+          display_order: number | null
+          google_maps_url: string | null
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_id: string
+          city: string
+          created_at?: string
+          display_order?: number | null
+          google_maps_url?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_id?: string
+          city?: string
+          created_at?: string
+          display_order?: number | null
+          google_maps_url?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_locations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_locations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_photos: {
         Row: {
           business_id: string
