@@ -421,62 +421,31 @@ const BusinessAnalytics = () => {
             </div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* Chart */}
-            <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-              <h2 className="font-display font-semibold text-slate-900 mb-4">
-                Redemptions Over Time
-              </h2>
-              <div className="h-64 flex items-end gap-1">
-                {dailyData.map((day, i) => (
-                  <div
-                    key={day.date}
-                    className="flex-1 flex flex-col items-center gap-1"
-                    title={`${format(new Date(day.date), "MMM d")}: ${day.redemptions}`}
-                  >
-                    <div
-                      className="w-full bg-primary/80 rounded-t-sm hover:bg-primary transition-colors cursor-pointer"
-                      style={{
-                        height: `${(day.redemptions / maxRedemptions) * 100}%`,
-                        minHeight: day.redemptions > 0 ? "4px" : "0",
-                      }}
-                    />
-                    {i % Math.ceil(dailyData.length / 7) === 0 && (
-                      <span className="text-xs text-slate-400 -rotate-45 origin-left whitespace-nowrap">
-                        {format(new Date(day.date), "M/d")}
-                      </span>
-                    )}
+          {/* Top Offers */}
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6">
+            <h2 className="font-display font-semibold text-slate-900 mb-4">Top Offers</h2>
+            {topOffers.length === 0 ? (
+              <p className="text-slate-500 text-sm">No redemptions yet</p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {topOffers.map((offer, i) => (
+                  <div key={offer.title} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-medium flex items-center justify-center">
+                      {i + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900 truncate">
+                        {offer.title}
+                      </p>
+                      <p className="text-xs text-slate-500">{offer.discount} off</p>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-900">
+                      {offer.redemptions}
+                    </span>
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* Top Offers */}
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-              <h2 className="font-display font-semibold text-slate-900 mb-4">Top Offers</h2>
-              {topOffers.length === 0 ? (
-                <p className="text-slate-500 text-sm">No redemptions yet</p>
-              ) : (
-                <div className="space-y-3">
-                  {topOffers.map((offer, i) => (
-                    <div key={offer.title} className="flex items-center gap-3">
-                      <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-medium flex items-center justify-center">
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-900 truncate">
-                          {offer.title}
-                        </p>
-                        <p className="text-xs text-slate-500">{offer.discount} off</p>
-                      </div>
-                      <span className="text-sm font-semibold text-slate-900">
-                        {offer.redemptions}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            )}
           </div>
 
           {/* Customer Insights */}
