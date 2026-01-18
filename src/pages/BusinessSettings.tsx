@@ -381,6 +381,7 @@ const BusinessSettings = () => {
               <p className="text-slate-500">Edit your business profile once your account is approved.</p>
             </div>
           </main>
+          <div className="pb-20 md:pb-0" />
           <BusinessMobileNav />
         </div>
       </>
@@ -730,7 +731,9 @@ const BusinessSettings = () => {
             </TabsContent>
           </Tabs>
         </main>
-
+        
+        {/* Spacer for mobile nav */}
+        <div className="pb-20 md:pb-0" />
         <BusinessMobileNav />
       </div>
     </>

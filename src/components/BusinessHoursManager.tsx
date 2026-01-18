@@ -166,33 +166,34 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
           return (
             <div
               key={hour.day_of_week}
-              className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg"
+              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-3 bg-muted/50 rounded-lg"
             >
-              <div className="w-24 font-medium text-foreground text-sm">
-                {dayLabel}
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={!hour.is_closed}
-                  onCheckedChange={(checked) =>
-                    updateHour(hour.day_of_week, { is_closed: !checked })
-                  }
-                />
-                <Label className="text-xs text-muted-foreground">
-                  {hour.is_closed ? "Closed" : "Open"}
-                </Label>
+              <div className="flex items-center justify-between sm:justify-start gap-3">
+                <div className="w-20 sm:w-24 font-medium text-foreground text-sm">
+                  {dayLabel}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={!hour.is_closed}
+                    onCheckedChange={(checked) =>
+                      updateHour(hour.day_of_week, { is_closed: !checked })
+                    }
+                  />
+                  <Label className="text-xs text-muted-foreground w-12">
+                    {hour.is_closed ? "Closed" : "Open"}
+                  </Label>
+                </div>
               </div>
 
               {!hour.is_closed && (
-                <div className="flex items-center gap-2 flex-1">
+                <div className="flex items-center gap-2 pl-0 sm:pl-0 mt-2 sm:mt-0">
                   <Select
                     value={formatTime(hour.open_time)}
                     onValueChange={(value) =>
                       updateHour(hour.day_of_week, { open_time: value })
                     }
                   >
-                    <SelectTrigger className="w-24 h-9">
+                    <SelectTrigger className="w-[90px] sm:w-24 h-9">
                       <SelectValue placeholder="Open" />
                     </SelectTrigger>
                     <SelectContent>
@@ -212,7 +213,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                       updateHour(hour.day_of_week, { close_time: value })
                     }
                   >
-                    <SelectTrigger className="w-24 h-9">
+                    <SelectTrigger className="w-[90px] sm:w-24 h-9">
                       <SelectValue placeholder="Close" />
                     </SelectTrigger>
                     <SelectContent>

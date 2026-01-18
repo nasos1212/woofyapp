@@ -490,7 +490,7 @@ const BusinessDashboard = () => {
             )}
             {isApproved ? (
               <Link 
-                to="/business/history" 
+                to="/business/analytics" 
                 className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-white rounded-xl border border-slate-200 hover:border-primary hover:shadow-md transition-all group text-center sm:text-left"
               >
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
@@ -862,7 +862,7 @@ const BusinessDashboard = () => {
                     Recent Redemptions
                   </h3>
                   <Link 
-                    to="/business/history" 
+                    to="/business/analytics" 
                     className="text-sm text-primary hover:underline"
                   >
                     View All →
