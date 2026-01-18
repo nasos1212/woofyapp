@@ -469,7 +469,7 @@ const MemberDashboard = () => {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-foreground text-sm">Got another furry friend?</p>
-                        <p className="text-xs text-muted-foreground">Upgrade your plan to add more pets and unlock family benefits!</p>
+                        <p className="text-xs text-muted-foreground">Upgrade your plan to add more pets and unlock Pack Leader benefits!</p>
                       </div>
                       <Link to="/member/upgrade">
                         <Button size="sm" variant="hero" className="shrink-0">

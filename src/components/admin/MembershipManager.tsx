@@ -131,7 +131,7 @@ const MembershipManager = () => {
     const labels: Record<string, string> = {
       single: "Solo Paw",
       duo: "Dynamic Duo",
-      family: "Family Pack",
+      family: "Pack Leader",
     };
     return (
       <Badge className={colors[planType] || colors.single}>

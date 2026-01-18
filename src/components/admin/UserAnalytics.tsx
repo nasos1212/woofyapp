@@ -58,7 +58,7 @@ const UserAnalytics = () => {
       const planLabels: Record<string, string> = {
         single: "Solo Paw",
         duo: "Dynamic Duo",
-        family: "Family Pack",
+        family: "Pack Leader",
       };
 
       const planDistribution = Object.entries(planCounts).map(([key, value]) => ({
