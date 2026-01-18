@@ -244,7 +244,7 @@ const InfluencerMemberships = () => {
                   <SelectContent>
                     <SelectItem value="single">Solo Paw (1 pet)</SelectItem>
                     <SelectItem value="duo">Dynamic Duo (2 pets)</SelectItem>
-                    <SelectItem value="family">Pack Leader (5 pets)</SelectItem>
+                    <SelectItem value="family">Pack Leader (3-5 pets)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
