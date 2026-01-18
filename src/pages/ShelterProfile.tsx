@@ -18,7 +18,8 @@ import {
   Instagram,
   Calendar,
   Dog,
-  ExternalLink
+  ExternalLink,
+  PawPrint
 } from "lucide-react";
 
 const ShelterProfile = () => {
@@ -48,6 +49,22 @@ const ShelterProfile = () => {
         .select('*')
         .eq('shelter_id', id)
         .order('display_order', { ascending: true });
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const { data: adoptablePets } = useQuery({
+    queryKey: ['shelter-adoptable-pets-public', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('shelter_adoptable_pets')
+        .select('*')
+        .eq('shelter_id', id)
+        .eq('is_available', true)
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return data;
@@ -217,6 +234,68 @@ const ShelterProfile = () => {
                 <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
                   {shelter.description}
                 </p>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Pets Available for Adoption */}
+          {adoptablePets && adoptablePets.length > 0 && (
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <PawPrint className="h-5 w-5 text-primary" />
+                  Pets Available for Adoption
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {adoptablePets.map((pet) => (
+                    <div 
+                      key={pet.id} 
+                      className="rounded-lg overflow-hidden bg-muted border"
+                    >
+                      <div className="aspect-square relative">
+                        {pet.photo_url ? (
+                          <img 
+                            src={pet.photo_url} 
+                            alt={pet.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-muted">
+                            <PawPrint className="h-12 w-12 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <h3 className="font-medium">{pet.name}</h3>
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          <Badge variant="secondary" className="text-xs capitalize">
+                            {pet.pet_type}
+                          </Badge>
+                          {pet.breed && (
+                            <Badge variant="outline" className="text-xs">
+                              {pet.breed}
+                            </Badge>
+                          )}
+                          {pet.age && (
+                            <Badge variant="outline" className="text-xs">
+                              {pet.age}
+                            </Badge>
+                          )}
+                          {pet.gender && (
+                            <Badge variant="outline" className="text-xs capitalize">
+                              {pet.gender}
+                            </Badge>
+                          )}
+                        </div>
+                        {pet.description && (
+                          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                            {pet.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           )}
