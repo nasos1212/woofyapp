@@ -25,6 +25,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const { hasMembership } = useMembership();
   const isHomePage = location.pathname === "/";
+  const isAdminPage = location.pathname.startsWith("/admin");
   
   // Determine correct dashboard path based on role and membership status
   const dashboardPath = isBusiness ? "/business" : (hasMembership ? "/member" : "/member/free");
@@ -95,7 +96,10 @@ const Header = () => {
   };
 
   // Navigation links - filter out landing page sections for logged-in users
-  const navLinks = user ? [
+  // Hide all links except Dashboard on admin pages
+  const navLinks = isAdminPage ? [
+    { name: "Dashboard", href: dashboardPath, isRoute: true },
+  ] : user ? [
     { name: "Dashboard", href: dashboardPath, isRoute: true },
     { name: "Offers", href: "/member/offers", isRoute: true },
     { name: "Community", href: "/community", isRoute: true },
