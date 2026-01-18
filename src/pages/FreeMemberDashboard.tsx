@@ -31,7 +31,7 @@ const FreeMemberDashboard = () => {
   const { hasMembership, loading: membershipLoading } = useMembership();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
-  const [businessRedirectPath, setBusinessRedirectPath] = useState<string | null>(null);
+  
   const [checkingBusiness, setCheckingBusiness] = useState(true);
   const [profileName, setProfileName] = useState<string | null>(null);
 
@@ -51,47 +51,10 @@ const FreeMemberDashboard = () => {
     fetchProfile();
   }, [user]);
 
-  // When user is detected as business, check if they have a business record
+  // Business users can now view the free member dashboard when they explicitly navigate here
+  // This allows them to access community features as members too
   useEffect(() => {
-    const checkBusinessRecord = async () => {
-      // Wait for account type check to complete
-      if (accountTypeLoading) return;
-      
-      // If not a business user, no need to check further
-      if (!isBusiness) {
-        setCheckingBusiness(false);
-        return;
-      }
-      
-      if (!user) {
-        setCheckingBusiness(false);
-        return;
-      }
-      
-      const { data: business } = await supabase
-        .from("businesses")
-        .select("id")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      
-      if (business) {
-        setBusinessRedirectPath("/business");
-      } else {
-        // Business role but no business record - redirect to partner registration
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        
-        const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
-        setBusinessRedirectPath(`/partner-register${nameParam}`);
-      }
-      
-      setCheckingBusiness(false);
-    };
-    
-    checkBusinessRecord();
+    setCheckingBusiness(false);
   }, [user, isBusiness, accountTypeLoading]);
 
   if (authLoading || membershipLoading || accountTypeLoading || checkingBusiness) {
@@ -106,10 +69,7 @@ const FreeMemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Business users should never see the freemium dashboard
-  if (isBusiness && businessRedirectPath) {
-    return <Navigate to={businessRedirectPath} replace />;
-  }
+  // Business users can now access member features too - no redirect
 
   if (hasMembership) {
     return <Navigate to="/member" replace />;
