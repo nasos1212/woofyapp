@@ -344,7 +344,7 @@ ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` 
     if (overdue.length > 0) {
       parts.push(`### ⚠️ OVERDUE (${overdue.length})`);
       overdue.forEach((r: any) => {
-        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - OVERDUE by ${Math.abs(r.days_until)} days
+        parts.push(`- ${r.pet_name}: ${r.title} (${r.record_type}) - OVERDUE by ${Math.abs(r.days_until)} days
   ${r.preferred_time ? `Preferred time: ${r.preferred_time}` : ''}`);
       });
     }
@@ -353,7 +353,7 @@ ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` 
       parts.push(`### 🔔 DUE THIS WEEK (${urgent.length})`);
       urgent.forEach((r: any) => {
         const dueText = r.days_until === 0 ? 'TODAY' : `in ${r.days_until} days`;
-        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - Due ${dueText}
+        parts.push(`- ${r.pet_name}: ${r.title} (${r.record_type}) - Due ${dueText}
   ${r.preferred_time ? `Preferred time: ${r.preferred_time}` : ''}`);
       });
     }
@@ -361,7 +361,7 @@ ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` 
     if (upcoming.length > 0) {
       parts.push(`### 📅 COMING UP (${upcoming.length})`);
       upcoming.forEach((r: any) => {
-        parts.push(`- **${r.pet_name}**: ${r.title} (${r.record_type}) - in ${r.days_until} days (${r.next_due_date})`);
+        parts.push(`- ${r.pet_name}: ${r.title} (${r.record_type}) - in ${r.days_until} days (${r.next_due_date})`);
       });
     }
   }
@@ -373,7 +373,7 @@ ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` 
       parts.push(`## 🎂 UPCOMING PET BIRTHDAYS`);
       birthdays.forEach((b: any) => {
         const dueText = b.days_until === 0 ? 'TODAY!' : b.days_until === 1 ? 'TOMORROW!' : `in ${b.days_until} days`;
-        parts.push(`- **${b.pet_name}** (${b.pet_breed || 'Unknown breed'}) turns ${b.upcoming_age} ${dueText}`);
+        parts.push(`- ${b.pet_name} (${b.pet_breed || 'Unknown breed'}) turns ${b.upcoming_age} ${dueText}`);
       });
     }
   }
@@ -384,7 +384,7 @@ ${q.top_answer ? `- Top answer: "${String(q.top_answer).substring(0, 200)}..."` 
     if (alerts.length > 0) {
       parts.push(`## 🚨 ACTIVE LOST PET ALERTS`);
       alerts.forEach((a: any) => {
-        parts.push(`- **${a.pet_name}** (${a.pet_breed || 'Unknown breed'}) - Last seen: ${a.last_seen_location || 'Unknown'}
+        parts.push(`- ${a.pet_name} (${a.pet_breed || 'Unknown breed'}) - Last seen: ${a.last_seen_location || 'Unknown'}
   Alert created: ${a.created_at ? new Date(a.created_at).toLocaleDateString('en-US') : 'Unknown'}`);
       });
     }
