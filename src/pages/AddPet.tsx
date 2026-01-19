@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { Dog, Cat, Check, ArrowRight, ArrowLeft, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { getBreedsByPetType, PetType, getPetTypeEmoji } from "@/data/petBreeds";
 import DogLoader from "@/components/DogLoader";
 import Header from "@/components/Header";
+import { validateImageFile } from "@/lib/fileValidation";
 
 const AddPet = () => {
   const { user, loading } = useAuth();
@@ -36,6 +37,10 @@ const AddPet = () => {
   const [currentPetCount, setCurrentPetCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [breedPopoverOpen, setBreedPopoverOpen] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Get breeds based on selected pet type
   const breeds = getBreedsByPetType(petType);
@@ -103,6 +108,54 @@ const AddPet = () => {
     }
   }, [user, loading, accountTypeLoading, isBusiness, navigate]);
 
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      toast.error(validation.error);
+      return;
+    }
+
+    setPhotoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const uploadPhoto = async (petId: string): Promise<string | null> => {
+    if (!photoFile || !user) return null;
+
+    const fileExt = photoFile.name.split(".").pop();
+    const filePath = `${user.id}/${petId}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("pet-photos")
+      .upload(filePath, photoFile, { upsert: true });
+
+    if (uploadError) {
+      console.error("Photo upload error:", uploadError);
+      return null;
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from("pet-photos")
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -116,7 +169,8 @@ const AddPet = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase.from("pets").insert({
+      // First create the pet
+      const { data: newPet, error } = await supabase.from("pets").insert({
         membership_id: membership.id,
         owner_user_id: user.id,
         pet_name: petName.trim(),
@@ -125,9 +179,23 @@ const AddPet = () => {
         gender: petGender,
         birthday: knowsBirthday && petBirthday ? petBirthday : null,
         age_years: !knowsBirthday && petAgeYears !== "" ? petAgeYears : null,
-      });
+      }).select("id").single();
 
       if (error) throw error;
+
+      // Upload photo if selected
+      if (photoFile && newPet) {
+        setIsUploadingPhoto(true);
+        const photoUrl = await uploadPhoto(newPet.id);
+        
+        if (photoUrl) {
+          await supabase
+            .from("pets")
+            .update({ photo_url: photoUrl })
+            .eq("id", newPet.id);
+        }
+        setIsUploadingPhoto(false);
+      }
 
       toast.success(`${petName} has been added! 🐾`);
       navigate("/member");
@@ -194,6 +262,54 @@ const AddPet = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Profile Photo */}
+                <div className="space-y-2">
+                  <Label>Profile Photo (optional)</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div 
+                        className={cn(
+                          "w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center overflow-hidden cursor-pointer transition-all hover:border-primary",
+                          photoPreview ? "border-solid border-primary" : "border-border"
+                        )}
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {photoPreview ? (
+                          <img src={photoPreview} alt="Pet preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="text-center">
+                            <Camera className="w-8 h-8 text-muted-foreground mx-auto" />
+                            <span className="text-xs text-muted-foreground">Add photo</span>
+                          </div>
+                        )}
+                      </div>
+                      {photoPreview && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removePhoto();
+                          }}
+                          className="absolute -top-1 -right-1 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:bg-destructive/90"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      <p>Click to upload a photo of your pet</p>
+                      <p className="text-xs">JPG, PNG or WebP. Max 5MB.</p>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handlePhotoSelect}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
+
                 {/* Pet Type Selection */}
                 <div className="space-y-2">
                   <Label>Pet Type</Label>
@@ -381,10 +497,10 @@ const AddPet = () => {
                   variant="hero"
                   size="lg"
                   className="w-full"
-                  disabled={isSubmitting || !petName.trim()}
+                  disabled={isSubmitting || isUploadingPhoto || !petName.trim()}
                 >
-                  {isSubmitting ? (
-                    "Adding..."
+                  {isSubmitting || isUploadingPhoto ? (
+                    isUploadingPhoto ? "Uploading photo..." : "Adding..."
                   ) : (
                     <>
                       Add Pet
