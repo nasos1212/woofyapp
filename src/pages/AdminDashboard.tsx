@@ -21,6 +21,7 @@ import EngagementAnalytics from "@/components/admin/EngagementAnalytics";
 import type { Database } from "@/integrations/supabase/types";
 
 type Business = Database["public"]["Tables"]["businesses"]["Row"];
+type BusinessLocation = Database["public"]["Tables"]["business_locations"]["Row"];
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type UserRole = Database["public"]["Tables"]["user_roles"]["Row"];
 
@@ -37,6 +38,30 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [expandedBusiness, setExpandedBusiness] = useState<string | null>(null);
   const [viewingBusiness, setViewingBusiness] = useState<Business | null>(null);
+  const [viewingBusinessLocations, setViewingBusinessLocations] = useState<BusinessLocation[]>([]);
+
+  // Fetch locations when viewing a business
+  useEffect(() => {
+    const fetchLocations = async () => {
+      if (!viewingBusiness) {
+        setViewingBusinessLocations([]);
+        return;
+      }
+      
+      const { data, error } = await supabase
+        .from("business_locations")
+        .select("*")
+        .eq("business_id", viewingBusiness.id)
+        .order("display_order", { ascending: true });
+      
+      if (!error && data) {
+        setViewingBusinessLocations(data);
+      }
+    };
+    
+    fetchLocations();
+  }, [viewingBusiness]);
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
@@ -700,28 +725,76 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Location */}
+                  {/* Locations */}
                   <div className="space-y-2">
-                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Location</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-muted/30 rounded-lg p-4">
-                      <div className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                        <div className="text-sm">
-                          <p>{viewingBusiness.city || <span className="text-muted-foreground/60 italic">No city</span>}</p>
-                          <p className="text-muted-foreground">{viewingBusiness.address || <span className="italic">No address</span>}</p>
-                        </div>
-                      </div>
-                      {viewingBusiness.google_maps_url && (
-                        <div className="flex items-center gap-2">
-                          <ExternalLink className="w-4 h-4 text-muted-foreground" />
-                          <a 
-                            href={viewingBusiness.google_maps_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline text-sm"
-                          >
-                            View on Google Maps
-                          </a>
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                      Locations ({viewingBusinessLocations.length || 1})
+                    </h4>
+                    <div className="space-y-3">
+                      {viewingBusinessLocations.length > 0 ? (
+                        viewingBusinessLocations.map((location, index) => (
+                          <div key={location.id} className="bg-muted/30 rounded-lg p-4">
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xs font-bold">
+                                {index + 1}
+                              </div>
+                              <span className="font-medium text-sm">{location.city}</span>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pl-8">
+                              <div className="flex items-start gap-2">
+                                <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                                <span className="text-sm">
+                                  {location.address || <span className="text-muted-foreground/60 italic">No address</span>}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Phone className="w-4 h-4 text-muted-foreground" />
+                                {location.phone ? (
+                                  <a href={`tel:${location.phone}`} className="text-primary hover:underline text-sm">
+                                    {location.phone}
+                                  </a>
+                                ) : (
+                                  <span className="text-muted-foreground/60 italic text-sm">No phone</span>
+                                )}
+                              </div>
+                              {location.google_maps_url && (
+                                <div className="flex items-center gap-2 md:col-span-2">
+                                  <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                                  <a 
+                                    href={location.google_maps_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline text-sm"
+                                  >
+                                    View on Google Maps
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="bg-muted/30 rounded-lg p-4">
+                          <div className="flex items-start gap-2">
+                            <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                            <div className="text-sm">
+                              <p>{viewingBusiness.city || <span className="text-muted-foreground/60 italic">No city</span>}</p>
+                              <p className="text-muted-foreground">{viewingBusiness.address || <span className="italic">No address</span>}</p>
+                            </div>
+                          </div>
+                          {viewingBusiness.google_maps_url && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                              <a 
+                                href={viewingBusiness.google_maps_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline text-sm"
+                              >
+                                View on Google Maps
+                              </a>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
