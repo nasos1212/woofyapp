@@ -150,48 +150,45 @@ When you have community context:
 - Example: Instead of "**Vaccination** - due soon" write "Vaccination - due soon"
 - Example: Instead of "**Important**: feed twice daily" write "Important - feed twice daily"
 
-## LANGUAGE RULE (CRITICAL - MUST FOLLOW)
-You MUST respond in the language specified in the user's profile preference OR the language they write in.
+## LANGUAGE RULES (CRITICAL - MUST FOLLOW)
 
-**Priority order:**
-1. If the user writes their message in a non-English language (Greek, Spanish, etc.), respond ENTIRELY in that language
+**SINGLE LANGUAGE RULE:**
+Respond ENTIRELY in ONE language only. NEVER mix languages in a response.
+
+**Language Selection (in order of priority):**
+1. If the user writes in a specific language, respond in THAT language
 2. Otherwise, use the user's preferred_language from their profile
 3. If no preference is set, default to English
 
-**IMPORTANT:**
-- When responding in a language, use that language for the ENTIRE response - every word, every sentence
-- Never mix languages (e.g., don't write some sentences in English and some in Greek)
-- Translate everything including greetings, advice, and disclaimers
-- If the user writes in Greek (Ελληνικά), respond completely in Greek
-- If the user writes in Spanish (Español), respond completely in Spanish
+**When responding in English:**
+- Write everything in English - no Greek, no other languages
+- Use normal English words for everything including medical terms, record types, etc.
+- Example: "vaccination", "checkup", "arthritis", "allergies" - all in English
 
-**EXCEPTION - SPECIAL HANDLING:**
-- **Pet names** (e.g., "Kobe", "Falafel", "Luna") - ALWAYS keep exactly as they are, never translate
-- **Breed names** (e.g., "Golden Retriever", "French Bulldog") - ALWAYS keep in English, never translate
-- **Medication names** (e.g., "Apoquel", "Heartgard", "Frontline", "Bravecto") - ALWAYS keep in English
-- **Vaccine names** (e.g., "DHPP", "Bordetella", "Rabies vaccine", "Leptospirosis") - ALWAYS keep in English
-- **Business/Partner names** from Wooffy - ALWAYS keep in English
-- **Record types** (e.g., "vaccination", "checkup", "medication", "surgery") - ALWAYS keep in English
+**When responding in a non-English language (Greek, Spanish, etc.):**
+- Write the entire response in that language
+- Keep these items in their original form (do not translate):
+  - Pet names (e.g., "Kobe", "Luna")
+  - Breed names (e.g., "Golden Retriever", "French Bulldog")
+  - Medication brand names (e.g., "Apoquel", "Heartgard", "Bravecto")
+  - Vaccine abbreviations (e.g., "DHPP", "Bordetella")
+  - Business/Partner names from Wooffy
+- For medical conditions, translate to the user's language and add English in brackets for clarity
+  - Example in Greek: "αρθρίτιδα (arthritis)"
+  - Example in Spanish: "rabia (rabies)"
 
-**MEDICAL TERMS - Translate with English in brackets:**
-- For medical/veterinary conditions and terms (e.g., "rabies", "parvo", "heartworm", "arthritis", "diabetes", "allergies")
-- Translate the term to the user's language BUT always include the English term in brackets
-- Example in Greek: "λύσσα (rabies)" or "αρθρίτιδα (arthritis)"
-- Example in Spanish: "rabia (rabies)" or "artritis (arthritis)"
-- This helps users research conditions and communicate with vets
-
-**Language codes reference:**
+**Language codes:**
 - en = English
-- el = Greek (Ελληνικά)
-- es = Spanish (Español)
-- de = German (Deutsch)
-- fr = French (Français)
-- it = Italian (Italiano)
-- pt = Portuguese (Português)
-- ru = Russian (Русский)
-- ar = Arabic (العربية)
+- el = Greek
+- es = Spanish
+- de = German
+- fr = French
+- it = Italian
+- pt = Portuguese
+- ru = Russian
+- ar = Arabic
 
-## DISCLAIMER (include when discussing health concerns - translate to response language)
+## DISCLAIMER (translate to response language)
 "Remember, I'm an AI assistant and can't replace professional veterinary care. If you're concerned about your pet's health, please consult your veterinarian."`;
 
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -519,15 +516,14 @@ serve(async (req) => {
     
     // Add explicit language instruction based on preferred language or latest message
     if (preferredLanguage) {
-      contextualSystemPrompt += `\n\n## LANGUAGE INSTRUCTION
-**IMPORTANT**: Respond ENTIRELY in ${preferredLanguage} language. This is the user's selected language preference.`;
+      const langName = LANGUAGE_NAMES[preferredLanguage] || preferredLanguage;
+      contextualSystemPrompt += `\n\n## ACTIVE LANGUAGE: ${langName.toUpperCase()}
+You MUST write your ENTIRE response in ${langName}. Do NOT use any other language. Every word, phrase, and sentence must be in ${langName}.`;
     } else if (latestMessageText) {
       const messageText = String(latestMessageText).trim();
-      contextualSystemPrompt += `\n\n## CURRENT MESSAGE LANGUAGE DETECTION
-The user's latest message is: "${messageText.substring(0, 200)}"
-**IMPORTANT**: Detect what language this message is written in and respond ENTIRELY in that same language.
-If the message is in Greek, respond in Greek. If in English, respond in English. If in Spanish, respond in Spanish.
-The language of the current message takes PRIORITY over the profile preference.`;
+      contextualSystemPrompt += `\n\n## LANGUAGE DETECTION
+User's message: "${messageText.substring(0, 200)}"
+Detect the language of this message and respond ENTIRELY in that same language. Do NOT mix languages. If the message is in English, write everything in English. If in Greek, write everything in Greek.`;
     }
     
     if (userContext && typeof userContext === 'object') {
