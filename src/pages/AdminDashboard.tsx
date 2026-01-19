@@ -830,9 +830,6 @@ const AdminDashboard = () => {
                         Approve
                       </Button>
                     )}
-                    <Button variant="outline" onClick={() => navigate(`/business/${viewingBusiness.id}`)}>
-                      View Public Profile
-                    </Button>
                   </div>
                 </div>
               </>
