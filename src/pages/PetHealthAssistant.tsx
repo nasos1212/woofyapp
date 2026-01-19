@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, Trash2, ArrowLeft, Dog, Pencil, Check, X } from "lucide-react";
+import { Send, Bot, User, Loader2, Sparkles, AlertCircle, History, ArrowLeft, Dog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useActivityTracking } from "@/hooks/useActivityTracking";
 import { toast } from "sonner";
 import LanguageSelector from "@/components/LanguageSelector";
+import ChatHistoryPanel from "@/components/ChatHistoryPanel";
 
 interface Message {
   role: "user" | "assistant";
@@ -107,23 +108,16 @@ const PetHealthAssistant = () => {
   // Track if we need to save the last message after streaming completes
   const pendingSaveRef = useRef<{ role: string; content: string } | null>(null);
 
-  const fetchChatSessions = async (petNameFilter?: string) => {
+  const fetchChatSessions = async () => {
     if (!user) return;
     
-    // Fetch sessions that have more than 2 messages (meaning real conversation, not just greeting)
-    let query = supabase
+    // Fetch all sessions (not filtered by pet) for the history panel
+    const { data: sessions } = await supabase
       .from("ai_chat_sessions")
       .select("*")
       .eq("user_id", user.id)
       .order("updated_at", { ascending: false })
-      .limit(50);
-    
-    // Filter by pet name if provided
-    if (petNameFilter) {
-      query = query.eq("pet_name", petNameFilter);
-    }
-    
-    const { data: sessions } = await query;
+      .limit(100);
 
     if (sessions) {
       // Filter out sessions with only greeting messages (auto-generated when switching pets)
@@ -172,8 +166,8 @@ const PetHealthAssistant = () => {
       return null;
     }
 
-    // Refresh sessions for the current pet
-    await fetchChatSessions(petToUse || undefined);
+    // Refresh all sessions
+    await fetchChatSessions();
     setCurrentSessionId(data.id);
     setMessages([]);
     trackFeatureUse("ai_new_chat");
@@ -745,14 +739,14 @@ const PetHealthAssistant = () => {
       setUserContext(updatedContext);
     }
     
-    // Fetch chat history ONLY for this pet
-    await fetchChatSessions(pet.pet_name);
+    // Refresh all chat sessions
+    await fetchChatSessions();
     
     // Start a new blank conversation for this pet
     setCurrentSessionId(null);
     setMessages([]);
     
-    toast.success(`Viewing ${pet.pet_name}'s chats`);
+    toast.success(`Switched to ${pet.pet_name}`);
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
   };
   // Handle language change - just update the preference, no greeting
@@ -768,36 +762,16 @@ const PetHealthAssistant = () => {
     }
   };
 
-  // Edit session title
-  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [editingTitle, setEditingTitle] = useState("");
-
-  const startEditingTitle = (session: ChatSession) => {
-    setEditingSessionId(session.id);
-    setEditingTitle(session.title || "");
-  };
-
-  const saveSessionTitle = async (sessionId: string) => {
-    if (!editingTitle.trim()) {
-      setEditingSessionId(null);
-      return;
-    }
-
+  // Update session title callback for ChatHistoryPanel
+  const updateSessionTitle = async (sessionId: string, newTitle: string) => {
     await supabase
       .from("ai_chat_sessions")
-      .update({ title: editingTitle.trim() })
+      .update({ title: newTitle })
       .eq("id", sessionId);
 
     setChatSessions(prev =>
-      prev.map(s => s.id === sessionId ? { ...s, title: editingTitle.trim() } : s)
+      prev.map(s => s.id === sessionId ? { ...s, title: newTitle } : s)
     );
-    setEditingSessionId(null);
-    toast.success("Title updated");
-  };
-
-  const cancelEditingTitle = () => {
-    setEditingSessionId(null);
-    setEditingTitle("");
   };
 
   if (loading) {
@@ -886,108 +860,17 @@ const PetHealthAssistant = () => {
 
           {/* Chat History Panel */}
           {showHistory && (
-            <div className="mb-4 bg-white rounded-xl shadow-soft border border-border/50 p-4 max-h-64 overflow-y-auto">
-              <h3 className="font-semibold text-sm mb-3">
-                {selectedPet ? `${selectedPet.pet_name}'s Conversations` : "Previous Conversations"}
-              </h3>
-              {chatSessions.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  {selectedPet ? `No previous conversations about ${selectedPet.pet_name}` : "No previous conversations"}
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  {chatSessions.map((session) => (
-                    <div
-                      key={session.id}
-                      className={`flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors ${
-                        currentSessionId === session.id ? "bg-muted" : ""
-                      }`}
-                    >
-                      <div
-                        className="flex-1 min-w-0"
-                        onClick={() => editingSessionId !== session.id && loadSession(session.id)}
-                      >
-                        {editingSessionId === session.id ? (
-                          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                            <input
-                              type="text"
-                              value={editingTitle}
-                              onChange={(e) => setEditingTitle(e.target.value)}
-                              className="flex-1 text-sm px-2 py-1 border rounded bg-background"
-                              autoFocus
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") saveSessionTitle(session.id);
-                                if (e.key === "Escape") cancelEditingTitle();
-                              }}
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => saveSessionTitle(session.id)}
-                              className="h-7 w-7 p-0"
-                            >
-                              <Check className="w-3 h-3 text-green-600" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={cancelEditingTitle}
-                              className="h-7 w-7 p-0"
-                            >
-                              <X className="w-3 h-3 text-muted-foreground" />
-                            </Button>
-                          </div>
-                        ) : (
-                          <>
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium truncate">{session.title || "Untitled"}</p>
-                              {session.pet_name && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
-                                  <Dog className="w-3 h-3" />
-                                  {session.pet_name}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              {session.pet_breed && <span className="mr-2">{session.pet_breed}</span>}
-                              {new Date(session.updated_at).toLocaleDateString()}
-                            </p>
-                          </>
-                        )}
-                      </div>
-                      {editingSessionId !== session.id && (
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              startEditingTitle(session);
-                            }}
-                            className="h-auto px-2 py-1"
-                          >
-                            <Pencil className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground ml-1">Edit</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteSession(session.id);
-                            }}
-                            className="h-auto px-2 py-1"
-                          >
-                            <Trash2 className="w-3 h-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground ml-1">Delete</span>
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <ChatHistoryPanel
+              chatSessions={chatSessions}
+              currentSessionId={currentSessionId}
+              pets={pets}
+              selectedPet={selectedPet}
+              onLoadSession={loadSession}
+              onDeleteSession={deleteSession}
+              onUpdateSessionTitle={updateSessionTitle}
+              onStartNewChat={startNewChat}
+              onClose={() => setShowHistory(false)}
+            />
           )}
 
           {/* Chat Messages */}
