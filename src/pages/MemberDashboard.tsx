@@ -558,7 +558,7 @@ const MemberDashboard = () => {
                       <AlertTriangle className="w-5 h-5 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Lost and Found</p>
+                      <p className="font-medium text-foreground text-sm">Lost&Found</p>
                       <p className="text-xs text-muted-foreground">Report lost or found pets</p>
                     </div>
                   </Link>

@@ -562,7 +562,7 @@ const LostFoundAlerts = () => {
   return (
     <>
       <Helmet>
-        <title>Lost and Found Pet Alerts | Wooffy Community</title>
+        <title>Lost&Found Alerts | Wooffy Community</title>
         <meta name="description" content="Community-powered lost and found pet alert system in Cyprus. Help reunite pets with their families." />
       </Helmet>
 
@@ -583,7 +583,7 @@ const LostFoundAlerts = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Lost and Found Alerts
+                Lost&Found Alerts
               </h1>
               <p className="text-muted-foreground">
                 Help reunite pets with their families. {lostAlerts.length} lost, {foundAlerts.length} found.
