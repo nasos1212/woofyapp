@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
 import BackToTop from "./components/BackToTop";
@@ -22,7 +22,7 @@ import BusinessProfile from "./pages/BusinessProfile";
 import BusinessSettings from "./pages/BusinessSettings";
 import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
-import LostPetAlerts from "./pages/LostPetAlerts";
+import LostFoundAlerts from "./pages/LostFoundAlerts";
 import PetHealthRecords from "./pages/PetHealthRecords";
 
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
@@ -61,7 +61,8 @@ const App = () => (
               <Route path="/member/offers" element={<MemberOffers />} />
               <Route path="/member/history" element={<RedemptionHistory />} />
               <Route path="/member/health-assistant" element={<PetHealthAssistant />} />
-              <Route path="/member/lost-pets" element={<LostPetAlerts />} />
+              <Route path="/member/lost-found" element={<LostFoundAlerts />} />
+              <Route path="/member/lost-pets" element={<Navigate to="/member/lost-found" replace />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
               <Route path="/member/vaccinations" element={<PetHealthRecords />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
