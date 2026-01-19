@@ -455,23 +455,91 @@ const AdminDashboard = () => {
                     )}
                   </div>
                   {expandedBusiness === business.id && (
-                    <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">Email:</span> {business.email}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">Phone:</span>{" "}
-                        {business.phone || "Not provided"}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-muted-foreground">Location:</span>{" "}
-                        {business.address}, {business.city}
-                      </p>
-                      {business.description && (
+                    <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
+                      {/* Logo */}
+                      {business.logo_url && (
+                        <div className="flex items-center gap-3">
+                          <span className="text-muted-foreground text-sm">Logo:</span>
+                          <img 
+                            src={business.logo_url} 
+                            alt={`${business.business_name} logo`}
+                            className="w-16 h-16 object-contain rounded-lg border border-border"
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <p className="text-sm">
-                          <span className="text-muted-foreground">Description:</span>{" "}
-                          {business.description}
+                          <span className="text-muted-foreground">Email:</span>{" "}
+                          <a href={`mailto:${business.email}`} className="text-primary hover:underline">
+                            {business.email}
+                          </a>
                         </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Phone:</span>{" "}
+                          {business.phone ? (
+                            <a href={`tel:${business.phone}`} className="text-primary hover:underline">
+                              {business.phone}
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground/60 italic">Not provided</span>
+                          )}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">City:</span>{" "}
+                          {business.city || <span className="text-muted-foreground/60 italic">Not provided</span>}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Address:</span>{" "}
+                          {business.address || <span className="text-muted-foreground/60 italic">Not provided</span>}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Website:</span>{" "}
+                          {business.website ? (
+                            <a 
+                              href={business.website.startsWith('http') ? business.website : `https://${business.website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              {business.website}
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground/60 italic">Not provided</span>
+                          )}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Google Maps:</span>{" "}
+                          {business.google_maps_url ? (
+                            <a 
+                              href={business.google_maps_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              View on Maps
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground/60 italic">Not provided</span>
+                          )}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-muted-foreground">Registered:</span>{" "}
+                          {new Date(business.created_at).toLocaleDateString()}
+                        </p>
+                        {business.verified_at && (
+                          <p className="text-sm">
+                            <span className="text-muted-foreground">Verified:</span>{" "}
+                            {new Date(business.verified_at).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                      
+                      {business.description && (
+                        <div className="text-sm">
+                          <span className="text-muted-foreground">Description:</span>
+                          <p className="mt-1 text-foreground/80">{business.description}</p>
+                        </div>
                       )}
                       <div className="flex gap-2 mt-4">
                         <Button size="sm" variant="outline" onClick={() => navigate(`/business/${business.id}`)}>
