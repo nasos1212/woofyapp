@@ -938,6 +938,7 @@ export type Database = {
       lost_pet_alerts: {
         Row: {
           additional_info: string | null
+          alert_type: string
           contact_email: string | null
           contact_phone: string | null
           created_at: string
@@ -952,6 +953,7 @@ export type Database = {
           pet_id: string | null
           pet_name: string
           pet_photo_url: string | null
+          pet_type: string | null
           resolved_at: string | null
           reward_offered: string | null
           status: string
@@ -959,6 +961,7 @@ export type Database = {
         }
         Insert: {
           additional_info?: string | null
+          alert_type?: string
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -973,6 +976,7 @@ export type Database = {
           pet_id?: string | null
           pet_name: string
           pet_photo_url?: string | null
+          pet_type?: string | null
           resolved_at?: string | null
           reward_offered?: string | null
           status?: string
@@ -980,6 +984,7 @@ export type Database = {
         }
         Update: {
           additional_info?: string | null
+          alert_type?: string
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -994,6 +999,7 @@ export type Database = {
           pet_id?: string | null
           pet_name?: string
           pet_photo_url?: string | null
+          pet_type?: string | null
           resolved_at?: string | null
           reward_offered?: string | null
           status?: string
@@ -2307,6 +2313,7 @@ export type Database = {
       lost_pet_alerts_public: {
         Row: {
           additional_info: string | null
+          alert_type: string | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string | null
@@ -2321,6 +2328,7 @@ export type Database = {
           pet_id: string | null
           pet_name: string | null
           pet_photo_url: string | null
+          pet_type: string | null
           resolved_at: string | null
           reward_offered: string | null
           status: string | null
@@ -2328,6 +2336,7 @@ export type Database = {
         }
         Insert: {
           additional_info?: string | null
+          alert_type?: string | null
           contact_email?: never
           contact_phone?: never
           created_at?: string | null
@@ -2342,6 +2351,7 @@ export type Database = {
           pet_id?: string | null
           pet_name?: string | null
           pet_photo_url?: string | null
+          pet_type?: string | null
           resolved_at?: string | null
           reward_offered?: string | null
           status?: string | null
@@ -2349,6 +2359,7 @@ export type Database = {
         }
         Update: {
           additional_info?: string | null
+          alert_type?: string | null
           contact_email?: never
           contact_phone?: never
           created_at?: string | null
@@ -2363,6 +2374,7 @@ export type Database = {
           pet_id?: string | null
           pet_name?: string | null
           pet_photo_url?: string | null
+          pet_type?: string | null
           resolved_at?: string | null
           reward_offered?: string | null
           status?: string | null
