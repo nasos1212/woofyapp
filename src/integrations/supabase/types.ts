@@ -902,6 +902,7 @@ export type Database = {
           created_at: string
           display_order: number | null
           id: string
+          photo_position: number | null
           photo_url: string
         }
         Insert: {
@@ -909,6 +910,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          photo_position?: number | null
           photo_url: string
         }
         Update: {
@@ -916,6 +918,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          photo_position?: number | null
           photo_url?: string
         }
         Relationships: [
