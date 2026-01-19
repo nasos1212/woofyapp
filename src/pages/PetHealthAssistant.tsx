@@ -131,8 +131,8 @@ const PetHealthAssistant = () => {
         })
       );
       
-      // Only show sessions with more than 2 messages (greeting + response + at least one real message)
-      const meaningfulSessions = sessionsWithCounts.filter(s => s.messageCount > 2);
+      // Show sessions with at least 2 messages (1 user + 1 assistant = a real conversation)
+      const meaningfulSessions = sessionsWithCounts.filter(s => s.messageCount >= 2);
       setChatSessions(meaningfulSessions);
     }
   };
