@@ -18,10 +18,11 @@ interface AlertPhoto {
   id: string;
   photo_url: string;
   display_order: number | null;
+  photo_position: number | null;
 }
 
 const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhotoCarouselProps) => {
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<{ url: string; position: number }[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,23 +31,26 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
       try {
         const { data, error } = await supabase
           .from("lost_pet_alert_photos")
-          .select("id, photo_url, display_order")
+          .select("id, photo_url, display_order, photo_position")
           .eq("alert_id", alertId)
           .order("display_order", { ascending: true });
 
         if (error) throw error;
 
         if (data && data.length > 0) {
-          setPhotos(data.map((p: AlertPhoto) => p.photo_url));
+          setPhotos(data.map((p: AlertPhoto) => ({
+            url: p.photo_url,
+            position: p.photo_position ?? 50
+          })));
         } else if (mainPhotoUrl) {
           // Fallback to main photo if no photos in the table
-          setPhotos([mainPhotoUrl]);
+          setPhotos([{ url: mainPhotoUrl, position: 50 }]);
         }
       } catch (error) {
         console.error("Error fetching alert photos:", error);
         // Fallback to main photo on error
         if (mainPhotoUrl) {
-          setPhotos([mainPhotoUrl]);
+          setPhotos([{ url: mainPhotoUrl, position: 50 }]);
         }
       } finally {
         setIsLoading(false);
@@ -83,17 +87,20 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
     return null;
   }
 
+  const currentPhoto = photos[currentIndex];
+
   return (
-    <div className="w-full h-48 bg-muted relative group">
+    <div className="w-full h-48 bg-muted relative group overflow-hidden">
       <img
-        src={photos[currentIndex]}
+        src={currentPhoto.url}
         alt={`${petName} - Photo ${currentIndex + 1}`}
-        className="w-full h-full object-cover"
+        className="w-full h-[200%] object-cover absolute left-0"
+        style={{ top: `${-currentPhoto.position}%` }}
       />
 
       {/* Badge */}
       {badge && (
-        <Badge className={`absolute top-2 left-2 ${badge.className}`}>
+        <Badge className={`absolute top-2 left-2 z-10 ${badge.className}`}>
           {badge.text}
         </Badge>
       )}
@@ -104,7 +111,7 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
             onClick={goToPrevious}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -112,14 +119,14 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
             onClick={goToNext}
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
 
           {/* Dot indicators */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
             {photos.map((_, index) => (
               <button
                 key={index}
@@ -134,7 +141,7 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
           </div>
 
           {/* Photo counter */}
-          <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+          <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full z-10">
             {currentIndex + 1}/{photos.length}
           </div>
         </>

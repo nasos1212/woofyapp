@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -101,7 +101,9 @@ const LostFoundAlerts = () => {
   const [rewardOffered, setRewardOffered] = useState("");
   const [petPhotos, setPetPhotos] = useState<File[]>([]);
   const [petPhotoPreviews, setPetPhotoPreviews] = useState<string[]>([]);
+  const [photoPositions, setPhotoPositions] = useState<number[]>([]);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [editingPhotoIndex, setEditingPhotoIndex] = useState<number | null>(null);
   const MAX_PHOTOS = 3;
 
   useEffect(() => {
@@ -243,6 +245,7 @@ const LostFoundAlerts = () => {
 
     setPetPhotos((prev) => [...prev, ...newFiles]);
     setPetPhotoPreviews((prev) => [...prev, ...newPreviews]);
+    setPhotoPositions((prev) => [...prev, ...newFiles.map(() => 50)]);
     e.target.value = "";
   };
 
@@ -250,12 +253,17 @@ const LostFoundAlerts = () => {
     URL.revokeObjectURL(petPhotoPreviews[index]);
     setPetPhotos((prev) => prev.filter((_, i) => i !== index));
     setPetPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+    setPhotoPositions((prev) => prev.filter((_, i) => i !== index));
+    if (editingPhotoIndex === index) {
+      setEditingPhotoIndex(null);
+    }
   };
 
   const clearAllPhotos = () => {
     petPhotoPreviews.forEach((preview) => URL.revokeObjectURL(preview));
     setPetPhotos([]);
     setPetPhotoPreviews([]);
+    setPhotoPositions([]);
   };
 
   const handleCreateAlert = async (e: React.FormEvent) => {
@@ -349,6 +357,7 @@ const LostFoundAlerts = () => {
           alert_id: alertData.id,
           photo_url: url,
           display_order: index,
+          photo_position: photoPositions[index] ?? 50,
         }));
 
         await supabase.from("lost_pet_alert_photos").insert(photoInserts);
@@ -386,6 +395,7 @@ const LostFoundAlerts = () => {
     setContactPhone("");
     setContactEmail("");
     setRewardOffered("");
+    setEditingPhotoIndex(null);
     clearAllPhotos();
   };
 
@@ -842,27 +852,100 @@ const LostFoundAlerts = () => {
                       <Label>Photos * (up to {MAX_PHOTOS})</Label>
 
                       {petPhotoPreviews.length > 0 && (
-                        <div className="grid grid-cols-3 gap-2 mb-2">
+                        <div className="space-y-3 mb-2">
                           {petPhotoPreviews.map((preview, index) => (
-                            <div key={index} className="relative aspect-square rounded-lg overflow-hidden border">
-                              <img
-                                src={preview}
-                                alt={`Photo ${index + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="icon"
-                                className="absolute top-1 right-1 h-6 w-6"
-                                onClick={() => removePhoto(index)}
+                            <div key={index} className="border rounded-lg overflow-hidden">
+                              {/* Photo with position applied */}
+                              <div 
+                                className="relative h-32 overflow-hidden cursor-pointer"
+                                onClick={() => setEditingPhotoIndex(editingPhotoIndex === index ? null : index)}
                               >
-                                <X className="w-3 h-3" />
-                              </Button>
-                              {index === 0 && (
-                                <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded">
-                                  Main
+                                <img
+                                  src={preview}
+                                  alt={`Photo ${index + 1}`}
+                                  className="w-full h-[200%] object-cover absolute left-0"
+                                  style={{ top: `${-(photoPositions[index] ?? 50)}%` }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-1 right-1 h-6 w-6 z-10"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    removePhoto(index);
+                                  }}
+                                >
+                                  <X className="w-3 h-3" />
+                                </Button>
+                                {index === 0 && (
+                                  <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded">
+                                    Main
+                                  </span>
+                                )}
+                                <span className="absolute bottom-1 right-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded">
+                                  {editingPhotoIndex === index ? "Click to close" : "Click to adjust"}
                                 </span>
+                              </div>
+
+                              {/* Position adjuster - shown when editing */}
+                              {editingPhotoIndex === index && (
+                                <div className="p-3 bg-muted/50 border-t">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <Label className="text-xs">Adjust vertical position</Label>
+                                    <span className="text-xs text-muted-foreground">{photoPositions[index]}%</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8"
+                                      onClick={() => {
+                                        setPhotoPositions((prev) => {
+                                          const newPositions = [...prev];
+                                          newPositions[index] = Math.max(0, (newPositions[index] ?? 50) - 10);
+                                          return newPositions;
+                                        });
+                                      }}
+                                    >
+                                      <ChevronUp className="w-4 h-4" />
+                                    </Button>
+                                    <input
+                                      type="range"
+                                      min="0"
+                                      max="100"
+                                      value={photoPositions[index] ?? 50}
+                                      onChange={(e) => {
+                                        const value = parseInt(e.target.value);
+                                        setPhotoPositions((prev) => {
+                                          const newPositions = [...prev];
+                                          newPositions[index] = value;
+                                          return newPositions;
+                                        });
+                                      }}
+                                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="icon"
+                                      className="h-8 w-8"
+                                      onClick={() => {
+                                        setPhotoPositions((prev) => {
+                                          const newPositions = [...prev];
+                                          newPositions[index] = Math.min(100, (newPositions[index] ?? 50) + 10);
+                                          return newPositions;
+                                        });
+                                      }}
+                                    >
+                                      <ChevronDown className="w-4 h-4" />
+                                    </Button>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mt-2 text-center">
+                                    Slide to adjust which part of the photo is visible
+                                  </p>
+                                </div>
                               )}
                             </div>
                           ))}
