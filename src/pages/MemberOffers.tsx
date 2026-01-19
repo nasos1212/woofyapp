@@ -47,6 +47,7 @@ interface Offer {
     business_name: string;
     category: string;
     city: string | null;
+    logo_url: string | null;
   };
   isRedeemed: boolean;
 }
@@ -170,7 +171,7 @@ const MemberOffers = () => {
           valid_hours_start,
           valid_hours_end,
           pet_type,
-          business:businesses_public(id, business_name, category, city)
+          business:businesses_public(id, business_name, category, city, logo_url)
         `)
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${now}`);
@@ -577,8 +578,16 @@ const MemberOffers = () => {
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3 gap-2">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                          <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+                          {offer.business.logo_url ? (
+                            <img 
+                              src={offer.business.logo_url} 
+                              alt={offer.business.business_name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                          )}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
