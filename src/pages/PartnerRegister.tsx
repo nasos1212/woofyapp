@@ -414,7 +414,7 @@ const PartnerRegister = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="website">Website (optional)</Label>
+                    <Label htmlFor="website">Website *</Label>
                     <div className="relative">
                       <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -423,6 +423,7 @@ const PartnerRegister = () => {
                         value={website}
                         onChange={(e) => setWebsite(e.target.value)}
                         className="pl-10"
+                        required
                       />
                     </div>
                   </div>
@@ -433,7 +434,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || !category || !primaryLocation.city || (category === "other" && !otherCategoryDescription.trim())}
+                  disabled={!businessName || !category || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (category === "other" && !otherCategoryDescription.trim())}
                 >
                   Review & Submit
                 </Button>
