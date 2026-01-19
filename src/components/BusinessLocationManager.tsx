@@ -105,7 +105,7 @@ const BusinessLocationManager = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm">Phone</Label>
+                  <Label className="text-sm">Phone *</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
