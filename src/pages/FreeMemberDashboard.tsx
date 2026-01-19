@@ -178,7 +178,7 @@ const FreeMemberDashboard = () => {
                   </div>
                   <Button 
                     variant="outline"
-                    onClick={() => navigate("/member/lost-pets")}
+                    onClick={() => navigate("/member/lost-found")}
                     className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2"
                   >
                     View Alerts
