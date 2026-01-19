@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Crown, Bell, ArrowLeft, CreditCard, Home, TrendingUp, Clock, Gift } from "lucide-react";
+import { Check, X, Building2, Users, Shield, Eye, ChevronDown, ChevronUp, UserCog, BarChart3, Crown, Bell, ArrowLeft, CreditCard, Home, TrendingUp, Clock, Gift, Globe, MapPin, Phone, Mail, Calendar, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -35,7 +36,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedBusiness, setExpandedBusiness] = useState<string | null>(null);
-
+  const [viewingBusiness, setViewingBusiness] = useState<Business | null>(null);
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
@@ -228,6 +229,9 @@ const AdminDashboard = () => {
   const approvedBusinesses = businesses.filter(
     (b) => b.verification_status === "approved"
   );
+  const nonPendingBusinesses = businesses.filter(
+    (b) => b.verification_status !== "pending"
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -402,7 +406,7 @@ const AdminDashboard = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => navigate(`/business/${business.id}`)}
+                          onClick={() => setViewingBusiness(business)}
                         >
                           <Eye className="w-4 h-4 mr-1" />
                           View
@@ -432,7 +436,7 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="businesses" className="space-y-4">
-            {businesses.map((business) => (
+            {nonPendingBusinesses.map((business) => (
               <Card key={business.id} className="border-border/50">
                 <CardContent className="p-4">
                   <div
@@ -542,8 +546,9 @@ const AdminDashboard = () => {
                         </div>
                       )}
                       <div className="flex gap-2 mt-4">
-                        <Button size="sm" variant="outline" onClick={() => navigate(`/business/${business.id}`)}>
-                          View Profile
+                        <Button size="sm" variant="outline" onClick={() => setViewingBusiness(business)}>
+                          <Eye className="w-4 h-4 mr-1" />
+                          View Details
                         </Button>
                         {business.verification_status === "pending" && (
                           <>
@@ -646,6 +651,194 @@ const AdminDashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Business Details Dialog */}
+        <Dialog open={!!viewingBusiness} onOpenChange={() => setViewingBusiness(null)}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {viewingBusiness && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-3">
+                    {viewingBusiness.logo_url && (
+                      <img 
+                        src={viewingBusiness.logo_url} 
+                        alt={`${viewingBusiness.business_name} logo`}
+                        className="w-12 h-12 object-contain rounded-lg border border-border"
+                      />
+                    )}
+                    <div>
+                      <span>{viewingBusiness.business_name}</span>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline">{getCategoryLabel(viewingBusiness.category)}</Badge>
+                        {getStatusBadge(viewingBusiness.verification_status)}
+                      </div>
+                    </div>
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-4 mt-4">
+                  {/* Contact Information */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Contact Information</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-muted/30 rounded-lg p-4">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-muted-foreground" />
+                        <a href={`mailto:${viewingBusiness.email}`} className="text-primary hover:underline text-sm">
+                          {viewingBusiness.email}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-muted-foreground" />
+                        {viewingBusiness.phone ? (
+                          <a href={`tel:${viewingBusiness.phone}`} className="text-primary hover:underline text-sm">
+                            {viewingBusiness.phone}
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground/60 italic text-sm">Not provided</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Location</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-muted/30 rounded-lg p-4">
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+                        <div className="text-sm">
+                          <p>{viewingBusiness.city || <span className="text-muted-foreground/60 italic">No city</span>}</p>
+                          <p className="text-muted-foreground">{viewingBusiness.address || <span className="italic">No address</span>}</p>
+                        </div>
+                      </div>
+                      {viewingBusiness.google_maps_url && (
+                        <div className="flex items-center gap-2">
+                          <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                          <a 
+                            href={viewingBusiness.google_maps_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline text-sm"
+                          >
+                            View on Google Maps
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Online Presence */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Online Presence</h4>
+                    <div className="bg-muted/30 rounded-lg p-4">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-4 h-4 text-muted-foreground" />
+                        {viewingBusiness.website ? (
+                          <a 
+                            href={viewingBusiness.website.startsWith('http') ? viewingBusiness.website : `https://${viewingBusiness.website}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline text-sm"
+                          >
+                            {viewingBusiness.website}
+                          </a>
+                        ) : (
+                          <span className="text-muted-foreground/60 italic text-sm">No website provided</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  {viewingBusiness.description && (
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Description</h4>
+                      <div className="bg-muted/30 rounded-lg p-4">
+                        <p className="text-sm whitespace-pre-wrap">{viewingBusiness.description}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Dates */}
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">Dates</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-muted/30 rounded-lg p-4">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm">
+                          <span className="text-muted-foreground">Registered:</span>{" "}
+                          {new Date(viewingBusiness.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {viewingBusiness.verified_at && (
+                        <div className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-green-500" />
+                          <span className="text-sm">
+                            <span className="text-muted-foreground">Verified:</span>{" "}
+                            {new Date(viewingBusiness.verified_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t border-border">
+                    {viewingBusiness.verification_status === "pending" && (
+                      <>
+                        <Button
+                          variant="destructive"
+                          onClick={() => {
+                            updateBusinessStatus(viewingBusiness.id, "rejected");
+                            setViewingBusiness(null);
+                          }}
+                        >
+                          <X className="w-4 h-4 mr-1" />
+                          Reject
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            updateBusinessStatus(viewingBusiness.id, "approved");
+                            setViewingBusiness(null);
+                          }}
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          <Check className="w-4 h-4 mr-1" />
+                          Approve
+                        </Button>
+                      </>
+                    )}
+                    {viewingBusiness.verification_status === "approved" && (
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          updateBusinessStatus(viewingBusiness.id, "rejected");
+                          setViewingBusiness(null);
+                        }}
+                      >
+                        Revoke Approval
+                      </Button>
+                    )}
+                    {viewingBusiness.verification_status === "rejected" && (
+                      <Button
+                        onClick={() => {
+                          updateBusinessStatus(viewingBusiness.id, "approved");
+                          setViewingBusiness(null);
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                      >
+                        Approve
+                      </Button>
+                    )}
+                    <Button variant="outline" onClick={() => navigate(`/business/${viewingBusiness.id}`)}>
+                      View Public Profile
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
