@@ -18,6 +18,7 @@ import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import LocationSelector from "@/components/LocationSelector";
 import CityMultiSelector from "@/components/CityMultiSelector";
+import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
 import { formatLocation } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
 
@@ -450,18 +451,15 @@ const LostFoundAlerts = () => {
         key={alert.id}
         className={`bg-white rounded-2xl shadow-soft border-l-4 ${borderColor} overflow-hidden`}
       >
-        {alert.pet_photo_url && (
-          <div className="w-full h-48 bg-muted relative">
-            <img
-              src={alert.pet_photo_url}
-              alt={alert.pet_name}
-              className="w-full h-full object-cover"
-            />
-            <Badge className={`absolute top-2 left-2 ${statusBadgeColor}`}>
-              {isLost ? "Lost" : "Found"}
-            </Badge>
-          </div>
-        )}
+        <AlertPhotoCarousel
+          alertId={alert.id}
+          mainPhotoUrl={alert.pet_photo_url}
+          petName={alert.pet_name}
+          badge={{
+            text: isLost ? "Lost" : "Found",
+            className: statusBadgeColor
+          }}
+        />
 
         <div className="p-5">
           <div className="flex items-start justify-between mb-3">
@@ -1050,18 +1048,15 @@ const LostFoundAlerts = () => {
                       key={alert.id}
                       className="bg-white rounded-2xl shadow-soft border-l-4 border-l-green-500 overflow-hidden opacity-75"
                     >
-                      {alert.pet_photo_url && (
-                        <div className="w-full h-48 bg-muted relative">
-                          <img
-                            src={alert.pet_photo_url}
-                            alt={alert.pet_name}
-                            className="w-full h-full object-cover"
-                          />
-                          <Badge className="absolute top-2 left-2 bg-green-100 text-green-700">
-                            Reunited
-                          </Badge>
-                        </div>
-                      )}
+                      <AlertPhotoCarousel
+                        alertId={alert.id}
+                        mainPhotoUrl={alert.pet_photo_url}
+                        petName={alert.pet_name}
+                        badge={{
+                          text: "Reunited",
+                          className: "bg-green-100 text-green-700"
+                        }}
+                      />
                       <div className="p-5">
                         <div className="flex items-center gap-2 mb-2">
                           {getPetTypeIcon(alert.pet_type || "dog")}
