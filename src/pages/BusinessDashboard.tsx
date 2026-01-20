@@ -69,7 +69,7 @@ const BusinessDashboard = () => {
   const [offers, setOffers] = useState<{ id: string; title: string; discount_value: number; discount_type: string }[]>([]);
   const [selectedOfferId, setSelectedOfferId] = useState<string>("");
   const [recentRedemptions, setRecentRedemptions] = useState<Redemption[]>([]);
-  const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0, discountsGiven: 0 });
+  const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0 });
   const [isCheckingBusiness, setIsCheckingBusiness] = useState(true);
   const [selectedPetId, setSelectedPetId] = useState<string>("");
 
@@ -169,15 +169,9 @@ const BusinessDashboard = () => {
         firstDate => firstDate >= thisMonth
       ).length;
       
-      const totalDiscount = monthlyRedemptions.reduce((sum, r) => {
-        const offer = r.offer as unknown as { discount_value: number };
-        return sum + (offer?.discount_value || 0);
-      }, 0);
-      
       setStats({
         redemptions: monthlyRedemptions.length,
         newCustomers: newCustomersThisMonth,
-        discountsGiven: totalDiscount
       });
     }
   };
@@ -968,18 +962,6 @@ const BusinessDashboard = () => {
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.newCustomers}</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                        <Gift className="w-5 h-5 text-amber-600" />
-                      </div>
-                      <div>
-                        <span className="text-slate-600">Discounts Given</span>
-                        <p className="text-xs text-slate-400">Value to customers</p>
-                      </div>
-                    </div>
-                    <span className="font-display font-bold text-xl text-slate-900">€{stats.discountsGiven}</span>
                   </div>
                 </div>
               </div>
