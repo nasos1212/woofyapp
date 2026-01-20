@@ -71,14 +71,15 @@ const formatFileSize = (bytes: number): string => {
 };
 
 const categoryOptions = [
-  { value: "trainer", label: "Trainer" },
+  { value: "trainer", label: "Dog Trainer" },
   { value: "pet_shop", label: "Pet Shop" },
-  { value: "hotel", label: "Hotel / Boarding" },
+  { value: "hotel", label: "Pet Hotel" },
   { value: "grooming", label: "Grooming" },
   { value: "vet", label: "Veterinary" },
   { value: "daycare", label: "Daycare" },
   { value: "physio", label: "Physiotherapy" },
   { value: "accessories", label: "Accessories" },
+  { value: "food", label: "Food & Treats" },
   { value: "other", label: "Other" },
 ];
 

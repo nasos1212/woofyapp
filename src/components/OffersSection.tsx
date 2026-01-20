@@ -100,10 +100,11 @@ const OffersSection = () => {
       pet_shop: "Pet Shop",
       hotel: "Pet Hotel",
       grooming: "Grooming",
-      vet: "Veterinarian",
+      vet: "Veterinary",
       daycare: "Daycare",
       food: "Food & Treats",
       accessories: "Accessories",
+      physio: "Physiotherapy",
       other: "Other",
     };
     return labels[category] || category;

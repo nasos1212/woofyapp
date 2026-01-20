@@ -45,19 +45,15 @@ interface OfferDetailDialogProps {
 }
 
 const categories: Record<string, string> = {
-  veterinary: "Veterinary",
-  grooming: "Grooming",
-  pet_store: "Pet Store",
-  pet_shop: "Pet Shop",
-  training: "Training",
-  boarding: "Boarding",
-  cafe_restaurant: "Café",
   trainer: "Dog Trainer",
+  pet_shop: "Pet Shop",
   hotel: "Pet Hotel",
-  vet: "Veterinarian",
+  grooming: "Grooming",
+  vet: "Veterinary",
   daycare: "Daycare",
   food: "Food & Treats",
   accessories: "Accessories",
+  physio: "Physiotherapy",
   other: "Other",
 };
 

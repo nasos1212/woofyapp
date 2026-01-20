@@ -56,12 +56,15 @@ type SortOption = "newest" | "discount_high" | "discount_low" | "expiry" | "busi
 
 const categories = [
   { id: "all", label: "All" },
-  { id: "veterinary", label: "Veterinary" },
+  { id: "vet", label: "Veterinary" },
   { id: "grooming", label: "Grooming" },
-  { id: "pet_store", label: "Pet Store" },
-  { id: "training", label: "Training" },
-  { id: "boarding", label: "Boarding" },
-  { id: "cafe_restaurant", label: "Café" },
+  { id: "pet_shop", label: "Pet Shop" },
+  { id: "trainer", label: "Dog Trainer" },
+  { id: "hotel", label: "Pet Hotel" },
+  { id: "daycare", label: "Daycare" },
+  { id: "food", label: "Food & Treats" },
+  { id: "accessories", label: "Accessories" },
+  { id: "physio", label: "Physiotherapy" },
   { id: "other", label: "Other" },
 ];
 
