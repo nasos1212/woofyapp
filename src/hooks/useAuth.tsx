@@ -53,15 +53,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     
-    // Auto-assign member role for new users
-    if (!error && data.user) {
-      await supabase
-        .from("user_roles")
-        .upsert(
-          { user_id: data.user.id, role: "member" as const },
-          { onConflict: "user_id,role" }
-        );
-    }
+    // NOTE: Role assignment is handled in Auth.tsx based on account type
+    // Don't auto-assign member role here - it causes business/shelter users to get incorrect roles
     
     return { error, data: data ? { user: data.user } : null };
   };
