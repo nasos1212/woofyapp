@@ -17,6 +17,16 @@ interface AnalyticsEvent {
   created_at: string;
 }
 
+interface Redemption {
+  id: string;
+  redeemed_at: string;
+  offer_id: string;
+  business_id: string;
+  member_name: string | null;
+  offers?: { title: string } | null;
+  businesses?: { business_name: string } | null;
+}
+
 interface TopEntity {
   name: string;
   count: number;
@@ -27,6 +37,7 @@ const COLORS = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"
 
 const EngagementAnalytics = () => {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
+  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d">("7d");
 
@@ -36,15 +47,34 @@ const EngagementAnalytics = () => {
       const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
       const startDate = subDays(new Date(), days);
 
-      const { data, error } = await supabase
-        .from("analytics_events")
-        .select("*")
-        .gte("created_at", startDate.toISOString())
-        .order("created_at", { ascending: false })
-        .limit(5000);
+      // Fetch analytics events and actual redemptions in parallel
+      const [eventsResult, redemptionsResult] = await Promise.all([
+        supabase
+          .from("analytics_events")
+          .select("*")
+          .gte("created_at", startDate.toISOString())
+          .order("created_at", { ascending: false })
+          .limit(5000),
+        supabase
+          .from("offer_redemptions")
+          .select(`
+            id,
+            redeemed_at,
+            offer_id,
+            business_id,
+            member_name,
+            offers:offer_id (title),
+            businesses:business_id (business_name)
+          `)
+          .gte("redeemed_at", startDate.toISOString())
+          .order("redeemed_at", { ascending: false })
+      ]);
 
-      if (error) throw error;
-      setEvents(data || []);
+      if (eventsResult.error) throw eventsResult.error;
+      if (redemptionsResult.error) throw redemptionsResult.error;
+      
+      setEvents(eventsResult.data || []);
+      setRedemptions(redemptionsResult.data || []);
     } catch (error) {
       console.error("Error fetching analytics:", error);
     } finally {
@@ -56,11 +86,13 @@ const EngagementAnalytics = () => {
     fetchAnalytics();
   }, [dateRange]);
 
-  // Calculate metrics
+  // Calculate metrics from analytics_events
   const businessViews = events.filter(e => e.event_type === "business_view");
   const offerClicks = events.filter(e => e.event_type === "offer_click");
-  const offerRedeems = events.filter(e => e.event_type === "offer_redeem");
   const shelterViews = events.filter(e => e.event_type === "shelter_view");
+  
+  // Use actual redemptions count from offer_redemptions table
+  const actualRedemptionsCount = redemptions.length;
 
   // Top businesses by views
   const topBusinesses: TopEntity[] = Object.entries(
@@ -75,12 +107,11 @@ const EngagementAnalytics = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
-  // Top offers by clicks
-  const topOffers: TopEntity[] = Object.entries(
-    offerClicks.reduce((acc, e) => {
-      if (e.entity_name) {
-        acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
-      }
+  // Top offers by clicks from analytics OR by actual redemptions
+  const topOffersByRedemptions: TopEntity[] = Object.entries(
+    redemptions.reduce((acc, r) => {
+      const offerTitle = r.offers?.title || "Unknown Offer";
+      acc[offerTitle] = (acc[offerTitle] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
   )
@@ -88,25 +119,48 @@ const EngagementAnalytics = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
-  // Daily activity chart data
-  const dailyActivity = events.reduce((acc, e) => {
+  // Top businesses by redemptions
+  const topBusinessesByRedemptions: TopEntity[] = Object.entries(
+    redemptions.reduce((acc, r) => {
+      const businessName = r.businesses?.business_name || "Unknown Business";
+      acc[businessName] = (acc[businessName] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>)
+  )
+    .map(([name, count]) => ({ name, count, entityId: "" }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  // Daily activity chart data - combine events and redemptions
+  const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
+  
+  events.forEach(e => {
     const day = format(new Date(e.created_at), "MMM d");
-    if (!acc[day]) {
-      acc[day] = { day, views: 0, clicks: 0, redeems: 0 };
+    if (!dailyActivity[day]) {
+      dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
     }
-    if (e.event_type === "business_view") acc[day].views++;
-    if (e.event_type === "offer_click") acc[day].clicks++;
-    if (e.event_type === "offer_redeem") acc[day].redeems++;
-    return acc;
-  }, {} as Record<string, { day: string; views: number; clicks: number; redeems: number }>);
+    if (e.event_type === "business_view") dailyActivity[day].views++;
+    if (e.event_type === "offer_click") dailyActivity[day].clicks++;
+  });
+  
+  // Add actual redemptions to the chart
+  redemptions.forEach(r => {
+    const day = format(new Date(r.redeemed_at), "MMM d");
+    if (!dailyActivity[day]) {
+      dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
+    }
+    dailyActivity[day].redeems++;
+  });
 
-  const chartData = Object.values(dailyActivity).reverse().slice(-14);
+  const chartData = Object.values(dailyActivity)
+    .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
+    .slice(-14);
 
-  // Event type distribution
+  // Event type distribution - use actual data
   const eventDistribution = [
     { name: "Business Views", value: businessViews.length, color: COLORS[0] },
     { name: "Offer Clicks", value: offerClicks.length, color: COLORS[1] },
-    { name: "Offer Redeems", value: offerRedeems.length, color: COLORS[2] },
+    { name: "Redemptions", value: actualRedemptionsCount, color: COLORS[2] },
     { name: "Shelter Views", value: shelterViews.length, color: COLORS[3] },
   ].filter(d => d.value > 0);
 
@@ -167,7 +221,7 @@ const EngagementAnalytics = () => {
                 <Gift className="w-5 h-5 text-green-500" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{offerRedeems.length}</p>
+                <p className="text-2xl font-bold">{actualRedemptionsCount}</p>
                 <p className="text-xs text-muted-foreground">Redemptions</p>
               </div>
             </div>
@@ -302,20 +356,20 @@ const EngagementAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* Top Offers */}
+        {/* Top Offers by Redemptions */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Gift className="w-4 h-4 text-yellow-500" />
-              Top Offers
+              <Gift className="w-4 h-4 text-green-500" />
+              Top Offers (by Redemptions)
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {topOffers.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No data yet</p>
+            {topOffersByRedemptions.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No redemptions yet</p>
             ) : (
               <div className="space-y-3">
-                {topOffers.map((offer, index) => (
+                {topOffersByRedemptions.map((offer, index) => (
                   <div key={offer.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
@@ -323,8 +377,8 @@ const EngagementAnalytics = () => {
                       </Badge>
                       <span className="text-sm font-medium truncate max-w-[180px]">{offer.name}</span>
                     </div>
-                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                      {offer.count} clicks
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                      {offer.count} redeemed
                     </Badge>
                   </div>
                 ))}
