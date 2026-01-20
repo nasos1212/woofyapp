@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
 import { ensureHttps } from "@/lib/utils";
-
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 // Full membership info
 interface MembershipInfo {
   id: string;
@@ -81,6 +81,8 @@ type MembershipFilter = "all" | "freemium" | "paid" | "expiring";
 type BusinessFilter = "all" | "pending" | "approved" | "rejected";
 type ShelterFilter = "all" | "pending" | "approved" | "rejected";
 
+const ITEMS_PER_PAGE = 20;
+
 const UserManagement = () => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,6 +92,9 @@ const UserManagement = () => {
   const [businessFilter, setBusinessFilter] = useState<BusinessFilter>("all");
   const [shelterFilter, setShelterFilter] = useState<ShelterFilter>("all");
   const [expandedUser, setExpandedUser] = useState<string | null>(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Edit states
   const [editingDogsHelped, setEditingDogsHelped] = useState<string | null>(null);
@@ -104,6 +109,11 @@ const UserManagement = () => {
     message: "",
     type: "announcement",
   });
+  
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeTab, membershipFilter, businessFilter, shelterFilter, searchQuery]);
 
   useEffect(() => {
     fetchAllUsers();
@@ -254,6 +264,30 @@ const UserManagement = () => {
 
     return result;
   }, [users, activeTab, membershipFilter, businessFilter, shelterFilter, searchQuery]);
+
+  // Paginated users
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const paginatedUsers = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredUsers, currentPage]);
+
+  // Generate page numbers to show
+  const getPageNumbers = () => {
+    const pages: (number | "ellipsis")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("ellipsis");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) pages.push("ellipsis");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   // Calculate counts
   const counts = useMemo(() => {
@@ -602,11 +636,18 @@ const UserManagement = () => {
             </TabsList>
 
             {/* User List */}
-            <div className="space-y-2 max-h-[700px] overflow-y-auto">
-              {filteredUsers.length === 0 ? (
+            <div className="space-y-2">
+              {/* Results info */}
+              <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                <span>
+                  Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredUsers.length)} of {filteredUsers.length} users
+                </span>
+              </div>
+              
+              {paginatedUsers.length === 0 ? (
                 <p className="text-center text-muted-foreground py-8">No users found</p>
               ) : (
-                filteredUsers.map((user) => {
+                paginatedUsers.map((user) => {
                   const isExpanded = expandedUser === user.id;
                   
                   return (
@@ -856,6 +897,43 @@ const UserManagement = () => {
                 })
               )}
             </div>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <Pagination className="mt-4">
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                  
+                  {getPageNumbers().map((page, idx) => (
+                    <PaginationItem key={idx}>
+                      {page === "ellipsis" ? (
+                        <PaginationEllipsis />
+                      ) : (
+                        <PaginationLink
+                          onClick={() => setCurrentPage(page)}
+                          isActive={currentPage === page}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      )}
+                    </PaginationItem>
+                  ))}
+                  
+                  <PaginationItem>
+                    <PaginationNext 
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
           </Tabs>
         </CardContent>
       </Card>
