@@ -55,8 +55,6 @@ const BusinessAnalytics = () => {
     thisMonth: 0,
     lastMonth: 0,
     uniqueCustomers: 0,
-    avgPerCustomer: 0,
-    totalDiscountsGiven: 0,
   });
   const [dailyData, setDailyData] = useState<DailyData[]>([]);
   const [topOffers, setTopOffers] = useState<TopOffer[]>([]);
@@ -140,24 +138,12 @@ const BusinessAnalytics = () => {
       );
 
       const uniqueMemberIds = new Set(redemptions.map((r) => r.membership_id));
-      const totalDiscounts = redemptions.reduce((sum, r) => {
-        const offer = r.offer as unknown as { discount_value: number; discount_type: string };
-        if (offer?.discount_type === "percentage") {
-          return sum + (offer.discount_value / 100) * 50; // Assume €50 avg transaction
-        }
-        return sum + (offer?.discount_value || 0);
-      }, 0);
 
       setStats({
         totalRedemptions: redemptions.length,
         thisMonth: thisMonthRedemptions.length,
         lastMonth: lastMonthRedemptions.length,
         uniqueCustomers: uniqueMemberIds.size,
-        avgPerCustomer:
-          uniqueMemberIds.size > 0
-            ? Math.round(redemptions.length / uniqueMemberIds.size * 10) / 10
-            : 0,
-        totalDiscountsGiven: Math.round(totalDiscounts),
       });
 
       // Calculate daily data
@@ -406,21 +392,6 @@ const BusinessAnalytics = () => {
               <p className="text-xs sm:text-sm text-slate-500">Customers</p>
             </div>
 
-            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mb-1 sm:mb-2" />
-              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
-                {stats.avgPerCustomer}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-500">Avg Visits</p>
-            </div>
-
-            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
-              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 mb-1 sm:mb-2" />
-              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
-                €{stats.totalDiscountsGiven}
-              </div>
-              <p className="text-xs sm:text-sm text-slate-500">Discounts</p>
-            </div>
           </div>
 
           {/* Top Offers */}
