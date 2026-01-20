@@ -443,36 +443,6 @@ const BusinessDashboard = () => {
             <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
           </div>
 
-          {/* Onboarding Tips - Show when no redemptions and approved */}
-          {recentRedemptions.length === 0 && isApproved && (
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-2xl p-6 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Gift className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold text-slate-900 mb-2">Welcome to Wooffy! 🎉</h3>
-                  <p className="text-slate-600 text-sm mb-3">
-                    Here's how to get started with your first redemption:
-                  </p>
-                  <ol className="text-sm text-slate-600 space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">1</span>
-                      <span>Create your first offer in the <Link to="/business/offers" className="text-primary font-medium hover:underline">Manage Offers</Link> section</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">2</span>
-                      <span>When a customer shows their Wooffy card, scan their QR code or enter their member ID below</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0">3</span>
-                      <span>Confirm the redemption and the customer gets notified of their savings!</span>
-                    </li>
-                  </ol>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Quick Navigation */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-8">
@@ -592,10 +562,13 @@ const BusinessDashboard = () => {
             <div className="lg:col-span-2 space-y-8">
               {/* Member Verification */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h2 className="font-display text-lg font-semibold text-slate-900 mb-6 flex items-center gap-2">
+                <h2 className="font-display text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
                   <ScanLine className="w-5 h-5 text-primary" />
                   Member Verification
                 </h2>
+                <p className="text-sm text-slate-500 mb-6">
+                  💡 <span className="font-medium">Quick tip:</span> Scan QR code or enter member ID, select offer, then confirm redemption.
+                </p>
 
                 {!isApproved ? (
                   <div className="text-center py-8">
