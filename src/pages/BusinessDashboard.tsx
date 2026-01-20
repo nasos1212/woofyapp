@@ -124,8 +124,8 @@ const BusinessDashboard = () => {
       setOffers([]);
     }
 
-    // Fetch recent redemptions - now with stored member/pet data
-    const { data: redemptionsData } = await supabase
+    // Fetch ALL redemptions for this business to calculate accurate stats
+    const { data: allRedemptionsData } = await supabase
       .from('offer_redemptions')
       .select(`
         id,
@@ -133,23 +133,41 @@ const BusinessDashboard = () => {
         member_name,
         pet_names,
         member_number,
+        membership_id,
         offer:offers(title, discount_value, discount_type)
       `)
       .eq('business_id', businessData.id)
-      .order('redeemed_at', { ascending: false })
-      .limit(10);
+      .order('redeemed_at', { ascending: true }); // Order by oldest first to track first visits
 
-    if (redemptionsData) {
-      setRecentRedemptions(redemptionsData as unknown as Redemption[]);
+    if (allRedemptionsData) {
+      // Get recent 10 for display
+      const recentRedemptions = [...allRedemptionsData]
+        .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime())
+        .slice(0, 10);
+      setRecentRedemptions(recentRedemptions as unknown as Redemption[]);
       
       // Calculate stats
       const thisMonth = new Date();
       thisMonth.setDate(1);
       thisMonth.setHours(0, 0, 0, 0);
       
-      const monthlyRedemptions = redemptionsData.filter(r => 
+      const monthlyRedemptions = allRedemptionsData.filter(r => 
         new Date(r.redeemed_at) >= thisMonth
       );
+      
+      // Calculate first-time customers this month
+      // Track when each membership first redeemed at this business
+      const firstRedemptionByMember: Record<string, Date> = {};
+      allRedemptionsData.forEach(r => {
+        if (r.membership_id && !firstRedemptionByMember[r.membership_id]) {
+          firstRedemptionByMember[r.membership_id] = new Date(r.redeemed_at);
+        }
+      });
+      
+      // Count members whose first redemption was this month
+      const newCustomersThisMonth = Object.values(firstRedemptionByMember).filter(
+        firstDate => firstDate >= thisMonth
+      ).length;
       
       const totalDiscount = monthlyRedemptions.reduce((sum, r) => {
         const offer = r.offer as unknown as { discount_value: number };
@@ -158,7 +176,7 @@ const BusinessDashboard = () => {
       
       setStats({
         redemptions: monthlyRedemptions.length,
-        newCustomers: Math.floor(monthlyRedemptions.length * 0.3),
+        newCustomers: newCustomersThisMonth,
         discountsGiven: totalDiscount
       });
     }
