@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import AdoptionInquiryDialog from "@/components/AdoptionInquiryDialog";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { 
   ArrowLeft, 
   Heart, 
@@ -28,6 +29,7 @@ import {
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
+  const { trackShelterView } = useAnalyticsTracking();
 
   const { data: shelter, isLoading: shelterLoading } = useQuery({
     queryKey: ['shelter', id],
@@ -44,6 +46,13 @@ const ShelterProfile = () => {
     },
     enabled: !!id,
   });
+
+  // Track shelter view
+  useEffect(() => {
+    if (shelter && id) {
+      trackShelterView(id, shelter.shelter_name);
+    }
+  }, [shelter?.id, id, trackShelterView]);
 
   const { data: photos } = useQuery({
     queryKey: ['shelter-photos', id],
