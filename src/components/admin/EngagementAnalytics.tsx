@@ -325,20 +325,20 @@ const EngagementAnalytics = () => {
 
       {/* Top Content */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Top Businesses */}
+        {/* Top Businesses by Redemptions */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Store className="w-4 h-4 text-orange-500" />
-              Top Businesses
+              Top Businesses (by Redemptions)
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {topBusinesses.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No data yet</p>
+            {topBusinessesByRedemptions.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No redemptions yet</p>
             ) : (
               <div className="space-y-3">
-                {topBusinesses.map((business, index) => (
+                {topBusinessesByRedemptions.map((business, index) => (
                   <div key={business.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
@@ -347,7 +347,7 @@ const EngagementAnalytics = () => {
                       <span className="text-sm font-medium truncate max-w-[180px]">{business.name}</span>
                     </div>
                     <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
-                      {business.count} views
+                      {business.count} redeemed
                     </Badge>
                   </div>
                 ))}
