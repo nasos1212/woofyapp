@@ -294,6 +294,22 @@ serve(async (req) => {
           }
         });
 
+      // Track analytics event for admin dashboard
+      await supabaseAdmin
+        .from('analytics_events')
+        .insert({
+          user_id: membership.user_id,
+          event_type: 'offer_redeem',
+          entity_type: 'offer',
+          entity_id: offerId,
+          entity_name: offer.title,
+          metadata: {
+            business_id: businessId,
+            business_name: business.business_name,
+            redemption_id: redemption.id,
+          }
+        });
+
       return new Response(
         JSON.stringify({
           success: true,
@@ -381,6 +397,22 @@ serve(async (req) => {
             business_name: business.business_name,
             discount_value: offer.discount_value,
             discount_type: offer.discount_type,
+          }
+        });
+
+      // Track analytics event for admin dashboard
+      await supabaseAdmin
+        .from('analytics_events')
+        .insert({
+          user_id: membership.user_id,
+          event_type: 'offer_redeem',
+          entity_type: 'offer',
+          entity_id: offerId,
+          entity_name: offer.title,
+          metadata: {
+            business_id: businessId,
+            business_name: business.business_name,
+            redemption_id: redemption.id,
           }
         });
 
