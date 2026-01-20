@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.notify-expiring-memberships]
 verify_jwt = false
+
+[functions.notify-business-birthdays]
+verify_jwt = false

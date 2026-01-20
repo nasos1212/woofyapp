@@ -97,6 +97,8 @@ const NotificationBell = () => {
       navigate(`/member/lost-found?alert=${data.alert_id}`);
     } else if ((notification.type === "community_answer" || notification.type === "community_follow_activity" || notification.type === "answer_accepted") && data?.question_id) {
       navigate(`/community/question/${data.question_id}`);
+    } else if (notification.type === "business_birthday_reminder") {
+      navigate("/business/birthdays");
     } else {
       // For bulk notifications and others, go to notifications page
       navigate("/member/notifications");
