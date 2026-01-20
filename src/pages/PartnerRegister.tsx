@@ -28,12 +28,13 @@ type BusinessCategory = Database["public"]["Enums"]["business_category"];
 const categories: { value: BusinessCategory; label: string }[] = [
   { value: "trainer", label: "Dog Trainer" },
   { value: "pet_shop", label: "Pet Shop" },
-  { value: "hotel", label: "Pet Hotel / Boarding" },
-  { value: "grooming", label: "Grooming Salon" },
-  { value: "vet", label: "Veterinary Clinic" },
-  { value: "daycare", label: "Doggy Daycare" },
-  { value: "physio", label: "Pet Physiotherapy" },
-  { value: "accessories", label: "Pet Accessories" },
+  { value: "hotel", label: "Pet Hotel" },
+  { value: "grooming", label: "Grooming" },
+  { value: "vet", label: "Veterinary" },
+  { value: "daycare", label: "Daycare" },
+  { value: "physio", label: "Physiotherapy" },
+  { value: "accessories", label: "Accessories" },
+  { value: "food", label: "Food & Treats" },
   { value: "other", label: "Other" },
 ];
 
