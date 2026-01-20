@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Eye, MousePointer, RefreshCw, TrendingUp, Store, Gift, Home, Percent } from "lucide-react";
+import { BarChart3, Eye, MousePointer, RefreshCw, TrendingUp, Store, Gift, Home } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 
@@ -198,11 +198,6 @@ const EngagementAnalytics = () => {
     .slice(0, 5);
 
 
-  // Overall conversion rate
-  const overallConversionRate = offerClicks.length > 0 
-    ? ((actualRedemptionsCount / offerClicks.length) * 100).toFixed(1)
-    : "0";
-
   // Daily activity chart data - combine events and redemptions
   const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
   
@@ -259,7 +254,7 @@ const EngagementAnalytics = () => {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="border-border/50">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
@@ -295,19 +290,6 @@ const EngagementAnalytics = () => {
               <div>
                 <p className="text-2xl font-bold">{actualRedemptionsCount}</p>
                 <p className="text-xs text-muted-foreground">Redemptions</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <Percent className="w-5 h-5 text-purple-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{overallConversionRate}%</p>
-                <p className="text-xs text-muted-foreground">Conversion Rate</p>
               </div>
             </div>
           </CardContent>
