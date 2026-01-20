@@ -27,6 +27,13 @@ interface Redemption {
   businesses?: { business_name: string } | null;
 }
 
+interface TopOfferEntity {
+  name: string;
+  businessName: string;
+  count: number;
+  entityId: string;
+}
+
 interface TopEntity {
   name: string;
   count: number;
@@ -94,8 +101,8 @@ const EngagementAnalytics = () => {
   // Use actual redemptions count from offer_redemptions table
   const actualRedemptionsCount = redemptions.length;
 
-  // Top businesses by views
-  const topBusinesses: TopEntity[] = Object.entries(
+  // Top businesses by views (clicks)
+  const topBusinessesByViews: TopEntity[] = Object.entries(
     businessViews.reduce((acc, e) => {
       if (e.entity_name) {
         acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
@@ -107,15 +114,67 @@ const EngagementAnalytics = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
-  // Top offers by clicks from analytics OR by actual redemptions
-  const topOffersByRedemptions: TopEntity[] = Object.entries(
-    redemptions.reduce((acc, r) => {
-      const offerTitle = r.offers?.title || "Unknown Offer";
-      acc[offerTitle] = (acc[offerTitle] || 0) + 1;
+  // Top businesses by offer clicks
+  const topBusinessesByClicks: TopEntity[] = Object.entries(
+    offerClicks.reduce((acc, e) => {
+      // Get business name from metadata if available
+      const metadata = (e as any).metadata;
+      const businessName = metadata?.business_name || e.entity_name || "Unknown";
+      if (businessName !== "Unknown") {
+        acc[businessName] = (acc[businessName] || 0) + 1;
+      }
       return acc;
     }, {} as Record<string, number>)
   )
     .map(([name, count]) => ({ name, count, entityId: "" }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  // Top shelters by views
+  const topSheltersByViews: TopEntity[] = Object.entries(
+    shelterViews.reduce((acc, e) => {
+      if (e.entity_name) {
+        acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<string, number>)
+  )
+    .map(([name, count]) => ({ name, count, entityId: "" }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  // Top offers by clicks (with business name)
+  const topOffersByClicks: TopOfferEntity[] = Object.entries(
+    offerClicks.reduce((acc, e) => {
+      if (e.entity_name) {
+        const metadata = (e as any).metadata;
+        const key = `${e.entity_name}||${metadata?.business_name || "Unknown"}`;
+        acc[key] = (acc[key] || 0) + 1;
+      }
+      return acc;
+    }, {} as Record<string, number>)
+  )
+    .map(([key, count]) => {
+      const [name, businessName] = key.split("||");
+      return { name, businessName, count, entityId: "" };
+    })
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  // Top offers by redemptions (with business name)
+  const topOffersByRedemptions: TopOfferEntity[] = Object.entries(
+    redemptions.reduce((acc, r) => {
+      const offerTitle = r.offers?.title || "Unknown Offer";
+      const businessName = r.businesses?.business_name || "Unknown";
+      const key = `${offerTitle}||${businessName}`;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>)
+  )
+    .map(([key, count]) => {
+      const [name, businessName] = key.split("||");
+      return { name, businessName, count, entityId: "" };
+    })
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
@@ -323,13 +382,75 @@ const EngagementAnalytics = () => {
         </Card>
       </div>
 
-      {/* Top Content */}
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Top Content - Row 1: Businesses */}
+      <div className="grid md:grid-cols-3 gap-6">
+        {/* Top Businesses by Views */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Eye className="w-4 h-4 text-orange-500" />
+              Top Businesses (by Views)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {topBusinessesByViews.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No views yet</p>
+            ) : (
+              <div className="space-y-3">
+                {topBusinessesByViews.map((business, index) => (
+                  <div key={business.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
+                        {index + 1}
+                      </Badge>
+                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
+                    </div>
+                    <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                      {business.count} views
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Top Businesses by Offer Clicks */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <MousePointer className="w-4 h-4 text-yellow-500" />
+              Top Businesses (by Clicks)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {topBusinessesByClicks.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No clicks yet</p>
+            ) : (
+              <div className="space-y-3">
+                {topBusinessesByClicks.map((business, index) => (
+                  <div key={business.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
+                        {index + 1}
+                      </Badge>
+                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
+                    </div>
+                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                      {business.count} clicks
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Top Businesses by Redemptions */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
-              <Store className="w-4 h-4 text-orange-500" />
+              <Store className="w-4 h-4 text-green-500" />
               Top Businesses (by Redemptions)
             </CardTitle>
           </CardHeader>
@@ -344,10 +465,47 @@ const EngagementAnalytics = () => {
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
                         {index + 1}
                       </Badge>
-                      <span className="text-sm font-medium truncate max-w-[180px]">{business.name}</span>
+                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
                     </div>
-                    <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                       {business.count} redeemed
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Content - Row 2: Offers */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Top Offers by Clicks */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <MousePointer className="w-4 h-4 text-yellow-500" />
+              Top Offers (by Clicks)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {topOffersByClicks.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No clicks yet</p>
+            ) : (
+              <div className="space-y-3">
+                {topOffersByClicks.map((offer, index) => (
+                  <div key={`${offer.name}-${offer.businessName}`} className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
+                        {index + 1}
+                      </Badge>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{offer.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0">
+                      {offer.count} clicks
                     </Badge>
                   </div>
                 ))}
@@ -370,15 +528,52 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topOffersByRedemptions.map((offer, index) => (
-                  <div key={offer.name} className="flex items-center justify-between">
+                  <div key={`${offer.name}-${offer.businessName}`} className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
+                        {index + 1}
+                      </Badge>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{offer.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
+                      </div>
+                    </div>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0">
+                      {offer.count} redeemed
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Content - Row 3: Shelters */}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Top Shelters by Views */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Home className="w-4 h-4 text-blue-500" />
+              Top Shelters (by Views)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {topSheltersByViews.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No shelter views yet</p>
+            ) : (
+              <div className="space-y-3">
+                {topSheltersByViews.map((shelter, index) => (
+                  <div key={shelter.name} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
                         {index + 1}
                       </Badge>
-                      <span className="text-sm font-medium truncate max-w-[180px]">{offer.name}</span>
+                      <span className="text-sm font-medium truncate max-w-[180px]">{shelter.name}</span>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                      {offer.count} redeemed
+                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                      {shelter.count} views
                     </Badge>
                   </div>
                 ))}
