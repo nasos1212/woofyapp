@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Eye, MousePointer, RefreshCw, TrendingUp, Store, Gift, Home } from "lucide-react";
+import { BarChart3, Eye, MousePointer, RefreshCw, TrendingUp, Store, Gift, Home, Percent } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 
@@ -38,6 +38,13 @@ interface TopEntity {
   name: string;
   count: number;
   entityId: string;
+}
+
+interface ConversionData {
+  name: string;
+  clicks: number;
+  redemptions: number;
+  rate: number;
 }
 
 const COLORS = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
@@ -190,6 +197,50 @@ const EngagementAnalytics = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
+  // Calculate conversion rates per business (clicks to redemptions)
+  const businessConversionRates: ConversionData[] = (() => {
+    // Get clicks per business
+    const clicksByBusiness: Record<string, number> = {};
+    offerClicks.forEach(e => {
+      const metadata = (e as any).metadata;
+      const businessName = metadata?.business_name || "Unknown";
+      if (businessName !== "Unknown") {
+        clicksByBusiness[businessName] = (clicksByBusiness[businessName] || 0) + 1;
+      }
+    });
+
+    // Get redemptions per business
+    const redemptionsByBusiness: Record<string, number> = {};
+    redemptions.forEach(r => {
+      const businessName = r.businesses?.business_name || "Unknown";
+      if (businessName !== "Unknown") {
+        redemptionsByBusiness[businessName] = (redemptionsByBusiness[businessName] || 0) + 1;
+      }
+    });
+
+    // Combine and calculate rates
+    const allBusinesses = new Set([
+      ...Object.keys(clicksByBusiness),
+      ...Object.keys(redemptionsByBusiness)
+    ]);
+
+    return Array.from(allBusinesses)
+      .map(name => {
+        const clicks = clicksByBusiness[name] || 0;
+        const redemptionsCount = redemptionsByBusiness[name] || 0;
+        const rate = clicks > 0 ? (redemptionsCount / clicks) * 100 : 0;
+        return { name, clicks, redemptions: redemptionsCount, rate };
+      })
+      .filter(b => b.clicks > 0 || b.redemptions > 0)
+      .sort((a, b) => b.rate - a.rate)
+      .slice(0, 5);
+  })();
+
+  // Overall conversion rate
+  const overallConversionRate = offerClicks.length > 0 
+    ? ((actualRedemptionsCount / offerClicks.length) * 100).toFixed(1)
+    : "0";
+
   // Daily activity chart data - combine events and redemptions
   const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
   
@@ -246,7 +297,7 @@ const EngagementAnalytics = () => {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card className="border-border/50">
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
@@ -282,6 +333,19 @@ const EngagementAnalytics = () => {
               <div>
                 <p className="text-2xl font-bold">{actualRedemptionsCount}</p>
                 <p className="text-xs text-muted-foreground">Redemptions</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="border-border/50">
+          <CardContent className="pt-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500/20 rounded-lg">
+                <Percent className="w-5 h-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{overallConversionRate}%</p>
+                <p className="text-xs text-muted-foreground">Conversion Rate</p>
               </div>
             </div>
           </CardContent>
@@ -549,7 +613,7 @@ const EngagementAnalytics = () => {
         </Card>
       </div>
 
-      {/* Top Content - Row 3: Shelters */}
+      {/* Top Content - Row 3: Shelters & Conversion Rates */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Top Shelters by Views */}
         <Card className="border-border/50">
@@ -575,6 +639,44 @@ const EngagementAnalytics = () => {
                     <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                       {shelter.count} views
                     </Badge>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Business Conversion Rates */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Percent className="w-4 h-4 text-purple-500" />
+              Business Conversion Rates
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {businessConversionRates.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No data yet</p>
+            ) : (
+              <div className="space-y-3">
+                {businessConversionRates.map((business, index) => (
+                  <div key={business.name} className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
+                          {index + 1}
+                        </Badge>
+                        <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
+                      </div>
+                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">
+                        {business.rate.toFixed(1)}%
+                      </Badge>
+                    </div>
+                    <div className="ml-8 flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>{business.clicks} clicks</span>
+                      <span>→</span>
+                      <span>{business.redemptions} redeemed</span>
+                    </div>
                   </div>
                 ))}
               </div>
