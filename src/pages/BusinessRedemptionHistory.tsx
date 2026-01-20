@@ -271,14 +271,10 @@ const BusinessRedemptionHistory = () => {
           </div>
 
           {/* Stats Summary */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-6">
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
               <p className="text-slate-500 text-xs sm:text-sm">Redemptions</p>
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">{filteredRedemptions.length}</p>
-            </div>
-            <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
-              <p className="text-slate-500 text-xs sm:text-sm">Discounts</p>
-              <p className="font-display text-lg sm:text-2xl font-bold text-primary">€{calculateTotalSavings()}</p>
             </div>
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
               <p className="text-slate-500 text-xs sm:text-sm">Members</p>
