@@ -197,55 +197,6 @@ const EngagementAnalytics = () => {
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
 
-  // Calculate conversion rates per offer (clicks to redemptions)
-  const offerConversionRates: (ConversionData & { businessName: string })[] = (() => {
-    // Get clicks per offer (with business name)
-    const clicksByOffer: Record<string, { clicks: number; businessName: string }> = {};
-    offerClicks.forEach(e => {
-      if (e.entity_name) {
-        const metadata = (e as any).metadata;
-        const businessName = metadata?.business_name || "Unknown";
-        const key = `${e.entity_name}||${businessName}`;
-        if (!clicksByOffer[key]) {
-          clicksByOffer[key] = { clicks: 0, businessName };
-        }
-        clicksByOffer[key].clicks++;
-      }
-    });
-
-    // Get redemptions per offer (with business name)
-    const redemptionsByOffer: Record<string, { redemptions: number; businessName: string }> = {};
-    redemptions.forEach(r => {
-      const offerTitle = r.offers?.title || "Unknown Offer";
-      const businessName = r.businesses?.business_name || "Unknown";
-      const key = `${offerTitle}||${businessName}`;
-      if (!redemptionsByOffer[key]) {
-        redemptionsByOffer[key] = { redemptions: 0, businessName };
-      }
-      redemptionsByOffer[key].redemptions++;
-    });
-
-    // Combine and calculate rates
-    const allOffers = new Set([
-      ...Object.keys(clicksByOffer),
-      ...Object.keys(redemptionsByOffer)
-    ]);
-
-    return Array.from(allOffers)
-      .map(key => {
-        const [name] = key.split("||");
-        const clickData = clicksByOffer[key];
-        const redeemData = redemptionsByOffer[key];
-        const clicks = clickData?.clicks || 0;
-        const redemptionsCount = redeemData?.redemptions || 0;
-        const businessName = clickData?.businessName || redeemData?.businessName || "Unknown";
-        const rate = clicks > 0 ? (redemptionsCount / clicks) * 100 : 0;
-        return { name, businessName, clicks, redemptions: redemptionsCount, rate };
-      })
-      .filter(o => o.clicks > 0 || o.redemptions > 0)
-      .sort((a, b) => b.rate - a.rate)
-      .slice(0, 5);
-  })();
 
   // Overall conversion rate
   const overallConversionRate = offerClicks.length > 0 
@@ -624,8 +575,8 @@ const EngagementAnalytics = () => {
         </Card>
       </div>
 
-      {/* Top Content - Row 3: Shelters & Conversion Rates */}
-      <div className="grid md:grid-cols-2 gap-6">
+      {/* Top Content - Row 3: Shelters */}
+      <div className="grid md:grid-cols-1 gap-6">
         {/* Top Shelters by Views */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
@@ -650,47 +601,6 @@ const EngagementAnalytics = () => {
                     <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
                       {shelter.count} views
                     </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Offer Conversion Rates */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Percent className="w-4 h-4 text-purple-500" />
-              Offer Conversion Rates
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {offerConversionRates.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No data yet</p>
-            ) : (
-              <div className="space-y-3">
-                {offerConversionRates.map((offer, index) => (
-                  <div key={`${offer.name}-${offer.businessName}`} className="space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                          {index + 1}
-                        </Badge>
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium truncate">{offer.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
-                        </div>
-                      </div>
-                      <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 shrink-0">
-                        {offer.rate.toFixed(1)}%
-                      </Badge>
-                    </div>
-                    <div className="ml-8 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{offer.clicks} clicks</span>
-                      <span>→</span>
-                      <span>{offer.redemptions} redeemed</span>
-                    </div>
                   </div>
                 ))}
               </div>
