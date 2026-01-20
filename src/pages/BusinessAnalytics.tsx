@@ -39,7 +39,7 @@ interface CustomerInsight {
   member_id: string;
   member_number: string;
   member_name: string | null;
-  pet_name: string | null;
+  pet_names: string | null;
   total_redemptions: number;
   last_visit: string;
 }
@@ -202,7 +202,7 @@ const BusinessAnalytics = () => {
       // Calculate customer insights - use member_number, member_name and pet_names directly from redemptions
       const customerData: Record<
         string,
-        { member_number: string; member_name: string | null; pet_name: string | null; count: number; lastVisit: string }
+        { member_number: string; member_name: string | null; pet_names: Set<string>; count: number; lastVisit: string }
       > = {};
 
       redemptions.forEach((r) => {
@@ -212,10 +212,17 @@ const BusinessAnalytics = () => {
             customerData[r.membership_id] = {
               member_number: memberNumber,
               member_name: r.member_name || null,
-              pet_name: r.pet_names || null,
+              pet_names: new Set<string>(),
               count: 0,
               lastVisit: r.redeemed_at,
             };
+          }
+          // Add pet names from this redemption
+          if (r.pet_names) {
+            r.pet_names.split(',').forEach((name: string) => {
+              const trimmed = name.trim();
+              if (trimmed) customerData[r.membership_id].pet_names.add(trimmed);
+            });
           }
           customerData[r.membership_id].count++;
           if (new Date(r.redeemed_at) > new Date(customerData[r.membership_id].lastVisit)) {
@@ -230,7 +237,7 @@ const BusinessAnalytics = () => {
             member_id: id,
             member_number: data.member_number,
             member_name: data.member_name,
-            pet_name: data.pet_name,
+            pet_names: Array.from(data.pet_names).join(', ') || null,
             total_redemptions: data.count,
             last_visit: data.lastVisit,
           }))
@@ -437,10 +444,10 @@ const BusinessAnalytics = () => {
                         Member
                       </th>
                       <th className="text-left text-xs font-medium text-slate-500 uppercase px-6 py-3">
-                        Pet
+                        Pets
                       </th>
                       <th className="text-center text-xs font-medium text-slate-500 uppercase px-6 py-3">
-                        Visits
+                        Redemptions
                       </th>
                       <th className="text-right text-xs font-medium text-slate-500 uppercase px-6 py-3">
                         Last Visit
@@ -462,7 +469,7 @@ const BusinessAnalytics = () => {
                         </td>
                         <td className="px-6 py-4">
                           <span className="text-sm text-slate-600">
-                            {customer.pet_name || "-"}
+                            {customer.pet_names || "-"}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center">
