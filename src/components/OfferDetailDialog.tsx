@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { format, formatDistanceToNow, isPast, isFuture } from "date-fns";
 import { Building2, MapPin, Percent, Check, ExternalLink, Clock, AlertTriangle, Lock, Sparkles } from "lucide-react";
@@ -10,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useMembership } from "@/hooks/useMembership";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 
 export interface OfferWithDetails {
   id: string;
@@ -62,6 +64,14 @@ const categories: Record<string, string> = {
 const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: OfferDetailDialogProps) => {
   const { hasMembership } = useMembership();
   const navigate = useNavigate();
+  const { trackOfferClick } = useAnalyticsTracking();
+  
+  // Track offer click when dialog opens
+  useEffect(() => {
+    if (offer) {
+      trackOfferClick(offer.id, offer.title, offer.business.business_name);
+    }
+  }, [offer?.id]);
   
   if (!offer) return null;
 
