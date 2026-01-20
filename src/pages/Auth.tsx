@@ -394,9 +394,19 @@ const Auth = () => {
             // Navigate to shelter onboarding
             navigate("/shelter-onboarding");
           } else {
-            // For member accounts, DON'T create membership automatically
+            // For member accounts, add member role and redirect to free dashboard
             // User will be a "free member" with community access only
             // They can upgrade to paid membership later via onboarding
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData?.user) {
+              await supabase
+                .from("user_roles")
+                .upsert(
+                  { user_id: userData.user.id, role: "member" as const },
+                  { onConflict: "user_id,role" }
+                );
+            }
+            
             toast({
               title: "Account Created!",
               description: "Welcome to Wooffy! Explore our community hub.",
