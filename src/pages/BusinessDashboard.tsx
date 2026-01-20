@@ -974,18 +974,6 @@ const BusinessDashboard = () => {
                 )}
               </div>
 
-              {/* Help Tip */}
-              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
-                <div className="flex items-start gap-3">
-                  <HelpCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-blue-900 text-sm mb-1">Quick Tip</h4>
-                    <p className="text-xs text-blue-700">
-                      Scan the member's QR code or ask them to tell you their Member ID (starts with WF-). Then select which offer they want to redeem.
-                    </p>
-                  </div>
-                </div>
-              </div>
 
               {/* Support */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
