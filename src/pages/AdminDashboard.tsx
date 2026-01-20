@@ -25,8 +25,16 @@ type BusinessLocation = Database["public"]["Tables"]["business_locations"]["Row"
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type UserRole = Database["public"]["Tables"]["user_roles"]["Row"];
 
+interface MembershipInfo {
+  id: string;
+  plan_type: string;
+  is_active: boolean;
+  expires_at: string;
+}
+
 interface UserWithRoles extends Profile {
   roles: UserRole[];
+  membership?: MembershipInfo | null;
 }
 
 const AdminDashboard = () => {
@@ -110,25 +118,37 @@ const AdminDashboard = () => {
       if (businessError) throw businessError;
       setBusinesses(businessData || []);
 
-      // Fetch all profiles
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+      // Fetch all profiles, user roles, and memberships in parallel
+      const [profileResult, rolesResult, membershipsResult] = await Promise.all([
+        supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+        supabase.from("user_roles").select("*"),
+        supabase.from("memberships").select("id, user_id, plan_type, is_active, expires_at"),
+      ]);
 
-      if (profileError) throw profileError;
+      if (profileResult.error) throw profileResult.error;
+      if (rolesResult.error) throw rolesResult.error;
+      if (membershipsResult.error) throw membershipsResult.error;
 
-      // Fetch all user roles
-      const { data: rolesData, error: rolesError } = await supabase
-        .from("user_roles")
-        .select("*");
+      const profileData = profileResult.data || [];
+      const rolesData = rolesResult.data || [];
+      const membershipsData = membershipsResult.data || [];
 
-      if (rolesError) throw rolesError;
+      // Create a map of user_id -> membership
+      const membershipsMap = new Map<string, MembershipInfo>();
+      membershipsData.forEach((m) => {
+        membershipsMap.set(m.user_id, {
+          id: m.id,
+          plan_type: m.plan_type,
+          is_active: m.is_active,
+          expires_at: m.expires_at,
+        });
+      });
 
-      // Combine profiles with their roles
-      const usersWithRoles: UserWithRoles[] = (profileData || []).map((profile) => ({
+      // Combine profiles with their roles and membership
+      const usersWithRoles: UserWithRoles[] = profileData.map((profile) => ({
         ...profile,
-        roles: (rolesData || []).filter((role) => role.user_id === profile.user_id),
+        roles: rolesData.filter((role) => role.user_id === profile.user_id),
+        membership: membershipsMap.get(profile.user_id) || null,
       }));
 
       setUsers(usersWithRoles);
@@ -632,44 +652,80 @@ const AdminDashboard = () => {
                   <p className="text-muted-foreground text-center py-8">No users found</p>
                 ) : (
                   <div className="space-y-3">
-                    {users.map((userItem) => (
-                      <div
-                        key={userItem.id}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 gap-3 border border-border/50"
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium">{userItem.full_name || "No name"}</p>
-                          <p className="text-sm text-muted-foreground">{userItem.email}</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex gap-1">
-                            {userItem.roles.map((role) => (
-                              <Badge key={role.id} variant="outline" className="capitalize">
-                                {role.role}
-                              </Badge>
-                            ))}
-                            {userItem.roles.length === 0 && (
-                              <Badge variant="outline" className="text-muted-foreground">
-                                No roles
-                              </Badge>
-                            )}
+                    {users.map((userItem) => {
+                      // Determine membership status for members
+                      const isMemberRole = userItem.roles.some(r => r.role === "member");
+                      const getMembershipBadge = () => {
+                        if (!isMemberRole) return null;
+                        
+                        if (!userItem.membership) {
+                          return (
+                            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                              Freemium
+                            </Badge>
+                          );
+                        }
+                        
+                        if (userItem.membership.is_active) {
+                          const planLabels: Record<string, string> = {
+                            single: "Solo Paw",
+                            duo: "Dynamic Duo",
+                            family: "Pack Leader",
+                          };
+                          return (
+                            <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                              {planLabels[userItem.membership.plan_type] || userItem.membership.plan_type}
+                            </Badge>
+                          );
+                        }
+                        
+                        return (
+                          <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
+                            Freemium
+                          </Badge>
+                        );
+                      };
+                      
+                      return (
+                        <div
+                          key={userItem.id}
+                          className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-lg bg-muted/30 gap-3 border border-border/50"
+                        >
+                          <div className="flex-1">
+                            <p className="font-medium">{userItem.full_name || "No name"}</p>
+                            <p className="text-sm text-muted-foreground">{userItem.email}</p>
                           </div>
-                          <div className="min-w-[170px]">
-                            <label className="sr-only">Change user role</label>
-                            <select
-                              className="h-10 w-full rounded-md border-2 border-primary/50 bg-background px-3 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                              value={userItem.roles[0]?.role || "member"}
-                              onChange={(e) => updateUserRole(userItem.user_id, userItem.roles, e.target.value)}
-                            >
-                              <option value="member">Member</option>
-                              <option value="business">Business</option>
-                              <option value="shelter">Shelter</option>
-                              <option value="admin">Admin</option>
-                            </select>
+                          <div className="flex items-center gap-3 flex-wrap">
+                            <div className="flex gap-1 flex-wrap">
+                              {userItem.roles.map((role) => (
+                                <Badge key={role.id} variant="outline" className="capitalize">
+                                  {role.role}
+                                </Badge>
+                              ))}
+                              {userItem.roles.length === 0 && (
+                                <Badge variant="outline" className="text-muted-foreground">
+                                  No roles
+                                </Badge>
+                              )}
+                              {getMembershipBadge()}
+                            </div>
+                            <div className="min-w-[170px]">
+                              <label className="sr-only">Change user role</label>
+                              <select
+                                className="h-10 w-full rounded-md border-2 border-primary/50 bg-background px-3 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                value={userItem.roles[0]?.role || "member"}
+                                onChange={(e) => updateUserRole(userItem.user_id, userItem.roles, e.target.value)}
+                              >
+                                <option value="member">Member</option>
+                                <option value="business">Business</option>
+                                <option value="shelter">Shelter</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </CardContent>
