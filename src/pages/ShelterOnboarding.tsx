@@ -187,7 +187,7 @@ const ShelterOnboarding = () => {
                 <div className="text-left">
                   <p className="font-semibold text-rose-800">10% Contribution</p>
                   <p className="text-sm text-rose-600">
-                    As an approved shelter, you'll receive 10% of all membership proceeds
+                    As an approved shelter, you'll receive a share of 10% of membership proceeds
                   </p>
                 </div>
               </div>
@@ -217,7 +217,7 @@ const ShelterOnboarding = () => {
             Become a Partner Shelter
           </h1>
           <p className="text-rose-100">
-            Join Wooffy and receive 10% of all membership proceeds
+            Join Wooffy and share in 10% of membership proceeds
           </p>
         </div>
       </div>
@@ -252,7 +252,7 @@ const ShelterOnboarding = () => {
               </div>
               <h3 className="font-semibold text-rose-800 mb-1">10% Revenue Share</h3>
               <p className="text-sm text-muted-foreground">
-                Receive 10% of all membership fees
+                Share in 10% of membership fees
               </p>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-rose-100">
