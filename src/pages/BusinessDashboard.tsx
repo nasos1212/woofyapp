@@ -285,7 +285,7 @@ const BusinessDashboard = () => {
   const confirmRedemption = async () => {
     if (!scanResult || scanResult.status !== 'valid' || !business || !user) return;
 
-    // For per-pet offers, require pet selection
+    // For per-pet offers, require pet selection (optional for per-member offers)
     if (scanResult.offerType === 'per_pet' && !selectedPetId) {
       toast({
         title: "Select a Pet",
@@ -315,7 +315,7 @@ const BusinessDashboard = () => {
           membershipId: scanResult.membershipId,
           offerId: scanResult.offerId,
           businessId: business.id,
-          petId: scanResult.offerType === 'per_pet' ? selectedPetId : null,
+          petId: selectedPetId || null,
         },
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -749,12 +749,14 @@ const BusinessDashboard = () => {
                           </div>
                         )}
 
-                        {/* Pet selector for per-pet offers */}
-                        {scanResult.status === 'valid' && scanResult.offerType === 'per_pet' && scanResult.availablePets && (
+                        {/* Pet selector - always show for data tracking */}
+                        {scanResult.status === 'valid' && scanResult.availablePets && scanResult.availablePets.length > 0 && (
                           <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
                             <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
                               <Dog className="w-4 h-4" />
-                              Select which pet is using this offer:
+                              {scanResult.offerType === 'per_pet' 
+                                ? 'Select which pet is using this offer:' 
+                                : 'Which pet is this for? (optional for tracking)'}
                             </label>
                             <div className="grid grid-cols-2 gap-2">
                               {scanResult.availablePets.map((pet) => (
