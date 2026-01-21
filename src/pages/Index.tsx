@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -19,7 +19,9 @@ import DogLoader from "@/components/DogLoader";
 const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [checkingMembership, setCheckingMembership] = useState(false);
+  const skipRedirect = searchParams.get("stay") === "true";
 
   useEffect(() => {
     const checkAndRedirect = async () => {
@@ -72,10 +74,10 @@ const Index = () => {
       setCheckingMembership(false);
     };
 
-    if (!loading && user) {
+    if (!loading && user && !skipRedirect) {
       checkAndRedirect();
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, skipRedirect]);
 
   if (loading || checkingMembership) {
     return (
