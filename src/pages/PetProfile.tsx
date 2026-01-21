@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock } from "lucide-react";
+import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock, Gift, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -27,9 +28,25 @@ import {
 } from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
 import { format, differenceInYears, differenceInMonths, differenceInDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { validateImageFile } from "@/lib/fileValidation";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
+
+interface BirthdayOffer {
+  id: string;
+  business_id: string;
+  pet_name: string;
+  discount_value: number;
+  discount_type: string;
+  message: string | null;
+  sent_at: string;
+  redeemed_at: string | null;
+  business?: {
+    business_name: string;
+    logo_url: string | null;
+  };
+}
 
 interface Pet {
   id: string;
@@ -71,6 +88,7 @@ const PetProfile = () => {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [canEditBirthday, setCanEditBirthday] = useState(true);
   const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
+  const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -122,14 +140,26 @@ const PetProfile = () => {
           const daysSinceCreation = differenceInDays(new Date(), new Date(petData.created_at));
           const isLocked = petData.birthday_locked ?? false;
           
-          // Check if any birthday offers have been received
-          const { data: birthdayOffers } = await supabase
+          // Check if any birthday offers have been received and fetch them
+          const { data: birthdayOffersData } = await supabase
             .from('sent_birthday_offers')
-            .select('id')
+            .select(`
+              id, business_id, pet_name, discount_value, 
+              discount_type, message, sent_at, redeemed_at,
+              businesses:business_id(business_name, logo_url)
+            `)
             .eq('pet_id', petData.id)
-            .limit(1);
+            .order('sent_at', { ascending: false });
           
-          const hasReceivedOffer = (birthdayOffers && birthdayOffers.length > 0);
+          const hasReceivedOffer = (birthdayOffersData && birthdayOffersData.length > 0);
+          
+          // Transform offers data
+          if (birthdayOffersData) {
+            setBirthdayOffers(birthdayOffersData.map((offer: any) => ({
+              ...offer,
+              business: offer.businesses as { business_name: string; logo_url: string | null } | undefined
+            })));
+          }
           
           if (isLocked) {
             setCanEditBirthday(false);
@@ -702,6 +732,85 @@ const PetProfile = () => {
             </CardContent>
           </Card>
 
+
+          {/* Birthday Offers Section */}
+          {birthdayOffers.length > 0 && (
+            <Card className="mb-6 border-2 border-pink-200 bg-gradient-to-r from-pink-50 to-orange-50">
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Gift className="w-5 h-5 text-pink-500" />
+                  Birthday Offers for {pet.pet_name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {birthdayOffers.map((offer) => {
+                  const isRedeemed = !!offer.redeemed_at;
+                  
+                  return (
+                    <div
+                      key={offer.id}
+                      className={cn(
+                        "p-3 rounded-lg border bg-white",
+                        isRedeemed ? "border-green-200 bg-green-50/50" : "border-pink-200"
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+                          {offer.business?.logo_url ? (
+                            <img 
+                              src={offer.business.logo_url} 
+                              alt={offer.business.business_name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Building2 className="w-5 h-5 text-muted-foreground" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-medium text-sm">
+                              {offer.business?.business_name || "Partner Business"}
+                            </p>
+                            {isRedeemed ? (
+                              <Badge className="bg-green-500 text-white text-xs">Redeemed</Badge>
+                            ) : (
+                              <Badge className="bg-pink-500 text-white text-xs">Active</Badge>
+                            )}
+                          </div>
+                          {offer.message && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {offer.message}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
+                            <span className="font-medium text-pink-600">
+                              {offer.discount_type === 'percentage' 
+                                ? `${offer.discount_value}% off` 
+                                : `€${offer.discount_value} off`}
+                            </span>
+                            <span>•</span>
+                            <span>
+                              Sent {format(new Date(offer.sent_at), "MMM d, yyyy")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      {!isRedeemed && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full mt-3 border-pink-300 text-pink-600 hover:bg-pink-50"
+                          onClick={() => navigate(`/business/${offer.business_id}`)}
+                        >
+                          Visit Business to Redeem
+                        </Button>
+                      )}
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Actions - Health Records */}
           <div className="mb-6">
