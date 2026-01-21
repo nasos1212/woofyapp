@@ -96,9 +96,6 @@ const UserManagement = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Edit states
-  const [editingDogsHelped, setEditingDogsHelped] = useState<string | null>(null);
-  const [dogsHelpedValue, setDogsHelpedValue] = useState<number>(0);
   
   // Notification dialog state
   const [notifyDialogOpen, setNotifyDialogOpen] = useState(false);
@@ -386,17 +383,6 @@ const UserManagement = () => {
     }
   };
 
-  const updateDogsHelped = async (shelterId: string) => {
-    try {
-      const { error } = await supabase.from("shelters").update({ dogs_helped_count: dogsHelpedValue }).eq("id", shelterId);
-      if (error) throw error;
-      toast.success("Dogs helped count updated!");
-      setEditingDogsHelped(null);
-      fetchAllUsers();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update");
-    }
-  };
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
@@ -833,24 +819,6 @@ const UserManagement = () => {
                                 <div><span className="text-muted-foreground">Created:</span> {format(new Date(user.shelter.created_at), "MMM d, yyyy")}</div>
                               </div>
                               
-                              {/* Dogs Helped Editor */}
-                              <div className="flex items-center gap-4 mb-3 p-2 bg-muted/50 rounded">
-                                <Label className="text-sm font-medium">Dogs Helped:</Label>
-                                {editingDogsHelped === user.shelter.id ? (
-                                  <div className="flex items-center gap-2">
-                                    <Input type="number" value={dogsHelpedValue} onChange={(e) => setDogsHelpedValue(parseInt(e.target.value) || 0)} className="w-24 h-8" />
-                                    <Button size="sm" onClick={() => updateDogsHelped(user.shelter!.id)}>Save</Button>
-                                    <Button size="sm" variant="outline" onClick={() => setEditingDogsHelped(null)}>Cancel</Button>
-                                  </div>
-                                ) : (
-                                  <div className="flex items-center gap-2">
-                                    <span className="font-semibold text-rose-500">{user.shelter.dogs_helped_count}</span>
-                                    <Button size="sm" variant="outline" onClick={() => { setEditingDogsHelped(user.shelter!.id); setDogsHelpedValue(user.shelter!.dogs_helped_count); }}>
-                                      <Edit2 className="w-3 h-3 mr-1" /> Edit
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
                               
                               {user.shelter.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.shelter.description}</p>
