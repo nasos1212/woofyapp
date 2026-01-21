@@ -201,15 +201,21 @@ const BusinessRedemptionHistory = () => {
       return value;
     };
 
-    const headers = ['Date', 'Member Name', 'Member ID', 'Pet Name', 'Offer', 'Discount'];
-    const rows = filteredRedemptions.map(r => [
-      format(parseISO(r.redeemed_at), 'yyyy-MM-dd HH:mm'),
-      r.member_name || 'N/A',
-      r.member_number || 'N/A',
-      r.pet_names || 'N/A',
-      r.offer?.title || 'N/A',
-      formatDiscount(r.offer?.discount_value || 0, r.offer?.discount_type || 'fixed')
-    ].map(escapeCSV));
+    const headers = ['Date', 'Time', 'Day', 'Member Name', 'Member ID', 'Pet Name', 'Offer', 'Discount Type', 'Discount Value'];
+    const rows = filteredRedemptions.map(r => {
+      const date = parseISO(r.redeemed_at);
+      return [
+        format(date, 'yyyy-MM-dd'),
+        format(date, 'HH:mm'),
+        format(date, 'EEEE'),
+        r.member_name || 'N/A',
+        r.member_number || 'N/A',
+        r.pet_names || 'N/A',
+        r.offer?.title || 'N/A',
+        r.offer?.discount_type === 'percentage' ? 'Percentage' : 'Fixed',
+        r.offer?.discount_type === 'percentage' ? `${r.offer?.discount_value}%` : `€${r.offer?.discount_value}`
+      ].map(escapeCSV);
+    });
 
     // Add BOM for proper Excel UTF-8 encoding
     const BOM = '\uFEFF';
