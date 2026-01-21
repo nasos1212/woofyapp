@@ -201,17 +201,22 @@ export const AIProactiveAlerts = () => {
         if (!pet.birthday) continue;
 
         const birthday = new Date(pet.birthday);
+        // Use date-only comparison to avoid timezone issues
+        const todayDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const thisYearBirthday = new Date(now.getFullYear(), birthday.getMonth(), birthday.getDate());
         
-        if (thisYearBirthday < now) {
+        // Check if birthday already passed this year
+        if (thisYearBirthday < todayDateOnly) {
           thisYearBirthday.setFullYear(thisYearBirthday.getFullYear() + 1);
         }
 
-        const daysUntil = differenceInDays(thisYearBirthday, now);
+        // Calculate days using date-only values for accuracy
+        const daysUntil = Math.round((thisYearBirthday.getTime() - todayDateOnly.getTime()) / (1000 * 60 * 60 * 24));
+        const isBirthdayToday = daysUntil === 0;
 
         if (daysUntil <= 14) {
           let status: UpcomingReminder["status"] = "upcoming";
-          if (isToday(thisYearBirthday)) status = "today";
+          if (isBirthdayToday) status = "today";
           else if (daysUntil <= 3) status = "urgent";
           else if (daysUntil <= 7) status = "soon";
 
@@ -407,7 +412,13 @@ export const AIProactiveAlerts = () => {
                 "relative p-3 rounded-lg border transition-all cursor-pointer hover:shadow-md",
                 statusConfig[reminder.status].bgClass
               )}
-              onClick={() => navigate("/member/health-records")}
+              onClick={() => {
+                if (reminder.type === "birthday") {
+                  navigate(`/member/pet/${reminder.id}`);
+                } else {
+                  navigate("/member/health-records");
+                }
+              }}
             >
               <div className="flex items-center gap-3">
                 <div className={cn(
