@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Eye, MousePointer, RefreshCw, TrendingUp, Store, Gift, Home } from "lucide-react";
+import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 
@@ -239,18 +239,13 @@ const EngagementAnalytics = () => {
           <TrendingUp className="w-5 h-5 text-primary" />
           Engagement Analytics
         </h2>
-        <div className="flex gap-2">
-          <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as typeof dateRange)}>
-            <TabsList>
-              <TabsTrigger value="7d">7 Days</TabsTrigger>
-              <TabsTrigger value="30d">30 Days</TabsTrigger>
-              <TabsTrigger value="90d">90 Days</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <Button variant="outline" size="sm" onClick={fetchAnalytics} disabled={loading}>
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-          </Button>
-        </div>
+        <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as typeof dateRange)}>
+          <TabsList>
+            <TabsTrigger value="7d">7 Days</TabsTrigger>
+            <TabsTrigger value="30d">30 Days</TabsTrigger>
+            <TabsTrigger value="90d">90 Days</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
       {/* Summary Stats */}
