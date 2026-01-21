@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, ArrowLeft, TrendingUp, Clock, Gift } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,15 +79,6 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate("/member")}
-          className="mb-4 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
-        </Button>
 
         <Breadcrumbs items={[{ label: "Admin Dashboard" }]} />
         
