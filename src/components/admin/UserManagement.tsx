@@ -640,7 +640,7 @@ const UserManagement = () => {
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as UserCategory)} className="w-full">
             <TabsList className="flex flex-wrap gap-1 h-auto p-1 mb-4 w-full justify-start">
               <TabsTrigger value="all" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All ({counts.all})</TabsTrigger>
-              <TabsTrigger value="members" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-orange-500 data-[state=active]:text-white">Members ({counts.members})</TabsTrigger>
+              <TabsTrigger value="members" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-yellow-500 data-[state=active]:text-white">Members ({counts.members})</TabsTrigger>
               <TabsTrigger value="freemium" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-orange-500 data-[state=active]:text-white">Freemium ({counts.freemium})</TabsTrigger>
               <TabsTrigger value="paid" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-green-500 data-[state=active]:text-white">Paid ({counts.paid})</TabsTrigger>
               <TabsTrigger value="businesses" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-blue-500 data-[state=active]:text-white">Business ({counts.businesses})</TabsTrigger>
