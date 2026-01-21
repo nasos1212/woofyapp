@@ -193,6 +193,14 @@ const BusinessRedemptionHistory = () => {
   };
 
   const exportToCSV = () => {
+    // Helper to escape CSV values properly
+    const escapeCSV = (value: string) => {
+      if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+        return `"${value.replace(/"/g, '""')}"`;
+      }
+      return value;
+    };
+
     const headers = ['Date', 'Member Name', 'Member ID', 'Pet Name', 'Offer', 'Discount'];
     const rows = filteredRedemptions.map(r => [
       format(parseISO(r.redeemed_at), 'yyyy-MM-dd HH:mm'),
@@ -201,10 +209,12 @@ const BusinessRedemptionHistory = () => {
       r.pet_names || 'N/A',
       r.offer?.title || 'N/A',
       formatDiscount(r.offer?.discount_value || 0, r.offer?.discount_type || 'fixed')
-    ]);
+    ].map(escapeCSV));
 
-    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    // Add BOM for proper Excel UTF-8 encoding
+    const BOM = '\uFEFF';
+    const csvContent = BOM + [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
