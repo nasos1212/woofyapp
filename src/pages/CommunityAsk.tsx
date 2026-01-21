@@ -420,60 +420,6 @@ const CommunityAsk = () => {
                   </div>
                 )}
 
-                {/* Breed Tags */}
-                <div className="space-y-2">
-                  <Label>Related breeds (optional)</Label>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {breedTags.map(breed => (
-                      <Badge key={breed} variant="secondary" className="gap-1">
-                        {breed}
-                        <button
-                          type="button"
-                          onClick={() => handleBreedRemove(breed)}
-                          className="ml-1 hover:text-destructive"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                  {breedTags.length < 3 && (
-                    <Popover open={breedOpen} onOpenChange={setBreedOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          role="combobox"
-                          className="justify-between"
-                        >
-                          Add breed tag
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[300px] p-0">
-                        <Command>
-                          <CommandInput placeholder={`Search ${animalType} breeds...`} />
-                          <CommandList>
-                            <CommandEmpty>No breed found.</CommandEmpty>
-                            <CommandGroup>
-                              {(animalType === 'cat' ? catBreeds : dogBreeds)
-                                .filter(breed => !breedTags.includes(breed))
-                                .map(breed => (
-                                  <CommandItem
-                                    key={breed}
-                                    value={breed}
-                                    onSelect={() => handleBreedSelect(breed)}
-                                  >
-                                    {breed}
-                                  </CommandItem>
-                                ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                </div>
 
                 {/* Photos */}
                 <div className="space-y-2">
