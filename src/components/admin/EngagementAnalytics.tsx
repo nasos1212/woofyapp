@@ -108,18 +108,6 @@ const EngagementAnalytics = () => {
   // Use actual redemptions count from offer_redemptions table
   const actualRedemptionsCount = redemptions.length;
 
-  // Top businesses by views (clicks)
-  const topBusinessesByViews: TopEntity[] = Object.entries(
-    businessViews.reduce((acc, e) => {
-      if (e.entity_name) {
-        acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>)
-  )
-    .map(([name, count]) => ({ name, count, entityId: "" }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
 
   // Top businesses by offer clicks
   const topBusinessesByClicks: TopEntity[] = Object.entries(
@@ -386,38 +374,7 @@ const EngagementAnalytics = () => {
       </div>
 
       {/* Top Content - Row 1: Businesses */}
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* Top Businesses by Views */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Eye className="w-4 h-4 text-orange-500" />
-              Top Businesses (by Views)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {topBusinessesByViews.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No views yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topBusinessesByViews.map((business, index) => (
-                  <div key={business.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
-                        {index + 1}
-                      </Badge>
-                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
-                    </div>
-                    <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
-                      {business.count} views
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
+      <div className="grid md:grid-cols-2 gap-6">
         {/* Top Businesses by Offer Clicks */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
