@@ -235,12 +235,6 @@ const ShelterProfile = () => {
                         <div className="text-sm text-muted-foreground">Dogs in Care</div>
                       </div>
                     )}
-                    {shelter.dogs_helped_count !== null && shelter.dogs_helped_count > 0 && (
-                      <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">{shelter.dogs_helped_count.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground">Dogs Helped</div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

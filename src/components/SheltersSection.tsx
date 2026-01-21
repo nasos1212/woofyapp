@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Home, PawPrint, LogIn } from "lucide-react";
+import { Heart, Home, LogIn } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,6 @@ interface Shelter {
   id: string;
   shelter_name: string;
   location: string;
-  dogs_helped_count: number;
 }
 
 const SheltersSection = () => {
@@ -43,9 +42,9 @@ const SheltersSection = () => {
     const fetchShelters = async () => {
       const { data, error } = await supabase
         .from("shelters")
-        .select("id, shelter_name, location, dogs_helped_count")
+        .select("id, shelter_name, location")
         .eq("verification_status", "approved")
-        .order("dogs_helped_count", { ascending: false });
+        .order("shelter_name");
 
       if (!error && data) {
         setShelters(data);
@@ -157,8 +156,6 @@ const SheltersSection = () => {
     }
   };
 
-  // Calculate total stats
-  const totalDogsHelped = shelters.reduce((sum, s) => sum + (s.dogs_helped_count || 0), 0);
 
   return (
     <section id="shelters" className="py-20 bg-gradient-to-b from-wooffy-soft to-background">
@@ -185,9 +182,7 @@ const SheltersSection = () => {
             <p className="text-muted-foreground text-sm">Donated This Year</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">
-              {totalDogsHelped > 0 ? `${totalDogsHelped.toLocaleString()}+` : "3,400+"}
-            </div>
+            <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">3,400+</div>
             <p className="text-muted-foreground text-sm">Dogs Rehomed</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
@@ -220,10 +215,6 @@ const SheltersSection = () => {
                   </div>
                   <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
                   <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
-                  <div className="flex items-center gap-2 text-sm">
-                    <PawPrint className="w-4 h-4 text-primary" />
-                    <span className="text-foreground font-medium">{shelter.dogs_helped_count || 0} dogs helped</span>
-                  </div>
                 </Link>
               ))
             ) : (
@@ -239,7 +230,7 @@ const SheltersSection = () => {
                   <h4 className="font-display font-semibold text-foreground mb-1">Coming Soon</h4>
                   <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
                   <div className="flex items-center gap-2 text-sm">
-                    <PawPrint className="w-4 h-4 text-primary" />
+                    <Heart className="w-4 h-4 text-primary" />
                     <span className="text-foreground font-medium">Join us!</span>
                   </div>
                 </div>

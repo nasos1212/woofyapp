@@ -22,7 +22,7 @@ interface Shelter {
   cover_photo_position: number | null;
   website: string | null;
   donation_link: string | null;
-  dogs_helped_count: number | null;
+  
   dogs_in_care: string | null;
 }
 
@@ -36,7 +36,7 @@ const MemberShelters = () => {
       try {
         const { data, error } = await supabase
           .from("shelters")
-          .select("id, shelter_name, location, city, description, mission_statement, logo_url, cover_photo_url, cover_photo_position, website, donation_link, dogs_helped_count, dogs_in_care")
+          .select("id, shelter_name, location, city, description, mission_statement, logo_url, cover_photo_url, cover_photo_position, website, donation_link, dogs_in_care")
           .eq("verification_status", "approved")
           .order("shelter_name");
 
