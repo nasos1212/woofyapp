@@ -95,9 +95,11 @@ serve(async (req) => {
         continue;
       }
 
-      // Calculate upcoming birthdays within the reminder window
-      const upcomingBirthdays = petsData.filter(pet => {
-        if (!pet.birthday) return false;
+      // Calculate upcoming birthdays - notify 3 days before AND on the day
+      const NOTIFICATION_DAYS = [3, 0]; // 3 days before and on the day
+      
+      const upcomingBirthdays = petsData.map(pet => {
+        if (!pet.birthday) return null;
         
         const birthday = new Date(pet.birthday);
         const thisYearBirthday = new Date(now.getFullYear(), birthday.getMonth(), birthday.getDate());
@@ -108,11 +110,16 @@ serve(async (req) => {
         }
         
         const daysUntil = Math.ceil((thisYearBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-        return daysUntil === days_before_reminder; // Only notify on the exact reminder day
-      });
+        
+        // Check if this is a notification day (3 days before or on the day)
+        if (NOTIFICATION_DAYS.includes(daysUntil)) {
+          return { ...pet, daysUntil };
+        }
+        return null;
+      }).filter(Boolean) as Array<typeof petsData[0] & { daysUntil: number }>;
 
       if (upcomingBirthdays.length === 0) {
-        console.log(`No upcoming birthdays matching reminder window for ${businessData.business_name}`);
+        console.log(`No upcoming birthdays matching notification days for ${businessData.business_name}`);
         continue;
       }
 
@@ -157,13 +164,20 @@ serve(async (req) => {
         }
         const age = thisYearBirthday.getFullYear() - birthday.getFullYear();
 
+        // Customize message based on days until birthday
+        const daysMessage = pet.daysUntil === 0 
+          ? "today! 🎉" 
+          : `in ${pet.daysUntil} day${pet.daysUntil !== 1 ? 's' : ''}!`;
+
         const { error: notificationError } = await supabase
           .from('notifications')
           .insert({
             user_id: businessData.user_id,
             type: 'business_birthday_reminder',
-            title: `🎂 Upcoming Pet Birthday: ${pet.pet_name}`,
-            message: `${ownerName}'s pet ${pet.pet_name} (${pet.pet_breed || 'Pet'}) is turning ${age} in ${days_before_reminder} day${days_before_reminder !== 1 ? 's' : ''}! Consider sending them a birthday offer.`,
+            title: pet.daysUntil === 0 
+              ? `🎂 It's ${pet.pet_name}'s Birthday Today!` 
+              : `🎂 Upcoming Pet Birthday: ${pet.pet_name}`,
+            message: `${ownerName}'s pet ${pet.pet_name} (${pet.pet_breed || 'Pet'}) is turning ${age} ${daysMessage} Consider sending them a birthday offer.`,
             data: {
               pet_id: pet.id,
               pet_name: pet.pet_name,
@@ -172,7 +186,7 @@ serve(async (req) => {
               owner_name: ownerName,
               birthday: pet.birthday,
               age,
-              days_until: days_before_reminder,
+              days_until: pet.daysUntil,
               business_id: business_id
             }
           });
