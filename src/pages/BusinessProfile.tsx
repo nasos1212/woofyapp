@@ -378,14 +378,15 @@ export default function BusinessProfile() {
             </Button>
           )}
 
-          {/* Breadcrumbs */}
-          <Breadcrumbs 
-            items={[
-              { label: "Businesses", href: "/member/offers" },
-              { label: business.business_name }
-            ]} 
-          />
-
+          {/* Breadcrumbs - hidden in preview mode */}
+          {!isPreviewMode && (
+            <Breadcrumbs 
+              items={[
+                { label: "Businesses", href: "/member/offers" },
+                { label: business.business_name }
+              ]} 
+            />
+          )}
 
           {/* Business Header */}
           <div className="bg-card rounded-2xl border border-border p-6 mb-6">
