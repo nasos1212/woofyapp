@@ -162,6 +162,13 @@ serve(async (req) => {
       ? pets.map(p => p.pet_name).join(', ') 
       : (membership.pet_name || 'Not specified');
 
+    // Check for pending birthday offers for this member from ANY business
+    const { data: pendingBirthdayOffers } = await supabaseAdmin
+      .from('sent_birthday_offers')
+      .select('id, pet_name, discount_value, discount_type, message, business_id, sent_at')
+      .eq('owner_user_id', membership.user_id)
+      .is('redeemed_at', null);
+
     // Check if membership is expired
     if (new Date(membership.expires_at) < new Date() || !membership.is_active) {
       const { data: profile } = await supabaseAdmin
@@ -177,6 +184,7 @@ serve(async (req) => {
           petName: petNames,
           memberId: membership.member_number,
           expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          pendingBirthdayOffers: pendingBirthdayOffers || [],
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -302,6 +310,7 @@ serve(async (req) => {
             availablePets: eligiblePets.map(p => ({ id: p.id, name: p.pet_name })),
             totalPets: eligiblePets.length,
             redeemedPetsCount: 0,
+            pendingBirthdayOffers: pendingBirthdayOffers || [],
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
@@ -348,6 +357,7 @@ serve(async (req) => {
           availablePets: availablePets.map(p => ({ id: p.id, name: p.pet_name })),
           totalPets: eligiblePets.length,
           redeemedPetsCount: redeemedPetIds.size,
+          pendingBirthdayOffers: pendingBirthdayOffers || [],
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -374,6 +384,7 @@ serve(async (req) => {
             redemptionFrequency: redemptionFrequency,
             availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
             totalPets: allPets.length,
+            pendingBirthdayOffers: pendingBirthdayOffers || [],
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
@@ -427,6 +438,7 @@ serve(async (req) => {
           redemptionFrequency: redemptionFrequency,
           availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
           totalPets: allPets.length,
+          pendingBirthdayOffers: pendingBirthdayOffers || [],
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

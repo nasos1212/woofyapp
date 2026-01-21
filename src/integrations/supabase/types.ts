@@ -1860,6 +1860,8 @@ export type Database = {
           owner_user_id: string
           pet_id: string
           pet_name: string
+          redeemed_at: string | null
+          redeemed_by_business_id: string | null
           sent_at: string
         }
         Insert: {
@@ -1872,6 +1874,8 @@ export type Database = {
           owner_user_id: string
           pet_id: string
           pet_name: string
+          redeemed_at?: string | null
+          redeemed_by_business_id?: string | null
           sent_at?: string
         }
         Update: {
@@ -1884,6 +1888,8 @@ export type Database = {
           owner_user_id?: string
           pet_id?: string
           pet_name?: string
+          redeemed_at?: string | null
+          redeemed_by_business_id?: string | null
           sent_at?: string
         }
         Relationships: [
@@ -1906,6 +1912,20 @@ export type Database = {
             columns: ["pet_id"]
             isOneToOne: false
             referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_redeemed_by_business_id_fkey"
+            columns: ["redeemed_by_business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_redeemed_by_business_id_fkey"
+            columns: ["redeemed_by_business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
         ]

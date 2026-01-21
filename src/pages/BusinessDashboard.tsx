@@ -21,6 +21,16 @@ interface AvailablePet {
   name: string;
 }
 
+interface PendingBirthdayOffer {
+  id: string;
+  pet_name: string;
+  discount_value: number;
+  discount_type: string;
+  message: string;
+  business_id: string;
+  sent_at: string;
+}
+
 interface ScanResult {
   status: 'valid' | 'expired' | 'invalid' | 'already_redeemed' | 'rate_limited' | 'limit_reached';
   memberName?: string;
@@ -39,6 +49,7 @@ interface ScanResult {
   availablePets?: AvailablePet[];
   totalPets?: number;
   redeemedPetsCount?: number;
+  pendingBirthdayOffers?: PendingBirthdayOffer[];
 }
 
 interface Redemption {
@@ -72,6 +83,7 @@ const BusinessDashboard = () => {
   const [stats, setStats] = useState({ redemptions: 0, newCustomers: 0 });
   const [isCheckingBusiness, setIsCheckingBusiness] = useState(true);
   const [selectedPetId, setSelectedPetId] = useState<string>("");
+  const [isRedeemingBirthday, setIsRedeemingBirthday] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -363,6 +375,81 @@ const BusinessDashboard = () => {
       });
     } finally {
       setIsVerifying(false);
+    }
+  };
+
+  const redeemBirthdayOffer = async (birthdayOfferId: string) => {
+    if (!business) return;
+
+    setIsRedeemingBirthday(birthdayOfferId);
+
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData?.session?.access_token;
+
+      if (!accessToken) {
+        toast({
+          title: "Session Expired",
+          description: "Please log in again to continue.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('redeem-birthday-offer', {
+        body: {
+          birthdayOfferId,
+          businessId: business.id,
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (error) {
+        console.error('Birthday redemption error:', error);
+        throw error;
+      }
+
+      if (data.error) {
+        if (data.code === 'ALREADY_REDEEMED') {
+          toast({
+            title: "Already Redeemed",
+            description: "This birthday offer has already been redeemed.",
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      // Trigger celebration
+      setShowCelebration(true);
+      playSuccessSound();
+
+      toast({
+        title: "Birthday Offer Redeemed! 🎂",
+        description: `${data.redemption.pet_name}'s birthday offer was successfully redeemed. They saved ${data.redemption.discount}!`,
+      });
+
+      // Remove this birthday offer from the scan result
+      if (scanResult && scanResult.pendingBirthdayOffers) {
+        setScanResult({
+          ...scanResult,
+          pendingBirthdayOffers: scanResult.pendingBirthdayOffers.filter(o => o.id !== birthdayOfferId),
+        });
+      }
+
+    } catch (error) {
+      console.error('Birthday redemption error:', error);
+      toast({
+        title: "Redemption Failed",
+        description: "Could not redeem the birthday offer. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRedeemingBirthday(null);
     }
   };
 
@@ -825,6 +912,36 @@ const BusinessDashboard = () => {
                         )}
                       </div>
                     </div>
+
+                    {/* Pending Birthday Offers */}
+                    {scanResult.pendingBirthdayOffers && scanResult.pendingBirthdayOffers.length > 0 && (
+                      <div className="mt-4 p-4 bg-pink-50 border border-pink-200 rounded-lg">
+                        <h4 className="font-semibold text-pink-800 mb-3 flex items-center gap-2">
+                          <Cake className="w-4 h-4" />
+                          Birthday Offers Available ({scanResult.pendingBirthdayOffers.length})
+                        </h4>
+                        <div className="space-y-2">
+                          {scanResult.pendingBirthdayOffers.map((offer) => (
+                            <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-100">
+                              <div>
+                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday</p>
+                                <p className="text-sm text-pink-700">
+                                  {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
+                                </p>
+                              </div>
+                              <Button
+                                size="sm"
+                                onClick={() => redeemBirthdayOffer(offer.id)}
+                                disabled={isRedeemingBirthday === offer.id}
+                                className="bg-pink-500 hover:bg-pink-600"
+                              >
+                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem'}
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {scanResult.status === 'valid' && (
                       <Button 

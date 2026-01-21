@@ -96,6 +96,9 @@ const Notifications = () => {
       navigate(`/community/question/${data.question_id}`);
     } else if (notification.type === "business_birthday_reminder") {
       navigate("/business/birthdays");
+    } else if (notification.type === "birthday_offer" && data?.business_id) {
+      // Navigate to offers page filtered by the business that sent the birthday offer
+      navigate(`/member/offers?highlight=birthday&business=${data.business_id}`);
     }
   };
 
@@ -123,6 +126,8 @@ const Notifications = () => {
         return "🏆";
       case "business_birthday_reminder":
         return "🎂";
+      case "birthday_offer":
+        return "🎁";
       default:
         return "🔔";
     }
