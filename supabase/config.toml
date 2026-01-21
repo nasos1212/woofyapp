@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.notify-business-birthdays]
 verify_jwt = false
+
+[functions.redeem-birthday-offer]
+verify_jwt = false

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home } from "lucide-react";
+import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 
@@ -25,6 +25,17 @@ interface Redemption {
   member_name: string | null;
   offers?: { title: string } | null;
   businesses?: { business_name: string } | null;
+}
+
+interface BirthdayOffer {
+  id: string;
+  pet_name: string;
+  owner_name: string | null;
+  discount_value: number;
+  discount_type: string;
+  sent_at: string;
+  redeemed_at: string | null;
+  business_id: string;
 }
 
 interface TopOfferEntity {
@@ -52,6 +63,7 @@ const COLORS = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"
 const EngagementAnalytics = () => {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
+  const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d">("7d");
 
@@ -61,8 +73,8 @@ const EngagementAnalytics = () => {
       const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
       const startDate = subDays(new Date(), days);
 
-      // Fetch analytics events and actual redemptions in parallel
-      const [eventsResult, redemptionsResult] = await Promise.all([
+      // Fetch analytics events, redemptions, and birthday offers in parallel
+      const [eventsResult, redemptionsResult, birthdayResult] = await Promise.all([
         supabase
           .from("analytics_events")
           .select("*")
@@ -81,14 +93,30 @@ const EngagementAnalytics = () => {
             businesses:business_id (business_name)
           `)
           .gte("redeemed_at", startDate.toISOString())
-          .order("redeemed_at", { ascending: false })
+          .order("redeemed_at", { ascending: false }),
+        supabase
+          .from("sent_birthday_offers")
+          .select(`
+            id,
+            pet_name,
+            owner_name,
+            discount_value,
+            discount_type,
+            sent_at,
+            redeemed_at,
+            business_id
+          `)
+          .gte("sent_at", startDate.toISOString())
+          .order("sent_at", { ascending: false })
       ]);
 
       if (eventsResult.error) throw eventsResult.error;
       if (redemptionsResult.error) throw redemptionsResult.error;
+      if (birthdayResult.error) throw birthdayResult.error;
       
       setEvents(eventsResult.data || []);
       setRedemptions(redemptionsResult.data || []);
+      setBirthdayOffers(birthdayResult.data || []);
     } catch (error) {
       console.error("Error fetching analytics:", error);
     } finally {
@@ -509,8 +537,8 @@ const EngagementAnalytics = () => {
         </Card>
       </div>
 
-      {/* Top Content - Row 3: Shelters */}
-      <div className="grid md:grid-cols-1 gap-6">
+      {/* Top Content - Row 3: Shelters & Birthday Offers */}
+      <div className="grid md:grid-cols-2 gap-6">
         {/* Top Shelters by Views */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
@@ -537,6 +565,59 @@ const EngagementAnalytics = () => {
                     </Badge>
                   </div>
                 ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Birthday Offers Stats */}
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Cake className="w-4 h-4 text-pink-500" />
+              Birthday Offers
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {birthdayOffers.length === 0 ? (
+              <p className="text-muted-foreground text-sm py-4 text-center">No birthday offers sent yet</p>
+            ) : (
+              <div className="space-y-4">
+                {/* Summary stats */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-pink-500/10 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-pink-500">{birthdayOffers.length}</p>
+                    <p className="text-xs text-muted-foreground">Sent</p>
+                  </div>
+                  <div className="bg-green-500/10 rounded-lg p-3 text-center">
+                    <p className="text-2xl font-bold text-green-500">
+                      {birthdayOffers.filter(b => b.redeemed_at).length}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Redeemed</p>
+                  </div>
+                </div>
+                {/* Recent birthday offers */}
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground font-medium">Recent Offers</p>
+                  {birthdayOffers.slice(0, 5).map((offer) => (
+                    <div key={offer.id} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="truncate">{offer.pet_name}</span>
+                        <span className="text-muted-foreground text-xs">
+                          ({offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`})
+                        </span>
+                      </div>
+                      {offer.redeemed_at ? (
+                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30 gap-1">
+                          <Check className="w-3 h-3" />
+                          Redeemed
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">Pending</Badge>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </CardContent>
