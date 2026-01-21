@@ -354,6 +354,9 @@ serve(async (req) => {
     } else {
       // Per-member: check if already redeemed within the frequency period
       
+      // Get all pets for optional selection (for data tracking)
+      const allPets = pets || [];
+      
       // If unlimited frequency, always allow
       if (redemptionFrequency === 'unlimited') {
         return new Response(
@@ -369,6 +372,8 @@ serve(async (req) => {
             offerTitle: offer?.title,
             offerType: 'per_member',
             redemptionFrequency: redemptionFrequency,
+            availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
+            totalPets: allPets.length,
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
@@ -406,7 +411,7 @@ serve(async (req) => {
         );
       }
 
-      // Valid membership for per-member offer
+      // Valid membership for per-member offer - include pets for optional tracking
       return new Response(
         JSON.stringify({
           status: 'valid',
@@ -420,6 +425,8 @@ serve(async (req) => {
           offerTitle: offer?.title,
           offerType: 'per_member',
           redemptionFrequency: redemptionFrequency,
+          availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
+          totalPets: allPets.length,
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
