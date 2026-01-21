@@ -30,6 +30,52 @@ const FreeMemberDashboard = () => {
   const { hasMembership, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [checkingRoles, setCheckingRoles] = useState(true);
+  const [redirectPath, setRedirectPath] = useState<string | null>(null);
+
+  // Check user roles to ensure only freemium members can access this page
+  useEffect(() => {
+    const checkUserRoles = async () => {
+      if (!user) {
+        setCheckingRoles(false);
+        return;
+      }
+
+      try {
+        // Check for shelter and business in parallel
+        const [shelterResult, businessResult] = await Promise.all([
+          supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
+          supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
+        ]);
+
+        // Redirect shelters to their dashboard
+        if (shelterResult.data) {
+          if (shelterResult.data.verification_status === "approved") {
+            setRedirectPath("/shelter-dashboard");
+          } else {
+            setRedirectPath("/shelter-dashboard");
+          }
+          return;
+        }
+
+        // Redirect businesses to their dashboard
+        if (businessResult.data) {
+          setRedirectPath("/business");
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking user roles:", error);
+      } finally {
+        setCheckingRoles(false);
+      }
+    };
+
+    if (!authLoading && user) {
+      checkUserRoles();
+    } else if (!authLoading) {
+      setCheckingRoles(false);
+    }
+  }, [user, authLoading]);
 
   // Fetch profile name
   useEffect(() => {
@@ -48,7 +94,7 @@ const FreeMemberDashboard = () => {
   }, [user]);
 
 
-  if (authLoading || membershipLoading) {
+  if (authLoading || membershipLoading || checkingRoles) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <DogLoader size="lg" />
@@ -60,8 +106,12 @@ const FreeMemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  
+  // Redirect shelters and businesses to their proper dashboards
+  if (redirectPath) {
+    return <Navigate to={redirectPath} replace />;
+  }
 
+  // Redirect paid members to member dashboard
   if (hasMembership) {
     return <Navigate to="/member" replace />;
   }
