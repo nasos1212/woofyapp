@@ -45,9 +45,11 @@ import {
   Send,
   Info,
   Dog,
+  Cat,
   ArrowLeft
 } from 'lucide-react';
 import { dogBreeds } from '@/data/dogBreeds';
+import { catBreeds } from '@/data/catBreeds';
 import { cn } from '@/lib/utils';
 
 interface Pet {
@@ -69,6 +71,7 @@ const CommunityAsk = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [animalType, setAnimalType] = useState<'dog' | 'cat'>('dog');
   const [urgency, setUrgency] = useState<'general' | 'concerned' | 'urgent'>('general');
   const [selectedPetId, setSelectedPetId] = useState<string>('');
   const [breedTags, setBreedTags] = useState<string[]>([]);
@@ -183,6 +186,7 @@ const CommunityAsk = () => {
           title: title.trim(),
           content: content.trim(),
           category_id: categoryId,
+          animal_type: animalType,
           urgency,
           breed_tags: breedTags,
           pet_id: selectedPetId || undefined
@@ -212,7 +216,7 @@ const CommunityAsk = () => {
     <>
       <Helmet>
         <title>Ask the Community | Wooffy</title>
-        <meta name="description" content="Ask a question to the Wooffy community of dog owners." />
+        <meta name="description" content="Ask a question to the Wooffy community of pet owners." />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -233,11 +237,48 @@ const CommunityAsk = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Ask the Community</CardTitle>
               <CardDescription>
-                Get help from fellow dog owners and verified professionals
+                Get help from fellow pet owners and verified professionals
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Animal Type Selection */}
+                <div className="space-y-2">
+                  <Label>Is this about a dog or a cat? *</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      type="button"
+                      variant={animalType === 'dog' ? 'default' : 'outline'}
+                      className={cn(
+                        'h-auto py-4 flex flex-col gap-2',
+                        animalType === 'dog' && 'ring-2 ring-primary ring-offset-2'
+                      )}
+                      onClick={() => {
+                        setAnimalType('dog');
+                        setBreedTags([]);
+                      }}
+                    >
+                      <Dog className="w-6 h-6" />
+                      <span className="font-medium">Dog</span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={animalType === 'cat' ? 'default' : 'outline'}
+                      className={cn(
+                        'h-auto py-4 flex flex-col gap-2',
+                        animalType === 'cat' && 'ring-2 ring-primary ring-offset-2'
+                      )}
+                      onClick={() => {
+                        setAnimalType('cat');
+                        setBreedTags([]);
+                      }}
+                    >
+                      <Cat className="w-6 h-6" />
+                      <span className="font-medium">Cat</span>
+                    </Button>
+                  </div>
+                </div>
+
                 {/* Category Selection */}
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
@@ -411,11 +452,11 @@ const CommunityAsk = () => {
                       </PopoverTrigger>
                       <PopoverContent className="w-[300px] p-0">
                         <Command>
-                          <CommandInput placeholder="Search breeds..." />
+                          <CommandInput placeholder={`Search ${animalType} breeds...`} />
                           <CommandList>
                             <CommandEmpty>No breed found.</CommandEmpty>
                             <CommandGroup>
-                              {dogBreeds
+                              {(animalType === 'cat' ? catBreeds : dogBreeds)
                                 .filter(breed => !breedTags.includes(breed))
                                 .map(breed => (
                                   <CommandItem
