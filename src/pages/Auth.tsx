@@ -114,7 +114,28 @@ const Auth = () => {
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
       
-      // CASE 0: User has a shelter OR shelter role - redirect appropriately
+      // CASE 0: Check for rejected accounts - sign them out immediately
+      if (business?.verification_status === "rejected") {
+        await supabase.auth.signOut();
+        toast({
+          title: "Account Suspended",
+          description: "Your business application was not approved. Please contact support for more information.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (shelter?.verification_status === "rejected") {
+        await supabase.auth.signOut();
+        toast({
+          title: "Account Suspended",
+          description: "Your shelter application was not approved. Please contact support for more information.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // CASE 1: User has a shelter OR shelter role - redirect appropriately
       if (hasShelter) {
         navigate("/shelter-dashboard");
         return;
@@ -126,7 +147,7 @@ const Auth = () => {
         return;
       }
       
-      // CASE 1: User has business role OR business account - redirect to business
+      // CASE 2: User has business role OR business account - redirect to business
       // This catches users who started business registration but didn't complete it
       if (hasBusinessRole || hasBusiness) {
         // Fetch user's name from profile to pre-fill business name if needed

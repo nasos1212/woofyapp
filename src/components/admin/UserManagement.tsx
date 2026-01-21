@@ -424,8 +424,20 @@ const UserManagement = () => {
       case "members": targetUsers = users.filter(u => u.role === "member"); break;
       case "freemium": targetUsers = users.filter(u => u.role === "member" && (!u.membership || !u.membership.is_active)); break;
       case "paid": targetUsers = users.filter(u => u.role === "member" && u.membership?.is_active); break;
-      case "businesses": targetUsers = users.filter(u => u.role === "business" || u.business); break;
-      case "shelters": targetUsers = users.filter(u => u.role === "shelter" || u.shelter); break;
+      case "businesses": 
+        // Exclude rejected businesses from notifications
+        targetUsers = users.filter(u => 
+          (u.role === "business" || u.business) && 
+          u.business?.verification_status !== "rejected"
+        ); 
+        break;
+      case "shelters": 
+        // Exclude rejected shelters from notifications
+        targetUsers = users.filter(u => 
+          (u.role === "shelter" || u.shelter) && 
+          u.shelter?.verification_status !== "rejected"
+        ); 
+        break;
     }
     return targetUsers.map(u => u.user_id);
   };
