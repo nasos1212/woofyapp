@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, Heart, Users, DollarSign, CheckCircle, ArrowRight, Mail, Phone, MapPin, Globe, FileText, Camera, Loader2 } from "lucide-react";
+import { Home, Heart, Users, DollarSign, CheckCircle, ArrowRight, ArrowLeft, Mail, Phone, MapPin, Globe, FileText, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -208,7 +208,16 @@ const ShelterOnboarding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-rose-500 to-rose-600 text-white py-8 px-4">
+      <div className="bg-gradient-to-r from-rose-500 to-rose-600 text-white py-8 px-4 relative">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate("/")}
+          className="absolute top-4 left-4 text-white/80 hover:text-white hover:bg-white/10"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Home className="w-8 h-8" />
