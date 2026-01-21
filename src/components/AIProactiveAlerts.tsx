@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { format, differenceInDays, isPast, isToday } from "date-fns";
+import { format, differenceInDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface ProactiveAlert {
   id: string;
@@ -164,20 +165,24 @@ export const AIProactiveAlerts = () => {
       .not("next_due_date", "is", null)
       .order("next_due_date", { ascending: true });
 
-    const now = new Date();
+    const TIMEZONE = "Europe/Athens";
+    const now = toZonedTime(new Date(), TIMEZONE);
+    const todayDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const upcomingReminders: UpcomingReminder[] = [];
 
     // Process health records (vaccinations)
     if (healthRecords) {
       for (const record of healthRecords) {
         const dueDate = new Date(record.next_due_date);
-        const daysUntil = differenceInDays(dueDate, now);
+        const dueDateOnly = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+        const daysUntil = Math.round((dueDateOnly.getTime() - todayDateOnly.getTime()) / (1000 * 60 * 60 * 24));
+        const isDueToday = daysUntil === 0;
 
         // Include overdue (up to 30 days) and upcoming (up to 30 days)
         if (daysUntil >= -30 && daysUntil <= 30) {
           let status: UpcomingReminder["status"] = "upcoming";
           if (daysUntil < 0) status = "overdue";
-          else if (isToday(dueDate)) status = "today";
+          else if (isDueToday) status = "today";
           else if (daysUntil <= 3) status = "urgent";
           else if (daysUntil <= 7) status = "soon";
 
