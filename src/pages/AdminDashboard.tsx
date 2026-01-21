@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, BarChart3, ArrowLeft, TrendingUp, Clock, Gift } from "lucide-react";
+import { Users, Shield, ArrowLeft, TrendingUp, Clock, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import GiftMemberships from "@/components/admin/GiftMemberships";
-import UserAnalytics from "@/components/admin/UserAnalytics";
 import ExpiringMembershipsPanel from "@/components/admin/ExpiringMembershipsPanel";
 import EngagementAnalytics from "@/components/admin/EngagementAnalytics";
 import UserManagement from "@/components/admin/UserManagement";
@@ -103,10 +102,6 @@ const AdminDashboard = () => {
               <Users className="w-4 h-4" />
               User Management
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="gap-1">
-              <BarChart3 className="w-4 h-4" />
-              Analytics
-            </TabsTrigger>
             <TabsTrigger value="engagement" className="gap-1">
               <TrendingUp className="w-4 h-4" />
               Engagement
@@ -123,10 +118,6 @@ const AdminDashboard = () => {
 
           <TabsContent value="users">
             <UserManagement />
-          </TabsContent>
-
-          <TabsContent value="analytics">
-            <UserAnalytics />
           </TabsContent>
 
           <TabsContent value="engagement">

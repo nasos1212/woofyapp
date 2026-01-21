@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Search, Users, Building2, Home, Crown, Bell, Send, Filter, CreditCard, UserCog, Mail, Calendar, ExternalLink, Phone, Globe, MapPin, Check, X, ChevronDown, ChevronUp, RefreshCw, UserX, Clock, Edit2 } from "lucide-react";
+import { Search, Users, Building2, Home, Crown, Bell, Send, Filter, CreditCard, UserCog, Mail, Calendar, ExternalLink, Phone, Globe, MapPin, Check, X, ChevronDown, ChevronUp, RefreshCw, UserX, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,9 @@ import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
 import { ensureHttps } from "@/lib/utils";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+
+const CHART_COLORS = ["#60a5fa", "#34d399", "#f472b6", "#fbbf24"];
 // Full membership info
 interface MembershipInfo {
   id: string;
@@ -308,6 +311,57 @@ const UserManagement = () => {
     };
   }, [users]);
 
+  // Signups by month (last 6 months)
+  const signupsByMonth = useMemo(() => {
+    const monthCounts: Record<string, number> = {};
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+      monthCounts[key] = 0;
+      months.push({
+        key,
+        label: d.toLocaleDateString("en-US", { month: "short" }),
+      });
+    }
+
+    users.forEach((u) => {
+      const created = new Date(u.created_at);
+      const key = `${created.getFullYear()}-${String(created.getMonth() + 1).padStart(2, "0")}`;
+      if (monthCounts[key] !== undefined) {
+        monthCounts[key]++;
+      }
+    });
+
+    return months.map((m) => ({
+      month: m.label,
+      signups: monthCounts[m.key],
+    }));
+  }, [users]);
+
+  // Plan distribution for paid members
+  const planDistribution = useMemo(() => {
+    const planCounts: Record<string, number> = {};
+    const paidMembers = users.filter(u => u.role === "member" && u.membership?.is_active);
+    
+    paidMembers.forEach((u) => {
+      const plan = u.membership?.plan_type || "single";
+      planCounts[plan] = (planCounts[plan] || 0) + 1;
+    });
+
+    const planLabels: Record<string, string> = {
+      single: "Solo Paw",
+      duo: "Dynamic Duo",
+      family: "Pack Leader",
+    };
+
+    return Object.entries(planCounts).map(([key, value]) => ({
+      name: planLabels[key] || key,
+      value,
+    }));
+  }, [users]);
+
   const getPlanLabel = (planType: string) => {
     const labels: Record<string, string> = { single: "Solo Paw", duo: "Dynamic Duo", family: "Pack Leader" };
     return labels[planType] || planType;
@@ -542,6 +596,77 @@ const UserManagement = () => {
             <p className="text-xs text-muted-foreground">Shelters</p>
             {counts.pendingShelters > 0 && (
               <Badge className="absolute -top-1 -right-1 bg-yellow-500 text-white text-[10px] px-1.5">{counts.pendingShelters}</Badge>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Signups (Last 6 Months)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {signupsByMonth.every(m => m.signups === 0) ? (
+              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                No signup data yet
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={signupsByMonth}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 11 }} />
+                  <YAxis stroke="hsl(var(--muted-foreground))" tick={{ fontSize: 11 }} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px" }}
+                  />
+                  <Bar dataKey="signups" fill="#60a5fa" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/50">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">Plan Distribution (Paid Members)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {planDistribution.length === 0 ? (
+              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                No paid members yet
+              </div>
+            ) : (
+              <div className="flex items-center gap-4">
+                <ResponsiveContainer width="50%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={planDistribution}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={70}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {planDistribution.map((_, index) => (
+                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="space-y-2">
+                  {planDistribution.map((item, index) => (
+                    <div key={item.name} className="flex items-center gap-2 text-sm">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: CHART_COLORS[index % CHART_COLORS.length] }} />
+                      <span className="text-muted-foreground">{item.name}</span>
+                      <span className="font-medium">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
