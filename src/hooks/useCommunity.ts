@@ -115,6 +115,7 @@ export const useCommunity = () => {
     status?: string;
     search?: string;
     breed?: string;
+    animal_type?: string;
     sort?: 'recent' | 'popular' | 'unanswered';
     limit?: number;
     offset?: number;
@@ -142,6 +143,9 @@ export const useCommunity = () => {
     }
     if (filters?.breed) {
       query = query.contains('breed_tags', [filters.breed]);
+    }
+    if (filters?.animal_type) {
+      query = query.eq('animal_type', filters.animal_type);
     }
 
     // Sorting
@@ -278,6 +282,7 @@ export const useCommunity = () => {
     title: string;
     content: string;
     urgency: 'general' | 'concerned' | 'urgent';
+    animal_type?: 'dog' | 'cat';
     breed_tags?: string[];
     pet_id?: string;
   }, photos?: File[]): Promise<Question> => {

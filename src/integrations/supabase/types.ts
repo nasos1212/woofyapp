@@ -739,6 +739,7 @@ export type Database = {
       }
       community_questions: {
         Row: {
+          animal_type: string | null
           breed_tags: string[] | null
           category_id: string
           content: string
@@ -756,6 +757,7 @@ export type Database = {
           view_count: number | null
         }
         Insert: {
+          animal_type?: string | null
           breed_tags?: string[] | null
           category_id: string
           content: string
@@ -773,6 +775,7 @@ export type Database = {
           view_count?: number | null
         }
         Update: {
+          animal_type?: string | null
           breed_tags?: string[] | null
           category_id?: string
           content?: string

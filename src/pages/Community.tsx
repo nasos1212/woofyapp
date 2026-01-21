@@ -33,7 +33,9 @@ import {
   AlertCircle,
   Users,
   Trophy,
-  ArrowLeft
+  ArrowLeft,
+  Dog,
+  Cat
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -62,6 +64,7 @@ const Community = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
+  const [selectedAnimalType, setSelectedAnimalType] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'unanswered'>('recent');
   const [activeTab, setActiveTab] = useState('all');
 
@@ -79,6 +82,7 @@ const Community = () => {
           fetchQuestions({
             category_id: selectedCategory !== 'all' ? selectedCategory : undefined,
             urgency: selectedUrgency !== 'all' ? selectedUrgency : undefined,
+            animal_type: selectedAnimalType !== 'all' ? selectedAnimalType : undefined,
             search: searchQuery || undefined,
             sort: sortBy
           })
@@ -95,7 +99,7 @@ const Community = () => {
     if (user) {
       loadData();
     }
-  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, searchQuery, sortBy]);
+  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, selectedAnimalType, searchQuery, sortBy]);
 
   const handleSaveToggle = async (question: Question) => {
     try {
@@ -239,7 +243,7 @@ const Community = () => {
     <>
       <Helmet>
         <title>Community Hub | Wooffy</title>
-        <meta name="description" content="Connect with fellow dog owners, ask questions, and share experiences in the Wooffy community." />
+        <meta name="description" content="Connect with fellow pet owners, ask questions, and share experiences in the Wooffy community." />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -262,9 +266,9 @@ const Community = () => {
                 <Users className="w-8 h-8 text-primary" />
                 Community Hub
               </h1>
-              <p className="text-muted-foreground mt-1">
-                Ask questions, share experiences, and help fellow dog owners
-              </p>
+            <p className="text-muted-foreground mt-1">
+              Ask questions, share experiences, and help fellow pet owners
+            </p>
             </div>
             <Button 
               onClick={() => navigate('/community/ask')}
@@ -272,6 +276,36 @@ const Community = () => {
             >
               <MessageSquarePlus className="w-4 h-4 mr-2" />
               Ask a Question
+            </Button>
+          </div>
+
+          {/* Animal Type Pills */}
+          <div className="flex gap-2 mb-4">
+            <Button
+              variant={selectedAnimalType === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedAnimalType('all')}
+              className="gap-2"
+            >
+              🐾 All Pets
+            </Button>
+            <Button
+              variant={selectedAnimalType === 'dog' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedAnimalType('dog')}
+              className="gap-2"
+            >
+              <Dog className="w-4 h-4" />
+              Dogs
+            </Button>
+            <Button
+              variant={selectedAnimalType === 'cat' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSelectedAnimalType('cat')}
+              className="gap-2"
+            >
+              <Cat className="w-4 h-4" />
+              Cats
             </Button>
           </div>
 
