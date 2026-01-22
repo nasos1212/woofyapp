@@ -61,8 +61,8 @@ serve(async (req) => {
 
     const { memberId, offerId, businessId } = body;
     
-    // Validate required fields exist
-    if (!memberId || !offerId || !businessId) {
+    // Validate required fields exist (offerId is now optional for birthday-only checks)
+    if (!memberId || !businessId) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -77,7 +77,8 @@ serve(async (req) => {
       );
     }
 
-    if (!isValidUUID(offerId)) {
+    // Only validate offerId if provided
+    if (offerId && !isValidUUID(offerId)) {
       return new Response(
         JSON.stringify({ error: 'Invalid offer ID format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -190,19 +191,41 @@ serve(async (req) => {
       );
     }
 
+    // Get profile for member name
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('full_name')
+      .eq('user_id', membership.user_id)
+      .maybeSingle();
+
+    // If no offerId provided, return member info with birthday offers only (birthday-only verification)
+    if (!offerId) {
+      return new Response(
+        JSON.stringify({
+          status: 'valid',
+          memberName: profile?.full_name || 'Member',
+          petName: petNames,
+          memberId: membership.member_number,
+          membershipId: membership.id,
+          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          pendingBirthdayOffers: pendingBirthdayOffers || [],
+          availablePets: (pets || []).map(p => ({ id: p.id, name: p.pet_name })),
+          totalPets: (pets || []).length,
+          // No offer-specific fields since no offer was selected
+          offerId: null,
+          offerTitle: null,
+          discount: null,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Get offer details including redemption rules and pet_type
     const { data: offer } = await supabaseAdmin
       .from('offers')
       .select('id, title, discount_value, discount_type, max_redemptions, offer_type, redemption_scope, redemption_frequency, pet_type')
       .eq('id', offerId)
       .single();
-
-    // Get profile
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('full_name')
-      .eq('user_id', membership.user_id)
-      .maybeSingle();
 
     // Check if offer has reached max redemptions
     if (offer?.max_redemptions !== null && offer?.max_redemptions !== undefined) {
