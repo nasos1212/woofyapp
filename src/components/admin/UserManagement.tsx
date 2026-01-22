@@ -215,7 +215,7 @@ const UserManagement = () => {
     // Filter by category/tab
     switch (activeTab) {
       case "members":
-        // CRITICAL: Exclude shelters and businesses - they are NEVER members
+        // CRITICAL: Only show users with "member" role AND no shelter/business records
         result = result.filter(u => u.role === "member" && !u.shelter && !u.business);
         if (membershipFilter === "freemium") {
           result = result.filter(u => !u.membership || !u.membership.is_active);
@@ -232,11 +232,11 @@ const UserManagement = () => {
         }
         break;
       case "freemium":
-        // CRITICAL: Exclude shelters and businesses - they are NEVER freemium
+        // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER freemium
         result = result.filter(u => u.role === "member" && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
         break;
       case "paid":
-        // CRITICAL: Exclude shelters and businesses - they are NEVER paid members
+        // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER paid members
         result = result.filter(u => u.role === "member" && !u.shelter && !u.business && u.membership?.is_active);
         break;
       case "businesses":
