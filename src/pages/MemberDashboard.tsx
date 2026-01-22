@@ -61,6 +61,7 @@ interface Redemption {
   business: {
     business_name: string;
   };
+  isBirthday?: boolean;
 }
 
 interface NearbyOffer {
@@ -157,7 +158,7 @@ const MemberDashboard = () => {
           }
         }
 
-        // Fetch redemptions for this membership
+        // Fetch regular redemptions for this membership
         const { data: redemptionsData } = await supabase
           .from("offer_redemptions")
           .select(`
@@ -170,19 +171,52 @@ const MemberDashboard = () => {
           .order("redeemed_at", { ascending: false })
           .limit(5);
 
-        if (redemptionsData) {
-          const transformed = redemptionsData.map((r) => ({
-            id: r.id,
-            redeemed_at: r.redeemed_at,
-            offer: r.offer as unknown as Redemption["offer"],
-            business: r.business as unknown as Redemption["business"],
-          }));
-          setRedemptions(transformed);
+        const regularRedemptions = (redemptionsData || []).map((r) => ({
+          id: r.id,
+          redeemed_at: r.redeemed_at,
+          offer: r.offer as unknown as Redemption["offer"],
+          business: r.business as unknown as Redemption["business"],
+          isBirthday: false,
+        }));
 
-          setStats({
-            dealsUsed: transformed.length,
-          });
-        }
+        // Fetch birthday offer redemptions
+        const { data: birthdayData } = await supabase
+          .from("sent_birthday_offers")
+          .select(`
+            id,
+            redeemed_at,
+            pet_name,
+            discount_value,
+            discount_type,
+            business:businesses(business_name)
+          `)
+          .eq("owner_user_id", user.id)
+          .not("redeemed_at", "is", null)
+          .order("redeemed_at", { ascending: false })
+          .limit(5);
+
+        const birthdayRedemptions = (birthdayData || []).map((r) => ({
+          id: r.id,
+          redeemed_at: r.redeemed_at!,
+          offer: {
+            title: `🎂 Birthday: ${r.pet_name}`,
+            discount_value: r.discount_value,
+            discount_type: r.discount_type,
+          },
+          business: r.business as unknown as Redemption["business"],
+          isBirthday: true,
+        }));
+
+        // Combine and sort by date, take top 5
+        const allRedemptions = [...regularRedemptions, ...birthdayRedemptions]
+          .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime())
+          .slice(0, 5);
+
+        setRedemptions(allRedemptions);
+
+        setStats({
+          dealsUsed: allRedemptions.length,
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
