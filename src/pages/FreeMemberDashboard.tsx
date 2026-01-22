@@ -42,25 +42,35 @@ const FreeMemberDashboard = () => {
       }
 
       try {
-        // Check for shelter and business in parallel
-        const [shelterResult, businessResult] = await Promise.all([
+        // Check for shelter record, shelter role, and business in parallel
+        const [shelterResult, shelterRoleResult, businessResult, businessRoleResult] = await Promise.all([
           supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
+          supabase.rpc("has_role", { _user_id: user.id, _role: "shelter" }),
           supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
+          supabase.rpc("has_role", { _user_id: user.id, _role: "business" }),
         ]);
 
-        // Redirect shelters to their dashboard
+        // Redirect shelters to their dashboard or onboarding
         if (shelterResult.data) {
-          if (shelterResult.data.verification_status === "approved") {
-            setRedirectPath("/shelter-dashboard");
-          } else {
-            setRedirectPath("/shelter-dashboard");
-          }
+          setRedirectPath("/shelter-dashboard");
+          return;
+        }
+        
+        // Shelter role but no record = incomplete onboarding
+        if (shelterRoleResult.data) {
+          setRedirectPath("/shelter-onboarding");
           return;
         }
 
-        // Redirect businesses to their dashboard
+        // Redirect businesses to their dashboard or registration
         if (businessResult.data) {
           setRedirectPath("/business");
+          return;
+        }
+        
+        // Business role but no record = incomplete registration
+        if (businessRoleResult.data) {
+          setRedirectPath("/partner-register");
           return;
         }
       } catch (error) {
