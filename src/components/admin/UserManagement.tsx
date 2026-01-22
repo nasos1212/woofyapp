@@ -215,7 +215,8 @@ const UserManagement = () => {
     // Filter by category/tab
     switch (activeTab) {
       case "members":
-        result = result.filter(u => u.role === "member");
+        // CRITICAL: Exclude shelters and businesses - they are NEVER members
+        result = result.filter(u => u.role === "member" && !u.shelter && !u.business);
         if (membershipFilter === "freemium") {
           result = result.filter(u => !u.membership || !u.membership.is_active);
         } else if (membershipFilter === "paid") {
@@ -231,10 +232,12 @@ const UserManagement = () => {
         }
         break;
       case "freemium":
-        result = result.filter(u => u.role === "member" && (!u.membership || !u.membership.is_active));
+        // CRITICAL: Exclude shelters and businesses - they are NEVER freemium
+        result = result.filter(u => u.role === "member" && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
         break;
       case "paid":
-        result = result.filter(u => u.role === "member" && u.membership?.is_active);
+        // CRITICAL: Exclude shelters and businesses - they are NEVER paid members
+        result = result.filter(u => u.role === "member" && !u.shelter && !u.business && u.membership?.is_active);
         break;
       case "businesses":
         // IMPORTANT: Exclude users who have a shelter record - shelters should NEVER appear as businesses
@@ -293,7 +296,8 @@ const UserManagement = () => {
 
   // Calculate counts
   const counts = useMemo(() => {
-    const members = users.filter(u => u.role === "member");
+    // CRITICAL: Members must exclude shelters and businesses
+    const members = users.filter(u => u.role === "member" && !u.shelter && !u.business);
     const freemium = members.filter(u => !u.membership || !u.membership.is_active);
     const paid = members.filter(u => u.membership?.is_active);
     // IMPORTANT: Exclude users with shelter records from business count - shelters should NEVER be counted as businesses
