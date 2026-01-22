@@ -189,10 +189,10 @@ const BusinessDashboard = () => {
   };
 
   const verifyMember = async () => {
-    if (!memberIdInput.trim() || !selectedOfferId || !business) {
+    if (!memberIdInput.trim() || !business) {
       toast({
         title: "Missing Information",
-        description: "Please enter a member ID and select an offer.",
+        description: "Please enter a member ID.",
         variant: "destructive",
       });
       return;
@@ -218,10 +218,11 @@ const BusinessDashboard = () => {
       console.log('Calling verify-member with session:', !!sessionData.session);
 
       // Use edge function for rate-limited verification
+      // offerId is now optional - can verify member without selecting an offer
       const { data, error } = await supabase.functions.invoke('verify-member', {
         body: {
           memberId: memberIdInput.trim(),
-          offerId: selectedOfferId,
+          offerId: selectedOfferId || null,
           businessId: business.id,
         },
       });
