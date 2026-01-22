@@ -918,22 +918,51 @@ const BusinessDashboard = () => {
                       <div className="mt-4 p-4 bg-pink-50 border border-pink-200 rounded-lg">
                         <h4 className="font-semibold text-pink-800 mb-3 flex items-center gap-2">
                           <Cake className="w-4 h-4" />
-                          Birthday Offers Available ({scanResult.pendingBirthdayOffers.length})
+                          🎂 Birthday Offers to Redeem ({scanResult.pendingBirthdayOffers.length})
                         </h4>
+                        <p className="text-sm text-pink-700 mb-3">
+                          This member has birthday offers they can use at your business!
+                        </p>
                         <div className="space-y-2">
-                          {scanResult.pendingBirthdayOffers.map((offer) => (
-                            <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-100">
+                          {scanResult.pendingBirthdayOffers
+                            .filter(offer => offer.business_id === business?.id)
+                            .map((offer) => (
+                            <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-200 ring-2 ring-pink-300">
                               <div>
-                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday</p>
-                                <p className="text-sm text-pink-700">
+                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday 🎉</p>
+                                <p className="text-sm text-pink-700 font-semibold">
                                   {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
                                 </p>
+                                <p className="text-xs text-pink-600">From your business</p>
                               </div>
                               <Button
                                 size="sm"
                                 onClick={() => redeemBirthdayOffer(offer.id)}
                                 disabled={isRedeemingBirthday === offer.id}
                                 className="bg-pink-500 hover:bg-pink-600"
+                              >
+                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem Now'}
+                              </Button>
+                            </div>
+                          ))}
+                          {/* Show offers from other businesses - they can also redeem these */}
+                          {scanResult.pendingBirthdayOffers
+                            .filter(offer => offer.business_id !== business?.id)
+                            .map((offer) => (
+                            <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-100">
+                              <div>
+                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday</p>
+                                <p className="text-sm text-pink-700">
+                                  {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
+                                </p>
+                                <p className="text-xs text-pink-500">From another business</p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => redeemBirthdayOffer(offer.id)}
+                                disabled={isRedeemingBirthday === offer.id}
+                                className="border-pink-300 text-pink-600 hover:bg-pink-50"
                               >
                                 {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem'}
                               </Button>
