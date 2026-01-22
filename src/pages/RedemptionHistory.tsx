@@ -122,7 +122,7 @@ const RedemptionHistory = () => {
       }));
 
       // Fetch birthday offer redemptions
-      const { data: birthdayData } = await supabase
+      const { data: birthdayData, error: birthdayError } = await supabase
         .from("sent_birthday_offers")
         .select(`
           id,
@@ -136,6 +136,10 @@ const RedemptionHistory = () => {
         .eq("owner_user_id", user.id)
         .not("redeemed_at", "is", null)
         .order("redeemed_at", { ascending: false });
+
+      if (birthdayError) {
+        console.error("Error fetching birthday redemptions:", birthdayError);
+      }
 
       const birthdayRedemptions = (birthdayData || []).map((r) => ({
         id: r.id,
