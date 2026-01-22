@@ -131,9 +131,11 @@ const BusinessDashboard = () => {
 
     if (offersData && offersData.length > 0) {
       setOffers(offersData);
-      setSelectedOfferId(offersData[0].id);
+      // Default to "birthday" verification option
+      setSelectedOfferId("birthday");
     } else {
       setOffers([]);
+      setSelectedOfferId("birthday");
     }
 
     // Fetch ALL redemptions for this business to calculate accurate stats
@@ -218,11 +220,12 @@ const BusinessDashboard = () => {
       console.log('Calling verify-member with session:', !!sessionData.session);
 
       // Use edge function for rate-limited verification
-      // offerId is now optional - can verify member without selecting an offer
+      // Pass null for offerId when "birthday" is selected (birthday-only verification)
+      const actualOfferId = selectedOfferId === "birthday" ? null : selectedOfferId;
       const { data, error } = await supabase.functions.invoke('verify-member', {
         body: {
           memberId: memberIdInput.trim(),
-          offerId: selectedOfferId || null,
+          offerId: actualOfferId,
           businessId: business.id,
         },
       });
@@ -742,24 +745,28 @@ const BusinessDashboard = () => {
                     />
                   </div>
 
-                  {offers.length > 0 && (
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
-                        Select Offer to Redeem
-                      </label>
-                      <select
-                        value={selectedOfferId}
-                        onChange={(e) => setSelectedOfferId(e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      >
-                        {offers.map(offer => (
-                          <option key={offer.id} value={offer.id}>
-                            {offer.title} ({offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} off)
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">
+                      Verification Type
+                    </label>
+                    <select
+                      value={selectedOfferId}
+                      onChange={(e) => setSelectedOfferId(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+                    >
+                      <option value="birthday">🎂 Birthday Verification</option>
+                      {offers.map(offer => (
+                        <option key={offer.id} value={offer.id}>
+                          {offer.title} ({offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} off)
+                        </option>
+                      ))}
+                    </select>
+                    {selectedOfferId === "birthday" && (
+                      <p className="text-xs text-pink-600 mt-1">
+                        Check for birthday offers available for this member
+                      </p>
+                    )}
+                  </div>
 
                   <Button 
                     onClick={verifyMember} 
@@ -973,7 +980,8 @@ const BusinessDashboard = () => {
                       </div>
                     )}
 
-                    {scanResult.status === 'valid' && (
+                    {/* Only show Confirm Redemption button if a regular offer was selected */}
+                    {scanResult.status === 'valid' && scanResult.offerId && (
                       <Button 
                         onClick={confirmRedemption} 
                         disabled={isVerifying}
@@ -981,6 +989,18 @@ const BusinessDashboard = () => {
                       >
                         {isVerifying ? 'Confirming...' : 'Confirm Redemption'}
                       </Button>
+                    )}
+
+                    {/* Show message when birthday verification has no birthday offers */}
+                    {scanResult.status === 'valid' && !scanResult.offerId && (!scanResult.pendingBirthdayOffers || scanResult.pendingBirthdayOffers.length === 0) && (
+                      <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-center">
+                        <p className="text-slate-600">
+                          ✅ Member verified! No birthday offers available at this time.
+                        </p>
+                        <p className="text-sm text-slate-500 mt-1">
+                          Select a regular offer above to redeem a discount.
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
