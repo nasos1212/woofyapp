@@ -237,13 +237,15 @@ const UserManagement = () => {
         result = result.filter(u => u.role === "member" && u.membership?.is_active);
         break;
       case "businesses":
-        result = result.filter(u => u.role === "business" || u.business);
+        // IMPORTANT: Exclude users who have a shelter record - shelters should NEVER appear as businesses
+        result = result.filter(u => (u.role === "business" || u.business) && !u.shelter);
         if (businessFilter !== "all") {
           result = result.filter(u => u.business?.verification_status === businessFilter);
         }
         break;
       case "shelters":
-        result = result.filter(u => u.role === "shelter" || u.shelter);
+        // Users with shelter records are shelters, regardless of role
+        result = result.filter(u => u.shelter);
         if (shelterFilter !== "all") {
           result = result.filter(u => u.shelter?.verification_status === shelterFilter);
         }
@@ -294,9 +296,11 @@ const UserManagement = () => {
     const members = users.filter(u => u.role === "member");
     const freemium = members.filter(u => !u.membership || !u.membership.is_active);
     const paid = members.filter(u => u.membership?.is_active);
-    const businesses = users.filter(u => u.role === "business" || u.business);
+    // IMPORTANT: Exclude users with shelter records from business count - shelters should NEVER be counted as businesses
+    const businesses = users.filter(u => (u.role === "business" || u.business) && !u.shelter);
     const pendingBusinesses = businesses.filter(u => u.business?.verification_status === "pending");
-    const shelters = users.filter(u => u.role === "shelter" || u.shelter);
+    // Users with shelter records are shelters, regardless of role
+    const shelters = users.filter(u => u.shelter);
     const pendingShelters = shelters.filter(u => u.shelter?.verification_status === "pending");
     
     return {
