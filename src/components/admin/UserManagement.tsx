@@ -247,8 +247,8 @@ const UserManagement = () => {
         }
         break;
       case "shelters":
-        // Users with shelter records are shelters, regardless of role
-        result = result.filter(u => u.shelter);
+        // Users with shelter records OR shelter role (incomplete onboarding) are shelters
+        result = result.filter(u => u.shelter || u.role === "shelter");
         if (shelterFilter !== "all") {
           result = result.filter(u => u.shelter?.verification_status === shelterFilter);
         }
@@ -296,16 +296,16 @@ const UserManagement = () => {
 
   // Calculate counts
   const counts = useMemo(() => {
-    // CRITICAL: Members must exclude shelters and businesses
+    // CRITICAL: Members must exclude shelters (by role OR record) and businesses
     const members = users.filter(u => u.role === "member" && !u.shelter && !u.business);
     const freemium = members.filter(u => !u.membership || !u.membership.is_active);
     const paid = members.filter(u => u.membership?.is_active);
-    // IMPORTANT: Exclude users with shelter records from business count - shelters should NEVER be counted as businesses
-    const businesses = users.filter(u => (u.role === "business" || u.business) && !u.shelter);
+    // IMPORTANT: Exclude users with shelter records OR shelter role from business count
+    const businesses = users.filter(u => (u.role === "business" || u.business) && !u.shelter && u.role !== "shelter");
     const pendingBusinesses = businesses.filter(u => u.business?.verification_status === "pending");
-    // Users with shelter records are shelters, regardless of role
-    const shelters = users.filter(u => u.shelter);
-    const pendingShelters = shelters.filter(u => u.shelter?.verification_status === "pending");
+    // Users with shelter records OR shelter role are shelters
+    const shelters = users.filter(u => u.shelter || u.role === "shelter");
+    const pendingShelters = shelters.filter(u => u.shelter?.verification_status === "pending" || !u.shelter);
     
     return {
       all: users.length,
@@ -813,8 +813,9 @@ const UserManagement = () => {
                             {/* Business Status - only if NOT a shelter */}
                             {user.business && !user.shelter && getStatusBadge(user.business.verification_status)}
                             
-                            {/* Shelter Status */}
-                            {user.shelter && getStatusBadge(user.shelter.verification_status)}
+                            {/* Shelter Status - show for shelter record OR shelter role without record */}
+                            {user.shelter ? getStatusBadge(user.shelter.verification_status) : 
+                              user.role === "shelter" && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>}
                           </div>
                           
                           <p className="text-sm text-muted-foreground truncate">{user.email}</p>
