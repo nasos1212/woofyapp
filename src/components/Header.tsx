@@ -19,6 +19,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false);
+  const [isShelter, setIsShelter] = useState(false);
+  const [hasShelterRecord, setHasShelterRecord] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,7 +30,12 @@ const Header = () => {
   const isAdminPage = location.pathname.startsWith("/admin");
   
   // Determine correct dashboard path based on role and membership status
-  const dashboardPath = isBusiness ? "/business" : (hasMembership ? "/member" : "/member/free");
+  // CRITICAL: Check shelter first, then business, then member
+  const dashboardPath = isShelter 
+    ? (hasShelterRecord ? "/shelter-dashboard" : "/shelter-onboarding")
+    : isBusiness 
+      ? "/business" 
+      : (hasMembership ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
     setIsMenuOpen(false);
@@ -49,10 +56,13 @@ const Header = () => {
     if (user) {
       checkAdminStatus();
       checkBusinessStatus();
+      checkShelterStatus();
       fetchProfile();
     } else {
       setIsAdmin(false);
       setIsBusiness(false);
+      setIsShelter(false);
+      setHasShelterRecord(false);
       setProfile(null);
     }
   }, [user]);
@@ -95,7 +105,29 @@ const Header = () => {
     }
   };
 
-  // Navigation links - filter out landing page sections for logged-in users
+  const checkShelterStatus = async () => {
+    if (!user) return;
+    try {
+      // Check shelter role
+      const { data: roleData } = await supabase.rpc("has_role", {
+        _user_id: user.id,
+        _role: "shelter",
+      });
+      setIsShelter(!!roleData);
+      
+      // Check if shelter record exists
+      const { data: shelterData } = await supabase
+        .from("shelters")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setHasShelterRecord(!!shelterData);
+    } catch {
+      setIsShelter(false);
+      setHasShelterRecord(false);
+    }
+  };
+
   // Hide all links except Dashboard on admin pages
   const navLinks = isAdminPage ? [
     { name: "Dashboard", href: dashboardPath, isRoute: true },
