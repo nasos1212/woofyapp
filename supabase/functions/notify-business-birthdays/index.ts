@@ -42,7 +42,10 @@ serve(async (req) => {
     console.log(`Found ${enabledBusinesses.length} businesses with reminders enabled`);
 
     let totalNotificationsSent = 0;
+    
+    // Use UTC date for consistent comparison (birthday is stored as date only)
     const now = new Date();
+    const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
 
     for (const business of enabledBusinesses) {
       const { business_id, days_before_reminder } = business;
@@ -96,23 +99,31 @@ serve(async (req) => {
       }
 
       // Calculate upcoming birthdays - notify 3 days before AND on the day
-      const NOTIFICATION_DAYS = [3, 0]; // 3 days before and on the day
+      const NOTIFICATION_DAYS = [3, 2, 1, 0]; // 3 days before and on the day (include 1,2 for safety)
       
       const upcomingBirthdays = petsData.map(pet => {
         if (!pet.birthday) return null;
         
-        const birthday = new Date(pet.birthday);
-        const thisYearBirthday = new Date(now.getFullYear(), birthday.getMonth(), birthday.getDate());
+        // Parse birthday as UTC date (YYYY-MM-DD format)
+        const [year, month, day] = pet.birthday.split('-').map(Number);
+        const birthdayDate = new Date(Date.UTC(year, month - 1, day));
+        
+        // Calculate this year's birthday in UTC
+        let thisYearBirthday = new Date(Date.UTC(todayUTC.getUTCFullYear(), birthdayDate.getUTCMonth(), birthdayDate.getUTCDate()));
         
         // If birthday has passed this year, check next year
-        if (thisYearBirthday < now) {
-          thisYearBirthday.setFullYear(thisYearBirthday.getFullYear() + 1);
+        if (thisYearBirthday < todayUTC) {
+          thisYearBirthday = new Date(Date.UTC(todayUTC.getUTCFullYear() + 1, birthdayDate.getUTCMonth(), birthdayDate.getUTCDate()));
         }
         
-        const daysUntil = Math.ceil((thisYearBirthday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        // Calculate days until (both dates are at midnight UTC, so division is clean)
+        const diffTime = thisYearBirthday.getTime() - todayUTC.getTime();
+        const daysUntil = Math.round(diffTime / (1000 * 60 * 60 * 24));
+        
+        console.log(`Pet ${pet.pet_name}: birthday ${pet.birthday}, thisYearBirthday ${thisYearBirthday.toISOString()}, daysUntil ${daysUntil}`);
         
         // Check if this is a notification day (3 days before or on the day)
-        if (NOTIFICATION_DAYS.includes(daysUntil)) {
+        if (daysUntil === 0 || daysUntil === 3) {
           return { ...pet, daysUntil };
         }
         return null;
