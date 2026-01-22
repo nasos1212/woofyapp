@@ -788,10 +788,17 @@ const UserManagement = () => {
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-medium truncate">{user.full_name || "No name"}</p>
                             
-                            {user.role && <Badge variant="outline" className="capitalize text-xs">{user.role}</Badge>}
+                            {/* IMPORTANT: Shelters show "shelter" badge, businesses show "business" badge, members show their role */}
+                            {user.shelter ? (
+                              <Badge variant="outline" className="capitalize text-xs">shelter</Badge>
+                            ) : user.business ? (
+                              <Badge variant="outline" className="capitalize text-xs">business</Badge>
+                            ) : user.role ? (
+                              <Badge variant="outline" className="capitalize text-xs">{user.role}</Badge>
+                            ) : null}
                             
-                            {/* Membership Status */}
-                            {user.role === "member" && (
+                            {/* Membership Status - ONLY for actual members, NEVER for shelters or businesses */}
+                            {user.role === "member" && !user.shelter && !user.business && (
                               user.membership?.is_active ? (
                                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">{getPlanLabel(user.membership.plan_type)}</Badge>
                               ) : (
@@ -799,8 +806,8 @@ const UserManagement = () => {
                               )
                             )}
                             
-                            {/* Business Status */}
-                            {user.business && getStatusBadge(user.business.verification_status)}
+                            {/* Business Status - only if NOT a shelter */}
+                            {user.business && !user.shelter && getStatusBadge(user.business.verification_status)}
                             
                             {/* Shelter Status */}
                             {user.shelter && getStatusBadge(user.shelter.verification_status)}
