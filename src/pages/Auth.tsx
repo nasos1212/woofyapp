@@ -373,11 +373,18 @@ const Auth = () => {
             });
           }
         } else {
-          // For business accounts, add business role immediately and redirect to partner registration
+          // For business accounts, update role to business (replacing member role from trigger)
           if (accountType === "business") {
-            // Add business role so they're recognized as business users even before completing registration
             const { data: userData } = await supabase.auth.getUser();
             if (userData?.user) {
+              // First delete the member role that was auto-assigned by trigger
+              await supabase
+                .from("user_roles")
+                .delete()
+                .eq("user_id", userData.user.id)
+                .eq("role", "member");
+              
+              // Then insert business role
               await supabase
                 .from("user_roles")
                 .insert({
@@ -393,9 +400,17 @@ const Auth = () => {
             // Pass the full name to pre-fill business name
             navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
           } else if (accountType === "shelter") {
-            // For shelter accounts, add shelter role and redirect to shelter onboarding
+            // For shelter accounts, update role to shelter (replacing member role from trigger)
             const { data: userData } = await supabase.auth.getUser();
             if (userData?.user) {
+              // First delete the member role that was auto-assigned by trigger
+              await supabase
+                .from("user_roles")
+                .delete()
+                .eq("user_id", userData.user.id)
+                .eq("role", "member");
+              
+              // Then insert shelter role
               const { error: roleError } = await supabase
                 .from("user_roles")
                 .insert({
