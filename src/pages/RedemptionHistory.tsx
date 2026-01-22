@@ -31,6 +31,8 @@ interface Redemption {
     business_name: string;
     category: string;
   };
+  isBirthday?: boolean;
+  petName?: string;
 }
 
 const RedemptionHistory = () => {
@@ -97,7 +99,7 @@ const RedemptionHistory = () => {
         return;
       }
 
-      // Fetch redemptions
+      // Fetch regular offer redemptions
       const { data, error } = await supabase
         .from("offer_redemptions")
         .select(`
@@ -111,12 +113,47 @@ const RedemptionHistory = () => {
 
       if (error) throw error;
 
-      const transformedRedemptions = (data || []).map((r) => ({
+      const regularRedemptions = (data || []).map((r) => ({
         id: r.id,
         redeemed_at: r.redeemed_at,
         offer: r.offer as unknown as Redemption["offer"],
         business: r.business as unknown as Redemption["business"],
+        isBirthday: false,
       }));
+
+      // Fetch birthday offer redemptions
+      const { data: birthdayData } = await supabase
+        .from("sent_birthday_offers")
+        .select(`
+          id,
+          redeemed_at,
+          pet_name,
+          discount_value,
+          discount_type,
+          message,
+          business:businesses(id, business_name, category)
+        `)
+        .eq("owner_user_id", user.id)
+        .not("redeemed_at", "is", null)
+        .order("redeemed_at", { ascending: false });
+
+      const birthdayRedemptions = (birthdayData || []).map((r) => ({
+        id: r.id,
+        redeemed_at: r.redeemed_at!,
+        offer: {
+          title: `🎂 Birthday Offer for ${r.pet_name}`,
+          description: r.message,
+          discount_value: r.discount_value,
+          discount_type: r.discount_type,
+        },
+        business: r.business as unknown as Redemption["business"],
+        isBirthday: true,
+        petName: r.pet_name,
+      }));
+
+      // Combine and sort by date
+      const transformedRedemptions = [...regularRedemptions, ...birthdayRedemptions]
+        .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime());
 
       setRedemptions(transformedRedemptions);
 

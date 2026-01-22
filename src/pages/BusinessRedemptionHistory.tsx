@@ -32,6 +32,7 @@ interface Redemption {
     discount_value: number;
     discount_type: string;
   };
+  isBirthday?: boolean;
 }
 
 interface Offer {
@@ -99,7 +100,7 @@ const BusinessRedemptionHistory = () => {
         setOffers(offersData);
       }
 
-      // Fetch all redemptions with stored member/pet data
+      // Fetch regular offer redemptions with stored member/pet data
       const { data: redemptionsData } = await supabase
         .from('offer_redemptions')
         .select(`
@@ -113,9 +114,47 @@ const BusinessRedemptionHistory = () => {
         .eq('business_id', businessData.id)
         .order('redeemed_at', { ascending: false });
 
-      if (redemptionsData) {
-        setRedemptions(redemptionsData as unknown as Redemption[]);
-      }
+      const regularRedemptions = (redemptionsData || []).map((r) => ({
+        ...r,
+        offer: r.offer as unknown as Redemption["offer"],
+        isBirthday: false,
+      })) as Redemption[];
+
+      // Fetch birthday offer redemptions for this business
+      const { data: birthdayData } = await supabase
+        .from('sent_birthday_offers')
+        .select(`
+          id,
+          redeemed_at,
+          pet_name,
+          owner_name,
+          discount_value,
+          discount_type
+        `)
+        .eq('redeemed_by_business_id', businessData.id)
+        .not('redeemed_at', 'is', null)
+        .order('redeemed_at', { ascending: false });
+
+      const birthdayRedemptions: Redemption[] = (birthdayData || []).map((r) => ({
+        id: r.id,
+        redeemed_at: r.redeemed_at!,
+        member_name: r.owner_name,
+        pet_names: r.pet_name,
+        member_number: null,
+        offer: {
+          id: 'birthday',
+          title: `🎂 Birthday: ${r.pet_name}`,
+          discount_value: r.discount_value,
+          discount_type: r.discount_type,
+        },
+        isBirthday: true,
+      }));
+
+      // Combine and sort by date
+      const allRedemptions = [...regularRedemptions, ...birthdayRedemptions]
+        .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime());
+
+      setRedemptions(allRedemptions);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
