@@ -87,7 +87,8 @@ const Index = () => {
     );
   }
 
-  if (user) {
+  // If skipRedirect is true, show the landing page even for logged-in users
+  if (user && !skipRedirect) {
     return null; // Will redirect
   }
 
