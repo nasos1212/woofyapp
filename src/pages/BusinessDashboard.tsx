@@ -831,7 +831,8 @@ const BusinessDashboard = () => {
                           </div>
                         )}
 
-                        {scanResult.status === 'valid' && (
+                        {/* Only show Apply Discount section when a regular offer is selected (not birthday verification) */}
+                        {scanResult.status === 'valid' && scanResult.offerId && (
                           <div className="mt-4 p-3 bg-green-100 rounded-lg">
                             <p className="text-green-800 font-medium">
                               🎁 Apply discount: {scanResult.discount}
@@ -844,8 +845,8 @@ const BusinessDashboard = () => {
                           </div>
                         )}
 
-                        {/* Pet selector - always show for data tracking */}
-                        {scanResult.status === 'valid' && scanResult.availablePets && scanResult.availablePets.length > 0 && (
+                        {/* Pet selector - only show for regular offers, not birthday verification */}
+                        {scanResult.status === 'valid' && scanResult.offerId && scanResult.availablePets && scanResult.availablePets.length > 0 && (
                           <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
                             <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
                               <Dog className="w-4 h-4" />
