@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home } from "lucide-react";
+import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const authSchema = z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255, "Email too long"),
@@ -35,6 +43,7 @@ const Auth = () => {
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [rejectedDialog, setRejectedDialog] = useState<{ open: boolean; type: "business" | "shelter" | null }>({ open: false, type: null });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -114,24 +123,16 @@ const Auth = () => {
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
       
-      // CASE 0: Check for rejected accounts - sign them out immediately
+      // CASE 0: Check for rejected accounts - show dialog and sign them out
       if (business?.verification_status === "rejected") {
         await supabase.auth.signOut();
-        toast({
-          title: "Account Suspended",
-          description: "Your business application was not approved. Please contact support for more information.",
-          variant: "destructive",
-        });
+        setRejectedDialog({ open: true, type: "business" });
         return;
       }
       
       if (shelter?.verification_status === "rejected") {
         await supabase.auth.signOut();
-        toast({
-          title: "Account Suspended",
-          description: "Your shelter application was not approved. Please contact support for more information.",
-          variant: "destructive",
-        });
+        setRejectedDialog({ open: true, type: "shelter" });
         return;
       }
       
@@ -461,10 +462,50 @@ const Auth = () => {
     }
   };
 
+  // Rejected Account Dialog Component
+  const RejectedDialog = () => (
+    <Dialog open={rejectedDialog.open} onOpenChange={(open) => setRejectedDialog({ ...rejectedDialog, open })}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+            </div>
+            <div>
+              <DialogTitle className="text-red-800">Application Not Approved</DialogTitle>
+            </div>
+          </div>
+        </DialogHeader>
+        <DialogDescription className="text-base py-4">
+          Unfortunately, your {rejectedDialog.type === "business" ? "business" : "shelter"} application was not approved at this time.
+          <br /><br />
+          If you believe this was a mistake or would like more information, please contact us at:
+          <br />
+          <a 
+            href="mailto:support@wooffy.app" 
+            className="text-primary font-semibold hover:underline"
+          >
+            support@wooffy.app
+          </a>
+        </DialogDescription>
+        <DialogFooter>
+          <Button 
+            onClick={() => setRejectedDialog({ open: false, type: null })}
+            className="w-full"
+          >
+            I Understand
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+
   // Account Type Selection View
   if (!accountType) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+      <>
+        <RejectedDialog />
+        <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
         <div className="w-full max-w-lg">
           <Button
             variant="ghost"
@@ -549,6 +590,7 @@ const Auth = () => {
           </div>
         </div>
       </div>
+      </>
     );
   }
 
