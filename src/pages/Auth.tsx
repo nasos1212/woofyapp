@@ -453,7 +453,7 @@ const Auth = () => {
         <div className="w-full max-w-lg">
           <Button
             variant="ghost"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/?stay=true")}
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
