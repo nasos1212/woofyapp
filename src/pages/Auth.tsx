@@ -540,7 +540,7 @@ const Auth = () => {
                       I'm a Shelter
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Apply to receive 10% of membership proceeds
+                      Join Wooffy and share in 10% of membership proceeds
                     </p>
                   </div>
                 </div>
@@ -655,7 +655,7 @@ const Auth = () => {
 
   const getAccountDescription = () => {
     if (isBusiness) return "Partner with us to reach pet owners";
-    if (isShelter) return "Apply to receive 10% of membership proceeds";
+    if (isShelter) return "Join Wooffy and share in 10% of membership proceeds";
     return "Your premium pet membership awaits";
   };
 
