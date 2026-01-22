@@ -123,16 +123,16 @@ const Auth = () => {
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
       
-      // CASE 0: Check for rejected accounts - show dialog and sign them out
+      // CASE 0: Check for rejected accounts - show dialog (sign out happens when dialog closes)
       if (business?.verification_status === "rejected") {
-        await supabase.auth.signOut();
         setRejectedDialog({ open: true, type: "business" });
+        await supabase.auth.signOut();
         return;
       }
       
       if (shelter?.verification_status === "rejected") {
-        await supabase.auth.signOut();
         setRejectedDialog({ open: true, type: "shelter" });
+        await supabase.auth.signOut();
         return;
       }
       
@@ -869,6 +869,9 @@ const Auth = () => {
 
         </div>
       </div>
+      
+      {/* Rejected Account Dialog - Always rendered */}
+      <RejectedDialog />
     </div>
   );
 };
