@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
+import { useMembership } from '@/hooks/useMembership';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
 import DogLoader from '@/components/DogLoader';
@@ -56,6 +57,7 @@ const Community = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
+  const { hasMembership, loading: membershipLoading } = useMembership();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
 
   const [categories, setCategories] = useState<Category[]>([]);
@@ -252,11 +254,11 @@ const Community = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate(hasMembership ? '/member' : '/member/free')}
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            Back to Dashboard
           </Button>
 
           {/* Header */}
