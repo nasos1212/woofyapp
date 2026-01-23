@@ -631,6 +631,7 @@ const PetHealthRecords = () => {
 
   const getIntervalLabel = (type: string | null, days: number | null) => {
     if (type === 'once') return 'One-time';
+    if (type === 'daily') return 'Daily';
     if (type === 'monthly') return 'Monthly';
     if (type === 'quarterly') return 'Every 3 mo';
     if (type === 'biannually') return 'Every 6 mo';
