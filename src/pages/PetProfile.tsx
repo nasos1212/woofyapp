@@ -89,6 +89,7 @@ const PetProfile = () => {
   const [canEditBirthday, setCanEditBirthday] = useState(true);
   const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
+  const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -486,14 +487,37 @@ const PetProfile = () => {
                     <Camera className="w-4 h-4 text-gray-700" />
                   </button>
                   {pet.photo_url && (
-                    <button
-                      onClick={handlePhotoRemove}
-                      disabled={isUploadingPhoto}
-                      className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md hover:bg-destructive/90 transition-colors disabled:opacity-50"
-                      title="Remove photo"
-                    >
-                      <X className="w-3 h-3 text-white" />
-                    </button>
+                    <AlertDialog open={showPhotoRemoveDialog} onOpenChange={setShowPhotoRemoveDialog}>
+                      <AlertDialogTrigger asChild>
+                        <button
+                          disabled={isUploadingPhoto}
+                          className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md hover:bg-destructive/90 transition-colors disabled:opacity-50"
+                          title="Remove photo"
+                        >
+                          <X className="w-3 h-3 text-white" />
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Remove Photo?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to remove {pet.pet_name}'s photo? You can always upload a new one later.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => {
+                              setShowPhotoRemoveDialog(false);
+                              handlePhotoRemove();
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Remove Photo
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </div>
                 <div className="flex-1">
