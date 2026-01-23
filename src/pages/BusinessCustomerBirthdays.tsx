@@ -50,6 +50,7 @@ interface UpcomingBirthday extends CustomerPet {
   daysUntil: number;
   nextBirthday: Date;
   age: number;
+  alreadySentOffer: boolean;
 }
 
 interface SentBirthdayOffer {
@@ -208,11 +209,26 @@ const BusinessCustomerBirthdays = () => {
             const daysUntil = differenceInDays(nextBirthday, now);
             const age = nextBirthday.getFullYear() - birthday.getFullYear();
 
+            // Check if an offer was already sent for this pet for this year's birthday
+            // An offer is considered "for this birthday" if sent within 30 days before the birthday
+            const birthdayYear = nextBirthday.getFullYear();
+            const alreadySentOffer = (sentOffersData || []).some(offer => {
+              if (offer.pet_id !== pet.pet_id) return false;
+              const sentDate = new Date(offer.sent_at);
+              const sentYear = sentDate.getFullYear();
+              // Check if sent in the same year as the upcoming birthday
+              // and within the birthday window (30 days before to the birthday itself)
+              const offerBirthdayWindow = new Date(nextBirthday);
+              offerBirthdayWindow.setDate(offerBirthdayWindow.getDate() - 30);
+              return sentDate >= offerBirthdayWindow && sentDate <= nextBirthday;
+            });
+
             return {
               ...pet,
               daysUntil,
               nextBirthday,
               age,
+              alreadySentOffer,
             };
           })
           .filter(pet => pet.daysUntil <= 30) // Show birthdays within 30 days
@@ -508,18 +524,25 @@ const BusinessCustomerBirthdays = () => {
                           )}
                         </div>
                       </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="shrink-0"
-                        onClick={() => {
-                          setSelectedPetForOffer(pet);
-                          setOfferModalOpen(true);
-                        }}
-                      >
-                        <Gift className="mr-2 h-4 w-4" />
-                        Send Offer
-                      </Button>
+                      {pet.alreadySentOffer ? (
+                        <Badge variant="secondary" className="shrink-0 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                          <Gift className="mr-1 h-3 w-3" />
+                          Offer Sent
+                        </Badge>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="shrink-0"
+                          onClick={() => {
+                            setSelectedPetForOffer(pet);
+                            setOfferModalOpen(true);
+                          }}
+                        >
+                          <Gift className="mr-2 h-4 w-4" />
+                          Send Offer
+                        </Button>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -625,8 +648,18 @@ const BusinessCustomerBirthdays = () => {
         businessName={businessName}
         existingOffers={businessOffers}
         onSuccess={() => {
+          // Mark the pet as having received an offer immediately in the UI
+          if (selectedPetForOffer) {
+            setUpcomingBirthdays(prev => 
+              prev.map(pet => 
+                pet.pet_id === selectedPetForOffer.pet_id 
+                  ? { ...pet, alreadySentOffer: true } 
+                  : pet
+              )
+            );
+          }
           setSelectedPetForOffer(null);
-          // Refresh sent offers
+          // Refresh sent offers list
           if (businessId) {
             supabase
               .from("sent_birthday_offers")
