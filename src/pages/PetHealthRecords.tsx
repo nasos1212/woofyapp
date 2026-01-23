@@ -901,14 +901,22 @@ const PetHealthRecords = () => {
                       {/* Preferred time for daily medications */}
                       {intervalType === 'daily' && (
                         <div className="space-y-2">
-                          <Label>Preferred Time (Cyprus/Athens timezone)</Label>
-                          <Input
-                            type="time"
-                            value={preferredTime}
-                            onChange={(e) => setPreferredTime(e.target.value)}
-                          />
+                          <Label>Preferred Time (24h format, Cyprus/Athens timezone)</Label>
+                          <div className="relative">
+                            <Input
+                              type="time"
+                              value={preferredTime}
+                              onChange={(e) => setPreferredTime(e.target.value)}
+                              className="[&::-webkit-calendar-picker-indicator]:opacity-100"
+                            />
+                            {preferredTime && (
+                              <span className="absolute right-10 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+                                {preferredTime}
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground">
-                            Set a reminder time for this daily medication
+                            Set a reminder time for this daily medication (e.g. 09:00, 14:30)
                           </p>
                         </div>
                       )}
