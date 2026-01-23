@@ -65,7 +65,7 @@ const Auth = () => {
       await new Promise(resolve => setTimeout(resolve, 300));
       
       // Check business role, business record, membership status, and shelter in parallel
-      const [businessRoleResult, shelterRoleResult, businessResult, membershipResult, shelterResult] = await Promise.all([
+      const [businessRoleResult, shelterRoleResult, businessResult, membershipResult, shelterResult, profileResult] = await Promise.all([
         supabase
           .from("user_roles")
           .select("id")
@@ -92,6 +92,11 @@ const Auth = () => {
           .from("shelters")
           .select("id, verification_status")
           .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("full_name")
+          .eq("user_id", user.id)
           .maybeSingle()
       ]);
       
@@ -100,6 +105,7 @@ const Auth = () => {
       const { data: business, error: businessError } = businessResult;
       const { data: membership, error: membershipError } = membershipResult;
       const { data: shelter, error: shelterError } = shelterResult;
+      const { data: profile } = profileResult;
       
       if (roleError) {
         console.error("Error checking business role:", roleError);
@@ -122,6 +128,15 @@ const Auth = () => {
       const hasBusiness = !!business;
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
+      const userName = profile?.full_name || "there";
+      
+      // Helper to show welcome toast
+      const showWelcomeToast = () => {
+        toast({
+          title: `Hello ${userName}! 👋`,
+          description: "Great to have you here!",
+        });
+      };
       
       // CASE 0: Check for rejected accounts - show dialog (sign out happens when dialog closes)
       if (business?.verification_status === "rejected") {
@@ -138,6 +153,7 @@ const Auth = () => {
       
       // CASE 1: User has a shelter OR shelter role - redirect appropriately
       if (hasShelter) {
+        showWelcomeToast();
         navigate("/shelter-dashboard");
         return;
       }
@@ -151,17 +167,11 @@ const Auth = () => {
       // CASE 2: User has business role OR business account - redirect to business
       // This catches users who started business registration but didn't complete it
       if (hasBusinessRole || hasBusiness) {
-        // Fetch user's name from profile to pre-fill business name if needed
         if (!hasBusiness) {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("full_name")
-            .eq("user_id", user.id)
-            .maybeSingle();
-          
-          const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
+          const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
           navigate(`/partner-register${nameParam}`);
         } else {
+          showWelcomeToast();
           navigate("/business");
         }
         return;
@@ -174,6 +184,8 @@ const Auth = () => {
             title: "Pet Owner Account Found",
             description: "You're registered as a pet owner. Redirecting to your dashboard.",
           });
+        } else {
+          showWelcomeToast();
         }
         navigate("/member");
         return;
@@ -188,20 +200,14 @@ const Auth = () => {
       // CASE 4: User has neither business role nor membership - they're new
       // If they selected business type, add role and redirect to partner registration
       if (accountType === "business") {
-        // Fetch user's name from profile to pre-fill business name
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("full_name")
-          .eq("user_id", user.id)
-          .maybeSingle();
-        
-        const nameParam = profile?.full_name ? `?name=${encodeURIComponent(profile.full_name)}` : "";
+        const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
         navigate(`/partner-register${nameParam}`);
         return;
       }
       
       // If they selected member type and have no membership, go to free member dashboard
       if (accountType === "member") {
+        showWelcomeToast();
         navigate("/member/free");
         return;
       }
@@ -287,21 +293,9 @@ const Auth = () => {
             description: error.message,
             variant: "destructive",
           });
-        } else {
-          // Get user's name for welcome message
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("full_name")
-            .eq("email", email.trim().toLowerCase())
-            .maybeSingle();
-          
-          const userName = profile?.full_name || "there";
-          
-          toast({
-            title: `Hello ${userName}! 👋`,
-            description: "Great to have you here!",
-          });
         }
+        // Note: Welcome toast is now shown after rejection check in checkAndRedirect
+        // to avoid showing "Hello!" followed immediately by rejection dialog
       } else {
         // Check if email already exists with a different account type
         const { data: existingProfile } = await supabase
