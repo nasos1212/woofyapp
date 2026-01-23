@@ -78,7 +78,7 @@ interface NearbyOffer {
 
 const MemberDashboard = () => {
   const { user, loading, signOut } = useAuth();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [membership, setMembership] = useState<Membership | null>(null);
@@ -326,6 +326,16 @@ const MemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
+  // Redirect business users to their dashboard
+  if (isBusiness) {
+    return <Navigate to="/business" replace />;
+  }
+
+  // Redirect shelter users to their dashboard
+  if (isShelter) {
+    return <Navigate to="/shelter-dashboard" replace />;
+  }
+
   if (isLoading || hasMembership === null) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -335,7 +345,6 @@ const MemberDashboard = () => {
   }
 
   // Redirect users without membership to the free member dashboard
-  // Business users without a membership should also go to free dashboard (not back to business)
   if (hasMembership === false) {
     return <Navigate to="/member/free" replace />;
   }

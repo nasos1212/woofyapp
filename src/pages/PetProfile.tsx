@@ -69,7 +69,7 @@ const PetProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [pet, setPet] = useState<Pet | null>(null);
   
@@ -97,11 +97,13 @@ const PetProfile = () => {
         navigate("/auth?type=member");
       } else if (isBusiness) {
         navigate("/business");
+      } else if (isShelter) {
+        navigate("/shelter-dashboard");
       } else if (!membershipLoading && !hasMembership) {
         navigate("/member/free");
       }
     }
-  }, [user, authLoading, hasMembership, membershipLoading, isBusiness, accountTypeLoading, navigate]);
+  }, [user, authLoading, hasMembership, membershipLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
 
   useEffect(() => {
     const fetchPet = async () => {
