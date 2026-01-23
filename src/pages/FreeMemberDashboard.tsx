@@ -200,13 +200,7 @@ const FreeMemberDashboard = () => {
                     <MessageSquarePlus className="w-4 h-4" />
                     <span className="text-sm font-medium">Latest Questions</span>
                   </button>
-                  <button 
-                    onClick={() => navigate("/community/leaderboard")}
-                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" />
-                    <span className="text-sm font-medium">Top Contributors</span>
-                  </button>
+                  {/* Top Contributors temporarily hidden - may be re-enabled in future */}
                   <button 
                     onClick={() => navigate("/community")}
                     className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"

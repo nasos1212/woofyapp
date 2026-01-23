@@ -33,7 +33,8 @@ import Notifications from "./pages/Notifications";
 import Community from "./pages/Community";
 import CommunityAsk from "./pages/CommunityAsk";
 import CommunityQuestion from "./pages/CommunityQuestion";
-import CommunityLeaderboard from "./pages/CommunityLeaderboard";
+// CommunityLeaderboard temporarily disabled - may be re-enabled in future
+// import CommunityLeaderboard from "./pages/CommunityLeaderboard";
 import MemberUpgrade from "./pages/MemberUpgrade";
 import AddPet from "./pages/AddPet";
 import ShelterProfile from "./pages/ShelterProfile";
@@ -73,7 +74,8 @@ const App = () => (
               <Route path="/community" element={<Community />} />
               <Route path="/community/ask" element={<CommunityAsk />} />
               <Route path="/community/question/:id" element={<CommunityQuestion />} />
-              <Route path="/community/leaderboard" element={<CommunityLeaderboard />} />
+              {/* Leaderboard route temporarily disabled - may be re-enabled in future */}
+              {/* <Route path="/community/leaderboard" element={<CommunityLeaderboard />} /> */}
               <Route path="/business" element={<BusinessDashboard />} />
               <Route path="/business/offers" element={<BusinessOfferManagement />} />
               <Route path="/business/analytics" element={<BusinessAnalytics />} />
