@@ -902,21 +902,47 @@ const PetHealthRecords = () => {
                       {intervalType === 'daily' && (
                         <div className="space-y-2">
                           <Label>Preferred Time (24h format, Cyprus/Athens timezone)</Label>
-                          <div className="relative">
-                            <Input
-                              type="time"
-                              value={preferredTime}
-                              onChange={(e) => setPreferredTime(e.target.value)}
-                              className="[&::-webkit-calendar-picker-indicator]:opacity-100"
-                            />
-                            {preferredTime && (
-                              <span className="absolute right-10 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
-                                {preferredTime}
-                              </span>
-                            )}
+                          <div className="flex gap-2 items-center">
+                            <Select
+                              value={preferredTime ? preferredTime.split(':')[0] : ''}
+                              onValueChange={(hour) => {
+                                const minutes = preferredTime ? preferredTime.split(':')[1] || '00' : '00';
+                                setPreferredTime(`${hour}:${minutes}`);
+                              }}
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue placeholder="HH" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map((hour) => (
+                                  <SelectItem key={hour} value={hour}>
+                                    {hour}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <span className="text-lg font-medium">:</span>
+                            <Select
+                              value={preferredTime ? preferredTime.split(':')[1] || '00' : ''}
+                              onValueChange={(minute) => {
+                                const hour = preferredTime ? preferredTime.split(':')[0] || '09' : '09';
+                                setPreferredTime(`${hour}:${minute}`);
+                              }}
+                            >
+                              <SelectTrigger className="w-20">
+                                <SelectValue placeholder="MM" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {['00', '15', '30', '45'].map((minute) => (
+                                  <SelectItem key={minute} value={minute}>
+                                    {minute}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Set a reminder time for this daily medication (e.g. 09:00, 14:30)
+                            Set a reminder time for this daily medication
                           </p>
                         </div>
                       )}
