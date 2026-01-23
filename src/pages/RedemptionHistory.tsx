@@ -38,7 +38,7 @@ interface Redemption {
 const RedemptionHistory = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -57,11 +57,13 @@ const RedemptionHistory = () => {
         navigate("/auth?type=member");
       } else if (isBusiness) {
         navigate("/business");
+      } else if (isShelter) {
+        navigate("/shelter-dashboard");
       } else if (!membershipLoading && !hasMembership) {
         navigate("/member/free");
       }
     }
-  }, [user, loading, hasMembership, membershipLoading, isBusiness, accountTypeLoading, navigate]);
+  }, [user, loading, hasMembership, membershipLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (user) {

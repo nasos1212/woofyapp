@@ -23,7 +23,7 @@ import { validateImageFile } from "@/lib/fileValidation";
 const AddPet = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [petType, setPetType] = useState<PetType>("dog");
   const [petName, setPetName] = useState("");
@@ -51,10 +51,16 @@ const AddPet = () => {
   }, [petType]);
 
   useEffect(() => {
-    // Redirect business users
-    if (!loading && !accountTypeLoading && isBusiness) {
-      navigate("/business");
-      return;
+    // Redirect business or shelter users
+    if (!loading && !accountTypeLoading) {
+      if (isBusiness) {
+        navigate("/business");
+        return;
+      }
+      if (isShelter) {
+        navigate("/shelter-dashboard");
+        return;
+      }
     }
 
     const checkMembership = async () => {
@@ -217,6 +223,16 @@ const AddPet = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Shelter users should not be here
+  if (isShelter) {
+    return <Navigate to="/shelter-dashboard" replace />;
+  }
+
+  // Business users should not be here
+  if (isBusiness) {
+    return <Navigate to="/business" replace />;
   }
 
   if (!hasMembership) {

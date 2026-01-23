@@ -71,7 +71,7 @@ const categories = [
 const MemberOffers = () => {
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
-  const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
@@ -95,10 +95,12 @@ const MemberOffers = () => {
         navigate("/auth?type=member");
       } else if (isBusiness) {
         navigate("/business");
+      } else if (isShelter) {
+        navigate("/shelter-dashboard");
       }
     }
     // Allow free members to browse - they'll see upgrade prompts
-  }, [user, loading, accountTypeLoading, isBusiness, navigate]);
+  }, [user, loading, accountTypeLoading, isBusiness, isShelter, navigate]);
 
   useEffect(() => {
     if (user) {
