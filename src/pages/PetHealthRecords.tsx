@@ -293,9 +293,11 @@ const PetHealthRecords = () => {
     let calculatedNextDueDate: string | null = null;
     const hasInterval = recordType === 'vaccination' || recordType === 'medication';
     
-    if (hasInterval && dateAdministered && intervalType !== 'once') {
+    if (hasInterval && intervalType !== 'once') {
       const intervalDays = getIntervalDays();
-      calculatedNextDueDate = format(addDays(new Date(dateAdministered), intervalDays), "yyyy-MM-dd");
+      // Use date_administered if provided, otherwise default to today
+      const baseDate = dateAdministered ? new Date(dateAdministered) : new Date();
+      calculatedNextDueDate = format(addDays(baseDate, intervalDays), "yyyy-MM-dd");
     } else if (!hasInterval) {
       // For other record types, use the manually entered next due date
       calculatedNextDueDate = nextDueDate || null;
