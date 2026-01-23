@@ -163,11 +163,12 @@ serve(async (req) => {
       ? pets.map(p => p.pet_name).join(', ') 
       : (membership.pet_name || 'Not specified');
 
-    // Check for pending birthday offers for this member from ANY business
+    // Check for pending birthday offers for this member from THIS business only
     const { data: pendingBirthdayOffers } = await supabaseAdmin
       .from('sent_birthday_offers')
       .select('id, pet_name, discount_value, discount_type, message, business_id, sent_at')
       .eq('owner_user_id', membership.user_id)
+      .eq('business_id', businessId)
       .is('redeemed_at', null);
 
     // Check if membership is expired
