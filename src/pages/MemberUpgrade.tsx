@@ -127,12 +127,15 @@ const MemberUpgrade = () => {
     }
   }, [user, loading]);
 
+  // Freemium users have no membership record - they're not "expired", they're new signups
+  const isFreemiumUser = !membership;
+  
   const daysUntilExpiry = membership?.expires_at
     ? differenceInDays(new Date(membership.expires_at), new Date())
-    : 0;
+    : null;
 
-  const isExpiringSoon = daysUntilExpiry <= 30 && daysUntilExpiry > 0;
-  const isExpired = daysUntilExpiry <= 0;
+  const isExpiringSoon = daysUntilExpiry !== null && daysUntilExpiry <= 30 && daysUntilExpiry > 0;
+  const isExpired = membership && daysUntilExpiry !== null && daysUntilExpiry <= 0;
 
   const handlePlanChange = async (planId: string, isDowngrade: boolean = false) => {
     if (!membership || !user) return;
@@ -173,6 +176,52 @@ const MemberUpgrade = () => {
       navigate("/member");
     } catch (error) {
       console.error("Error changing plan:", error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again or contact support.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+      setSelectedPlan(null);
+    }
+  };
+
+  const handleNewSignup = async (planId: string) => {
+    if (!user) return;
+    
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) return;
+
+    setIsProcessing(true);
+    setSelectedPlan(planId);
+
+    try {
+      // Generate member number
+      const memberNumber = `WF${Date.now().toString(36).toUpperCase()}`;
+      const expiryDate = addYears(new Date(), 1);
+
+      const { error } = await supabase
+        .from("memberships")
+        .insert({
+          user_id: user.id,
+          plan_type: planId,
+          max_pets: plan.maxPets,
+          member_number: memberNumber,
+          expires_at: expiryDate.toISOString(),
+          is_active: true
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Welcome to Wooffy! 🎉",
+        description: `Your ${plan.name} membership is now active until ${format(expiryDate, "MMM d, yyyy")}.`,
+      });
+
+      navigate("/member");
+    } catch (error) {
+      console.error("Error creating membership:", error);
       toast({
         title: "Something went wrong",
         description: "Please try again or contact support.",
@@ -248,8 +297,8 @@ const MemberUpgrade = () => {
     return null;
   }
 
-  const currentPlanIndex = plans.findIndex(p => p.id === membership?.plan_type);
-  const currentPlan = plans.find(p => p.id === membership?.plan_type);
+  const currentPlanIndex = membership ? plans.findIndex(p => p.id === membership.plan_type) : -1;
+  const currentPlan = membership ? plans.find(p => p.id === membership.plan_type) : null;
 
   return (
     <>
@@ -265,15 +314,15 @@ const MemberUpgrade = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/member")}
+            onClick={() => navigate(isFreemiumUser ? "/member/free" : "/member")}
             className="mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
           </Button>
 
-          {/* Renewal Banner */}
-          {(isExpiringSoon || isExpired) && (
+          {/* Renewal Banner - only for existing members with expiring/expired subscriptions */}
+          {!isFreemiumUser && (isExpiringSoon || isExpired) && (
             <Alert className={`mb-6 ${isExpired ? 'border-destructive bg-destructive/10' : 'border-amber-500 bg-amber-50'}`}>
               <Clock className={`h-4 w-4 ${isExpired ? 'text-destructive' : 'text-amber-600'}`} />
               <AlertDescription className={isExpired ? 'text-destructive' : 'text-amber-800'}>
@@ -289,15 +338,23 @@ const MemberUpgrade = () => {
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Manage Your Plan</span>
+              <span className="text-sm font-medium text-primary">
+                {isFreemiumUser ? "Become a Member" : "Manage Your Plan"}
+              </span>
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
-              {isExpiringSoon || isExpired ? "Renew & Save 🎉" : "Choose Your Plan 🐾"}
+              {isFreemiumUser 
+                ? "Join Wooffy Today! 🐾" 
+                : isExpiringSoon || isExpired 
+                  ? "Renew & Save 🎉" 
+                  : "Choose Your Plan 🐾"}
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              {isExpiringSoon || isExpired 
-                ? "Renew your membership with special loyalty discounts - save up to €30/year!"
-                : "Upgrade or change your plan anytime to fit your furry family."}
+              {isFreemiumUser
+                ? "Unlock exclusive discounts, AI pet assistance, and more for your furry family."
+                : isExpiringSoon || isExpired 
+                  ? "Renew your membership with special loyalty discounts - save up to €30/year!"
+                  : "Upgrade or change your plan anytime to fit your furry family."}
             </p>
           </div>
 
@@ -305,9 +362,9 @@ const MemberUpgrade = () => {
             {plans.map((plan, index) => {
               const Icon = plan.icon;
               const isCurrentPlan = membership?.plan_type === plan.id;
-              const isDowngrade = index < currentPlanIndex;
-              const isUpgrade = index > currentPlanIndex;
-              const showRenewalPrice = isExpiringSoon || isExpired;
+              const isDowngrade = !isFreemiumUser && index < currentPlanIndex;
+              const isUpgrade = !isFreemiumUser && index > currentPlanIndex;
+              const showRenewalPrice = !isFreemiumUser && (isExpiringSoon || isExpired);
               const savings = plan.price - plan.renewalPrice;
 
               return (
@@ -319,19 +376,19 @@ const MemberUpgrade = () => {
                       : 'border-border'
                   } ${isCurrentPlan ? 'ring-2 ring-green-500/50' : ''}`}
                 >
-                  {plan.highlight && !isCurrentPlan && (
+                  {plan.highlight && !isCurrentPlan && !showRenewalPrice && (
                     <div className="absolute top-0 left-0 right-0 bg-primary text-primary-foreground text-xs font-medium py-1 text-center">
                       Most Popular
                     </div>
                   )}
-                  {isCurrentPlan && (
+                  {isCurrentPlan && !showRenewalPrice && (
                     <div className="absolute top-0 left-0 right-0 bg-green-500 text-white text-xs font-medium py-1 text-center">
                       Current Plan
                     </div>
                   )}
-                  {showRenewalPrice && !isCurrentPlan && (
+                  {showRenewalPrice && (
                     <div className="absolute top-0 left-0 right-0 bg-amber-500 text-white text-xs font-medium py-1 text-center">
-                      Save €{savings}/year!
+                      {isCurrentPlan ? "Renew Now" : `Save €${savings}/year!`}
                     </div>
                   )}
                   
@@ -382,7 +439,24 @@ const MemberUpgrade = () => {
                       ))}
                     </ul>
 
-                    {isCurrentPlan ? (
+                    {isFreemiumUser ? (
+                      // Freemium users see "Get Started" buttons for new signup
+                      <Button 
+                        variant={plan.highlight ? "hero" : "default"}
+                        className="w-full"
+                        onClick={() => handleNewSignup(plan.id)}
+                        disabled={isProcessing}
+                      >
+                        {isProcessing && selectedPlan === plan.id ? (
+                          "Processing..."
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 mr-2" />
+                            Get Started
+                          </>
+                        )}
+                      </Button>
+                    ) : isCurrentPlan ? (
                       showRenewalPrice ? (
                         <Button 
                           variant="hero"
