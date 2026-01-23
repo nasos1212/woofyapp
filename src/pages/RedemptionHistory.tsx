@@ -121,7 +121,7 @@ const RedemptionHistory = () => {
         isBirthday: false,
       }));
 
-      // Fetch birthday offer redemptions
+      // Fetch birthday offer redemptions - use redeemed_by_business_id for the business that actually redeemed it
       const { data: birthdayData, error: birthdayError } = await supabase
         .from("sent_birthday_offers")
         .select(`
@@ -131,7 +131,7 @@ const RedemptionHistory = () => {
           discount_value,
           discount_type,
           message,
-          business:businesses(id, business_name, category)
+          redeemed_by_business:businesses!sent_birthday_offers_redeemed_by_business_id_fkey(id, business_name, category)
         `)
         .eq("owner_user_id", user.id)
         .not("redeemed_at", "is", null)
@@ -150,7 +150,7 @@ const RedemptionHistory = () => {
           discount_value: r.discount_value,
           discount_type: r.discount_type,
         },
-        business: r.business as unknown as Redemption["business"],
+        business: r.redeemed_by_business as unknown as Redemption["business"],
         isBirthday: true,
         petName: r.pet_name,
       }));
