@@ -42,6 +42,7 @@ interface Pet {
   id: string;
   pet_name: string;
   pet_breed: string | null;
+  pet_type: "dog" | "cat";
 }
 
 const recordTypeConfig: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
@@ -71,33 +72,35 @@ interface TreatmentPreset {
   intervalDays: number;
   description: string;
   recordType: string;
+  petType: 'dog' | 'cat' | 'both'; // Which pet type this preset applies to
 }
 
 const TREATMENT_PRESETS: TreatmentPreset[] = [
-  // Daily medications
-  { id: 'allopurinol', name: 'Allopurinol (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily medication for leishmaniasis treatment', recordType: 'medication' },
-  { id: 'milteforan', name: 'Milteforan (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily oral treatment for leishmaniasis', recordType: 'medication' },
+  // Daily medications (both)
+  { id: 'allopurinol', name: 'Allopurinol (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily medication for leishmaniasis treatment', recordType: 'medication', petType: 'dog' },
+  { id: 'milteforan', name: 'Milteforan (Leishmaniasis)', category: 'medication', intervalType: 'daily', intervalDays: 1, description: 'Daily oral treatment for leishmaniasis', recordType: 'medication', petType: 'dog' },
   
-  // Prevention treatments (monthly)
-  { id: 'flea-tick', name: 'Flea & Tick Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly topical or oral flea and tick prevention', recordType: 'medication' },
-  { id: 'heartworm', name: 'Heartworm Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly heartworm preventative medication', recordType: 'medication' },
+  // Prevention treatments (monthly) - both pets
+  { id: 'flea-tick', name: 'Flea & Tick Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly topical or oral flea and tick prevention', recordType: 'medication', petType: 'both' },
+  { id: 'heartworm', name: 'Heartworm Prevention', category: 'prevention', intervalType: 'monthly', intervalDays: 30, description: 'Monthly heartworm preventative medication', recordType: 'medication', petType: 'both' },
   
-  // Quarterly treatments
-  { id: 'deworming', name: 'Deworming Treatment', category: 'medication', intervalType: 'quarterly', intervalDays: 90, description: 'Intestinal parasite prevention', recordType: 'medication' },
+  // Quarterly treatments - both pets
+  { id: 'deworming', name: 'Deworming Treatment', category: 'medication', intervalType: 'quarterly', intervalDays: 90, description: 'Intestinal parasite prevention', recordType: 'medication', petType: 'both' },
   
-  // Biannual treatments (vaccines)
-  { id: 'bordetella', name: 'Bordetella (Kennel Cough)', category: 'vaccine', intervalType: 'biannually', intervalDays: 180, description: 'Kennel cough vaccine, often required for boarding', recordType: 'vaccination' },
+  // Dog-specific vaccines
+  { id: 'bordetella', name: 'Bordetella (Kennel Cough)', category: 'vaccine', intervalType: 'biannually', intervalDays: 180, description: 'Kennel cough vaccine, often required for boarding', recordType: 'vaccination', petType: 'dog' },
+  { id: 'rabies-dog', name: 'Rabies Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Required by law in most areas', recordType: 'vaccination', petType: 'dog' },
+  { id: 'dhpp', name: 'DHPP/DAPP (Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Distemper, Hepatitis, Parvo, Parainfluenza', recordType: 'vaccination', petType: 'dog' },
+  { id: 'leptospirosis', name: 'Leptospirosis Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Bacterial infection vaccine', recordType: 'vaccination', petType: 'dog' },
+  { id: 'lyme', name: 'Lyme Disease Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Tick-borne disease prevention', recordType: 'vaccination', petType: 'dog' },
+  { id: 'canine-influenza', name: 'Canine Influenza (Dog Flu)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'H3N2 and H3N8 strains', recordType: 'vaccination', petType: 'dog' },
   
-  // Annual vaccines
-  { id: 'rabies', name: 'Rabies Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Required by law in most areas', recordType: 'vaccination' },
-  { id: 'dhpp', name: 'DHPP/DAPP (Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Distemper, Hepatitis, Parvo, Parainfluenza', recordType: 'vaccination' },
-  { id: 'leptospirosis', name: 'Leptospirosis Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Bacterial infection vaccine', recordType: 'vaccination' },
-  { id: 'lyme', name: 'Lyme Disease Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Tick-borne disease prevention', recordType: 'vaccination' },
-  { id: 'canine-influenza', name: 'Canine Influenza (Dog Flu)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'H3N2 and H3N8 strains', recordType: 'vaccination' },
-  
-  // Cat vaccines
-  { id: 'fvrcp', name: 'FVRCP (Cat Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Feline viral rhinotracheitis, calicivirus, panleukopenia', recordType: 'vaccination' },
-  { id: 'feline-leukemia', name: 'Feline Leukemia (FeLV)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Recommended for outdoor cats', recordType: 'vaccination' },
+  // Cat-specific vaccines
+  { id: 'rabies-cat', name: 'Rabies Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Required by law in most areas', recordType: 'vaccination', petType: 'cat' },
+  { id: 'fvrcp', name: 'FVRCP (Core Vaccine)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Feline viral rhinotracheitis, calicivirus, panleukopenia', recordType: 'vaccination', petType: 'cat' },
+  { id: 'feline-leukemia', name: 'Feline Leukemia (FeLV)', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Recommended for outdoor cats', recordType: 'vaccination', petType: 'cat' },
+  { id: 'feline-chlamydia', name: 'Chlamydia Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Protects against feline chlamydiosis', recordType: 'vaccination', petType: 'cat' },
+  { id: 'fip', name: 'FIP Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Feline Infectious Peritonitis prevention', recordType: 'vaccination', petType: 'cat' },
 ];
 
 const PetHealthRecords = () => {
@@ -173,19 +176,23 @@ const PetHealthRecords = () => {
     if (membership) {
       const { data: petsData } = await supabase
         .from("pets")
-        .select("id, pet_name, pet_breed")
+        .select("id, pet_name, pet_breed, pet_type")
         .eq("membership_id", membership.id);
 
       if (petsData && petsData.length > 0) {
-        setPets(petsData);
+        const typedPets = petsData.map(p => ({
+          ...p,
+          pet_type: (p.pet_type === 'cat' ? 'cat' : 'dog') as 'dog' | 'cat'
+        }));
+        setPets(typedPets);
         
         // Check for pet query parameter to auto-select specific pet
         const petIdFromUrl = searchParams.get('pet');
         if (petIdFromUrl) {
-          const targetPet = petsData.find(p => p.id === petIdFromUrl);
-          setSelectedPet(targetPet || petsData[0]);
+          const targetPet = typedPets.find(p => p.id === petIdFromUrl);
+          setSelectedPet(targetPet || typedPets[0]);
         } else {
-          setSelectedPet(petsData[0]);
+          setSelectedPet(typedPets[0]);
         }
       }
     }
@@ -710,10 +717,10 @@ const PetHealthRecords = () => {
                     </Select>
                   </div>
 
-                  {/* Show presets for vaccinations and medications - filtered by record type */}
-                  {(recordType === 'vaccination' || recordType === 'medication') && (
+                  {/* Show presets for vaccinations and medications - filtered by record type AND pet type */}
+                  {(recordType === 'vaccination' || recordType === 'medication') && selectedPet && (
                     <div className="space-y-2">
-                      <Label>Quick Select (Optional)</Label>
+                      <Label>Quick Select for {selectedPet.pet_name} ({selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'})</Label>
                       <Select value={selectedPreset} onValueChange={handlePresetSelect}>
                         <SelectTrigger>
                           <SelectValue placeholder="Choose a common treatment..." />
@@ -721,30 +728,64 @@ const PetHealthRecords = () => {
                         <SelectContent>
                           {recordType === 'medication' && (
                             <>
-                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
-                              {TREATMENT_PRESETS.filter(p => p.recordType === 'medication' && p.intervalType === 'daily').map((preset) => (
-                                <SelectItem key={preset.id} value={preset.id}>
-                                  💊 {preset.name}
-                                </SelectItem>
-                              ))}
+                              {TREATMENT_PRESETS.filter(p => 
+                                p.recordType === 'medication' && 
+                                p.intervalType === 'daily' && 
+                                (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                              ).length > 0 && (
+                                <>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
+                                  {TREATMENT_PRESETS.filter(p => 
+                                    p.recordType === 'medication' && 
+                                    p.intervalType === 'daily' && 
+                                    (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                                  ).map((preset) => (
+                                    <SelectItem key={preset.id} value={preset.id}>
+                                      💊 {preset.name}
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
                               <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
-                              {TREATMENT_PRESETS.filter(p => p.category === 'prevention').map((preset) => (
+                              {TREATMENT_PRESETS.filter(p => 
+                                p.category === 'prevention' && 
+                                (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                              ).map((preset) => (
                                 <SelectItem key={preset.id} value={preset.id}>
                                   💊 {preset.name}
                                 </SelectItem>
                               ))}
-                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Other Medications</div>
-                              {TREATMENT_PRESETS.filter(p => p.recordType === 'medication' && p.category === 'medication' && p.intervalType !== 'daily').map((preset) => (
-                                <SelectItem key={preset.id} value={preset.id}>
-                                  💉 {preset.name}
-                                </SelectItem>
-                              ))}
+                              {TREATMENT_PRESETS.filter(p => 
+                                p.recordType === 'medication' && 
+                                p.category === 'medication' && 
+                                p.intervalType !== 'daily' && 
+                                (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                              ).length > 0 && (
+                                <>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Other Medications</div>
+                                  {TREATMENT_PRESETS.filter(p => 
+                                    p.recordType === 'medication' && 
+                                    p.category === 'medication' && 
+                                    p.intervalType !== 'daily' && 
+                                    (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                                  ).map((preset) => (
+                                    <SelectItem key={preset.id} value={preset.id}>
+                                      💉 {preset.name}
+                                    </SelectItem>
+                                  ))}
+                                </>
+                              )}
                             </>
                           )}
                           {recordType === 'vaccination' && (
                             <>
-                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Vaccines</div>
-                              {TREATMENT_PRESETS.filter(p => p.recordType === 'vaccination').map((preset) => (
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                                {selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'} Vaccines
+                              </div>
+                              {TREATMENT_PRESETS.filter(p => 
+                                p.recordType === 'vaccination' && 
+                                (p.petType === 'both' || p.petType === selectedPet.pet_type)
+                              ).map((preset) => (
                                 <SelectItem key={preset.id} value={preset.id}>
                                   🛡️ {preset.name}
                                 </SelectItem>
@@ -752,7 +793,7 @@ const PetHealthRecords = () => {
                             </>
                           )}
                           <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-1"></div>
-                          <SelectItem value="custom">✏️ Other</SelectItem>
+                          <SelectItem value="custom">✏️ Other / Custom</SelectItem>
                         </SelectContent>
                       </Select>
                       {selectedPreset && selectedPreset !== 'custom' && (
