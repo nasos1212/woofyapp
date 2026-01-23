@@ -1027,7 +1027,7 @@ const BusinessDashboard = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Member</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Customer</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Pet</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Offer</th>
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Time</th>
