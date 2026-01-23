@@ -192,7 +192,9 @@ const Notifications = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
                         <h3 className="font-medium text-foreground">
-                          {notification.title}
+                          {notification.type === "lost_pet_alert" 
+                            ? notification.title.replace("Area", "Area 🚨")
+                            : notification.title}
                         </h3>
                         {!notification.read && (
                           <span className="flex-shrink-0 h-2 w-2 rounded-full bg-primary" />
