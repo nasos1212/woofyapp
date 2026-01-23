@@ -98,8 +98,8 @@ serve(async (req) => {
         continue;
       }
 
-      // Calculate upcoming birthdays - notify 3 days before AND on the day
-      const NOTIFICATION_DAYS = [3, 2, 1, 0]; // 3 days before and on the day (include 1,2 for safety)
+      // Calculate upcoming birthdays - notify on days 0, 1, 2, 3 (covers the full window)
+      const NOTIFICATION_DAYS = [0, 1, 2, 3];
       
       const upcomingBirthdays = petsData.map(pet => {
         if (!pet.birthday) return null;
@@ -122,8 +122,8 @@ serve(async (req) => {
         
         console.log(`Pet ${pet.pet_name}: birthday ${pet.birthday}, thisYearBirthday ${thisYearBirthday.toISOString()}, daysUntil ${daysUntil}`);
         
-        // Check if this is a notification day (3 days before or on the day)
-        if (daysUntil === 0 || daysUntil === 3) {
+        // Check if this is within notification window (0-3 days)
+        if (NOTIFICATION_DAYS.includes(daysUntil)) {
           return { ...pet, daysUntil };
         }
         return null;
