@@ -354,6 +354,15 @@ serve(async (req) => {
         }
       }
 
+      // Determine which pet name to store - if a specific pet was selected, use that
+      let petNameForRedemption = petNames;
+      if (petId) {
+        const selectedPet = petsData?.find(p => p.id === petId);
+        if (selectedPet) {
+          petNameForRedemption = selectedPet.pet_name || 'Pet';
+        }
+      }
+
       // Insert the redemption
       const { data: redemption, error: redemptionError } = await supabaseAdmin
         .from('offer_redemptions')
@@ -363,8 +372,9 @@ serve(async (req) => {
           business_id: businessId,
           redeemed_by_user_id: user.id,
           member_name: memberName,
-          pet_names: petNames,
+          pet_names: petNameForRedemption,
           member_number: membership.member_number,
+          pet_id: petId || null,
         })
         .select()
         .single();
@@ -426,7 +436,7 @@ serve(async (req) => {
             business_name: business.business_name,
             redeemed_at: redemption.redeemed_at,
             member_name: memberName,
-            pet_names: petNames,
+            pet_names: petNameForRedemption,
             member_number: membership.member_number,
           }
         }),
