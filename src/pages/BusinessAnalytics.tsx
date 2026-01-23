@@ -388,7 +388,7 @@ const BusinessAnalytics = () => {
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.thisMonth}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">This Month</p>
+              <p className="text-xs sm:text-sm text-slate-500">Redemptions This Month</p>
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
