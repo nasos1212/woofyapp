@@ -159,7 +159,11 @@ const NotificationBell = () => {
                 }`}
                 onClick={() => handleNotificationClick(notification)}
               >
-                <span className="font-medium">{notification.title}</span>
+                <span className="font-medium">
+                  {notification.type === "lost_pet_alert" 
+                    ? notification.title.replace("Area", "Area 🚨")
+                    : notification.title}
+                </span>
                 <span className="text-sm text-muted-foreground line-clamp-2">
                   {notification.message}
                 </span>
