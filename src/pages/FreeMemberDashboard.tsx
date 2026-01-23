@@ -14,7 +14,6 @@ import {
   Crown,
   Shield,
   HelpCircle,
-  Trophy,
   Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
