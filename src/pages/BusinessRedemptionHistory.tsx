@@ -332,7 +332,7 @@ const BusinessRedemptionHistory = () => {
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">{filteredRedemptions.length}</p>
             </div>
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
-              <p className="text-slate-500 text-xs sm:text-sm">Members</p>
+              <p className="text-slate-500 text-xs sm:text-sm">Customers</p>
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">
                 {new Set(filteredRedemptions.map(r => r.member_number).filter(Boolean)).size}
               </p>
@@ -346,7 +346,7 @@ const BusinessRedemptionHistory = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder="Search member..."
+                  placeholder="Search customer..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -421,7 +421,7 @@ const BusinessRedemptionHistory = () => {
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
                       <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Date & Time</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Member</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Customer</th>
                       <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Pet</th>
                       <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Offer</th>
                       <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Discount</th>
