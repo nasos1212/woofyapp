@@ -336,6 +336,35 @@ const PetProfile = () => {
     }
   };
 
+  const handlePhotoRemove = async () => {
+    if (!pet || !pet.photo_url) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      // Delete photo from storage
+      const photoPath = pet.photo_url.split('/pet-photos/')[1];
+      if (photoPath) {
+        await supabase.storage.from('pet-photos').remove([decodeURIComponent(photoPath)]);
+      }
+
+      // Update pet record to remove photo_url
+      const { error: updateError } = await supabase
+        .from('pets')
+        .update({ photo_url: null })
+        .eq('id', pet.id);
+
+      if (updateError) throw updateError;
+
+      setPet({ ...pet, photo_url: null });
+      toast.success('Photo removed!');
+    } catch (error) {
+      console.error('Error removing photo:', error);
+      toast.error('Failed to remove photo');
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!pet) return;
     setIsDeleting(true);
@@ -452,10 +481,20 @@ const PetProfile = () => {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingPhoto}
                     className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors disabled:opacity-50"
-                    title="Upload photo"
+                    title="Change photo"
                   >
                     <Camera className="w-4 h-4 text-gray-700" />
                   </button>
+                  {pet.photo_url && (
+                    <button
+                      onClick={handlePhotoRemove}
+                      disabled={isUploadingPhoto}
+                      className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md hover:bg-destructive/90 transition-colors disabled:opacity-50"
+                      title="Remove photo"
+                    >
+                      <X className="w-3 h-3 text-white" />
+                    </button>
+                  )}
                 </div>
                 <div className="flex-1">
                   {isEditing ? (
