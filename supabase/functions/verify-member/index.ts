@@ -388,8 +388,27 @@ serve(async (req) => {
     } else {
       // Per-member: check if already redeemed within the frequency period
       
-      // Get all pets for optional selection (for data tracking)
-      const allPets = pets || [];
+      // Filter pets by offer's pet_type if specified (for per-member offers too)
+      const eligiblePets = offer?.pet_type 
+        ? (pets || []).filter(pet => pet.pet_type === offer.pet_type)
+        : (pets || []);
+
+      // If offer has pet_type restriction but member has no eligible pets
+      if (offer?.pet_type && eligiblePets.length === 0) {
+        const petTypeLabel = offer.pet_type === 'dog' ? 'dogs' : 'cats';
+        return new Response(
+          JSON.stringify({
+            status: 'already_redeemed',
+            memberName: profile?.full_name || 'Member',
+            petName: petNames,
+            memberId: membership.member_number,
+            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            offerTitle: offer?.title,
+            message: `This offer is only for ${petTypeLabel}. You don't have any registered ${petTypeLabel}.`,
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       
       // If unlimited frequency, always allow
       if (redemptionFrequency === 'unlimited') {
@@ -405,9 +424,10 @@ serve(async (req) => {
             offerId: offerId,
             offerTitle: offer?.title,
             offerType: 'per_member',
+            offerPetType: offer?.pet_type || null,
             redemptionFrequency: redemptionFrequency,
-            availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
-            totalPets: allPets.length,
+            availablePets: eligiblePets.map(p => ({ id: p.id, name: p.pet_name })),
+            totalPets: eligiblePets.length,
             pendingBirthdayOffers: pendingBirthdayOffers || [],
           }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -446,7 +466,7 @@ serve(async (req) => {
         );
       }
 
-      // Valid membership for per-member offer - include pets for optional tracking
+      // Valid membership for per-member offer - include eligible pets for optional tracking
       return new Response(
         JSON.stringify({
           status: 'valid',
@@ -459,9 +479,10 @@ serve(async (req) => {
           offerId: offerId,
           offerTitle: offer?.title,
           offerType: 'per_member',
+          offerPetType: offer?.pet_type || null,
           redemptionFrequency: redemptionFrequency,
-          availablePets: allPets.map(p => ({ id: p.id, name: p.pet_name })),
-          totalPets: allPets.length,
+          availablePets: eligiblePets.map(p => ({ id: p.id, name: p.pet_name })),
+          totalPets: eligiblePets.length,
           pendingBirthdayOffers: pendingBirthdayOffers || [],
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
