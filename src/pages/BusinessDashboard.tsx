@@ -59,6 +59,8 @@ interface Redemption {
   member_name: string | null;
   pet_names: string | null;
   member_number: string | null;
+  membership_id?: string | null;
+  isBirthday?: boolean;
   offer: {
     title: string;
     discount_value: number;
@@ -139,7 +141,7 @@ const BusinessDashboard = () => {
       setSelectedOfferId("birthday");
     }
 
-    // Fetch ALL redemptions for this business to calculate accurate stats
+    // Fetch ALL regular redemptions for this business
     const { data: allRedemptionsData } = await supabase
       .from('offer_redemptions')
       .select(`
@@ -152,43 +154,90 @@ const BusinessDashboard = () => {
         offer:offers(title, discount_value, discount_type)
       `)
       .eq('business_id', businessData.id)
-      .order('redeemed_at', { ascending: true }); // Order by oldest first to track first visits
+      .order('redeemed_at', { ascending: true });
 
-    if (allRedemptionsData) {
-      // Get recent 10 for display
-      const recentRedemptions = [...allRedemptionsData]
-        .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime())
-        .slice(0, 10);
-      setRecentRedemptions(recentRedemptions as unknown as Redemption[]);
-      
-      // Calculate stats
-      const thisMonth = new Date();
-      thisMonth.setDate(1);
-      thisMonth.setHours(0, 0, 0, 0);
-      
-      const monthlyRedemptions = allRedemptionsData.filter(r => 
-        new Date(r.redeemed_at) >= thisMonth
-      );
-      
-      // Calculate first-time customers this month
-      // Track when each membership first redeemed at this business
-      const firstRedemptionByMember: Record<string, Date> = {};
-      allRedemptionsData.forEach(r => {
-        if (r.membership_id && !firstRedemptionByMember[r.membership_id]) {
-          firstRedemptionByMember[r.membership_id] = new Date(r.redeemed_at);
+    // Fetch ALL birthday redemptions for this business
+    const { data: birthdayRedemptionsData } = await supabase
+      .from('sent_birthday_offers')
+      .select(`
+        id,
+        redeemed_at,
+        pet_name,
+        owner_name,
+        owner_user_id,
+        discount_value,
+        discount_type
+      `)
+      .eq('redeemed_by_business_id', businessData.id)
+      .not('redeemed_at', 'is', null)
+      .order('redeemed_at', { ascending: true });
+
+    // Combine regular and birthday redemptions
+    const regularRedemptions: Redemption[] = (allRedemptionsData || []).map(r => ({
+      id: r.id,
+      redeemed_at: r.redeemed_at,
+      member_name: r.member_name,
+      pet_names: r.pet_names,
+      member_number: r.member_number,
+      membership_id: r.membership_id,
+      isBirthday: false,
+      offer: r.offer as unknown as Redemption['offer'],
+    }));
+
+    const birthdayRedemptions: Redemption[] = (birthdayRedemptionsData || []).map(r => ({
+      id: r.id,
+      redeemed_at: r.redeemed_at!,
+      member_name: r.owner_name,
+      pet_names: r.pet_name,
+      member_number: null,
+      membership_id: r.owner_user_id, // Use owner_user_id for customer tracking
+      isBirthday: true,
+      offer: {
+        title: `🎂 Birthday: ${r.pet_name}`,
+        discount_value: r.discount_value,
+        discount_type: r.discount_type,
+      },
+    }));
+
+    // Combine all redemptions
+    const allCombinedRedemptions = [...regularRedemptions, ...birthdayRedemptions];
+
+    // Get recent 10 for display (sorted by most recent first)
+    const recentCombined = [...allCombinedRedemptions]
+      .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime())
+      .slice(0, 10);
+    setRecentRedemptions(recentCombined);
+
+    // Calculate stats - include both regular and birthday redemptions
+    const thisMonth = new Date();
+    thisMonth.setDate(1);
+    thisMonth.setHours(0, 0, 0, 0);
+
+    const monthlyRedemptions = allCombinedRedemptions.filter(r => 
+      new Date(r.redeemed_at) >= thisMonth
+    );
+
+    // Calculate first-time customers this month
+    // Track when each membership/user first redeemed at this business
+    const firstRedemptionByMember: Record<string, Date> = {};
+    allCombinedRedemptions
+      .sort((a, b) => new Date(a.redeemed_at).getTime() - new Date(b.redeemed_at).getTime())
+      .forEach(r => {
+        const memberKey = r.membership_id || r.id; // Use id as fallback
+        if (memberKey && !firstRedemptionByMember[memberKey]) {
+          firstRedemptionByMember[memberKey] = new Date(r.redeemed_at);
         }
       });
-      
-      // Count members whose first redemption was this month
-      const newCustomersThisMonth = Object.values(firstRedemptionByMember).filter(
-        firstDate => firstDate >= thisMonth
-      ).length;
-      
-      setStats({
-        redemptions: monthlyRedemptions.length,
-        newCustomers: newCustomersThisMonth,
-      });
-    }
+
+    // Count members whose first redemption was this month
+    const newCustomersThisMonth = Object.values(firstRedemptionByMember).filter(
+      firstDate => firstDate >= thisMonth
+    ).length;
+
+    setStats({
+      redemptions: monthlyRedemptions.length,
+      newCustomers: newCustomersThisMonth,
+    });
   };
 
   const verifyMember = async () => {
@@ -1047,10 +1096,11 @@ const BusinessDashboard = () => {
                             <td className="py-3 px-2">
                               <div>
                                 <p className="font-medium text-slate-900">
-                                  {redemption.member_name || 'Member'}
+                                  {redemption.isBirthday && '🎂 '}
+                                  {redemption.member_name || 'Customer'}
                                 </p>
                                 <p className="text-xs text-slate-500 font-mono">
-                                  {redemption.member_number || 'N/A'}
+                                  {redemption.member_number || (redemption.isBirthday ? 'Birthday' : 'N/A')}
                                 </p>
                               </div>
                             </td>
