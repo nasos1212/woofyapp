@@ -984,6 +984,43 @@ const UserManagement = () => {
                             </div>
                           )}
 
+                          {/* Pending Onboarding Shelter - Nudge Button */}
+                          {user.role === "shelter" && !user.shelter && (
+                            <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
+                              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                                <Home className="w-4 h-4 text-purple-500" />
+                                Shelter Onboarding Incomplete
+                                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>
+                              </h4>
+                              <p className="text-sm text-muted-foreground mb-3">
+                                This user has registered as a shelter but hasn't completed their application form yet.
+                              </p>
+                              <Button
+                                size="sm"
+                                className="bg-purple-600 hover:bg-purple-700"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  try {
+                                    const { error } = await supabase.from("notifications").insert({
+                                      user_id: user.user_id,
+                                      type: "reminder",
+                                      title: "Complete Your Shelter Application",
+                                      message: "Your shelter registration is almost complete! Please finish your application to get your shelter listed on Woofy.",
+                                      data: { action_url: "/shelter-onboarding" },
+                                    });
+                                    if (error) throw error;
+                                    toast.success(`Onboarding reminder sent to ${user.full_name || user.email}`);
+                                  } catch (error: any) {
+                                    toast.error("Failed to send reminder");
+                                  }
+                                }}
+                              >
+                                <Bell className="w-4 h-4 mr-1" />
+                                Nudge to Complete Onboarding
+                              </Button>
+                            </div>
+                          )}
+
                           {/* Quick Notify */}
                           <div className="flex justify-end">
                             <Button
