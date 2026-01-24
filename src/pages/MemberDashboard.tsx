@@ -207,10 +207,10 @@ const MemberDashboard = () => {
           isBirthday: true,
         }));
 
-        // Combine and sort by date, take top 5
+        // Combine and sort by date, take top 3
         const allRedemptions = [...regularRedemptions, ...birthdayRedemptions]
           .sort((a, b) => new Date(b.redeemed_at).getTime() - new Date(a.redeemed_at).getTime())
-          .slice(0, 5);
+          .slice(0, 3);
 
         setRedemptions(allRedemptions);
 
@@ -524,107 +524,7 @@ const MemberDashboard = () => {
                 )}
               </div>
 
-              {/* Recent Activity */}
-              <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-primary" />
-                    Recent Activity
-                  </h3>
-                  {redemptions.length > 0 && (
-                    <Link to="/member/history" className="text-sm text-primary hover:underline">
-                      View all
-                    </Link>
-                  )}
-                </div>
-                <div className="space-y-4">
-                  {redemptions.length === 0 ? (
-                    <div className="text-center py-6 text-muted-foreground">
-                      <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No redemptions yet</p>
-                      <Link to="/member/offers" className="text-primary text-sm hover:underline">
-                        Browse offers
-                      </Link>
-                    </div>
-                  ) : (
-                    redemptions.map((redemption) => {
-                      const savedAmount = redemption.offer?.discount_type === "percentage"
-                        ? `${redemption.offer.discount_value}%`
-                        : `€${redemption.offer?.discount_value || 0}`;
-                      return (
-                        <div key={redemption.id} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
-                          <div>
-                            <p className="font-medium text-foreground">{redemption.business?.business_name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {redemption.offer?.title} • {format(new Date(redemption.redeemed_at), "MMM d")}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-green-500 font-semibold">{savedAmount}</span>
-                            <p className="text-xs text-muted-foreground">saved</p>
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column - Nearby & Info */}
-            <div className="space-y-6">
-
-              {/* Quick Access - New Features */}
-              <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <h3 className="font-display font-semibold text-foreground mb-4">Quick Access</h3>
-                <div className="space-y-3">
-                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">AI Pet Assistant</p>
-                      <p className="text-xs text-muted-foreground">Ask pet questions</p>
-                    </div>
-                  </Link>
-                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Syringe className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">Health Records</p>
-                      <p className="text-xs text-muted-foreground">Vaccinations, reminders & vet visits</p>
-                    </div>
-                  </Link>
-                  <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
-                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                      <AlertTriangle className="w-5 h-5 text-red-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">Lost&Found Alerts</p>
-                      <p className="text-xs text-muted-foreground">Report lost or found pets</p>
-                    </div>
-                  </Link>
-                  <Link to="/member/history" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <History className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">Redemption History</p>
-                      <p className="text-xs text-muted-foreground">View your savings & activity</p>
-                    </div>
-                  </Link>
-                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
-                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">Shelters</p>
-                      <p className="text-xs text-muted-foreground">Support local pet shelters</p>
-                    </div>
-                  </Link>
-                </div>
-              </div>
+              {/* Nearby Offers */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
@@ -711,6 +611,108 @@ const MemberDashboard = () => {
                     View All Partners
                   </Button>
                 </Link>
+              </div>
+            </div>
+
+            {/* Right Column - Quick Access & Activity */}
+            <div className="space-y-6">
+
+              {/* Quick Access - New Features */}
+              <div className="bg-white rounded-2xl p-6 shadow-soft">
+                <h3 className="font-display font-semibold text-foreground mb-4">Quick Access</h3>
+                <div className="space-y-3">
+                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">AI Pet Assistant</p>
+                      <p className="text-xs text-muted-foreground">Ask pet questions</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Syringe className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Health Records</p>
+                      <p className="text-xs text-muted-foreground">Vaccinations, reminders & vet visits</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
+                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Lost&Found Alerts</p>
+                      <p className="text-xs text-muted-foreground">Report lost or found pets</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/history" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                      <History className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Redemption History</p>
+                      <p className="text-xs text-muted-foreground">View your savings & activity</p>
+                    </div>
+                  </Link>
+                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
+                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Shelters</p>
+                      <p className="text-xs text-muted-foreground">Support local pet shelters</p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="bg-white rounded-2xl p-6 shadow-soft">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    Recent Activity
+                  </h3>
+                  {redemptions.length > 0 && (
+                    <Link to="/member/history" className="text-sm text-primary hover:underline">
+                      View all
+                    </Link>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  {redemptions.length === 0 ? (
+                    <div className="text-center py-6 text-muted-foreground">
+                      <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No redemptions yet</p>
+                      <Link to="/member/offers" className="text-primary text-sm hover:underline">
+                        Browse offers
+                      </Link>
+                    </div>
+                  ) : (
+                    redemptions.map((redemption) => {
+                      const savedAmount = redemption.offer?.discount_type === "percentage"
+                        ? `${redemption.offer.discount_value}%`
+                        : `€${redemption.offer?.discount_value || 0}`;
+                      return (
+                        <div key={redemption.id} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
+                          <div>
+                            <p className="font-medium text-foreground">{redemption.business?.business_name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {redemption.offer?.title} • {format(new Date(redemption.redeemed_at), "MMM d")}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-green-500 font-semibold">{savedAmount}</span>
+                            <p className="text-xs text-muted-foreground">saved</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
 
             </div>
