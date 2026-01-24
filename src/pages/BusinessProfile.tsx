@@ -38,6 +38,8 @@ interface Offer {
   discount_type: string;
   discount_value: number | null;
   terms: string | null;
+  pet_type: string | null;
+  redemption_scope?: string | null;
 }
 
 interface Review {
