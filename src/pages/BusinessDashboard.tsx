@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, Settings } from "lucide-react";
+import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, Cat, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,7 @@ interface ScanResult {
   remainingMinutes?: number;
   message?: string;
   offerType?: 'per_member' | 'per_pet';
+  offerPetType?: 'dog' | 'cat' | null;
   availablePets?: AvailablePet[];
   totalPets?: number;
   redeemedPetsCount?: number;
@@ -839,7 +840,7 @@ const BusinessDashboard = () => {
                             </p>
                             {scanResult.offerType === 'per_pet' && scanResult.availablePets && (
                               <p className="text-green-700 text-sm mt-1">
-                                🐕 Per-pet offer: {scanResult.redeemedPetsCount}/{scanResult.totalPets} pets have used this
+                                {scanResult.offerPetType === 'cat' ? '🐱' : '🐕'} Per-pet offer: {scanResult.redeemedPetsCount}/{scanResult.totalPets} pets have used this
                               </p>
                             )}
                           </div>
@@ -849,9 +850,9 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'valid' && scanResult.offerId && scanResult.availablePets && scanResult.availablePets.length > 0 && (
                           <div className="mt-4 p-4 bg-teal-50 border border-teal-200 rounded-lg">
                             <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
-                              <Dog className="w-4 h-4" />
+                              {scanResult.offerPetType === 'cat' ? <Cat className="w-4 h-4" /> : <Dog className="w-4 h-4" />}
                               {scanResult.offerType === 'per_pet' 
-                                ? 'Select which pet is using this offer:' 
+                                ? `Select which ${scanResult.offerPetType === 'cat' ? 'cat' : 'pet'} is using this offer:` 
                                 : 'Which pet is this for? (optional for tracking)'}
                             </label>
                             <div className="grid grid-cols-2 gap-2">

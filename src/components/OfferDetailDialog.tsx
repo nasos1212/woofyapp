@@ -29,6 +29,7 @@ export interface OfferWithDetails {
   valid_days?: number[] | null;
   valid_hours_start?: string | null;
   valid_hours_end?: string | null;
+  pet_type?: 'dog' | 'cat' | null;
   business: {
     id: string;
     business_name: string;
@@ -226,7 +227,9 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                       ? 'bg-teal-50 text-teal-700 border-teal-200' 
                       : 'bg-purple-50 text-purple-700 border-purple-200'
                   }>
-                    {offer.redemption_scope === 'per_pet' ? '🐕 Per Pet' : '♾️ Unlimited'}
+                    {offer.redemption_scope === 'per_pet' 
+                      ? (offer.pet_type === 'cat' ? '🐱 Per Cat' : offer.pet_type === 'dog' ? '🐕 Per Dog' : '🐾 Per Pet')
+                      : '♾️ Unlimited'}
                   </Badge>
                 )}
                 {offer.redemption_frequency && offer.redemption_frequency !== 'one_time' && (

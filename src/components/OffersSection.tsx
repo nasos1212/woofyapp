@@ -20,6 +20,8 @@ interface Offer {
   valid_until: string | null;
   is_limited_time: boolean;
   limited_time_label: string | null;
+  pet_type?: string | null;
+  redemption_scope?: string | null;
   business: {
     id: string;
     business_name: string;
@@ -54,6 +56,8 @@ const OffersSection = () => {
           is_limited_time,
           limited_time_label,
           terms,
+          pet_type,
+          redemption_scope,
           businesses!inner (
             id,
             business_name,
@@ -78,6 +82,8 @@ const OffersSection = () => {
         is_limited_time: offer.is_limited_time,
         limited_time_label: offer.limited_time_label,
         terms: offer.terms,
+        pet_type: offer.pet_type,
+        redemption_scope: offer.redemption_scope,
         business: {
           id: offer.businesses.id,
           business_name: offer.businesses.business_name,
