@@ -120,7 +120,7 @@ const BusinessRedemptionHistory = () => {
         isBirthday: false,
       })) as Redemption[];
 
-      // Fetch birthday offer redemptions for this business
+      // Fetch birthday offer redemptions for this business with membership info
       const { data: birthdayData } = await supabase
         .from('sent_birthday_offers')
         .select(`
@@ -128,6 +128,7 @@ const BusinessRedemptionHistory = () => {
           redeemed_at,
           pet_name,
           owner_name,
+          owner_user_id,
           discount_value,
           discount_type
         `)
@@ -135,12 +136,28 @@ const BusinessRedemptionHistory = () => {
         .not('redeemed_at', 'is', null)
         .order('redeemed_at', { ascending: false });
 
+      // Get member numbers for birthday offer owners
+      const ownerUserIds = [...new Set((birthdayData || []).map(r => r.owner_user_id))];
+      let memberNumberMap: Record<string, string> = {};
+      
+      if (ownerUserIds.length > 0) {
+        const { data: membershipsData } = await supabase
+          .from('memberships')
+          .select('user_id, member_number')
+          .in('user_id', ownerUserIds);
+        
+        memberNumberMap = (membershipsData || []).reduce((acc, m) => {
+          acc[m.user_id] = m.member_number;
+          return acc;
+        }, {} as Record<string, string>);
+      }
+
       const birthdayRedemptions: Redemption[] = (birthdayData || []).map((r) => ({
         id: r.id,
         redeemed_at: r.redeemed_at!,
         member_name: r.owner_name,
         pet_names: r.pet_name,
-        member_number: null,
+        member_number: memberNumberMap[r.owner_user_id] || null,
         offer: {
           id: 'birthday',
           title: `🎂 Birthday: ${r.pet_name}`,
