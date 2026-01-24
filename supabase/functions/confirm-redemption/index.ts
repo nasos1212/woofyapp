@@ -329,6 +329,22 @@ serve(async (req) => {
 
     } else {
       // Per-member: check if already redeemed within the frequency period (unless unlimited)
+
+      // Validate pet_type restriction for per-member offers too
+      if (petId && offer.pet_type) {
+        const selectedPet = petsData?.find(p => p.id === petId);
+        if (selectedPet && selectedPet.pet_type !== offer.pet_type) {
+          const petTypeLabel = offer.pet_type === 'dog' ? 'dogs' : 'cats';
+          return new Response(
+            JSON.stringify({ 
+              error: `This offer is only valid for ${petTypeLabel}`, 
+              code: 'PET_TYPE_MISMATCH' 
+            }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+
       if (redemptionFrequency !== 'unlimited') {
         let redemptionQuery = supabaseAdmin
           .from('offer_redemptions')
