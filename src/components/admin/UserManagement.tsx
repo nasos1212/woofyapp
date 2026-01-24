@@ -941,6 +941,43 @@ const UserManagement = () => {
                             </div>
                           )}
 
+                          {/* Pending Onboarding Business - Nudge Button */}
+                          {user.role === "business" && !user.business && (
+                            <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
+                              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                                <Building2 className="w-4 h-4 text-blue-500" />
+                                Business Onboarding Incomplete
+                                <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Pending Onboarding</Badge>
+                              </h4>
+                              <p className="text-sm text-muted-foreground mb-3">
+                                This user has registered as a business but hasn't completed their application form yet.
+                              </p>
+                              <Button
+                                size="sm"
+                                className="bg-blue-600 hover:bg-blue-700"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  try {
+                                    const { error } = await supabase.from("notifications").insert({
+                                      user_id: user.user_id,
+                                      type: "reminder",
+                                      title: "Complete Your Business Application",
+                                      message: "Your business registration is almost complete! Please finish your application to start offering deals to Woofy members.",
+                                      data: { action_url: "/partner-register" },
+                                    });
+                                    if (error) throw error;
+                                    toast.success(`Onboarding reminder sent to ${user.full_name || user.email}`);
+                                  } catch (error: any) {
+                                    toast.error("Failed to send reminder");
+                                  }
+                                }}
+                              >
+                                <Bell className="w-4 h-4 mr-1" />
+                                Nudge to Complete Onboarding
+                              </Button>
+                            </div>
+                          )}
+
                           {/* Shelter Details */}
                           {user.shelter && (
                             <div className="bg-rose-500/5 rounded-lg p-4">
