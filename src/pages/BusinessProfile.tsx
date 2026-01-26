@@ -352,7 +352,7 @@ export default function BusinessProfile() {
       <div className="min-h-screen bg-background">
         {/* Preview Mode Banner */}
         {isPreviewMode && (
-          <div className="bg-primary text-primary-foreground py-3 px-4 text-center">
+          <div className="bg-primary text-primary-foreground py-3 px-4 text-center pt-[calc(0.75rem+env(safe-area-inset-top))]">
             <p className="text-sm font-medium">
               👁️ Preview Mode — This is how members see your profile
             </p>
@@ -367,7 +367,7 @@ export default function BusinessProfile() {
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className={`max-w-4xl mx-auto px-4 py-8 ${!isPreviewMode ? 'pt-[calc(2rem+env(safe-area-inset-top))]' : ''}`}>
           {!isPreviewMode && (
             <Button
               variant="ghost"
