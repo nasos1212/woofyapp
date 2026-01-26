@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Dark background matching wooffy-dark #1A1A2E -->
+  <rect width="512" height="512" rx="102" fill="#1A1A2E"/>
+  <!-- Dog icon matching lucide Dog in wooffy-sky #7DD3FC, scaled up -->
+  <g transform="translate(86, 86)" stroke="#7DD3FC" stroke-width="20" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M160 234h22L212 298H128l32-64Z"/>
+    <path d="M170 234V170"/>
+    <path d="M170 96a32 32 0 0 0-32-32 43 43 0 0 0-43 43v64a21 21 0 0 1-21 21h-21a11 11 0 0 0-11 11v32a11 11 0 0 0 11 11h43"/>
+    <path d="M170 96a32 32 0 0 1 32-32 43 43 0 0 1 43 43v64a21 21 0 0 0 21 21h21a11 11 0 0 1 11 11v32a11 11 0 0 1-11 11h-43"/>
+    <path d="M106 96v32"/>
+    <path d="M234 96v32"/>
+  </g>
+</svg>
