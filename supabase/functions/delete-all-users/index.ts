@@ -21,13 +21,8 @@ Deno.serve(async (req) => {
       },
     });
 
-    // Get all admin user IDs first
-    const { data: adminRoles } = await supabaseAdmin
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "admin");
-
-    const adminUserIds = new Set((adminRoles || []).map((r) => r.user_id));
+    // Check if we should include admins
+    const { includeAdmins } = await req.json().catch(() => ({ includeAdmins: false }));
 
     // List all users
     const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
@@ -40,9 +35,19 @@ Deno.serve(async (req) => {
     const deletedEmails: string[] = [];
     const errors: string[] = [];
 
-    // Delete each non-admin user
+    // Get admin user IDs if we need to skip them
+    let adminUserIds = new Set<string>();
+    if (!includeAdmins) {
+      const { data: adminRoles } = await supabaseAdmin
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "admin");
+      adminUserIds = new Set((adminRoles || []).map((r) => r.user_id));
+    }
+
+    // Delete users
     for (const user of users) {
-      if (adminUserIds.has(user.id)) {
+      if (!includeAdmins && adminUserIds.has(user.id)) {
         console.log(`Skipping admin user: ${user.email}`);
         continue;
       }
