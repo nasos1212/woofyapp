@@ -230,7 +230,7 @@ const RedemptionHistory = () => {
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-24">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
           <Button
             variant="ghost"
             size="sm"

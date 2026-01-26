@@ -140,7 +140,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8 pt-24">
+      <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Button

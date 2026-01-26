@@ -336,7 +336,7 @@ const BusinessCustomerBirthdays = () => {
           <title>Customer Pet Birthdays | Business Dashboard</title>
         </Helmet>
         <BusinessHeader />
-        <main className="min-h-screen bg-background pt-24 md:pt-28 pb-16">
+        <main className="min-h-screen bg-background pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] pb-16">
           <div className="container max-w-4xl mx-auto px-4">
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
@@ -361,7 +361,7 @@ const BusinessCustomerBirthdays = () => {
 
       <BusinessHeader />
       
-      <main className="min-h-screen bg-background pt-24 md:pt-28 pb-16">
+      <main className="min-h-screen bg-background pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] pb-16">
         <div className="container max-w-4xl mx-auto px-4">
           <Button 
             variant="ghost"

@@ -284,7 +284,7 @@ const BusinessRedemptionHistory = () => {
         </Helmet>
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
-          <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
+          <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
@@ -309,7 +309,7 @@ const BusinessRedemptionHistory = () => {
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
         <BusinessHeader />
 
-        <main className="container mx-auto px-4 py-8 pt-24 md:pt-28">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
           {/* Back Link & Title */}
           <div className="mb-6">
             <Link 

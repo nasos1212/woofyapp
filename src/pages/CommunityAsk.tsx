@@ -222,7 +222,7 @@ const CommunityAsk = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 pt-24 max-w-3xl">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-3xl">
           <Button
             variant="ghost"
             size="sm"

@@ -430,7 +430,7 @@ const PetProfile = () => {
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-24 max-w-2xl">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-2xl">
           {/* Breadcrumbs */}
           <div className="mb-4">
             <Breadcrumbs

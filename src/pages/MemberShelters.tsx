@@ -74,7 +74,7 @@ const MemberShelters = () => {
       <div className="min-h-screen bg-gradient-to-b from-rose-50/50 via-background to-background">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-24">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
           {/* Back Button */}
           <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
