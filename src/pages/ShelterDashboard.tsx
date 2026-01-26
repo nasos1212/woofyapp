@@ -206,7 +206,7 @@ const ShelterDashboard = () => {
 
       <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="border-b bg-card">
+        <header className="border-b bg-card pt-[env(safe-area-inset-top)]">
           <div className="container max-w-4xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
