@@ -171,3 +171,23 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
+
+/* Hide Lovable badge in standalone PWA mode */
+@media all and (display-mode: standalone) {
+  #lovable-badge,
+  [data-lovable-badge],
+  a[href*="lovable.dev"][style*="fixed"],
+  div[style*="fixed"][style*="right"][style*="bottom"] a[href*="lovable"] {
+    display: none !important;
+  }
+}
+
+/* Also hide in fullscreen mode */
+@media all and (display-mode: fullscreen) {
+  #lovable-badge,
+  [data-lovable-badge],
+  a[href*="lovable.dev"][style*="fixed"],
+  div[style*="fixed"][style*="right"][style*="bottom"] a[href*="lovable"] {
+    display: none !important;
+  }
+}
