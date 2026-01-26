@@ -354,7 +354,7 @@ const BusinessOfferManagement = () => {
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
         <BusinessHeader />
 
-        <main className="container mx-auto px-4 py-8 pt-24 md:pt-28 max-w-4xl">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] max-w-4xl">
           <Button
             variant="ghost"
             size="sm"

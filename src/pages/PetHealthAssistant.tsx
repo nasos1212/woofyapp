@@ -795,7 +795,7 @@ const PetHealthAssistant = () => {
         <Header />
 
         {/* Main Content */}
-        <main className="flex-1 container mx-auto px-4 py-6 pt-24 flex flex-col max-w-3xl">
+        <main className="flex-1 container mx-auto px-4 py-6 pt-[calc(6rem+env(safe-area-inset-top))] flex flex-col max-w-3xl">
           {/* Title & Pet Selector */}
           <Button
             variant="ghost"

@@ -260,7 +260,7 @@ const CommunityQuestion = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 pt-24 max-w-4xl">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-4xl">
           {/* Back button */}
           <Button
             variant="ghost"

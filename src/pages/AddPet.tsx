@@ -247,7 +247,7 @@ const AddPet = () => {
 
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
         <Header />
-        <div className="container max-w-xl mx-auto px-4 py-8 pt-24">
+        <div className="container max-w-xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
           <Button variant="ghost" onClick={() => navigate("/member")} className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Dashboard
