@@ -16,7 +16,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen pt-24 pb-16 overflow-hidden">
+    <section className="relative min-h-screen pt-[calc(6rem+env(safe-area-inset-top))] pb-16 overflow-hidden">
       {/* Background image with overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
