@@ -267,10 +267,65 @@ const Header = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-2">
+          <div className="md:hidden flex items-center gap-1">
             {user && <NotificationBell />}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
+                        {profile?.full_name ? getInitials(profile.full_name) : user.email?.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => { navigate(dashboardPath); setIsMenuOpen(false); }}>
+                    <User className="mr-2 h-4 w-4" />
+                    My Dashboard
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { navigate("/member/offers"); setIsMenuOpen(false); }}>
+                    <Tag className="mr-2 h-4 w-4" />
+                    Browse Offers
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { navigate("/community"); setIsMenuOpen(false); }}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Community Hub
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { navigate("/member/history"); setIsMenuOpen(false); }}>
+                    <History className="mr-2 h-4 w-4" />
+                    Redemption History
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { navigate("/member/notifications"); setIsMenuOpen(false); }}>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Notifications
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => { navigate("/admin"); setIsMenuOpen(false); }} className="text-primary">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <button
-              className="p-3 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             >
