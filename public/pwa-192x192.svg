@@ -1,13 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <!-- Dark background matching wooffy-dark #1A1A2E -->
-  <rect width="192" height="192" rx="38" fill="#1A1A2E"/>
-  <!-- Dog icon matching lucide Dog in wooffy-sky #7DD3FC, scaled up -->
-  <g transform="translate(32, 32)" stroke="#7DD3FC" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M60 88h8L80 112H48l12-24Z"/>
-    <path d="M64 88V64"/>
-    <path d="M64 36a12 12 0 0 0-12-12 16 16 0 0 0-16 16v24a8 8 0 0 1-8 8h-8a4 4 0 0 0-4 4v12a4 4 0 0 0 4 4h16"/>
-    <path d="M64 36a12 12 0 0 1 12-12 16 16 0 0 1 16 16v24a8 8 0 0 0 8 8h8a4 4 0 0 1 4 4v12a4 4 0 0 1-4 4h-16"/>
-    <path d="M40 36v12"/>
-    <path d="M88 36v12"/>
+  <!-- Dark background matching wooffy-dark -->
+  <circle cx="96" cy="96" r="96" fill="#1A1A2E"/>
+  <!-- Cute dog face in wooffy-sky color -->
+  <g fill="none" stroke="#7DD3FC" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Face outline -->
+    <circle cx="96" cy="102" r="42"/>
+    <!-- Left ear -->
+    <circle cx="60" cy="60" r="18"/>
+    <!-- Right ear -->
+    <circle cx="132" cy="60" r="18"/>
+    <!-- Left eye -->
+    <circle cx="78" cy="90" r="6" fill="#7DD3FC"/>
+    <!-- Right eye -->
+    <circle cx="114" cy="90" r="6" fill="#7DD3FC"/>
+    <!-- Nose -->
+    <ellipse cx="96" cy="114" rx="12" ry="9" fill="#7DD3FC"/>
   </g>
 </svg>
