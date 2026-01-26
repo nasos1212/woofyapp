@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'woofyapp',
   webDir: 'dist',
   server: {
-    url: 'https://25fba1e9-3660-49dc-baa0-f74706ff00da.lovableproject.com?forceHideBadge=true',
+    url: 'https://woofyapp.lovable.app?forceHideBadge=true',
     cleartext: true
   }
 };
