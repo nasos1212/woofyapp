@@ -172,7 +172,7 @@ Deno.serve(async (req) => {
                       </p>
                     </div>
                     <div style="text-align: center; margin: 30px 0;">
-                      <a href="https://woofyapp.lovable.app/member" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                      <a href="https://www.wooffy.app/member" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                         Renew Membership
                       </a>
                     </div>
