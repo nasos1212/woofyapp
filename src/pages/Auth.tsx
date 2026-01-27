@@ -386,6 +386,11 @@ const Auth = () => {
                   user_id: userData.user.id,
                   role: "business" as const,
                 });
+              
+              // Send welcome email (non-blocking)
+              supabase.functions.invoke("send-welcome-email", {
+                body: { email: email.trim(), fullName: fullName.trim() }
+              }).catch(err => console.error("Welcome email error:", err));
             }
             
             toast({
@@ -416,6 +421,11 @@ const Auth = () => {
               if (roleError) {
                 console.error("Error adding shelter role:", roleError);
               }
+              
+              // Send welcome email (non-blocking)
+              supabase.functions.invoke("send-welcome-email", {
+                body: { email: email.trim(), fullName: fullName.trim() }
+              }).catch(err => console.error("Welcome email error:", err));
             }
             
             toast({
@@ -436,6 +446,11 @@ const Auth = () => {
                   { user_id: userData.user.id, role: "member" as const },
                   { onConflict: "user_id,role" }
                 );
+              
+              // Send welcome email (non-blocking)
+              supabase.functions.invoke("send-welcome-email", {
+                body: { email: email.trim(), fullName: fullName.trim() }
+              }).catch(err => console.error("Welcome email error:", err));
             }
             
             toast({
