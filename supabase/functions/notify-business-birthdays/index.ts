@@ -1,10 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -33,7 +36,8 @@ serve(async (req) => {
       console.log('No businesses with birthday reminders enabled');
       return new Response(JSON.stringify({ 
         message: 'No businesses with birthday reminders enabled',
-        notificationsSent: 0 
+        notificationsSent: 0,
+        emailsSent: 0
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -42,6 +46,7 @@ serve(async (req) => {
     console.log(`Found ${enabledBusinesses.length} businesses with reminders enabled`);
 
     let totalNotificationsSent = 0;
+    let totalEmailsSent = 0;
     
     // Use UTC date for consistent comparison (birthday is stored as date only)
     const now = new Date();
@@ -50,10 +55,10 @@ serve(async (req) => {
     for (const business of enabledBusinesses) {
       const { business_id, days_before_reminder } = business;
 
-      // Get business details including owner user_id
+      // Get business details including owner user_id and email
       const { data: businessData, error: businessError } = await supabase
         .from('businesses')
-        .select('id, business_name, user_id')
+        .select('id, business_name, user_id, email')
         .eq('id', business_id)
         .single();
 
@@ -180,15 +185,20 @@ serve(async (req) => {
           ? "today! 🎉" 
           : `in ${pet.daysUntil} day${pet.daysUntil !== 1 ? 's' : ''}!`;
 
+        const notificationTitle = pet.daysUntil === 0 
+          ? `🎂 It's ${pet.pet_name}'s Birthday Today!` 
+          : `🎂 Upcoming Pet Birthday: ${pet.pet_name}`;
+        
+        const notificationMessage = `${ownerName}'s pet ${pet.pet_name} (${pet.pet_breed || 'Pet'}) is turning ${age} ${daysMessage} Consider sending them a birthday offer.`;
+
+        // Insert in-app notification
         const { error: notificationError } = await supabase
           .from('notifications')
           .insert({
             user_id: businessData.user_id,
             type: 'business_birthday_reminder',
-            title: pet.daysUntil === 0 
-              ? `🎂 It's ${pet.pet_name}'s Birthday Today!` 
-              : `🎂 Upcoming Pet Birthday: ${pet.pet_name}`,
-            message: `${ownerName}'s pet ${pet.pet_name} (${pet.pet_breed || 'Pet'}) is turning ${age} ${daysMessage} Consider sending them a birthday offer.`,
+            title: notificationTitle,
+            message: notificationMessage,
             data: {
               pet_id: pet.id,
               pet_name: pet.pet_name,
@@ -208,14 +218,71 @@ serve(async (req) => {
           totalNotificationsSent++;
           console.log(`Sent birthday reminder for ${pet.pet_name} to ${businessData.business_name}`);
         }
+
+        // Send email to business owner
+        try {
+          await resend.emails.send({
+            from: "Wooffy <hello@wooffy.app>",
+            to: [businessData.email],
+            subject: `🎂 ${notificationTitle}`,
+            html: `
+              <!DOCTYPE html>
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                </head>
+                <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
+                  <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 40px; text-align: center;">
+                      <h1 style="color: white; margin: 0; font-size: 28px;">🎂 Pet Birthday Alert!</h1>
+                    </div>
+                    <div style="padding: 40px;">
+                      <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">
+                        Hi ${businessData.business_name},
+                      </p>
+                      <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
+                        ${notificationMessage}
+                      </p>
+                      <div style="background-color: #fef3c7; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                        <p style="font-size: 16px; color: #92400e; margin: 0;">
+                          <strong>🐕 ${pet.pet_name}</strong><br/>
+                          ${pet.pet_breed || 'Pet'} • Turning ${age} years old
+                        </p>
+                      </div>
+                      <div style="text-align: center; margin: 30px 0;">
+                        <a href="https://woofyapp.lovable.app/business/birthdays" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                          Send Birthday Offer
+                        </a>
+                      </div>
+                      <p style="font-size: 14px; color: #6b7280; text-align: center;">
+                        Birthday offers help build customer loyalty and increase repeat visits!
+                      </p>
+                    </div>
+                    <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+                      <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                        © 2024 Wooffy. Made with ❤️ for pets in Cyprus.
+                      </p>
+                    </div>
+                  </div>
+                </body>
+              </html>
+            `,
+          });
+          totalEmailsSent++;
+          console.log(`Email sent to ${businessData.email} for pet ${pet.pet_name}`);
+        } catch (emailError) {
+          console.error(`Failed to send email to ${businessData.email}:`, emailError);
+        }
       }
     }
 
-    console.log(`Completed: sent ${totalNotificationsSent} birthday reminder notifications`);
+    console.log(`Completed: sent ${totalNotificationsSent} birthday reminders, ${totalEmailsSent} emails`);
 
     return new Response(JSON.stringify({ 
       message: `Sent ${totalNotificationsSent} birthday reminder notifications`,
-      notificationsSent: totalNotificationsSent 
+      notificationsSent: totalNotificationsSent,
+      emailsSent: totalEmailsSent
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
