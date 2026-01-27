@@ -23,3 +23,18 @@ verify_jwt = false
 
 [functions.redeem-birthday-offer]
 verify_jwt = false
+
+[functions.delete-all-users]
+verify_jwt = false
+
+[functions.send-welcome-email]
+verify_jwt = false
+
+[functions.send-password-reset]
+verify_jwt = false
+
+[functions.send-notification-email]
+verify_jwt = false
+
+[functions.send-bulk-email]
+verify_jwt = false
