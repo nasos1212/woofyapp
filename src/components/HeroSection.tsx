@@ -65,7 +65,7 @@ const HeroSection = () => {
                 <p className="text-sm text-muted-foreground">Partner Businesses</p>
               </div>
               <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">€500+</p>
+                <p className="font-display font-bold text-3xl text-foreground">€300+</p>
                 <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
               </div>
               <div className="text-center lg:text-left">
