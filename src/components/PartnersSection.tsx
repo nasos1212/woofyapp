@@ -34,9 +34,9 @@ const PartnersSection = () => {
 
   useEffect(() => {
     const fetchCategoryCounts = async () => {
-      // Get count per category for approved businesses
+      // Get count per category for approved businesses (use public view for RLS-safe access)
       const { data, error } = await supabase
-        .from("businesses")
+        .from("businesses_public")
         .select("category")
         .eq("verification_status", "approved");
 
