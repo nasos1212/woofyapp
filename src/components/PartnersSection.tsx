@@ -1,22 +1,13 @@
-import { useState, useEffect } from "react";
 import { Building2, Store, Dumbbell, Home, Stethoscope, Scissors } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useLandingStats } from "@/hooks/useLandingStats";
 
-interface CategoryCount {
-  icon: typeof Building2;
-  name: string;
-  count: number;
-  category: string;
-}
-
 const categoryConfig = [
-  { icon: Store, name: "Pet Shops", category: "pet_shop" },
-  { icon: Stethoscope, name: "Veterinaries", category: "vet" },
-  { icon: Dumbbell, name: "Trainers", category: "trainer" },
-  { icon: Home, name: "Pet Hotels", category: "hotel" },
-  { icon: Scissors, name: "Groomers", category: "grooming" },
-  { icon: Building2, name: "Other", category: "other" },
+  { icon: Store, name: "Pet Shops" },
+  { icon: Stethoscope, name: "Veterinaries" },
+  { icon: Dumbbell, name: "Trainers" },
+  { icon: Home, name: "Pet Hotels" },
+  { icon: Scissors, name: "Groomers" },
+  { icon: Building2, name: "Other" },
 ];
 
 const featuredPartners = [
@@ -30,32 +21,6 @@ const featuredPartners = [
 
 const PartnersSection = () => {
   const { partnerBusinesses, isLoading } = useLandingStats();
-  const [categoryCounts, setCategoryCounts] = useState<CategoryCount[]>([]);
-
-  useEffect(() => {
-    const fetchCategoryCounts = async () => {
-      // Get count per category for approved businesses (use public view for RLS-safe access)
-      const { data, error } = await supabase
-        .from("businesses_public")
-        .select("category")
-        .eq("verification_status", "approved");
-
-      if (!error && data) {
-        const counts: Record<string, number> = {};
-        data.forEach((b) => {
-          counts[b.category] = (counts[b.category] || 0) + 1;
-        });
-
-        const result = categoryConfig.map((config) => ({
-          ...config,
-          count: counts[config.category] || 0,
-        }));
-        setCategoryCounts(result);
-      }
-    };
-
-    fetchCategoryCounts();
-  }, []);
 
   return (
     <section id="partners" className="py-20 lg:py-32">
@@ -77,9 +42,9 @@ const PartnersSection = () => {
           </p>
         </div>
 
-        {/* Category stats */}
+        {/* Category icons */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
-          {(categoryCounts.length > 0 ? categoryCounts : categoryConfig.map(c => ({ ...c, count: 0 }))).map((category) => (
+          {categoryConfig.map((category) => (
             <div
               key={category.name}
               className="bg-card rounded-2xl p-4 text-center shadow-soft border border-border hover:shadow-card hover:border-primary/20 transition-all duration-300"
@@ -87,10 +52,7 @@ const PartnersSection = () => {
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                 <category.icon className="w-6 h-6 text-primary" />
               </div>
-              <p className="font-display font-bold text-xl text-foreground">
-                {category.count > 0 ? `${category.count}` : "—"}
-              </p>
-              <p className="text-sm text-muted-foreground">{category.name}</p>
+              <p className="text-sm font-medium text-foreground">{category.name}</p>
             </div>
           ))}
         </div>
