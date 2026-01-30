@@ -11,8 +11,8 @@ interface MembershipCardFullProps {
 }
 
 const MembershipCardFull = ({ 
-  memberName = "John Smith", 
-  petName = "Max",
+  memberName = "Your Name", 
+  petName = "My Pet's Name",
   petNames,
   memberSince = "2024",
   memberId = "WF-2026-XXXX-XXXX",

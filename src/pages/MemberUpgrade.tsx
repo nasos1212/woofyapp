@@ -55,7 +55,7 @@ const plans: PlanOption[] = [
     renewalPrice: 49,
     maxPets: 1,
     icon: Dog,
-    features: ["1 pet included", ...sharedFeatures],
+    features: ["1 pet covered", ...sharedFeatures],
   },
   {
     id: "duo",
@@ -64,7 +64,7 @@ const plans: PlanOption[] = [
     renewalPrice: 79,
     maxPets: 2,
     icon: Users,
-    features: ["2 pets included", ...sharedFeatures],
+    features: ["2 pets covered", ...sharedFeatures],
     highlight: true,
   },
   {
@@ -74,7 +74,7 @@ const plans: PlanOption[] = [
     renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
-    features: ["3-5 pets included", ...sharedFeatures],
+    features: ["Up to 5 pets covered", ...sharedFeatures],
   },
 ];
 

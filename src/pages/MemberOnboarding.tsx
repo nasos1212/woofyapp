@@ -54,7 +54,7 @@ const plans: PlanOption[] = [
     price: 59,
     pricePerPet: 59,
     description: "Perfect for one furry friend",
-    features: ["500+ partner discounts", "Digital membership card", "Monthly training session"],
+    features: ["1 pet covered", "All member benefits included"],
   },
   {
     id: "duo",
@@ -63,7 +63,7 @@ const plans: PlanOption[] = [
     price: 99,
     pricePerPet: 49.5,
     description: "Ideal for households with two pets",
-    features: ["Everything in Solo Paw", "Both pets covered", "Save €19 vs 2 single memberships"],
+    features: ["2 pets covered", "Save €19 vs 2 single plans"],
   },
   {
     id: "family",
@@ -72,7 +72,7 @@ const plans: PlanOption[] = [
     price: 139,
     pricePerPet: 27.8,
     description: "Best value for 3-5 pets",
-    features: ["Everything in Dynamic Duo", "Up to 5 pets covered", "Save up to €156 vs single memberships"],
+    features: ["Up to 5 pets covered", "Save up to €156 vs single plans"],
   },
 ];
 
@@ -675,8 +675,9 @@ const MemberOnboarding = () => {
                               value={pet.birthday}
                               onChange={(e) => updatePet(pet.id, "birthday", e.target.value)}
                               max={new Date().toISOString().split('T')[0]}
+                              min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                             />
-                            <p className="text-xs text-muted-foreground">Select your pet's date of birth</p>
+                            <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
                           </div>
                         ) : (
                           <div className="space-y-2">
@@ -684,15 +685,20 @@ const MemberOnboarding = () => {
                               <Input
                                 type="number"
                                 min="0"
-                                max="30"
+                                max="25"
                                 value={pet.ageYears}
-                                onChange={(e) => updatePet(pet.id, "ageYears", e.target.value ? parseInt(e.target.value) : "")}
+                                onChange={(e) => {
+                                  const value = e.target.value ? parseInt(e.target.value) : "";
+                                  if (value === "" || (typeof value === "number" && value <= 25)) {
+                                    updatePet(pet.id, "ageYears", value);
+                                  }
+                                }}
                                 placeholder="e.g., 3"
                                 className="w-24"
                               />
                               <span className="text-muted-foreground">years old</span>
                             </div>
-                            <p className="text-xs text-muted-foreground">Enter approximate age in years</p>
+                            <p className="text-xs text-muted-foreground">Enter approximate age in years (max 25)</p>
                           </div>
                         )}
                       </div>
