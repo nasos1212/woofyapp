@@ -486,8 +486,9 @@ const AddPet = () => {
                         value={petBirthday}
                         onChange={(e) => setPetBirthday(e.target.value)}
                         max={new Date().toISOString().split('T')[0]}
+                        min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                       />
-                      <p className="text-xs text-muted-foreground">Select your pet's date of birth</p>
+                      <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -495,15 +496,20 @@ const AddPet = () => {
                         <Input
                           type="number"
                           min="0"
-                          max="30"
+                          max="25"
                           value={petAgeYears}
-                          onChange={(e) => setPetAgeYears(e.target.value ? parseInt(e.target.value) : "")}
+                          onChange={(e) => {
+                            const value = e.target.value ? parseInt(e.target.value) : "";
+                            if (value === "" || (typeof value === "number" && value <= 25)) {
+                              setPetAgeYears(value);
+                            }
+                          }}
                           placeholder="e.g., 3"
                           className="w-24"
                         />
                         <span className="text-muted-foreground">years old</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Enter approximate age in years</p>
+                      <p className="text-xs text-muted-foreground">Enter approximate age in years (max 25)</p>
                     </div>
                   )}
                 </div>

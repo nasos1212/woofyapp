@@ -1,4 +1,4 @@
-import { Check, Star, Zap, Dog } from "lucide-react";
+import { Check, Star, Zap, Dog, Users, Crown } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,7 @@ const plans = [
     pricePerPet: 59,
     description: "Perfect for one furry friend",
     popular: false,
+    icon: Dog,
   },
   {
     id: "duo",
@@ -21,6 +22,7 @@ const plans = [
     description: "Ideal for households with two pets",
     popular: true,
     savings: 19,
+    icon: Users,
   },
   {
     id: "pack",
@@ -31,6 +33,7 @@ const plans = [
     description: "Best value for 3-5 pets",
     popular: false,
     savings: 156,
+    icon: Crown,
   },
 ];
 
@@ -65,13 +68,15 @@ const PricingSection = () => {
           </h2>
           
           <p className="text-lg text-muted-foreground">
-            Choose the perfect plan for your furry family. Save more with multiple pets!
+            All plans include the same great benefits. Choose based on how many pets you have!
           </p>
         </div>
 
         {/* Pricing cards */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
-          {plans.map((plan) => (
+          {plans.map((plan) => {
+            const Icon = plan.icon;
+            return (
             <div key={plan.id} className="relative">
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
@@ -84,13 +89,11 @@ const PricingSection = () => {
               
               <div className={`bg-card rounded-3xl p-6 lg:p-8 shadow-card h-full flex flex-col ${plan.popular ? "border-2 border-primary/30 ring-2 ring-primary/10" : "border border-border"}`}>
                 <div className="text-center mb-6">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                    <Dog className="w-6 h-6 text-primary" />
-                    {plan.pets > 1 && (
-                      <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center font-semibold">
-                        {plan.pets}
-                      </span>
-                    )}
+                  <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                    <Icon className="w-7 h-7 text-primary" />
+                    <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+                      {plan.pets}
+                    </span>
                   </div>
                   <h3 className="font-display font-bold text-xl text-foreground mb-1">
                     {plan.name}
@@ -98,17 +101,24 @@ const PricingSection = () => {
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
                 </div>
 
+                {/* Pet count highlight */}
+                <div className="bg-muted/50 rounded-xl p-4 mb-6 text-center">
+                  <p className="text-2xl font-display font-bold text-primary">
+                    {plan.pets === 1 ? "1 Pet" : plan.pets === 5 ? "Up to 5 Pets" : `${plan.pets} Pets`}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    €{plan.pricePerPet.toFixed(2)} per pet/year
+                  </p>
+                </div>
+
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
                     <span className="text-muted-foreground">/year</span>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    €{plan.pricePerPet.toFixed(2)} per pet
-                  </p>
                   {plan.savings && (
-                    <p className="text-sm text-green-600 font-medium mt-1">
-                      Save €{plan.savings} vs individual
+                    <p className="text-sm text-green-600 font-medium mt-2">
+                      Save €{plan.savings} vs individual plans
                     </p>
                   )}
                 </div>
@@ -124,7 +134,7 @@ const PricingSection = () => {
                 </Button>
               </div>
             </div>
-          ))}
+          )})}
         </div>
 
         {/* Features list */}

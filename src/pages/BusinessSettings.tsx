@@ -573,31 +573,6 @@ const BusinessSettings = () => {
                     </div>
                   </div>
 
-                  {/* Address */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="address">Address</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                          id="address"
-                          placeholder="Street address"
-                          value={formData.address || ""}
-                          onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        placeholder="City"
-                        value={formData.city || ""}
-                        onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                      />
-                    </div>
-                  </div>
 
                   {/* Website */}
                   <div className="space-y-2">
