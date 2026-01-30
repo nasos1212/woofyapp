@@ -3,9 +3,17 @@ import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import heroImage from "@/assets/hero-dog.jpg";
 import { useNavigate } from "react-router-dom";
+import { useLandingStats } from "@/hooks/useLandingStats";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { partnerBusinesses, happyMembers, isLoading } = useLandingStats();
+
+  // Format number with + suffix for display
+  const formatCount = (count: number) => {
+    if (count === 0) return "—";
+    return count.toLocaleString();
+  };
 
   const handleGetPass = () => {
     navigate("/auth?type=member");
@@ -54,14 +62,16 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Join 250+ happy pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
+              Join {happyMembers > 0 ? `${formatCount(happyMembers)}+` : "our"} happy pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
               Plus access our community hub for tips, events & connections.
             </p>
 
             {/* Stats */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-8 py-4">
               <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">500+</p>
+                <p className="font-display font-bold text-3xl text-foreground">
+                  {isLoading ? "—" : `${formatCount(partnerBusinesses)}+`}
+                </p>
                 <p className="text-sm text-muted-foreground">Partner Businesses</p>
               </div>
               <div className="text-center lg:text-left">
@@ -69,7 +79,9 @@ const HeroSection = () => {
                 <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
               </div>
               <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">250+</p>
+                <p className="font-display font-bold text-3xl text-foreground">
+                  {isLoading ? "—" : `${formatCount(happyMembers)}+`}
+                </p>
                 <p className="text-sm text-muted-foreground">Happy Members</p>
               </div>
             </div>

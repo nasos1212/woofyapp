@@ -176,18 +176,10 @@ const SheltersSection = () => {
         </div>
 
         {/* Impact Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-rose-500 mb-2">€47K+</div>
-            <p className="text-muted-foreground text-sm">Donated This Year</p>
-          </div>
-          <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-primary mb-2">3,400+</div>
-            <p className="text-muted-foreground text-sm">Dogs Rehomed</p>
-          </div>
+        <div className="grid grid-cols-2 gap-6 max-w-md mx-auto mb-16">
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
             <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">
-              {shelters.length > 0 ? shelters.length : 12}
+              {shelters.length > 0 ? shelters.length : "—"}
             </div>
             <p className="text-muted-foreground text-sm">Partner Shelters</p>
           </div>
