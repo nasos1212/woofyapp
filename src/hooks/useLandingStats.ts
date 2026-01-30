@@ -10,9 +10,9 @@ interface LandingStats {
 
 // Minimum fallback values for display (believable starting numbers)
 const FALLBACK_STATS = {
-  partnerBusinesses: 12,
-  happyMembers: 47,
-  partnerShelters: 3,
+  partnerBusinesses: 100,
+  happyMembers: 250,
+  partnerShelters: 5,
 };
 
 export const useLandingStats = (): LandingStats => {
