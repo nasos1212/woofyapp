@@ -6,7 +6,6 @@ import {
   Users, 
   Heart,
   Stethoscope,
-  ShoppingBag,
   Home,
   GraduationCap
 } from "lucide-react";
@@ -41,12 +40,6 @@ const benefits = [
     title: "Birthday Treats",
     description: "Free gifts & special surprises on your pet's birthday",
     color: "bg-pink-100 text-pink-600",
-  },
-  {
-    icon: ShoppingBag,
-    title: "Welcome Kit",
-    description: "Premium starter kit with treats, toys & essentials",
-    color: "bg-amber-100 text-amber-600",
   },
   {
     icon: Calendar,
