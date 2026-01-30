@@ -159,10 +159,10 @@ const PricingSection = () => {
         {/* Value proposition */}
         <div className="mt-8 max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center">
           <p className="font-display font-semibold text-lg text-wooffy-sky mb-2">
-            💡 The Average Member Saves €2,000+ Per Year
+            💡 The Average Member Saves €300+ Per Year
           </p>
           <p className="text-sm text-wooffy-light/70">
-            That's a 33x return on your membership investment!
+            That's a 5x return on your membership investment!
           </p>
         </div>
       </div>
