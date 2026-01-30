@@ -21,9 +21,9 @@ export const useLandingStats = (): LandingStats => {
       try {
         // Fetch all counts in parallel
         const [businessesResult, membersResult, sheltersResult] = await Promise.all([
-          // Count approved businesses
+          // Count approved businesses using public view (RLS-safe for anonymous users)
           supabase
-            .from("businesses")
+            .from("businesses_public")
             .select("*", { count: "exact", head: true })
             .eq("verification_status", "approved"),
           // Count all members (users with member role - both freemium and paid)
