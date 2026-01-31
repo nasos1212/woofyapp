@@ -106,7 +106,7 @@ const HeroSection = () => {
               <div className="w-1 h-1 bg-muted-foreground rounded-full" />
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>Partners across Europe</span>
+                <span>Partners across Cyprus</span>
               </div>
             </div>
           </div>
