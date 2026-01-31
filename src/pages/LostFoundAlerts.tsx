@@ -366,7 +366,7 @@ const LostFoundAlerts = () => {
       toast.success(
         alertType === "lost"
           ? "Alert created! The community will help find your pet."
-          : "Thank you for reporting! The owner will be notified."
+          : "Thank you for reporting! Your alert is now live."
       );
       setShowCreateDialog(false);
       resetForm();
