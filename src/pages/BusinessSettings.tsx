@@ -8,7 +8,6 @@ import {
   Phone,
   Globe,
   Mail,
-  Map,
   Camera,
   Trash2,
   Image as ImageIcon,
@@ -587,24 +586,6 @@ const BusinessSettings = () => {
                         className="pl-10"
                       />
                     </div>
-                  </div>
-
-                  {/* Google Maps */}
-                  <div className="space-y-2">
-                    <Label htmlFor="googleMapsUrl">Google Maps Link</Label>
-                    <div className="relative">
-                      <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <Input
-                        id="googleMapsUrl"
-                        placeholder="https://maps.google.com/..."
-                        value={formData.google_maps_url || ""}
-                        onChange={(e) => setFormData(prev => ({ ...prev, google_maps_url: e.target.value }))}
-                        className="pl-10"
-                      />
-                    </div>
-                    <p className="text-xs text-slate-500">
-                      Paste your Google Maps share link so customers can find you easily
-                    </p>
                   </div>
 
                   {/* Save Button */}
