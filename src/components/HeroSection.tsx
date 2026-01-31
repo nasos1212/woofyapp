@@ -62,7 +62,7 @@ const HeroSection = () => {
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
               <p className="text-sm font-semibold text-primary mb-5 flex items-center gap-2">
                 <Sparkles className="w-4 h-4" />
-                Our aim in 2026 is to provide our members with:
+                Our targets for 2026
               </p>
               <div className="grid grid-cols-3 gap-3 relative">
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
