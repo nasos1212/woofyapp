@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { Dog, Mail, Phone, MapPin, Instagram, Facebook, Twitter } from "lucide-react";
+import { Dog, Mail, Phone, MapPin, Instagram, Facebook, Twitter, Copy } from "lucide-react";
+import { toast } from "sonner";
 
 const Footer = () => {
   const location = useLocation();
@@ -10,6 +11,16 @@ const Footer = () => {
       document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
     } else {
       window.location.href = `/#${sectionId}`;
+    }
+  };
+
+  const handleEmailClick = async (e: React.MouseEvent) => {
+    // Try mailto: first, but also copy to clipboard as fallback
+    try {
+      await navigator.clipboard.writeText("hello@wooffy.app");
+      toast.success("Email copied to clipboard!");
+    } catch {
+      // Clipboard failed, mailto: should still work
     }
   };
 
@@ -71,10 +82,12 @@ const Footer = () => {
               <li>
                 <a 
                   href="mailto:hello@wooffy.app" 
+                  onClick={handleEmailClick}
                   className="flex items-center gap-2 py-3 hover:text-wooffy-sky transition-colors touch-manipulation"
                 >
                   <Mail className="w-5 h-5 text-wooffy-sky flex-shrink-0" />
                   <span className="underline">hello@wooffy.app</span>
+                  <Copy className="w-4 h-4 text-wooffy-sky/50 ml-auto" />
                 </a>
               </li>
               <li>
