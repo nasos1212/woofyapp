@@ -9,7 +9,7 @@ interface MembershipCardProps {
 const MembershipCard = ({ 
   memberName = "Your Name", 
   petName = "My Pet's Name",
-  memberSince = "2024"
+  memberSince = "2026"
 }: MembershipCardProps) => {
   return (
     <div className="relative w-full max-w-md mx-auto group">
