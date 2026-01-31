@@ -90,12 +90,12 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
   const currentPhoto = photos[currentIndex];
 
   return (
-    <div className="w-full h-48 bg-muted relative group overflow-hidden">
+    <div className="w-full aspect-square bg-muted relative group overflow-hidden">
       <img
         src={currentPhoto.url}
         alt={`${petName} - Photo ${currentIndex + 1}`}
-        className="w-full h-[200%] object-cover absolute left-0"
-        style={{ top: `${-currentPhoto.position}%` }}
+        className="w-full h-full object-cover"
+        style={{ objectPosition: `center ${currentPhoto.position}%` }}
       />
 
       {/* Badge */}
