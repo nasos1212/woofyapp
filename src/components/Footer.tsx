@@ -67,17 +67,21 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Contact</h4>
-            <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-wooffy-sky" />
-                <a href="mailto:hello@wooffy.app" className="hover:text-wooffy-sky transition-colors">hello@wooffy.app</a>
+            <ul className="space-y-1 text-sm text-wooffy-light/70">
+              <li>
+                <a href="mailto:hello@wooffy.app" className="flex items-center gap-2 py-2 hover:text-wooffy-sky transition-colors">
+                  <Mail className="w-4 h-4 text-wooffy-sky flex-shrink-0" />
+                  <span>hello@wooffy.app</span>
+                </a>
               </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-wooffy-sky" />
-                <a href="tel:+35799123456" className="hover:text-wooffy-sky transition-colors">+357 99 123 456</a>
+              <li>
+                <a href="tel:+35799123456" className="flex items-center gap-2 py-2 hover:text-wooffy-sky transition-colors">
+                  <Phone className="w-4 h-4 text-wooffy-sky flex-shrink-0" />
+                  <span>+357 99 123 456</span>
+                </a>
               </li>
-              <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 mt-0.5 text-wooffy-sky" />
+              <li className="flex items-start gap-2 py-2">
+                <MapPin className="w-4 h-4 mt-0.5 text-wooffy-sky flex-shrink-0" />
                 <span>Cyprus</span>
               </li>
             </ul>
