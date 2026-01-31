@@ -90,17 +90,20 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
   const currentPhoto = photos[currentIndex];
 
   return (
-    <div className="w-full aspect-[4/3] bg-muted relative group overflow-hidden">
+    <div className="w-full aspect-square bg-muted relative group overflow-hidden rounded-t-2xl">
       <img
         src={currentPhoto.url}
         alt={`${petName} - Photo ${currentIndex + 1}`}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         style={{ objectPosition: `center ${currentPhoto.position}%` }}
       />
+      
+      {/* Gradient overlay for better text visibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
 
       {/* Badge */}
       {badge && (
-        <Badge className={`absolute top-2 left-2 z-10 ${badge.className}`}>
+        <Badge className={`absolute top-3 left-3 z-10 ${badge.className} shadow-md font-medium`}>
           {badge.text}
         </Badge>
       )}
@@ -111,7 +114,7 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
           <Button
             variant="ghost"
             size="icon"
-            className="absolute left-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+            className="absolute left-2 top-1/2 -translate-y-1/2 h-9 w-9 bg-white/90 hover:bg-white text-foreground shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 rounded-full"
             onClick={goToPrevious}
           >
             <ChevronLeft className="h-5 w-5" />
@@ -119,29 +122,29 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+            className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 bg-white/90 hover:bg-white text-foreground shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 rounded-full"
             onClick={goToNext}
           >
             <ChevronRight className="h-5 w-5" />
           </Button>
 
           {/* Dot indicators */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {photos.map((_, index) => (
               <button
                 key={index}
                 onClick={(e) => goToSlide(index, e)}
-                className={`w-2 h-2 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-all duration-200 shadow-sm ${
                   index === currentIndex
-                    ? "bg-white w-4"
-                    : "bg-white/60 hover:bg-white/80"
+                    ? "bg-white w-5"
+                    : "bg-white/70 hover:bg-white w-2"
                 }`}
               />
             ))}
           </div>
 
           {/* Photo counter */}
-          <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full z-10">
+          <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full z-10 shadow-md">
             {currentIndex + 1}/{photos.length}
           </div>
         </>
