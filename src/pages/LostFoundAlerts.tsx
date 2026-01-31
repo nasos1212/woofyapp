@@ -857,14 +857,14 @@ const LostFoundAlerts = () => {
                             <div key={index} className="border rounded-lg overflow-hidden">
                               {/* Photo with position applied */}
                               <div 
-                                className="relative h-32 overflow-hidden cursor-pointer"
+                                className="relative h-40 overflow-hidden cursor-pointer"
                                 onClick={() => setEditingPhotoIndex(editingPhotoIndex === index ? null : index)}
                               >
                                 <img
                                   src={preview}
                                   alt={`Photo ${index + 1}`}
-                                  className="w-full h-[200%] object-cover absolute left-0"
-                                  style={{ top: `${-(photoPositions[index] ?? 50)}%` }}
+                                  className="w-full h-full object-cover"
+                                  style={{ objectPosition: `center ${photoPositions[index] ?? 50}%` }}
                                 />
                                 <Button
                                   type="button"
