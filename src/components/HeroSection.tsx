@@ -58,33 +58,34 @@ const HeroSection = () => {
             </p>
 
             {/* Our Aim */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-3xl p-6 shadow-card border border-primary/20">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
-              <p className="text-sm font-semibold text-primary mb-5 flex items-center gap-2">
-                <Sparkles className="w-4 h-4" />
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-3xl p-8 shadow-card border border-primary/20">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
+              <p className="text-base font-semibold text-primary mb-6 flex items-center justify-center gap-2">
+                <Sparkles className="w-5 h-5" />
                 Our targets for 2026
               </p>
               <div className="grid grid-cols-3 gap-3 relative">
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Building2 className="w-5 h-5 text-primary" />
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Building2 className="w-6 h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-2xl text-gradient">500+</p>
-                  <p className="text-xs text-muted-foreground mt-1">Partner Businesses</p>
+                  <p className="font-display font-bold text-3xl text-gradient">500+</p>
+                  <p className="text-sm text-muted-foreground mt-1">Partner Businesses</p>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <PiggyBank className="w-5 h-5 text-green-600" />
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <PiggyBank className="w-6 h-6 text-green-600" />
                   </div>
-                  <p className="font-display font-bold text-2xl text-green-600">€300+</p>
-                  <p className="text-xs text-muted-foreground mt-1">Avg. Yearly Savings</p>
+                  <p className="font-display font-bold text-3xl text-green-600">€300+</p>
+                  <p className="text-sm text-muted-foreground mt-1">Avg. Yearly Savings</p>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Heart className="w-5 h-5 text-rose-500" />
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Heart className="w-6 h-6 text-rose-500" />
                   </div>
-                  <p className="font-display font-bold text-2xl text-rose-500">10</p>
-                  <p className="text-xs text-muted-foreground mt-1">Shelters Supported</p>
+                  <p className="font-display font-bold text-3xl text-rose-500">10</p>
+                  <p className="text-sm text-muted-foreground mt-1">Shelters Supported</p>
                 </div>
               </div>
             </div>
