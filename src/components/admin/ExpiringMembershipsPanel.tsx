@@ -6,7 +6,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertTriangle, Calendar, Clock, RefreshCw, Send, User } from "lucide-react";
 import { toast } from "sonner";
-import { format, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface ExpiringMembership {
   id: string;
@@ -182,7 +183,7 @@ const ExpiringMembershipsPanel = () => {
                       <Badge variant="outline" className="mb-1">{getPlanLabel(membership.plan_type)}</Badge>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Calendar className="w-3 h-3" />
-                        {format(new Date(membership.expires_at), "MMM d, yyyy")}
+                        {formatDate(new Date(membership.expires_at))}
                       </div>
                     </div>
                     {getDaysLeftBadge(membership.expires_at)}

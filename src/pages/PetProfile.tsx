@@ -12,7 +12,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import {
@@ -651,7 +651,7 @@ const PetProfile = () => {
                           <div className="mt-1">
                             <p className="font-medium text-sm sm:text-base truncate">
                               {pet.birthday 
-                                ? format(new Date(pet.birthday), "MMM d, yyyy") 
+                                ? formatDate(new Date(pet.birthday)) 
                                 : "Not set"}
                             </p>
                             <p className="text-xs text-amber-600 flex items-center gap-1 mt-1">
@@ -663,7 +663,7 @@ const PetProfile = () => {
                       ) : (
                         <p className="font-medium text-sm sm:text-base truncate">
                           {pet.birthday 
-                            ? format(new Date(pet.birthday), "MMM d, yyyy") 
+                            ? formatDate(new Date(pet.birthday)) 
                             : "Not set"}
                         </p>
                       )}
@@ -790,7 +790,7 @@ const PetProfile = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Member Since</p>
                   <p className="font-medium">
-                    {format(new Date(pet.created_at), "MMMM d, yyyy")}
+                    {formatDate(new Date(pet.created_at))}
                   </p>
                 </div>
               </div>
@@ -855,7 +855,7 @@ const PetProfile = () => {
                             </span>
                             <span>•</span>
                             <span>
-                              Sent {format(new Date(offer.sent_at), "MMM d, yyyy")}
+                              Sent {formatDate(new Date(offer.sent_at))}
                             </span>
                           </div>
                         </div>

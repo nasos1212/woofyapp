@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Cake, Gift, Calendar, Settings, Users, PartyPopper, Clock, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { format, differenceInDays, isSameMonth, isSameDay, addYears, setYear } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
@@ -517,10 +518,10 @@ const BusinessCustomerBirthdays = () => {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            {format(pet.nextBirthday, "MMMM d, yyyy")}
+                            {formatDate(pet.nextBirthday)}
                           </span>
                           {pet.last_interaction && (
-                            <span>Last visit: {format(new Date(pet.last_interaction), "MMM d, yyyy")}</span>
+                            <span>Last visit: {formatDate(new Date(pet.last_interaction))}</span>
                           )}
                         </div>
                       </div>
@@ -573,7 +574,7 @@ const BusinessCustomerBirthdays = () => {
                           {pet.birthday ? (
                             <p className="flex items-center gap-1">
                               <Cake className="h-4 w-4 text-pink-500" />
-                              {format(new Date(pet.birthday), "MMM d")}
+                              {formatDate(new Date(pet.birthday))}
                             </p>
                           ) : (
                             <p className="text-muted-foreground">No birthday set</p>
@@ -625,8 +626,8 @@ const BusinessCustomerBirthdays = () => {
                             </p>
                           </div>
                           <div className="text-right text-xs text-muted-foreground shrink-0">
-                            <p>{format(new Date(offer.sent_at), "MMM d, yyyy")}</p>
-                            <p>{format(new Date(offer.sent_at), "h:mm a")}</p>
+                            <p>{formatDate(new Date(offer.sent_at))}</p>
+                            <p>{format(new Date(offer.sent_at), "HH:mm")}</p>
                           </div>
                         </div>
                       </CardContent>

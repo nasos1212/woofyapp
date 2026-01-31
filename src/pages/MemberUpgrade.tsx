@@ -19,7 +19,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format, differenceInDays, addYears } from "date-fns";
+import { differenceInDays, addYears } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface Membership {
   id: string;
@@ -216,7 +217,7 @@ const MemberUpgrade = () => {
 
       toast({
         title: "Welcome to Wooffy! 🎉",
-        description: `Your ${plan.name} membership is now active until ${format(expiryDate, "MMM d, yyyy")}.`,
+        description: `Your ${plan.name} membership is now active until ${formatDate(expiryDate)}.`,
       });
 
       navigate("/member");
@@ -262,7 +263,7 @@ const MemberUpgrade = () => {
 
       toast({
         title: "Membership renewed! 🎉",
-        description: `Your ${plan.name} plan is now active until ${format(newExpiryDate, "MMM d, yyyy")}.`,
+        description: `Your ${plan.name} plan is now active until ${formatDate(newExpiryDate)}.`,
       });
 
       navigate("/member");

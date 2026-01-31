@@ -48,7 +48,8 @@ import {
   MoreVertical,
   ChevronLeft
 } from 'lucide-react';
-import { formatDistanceToNow, format } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
+import { formatDate } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -286,7 +287,7 @@ const CommunityQuestion = () => {
                   <div>
                     <p className="font-medium">{question.author?.full_name || 'Anonymous'}</p>
                     <p className="text-sm text-muted-foreground">
-                      {format(new Date(question.created_at), 'MMM d, yyyy')} · {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
+                      {formatDate(new Date(question.created_at))} · {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
                     </p>
                   </div>
                 </div>

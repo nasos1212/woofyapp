@@ -56,7 +56,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { format } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 import { PetType } from "@/data/petBreeds";
 
@@ -759,7 +759,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_from ? format(formData.valid_from, "PPP") : <span>Pick a date</span>}
+                          {formData.valid_from ? formatDate(formData.valid_from) : <span>Pick a date</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -785,7 +785,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_until ? format(formData.valid_until, "PPP") : <span>Pick a date</span>}
+                          {formData.valid_until ? formatDate(formData.valid_until) : <span>Pick a date</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -803,11 +803,11 @@ const BusinessOfferManagement = () => {
                 </div>
                 {(formData.valid_from || formData.valid_until) && (
                   <p className="text-xs text-muted-foreground">
-                    📅 {formData.valid_from && formData.valid_until 
-                      ? `Valid from ${format(formData.valid_from, "MMM d, yyyy")} to ${format(formData.valid_until, "MMM d, yyyy")}`
+                  📅 {formData.valid_from && formData.valid_until 
+                      ? `Valid from ${formatDate(formData.valid_from)} to ${formatDate(formData.valid_until)}`
                       : formData.valid_from 
-                        ? `Starts ${format(formData.valid_from, "MMM d, yyyy")}`
-                        : `Ends ${format(formData.valid_until!, "MMM d, yyyy")}`}
+                        ? `Starts ${formatDate(formData.valid_from)}`
+                        : `Ends ${formatDate(formData.valid_until!)}`}
                   </p>
                 )}
 

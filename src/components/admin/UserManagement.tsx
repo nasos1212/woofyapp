@@ -12,8 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { format, differenceInDays } from "date-fns";
-import { ensureHttps } from "@/lib/utils";
+import { differenceInDays } from "date-fns";
+import { ensureHttps, formatDate } from "@/lib/utils";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -398,7 +398,7 @@ const UserManagement = () => {
     } else if (daysUntil <= 7) {
       return { label: `Expires in ${daysUntil}d`, color: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30", isExpired: false };
     } else {
-      return { label: format(expiry, "MMM d, yyyy"), color: "bg-muted text-muted-foreground", isExpired: false };
+      return { label: formatDate(expiry), color: "bg-muted text-muted-foreground", isExpired: false };
     }
   };
 
@@ -881,7 +881,7 @@ const UserManagement = () => {
                           {/* Basic Info */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div><span className="text-muted-foreground">Email:</span> {user.email}</div>
-                            <div><span className="text-muted-foreground">Joined:</span> {format(new Date(user.created_at), "MMM d, yyyy")}</div>
+                            <div><span className="text-muted-foreground">Joined:</span> {formatDate(new Date(user.created_at))}</div>
                           </div>
                           
                           {/* Role Management - Multiple roles */}
@@ -960,7 +960,7 @@ const UserManagement = () => {
                                 <div><span className="text-muted-foreground">City:</span> {user.business.city || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Email:</span> {user.business.email}</div>
                                 <div><span className="text-muted-foreground">Phone:</span> {user.business.phone || "N/A"}</div>
-                                <div><span className="text-muted-foreground">Created:</span> {format(new Date(user.business.created_at), "MMM d, yyyy")}</div>
+                                <div><span className="text-muted-foreground">Created:</span> {formatDate(new Date(user.business.created_at))}</div>
                               </div>
                               {user.business.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.business.description}</p>
@@ -1038,7 +1038,7 @@ const UserManagement = () => {
                                 <div><span className="text-muted-foreground">Phone:</span> {user.shelter.phone || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Dogs in Care:</span> {user.shelter.dogs_in_care || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Years Operating:</span> {user.shelter.years_operating || "N/A"}</div>
-                                <div><span className="text-muted-foreground">Created:</span> {format(new Date(user.shelter.created_at), "MMM d, yyyy")}</div>
+                                <div><span className="text-muted-foreground">Created:</span> {formatDate(new Date(user.shelter.created_at))}</div>
                               </div>
                               
                               

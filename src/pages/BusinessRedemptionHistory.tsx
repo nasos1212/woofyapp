@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format, subDays, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface Redemption {
   id: string;
@@ -217,8 +218,8 @@ const BusinessRedemptionHistory = () => {
     setFilteredRedemptions(filtered);
   };
 
-  const formatDate = (dateString: string) => {
-    return format(parseISO(dateString), "MMM d, yyyy 'at' h:mm a");
+  const formatDateLocal = (dateString: string) => {
+    return format(parseISO(dateString), "dd/MM/yyyy 'at' HH:mm");
   };
 
   const formatDiscount = (value: number, type: string) => {
@@ -431,7 +432,7 @@ const BusinessRedemptionHistory = () => {
                     {filteredRedemptions.map((redemption) => (
                       <tr key={redemption.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
                         <td className="py-4 px-4">
-                          <p className="text-slate-900 text-sm">{formatDate(redemption.redeemed_at)}</p>
+                          <p className="text-slate-900 text-sm">{formatDateLocal(redemption.redeemed_at)}</p>
                         </td>
                         <td className="py-4 px-4">
                           <div>

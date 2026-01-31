@@ -17,7 +17,7 @@ import Header from "@/components/Header";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
@@ -303,11 +303,11 @@ const MemberDashboard = () => {
     .slice(0, 2) || "M";
 
   const expiryFormatted = membership?.expires_at
-    ? format(new Date(membership.expires_at), "MMM d, yyyy")
+    ? formatDate(new Date(membership.expires_at))
     : "N/A";
 
   const memberSince = membership?.created_at
-    ? format(new Date(membership.created_at), "yyyy")
+    ? new Date(membership.created_at).getFullYear().toString()
     : "N/A";
 
   const daysLeft = membership?.expires_at
@@ -701,7 +701,7 @@ const MemberDashboard = () => {
                           <div>
                             <p className="font-medium text-foreground">{redemption.business?.business_name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {redemption.offer?.title} • {format(new Date(redemption.redeemed_at), "MMM d")}
+                              {redemption.offer?.title} • {formatDate(new Date(redemption.redeemed_at))}
                             </p>
                           </div>
                           <div className="text-right">

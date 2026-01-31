@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface AnalyticsEvent {
   id: string;
@@ -218,7 +219,7 @@ const EngagementAnalytics = () => {
   const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
   
   events.forEach(e => {
-    const day = format(new Date(e.created_at), "MMM d");
+    const day = format(new Date(e.created_at), "dd/MM");
     if (!dailyActivity[day]) {
       dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
     }
@@ -228,7 +229,7 @@ const EngagementAnalytics = () => {
   
   // Add actual redemptions to the chart
   redemptions.forEach(r => {
-    const day = format(new Date(r.redeemed_at), "MMM d");
+    const day = format(new Date(r.redeemed_at), "dd/MM");
     if (!dailyActivity[day]) {
       dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
     }

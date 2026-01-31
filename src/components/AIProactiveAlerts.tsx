@@ -7,7 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { format, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import { toZonedTime } from "date-fns-tz";
 
 interface ProactiveAlert {
@@ -451,7 +452,7 @@ export const AIProactiveAlerts = () => {
                       {getDaysText(reminder.daysUntil)}
                     </span>
                     <span>•</span>
-                    <span>{format(reminder.dueDate, "MMM d")}</span>
+                    <span>{formatDate(reminder.dueDate)}</span>
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
