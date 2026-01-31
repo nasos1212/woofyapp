@@ -852,12 +852,12 @@ const LostFoundAlerts = () => {
                       <Label>Photos * (up to {MAX_PHOTOS})</Label>
 
                       {petPhotoPreviews.length > 0 && (
-                        <div className="space-y-3 mb-2">
+                        <div className="grid grid-cols-3 gap-3 mb-2">
                           {petPhotoPreviews.map((preview, index) => (
-                            <div key={index} className="border rounded-lg overflow-hidden">
-                              {/* Photo with position applied */}
+                            <div key={index} className="relative group">
+                              {/* Square photo frame */}
                               <div 
-                                className="relative aspect-[4/3] overflow-hidden cursor-pointer"
+                                className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-border shadow-sm hover:shadow-md transition-shadow bg-muted"
                                 onClick={() => setEditingPhotoIndex(editingPhotoIndex === index ? null : index)}
                               >
                                 <img
@@ -870,7 +870,7 @@ const LostFoundAlerts = () => {
                                   type="button"
                                   variant="destructive"
                                   size="icon"
-                                  className="absolute top-1 right-1 h-6 w-6 z-10"
+                                  className="absolute top-1.5 right-1.5 h-6 w-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     removePhoto(index);
@@ -879,76 +879,97 @@ const LostFoundAlerts = () => {
                                   <X className="w-3 h-3" />
                                 </Button>
                                 {index === 0 && (
-                                  <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded">
+                                  <span className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">
                                     Main
                                   </span>
                                 )}
-                                <span className="absolute bottom-1 right-1 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded">
-                                  {editingPhotoIndex === index ? "Click to close" : "Click to adjust"}
-                                </span>
-                              </div>
-
-                              {/* Position adjuster - shown when editing */}
-                              {editingPhotoIndex === index && (
-                                <div className="p-3 bg-muted/50 border-t">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <Label className="text-xs">Adjust vertical position</Label>
-                                    <span className="text-xs text-muted-foreground">{photoPositions[index]}%</span>
-                                  </div>
-                                  <div className="flex items-center gap-2">
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="icon"
-                                      className="h-8 w-8"
-                                      onClick={() => {
-                                        setPhotoPositions((prev) => {
-                                          const newPositions = [...prev];
-                                          newPositions[index] = Math.max(0, (newPositions[index] ?? 50) - 10);
-                                          return newPositions;
-                                        });
-                                      }}
-                                    >
-                                      <ChevronUp className="w-4 h-4" />
-                                    </Button>
-                                    <input
-                                      type="range"
-                                      min="0"
-                                      max="100"
-                                      value={photoPositions[index] ?? 50}
-                                      onChange={(e) => {
-                                        const value = parseInt(e.target.value);
-                                        setPhotoPositions((prev) => {
-                                          const newPositions = [...prev];
-                                          newPositions[index] = value;
-                                          return newPositions;
-                                        });
-                                      }}
-                                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="icon"
-                                      className="h-8 w-8"
-                                      onClick={() => {
-                                        setPhotoPositions((prev) => {
-                                          const newPositions = [...prev];
-                                          newPositions[index] = Math.min(100, (newPositions[index] ?? 50) + 10);
-                                          return newPositions;
-                                        });
-                                      }}
-                                    >
-                                      <ChevronDown className="w-4 h-4" />
-                                    </Button>
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mt-2 text-center">
-                                    Slide to adjust which part of the photo is visible
-                                  </p>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                  <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                    {editingPhotoIndex === index ? "Close" : "Adjust"}
+                                  </span>
                                 </div>
-                              )}
+                              </div>
                             </div>
                           ))}
+                        </div>
+                      )}
+
+                      {/* Position adjuster - shown below the grid when editing */}
+                      {editingPhotoIndex !== null && petPhotoPreviews[editingPhotoIndex] && (
+                        <div className="p-4 bg-muted/50 border rounded-xl mb-2">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-primary flex-shrink-0">
+                              <img
+                                src={petPhotoPreviews[editingPhotoIndex]}
+                                alt="Editing"
+                                className="w-full h-full object-cover"
+                                style={{ objectPosition: `center ${photoPositions[editingPhotoIndex] ?? 50}%` }}
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-1">
+                                <Label className="text-sm font-medium">Adjust Photo {editingPhotoIndex + 1}</Label>
+                                <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded">{photoPositions[editingPhotoIndex]}%</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">Slide to adjust which part of the photo is visible</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => {
+                                setPhotoPositions((prev) => {
+                                  const newPositions = [...prev];
+                                  newPositions[editingPhotoIndex] = Math.max(0, (newPositions[editingPhotoIndex] ?? 50) - 10);
+                                  return newPositions;
+                                });
+                              }}
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </Button>
+                            <input
+                              type="range"
+                              min="0"
+                              max="100"
+                              value={photoPositions[editingPhotoIndex] ?? 50}
+                              onChange={(e) => {
+                                const value = parseInt(e.target.value);
+                                setPhotoPositions((prev) => {
+                                  const newPositions = [...prev];
+                                  newPositions[editingPhotoIndex] = value;
+                                  return newPositions;
+                                });
+                              }}
+                              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => {
+                                setPhotoPositions((prev) => {
+                                  const newPositions = [...prev];
+                                  newPositions[editingPhotoIndex] = Math.min(100, (newPositions[editingPhotoIndex] ?? 50) + 10);
+                                  return newPositions;
+                                });
+                              }}
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </Button>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="w-full mt-3 text-muted-foreground"
+                            onClick={() => setEditingPhotoIndex(null)}
+                          >
+                            Done adjusting
+                          </Button>
                         </div>
                       )}
 
