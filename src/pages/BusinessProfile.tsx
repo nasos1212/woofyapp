@@ -465,18 +465,6 @@ export default function BusinessProfile() {
                     </a>
                   )}
                   
-                  {business.google_maps_url && (
-                    <a
-                      href={business.google_maps_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      Get Directions
-                    </a>
-                  )}
-                  
                   {business.website && (
                     <a
                       href={ensureHttps(business.website)}
