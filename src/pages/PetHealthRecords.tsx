@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import { format, isPast, addDays, differenceInDays, isToday } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import DogLoader from "@/components/DogLoader";
 import { validateDocumentFile, MAX_DOCUMENT_SIZE, VALID_DOCUMENT_EXTENSIONS } from "@/lib/fileValidation";
 
@@ -1179,7 +1180,7 @@ const PetHealthRecords = () => {
                                 {getStatusBadge(reminder.status)}
                               </div>
                               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                                <span>Due: {format(new Date(reminder.next_due_date!), "MMM d, yyyy")}</span>
+                                <span>Due: {formatDate(new Date(reminder.next_due_date!))}</span>
                                 {reminder.reminder_interval_type && (
                                   <span className="text-xs">
                                     ({getIntervalLabel(reminder.reminder_interval_type, reminder.reminder_interval_days)})
@@ -1281,10 +1282,10 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Date: {format(new Date(record.date_administered), "MMM d, yyyy")}</span>
+                                <span>Date: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (
-                                <span>Next: {format(new Date(record.next_due_date), "MMM d, yyyy")}</span>
+                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                               {record.veterinarian_name && <span>Vet: {record.veterinarian_name}</span>}
                               {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
@@ -1370,10 +1371,10 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Last: {format(new Date(record.date_administered), "MMM d, yyyy")}</span>
+                                <span>Last: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (
-                                <span>Next: {format(new Date(record.next_due_date), "MMM d, yyyy")}</span>
+                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
                           </div>
@@ -1445,10 +1446,10 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Last: {format(new Date(record.date_administered), "MMM d, yyyy")}</span>
+                                <span>Last: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (
-                                <span>Next: {format(new Date(record.next_due_date), "MMM d, yyyy")}</span>
+                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
                           </div>

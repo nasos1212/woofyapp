@@ -23,6 +23,7 @@ import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface DailyData {
   date: string;
@@ -480,7 +481,7 @@ const BusinessAnalytics = () => {
                         <td className="px-6 py-4 text-right">
                           <span className="text-sm text-slate-500 flex items-center justify-end gap-1">
                             <Calendar className="w-3 h-3" />
-                            {format(new Date(customer.last_visit), "MMM d, yyyy")}
+                            {formatDate(new Date(customer.last_visit))}
                           </span>
                         </td>
                       </tr>

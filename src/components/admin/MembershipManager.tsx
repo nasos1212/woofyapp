@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { format, differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
+import { formatDate } from "@/lib/utils";
 
 interface MembershipWithUser {
   id: string;
@@ -114,7 +115,7 @@ const MembershipManager = () => {
       };
     } else {
       return {
-        label: `Expires ${format(expiry, "MMM d, yyyy")}`,
+        label: `Expires ${formatDate(expiry)}`,
         color: "bg-green-500/20 text-green-400 border-green-500/30",
         isExpired: false,
         daysExpired: 0,

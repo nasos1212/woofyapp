@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { format, formatDistanceToNow, isPast, isFuture } from "date-fns";
+import { formatDistanceToNow, isPast, isFuture } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import { Building2, MapPin, Percent, Check, ExternalLink, Clock, AlertTriangle, Lock, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -114,7 +115,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
     
     return { 
       type: "valid", 
-      label: `Valid until ${format(validUntil, "MMM d, yyyy")}` 
+      label: `Valid until ${formatDate(validUntil)}` 
     };
   };
 
@@ -206,10 +207,10 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                 <span>
                   {offer.valid_from && offer.valid_until ? (
                     <>
-                      {format(new Date(offer.valid_from), "MMM d")} - {format(new Date(offer.valid_until), "MMM d, yyyy")}
+                      {formatDate(new Date(offer.valid_from))} - {formatDate(new Date(offer.valid_until))}
                     </>
                   ) : offer.valid_until ? (
-                    <>Valid until {format(new Date(offer.valid_until), "MMM d, yyyy")}</>
+                    <>Valid until {formatDate(new Date(offer.valid_until))}</>
                   ) : null}
                 </span>
               </div>

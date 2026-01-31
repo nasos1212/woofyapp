@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { formatDate } from "@/lib/utils";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import {
@@ -332,7 +332,7 @@ const RedemptionHistory = () => {
                         </p>
                         <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
                           <Calendar className="w-3 h-3" />
-                          {format(new Date(redemption.redeemed_at), "MMM d, yyyy")}
+                          {formatDate(new Date(redemption.redeemed_at))}
                         </p>
                       </div>
                     </div>
@@ -378,7 +378,7 @@ const RedemptionHistory = () => {
                       <div className="text-right">
                         <p className="text-sm text-muted-foreground">Redeemed</p>
                         <p className="font-medium">
-                          {format(new Date(selectedRedemption.redeemed_at), "MMM d, yyyy")}
+                          {formatDate(new Date(selectedRedemption.redeemed_at))}
                         </p>
                       </div>
                     </div>
