@@ -90,7 +90,7 @@ const AlertPhotoCarousel = ({ alertId, mainPhotoUrl, petName, badge }: AlertPhot
   const currentPhoto = photos[currentIndex];
 
   return (
-    <div className="w-full aspect-square bg-muted relative group overflow-hidden">
+    <div className="w-full aspect-[4/3] bg-muted relative group overflow-hidden">
       <img
         src={currentPhoto.url}
         alt={`${petName} - Photo ${currentIndex + 1}`}

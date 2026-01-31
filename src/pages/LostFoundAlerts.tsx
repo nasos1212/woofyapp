@@ -857,7 +857,7 @@ const LostFoundAlerts = () => {
                             <div key={index} className="border rounded-lg overflow-hidden">
                               {/* Photo with position applied */}
                               <div 
-                                className="relative aspect-square overflow-hidden cursor-pointer"
+                                className="relative aspect-[4/3] overflow-hidden cursor-pointer"
                                 onClick={() => setEditingPhotoIndex(editingPhotoIndex === index ? null : index)}
                               >
                                 <img
