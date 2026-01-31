@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank, Users } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import heroImage from "@/assets/hero-dog.jpg";
@@ -80,11 +80,11 @@ const HeroSection = () => {
                   <p className="text-xs text-muted-foreground mt-1">Avg. Yearly Savings</p>
                 </div>
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 bg-wooffy-sky/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Users className="w-5 h-5 text-wooffy-sky" />
+                  <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Heart className="w-5 h-5 text-rose-500" />
                   </div>
-                  <p className="font-display font-bold text-2xl text-wooffy-sky">24/7</p>
-                  <p className="text-xs text-muted-foreground mt-1">Community Support</p>
+                  <p className="font-display font-bold text-2xl text-rose-500">10%</p>
+                  <p className="text-xs text-muted-foreground mt-1">To Dog Shelters</p>
                 </div>
               </div>
             </div>
