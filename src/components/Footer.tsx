@@ -14,7 +14,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-wooffy-dark text-white py-16">
+    <footer className="bg-wooffy-dark text-white py-16 relative z-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12 mb-12">
           {/* Brand */}
@@ -69,9 +69,12 @@ const Footer = () => {
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Contact</h4>
             <ul className="space-y-1 text-sm text-wooffy-light/70">
               <li>
-                <a href="mailto:hello@wooffy.app" className="flex items-center gap-2 py-2 hover:text-wooffy-sky transition-colors">
-                  <Mail className="w-4 h-4 text-wooffy-sky flex-shrink-0" />
-                  <span>hello@wooffy.app</span>
+                <a 
+                  href="mailto:hello@wooffy.app" 
+                  className="flex items-center gap-2 py-3 hover:text-wooffy-sky transition-colors touch-manipulation"
+                >
+                  <Mail className="w-5 h-5 text-wooffy-sky flex-shrink-0" />
+                  <span className="underline">hello@wooffy.app</span>
                 </a>
               </li>
               <li>
