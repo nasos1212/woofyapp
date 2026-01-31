@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, Heart, MapPin } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank, Users } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import heroImage from "@/assets/hero-dog.jpg";
@@ -58,20 +58,33 @@ const HeroSection = () => {
             </p>
 
             {/* Our Aim */}
-            <div className="bg-card rounded-2xl p-6 shadow-soft border border-border">
-              <p className="text-sm font-medium text-muted-foreground mb-4">Our aim in 2026 is to provide our members with:</p>
-              <div className="flex flex-wrap justify-center lg:justify-start gap-6">
-                <div className="text-center lg:text-left">
-                  <p className="font-display font-bold text-2xl text-primary">500+</p>
-                  <p className="text-sm text-muted-foreground">Partner Businesses</p>
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-3xl p-6 shadow-card border border-primary/20">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
+              <p className="text-sm font-semibold text-primary mb-5 flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Our aim in 2026 is to provide our members with:
+              </p>
+              <div className="grid grid-cols-3 gap-3 relative">
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Building2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="font-display font-bold text-2xl text-gradient">500+</p>
+                  <p className="text-xs text-muted-foreground mt-1">Partner Businesses</p>
                 </div>
-                <div className="text-center lg:text-left">
-                  <p className="font-display font-bold text-2xl text-primary">€300+</p>
-                  <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <PiggyBank className="w-5 h-5 text-green-600" />
+                  </div>
+                  <p className="font-display font-bold text-2xl text-green-600">€300+</p>
+                  <p className="text-xs text-muted-foreground mt-1">Avg. Yearly Savings</p>
                 </div>
-                <div className="text-center lg:text-left">
-                  <p className="font-display font-bold text-2xl text-primary">24/7</p>
-                  <p className="text-sm text-muted-foreground">Community Support</p>
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 bg-wooffy-sky/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <Users className="w-5 h-5 text-wooffy-sky" />
+                  </div>
+                  <p className="font-display font-bold text-2xl text-wooffy-sky">24/7</p>
+                  <p className="text-xs text-muted-foreground mt-1">Community Support</p>
                 </div>
               </div>
             </div>
