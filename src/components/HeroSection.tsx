@@ -70,7 +70,7 @@ const HeroSection = () => {
                   <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <Building2 className="w-6 h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-3xl text-gradient">500+</p>
+                  <p className="font-display font-bold text-3xl text-gradient">200</p>
                   <p className="text-sm text-muted-foreground mt-1">Partner Businesses</p>
                 </div>
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
