@@ -83,8 +83,8 @@ const HeroSection = () => {
                   <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <Heart className="w-5 h-5 text-rose-500" />
                   </div>
-                  <p className="font-display font-bold text-2xl text-rose-500">10%</p>
-                  <p className="text-xs text-muted-foreground mt-1">To Dog Shelters</p>
+                  <p className="font-display font-bold text-2xl text-rose-500">10</p>
+                  <p className="text-xs text-muted-foreground mt-1">Shelters Supported</p>
                 </div>
               </div>
             </div>
