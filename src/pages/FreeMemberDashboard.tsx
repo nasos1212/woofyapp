@@ -223,7 +223,7 @@ const FreeMemberDashboard = () => {
                       <AlertTriangle className="w-5 h-5 text-amber-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Lost&Found Alert</h3>
+                      <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
                       <p className="text-sm text-muted-foreground">
                         Help reunite pets with their families
                       </p>
