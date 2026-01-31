@@ -1,5 +1,4 @@
 import { Building2, Store, Dumbbell, Home, Stethoscope, Scissors } from "lucide-react";
-import { useLandingStats } from "@/hooks/useLandingStats";
 
 const categoryConfig = [
   { icon: Store, name: "Pet Shops" },
@@ -20,8 +19,6 @@ const featuredPartners = [
 ];
 
 const PartnersSection = () => {
-  const { partnerBusinesses, isLoading } = useLandingStats();
-
   return (
     <section id="partners" className="py-20 lg:py-32">
       <div className="container mx-auto px-4">
@@ -33,7 +30,7 @@ const PartnersSection = () => {
           </span>
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
-            {isLoading ? "Partner Businesses" : `${partnerBusinesses}+ Partner Businesses`}
+            Our Partner Network
           </h2>
           
           <p className="text-lg text-muted-foreground">

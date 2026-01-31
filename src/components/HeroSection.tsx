@@ -3,17 +3,8 @@ import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import heroImage from "@/assets/hero-dog.jpg";
 import { useNavigate } from "react-router-dom";
-import { useLandingStats } from "@/hooks/useLandingStats";
-
 const HeroSection = () => {
   const navigate = useNavigate();
-  const { partnerBusinesses, happyMembers, isLoading } = useLandingStats();
-
-  // Format number with + suffix for display
-  const formatCount = (count: number) => {
-    if (count === 0) return "—";
-    return count.toLocaleString();
-  };
 
   const handleGetPass = () => {
     navigate("/auth?type=member");
@@ -62,27 +53,26 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Join {happyMembers > 0 ? `${formatCount(happyMembers)}+` : "our"} happy pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
+              Join our growing community of pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
               Plus access our community hub for tips, events & connections.
             </p>
 
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-8 py-4">
-              <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">
-                  {isLoading ? "—" : `${formatCount(partnerBusinesses)}+`}
-                </p>
-                <p className="text-sm text-muted-foreground">Partner Businesses</p>
-              </div>
-              <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">€300+</p>
-                <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
-              </div>
-              <div className="text-center lg:text-left">
-                <p className="font-display font-bold text-3xl text-foreground">
-                  {isLoading ? "—" : `${formatCount(happyMembers)}+`}
-                </p>
-                <p className="text-sm text-muted-foreground">Happy Members</p>
+            {/* Our Aim */}
+            <div className="bg-card rounded-2xl p-6 shadow-soft border border-border">
+              <p className="text-sm font-medium text-muted-foreground mb-4">Our aim is to provide our members with:</p>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6">
+                <div className="text-center lg:text-left">
+                  <p className="font-display font-bold text-2xl text-primary">500+</p>
+                  <p className="text-sm text-muted-foreground">Partner Businesses</p>
+                </div>
+                <div className="text-center lg:text-left">
+                  <p className="font-display font-bold text-2xl text-primary">€300+</p>
+                  <p className="text-sm text-muted-foreground">Avg. Yearly Savings</p>
+                </div>
+                <div className="text-center lg:text-left">
+                  <p className="font-display font-bold text-2xl text-primary">24/7</p>
+                  <p className="text-sm text-muted-foreground">Community Support</p>
+                </div>
               </div>
             </div>
 
