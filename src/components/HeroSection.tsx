@@ -59,7 +59,7 @@ const HeroSection = () => {
 
             {/* Our Aim */}
             <div className="bg-card rounded-2xl p-6 shadow-soft border border-border">
-              <p className="text-sm font-medium text-muted-foreground mb-4">Our aim is to provide our members with:</p>
+              <p className="text-sm font-medium text-muted-foreground mb-4">Our aim in 2026 is to provide our members with:</p>
               <div className="flex flex-wrap justify-center lg:justify-start gap-6">
                 <div className="text-center lg:text-left">
                   <p className="font-display font-bold text-2xl text-primary">500+</p>
