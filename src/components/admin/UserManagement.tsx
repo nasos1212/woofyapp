@@ -73,7 +73,7 @@ interface UserData {
   full_name: string | null;
   email: string;
   created_at: string;
-  role: string | null;
+  roles: string[];
   membership: MembershipInfo | null;
   business: BusinessInfo | null;
   shelter: ShelterInfo | null;
@@ -134,8 +134,12 @@ const UserManagement = () => {
       if (profilesResult.error) throw profilesResult.error;
 
       // Create maps for quick lookups
-      const rolesMap = new Map<string, string>();
-      (rolesResult.data || []).forEach(r => rolesMap.set(r.user_id, r.role));
+      const rolesMap = new Map<string, string[]>();
+      (rolesResult.data || []).forEach(r => {
+        const existing = rolesMap.get(r.user_id) || [];
+        existing.push(r.role);
+        rolesMap.set(r.user_id, existing);
+      });
 
       const membershipsMap = new Map<string, MembershipInfo>();
       (membershipsResult.data || []).forEach(m => membershipsMap.set(m.user_id, {
@@ -193,7 +197,7 @@ const UserManagement = () => {
         full_name: profile.full_name,
         email: profile.email,
         created_at: profile.created_at,
-        role: rolesMap.get(profile.user_id) || null,
+        roles: rolesMap.get(profile.user_id) || [],
         membership: membershipsMap.get(profile.user_id) || null,
         business: businessesMap.get(profile.user_id) || null,
         shelter: sheltersMap.get(profile.user_id) || null,
@@ -216,7 +220,7 @@ const UserManagement = () => {
     switch (activeTab) {
       case "members":
         // CRITICAL: Only show users with "member" role AND no shelter/business records
-        result = result.filter(u => u.role === "member" && !u.shelter && !u.business);
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
         if (membershipFilter === "freemium") {
           result = result.filter(u => !u.membership || !u.membership.is_active);
         } else if (membershipFilter === "paid") {
@@ -233,22 +237,22 @@ const UserManagement = () => {
         break;
       case "freemium":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER freemium
-        result = result.filter(u => u.role === "member" && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
         break;
       case "paid":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER paid members
-        result = result.filter(u => u.role === "member" && !u.shelter && !u.business && u.membership?.is_active);
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active);
         break;
       case "businesses":
         // IMPORTANT: Exclude users who have a shelter record - shelters should NEVER appear as businesses
-        result = result.filter(u => (u.role === "business" || u.business) && !u.shelter);
+        result = result.filter(u => (u.roles.includes("business") || u.business) && !u.shelter);
         if (businessFilter !== "all") {
           result = result.filter(u => u.business?.verification_status === businessFilter);
         }
         break;
       case "shelters":
         // Users with shelter records OR shelter role (incomplete onboarding) are shelters
-        result = result.filter(u => u.shelter || u.role === "shelter");
+        result = result.filter(u => u.shelter || u.roles.includes("shelter"));
         if (shelterFilter !== "all") {
           result = result.filter(u => u.shelter?.verification_status === shelterFilter);
         }
@@ -297,14 +301,14 @@ const UserManagement = () => {
   // Calculate counts
   const counts = useMemo(() => {
     // CRITICAL: Members must exclude shelters (by role OR record) and businesses
-    const members = users.filter(u => u.role === "member" && !u.shelter && !u.business);
+    const members = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
     const freemium = members.filter(u => !u.membership || !u.membership.is_active);
     const paid = members.filter(u => u.membership?.is_active);
     // IMPORTANT: Exclude users with shelter records OR shelter role from business count
-    const businesses = users.filter(u => (u.role === "business" || u.business) && !u.shelter && u.role !== "shelter");
+    const businesses = users.filter(u => (u.roles.includes("business") || u.business) && !u.shelter && !u.roles.includes("shelter"));
     const pendingBusinesses = businesses.filter(u => u.business?.verification_status === "pending");
     // Users with shelter records OR shelter role are shelters
-    const shelters = users.filter(u => u.shelter || u.role === "shelter");
+    const shelters = users.filter(u => u.shelter || u.roles.includes("shelter"));
     const pendingShelters = shelters.filter(u => u.shelter?.verification_status === "pending" || !u.shelter);
     
     return {
@@ -351,7 +355,7 @@ const UserManagement = () => {
   // Plan distribution for paid members
   const planDistribution = useMemo(() => {
     const planCounts: Record<string, number> = {};
-    const paidMembers = users.filter(u => u.role === "member" && u.membership?.is_active);
+    const paidMembers = users.filter(u => u.roles.includes("member") && u.membership?.is_active);
     
     paidMembers.forEach((u) => {
       const plan = u.membership?.plan_type || "single";
@@ -446,18 +450,38 @@ const UserManagement = () => {
   };
 
 
-  const updateUserRole = async (userId: string, newRole: string) => {
+  const addRole = async (userId: string, role: string) => {
     try {
-      await supabase.from("user_roles").delete().eq("user_id", userId);
       const { error } = await supabase.from("user_roles").insert({
         user_id: userId,
-        role: newRole as "admin" | "member" | "business" | "shelter",
+        role: role as "admin" | "member" | "business" | "shelter",
       });
       if (error) throw error;
-      toast.success(`Role updated to ${newRole}`);
+      toast.success(`Role "${role}" added`);
       fetchAllUsers();
     } catch (error: any) {
-      toast.error(error.message || "Failed to update role");
+      toast.error(error.message || "Failed to add role");
+    }
+  };
+
+  const removeRole = async (userId: string, role: string) => {
+    try {
+      const { error } = await supabase.from("user_roles").delete()
+        .eq("user_id", userId)
+        .eq("role", role as "admin" | "member" | "business" | "shelter");
+      if (error) throw error;
+      toast.success(`Role "${role}" removed`);
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to remove role");
+    }
+  };
+
+  const toggleRole = async (userId: string, role: string, hasRole: boolean) => {
+    if (hasRole) {
+      await removeRole(userId, role);
+    } else {
+      await addRole(userId, role);
     }
   };
 
@@ -469,20 +493,20 @@ const UserManagement = () => {
   const getTargetUserIds = (): string[] => {
     let targetUsers = users;
     switch (notifyTarget) {
-      case "members": targetUsers = users.filter(u => u.role === "member"); break;
-      case "freemium": targetUsers = users.filter(u => u.role === "member" && (!u.membership || !u.membership.is_active)); break;
-      case "paid": targetUsers = users.filter(u => u.role === "member" && u.membership?.is_active); break;
+      case "members": targetUsers = users.filter(u => u.roles.includes("member")); break;
+      case "freemium": targetUsers = users.filter(u => u.roles.includes("member") && (!u.membership || !u.membership.is_active)); break;
+      case "paid": targetUsers = users.filter(u => u.roles.includes("member") && u.membership?.is_active); break;
       case "businesses": 
         // Exclude rejected businesses from notifications
         targetUsers = users.filter(u => 
-          (u.role === "business" || u.business) && 
+          (u.roles.includes("business") || u.business) && 
           u.business?.verification_status !== "rejected"
         ); 
         break;
       case "shelters": 
         // Exclude rejected shelters from notifications
         targetUsers = users.filter(u => 
-          (u.role === "shelter" || u.shelter) && 
+          (u.roles.includes("shelter") || u.shelter) && 
           u.shelter?.verification_status !== "rejected"
         ); 
         break;
@@ -792,17 +816,21 @@ const UserManagement = () => {
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-medium truncate">{user.full_name || "No name"}</p>
                             
-                            {/* IMPORTANT: Shelters show "shelter" badge, businesses show "business" badge, members show their role */}
-                            {user.shelter ? (
-                              <Badge variant="outline" className="capitalize text-xs">shelter</Badge>
-                            ) : user.business ? (
-                              <Badge variant="outline" className="capitalize text-xs">business</Badge>
-                            ) : user.role ? (
-                              <Badge variant="outline" className="capitalize text-xs">{user.role}</Badge>
-                            ) : null}
+                            {/* Show ALL roles for the user */}
+                            {user.roles.map((role) => (
+                              <Badge 
+                                key={role} 
+                                variant="outline" 
+                                className={`capitalize text-xs ${
+                                  role === 'admin' ? 'bg-red-500/20 text-red-400 border-red-500/30' : ''
+                                }`}
+                              >
+                                {role}
+                              </Badge>
+                            ))}
                             
                             {/* Membership Status - ONLY for actual members, NEVER for shelters or businesses */}
-                            {user.role === "member" && !user.shelter && !user.business && (
+                            {user.roles.includes("member") && !user.shelter && !user.business && (
                               user.membership?.is_active ? (
                                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">{getPlanLabel(user.membership.plan_type)}</Badge>
                               ) : (
@@ -815,7 +843,7 @@ const UserManagement = () => {
                             
                             {/* Shelter Status - show for shelter record OR shelter role without record */}
                             {user.shelter ? getStatusBadge(user.shelter.verification_status) : 
-                              user.role === "shelter" && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>}
+                              user.roles.includes("shelter") && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>}
                           </div>
                           
                           <p className="text-sm text-muted-foreground truncate">{user.email}</p>
@@ -851,23 +879,39 @@ const UserManagement = () => {
                       {isExpanded && (
                         <div className="border-t border-border/50 p-4 bg-background/50 space-y-4">
                           {/* Basic Info */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div><span className="text-muted-foreground">Email:</span> {user.email}</div>
                             <div><span className="text-muted-foreground">Joined:</span> {format(new Date(user.created_at), "MMM d, yyyy")}</div>
-                            <div><span className="text-muted-foreground">Role:</span> <span className="capitalize">{user.role || "None"}</span></div>
-                            <div>
-                              <Select value={user.role || "member"} onValueChange={(v) => updateUserRole(user.user_id, v)}>
-                                <SelectTrigger className="h-8 text-xs">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="member">Member</SelectItem>
-                                  <SelectItem value="business">Business</SelectItem>
-                                  <SelectItem value="shelter">Shelter</SelectItem>
-                                  <SelectItem value="admin">Admin</SelectItem>
-                                </SelectContent>
-                              </Select>
+                          </div>
+                          
+                          {/* Role Management - Multiple roles */}
+                          <div className="bg-muted/30 rounded-lg p-4">
+                            <h4 className="font-semibold mb-3 flex items-center gap-2">
+                              <UserCog className="w-4 h-4 text-primary" />
+                              Roles
+                            </h4>
+                            <div className="flex flex-wrap gap-3">
+                              {["member", "business", "shelter", "admin"].map((role) => {
+                                const hasRole = user.roles.includes(role);
+                                return (
+                                  <div key={role} className="flex items-center gap-2">
+                                    <Switch 
+                                      checked={hasRole} 
+                                      onCheckedChange={() => toggleRole(user.user_id, role, hasRole)}
+                                    />
+                                    <span className={`capitalize text-sm ${hasRole ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                                      {role}
+                                    </span>
+                                    {role === 'admin' && hasRole && (
+                                      <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">Admin</Badge>
+                                    )}
+                                  </div>
+                                );
+                              })}
                             </div>
+                            <p className="text-xs text-muted-foreground mt-2">
+                              Current roles: {user.roles.length > 0 ? user.roles.join(', ') : 'None'}
+                            </p>
                           </div>
 
                           {/* Membership Details */}
@@ -942,7 +986,7 @@ const UserManagement = () => {
                           )}
 
                           {/* Pending Onboarding Business - Nudge Button */}
-                          {user.role === "business" && !user.business && (
+                          {user.roles.includes("business") && !user.business && (
                             <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
                               <h4 className="font-semibold mb-3 flex items-center gap-2">
                                 <Building2 className="w-4 h-4 text-blue-500" />
@@ -1022,7 +1066,7 @@ const UserManagement = () => {
                           )}
 
                           {/* Pending Onboarding Shelter - Nudge Button */}
-                          {user.role === "shelter" && !user.shelter && (
+                          {user.roles.includes("shelter") && !user.shelter && (
                             <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
                               <h4 className="font-semibold mb-3 flex items-center gap-2">
                                 <Home className="w-4 h-4 text-purple-500" />
