@@ -12,6 +12,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       closeButton
       swipeDirections={["top", "right"]}
+      duration={3000}
       toastOptions={{
         classNames: {
           toast:
@@ -19,7 +20,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           description: "group-[.toast]:text-muted-foreground",
           actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
           cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
-          closeButton: "group-[.toast]:bg-background group-[.toast]:border-border group-[.toast]:text-foreground hover:group-[.toast]:bg-muted",
+          closeButton: "group-[.toast]:bg-wooffy-sky group-[.toast]:border-wooffy-sky group-[.toast]:text-white hover:group-[.toast]:bg-wooffy-sky/80",
         },
       }}
       {...props}
