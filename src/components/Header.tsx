@@ -323,14 +323,17 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button
-                variant="ghost"
-                size="icon"
+              <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle menu"
+                className="w-11 h-11 rounded-full bg-wooffy-sky/20 border-2 border-wooffy-sky flex items-center justify-center hover:bg-wooffy-sky/30 active:scale-95 transition-all duration-200"
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </Button>
+                {mobileMenuOpen ? (
+                  <X className="h-6 w-6 text-wooffy-sky" />
+                ) : (
+                  <Menu className="h-6 w-6 text-wooffy-sky" />
+                )}
+              </button>
             )}
           </div>
         </div>
