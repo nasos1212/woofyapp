@@ -74,18 +74,18 @@ const SupportButton = () => {
     <>
       <Button
         onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-50 h-auto gap-2 rounded-full px-4 py-3 shadow-lg md:bottom-6"
+        className="fixed bottom-6 right-4 z-50 h-14 w-14 rounded-full shadow-lg"
+        size="icon"
         aria-label="Get support"
       >
         <div className="relative">
-          <MessageCircleQuestion className="h-5 w-5" />
+          <MessageCircleQuestion className="h-7 w-7" />
           {unreadCount > 0 && (
-            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
         </div>
-        <span className="text-sm font-medium">Support</span>
       </Button>
       <SupportDialog open={open} onOpenChange={setOpen} />
     </>
