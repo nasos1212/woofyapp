@@ -12,7 +12,7 @@ interface MembershipCardFullProps {
 
 const MembershipCardFull = ({ 
   memberName = "Your Name", 
-  petName = "My Pet's Name",
+  petName = "Your Pet's Name",
   petNames,
   memberSince = "2024",
   memberId = "WF-2026-XXXX-XXXX",
