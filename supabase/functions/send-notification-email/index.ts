@@ -60,43 +60,33 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Wooffy <hello@wooffy.app>",
       to: [email],
       subject: `${emoji} ${subject}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              .preview-text { display: none; max-height: 0; overflow: hidden; }
-            </style>
-          </head>
-          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
-            <div class="preview-text">${previewText}</div>
-            <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
-                <h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">${emoji} ${title}</h1>
-              </div>
-              <div style="padding: 40px;">
-                <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap;">
-                  ${message}
-                </p>
-                ${ctaText && ctaUrl ? `
-                <div style="text-align: center; margin: 30px 0;">
-                  <a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
-                    ${ctaText}
-                  </a>
-                </div>
-                ` : ""}
-              </div>
-              <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
-                <p style="font-size: 12px; color: #9ca3af; margin: 0;">
-                  © 2026 Wooffy. Made with ❤️ for pets in Cyprus.
-                </p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
+      html: `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+.preview-text { display: none; max-height: 0; overflow: hidden; }
+</style>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
+<div class="preview-text">${previewText}</div>
+<div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+<div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
+<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">${emoji} ${title}</h1>
+</div>
+<div style="padding: 40px;">
+<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap;">${message}</p>
+${ctaText && ctaUrl ? `<div style="text-align: center; margin: 30px 0;">
+<a href="${ctaUrl}" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">${ctaText}</a>
+</div>` : ""}
+</div>
+<div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
+<p style="font-size: 12px; color: #9ca3af; margin: 0;">© 2026 Wooffy. Made with ❤️ for pets in Cyprus.</p>
+</div>
+</div>
+</body>
+</html>`,
     });
 
     console.log("Notification email sent successfully:", emailResponse);
