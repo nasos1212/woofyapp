@@ -30,68 +30,76 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto group">
+    <div className="relative w-full max-w-md mx-auto group px-2 sm:px-0">
       {/* Glow effect */}
       <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
       {/* Card */}
-      <div className="relative bg-wooffy-dark rounded-3xl p-6 shadow-card overflow-hidden">
+      <div className="relative bg-wooffy-dark rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-card overflow-hidden">
         {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-24 sm:w-32 h-24 sm:h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         
         {/* Header */}
-        <div className="relative flex items-center justify-between mb-5">
+        <div className="relative flex items-center justify-between mb-4 sm:mb-5">
           <div className="flex items-center gap-2">
-            <Dog className="w-8 h-8 text-wooffy-sky" />
-            <span className="font-display font-bold text-2xl text-wooffy-sky">Wooffy</span>
+            <Dog className="w-6 sm:w-8 h-6 sm:h-8 text-wooffy-sky" />
+            <span className="font-display font-bold text-xl sm:text-2xl text-wooffy-sky">Wooffy</span>
           </div>
           <div className="flex items-center gap-1">
-            <Crown className="w-5 h-5 text-wooffy-accent" />
-            <span className="text-sm font-medium text-wooffy-light">Premium</span>
+            <Crown className="w-4 sm:w-5 h-4 sm:h-5 text-wooffy-accent" />
+            <span className="text-xs sm:text-sm font-medium text-wooffy-light">Premium</span>
           </div>
         </div>
 
         {/* Main content */}
-        <div className="relative flex gap-5">
+        <div className="relative flex gap-3 sm:gap-5">
           {/* Member info */}
-          <div className="flex-1 space-y-3">
+          <div className="flex-1 min-w-0 space-y-2 sm:space-y-3">
             <div>
-              <p className="text-wooffy-light/70 text-sm">Member</p>
-              <p className="font-display font-semibold text-xl text-wooffy-sky">{memberName}</p>
+              <p className="text-wooffy-light/70 text-xs sm:text-sm">Member</p>
+              <p className="font-display font-semibold text-lg sm:text-xl text-wooffy-sky truncate">{memberName}</p>
             </div>
             
             <div>
-              <p className="text-wooffy-light/70 text-sm">
+              <p className="text-wooffy-light/70 text-xs sm:text-sm">
                 {petNames && petNames.length > 1 ? "Furry Friends" : "Furry Friend"}
               </p>
-              <p className="font-display font-semibold text-lg text-wooffy-sky">{formatPetDisplay()}</p>
+              <p className="font-display font-semibold text-base sm:text-lg text-wooffy-sky truncate">{formatPetDisplay()}</p>
             </div>
           </div>
 
           {/* QR Code */}
           <div className="shrink-0 flex flex-col items-center justify-center">
-            <div className="bg-white p-3 rounded-xl shadow-lg">
+            <div className="bg-white p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg">
+              <QRCodeSVG 
+                value={verificationUrl}
+                size={70}
+                level="H"
+                includeMargin={false}
+                className="sm:hidden"
+              />
               <QRCodeSVG 
                 value={verificationUrl}
                 size={100}
                 level="H"
                 includeMargin={false}
+                className="hidden sm:block"
               />
             </div>
-            <p className="text-xs text-wooffy-light/60 mt-1.5">Scan to verify</p>
+            <p className="text-[10px] sm:text-xs text-wooffy-light/60 mt-1 sm:mt-1.5">Scan to verify</p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="relative mt-5 pt-4 border-t border-wooffy-blue/30 flex items-center justify-between">
-          <div>
-            <p className="text-wooffy-light/60 text-xs mb-0.5">Member ID</p>
-            <p className="font-mono text-sm text-wooffy-light/90 tracking-wide">{memberId}</p>
+        <div className="relative mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-wooffy-blue/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+          <div className="min-w-0">
+            <p className="text-wooffy-light/60 text-[10px] sm:text-xs mb-0.5">Member ID</p>
+            <p className="font-mono text-xs sm:text-sm text-wooffy-light/90 tracking-wide truncate">{memberId}</p>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Shield className="w-4 h-4 text-wooffy-light/70" />
-            <span className="text-sm text-wooffy-light/70">Valid: {expiryDate}</span>
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            <Shield className="w-3 sm:w-4 h-3 sm:h-4 text-wooffy-light/70" />
+            <span className="text-xs sm:text-sm text-wooffy-light/70">Valid: {expiryDate}</span>
           </div>
         </div>
       </div>
