@@ -8,7 +8,7 @@ interface MembershipCardProps {
 
 const MembershipCard = ({ 
   memberName = "Your Name", 
-  petName = "My Pet's Name",
+  petName = "Your Pet's Name",
   memberSince = "2026"
 }: MembershipCardProps) => {
   return (
