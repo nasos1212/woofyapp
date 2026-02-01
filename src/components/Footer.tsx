@@ -68,7 +68,6 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Support</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><a href="mailto:hello@wooffy.app?subject=Help Request" className="hover:text-wooffy-sky transition-colors">Help Center</a></li>
               <li><Link to="/partner-register" className="hover:text-wooffy-sky transition-colors">Partner Program</Link></li>
               <li><a href="mailto:hello@wooffy.app?subject=Privacy Policy Inquiry" className="hover:text-wooffy-sky transition-colors">Privacy Policy</a></li>
               <li><a href="mailto:hello@wooffy.app?subject=Terms of Service Inquiry" className="hover:text-wooffy-sky transition-colors">Terms of Service</a></li>
