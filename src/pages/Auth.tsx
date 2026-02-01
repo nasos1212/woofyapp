@@ -387,15 +387,15 @@ const Auth = () => {
                   role: "business" as const,
                 });
               
-              // Send welcome email (non-blocking)
-              supabase.functions.invoke("send-welcome-email", {
-                body: { email: email.trim(), fullName: fullName.trim() }
-              }).catch(err => console.error("Welcome email error:", err));
+              // Send verification email from hello@wooffy.app
+              supabase.functions.invoke("send-verification-email", {
+                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
+              }).catch(err => console.error("Verification email error:", err));
             }
             
             toast({
               title: "Account Created!",
-              description: "Now let's register your business.",
+              description: "Please check your email to verify your account, then complete your business registration.",
             });
             // Pass the full name to pre-fill business name
             navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
@@ -422,15 +422,15 @@ const Auth = () => {
                 console.error("Error adding shelter role:", roleError);
               }
               
-              // Send welcome email (non-blocking)
-              supabase.functions.invoke("send-welcome-email", {
-                body: { email: email.trim(), fullName: fullName.trim() }
-              }).catch(err => console.error("Welcome email error:", err));
+              // Send verification email from hello@wooffy.app
+              supabase.functions.invoke("send-verification-email", {
+                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
+              }).catch(err => console.error("Verification email error:", err));
             }
             
             toast({
               title: "Account Created!",
-              description: "Now complete your shelter application.",
+              description: "Please check your email to verify your account, then complete your shelter application.",
             });
             // Navigate to shelter onboarding
             navigate("/shelter-onboarding");
@@ -447,15 +447,15 @@ const Auth = () => {
                   { onConflict: "user_id,role" }
                 );
               
-              // Send welcome email (non-blocking)
-              supabase.functions.invoke("send-welcome-email", {
-                body: { email: email.trim(), fullName: fullName.trim() }
-              }).catch(err => console.error("Welcome email error:", err));
+              // Send verification email from hello@wooffy.app
+              supabase.functions.invoke("send-verification-email", {
+                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
+              }).catch(err => console.error("Verification email error:", err));
             }
             
             toast({
               title: "Account Created!",
-              description: "Welcome to Wooffy! Explore our community hub.",
+              description: "Please check your email to verify your account.",
             });
           }
         }
