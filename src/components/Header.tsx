@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History } from "lucide-react";
+import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -21,6 +21,7 @@ const Header = () => {
   const [isShelter, setIsShelter] = useState(false);
   const [hasShelterRecord, setHasShelterRecord] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -267,7 +268,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-1">
             {user && <NotificationBell />}
-            {user && (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
@@ -321,9 +322,69 @@ const Header = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
             )}
           </div>
         </div>
+
+        {/* Mobile menu for non-logged-in users */}
+        {mobileMenuOpen && !user && (
+          <div className="md:hidden border-t border-border py-4 space-y-2">
+            {navLinks.map((link) => (
+              link.isRoute ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="block px-4 py-2 font-medium text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                isHomePage ? (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="block px-4 py-2 font-medium text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.name}
+                    to={`/${link.href}`}
+                    className="block px-4 py-2 font-medium text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </Link>
+                )
+              )
+            ))}
+            <div className="px-4 pt-2 space-y-2">
+              <Link to="/partner-register" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full justify-start gap-2">
+                  <Building2 className="w-4 h-4" />
+                  For Business
+                </Button>
+              </Link>
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="hero" size="default" className="w-full">
+                  Join Now
+                </Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );
