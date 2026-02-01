@@ -69,8 +69,8 @@ const MembershipCardFull = ({
             </div>
           </div>
 
-          {/* QR Code */}
-          <div className="shrink-0 flex flex-col items-center justify-center">
+          {/* QR Code - positioned slightly towards center */}
+          <div className="shrink-0 flex flex-col items-center justify-center ml-auto mr-2 sm:mr-4">
             <div className="bg-white p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg">
               <QRCodeSVG 
                 value={verificationUrl}
