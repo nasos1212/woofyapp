@@ -38,18 +38,22 @@ const handler = async (req: Request): Promise<Response> => {
           <head>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              .preview-text { display: none; max-height: 0; overflow: hidden; }
+            </style>
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
+            <div class="preview-text">Reset your Wooffy password - this link expires in 1 hour.</div>
             <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 40px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">Password Reset 🔐</h1>
+              <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
+                <h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Password Reset 🔐</h1>
               </div>
               <div style="padding: 40px;">
                 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
                   We received a request to reset your Wooffy password. Click the button below to set a new password:
                 </p>
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                  <a href="${resetUrl}" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">
                     Reset Password
                   </a>
                 </div>

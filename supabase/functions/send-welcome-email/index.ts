@@ -35,11 +35,15 @@ const handler = async (req: Request): Promise<Response> => {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .preview-text { display: none; max-height: 0; overflow: hidden; }
+</style>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
+<div class="preview-text">Welcome to the Wooffy family! Start exploring exclusive pet benefits in Cyprus.</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-<div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 40px; text-align: center;">
-<h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Wooffy! 🐾</h1>
+<div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
+<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome to Wooffy! 🐾</h1>
 </div>
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
@@ -56,7 +60,7 @@ With Wooffy, you can:
 <li>🔔 Get personalized alerts and notifications</li>
 </ul>
 <div style="text-align: center; margin: 30px 0;">
-<a href="https://www.wooffy.app/member" style="display: inline-block; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Get Started</a>
+<a href="https://www.wooffy.app/member" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Get Started</a>
 </div>
 <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
 Questions? Reply to this email - we're always here to help!
