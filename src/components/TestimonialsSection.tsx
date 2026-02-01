@@ -34,7 +34,7 @@ const TestimonialsSection = () => {
             What Our Members Say
           </h2>
           <p className="text-lg text-muted-foreground">
-            Join thousands of happy pet parents who are saving money and building community.
+            Join the Wooffy family of happy pet parents who are saving money and building community.
           </p>
         </div>
 
