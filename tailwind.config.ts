@@ -12,6 +12,9 @@ export default {
         "2xl": "1400px",
       },
     },
+    screens: {
+      'xs': '400px',
+    },
     extend: {
       fontFamily: {
         display: ["Fredoka", "sans-serif"],

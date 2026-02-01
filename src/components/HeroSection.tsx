@@ -65,27 +65,27 @@ const HeroSection = () => {
                 <Sparkles className="w-5 h-5" />
                 Our targets for 2026
               </p>
-              <div className="grid grid-cols-3 gap-3 relative">
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Building2 className="w-6 h-6 text-primary" />
+              <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 relative">
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-3xl text-gradient">200+</p>
-                  <p className="text-sm text-muted-foreground mt-1">Partner Businesses</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-gradient">200+</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">Partner Businesses</p>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <PiggyBank className="w-6 h-6 text-green-600" />
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <PiggyBank className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   </div>
-                  <p className="font-display font-bold text-3xl text-green-600">€300+</p>
-                  <p className="text-sm text-muted-foreground mt-1">Avg. Yearly Savings</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-green-600">€300+</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">Avg. Yearly Savings</p>
                 </div>
-                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Heart className="w-6 h-6 text-rose-500" />
+                <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
                   </div>
-                  <p className="font-display font-bold text-3xl text-rose-500">5+</p>
-                  <p className="text-sm text-muted-foreground mt-1">Shelters Supported</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-rose-500">5+</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">Shelters Supported</p>
                 </div>
               </div>
             </div>
