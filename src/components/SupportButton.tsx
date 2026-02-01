@@ -79,7 +79,7 @@ const SupportButton = () => {
         aria-label="Get support"
       >
         <div className="relative">
-          <MessageCircleQuestion className="h-8 w-8" />
+          <MessageCircleQuestion className="h-9 w-9" />
           {unreadCount > 0 && (
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
               {unreadCount > 9 ? "9+" : unreadCount}
