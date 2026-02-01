@@ -419,85 +419,82 @@ const MemberOffers = () => {
               />
             </div>
 
-            {/* Category Dropdown */}
-            <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-muted-foreground" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="justify-between gap-2 min-w-[180px]"
-                  >
-                    <span className="truncate">
-                      {categories.find(c => c.id === selectedCategory)?.label || "All"}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[200px] max-h-[300px] overflow-y-auto bg-card z-50">
-                  {categories.map((category) => (
-                    <DropdownMenuItem 
-                      key={category.id}
-                      onClick={() => setSelectedCategory(category.id)}
-                      className="flex items-center justify-between cursor-pointer"
+            {/* Filter Dropdowns Row */}
+            <div className="flex flex-wrap gap-3">
+              {/* Category Dropdown */}
+              <div className="flex items-center gap-2 bg-muted/50 rounded-full px-4 py-2 border border-border/50">
+                <Filter className="w-4 h-4 text-primary" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="justify-between gap-2 min-w-[140px] h-auto p-0 hover:bg-transparent"
                     >
-                      {category.label}
-                      {selectedCategory === category.id && (
-                        <Check className="w-4 h-4 text-primary" />
-                      )}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Filter by category
-              </p>
-            </div>
+                      <span className="truncate font-medium text-foreground">
+                        {categories.find(c => c.id === selectedCategory)?.label || "All"}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-[200px] max-h-[300px] overflow-y-auto bg-card z-50">
+                    {categories.map((category) => (
+                      <DropdownMenuItem 
+                        key={category.id}
+                        onClick={() => setSelectedCategory(category.id)}
+                        className="flex items-center justify-between cursor-pointer"
+                      >
+                        {category.label}
+                        {selectedCategory === category.id && (
+                          <Check className="w-4 h-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
-            {/* City Filter */}
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-muted-foreground" />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="justify-between gap-2 min-w-[180px]"
-                  >
-                    <span className="truncate">
-                      {selectedCity === "all" ? "All Cities" : selectedCity}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[280px] max-h-[300px] overflow-y-auto bg-card z-50">
-                  <DropdownMenuItem 
-                    onClick={() => setSelectedCity("all")}
-                    className="flex items-center justify-between cursor-pointer"
-                  >
-                    All Cities
-                    {selectedCity === "all" && (
-                      <Check className="w-4 h-4 text-primary" />
-                    )}
-                  </DropdownMenuItem>
-                  {cyprusCityNames.map((city) => (
+              {/* City Filter */}
+              <div className="flex items-center gap-2 bg-muted/50 rounded-full px-4 py-2 border border-border/50">
+                <MapPin className="w-4 h-4 text-primary" />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="justify-between gap-2 min-w-[140px] h-auto p-0 hover:bg-transparent"
+                    >
+                      <span className="truncate font-medium text-foreground">
+                        {selectedCity === "all" ? "All Cities" : selectedCity}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-[280px] max-h-[300px] overflow-y-auto bg-card z-50">
                     <DropdownMenuItem 
-                      key={city}
-                      onClick={() => setSelectedCity(city)}
+                      onClick={() => setSelectedCity("all")}
                       className="flex items-center justify-between cursor-pointer"
                     >
-                      {city}
-                      {selectedCity === city && (
+                      All Cities
+                      {selectedCity === "all" && (
                         <Check className="w-4 h-4 text-primary" />
                       )}
                     </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <p className="text-xs text-muted-foreground hidden sm:block">
-                Filter by location
-              </p>
+                    {cyprusCityNames.map((city) => (
+                      <DropdownMenuItem 
+                        key={city}
+                        onClick={() => setSelectedCity(city)}
+                        className="flex items-center justify-between cursor-pointer"
+                      >
+                        {city}
+                        {selectedCity === city && (
+                          <Check className="w-4 h-4 text-primary" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
 
             {/* Pet Type Filter */}
