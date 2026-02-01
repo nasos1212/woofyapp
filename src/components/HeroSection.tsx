@@ -84,7 +84,7 @@ const HeroSection = () => {
                   <div className="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-3">
                     <Heart className="w-6 h-6 text-rose-500" />
                   </div>
-                  <p className="font-display font-bold text-3xl text-rose-500">10+</p>
+                  <p className="font-display font-bold text-3xl text-rose-500">5+</p>
                   <p className="text-sm text-muted-foreground mt-1">Shelters Supported</p>
                 </div>
               </div>
