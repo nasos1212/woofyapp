@@ -94,10 +94,13 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
   }, [messages]);
 
   const fetchConversations = async () => {
+    if (!user) return;
+    
     setLoading(true);
     const { data, error } = await supabase
       .from("support_conversations")
       .select("*")
+      .eq("user_id", user.id)
       .order("updated_at", { ascending: false });
 
     if (!error && data) {
