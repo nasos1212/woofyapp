@@ -86,15 +86,17 @@ const handler = async (req: Request): Promise<Response> => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #8B5CF6, #A855F7); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+            .header { background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
             .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
             .user-info { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
-            .message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #8B5CF6; }
+            .message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f97316; }
             .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
-            .btn { display: inline-block; background: #8B5CF6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
+            .btn { display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
+            .preview-text { display: none; max-height: 0; overflow: hidden; }
           </style>
         </head>
         <body>
+          <div class="preview-text">${isReply ? `Reply from ${userName}: ${subject}` : `New support request from ${userName}: ${subject}`}</div>
           <div class="container">
             <div class="header">
               <h1 style="margin: 0;">🐾 ${isReply ? "New Reply" : "New Support Request"}</h1>
