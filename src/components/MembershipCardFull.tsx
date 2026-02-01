@@ -30,15 +30,15 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto group">
-      {/* Glow effect */}
-      <div className="absolute -inset-1 sm:-inset-2 bg-wooffy-blue/50 rounded-2xl sm:rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+    <div className="relative w-full mx-auto group">
+      {/* Glow effect - hidden on mobile to prevent overflow */}
+      <div className="absolute inset-0 bg-wooffy-blue/30 rounded-2xl sm:rounded-3xl blur-xl opacity-0 sm:opacity-30 group-hover:opacity-50 transition-opacity duration-500 sm:-inset-2" />
       
       {/* Card */}
       <div className="relative bg-wooffy-dark rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-card overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-24 sm:w-32 h-24 sm:h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        {/* Decorative elements - smaller on mobile */}
+        <div className="absolute top-0 right-0 w-24 sm:w-40 h-24 sm:h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-20 sm:w-32 h-20 sm:h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         
         {/* Header */}
         <div className="relative flex items-center justify-between mb-4 sm:mb-5">
@@ -74,17 +74,10 @@ const MembershipCardFull = ({
             <div className="bg-white p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg">
               <QRCodeSVG 
                 value={verificationUrl}
-                size={70}
+                size={80}
                 level="H"
                 includeMargin={false}
-                className="sm:hidden"
-              />
-              <QRCodeSVG 
-                value={verificationUrl}
-                size={100}
-                level="H"
-                includeMargin={false}
-                className="hidden sm:block"
+                className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px]"
               />
             </div>
             <p className="text-[10px] sm:text-xs text-wooffy-light/60 mt-1 sm:mt-1.5">Scan to verify</p>
