@@ -54,7 +54,8 @@ const PartnersSection = () => {
           ))}
         </div>
 
-        {/* Featured partners */}
+        {/* Featured partners - Hidden for now, will be used for paid featured listings */}
+        {/* 
         <div className="bg-wooffy-dark rounded-3xl p-8 lg:p-12">
           <h3 className="font-display font-bold text-2xl text-wooffy-sky mb-8 text-center">
             Featured Partner Deals
@@ -83,6 +84,7 @@ const PartnersSection = () => {
             + hundreds more exclusive deals waiting for you
           </p>
         </div>
+        */}
       </div>
     </section>
   );
