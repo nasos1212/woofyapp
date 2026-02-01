@@ -112,7 +112,7 @@ const PricingSection = () => {
                 <Button 
                   variant={plan.popular ? "hero" : "outline"} 
                   className="w-full"
-                  onClick={() => navigate("/auth?type=member")}
+                  onClick={() => navigate("/auth")}
                 >
                   Get Started
                 </Button>
