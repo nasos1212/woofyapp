@@ -326,12 +326,12 @@ const Header = () => {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle menu"
-                className="w-11 h-11 rounded-full bg-wooffy-sky/20 border-2 border-wooffy-sky flex items-center justify-center hover:bg-wooffy-sky/30 active:scale-95 transition-all duration-200"
+                className="w-10 h-10 rounded-xl bg-wooffy-dark flex items-center justify-center hover:scale-105 active:scale-95 transition-transform duration-200 shadow-md"
               >
                 {mobileMenuOpen ? (
-                  <X className="h-6 w-6 text-wooffy-sky" />
+                  <X className="h-5 w-5 text-wooffy-sky" />
                 ) : (
-                  <Menu className="h-6 w-6 text-wooffy-sky" />
+                  <Menu className="h-5 w-5 text-wooffy-sky" />
                 )}
               </button>
             )}
