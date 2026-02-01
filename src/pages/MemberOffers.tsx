@@ -419,21 +419,40 @@ const MemberOffers = () => {
               />
             </div>
 
-            {/* Category Pills */}
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === category.id
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
-                  }`}
-                >
-                  {category.label}
-                </button>
-              ))}
+            {/* Category Dropdown */}
+            <div className="flex items-center gap-2">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="justify-between gap-2 min-w-[180px]"
+                  >
+                    <span className="truncate">
+                      {categories.find(c => c.id === selectedCategory)?.label || "All"}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[200px] max-h-[300px] overflow-y-auto bg-card z-50">
+                  {categories.map((category) => (
+                    <DropdownMenuItem 
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className="flex items-center justify-between cursor-pointer"
+                    >
+                      {category.label}
+                      {selectedCategory === category.id && (
+                        <Check className="w-4 h-4 text-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <p className="text-xs text-muted-foreground hidden sm:block">
+                Filter by category
+              </p>
             </div>
 
             {/* City Filter */}
