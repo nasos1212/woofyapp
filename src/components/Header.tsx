@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History } from "lucide-react";
+import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -16,7 +16,6 @@ import { useMembership } from "@/hooks/useMembership";
 import NotificationBell from "./NotificationBell";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isBusiness, setIsBusiness] = useState(false);
   const [isShelter, setIsShelter] = useState(false);
@@ -38,7 +37,6 @@ const Header = () => {
       : (hasMembership ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
-    setIsMenuOpen(false);
     await signOut();
     // signOut already handles redirect via window.location.href
   };
@@ -287,30 +285,30 @@ const Header = () => {
                     <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => { navigate(dashboardPath); setIsMenuOpen(false); }}>
+                  <DropdownMenuItem onClick={() => navigate(dashboardPath)}>
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { navigate("/member/offers"); setIsMenuOpen(false); }}>
+                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
                     <Tag className="mr-2 h-4 w-4" />
                     Browse Offers
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { navigate("/community"); setIsMenuOpen(false); }}>
+                  <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { navigate("/member/history"); setIsMenuOpen(false); }}>
+                  <DropdownMenuItem onClick={() => navigate("/member/history")}>
                     <History className="mr-2 h-4 w-4" />
                     Redemption History
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { navigate("/member/notifications"); setIsMenuOpen(false); }}>
+                  <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
                   </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => { navigate("/admin"); setIsMenuOpen(false); }} className="text-primary">
+                      <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
                         <Shield className="mr-2 h-4 w-4" />
                         Admin Dashboard
                       </DropdownMenuItem>
@@ -324,97 +322,9 @@ const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <button
-              className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            >
-              {isMenuOpen ? (
-                <X className="w-6 h-6 text-foreground" />
-              ) : (
-                <Menu className="w-6 h-6 text-foreground" />
-              )}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-card border-b border-border animate-slide-up">
-          <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
-            {navLinks.map((link) => (
-              link.isRoute ? (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="font-medium text-foreground hover:text-primary transition-colors py-2 flex items-center gap-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.name === "Dashboard" && <User className="w-4 h-4" />}
-                  {link.name === "Offers" && <Tag className="w-4 h-4" />}
-                  {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
-                  {link.name}
-                </Link>
-              ) : (
-                isHomePage ? (
-                  <a
-                    key={link.name}
-                    href={link.href}
-                    className="font-medium text-foreground hover:text-primary transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </a>
-                ) : (
-                  <Link
-                    key={link.name}
-                    to={`/${link.href}`}
-                    className="font-medium text-foreground hover:text-primary transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                )
-              )
-            ))}
-            <div className="flex flex-col gap-2 pt-4 border-t border-border">
-              {isAdmin && (
-                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-primary">
-                    <Shield className="w-4 h-4" />
-                    Admin Dashboard
-                  </Button>
-                </Link>
-              )}
-              <Link to={dashboardPath} onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2">
-                  <User className="w-4 h-4" />
-                  My Account
-                </Button>
-              </Link>
-              {!user && (
-                <Link to="/partner-register" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
-                    <Building2 className="w-4 h-4" />
-                    For Business
-                  </Button>
-                </Link>
-              )}
-              {user ? (
-                <Button variant="ghost" className="w-full justify-start gap-2 text-destructive" onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </Button>
-              ) : (
-                <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">Join Now</Button>
-                </Link>
-              )}
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
   );
 };
