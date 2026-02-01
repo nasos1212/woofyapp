@@ -133,8 +133,8 @@ const Auth = () => {
       // Helper to show welcome toast
       const showWelcomeToast = () => {
         toast({
-          title: `Hello ${userName}! 👋`,
-          description: "Great to have you here!",
+          title: `Welcome to Wooffy! 🐾`,
+          description: `Great to have you here, ${userName}!`,
         });
       };
       
