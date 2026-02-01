@@ -1,62 +1,42 @@
 import { 
   Percent, 
-  Gift, 
   Calendar, 
   MapPin, 
   Users, 
   Heart,
   Stethoscope,
-  Home,
-  GraduationCap
+  Home
 } from "lucide-react";
 
 const benefits = [
   {
     icon: Percent,
     title: "Exclusive Discounts",
-    description: "Up to 30% off at 500+ partner pet shops, groomers & supply stores",
     color: "bg-paw-amber/10 text-paw-amber",
   },
   {
     icon: Stethoscope,
     title: "Vet Savings",
-    description: "10-20% discounts on vaccinations, check-ups & treatments",
     color: "bg-blue-100 text-blue-600",
-  },
-  {
-    icon: GraduationCap,
-    title: "Free Training Sessions",
-    description: "Monthly free group training with certified trainers",
-    color: "bg-green-100 text-green-600",
   },
   {
     icon: Home,
     title: "Pet Hotel Benefits",
-    description: "Exclusive rates & priority booking at partner hotels",
     color: "bg-purple-100 text-purple-600",
-  },
-  {
-    icon: Gift,
-    title: "Birthday Treats",
-    description: "Free gifts & special surprises on your pet's birthday",
-    color: "bg-pink-100 text-pink-600",
   },
   {
     icon: Calendar,
     title: "Exclusive Events",
-    description: "VIP access to pet meetups, shows & community events",
     color: "bg-cyan-100 text-cyan-600",
   },
   {
     icon: MapPin,
     title: "Local Discovery",
-    description: "Find pet-friendly cafés, parks & hidden gems nearby",
     color: "bg-rose-100 text-rose-600",
   },
   {
     icon: Users,
     title: "Community Access",
-    description: "Connect with local pet owners, share tips & make friends",
     color: "bg-indigo-100 text-indigo-600",
   },
 ];
@@ -82,24 +62,20 @@ const BenefitsSection = () => {
         </div>
 
         {/* Benefits grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
           {benefits.map((benefit, index) => (
             <div
               key={benefit.title}
-              className="group bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              className="group bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className={`w-14 h-14 rounded-xl ${benefit.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                 <benefit.icon className="w-7 h-7" />
               </div>
               
-              <h3 className="font-display font-semibold text-xl text-foreground mb-2">
+              <h3 className="font-display font-semibold text-sm text-foreground">
                 {benefit.title}
               </h3>
-              
-              <p className="text-muted-foreground">
-                {benefit.description}
-              </p>
             </div>
           ))}
         </div>
