@@ -59,7 +59,27 @@ const HubSection = () => {
 
         {/* Features grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {hubFeatures.map((feature, index) => (
+          {hubFeatures.slice(0, 3).map((feature, index) => (
+            <div
+              key={feature.title}
+              className="group bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="flex items-start gap-4">
+                <div className="text-4xl">{feature.image}</div>
+                <div>
+                  <h3 className="font-display font-semibold text-lg text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 mb-12 max-w-2xl mx-auto">
+          {hubFeatures.slice(3).map((feature, index) => (
             <div
               key={feature.title}
               className="group bg-card rounded-2xl p-6 shadow-card border border-border hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
