@@ -1,14 +1,24 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const SupportButton = () => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const location = useLocation();
+  const isMobile = useIsMobile();
+
+  // Check if we're on a page with bottom navigation
+  const hasBottomNav = isMobile && (
+    location.pathname.startsWith("/business") ||
+    location.pathname.startsWith("/shelter")
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -74,7 +84,9 @@ const SupportButton = () => {
     <>
       <Button
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-4 z-50 h-14 w-14 rounded-full shadow-lg"
+        className={`fixed right-4 z-50 h-14 w-14 rounded-full shadow-lg ${
+          hasBottomNav ? "bottom-20" : "bottom-6"
+        }`}
         size="icon"
         aria-label="Get support"
       >
