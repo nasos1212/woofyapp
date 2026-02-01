@@ -18,7 +18,7 @@ const CTASection = () => {
           </h2>
           
           <p className="text-xl text-wooffy-light/80 mb-8 max-w-2xl mx-auto">
-            Start saving today with your Wooffy membership. Over 10,000 pet parents already trust us.
+            Start saving today with your Wooffy membership. Many pet parents already trust us.
           </p>
 
           {/* Benefits */}
