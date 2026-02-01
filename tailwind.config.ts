@@ -12,10 +12,10 @@ export default {
         "2xl": "1400px",
       },
     },
-    screens: {
-      'xs': '400px',
-    },
     extend: {
+      screens: {
+        'xs': '400px',
+      },
       fontFamily: {
         display: ["Fredoka", "sans-serif"],
         body: ["Inter", "sans-serif"],
