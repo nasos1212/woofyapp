@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Dog, Mail, Phone, MapPin, Instagram, Facebook, Twitter, Copy } from "lucide-react";
+import { Dog, Mail, MapPin, Instagram, Facebook, Twitter, Copy } from "lucide-react";
 import { toast } from "sonner";
 
 const Footer = () => {
@@ -88,12 +88,6 @@ const Footer = () => {
                   <Mail className="w-5 h-5 text-wooffy-sky flex-shrink-0" />
                   <span className="underline">hello@wooffy.app</span>
                   <Copy className="w-4 h-4 text-wooffy-sky/50 ml-auto" />
-                </a>
-              </li>
-              <li>
-                <a href="tel:+35799123456" className="flex items-center gap-2 py-2 hover:text-wooffy-sky transition-colors">
-                  <Phone className="w-4 h-4 text-wooffy-sky flex-shrink-0" />
-                  <span>+357 99 123 456</span>
                 </a>
               </li>
               <li className="flex items-start gap-2 py-2">
