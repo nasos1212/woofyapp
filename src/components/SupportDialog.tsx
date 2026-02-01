@@ -409,7 +409,7 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
-              {selectedConversation.status !== "closed" && (
+              {selectedConversation.status !== "closed" && selectedConversation.status !== "resolved" ? (
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <Input
@@ -436,6 +436,10 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
                       )}
                     </Button>
                   </div>
+                </div>
+              ) : (
+                <div className="p-4 border-t text-center text-sm text-muted-foreground">
+                  This conversation has been {selectedConversation.status}.
                 </div>
               )}
             </div>
