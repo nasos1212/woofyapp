@@ -30,7 +30,7 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full sm:max-w-md mx-auto group">
+    <div className="relative w-full sm:max-w-lg mx-auto group">
       {/* Glow effect - hidden on mobile to prevent overflow */}
       <div className="absolute inset-0 bg-wooffy-blue/30 rounded-2xl sm:rounded-3xl blur-xl opacity-0 sm:opacity-30 group-hover:opacity-50 transition-opacity duration-500 sm:-inset-2" />
       
