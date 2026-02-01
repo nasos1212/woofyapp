@@ -86,12 +86,12 @@ const handler = async (req: Request): Promise<Response> => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #f97316, #ea580c); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+            .header { background: linear-gradient(135deg, #1A1A2E, #2D2D44); color: #7DD3FC; padding: 20px; border-radius: 8px 8px 0 0; }
             .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
             .user-info { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
-            .message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #f97316; }
+            .message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #7DD3FC; }
             .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
-            .btn { display: inline-block; background: #f97316; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
+            .btn { display: inline-block; background: #1A1A2E; color: #7DD3FC; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
             .preview-text { display: none; max-height: 0; overflow: hidden; }
           </style>
         </head>
