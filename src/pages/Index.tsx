@@ -98,7 +98,7 @@ const Index = () => {
         <title>Wooffy - The Ultimate Membership for Pet Lovers | €59/year</title>
         <meta 
           name="description" 
-          content="Join 250+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% goes to animal shelters. Save €500+ yearly with Wooffy membership." 
+          content="Join 250+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% goes to whitelisted animal shelters. Save €500+ yearly with Wooffy membership." 
         />
         <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops, dog shelters, pet charity, Wooffy" />
       </Helmet>
