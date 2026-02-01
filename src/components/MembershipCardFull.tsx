@@ -30,74 +30,74 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-lg mx-auto group">
+    <div className="relative w-full max-w-md mx-auto group">
       {/* Glow effect */}
-      <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+      <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
-      {/* Card - credit card aspect ratio */}
-      <div className="relative bg-wooffy-dark rounded-2xl p-6 shadow-card overflow-hidden aspect-[1.6/1]">
+      {/* Card */}
+      <div className="relative bg-wooffy-dark rounded-3xl p-6 shadow-card overflow-hidden">
         {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-24 h-24 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
         
-        {/* Content wrapper */}
-        <div className="relative h-full flex flex-col justify-between">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Dog className="w-6 h-6 text-wooffy-sky" />
-              <span className="font-display font-bold text-xl text-wooffy-sky">Wooffy</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Crown className="w-4 h-4 text-wooffy-accent" />
-              <span className="text-xs font-medium text-wooffy-light">Premium</span>
-            </div>
+        {/* Header */}
+        <div className="relative flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <Dog className="w-8 h-8 text-wooffy-sky" />
+            <span className="font-display font-bold text-2xl text-wooffy-sky">Wooffy</span>
           </div>
+          <div className="flex items-center gap-1">
+            <Crown className="w-5 h-5 text-wooffy-accent" />
+            <span className="text-sm font-medium text-wooffy-light">Premium</span>
+          </div>
+        </div>
 
-          {/* Main content row */}
-          <div className="flex gap-4 items-end">
-            {/* Member info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex gap-4 items-end">
-                <div className="flex-1 min-w-0">
-                  <p className="text-wooffy-light/70 text-xs">Member</p>
-                  <p className="font-display font-semibold text-base text-wooffy-sky truncate">{memberName}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-wooffy-light/70 text-xs">Since</p>
-                  <p className="font-display font-semibold text-sm text-wooffy-sky">{memberSince}</p>
-                </div>
-              </div>
-              <div className="mt-1">
-                <p className="text-wooffy-light/70 text-xs">
+        {/* Main content */}
+        <div className="relative flex gap-5">
+          {/* Member info */}
+          <div className="flex-1 space-y-3">
+            <div>
+              <p className="text-wooffy-light/70 text-sm">Member</p>
+              <p className="font-display font-semibold text-xl text-wooffy-sky">{memberName}</p>
+            </div>
+            
+            <div className="flex justify-between items-end">
+              <div>
+                <p className="text-wooffy-light/70 text-sm">
                   {petNames && petNames.length > 1 ? "Furry Friends" : "Furry Friend"}
                 </p>
-                <p className="font-display font-semibold text-sm text-wooffy-sky truncate">{formatPetDisplay()}</p>
+                <p className="font-display font-semibold text-lg text-wooffy-sky">{formatPetDisplay()}</p>
               </div>
-            </div>
-
-            {/* QR Code */}
-            <div className="shrink-0 flex flex-col items-center">
-              <div className="bg-white p-2 rounded-lg shadow-lg">
-                <QRCodeSVG 
-                  value={verificationUrl}
-                  size={56}
-                  level="H"
-                  includeMargin={false}
-                />
+              <div className="text-right">
+                <p className="text-wooffy-light/70 text-sm">Since</p>
+                <p className="font-display font-semibold text-wooffy-sky">{memberSince}</p>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-2 border-t border-wooffy-blue/30">
-            <div>
-              <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">{memberId}</p>
+          {/* QR Code */}
+          <div className="shrink-0 flex flex-col items-center justify-center">
+            <div className="bg-white p-2.5 rounded-xl shadow-lg">
+              <QRCodeSVG 
+                value={verificationUrl}
+                size={80}
+                level="H"
+                includeMargin={false}
+              />
             </div>
-            <div className="flex items-center gap-1">
-              <Shield className="w-3 h-3 text-wooffy-light/60" />
-              <span className="text-xs text-wooffy-light/60">Valid: {expiryDate}</span>
-            </div>
+            <p className="text-xs text-wooffy-light/60 mt-1.5">Scan to verify</p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="relative mt-5 pt-4 border-t border-wooffy-blue/30 flex items-center justify-between">
+          <div>
+            <p className="text-wooffy-light/60 text-xs mb-0.5">Member ID</p>
+            <p className="font-mono text-sm text-wooffy-light/90 tracking-wide">{memberId}</p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Shield className="w-4 h-4 text-wooffy-light/70" />
+            <span className="text-sm text-wooffy-light/70">Valid: {expiryDate}</span>
           </div>
         </div>
       </div>
