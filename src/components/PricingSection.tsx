@@ -39,15 +39,11 @@ const plans = [
 
 const includedFeatures = [
   "Digital membership card",
-  "Access to 500+ partner discounts",
-  "Welcome kit (treats & toys)",
-  "Monthly free training session",
-  "Birthday treats for your pet",
+  "Access to partner discounts",
   "Pet owner community access",
   "Pet-friendly location finder",
   "Priority event booking",
   "Smart reminders & notifications",
-  "Satisfaction guaranteed",
 ];
 
 const PricingSection = () => {
