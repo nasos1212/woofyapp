@@ -1,6 +1,14 @@
-import { Star, Zap, Dog, Users, Crown } from "lucide-react";
+import { Star, Zap, Dog, Users, Crown, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
+
+const sharedFeatures = [
+  "Access to all partner discounts",
+  "AI Pet Assistant",
+  "Vaccination reminders",
+  "Community access",
+  "Priority support",
+];
 
 const plans = [
   {
@@ -10,6 +18,7 @@ const plans = [
     price: 59,
     popular: false,
     icon: Dog,
+    features: ["1 pet covered", ...sharedFeatures],
   },
   {
     id: "duo",
@@ -18,6 +27,7 @@ const plans = [
     price: 99,
     popular: true,
     icon: Users,
+    features: ["2 pets covered", ...sharedFeatures],
   },
   {
     id: "pack",
@@ -26,6 +36,7 @@ const plans = [
     price: 139,
     popular: false,
     icon: Crown,
+    features: ["Up to 5 pets covered", ...sharedFeatures],
   },
 ];
 
@@ -79,12 +90,15 @@ const PricingSection = () => {
                   </h3>
                 </div>
 
-                {/* Pet count highlight */}
-                <div className="bg-muted/50 rounded-xl p-4 mb-6 text-center">
-                  <p className="text-2xl font-display font-bold text-primary">
-                    {plan.pets === 1 ? "1 Pet" : plan.pets === 5 ? "Up to 5 Pets" : `${plan.pets} Pets`}
-                  </p>
-                </div>
+                {/* Features list */}
+                <ul className="space-y-2 mb-6 text-left">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <Check className="w-4 h-4 text-green-500 shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-1">
