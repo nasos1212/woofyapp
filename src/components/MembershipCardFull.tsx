@@ -85,7 +85,7 @@ const MembershipCardFull = ({
         </div>
 
         {/* Footer */}
-        <div className="relative mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-wooffy-blue/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
+        <div className="relative mt-4 sm:mt-5 pt-3 sm:pt-4 border-t border-wooffy-blue/30 flex flex-row items-center justify-between">
           <div className="min-w-0">
             <p className="text-wooffy-light/60 text-[10px] sm:text-xs mb-0.5">Member ID</p>
             <p className="font-mono text-xs sm:text-sm text-wooffy-light/90 tracking-wide truncate">{memberId}</p>
