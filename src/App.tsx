@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
-import BackToTop from "./components/BackToTop";
+
 import SupportButton from "./components/SupportButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -91,7 +91,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <BackToTop />
+            
             <SupportButton />
           </BrowserRouter>
         </TooltipProvider>
