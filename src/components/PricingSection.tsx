@@ -1,4 +1,4 @@
-import { Check, Star, Zap, Dog, Users, Crown } from "lucide-react";
+import { Star, Zap, Dog, Users, Crown } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -8,8 +8,6 @@ const plans = [
     name: "Solo Paw",
     pets: 1,
     price: 59,
-    pricePerPet: 59,
-    description: "Perfect for one furry friend",
     popular: false,
     icon: Dog,
   },
@@ -18,10 +16,7 @@ const plans = [
     name: "Dynamic Duo",
     pets: 2,
     price: 99,
-    pricePerPet: 49.5,
-    description: "Ideal for households with two pets",
     popular: true,
-    savings: 19,
     icon: Users,
   },
   {
@@ -29,21 +24,9 @@ const plans = [
     name: "Pack Leader",
     pets: 5,
     price: 139,
-    pricePerPet: 27.8,
-    description: "Best value for 3-5 pets",
     popular: false,
-    savings: 156,
     icon: Crown,
   },
-];
-
-const includedFeatures = [
-  "Digital membership card",
-  "Access to partner discounts",
-  "Pet owner community access",
-  "Pet-friendly location finder",
-  "Priority event booking",
-  "Smart reminders & notifications",
 ];
 
 const PricingSection = () => {
@@ -91,19 +74,15 @@ const PricingSection = () => {
                       {plan.pets}
                     </span>
                   </div>
-                  <h3 className="font-display font-bold text-xl text-foreground mb-1">
+                  <h3 className="font-display font-bold text-xl text-foreground">
                     {plan.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
                 </div>
 
                 {/* Pet count highlight */}
                 <div className="bg-muted/50 rounded-xl p-4 mb-6 text-center">
                   <p className="text-2xl font-display font-bold text-primary">
                     {plan.pets === 1 ? "1 Pet" : plan.pets === 5 ? "Up to 5 Pets" : `${plan.pets} Pets`}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    €{plan.pricePerPet.toFixed(2)} per pet/year
                   </p>
                 </div>
 
@@ -112,11 +91,6 @@ const PricingSection = () => {
                     <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
                     <span className="text-muted-foreground">/year</span>
                   </div>
-                  {plan.savings && (
-                    <p className="text-sm text-green-600 font-medium mt-2">
-                      Save €{plan.savings} vs individual plans
-                    </p>
-                  )}
                 </div>
 
                 <div className="flex-1" />
@@ -131,25 +105,6 @@ const PricingSection = () => {
               </div>
             </div>
           )})}
-        </div>
-
-        {/* Features list */}
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-card rounded-2xl p-8 shadow-card border border-border">
-            <h4 className="font-display font-bold text-lg text-center mb-6">
-              All Plans Include
-            </h4>
-            <div className="grid sm:grid-cols-2 gap-3">
-              {includedFeatures.map((feature) => (
-                <div key={feature} className="flex items-center gap-3">
-                  <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Check className="w-3 h-3 text-green-600" />
-                  </div>
-                  <span className="text-sm text-foreground">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Value proposition */}
