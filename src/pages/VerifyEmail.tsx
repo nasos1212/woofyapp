@@ -95,8 +95,8 @@ const VerifyEmail = () => {
             </Button>
             <p className="text-sm text-gray-500">
               Need help? Contact us at{" "}
-              <a href="mailto:support@wooffy.app" className="text-wooffy-purple hover:underline">
-                support@wooffy.app
+              <a href="mailto:hello@wooffy.app" className="text-wooffy-purple hover:underline">
+                hello@wooffy.app
               </a>
             </p>
           </div>

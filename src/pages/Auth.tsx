@@ -491,10 +491,10 @@ const Auth = () => {
           If you believe this was a mistake or would like more information, please contact us at:
           <br />
           <a 
-            href="mailto:support@wooffy.app" 
+            href="mailto:hello@wooffy.app" 
             className="text-primary font-semibold hover:underline"
           >
-            support@wooffy.app
+            hello@wooffy.app
           </a>
         </DialogDescription>
         <DialogFooter>
