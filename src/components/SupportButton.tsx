@@ -98,7 +98,7 @@ const SupportButton = () => {
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <Button
-            className={`fixed right-4 z-50 h-14 w-14 rounded-full shadow-lg ${
+            className={`fixed right-4 z-[60] h-14 w-14 rounded-full shadow-lg ${
               hasBottomNav ? "bottom-20" : "bottom-6"
             }`}
             size="icon"
