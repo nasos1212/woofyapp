@@ -30,12 +30,12 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto group">
+    <div className="relative w-full max-w-lg mx-auto group">
       {/* Glow effect */}
       <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
       {/* Card - credit card aspect ratio */}
-      <div className="relative bg-wooffy-dark rounded-2xl p-5 shadow-card overflow-hidden aspect-[1.7/1]">
+      <div className="relative bg-wooffy-dark rounded-2xl p-6 shadow-card overflow-hidden aspect-[1.6/1]">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
