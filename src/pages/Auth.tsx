@@ -133,8 +133,8 @@ const Auth = () => {
       // Helper to show welcome toast
       const showWelcomeToast = () => {
         toast({
-          title: `Welcome to Wooffy! 🐾`,
-          description: `Great to have you here, ${userName}!`,
+          title: `Hello ${userName}! 👋`,
+          description: "Great to have you here!",
         });
       };
       
@@ -739,7 +739,7 @@ const Auth = () => {
               {getAccountIcon()}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome Back" : "Join Wooffy"}
+              {isLogin ? "Welcome to Wooffy" : "Join Wooffy"}
             </h1>
             <p className="text-muted-foreground mt-2">
               {getAccountDescription()}
