@@ -98,6 +98,7 @@ body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
 <div class="preview-text">${isReply ? `Reply from ${userName}: ${subject}` : `New support request from ${userName}: ${subject}`}</div>
 <div class="container">
 <div class="header">
+<img src="https://qvdrwfltbqhlwkqndpdp.supabase.co/storage/v1/object/public/email-assets/wooffy-logo.png" alt="Wooffy" width="50" height="50" style="margin-bottom: 12px;">
 <h1 style="margin: 0;">🐾 ${isReply ? "New Reply" : "New Support Request"}</h1>
 </div>
 <div class="content">

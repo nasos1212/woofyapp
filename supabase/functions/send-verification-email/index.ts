@@ -73,6 +73,7 @@ const handler = async (req: Request): Promise<Response> => {
 <div class="preview-text">Please verify your email to complete your Wooffy registration.</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
+<img src="https://qvdrwfltbqhlwkqndpdp.supabase.co/storage/v1/object/public/email-assets/wooffy-logo.png" alt="Wooffy" width="60" height="60" style="margin-bottom: 16px;">
 <h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Verify Your Email 🐾</h1>
 </div>
 <div style="padding: 40px;">
