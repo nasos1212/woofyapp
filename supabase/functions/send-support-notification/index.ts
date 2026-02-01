@@ -121,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
             </div>
             <div class="footer">
-              <p>This is an automated notification from Wooffy Support System</p>
+              <p>© 2026 Wooffy. This is an automated notification from Wooffy Support System</p>
             </div>
           </div>
         </body>

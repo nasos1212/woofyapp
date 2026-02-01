@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
                 <p style="font-size: 12px; color: #9ca3af; margin: 0;">
-                  © 2024 Wooffy. Made with ❤️ for pets in Cyprus.
+                  © 2026 Wooffy. Made with ❤️ for pets in Cyprus.
                 </p>
               </div>
             </div>
