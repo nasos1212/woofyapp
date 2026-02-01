@@ -1,4 +1,4 @@
-import { Dog, Calendar, MessageSquare, MapPin, Bell, Award } from "lucide-react";
+import { Dog, Calendar, MessageSquare, MapPin, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -32,12 +32,6 @@ const hubFeatures = [
     title: "Smart Reminders",
     description: "Never miss vaccinations, grooming appointments, or your pet's special days.",
     image: "🔔",
-  },
-  {
-    icon: Award,
-    title: "Loyalty Rewards",
-    description: "Earn points with every purchase. Redeem for treats, products, and exclusive experiences.",
-    image: "🏆",
   },
 ];
 
