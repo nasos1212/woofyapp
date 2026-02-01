@@ -179,7 +179,14 @@ const Auth = () => {
       
       // CASE 2: User has a membership (pet owner) - redirect to member dashboard
       if (hasMembership) {
-        showWelcomeToast();
+        if (accountType === "business") {
+          toast({
+            title: "Pet Owner Account Found",
+            description: "You're registered as a pet owner. Redirecting to your dashboard.",
+          });
+        } else {
+          showWelcomeToast();
+        }
         navigate("/member");
         return;
       }
