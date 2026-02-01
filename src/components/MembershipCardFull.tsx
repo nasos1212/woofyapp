@@ -30,9 +30,9 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto group px-2 sm:px-0">
+    <div className="relative w-full max-w-md mx-auto group">
       {/* Glow effect */}
-      <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
+      <div className="absolute -inset-1 sm:-inset-2 bg-wooffy-blue/50 rounded-2xl sm:rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
       {/* Card */}
       <div className="relative bg-wooffy-dark rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-card overflow-hidden">
