@@ -79,54 +79,49 @@ const handler = async (req: Request): Promise<Response> => {
       from: "Wooffy Support <hello@wooffy.app>",
       to: ["hello@wooffy.app"], // Your support email
       subject: emailSubject,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #1A1A2E, #2D2D44); color: #7DD3FC; padding: 20px; border-radius: 8px 8px 0 0; }
-            .content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
-            .user-info { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
-            .message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #7DD3FC; }
-            .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
-            .btn { display: inline-block; background: #1A1A2E; color: #7DD3FC; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
-            .preview-text { display: none; max-height: 0; overflow: hidden; }
-          </style>
-        </head>
-        <body>
-          <div class="preview-text">${isReply ? `Reply from ${userName}: ${subject}` : `New support request from ${userName}: ${subject}`}</div>
-          <div class="container">
-            <div class="header">
-              <h1 style="margin: 0;">🐾 ${isReply ? "New Reply" : "New Support Request"}</h1>
-            </div>
-            <div class="content">
-              <div class="user-info">
-                <h3 style="margin-top: 0;">User Information</h3>
-                <p><strong>Name:</strong> ${userName}</p>
-                <p><strong>Email:</strong> ${userEmail}</p>
-                <p><strong>Membership:</strong> ${memberInfo}</p>
-                <p><strong>Conversation ID:</strong> ${conversationId}</p>
-              </div>
-              
-              <h3>Subject: ${subject}</h3>
-              
-              <div class="message-box">
-                <p style="white-space: pre-wrap;">${message}</p>
-              </div>
-              
-              <p style="margin-top: 20px;">
-                <a href="https://www.wooffy.app/admin" class="btn">View in Admin Dashboard</a>
-              </p>
-            </div>
-            <div class="footer">
-              <p>© 2026 Wooffy. This is an automated notification from Wooffy Support System</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
+      html: `<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+.header { background: linear-gradient(135deg, #1A1A2E, #2D2D44); color: #7DD3FC; padding: 20px; border-radius: 8px 8px 0 0; }
+.content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; }
+.user-info { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
+.message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #7DD3FC; }
+.footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
+.btn { display: inline-block; background: #1A1A2E; color: #7DD3FC; padding: 12px 24px; text-decoration: none; border-radius: 6px; }
+.preview-text { display: none; max-height: 0; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="preview-text">${isReply ? `Reply from ${userName}: ${subject}` : `New support request from ${userName}: ${subject}`}</div>
+<div class="container">
+<div class="header">
+<h1 style="margin: 0;">🐾 ${isReply ? "New Reply" : "New Support Request"}</h1>
+</div>
+<div class="content">
+<div class="user-info">
+<h3 style="margin-top: 0;">User Information</h3>
+<p><strong>Name:</strong> ${userName}</p>
+<p><strong>Email:</strong> ${userEmail}</p>
+<p><strong>Membership:</strong> ${memberInfo}</p>
+<p><strong>Conversation ID:</strong> ${conversationId}</p>
+</div>
+<h3>Subject: ${subject}</h3>
+<div class="message-box">
+<p style="white-space: pre-wrap;">${message}</p>
+</div>
+<p style="margin-top: 20px;">
+<a href="https://www.wooffy.app/admin" class="btn">View in Admin Dashboard</a>
+</p>
+</div>
+<div class="footer">
+<p>© 2026 Wooffy. This is an automated notification from Wooffy Support System</p>
+</div>
+</div>
+</body>
+</html>`,
     });
 
     console.log("Email sent successfully:", emailResponse);
