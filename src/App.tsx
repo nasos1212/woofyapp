@@ -42,6 +42,7 @@ import ShelterProfile from "./pages/ShelterProfile";
 import ShelterDashboard from "./pages/ShelterDashboard";
 import ShelterOnboarding from "./pages/ShelterOnboarding";
 import MemberShelters from "./pages/MemberShelters";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/member" element={<MemberDashboard />} />
               <Route path="/member/free" element={<FreeMemberDashboard />} />

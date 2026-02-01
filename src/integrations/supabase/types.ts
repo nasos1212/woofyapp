@@ -870,6 +870,36 @@ export type Database = {
           },
         ]
       }
+      email_verification_tokens: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          token: string
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          token: string
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
       favorite_offers: {
         Row: {
           created_at: string
@@ -1613,6 +1643,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           email: string
+          email_verified: boolean | null
           full_name: string | null
           id: string
           login_count: number | null
@@ -1626,6 +1657,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email: string
+          email_verified?: boolean | null
           full_name?: string | null
           id?: string
           login_count?: number | null
@@ -1639,6 +1671,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           email?: string
+          email_verified?: boolean | null
           full_name?: string | null
           id?: string
           login_count?: number | null
