@@ -534,7 +534,7 @@ const MemberUpgrade = () => {
           </div>
 
           <p className="text-center text-sm text-muted-foreground mt-8">
-            Need help choosing? <a href="mailto:support@wooffy.com" className="text-primary hover:underline">Contact us</a>
+            Need help choosing? <a href="mailto:hello@wooffy.app" className="text-primary hover:underline">Contact us</a>
           </p>
         </main>
       </div>
