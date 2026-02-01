@@ -74,10 +74,10 @@ const MembershipCardFull = ({
             <div className="bg-white p-2 sm:p-3 rounded-lg sm:rounded-xl shadow-lg">
               <QRCodeSVG 
                 value={verificationUrl}
-                size={80}
+                size={100}
                 level="H"
                 includeMargin={false}
-                className="w-[60px] h-[60px] sm:w-[80px] sm:h-[80px]"
+                className="w-[70px] h-[70px] sm:w-[100px] sm:h-[100px]"
               />
             </div>
             <p className="text-[10px] sm:text-xs text-wooffy-light/60 mt-1 sm:mt-1.5">Scan to verify</p>
