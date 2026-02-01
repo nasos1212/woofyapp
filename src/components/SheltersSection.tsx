@@ -167,11 +167,11 @@ const SheltersSection = () => {
             <span className="text-sm font-medium">Giving Back</span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            10% goes to <span className="text-rose-500">Whitelisted Animal Shelters</span>
+            10% goes to <span className="text-rose-500">Animal Shelters</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Every Wooffy membership directly supports whitelisted dog shelters. 
-            Together, we're making a difference for dogs in need.
+            Every Wooffy membership directly supports whitelisted animal shelters. 
+            Together, we're making a difference for animals in need.
           </p>
         </div>
 
