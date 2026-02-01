@@ -31,7 +31,7 @@ const benefits = [
   },
   {
     icon: Home,
-    title: "Pet Hotel Perks",
+    title: "Pet Hotel Benefits",
     description: "Exclusive rates & priority booking at partner hotels",
     color: "bg-purple-100 text-purple-600",
   },
@@ -77,7 +77,7 @@ const BenefitsSection = () => {
           </h2>
           
           <p className="text-lg text-muted-foreground">
-            From everyday savings to special perks, your Wooffy membership pays for itself many times over.
+            From everyday savings to special benefits, your Wooffy membership pays for itself many times over.
           </p>
         </div>
 
