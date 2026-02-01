@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,7 @@ import GiftMemberships from "@/components/admin/GiftMemberships";
 import ExpiringMembershipsPanel from "@/components/admin/ExpiringMembershipsPanel";
 import EngagementAnalytics from "@/components/admin/EngagementAnalytics";
 import UserManagement from "@/components/admin/UserManagement";
+import SupportManager from "@/components/admin/SupportManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -87,11 +88,15 @@ const AdminDashboard = () => {
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         </div>
 
-        <Tabs defaultValue="users" className="space-y-6">
+        <Tabs defaultValue="support" className="space-y-6">
           <TabsList className="flex flex-wrap gap-1 h-auto p-1">
+            <TabsTrigger value="support" className="gap-1">
+              <MessageCircleQuestion className="w-4 h-4" />
+              Support
+            </TabsTrigger>
             <TabsTrigger value="users" className="gap-1">
               <Users className="w-4 h-4" />
-              User Management
+              Users
             </TabsTrigger>
             <TabsTrigger value="engagement" className="gap-1">
               <TrendingUp className="w-4 h-4" />
@@ -106,6 +111,10 @@ const AdminDashboard = () => {
               Gifts
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="support">
+            <SupportManager />
+          </TabsContent>
 
           <TabsContent value="users">
             <UserManagement />
