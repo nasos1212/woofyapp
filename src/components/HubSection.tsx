@@ -39,7 +39,7 @@ const HubSection = () => {
   const navigate = useNavigate();
 
   const handleJoinWaitlist = () => {
-    navigate("/auth?type=member");
+    navigate("/auth");
   };
 
   return (
