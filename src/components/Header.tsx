@@ -217,7 +217,7 @@ const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-card border border-border shadow-lg">
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
@@ -281,7 +281,7 @@ const Header = () => {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-card border border-border shadow-lg">
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
                     <p className="text-xs text-muted-foreground">{user.email}</p>
