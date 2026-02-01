@@ -1,4 +1,4 @@
-import { ArrowRight, Gift, Shield, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -17,25 +17,9 @@ const CTASection = () => {
             Ready to Join the Pack?
           </h2>
           
-          <p className="text-xl text-wooffy-light/80 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-wooffy-light/80 mb-10 max-w-2xl mx-auto">
             Start saving today with your Wooffy membership. Many pet parents already trust us.
           </p>
-
-          {/* Benefits */}
-          <div className="flex flex-wrap justify-center gap-6 mb-10">
-            <div className="flex items-center gap-2 text-wooffy-light/90">
-              <Gift className="w-5 h-5 text-wooffy-accent" />
-              <span>Welcome kit included</span>
-            </div>
-            <div className="flex items-center gap-2 text-wooffy-light/90">
-              <Shield className="w-5 h-5 text-wooffy-accent" />
-              <span>30-day money back</span>
-            </div>
-            <div className="flex items-center gap-2 text-wooffy-light/90">
-              <Clock className="w-5 h-5 text-wooffy-accent" />
-              <span>Try it today - wooff!</span>
-            </div>
-          </div>
 
           {/* CTA */}
           <Button 
