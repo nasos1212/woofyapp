@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle } from "lucide-react";
+import { Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -36,17 +36,8 @@ interface PlanOption {
   renewalPrice: number;
   maxPets: number;
   icon: typeof Dog;
-  features: string[];
   highlight?: boolean;
 }
-
-const sharedFeatures = [
-  "Access to all partner discounts",
-  "AI Pet Assistant",
-  "Vaccination reminders",
-  "Community access",
-  "Priority support",
-];
 
 const plans: PlanOption[] = [
   {
@@ -56,7 +47,6 @@ const plans: PlanOption[] = [
     renewalPrice: 49,
     maxPets: 1,
     icon: Dog,
-    features: ["1 pet covered", ...sharedFeatures],
   },
   {
     id: "duo",
@@ -65,7 +55,6 @@ const plans: PlanOption[] = [
     renewalPrice: 79,
     maxPets: 2,
     icon: Users,
-    features: ["2 pets covered", ...sharedFeatures],
     highlight: true,
   },
   {
@@ -75,7 +64,6 @@ const plans: PlanOption[] = [
     renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
-    features: ["Up to 5 pets covered", ...sharedFeatures],
   },
 ];
 
@@ -431,14 +419,12 @@ const MemberUpgrade = () => {
                   </CardHeader>
                   
                   <CardContent>
-                    <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {/* Pet count display */}
+                    <div className="bg-muted/50 rounded-xl p-4 mb-6 text-center">
+                      <p className="text-xl font-display font-bold text-primary">
+                        {plan.maxPets === 1 ? "1 Pet" : plan.maxPets === 5 ? "Up to 5 Pets" : `${plan.maxPets} Pets`}
+                      </p>
+                    </div>
 
                     {isFreemiumUser ? (
                       // Freemium users see "Get Started" buttons for new signup
