@@ -356,7 +356,7 @@ const MemberDashboard = () => {
         <meta name="description" content="Access your Wooffy membership card, view savings, and discover nearby pet deals." />
       </Helmet>
 
-        <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-full max-w-full overflow-x-hidden">
+        <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-screen max-w-[100vw] overflow-x-hidden">
         <Header />
         {/* Rating Prompt Dialog */}
         {currentPrompt && (
@@ -371,8 +371,8 @@ const MemberDashboard = () => {
           />
         )}
 
-        <main className="w-full box-border px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
-          <div className="w-full max-w-7xl mx-auto">
+        <main className="w-full max-w-[100vw] px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+          <div className="max-w-7xl mx-auto w-full">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
@@ -384,29 +384,23 @@ const MemberDashboard = () => {
             <p className="text-muted-foreground">Here's your Wooffy membership overview</p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-8 w-full">
             {/* Left Column - Card & Stats */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-8 min-w-0">
               {/* Membership Card */}
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-lg font-semibold text-foreground flex items-center gap-2">
-                    <QrCode className="w-5 h-5 text-primary" />
-                    Your Membership Card
+              <div className="min-w-0 overflow-hidden">
+                <div className="flex items-center justify-between mb-4 gap-2">
+                  <h2 className="font-display text-base sm:text-lg font-semibold text-foreground flex items-center gap-2 min-w-0">
+                    <QrCode className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="truncate">Your Membership Card</span>
                   </h2>
-                  <Link to="/member/upgrade">
+                  <Link to="/member/upgrade" className="flex-shrink-0">
                     <Button variant="outline" size="sm" className="gap-1.5">
                       <Sparkles className="w-4 h-4" />
                       {membership?.plan_type === "family" ? (
-                        <>
-                          <span className="hidden sm:inline">View Plans</span>
-                          <span className="sm:hidden">Plans</span>
-                        </>
+                        <span>Plans</span>
                       ) : (
-                        <>
-                          <span className="hidden sm:inline">Upgrade Plan</span>
-                          <span className="sm:hidden">Upgrade</span>
-                        </>
+                        <span>Upgrade</span>
                       )}
                     </Button>
                   </Link>
