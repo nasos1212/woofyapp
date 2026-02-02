@@ -41,7 +41,7 @@ const ExpiringMembershipsPanel = () => {
           expires_at,
           plan_type,
           member_number,
-          profiles!inner(full_name, email)
+          profiles(full_name, email)
         `)
         .eq("is_active", true)
         .lte("expires_at", thirtyDaysFromNow.toISOString())
