@@ -311,7 +311,7 @@ const ShelterDashboard = () => {
                     Branding
                   </TabsTrigger>
                   <TabsTrigger value="adoptable-pets" className="gap-1">
-                    Adoptable Pets
+                    Pets for Adoption
                   </TabsTrigger>
                   <TabsTrigger value="inquiries" className="gap-1">
                     Inquiries
