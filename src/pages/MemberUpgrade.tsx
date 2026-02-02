@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle, Star, Zap } from "lucide-react";
+import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle, Star, Zap, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -12,6 +12,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import SupportDialog from "@/components/SupportDialog";
@@ -557,12 +562,31 @@ const MemberUpgrade = () => {
 
           <p className="text-center text-sm text-muted-foreground mt-8">
             Need help choosing?{" "}
-            <button 
-              onClick={() => setShowSupportDialog(true)} 
-              className="text-primary hover:underline"
-            >
-              Contact us
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="text-primary hover:underline">
+                  Contact us
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-2" align="center">
+                <div className="flex flex-col gap-1">
+                  <a
+                    href="mailto:hello@wooffy.app"
+                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Send an Email
+                  </a>
+                  <button
+                    onClick={() => setShowSupportDialog(true)}
+                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors text-left w-full"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Message Us
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
           </p>
         </main>
       </div>
