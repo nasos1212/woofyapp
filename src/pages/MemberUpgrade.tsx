@@ -581,6 +581,10 @@ const MemberUpgrade = () => {
                     onClick={() => {
                       navigator.clipboard.writeText("hello@wooffy.app");
                       window.location.href = "mailto:hello@wooffy.app";
+                      toast({
+                        title: "Email address copied!",
+                        description: "hello@wooffy.app has been copied to your clipboard. Your email app should open - if not, paste the address manually.",
+                      });
                     }}
                   >
                     <Mail className="w-4 h-4" />
