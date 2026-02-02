@@ -64,15 +64,6 @@ const ContactPopover = ({
           <p className="text-sm font-medium mb-3 text-center">How would you like to reach us?</p>
           <div className="flex flex-col gap-2">
             <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-start gap-2"
-              onClick={handleEmailClick}
-            >
-              <Mail className="w-4 h-4" />
-              Send an Email
-            </Button>
-            <Button
               variant="default"
               size="sm"
               className="w-full justify-start gap-2"
@@ -80,6 +71,15 @@ const ContactPopover = ({
             >
               <MessageSquare className="w-4 h-4" />
               Message Us
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-start gap-2"
+              onClick={handleEmailClick}
+            >
+              <Mail className="w-4 h-4" />
+              Send an Email
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">hello@wooffy.app</p>
