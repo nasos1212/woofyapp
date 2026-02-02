@@ -371,7 +371,7 @@ const MemberDashboard = () => {
           />
         )}
 
-        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))] overflow-x-hidden">
+        <main className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
