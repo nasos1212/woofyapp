@@ -628,7 +628,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             )}
                             {pet.age && (
                               <Badge variant="outline" className="text-xs">
-                                {pet.age}
+                                {/^\d+$/.test(pet.age.trim()) ? `${pet.age} years` : pet.age}
                               </Badge>
                             )}
                             {pet.gender && (
