@@ -2,7 +2,7 @@ import { Star, Zap, Dog, Users, Crown, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
-const sharedFeatures = [
+const sharedBenefits = [
   "Access to all partner discounts",
   "AI Pet Assistant",
   "Vaccination reminders",
@@ -15,28 +15,28 @@ const plans = [
     id: "single",
     name: "Solo Paw",
     pets: 1,
+    petLabel: "1 pet covered",
     price: 59,
     popular: false,
     icon: Dog,
-    features: ["1 pet covered", ...sharedFeatures],
   },
   {
     id: "duo",
     name: "Dynamic Duo",
     pets: 2,
+    petLabel: "2 pets covered",
     price: 99,
     popular: true,
     icon: Users,
-    features: ["2 pets covered", ...sharedFeatures],
   },
   {
     id: "pack",
     name: "Pack Leader",
     pets: 5,
+    petLabel: "Up to 5 pets covered",
     price: 139,
     popular: false,
     icon: Crown,
-    features: ["Up to 5 pets covered", ...sharedFeatures],
   },
 ];
 
@@ -63,7 +63,7 @@ const PricingSection = () => {
         </div>
 
         {/* Pricing cards */}
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+        <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
@@ -78,7 +78,7 @@ const PricingSection = () => {
               )}
               
               <div className={`bg-card rounded-3xl p-6 lg:p-8 shadow-card h-full flex flex-col ${plan.popular ? "border-2 border-primary/30 ring-2 ring-primary/10" : "border border-border"}`}>
-                <div className="text-center mb-6">
+                <div className="text-center mb-4">
                   <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
                     <Icon className="w-7 h-7 text-primary" />
                     <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
@@ -88,17 +88,8 @@ const PricingSection = () => {
                   <h3 className="font-display font-bold text-xl text-foreground">
                     {plan.name}
                   </h3>
+                  <p className="text-sm text-muted-foreground mt-1">{plan.petLabel}</p>
                 </div>
-
-                {/* Features list */}
-                <ul className="space-y-2 mb-6 text-left">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm">
-                      <Check className="w-4 h-4 text-green-500 shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
 
                 <div className="text-center mb-6">
                   <div className="flex items-baseline justify-center gap-1">
@@ -121,8 +112,21 @@ const PricingSection = () => {
           )})}
         </div>
 
+        {/* Shared benefits */}
+        <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border mb-8">
+          <h3 className="font-display font-semibold text-lg text-center mb-4">All Plans Include</h3>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {sharedBenefits.map((benefit, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Check className="w-5 h-5 text-green-500 shrink-0" />
+                <span className="text-sm text-foreground">{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Value proposition */}
-        <div className="mt-8 max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center">
+        <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center">
           <p className="font-display font-semibold text-lg text-wooffy-sky mb-2">
             💡 The Average Member Saves €300+ Per Year
           </p>
