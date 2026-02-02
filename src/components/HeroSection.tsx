@@ -116,7 +116,7 @@ const HeroSection = () => {
           </div>
 
           {/* Card */}
-          <div className="relative">
+          <div className="relative md:-mt-16 lg:-mt-24">
             <div className="animate-float">
               <MembershipCard />
             </div>
