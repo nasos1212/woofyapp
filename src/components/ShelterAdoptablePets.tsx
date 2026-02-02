@@ -449,12 +449,12 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0 pointer-events-auto" align="start">
                       <Command>
                         <CommandInput placeholder="Search breed..." />
-                        <CommandList>
+                        <CommandList className="max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent">
                           <CommandEmpty>No breed found.</CommandEmpty>
-                          <CommandGroup className="max-h-[200px] overflow-auto">
+                          <CommandGroup>
                             {breeds.map((breed) => (
                               <CommandItem
                                 key={breed}
