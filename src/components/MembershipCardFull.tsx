@@ -55,12 +55,12 @@ const MembershipCardFull = ({
         {/* Member info with QR code */}
         <div className="relative flex justify-between items-start">
           <div className="pl-2">
-            <p className="text-wooffy-light/70 text-xs">Member</p>
-            <p className="font-display font-semibold text-base text-wooffy-sky">{memberName}</p>
-            <p className="text-wooffy-light/70 text-xs mt-2">
+            <p className="text-wooffy-light/70 text-sm">Member</p>
+            <p className="font-display font-semibold text-lg text-wooffy-sky">{memberName}</p>
+            <p className="text-wooffy-light/70 text-sm mt-2">
               {petNames && petNames.length > 1 ? "Furry Friends" : "Furry Friend"}
             </p>
-            <p className="font-display font-semibold text-sm text-wooffy-sky">{formatPetDisplay()}</p>
+            <p className="font-display font-semibold text-base text-wooffy-sky">{formatPetDisplay()}</p>
           </div>
           
           {/* QR Code */}
