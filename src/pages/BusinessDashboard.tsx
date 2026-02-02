@@ -15,6 +15,7 @@ import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
+import ContactPopover from "@/components/ContactPopover";
 
 interface AvailablePet {
   id: string;
@@ -1202,9 +1203,7 @@ const BusinessDashboard = () => {
                 <p className="text-sm text-slate-500 mb-4">
                   Contact our partner support team for assistance with verification or billing.
                 </p>
-                <Button variant="outline" size="sm" className="w-full">
-                  Contact Support
-                </Button>
+                <ContactPopover triggerText="Contact Support" triggerClassName="w-full" />
               </div>
             </div>
           </div>

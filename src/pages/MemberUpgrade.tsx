@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle, Star, Zap, Mail, MessageSquare } from "lucide-react";
+import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -12,14 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
-import SupportDialog from "@/components/SupportDialog";
+import ContactPopover from "@/components/ContactPopover";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,7 +98,6 @@ const MemberUpgrade = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showDowngradeDialog, setShowDowngradeDialog] = useState(false);
   const [downgradePlan, setDowngradePlan] = useState<PlanOption | null>(null);
-  const [showSupportDialog, setShowSupportDialog] = useState(false);
 
   useEffect(() => {
     const fetchMembership = async () => {
@@ -564,45 +558,7 @@ const MemberUpgrade = () => {
             <p className="text-sm text-muted-foreground mb-3">
               Need help choosing the right plan?
             </p>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  Contact us
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 p-3" align="center">
-                <p className="text-sm font-medium mb-3 text-center">How would you like to reach us?</p>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start gap-2"
-                    onClick={() => {
-                      navigator.clipboard.writeText("hello@wooffy.app");
-                      window.location.href = "mailto:hello@wooffy.app";
-                      toast({
-                        title: "Email address copied!",
-                        description: "hello@wooffy.app has been copied to your clipboard. Your email app should open - if not, paste the address manually.",
-                      });
-                    }}
-                  >
-                    <Mail className="w-4 h-4" />
-                    Send an Email
-                  </Button>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="w-full justify-start gap-2"
-                    onClick={() => setShowSupportDialog(true)}
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Message Us
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2 text-center">hello@wooffy.app</p>
-              </PopoverContent>
-            </Popover>
+            <ContactPopover />
           </div>
         </main>
       </div>
@@ -649,9 +605,6 @@ const MemberUpgrade = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Support Dialog */}
-      <SupportDialog open={showSupportDialog} onOpenChange={setShowSupportDialog} />
     </>
   );
 };
