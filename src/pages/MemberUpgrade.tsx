@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle } from "lucide-react";
+import { Check, Sparkles, ArrowLeft, Dog, Users, Crown, Clock, RefreshCw, ArrowDown, AlertTriangle, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Dialog,
@@ -32,15 +31,15 @@ interface Membership {
 interface PlanOption {
   id: string;
   name: string;
+  petLabel: string;
   price: number;
   renewalPrice: number;
   maxPets: number;
   icon: typeof Dog;
-  features: string[];
-  highlight?: boolean;
+  popular?: boolean;
 }
 
-const sharedFeatures = [
+const sharedBenefits = [
   "Access to all partner discounts",
   "AI Pet Assistant",
   "Vaccination reminders",
@@ -52,30 +51,30 @@ const plans: PlanOption[] = [
   {
     id: "single",
     name: "Solo Paw",
+    petLabel: "For your one & only furball 🐾",
     price: 59,
     renewalPrice: 49,
     maxPets: 1,
     icon: Dog,
-    features: ["1 pet covered", ...sharedFeatures],
   },
   {
     id: "duo",
     name: "Dynamic Duo",
+    petLabel: "Because one buddy wasn't enough! 🐶🐱",
     price: 99,
     renewalPrice: 79,
     maxPets: 2,
     icon: Users,
-    features: ["2 pets covered", ...sharedFeatures],
-    highlight: true,
+    popular: true,
   },
   {
     id: "family",
     name: "Pack Leader",
+    petLabel: "You run the zoo — we've got you 🦁",
     price: 139,
     renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
-    features: ["Up to 5 pets covered", ...sharedFeatures],
   },
 ];
 
@@ -336,30 +335,34 @@ const MemberUpgrade = () => {
             </Alert>
           )}
 
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-4 py-2 mb-4">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">
-                {isFreemiumUser ? "Become a Member" : "Manage Your Plan"}
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
+              <Zap className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-muted-foreground">
+                {isFreemiumUser ? "Simple Pricing" : "Manage Your Plan"}
               </span>
-            </div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">
+            </span>
+            
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
               {isFreemiumUser 
-                ? "Join Wooffy Today! 🐾" 
+                ? "One Membership, Endless Value" 
                 : isExpiringSoon || isExpired 
                   ? "Renew & Save 🎉" 
-                  : "Choose Your Plan 🐾"}
+                  : "Choose Your Plan"}
             </h1>
-            <p className="text-muted-foreground max-w-lg mx-auto">
+            
+            <p className="text-lg text-muted-foreground">
               {isFreemiumUser
-                ? "Unlock exclusive discounts, AI pet assistance, and more for your furry family."
+                ? "All plans include the same great benefits. Choose based on how many pets you have!"
                 : isExpiringSoon || isExpired 
                   ? "Renew your membership with special loyalty discounts - save up to €30/year!"
                   : "Upgrade or change your plan anytime to fit your furry family."}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Pricing cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
             {plans.map((plan, index) => {
               const Icon = plan.icon;
               const isCurrentPlan = membership?.plan_type === plan.id;
@@ -369,40 +372,57 @@ const MemberUpgrade = () => {
               const savings = plan.price - plan.renewalPrice;
 
               return (
-                <Card 
-                  key={plan.id}
-                  className={`relative overflow-hidden transition-all ${
-                    plan.highlight 
-                      ? 'border-primary shadow-lg scale-[1.02]' 
-                      : 'border-border'
-                  } ${isCurrentPlan ? 'ring-2 ring-green-500/50' : ''}`}
-                >
-                  {plan.highlight && !isCurrentPlan && !showRenewalPrice && (
-                    <div className="absolute top-0 left-0 right-0 bg-primary text-primary-foreground text-xs font-medium py-1 text-center">
-                      Most Popular
+                <div key={plan.id} className="relative">
+                  {/* Most Popular / Current Plan / Renewal badges */}
+                  {plan.popular && !isCurrentPlan && !showRenewalPrice && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                      <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
+                        <Star className="w-4 h-4 fill-current" />
+                        Most Popular
+                      </div>
                     </div>
                   )}
                   {isCurrentPlan && !showRenewalPrice && (
-                    <div className="absolute top-0 left-0 right-0 bg-green-500 text-white text-xs font-medium py-1 text-center">
-                      Current Plan
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                      <div className="bg-green-500 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-lg">
+                        <Check className="w-4 h-4" />
+                        Current Plan
+                      </div>
                     </div>
                   )}
                   {showRenewalPrice && (
-                    <div className="absolute top-0 left-0 right-0 bg-amber-500 text-white text-xs font-medium py-1 text-center">
-                      {isCurrentPlan ? "Renew Now" : `Save €${savings}/year!`}
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                      <div className="bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                        {isCurrentPlan ? "Renew Now" : `Save €${savings}/year!`}
+                      </div>
                     </div>
                   )}
                   
-                  <CardHeader className={(plan.highlight && !isCurrentPlan) || isCurrentPlan || showRenewalPrice ? 'pt-8' : ''}>
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3">
-                      <Icon className="w-6 h-6 text-primary" />
+                  <div className={`bg-card rounded-3xl p-6 lg:p-8 shadow-card h-full flex flex-col ${
+                    plan.popular && !isCurrentPlan && !showRenewalPrice
+                      ? "border-2 border-primary/30 ring-2 ring-primary/10" 
+                      : isCurrentPlan && !showRenewalPrice
+                        ? "border-2 border-green-500/30 ring-2 ring-green-500/10"
+                        : "border border-border"
+                  }`}>
+                    <div className="text-center mb-4">
+                      <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
+                        <Icon className="w-7 h-7 text-primary" />
+                        <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+                          {plan.maxPets}
+                        </span>
+                      </div>
+                      <h3 className="font-display font-bold text-xl text-foreground">
+                        {plan.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">{plan.petLabel}</p>
                     </div>
-                    <CardTitle className="text-xl">{plan.name}</CardTitle>
-                    <CardDescription>
-                      {showRenewalPrice && isCurrentPlan ? (
+
+                    <div className="text-center mb-6">
+                      {showRenewalPrice ? (
                         <div className="space-y-1">
-                          <div>
-                            <span className="text-2xl font-bold text-foreground">€{plan.renewalPrice}</span>
+                          <div className="flex items-baseline justify-center gap-1">
+                            <span className="font-display font-bold text-4xl text-gradient">€{plan.renewalPrice}</span>
                             <span className="text-muted-foreground">/year</span>
                           </div>
                           <div className="text-xs">
@@ -410,40 +430,20 @@ const MemberUpgrade = () => {
                             <span className="ml-2 text-green-600 font-medium">Save €{savings}!</span>
                           </div>
                         </div>
-                      ) : showRenewalPrice ? (
-                        <div className="space-y-1">
-                          <div>
-                            <span className="text-2xl font-bold text-foreground">€{plan.renewalPrice}</span>
-                            <span className="text-muted-foreground">/year</span>
-                          </div>
-                          <div className="text-xs">
-                            <span className="line-through text-muted-foreground">€{plan.price}</span>
-                            <span className="ml-2 text-green-600 font-medium">Renewal price</span>
-                          </div>
-                        </div>
                       ) : (
-                        <>
-                          <span className="text-3xl font-bold text-foreground">€{plan.price}</span>
+                        <div className="flex items-baseline justify-center gap-1">
+                          <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
                           <span className="text-muted-foreground">/year</span>
-                        </>
+                        </div>
                       )}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm">
-                          <Check className="w-4 h-4 text-green-500 shrink-0" />
-                          <span>{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    </div>
 
+                    <div className="flex-1" />
+
+                    {/* Action Buttons */}
                     {isFreemiumUser ? (
-                      // Freemium users see "Get Started" buttons for new signup
                       <Button 
-                        variant={plan.highlight ? "hero" : "default"}
+                        variant={plan.popular ? "hero" : "outline"}
                         className="w-full"
                         onClick={() => handleNewSignup(plan.id)}
                         disabled={isProcessing}
@@ -451,10 +451,7 @@ const MemberUpgrade = () => {
                         {isProcessing && selectedPlan === plan.id ? (
                           "Processing..."
                         ) : (
-                          <>
-                            <Sparkles className="w-4 h-4 mr-2" />
-                            Get Started
-                          </>
+                          "Get Started"
                         )}
                       </Button>
                     ) : isCurrentPlan ? (
@@ -486,12 +483,12 @@ const MemberUpgrade = () => {
                         onClick={() => handleDowngradeClick(plan)}
                       >
                         <ArrowDown className="w-4 h-4 mr-2" />
-                        Downgrade to this plan
+                        Downgrade
                       </Button>
                     ) : isUpgrade ? (
                       showRenewalPrice ? (
                         <Button 
-                          variant={plan.highlight ? "hero" : "default"}
+                          variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
                           onClick={() => handleRenew(plan.id)}
                           disabled={isProcessing}
@@ -507,7 +504,7 @@ const MemberUpgrade = () => {
                         </Button>
                       ) : (
                         <Button 
-                          variant={plan.highlight ? "hero" : "default"}
+                          variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
                           onClick={() => handlePlanChange(plan.id)}
                           disabled={isProcessing}
@@ -517,7 +514,7 @@ const MemberUpgrade = () => {
                           ) : (
                             <>
                               <Sparkles className="w-4 h-4 mr-2" />
-                              Upgrade to {plan.name}
+                              Upgrade
                             </>
                           )}
                         </Button>
@@ -527,10 +524,33 @@ const MemberUpgrade = () => {
                         Select Plan
                       </Button>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               );
             })}
+          </div>
+
+          {/* Shared benefits */}
+          <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border mb-8">
+            <h3 className="font-display font-semibold text-lg text-center mb-4">All Plans Include</h3>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {sharedBenefits.map((benefit, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-500 shrink-0" />
+                  <span className="text-sm text-foreground">{benefit}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Value proposition */}
+          <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center">
+            <p className="font-display font-semibold text-lg text-wooffy-sky mb-2">
+              💡 The Average Member Saves €300+ Per Year
+            </p>
+            <p className="text-sm text-wooffy-light/70">
+              That's a 5x return on your membership investment!
+            </p>
           </div>
 
           <p className="text-center text-sm text-muted-foreground mt-8">
