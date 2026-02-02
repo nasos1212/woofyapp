@@ -53,7 +53,7 @@ const MembershipCardFull = ({
         </div>
 
         {/* Member info with QR code */}
-        <div className="relative flex justify-between items-start">
+        <div className="relative flex justify-between items-start mt-2 sm:mt-0">
           <div className="pl-2">
             <p className="text-wooffy-light/70 text-sm">Member</p>
             <p className="font-display font-semibold text-lg text-wooffy-sky">{memberName}</p>
