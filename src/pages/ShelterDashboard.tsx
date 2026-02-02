@@ -305,7 +305,7 @@ const ShelterDashboard = () => {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="basic">
-                <div className="overflow-x-auto -mx-4 px-4 mb-6">
+                <div className="overflow-x-auto -mx-4 px-4 mb-6 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <TabsList className="inline-flex w-max gap-1">
                     <TabsTrigger value="basic">Basic Info</TabsTrigger>
                     <TabsTrigger value="about">About</TabsTrigger>
