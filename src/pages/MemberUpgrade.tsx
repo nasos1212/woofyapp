@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
+import SupportDialog from "@/components/SupportDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
@@ -97,6 +98,7 @@ const MemberUpgrade = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showDowngradeDialog, setShowDowngradeDialog] = useState(false);
   const [downgradePlan, setDowngradePlan] = useState<PlanOption | null>(null);
+  const [showSupportDialog, setShowSupportDialog] = useState(false);
 
   useEffect(() => {
     const fetchMembership = async () => {
@@ -554,7 +556,13 @@ const MemberUpgrade = () => {
           </div>
 
           <p className="text-center text-sm text-muted-foreground mt-8">
-            Need help choosing? <a href="mailto:hello@wooffy.app" className="text-primary hover:underline">Contact us</a>
+            Need help choosing?{" "}
+            <button 
+              onClick={() => setShowSupportDialog(true)} 
+              className="text-primary hover:underline"
+            >
+              Contact us
+            </button>
           </p>
         </main>
       </div>
@@ -601,6 +609,9 @@ const MemberUpgrade = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Support Dialog */}
+      <SupportDialog open={showSupportDialog} onOpenChange={setShowSupportDialog} />
     </>
   );
 };
