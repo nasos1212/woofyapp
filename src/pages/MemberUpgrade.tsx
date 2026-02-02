@@ -560,34 +560,46 @@ const MemberUpgrade = () => {
             </p>
           </div>
 
-          <p className="text-center text-sm text-muted-foreground mt-8">
-            Need help choosing?{" "}
+          <div className="text-center mt-8 p-4 bg-muted/50 rounded-xl border border-border">
+            <p className="text-sm text-muted-foreground mb-3">
+              Need help choosing the right plan?
+            </p>
             <Popover>
               <PopoverTrigger asChild>
-                <button className="text-primary hover:underline">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <MessageSquare className="w-4 h-4" />
                   Contact us
-                </button>
+                </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-56 p-2" align="center">
-                <div className="flex flex-col gap-1">
-                  <a
-                    href="mailto:hello@wooffy.app"
-                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors"
+              <PopoverContent className="w-64 p-3" align="center">
+                <p className="text-sm font-medium mb-3 text-center">How would you like to reach us?</p>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      navigator.clipboard.writeText("hello@wooffy.app");
+                      window.location.href = "mailto:hello@wooffy.app";
+                    }}
                   >
                     <Mail className="w-4 h-4" />
                     Send an Email
-                  </a>
-                  <button
+                  </Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full justify-start gap-2"
                     onClick={() => setShowSupportDialog(true)}
-                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-muted transition-colors text-left w-full"
                   >
                     <MessageSquare className="w-4 h-4" />
                     Message Us
-                  </button>
+                  </Button>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2 text-center">hello@wooffy.app</p>
               </PopoverContent>
             </Popover>
-          </p>
+          </div>
         </main>
       </div>
 
