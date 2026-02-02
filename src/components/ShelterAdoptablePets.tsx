@@ -427,92 +427,91 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="breed">Breed</Label>
-                  {formData.pet_type === "other" ? (
-                    <Input
-                      id="breed"
-                      value={formData.breed}
-                      onChange={(e) => setFormData(prev => ({ ...prev, breed: e.target.value }))}
-                      placeholder="Enter breed"
-                    />
-                  ) : (
-                    <Popover open={breedOpen} onOpenChange={setBreedOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={breedOpen}
-                          className="w-full justify-between font-normal text-left truncate"
-                        >
-                          <span className="truncate">{formData.breed || "Select breed..."}</span>
-                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[280px] p-0" align="start">
-                        <Command>
-                          <CommandInput placeholder="Search breed..." />
-                          <CommandList>
-                            <CommandEmpty>No breed found.</CommandEmpty>
-                            <CommandGroup className="max-h-[200px] overflow-auto">
-                              {breeds.map((breed) => (
-                                <CommandItem
-                                  key={breed}
-                                  value={breed}
-                                  onSelect={(value) => {
-                                    setFormData(prev => ({ ...prev, breed: value }));
-                                    setBreedOpen(false);
-                                  }}
-                                >
-                                  <Check
-                                    className={cn(
-                                      "mr-2 h-4 w-4 shrink-0",
-                                      formData.breed === breed ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                  <span className="truncate">{breed}</span>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="age">Age</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="ageValue"
-                      type="number"
-                      min="1"
-                      max="30"
-                      value={formData.age.split(' ')[0] || ''}
-                      onChange={(e) => {
-                        const unit = formData.age.split(' ')[1] || 'years';
-                        setFormData(prev => ({ ...prev, age: e.target.value ? `${e.target.value} ${unit}` : '' }));
-                      }}
-                      placeholder="e.g., 2"
-                      className="w-20"
-                    />
-                    <Select
-                      value={formData.age.split(' ')[1] || 'years'}
-                      onValueChange={(value) => {
-                        const num = formData.age.split(' ')[0] || '';
-                        setFormData(prev => ({ ...prev, age: num ? `${num} ${value}` : '' }));
-                      }}
-                    >
-                      <SelectTrigger className="flex-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="months">months</SelectItem>
-                        <SelectItem value="years">years</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="breed">Breed</Label>
+                {formData.pet_type === "other" ? (
+                  <Input
+                    id="breed"
+                    value={formData.breed}
+                    onChange={(e) => setFormData(prev => ({ ...prev, breed: e.target.value }))}
+                    placeholder="Enter breed"
+                  />
+                ) : (
+                  <Popover open={breedOpen} onOpenChange={setBreedOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={breedOpen}
+                        className="w-full justify-between font-normal text-left"
+                      >
+                        <span className="truncate">{formData.breed || "Select breed..."}</span>
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search breed..." />
+                        <CommandList>
+                          <CommandEmpty>No breed found.</CommandEmpty>
+                          <CommandGroup className="max-h-[200px] overflow-auto">
+                            {breeds.map((breed) => (
+                              <CommandItem
+                                key={breed}
+                                value={breed}
+                                onSelect={(value) => {
+                                  setFormData(prev => ({ ...prev, breed: value }));
+                                  setBreedOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4 shrink-0",
+                                    formData.breed === breed ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                {breed}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="age">Age</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="ageValue"
+                    type="number"
+                    min="1"
+                    max="30"
+                    value={formData.age.split(' ')[0] || ''}
+                    onChange={(e) => {
+                      const unit = formData.age.split(' ')[1] || 'years';
+                      setFormData(prev => ({ ...prev, age: e.target.value ? `${e.target.value} ${unit}` : '' }));
+                    }}
+                    placeholder="e.g., 2"
+                    className="w-24"
+                  />
+                  <Select
+                    value={formData.age.split(' ')[1] || 'years'}
+                    onValueChange={(value) => {
+                      const num = formData.age.split(' ')[0] || '';
+                      setFormData(prev => ({ ...prev, age: num ? `${num} ${value}` : '' }));
+                    }}
+                  >
+                    <SelectTrigger className="w-28">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="months">months</SelectItem>
+                      <SelectItem value="years">years</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
