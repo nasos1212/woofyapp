@@ -2523,6 +2523,27 @@ export type Database = {
           },
         ]
       }
+      profiles_limited: {
+        Row: {
+          avatar_url: string | null
+          full_name: string | null
+          preferred_city: string | null
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          full_name?: string | null
+          preferred_city?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          full_name?: string | null
+          preferred_city?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       can_edit_pet_birthday: { Args: { _pet_id: string }; Returns: boolean }
