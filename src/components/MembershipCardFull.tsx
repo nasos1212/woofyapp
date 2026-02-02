@@ -30,12 +30,12 @@ const MembershipCardFull = ({
   };
 
   return (
-    <div className="relative w-full max-w-md lg:max-w-lg mx-auto group aspect-[1.6/1]">
+    <div className="relative w-full max-w-md lg:max-w-lg mx-auto group aspect-[1.6/1] overflow-hidden">
       {/* Glow effect */}
       <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
       {/* Card */}
-      <div className="relative h-full bg-wooffy-dark rounded-2xl p-5 sm:p-6 shadow-card overflow-hidden flex flex-col justify-between">
+      <div className="relative h-full bg-wooffy-dark rounded-2xl p-4 sm:p-5 lg:p-6 shadow-card overflow-hidden flex flex-col justify-between">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2" />
