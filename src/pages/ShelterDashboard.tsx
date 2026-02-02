@@ -537,7 +537,7 @@ const ShelterDashboard = () => {
                     <ShelterAdoptionInquiries shelterId={shelter.id} />
                   </TabsContent>
 
-                  <div className="flex justify-end mt-6 pt-4 border-t">
+                  <div className="flex justify-start mt-6 pt-4 border-t">
                     <Button type="submit" disabled={updateMutation.isPending}>
                       <Save className="h-4 w-4 mr-2" />
                       {updateMutation.isPending ? "Saving..." : "Save Changes"}
