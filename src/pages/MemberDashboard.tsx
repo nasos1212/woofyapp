@@ -356,7 +356,7 @@ const MemberDashboard = () => {
         <meta name="description" content="Access your Wooffy membership card, view savings, and discover nearby pet deals." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+        <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-full max-w-full overflow-x-hidden">
         <Header />
         {/* Rating Prompt Dialog */}
         {currentPrompt && (
