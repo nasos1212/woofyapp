@@ -11,12 +11,27 @@ const corsHeaders = {
 };
 
 interface SupportNotificationRequest {
-  conversationId: string;
-  subject: string;
-  message: string;
-  userId: string;
+  conversationId?: string;
+  subject?: string;
+  message?: string;
+  userId?: string;
   isReply?: boolean;
+  // Affiliate inquiry fields
+  type?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  audience?: string;
 }
+
+const audienceLabels: Record<string, string> = {
+  friends_family: "Friends & Family",
+  social_media: "Social Media Followers",
+  pet_community: "Pet Community / Groups",
+  workplace: "Colleagues / Workplace",
+  clients: "My Clients / Customers",
+  other: "Other",
+};
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
@@ -25,9 +40,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { conversationId, subject, message, userId, isReply }: SupportNotificationRequest = await req.json();
+    const body: SupportNotificationRequest = await req.json();
+    console.log("Received support notification request:", body);
 
-    console.log("Received support notification request:", { conversationId, subject, userId, isReply });
+    // Check if this is an affiliate inquiry
+    if (body.type === "affiliate_inquiry") {
+      return await handleAffiliateInquiry(body);
+    }
+
+    // Standard support notification flow
+    const { conversationId, subject, message, userId, isReply } = body;
 
     // Validate required fields
     if (!conversationId || !subject || !message || !userId) {
@@ -77,7 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "Wooffy Support <hello@wooffy.app>",
-      to: ["hello@wooffy.app"], // Your support email
+      to: ["hello@wooffy.app"],
       subject: emailSubject,
       html: `<!DOCTYPE html>
 <html>
@@ -145,5 +167,90 @@ body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     );
   }
 };
+
+async function handleAffiliateInquiry(body: SupportNotificationRequest): Promise<Response> {
+  const { fullName, email, phone, audience, message } = body;
+
+  // Validate required fields
+  if (!fullName || !email || !phone || !audience) {
+    throw new Error("Missing required fields for affiliate inquiry");
+  }
+
+  const audienceLabel = audienceLabels[audience] || audience;
+
+  console.log("Processing affiliate inquiry from:", fullName, email);
+
+  // Send email notification to support team
+  const emailResponse = await resend.emails.send({
+    from: "Wooffy Affiliates <hello@wooffy.app>",
+    to: ["hello@wooffy.app"],
+    subject: `[Wooffy] New Affiliate Inquiry: ${fullName}`,
+    html: `<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+.header { background: linear-gradient(135deg, #1A1A2E, #2D2D44); color: #7DD3FC; padding: 20px; border-radius: 8px 8px 0 0; }
+.content { background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; }
+.info-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e5e7eb; }
+.message-box { background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #7DD3FC; }
+.footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; }
+.highlight { background: #f0fdf4; padding: 10px; border-radius: 6px; border-left: 4px solid #22c55e; margin: 15px 0; }
+.preview-text { display: none; max-height: 0; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="preview-text">New affiliate inquiry from ${fullName} (${audienceLabel})</div>
+<div class="container">
+<div class="header">
+<h1 style="margin: 0;">🤝 New Affiliate Inquiry</h1>
+</div>
+<div class="content">
+<div class="highlight">
+<strong>Someone wants to join the affiliate program!</strong>
+</div>
+
+<div class="info-card">
+<h3 style="margin-top: 0;">Contact Information</h3>
+<p><strong>Name:</strong> ${fullName}</p>
+<p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+<p><strong>Phone:</strong> <a href="tel:${phone}">${phone}</a></p>
+</div>
+
+<div class="info-card">
+<h3 style="margin-top: 0;">Audience Type</h3>
+<p><strong>${audienceLabel}</strong></p>
+</div>
+
+${message ? `
+<div class="message-box">
+<h3 style="margin-top: 0;">Additional Message</h3>
+<p style="white-space: pre-wrap;">${message}</p>
+</div>
+` : ''}
+
+<p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
+Reply directly to this email or contact ${fullName} at the details above to discuss the affiliate partnership.
+</p>
+</div>
+<div class="footer">
+<p>© 2026 Wooffy. This is an automated notification from Wooffy</p>
+</div>
+</div>
+</body>
+</html>`,
+  });
+
+  console.log("Affiliate inquiry email sent successfully:", emailResponse);
+
+  return new Response(
+    JSON.stringify({ success: true, emailResponse }),
+    {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    }
+  );
+}
 
 serve(handler);
