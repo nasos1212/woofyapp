@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Dog, Mail, MapPin, Instagram, Facebook, Twitter, Copy } from "lucide-react";
 import { toast } from "sonner";
-import PartnerInquiryDialog from "./PartnerInquiryDialog";
+import AffiliateInquiryDialog from "./AffiliateInquiryDialog";
 
 const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const [showPartnerDialog, setShowPartnerDialog] = useState(false);
+  const [showAffiliateDialog, setShowAffiliateDialog] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     if (isHomePage) {
@@ -71,7 +71,7 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Support</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => setShowPartnerDialog(true)} className="hover:text-wooffy-sky transition-colors">Partner Program</button></li>
+              <li><button onClick={() => setShowAffiliateDialog(true)} className="hover:text-wooffy-sky transition-colors">Affiliate Program</button></li>
               <li><a href="mailto:hello@wooffy.app?subject=Privacy Policy Inquiry" className="hover:text-wooffy-sky transition-colors">Privacy Policy</a></li>
               <li><a href="mailto:hello@wooffy.app?subject=Terms of Service Inquiry" className="hover:text-wooffy-sky transition-colors">Terms of Service</a></li>
             </ul>
@@ -106,7 +106,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <PartnerInquiryDialog open={showPartnerDialog} onOpenChange={setShowPartnerDialog} />
+      <AffiliateInquiryDialog open={showAffiliateDialog} onOpenChange={setShowAffiliateDialog} />
     </footer>
   );
 };
