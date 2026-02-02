@@ -305,22 +305,30 @@ const ShelterDashboard = () => {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="basic">
-                <div className="overflow-x-auto -mx-4 px-4 mb-6 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                  <TabsList className="inline-flex w-max gap-1">
-                    <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                    <TabsTrigger value="about">About</TabsTrigger>
-                    <TabsTrigger value="social">Social</TabsTrigger>
-                    <TabsTrigger value="branding" className="gap-1">
-                      <ImageIcon className="h-3 w-3" />
-                      Branding
-                    </TabsTrigger>
-                    <TabsTrigger value="adoptable-pets">
-                      Pets
-                    </TabsTrigger>
-                    <TabsTrigger value="inquiries">
-                      Inquiries
-                    </TabsTrigger>
-                  </TabsList>
+                <div className="relative mb-6">
+                  {/* Left fade gradient */}
+                  <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
+                  {/* Right fade gradient with arrow hint */}
+                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-1">
+                    <span className="text-muted-foreground text-xs animate-pulse">›</span>
+                  </div>
+                  <div className="overflow-x-auto -mx-4 px-4 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <TabsList className="inline-flex w-max gap-1">
+                      <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                      <TabsTrigger value="about">About</TabsTrigger>
+                      <TabsTrigger value="social">Social</TabsTrigger>
+                      <TabsTrigger value="branding" className="gap-1">
+                        <ImageIcon className="h-3 w-3" />
+                        Branding
+                      </TabsTrigger>
+                      <TabsTrigger value="adoptable-pets">
+                        Pets
+                      </TabsTrigger>
+                      <TabsTrigger value="inquiries">
+                        Inquiries
+                      </TabsTrigger>
+                    </TabsList>
+                  </div>
                 </div>
 
                 <form onSubmit={handleSubmit}>
