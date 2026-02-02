@@ -36,7 +36,7 @@ const MembershipCard = ({
         </div>
 
         {/* Member info with QR code */}
-        <div className="relative flex justify-between items-end">
+        <div className="relative flex justify-between items-start">
           <div>
             <p className="text-wooffy-light/70 text-xs">Member</p>
             <p className="font-display font-semibold text-base text-wooffy-sky">{memberName}</p>
@@ -45,22 +45,28 @@ const MembershipCard = ({
           </div>
           
           {/* QR Code */}
-          <div className="bg-white p-1.5 rounded-lg">
-            <QRCodeSVG 
-              value="https://wooffy.app/member/WF-2026-DEMO" 
-              size={56}
-              level="M"
-              bgColor="#ffffff"
-              fgColor="#1a1f36"
-            />
+          <div className="flex flex-col items-center">
+            <div className="bg-white p-2 rounded-lg">
+              <QRCodeSVG 
+                value="https://wooffy.app/member/WF-2026-DEMO" 
+                size={72}
+                level="M"
+                bgColor="#ffffff"
+                fgColor="#1a1f36"
+              />
+            </div>
+            <p className="text-wooffy-light/60 text-[10px] mt-1">Scan to verify</p>
           </div>
         </div>
 
         {/* Card number */}
         <div className="relative pt-2 border-t border-wooffy-blue/30 flex justify-between items-center">
-          <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
-            WF-2026-XXXX-XXXX
-          </p>
+          <div>
+            <p className="text-wooffy-light/70 text-[10px]">Member ID</p>
+            <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
+              WF-2026-XXXX-XXXX
+            </p>
+          </div>
           <p className="text-wooffy-light/70 text-xs">
             Since {memberSince}
           </p>
