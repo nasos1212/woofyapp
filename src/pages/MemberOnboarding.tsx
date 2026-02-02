@@ -434,7 +434,7 @@ const MemberOnboarding = () => {
                         )}
                       </div>
                       <CardTitle className="font-display">{plan.name}</CardTitle>
-                      <CardDescription>{plan.description}</CardDescription>
+                      <CardDescription className="min-h-[40px] flex items-center justify-center">{plan.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="text-center space-y-4">
                       <div>
