@@ -7,40 +7,36 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Handshake, Building2, Mail, Phone, Globe, MessageSquare } from "lucide-react";
+import { Users, User, Mail, Phone, MessageSquare } from "lucide-react";
 import { z } from "zod";
 
-interface PartnerInquiryDialogProps {
+interface AffiliateInquiryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const partnerSchema = z.object({
-  businessName: z.string().trim().min(1, "Business name is required").max(100, "Business name must be less than 100 characters"),
-  contactName: z.string().trim().min(1, "Contact name is required").max(100, "Contact name must be less than 100 characters"),
+const affiliateSchema = z.object({
+  fullName: z.string().trim().min(1, "Full name is required").max(100, "Name must be less than 100 characters"),
   email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
   phone: z.string().trim().min(1, "Phone number is required").max(20, "Phone number must be less than 20 characters"),
-  website: z.string().trim().max(255, "Website must be less than 255 characters").optional(),
-  partnerType: z.string().min(1, "Please select a partner type"),
+  audience: z.string().min(1, "Please select your audience type"),
   message: z.string().trim().max(1000, "Message must be less than 1000 characters").optional(),
 });
 
-const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps) => {
+const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    businessName: "",
-    contactName: "",
+    fullName: "",
     email: "",
     phone: "",
-    website: "",
-    partnerType: "",
+    audience: "",
     message: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const validation = partnerSchema.safeParse(formData);
+    const validation = affiliateSchema.safeParse(formData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
       toast.error(firstError.message);
@@ -50,25 +46,14 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
     setIsSubmitting(true);
 
     try {
-      // Create a support conversation for the partner inquiry
-      const { error } = await supabase.from("support_conversations").insert({
-        user_id: null, // Anonymous submission
-        subject: `Partner Inquiry: ${formData.businessName}`,
-        status: "open",
-      });
-
-      if (error) throw error;
-
       // Send notification email
       await supabase.functions.invoke("send-support-notification", {
         body: {
-          type: "partner_inquiry",
-          businessName: formData.businessName,
-          contactName: formData.contactName,
+          type: "affiliate_inquiry",
+          fullName: formData.fullName,
           email: formData.email,
           phone: formData.phone,
-          website: formData.website,
-          partnerType: formData.partnerType,
+          audience: formData.audience,
           message: formData.message,
         },
       });
@@ -76,16 +61,14 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
       toast.success("Thank you! We'll be in touch soon.");
       onOpenChange(false);
       setFormData({
-        businessName: "",
-        contactName: "",
+        fullName: "",
         email: "",
         phone: "",
-        website: "",
-        partnerType: "",
+        audience: "",
         message: "",
       });
     } catch (error) {
-      console.error("Error submitting partner inquiry:", error);
+      console.error("Error submitting affiliate inquiry:", error);
       toast.error("Failed to submit. Please try again or email us directly.");
     } finally {
       setIsSubmitting(false);
@@ -97,35 +80,24 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Handshake className="h-5 w-5 text-primary" />
-            Become a Partner
+            <Users className="h-5 w-5 text-primary" />
+            Become an Affiliate
           </DialogTitle>
           <DialogDescription>
-            Join our network and offer exclusive deals to Wooffy members. Fill in your details and we'll get back to you.
+            Earn rewards by introducing pet owners to Wooffy. Share with your network and earn commissions on every signup!
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="businessName" className="flex items-center gap-1.5">
-              <Building2 className="h-3.5 w-3.5" />
-              Business Name *
+            <Label htmlFor="fullName" className="flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5" />
+              Full Name *
             </Label>
             <Input
-              id="businessName"
-              value={formData.businessName}
-              onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-              placeholder="Your business name"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="contactName">Contact Name *</Label>
-            <Input
-              id="contactName"
-              value={formData.contactName}
-              onChange={(e) => setFormData({ ...formData, contactName: e.target.value })}
+              id="fullName"
+              value={formData.fullName}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
               placeholder="Your full name"
               required
             />
@@ -164,36 +136,21 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="website" className="flex items-center gap-1.5">
-              <Globe className="h-3.5 w-3.5" />
-              Website (optional)
-            </Label>
-            <Input
-              id="website"
-              type="url"
-              value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-              placeholder="https://yourbusiness.com"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="partnerType">Partner Type *</Label>
+            <Label htmlFor="audience">Who would you refer? *</Label>
             <Select
-              value={formData.partnerType}
-              onValueChange={(value) => setFormData({ ...formData, partnerType: value })}
+              value={formData.audience}
+              onValueChange={(value) => setFormData({ ...formData, audience: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select partner type" />
+                <SelectValue placeholder="Select your audience" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="pet_shop">Pet Shop</SelectItem>
-                <SelectItem value="grooming">Grooming Salon</SelectItem>
-                <SelectItem value="veterinary">Veterinary Clinic</SelectItem>
-                <SelectItem value="training">Pet Training</SelectItem>
-                <SelectItem value="boarding">Pet Boarding/Hotel</SelectItem>
-                <SelectItem value="cafe_restaurant">Pet-Friendly Café/Restaurant</SelectItem>
-                <SelectItem value="other">Other Pet Service</SelectItem>
+                <SelectItem value="friends_family">Friends & Family</SelectItem>
+                <SelectItem value="social_media">Social Media Followers</SelectItem>
+                <SelectItem value="pet_community">Pet Community / Groups</SelectItem>
+                <SelectItem value="workplace">Colleagues / Workplace</SelectItem>
+                <SelectItem value="clients">My Clients / Customers</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -201,19 +158,19 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
           <div className="space-y-2">
             <Label htmlFor="message" className="flex items-center gap-1.5">
               <MessageSquare className="h-3.5 w-3.5" />
-              Message (optional)
+              Tell us more (optional)
             </Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              placeholder="Tell us about your business and what you'd like to offer..."
+              placeholder="How do you plan to introduce pet owners to Wooffy?"
               rows={3}
             />
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+            {isSubmitting ? "Submitting..." : "Join Affiliate Program"}
           </Button>
         </form>
       </DialogContent>
@@ -221,4 +178,4 @@ const PartnerInquiryDialog = ({ open, onOpenChange }: PartnerInquiryDialogProps)
   );
 };
 
-export default PartnerInquiryDialog;
+export default AffiliateInquiryDialog;
