@@ -408,7 +408,7 @@ const BusinessAnalytics = () => {
             {topOffers.length === 0 ? (
               <p className="text-slate-500 text-sm">No redemptions yet</p>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topOffers.map((offer, i) => (
                   <div key={offer.title} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                     <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-medium flex items-center justify-center">
