@@ -371,7 +371,8 @@ const MemberDashboard = () => {
           />
         )}
 
-        <main className="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+          <div className="mx-auto max-w-7xl">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
@@ -716,6 +717,7 @@ const MemberDashboard = () => {
               </div>
 
             </div>
+          </div>
           </div>
         </main>
       </div>
