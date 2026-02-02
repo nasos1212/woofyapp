@@ -30,7 +30,8 @@ import {
   Facebook,
   Instagram,
   ExternalLink,
-  ImageIcon
+  ImageIcon,
+  ChevronRight
 } from "lucide-react";
 
 const ShelterDashboard = () => {
@@ -308,9 +309,11 @@ const ShelterDashboard = () => {
                 <div className="relative mb-6">
                   {/* Left fade gradient */}
                   <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
-                  {/* Right fade gradient with arrow hint */}
-                  <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-1">
-                    <span className="text-muted-foreground text-xs animate-pulse">›</span>
+                  {/* Right fade gradient with blue arrow */}
+                  <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-1">
+                    <div className="bg-primary rounded-full p-0.5 animate-pulse">
+                      <ChevronRight className="h-4 w-4 text-primary-foreground" />
+                    </div>
                   </div>
                   <div className="overflow-x-auto -mx-4 px-4 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     <TabsList className="inline-flex w-max gap-1">
