@@ -68,7 +68,7 @@ const MembershipCardFull = ({
             <div className="bg-white p-2 rounded-lg">
               <QRCodeSVG 
                 value={verificationUrl}
-                size={72}
+                size={88}
                 level="M"
                 bgColor="#ffffff"
                 fgColor="#1a1f36"
