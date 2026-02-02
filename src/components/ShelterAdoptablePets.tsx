@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { validateImageFile } from "@/lib/fileValidation";
-import { Plus, Trash2, Edit2, PawPrint, Upload, X, ChevronsUpDown, Check } from "lucide-react";
+import { Plus, Trash2, Edit2, PawPrint, Upload, X, ChevronsUpDown, Check, ChevronUp, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dogBreeds } from "@/data/dogBreeds";
 import { catBreeds } from "@/data/catBreeds";
@@ -50,6 +50,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
   const [editingPet, setEditingPet] = useState<AdoptablePet | null>(null);
   const [uploading, setUploading] = useState(false);
   const [breedOpen, setBreedOpen] = useState(false);
+  const breedListRef = useRef<HTMLDivElement>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -452,29 +453,60 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0 pointer-events-auto" align="start">
                       <Command>
                         <CommandInput placeholder="Search breed..." />
-                        <CommandList className="max-h-[250px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent">
-                          <CommandEmpty>No breed found.</CommandEmpty>
-                          <CommandGroup>
-                            {breeds.map((breed) => (
-                              <CommandItem
-                                key={breed}
-                                value={breed}
-                                onSelect={(value) => {
-                                  setFormData(prev => ({ ...prev, breed: value }));
-                                  setBreedOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4 shrink-0",
-                                    formData.breed === breed ? "opacity-100" : "opacity-0"
-                                  )}
-                                />
-                                {breed}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
+                        <div className="relative">
+                          {/* Scroll Up Button */}
+                          <button
+                            type="button"
+                            className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center h-7 bg-gradient-to-b from-background via-background to-transparent hover:bg-muted/80 border-b"
+                            onClick={() => {
+                              if (breedListRef.current) {
+                                breedListRef.current.scrollBy({ top: -100, behavior: 'smooth' });
+                              }
+                            }}
+                          >
+                            <ChevronUp className="h-4 w-4" />
+                          </button>
+                          
+                          <CommandList 
+                            ref={breedListRef}
+                            className="max-h-[200px] overflow-y-auto pt-7 pb-7"
+                          >
+                            <CommandEmpty>No breed found.</CommandEmpty>
+                            <CommandGroup>
+                              {breeds.map((breed) => (
+                                <CommandItem
+                                  key={breed}
+                                  value={breed}
+                                  onSelect={(value) => {
+                                    setFormData(prev => ({ ...prev, breed: value }));
+                                    setBreedOpen(false);
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4 shrink-0",
+                                      formData.breed === breed ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  {breed}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                          
+                          {/* Scroll Down Button */}
+                          <button
+                            type="button"
+                            className="absolute bottom-0 left-0 right-0 z-10 flex items-center justify-center h-7 bg-gradient-to-t from-background via-background to-transparent hover:bg-muted/80 border-t"
+                            onClick={() => {
+                              if (breedListRef.current) {
+                                breedListRef.current.scrollBy({ top: 100, behavior: 'smooth' });
+                              }
+                            }}
+                          >
+                            <ChevronDown className="h-4 w-4" />
+                          </button>
+                        </div>
                       </Command>
                     </PopoverContent>
                   </Popover>
