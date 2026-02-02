@@ -1,4 +1,5 @@
 import { Dog, Crown } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface MembershipCardProps {
   memberName?: string;
@@ -34,7 +35,7 @@ const MembershipCard = ({
           </div>
         </div>
 
-        {/* Member info */}
+        {/* Member info with QR code */}
         <div className="relative flex justify-between items-end">
           <div>
             <p className="text-wooffy-light/70 text-xs">Member</p>
@@ -42,16 +43,26 @@ const MembershipCard = ({
             <p className="text-wooffy-light/70 text-xs mt-2">Furry Friend</p>
             <p className="font-display font-semibold text-sm text-wooffy-sky">{petName}</p>
           </div>
-          <div className="text-right">
-            <p className="text-wooffy-light/70 text-xs">Since</p>
-            <p className="font-display font-semibold text-sm text-wooffy-sky">{memberSince}</p>
+          
+          {/* QR Code */}
+          <div className="bg-white p-1.5 rounded-lg">
+            <QRCodeSVG 
+              value="https://wooffy.app/member/WF-2026-DEMO" 
+              size={56}
+              level="M"
+              bgColor="#ffffff"
+              fgColor="#1a1f36"
+            />
           </div>
         </div>
 
         {/* Card number */}
-        <div className="relative pt-2 border-t border-wooffy-blue/30">
+        <div className="relative pt-2 border-t border-wooffy-blue/30 flex justify-between items-center">
           <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
             WF-2026-XXXX-XXXX
+          </p>
+          <p className="text-wooffy-light/70 text-xs">
+            Since {memberSince}
           </p>
         </div>
       </div>
