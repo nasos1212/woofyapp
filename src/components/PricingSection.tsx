@@ -88,7 +88,7 @@ const PricingSection = () => {
                   <h3 className="font-display font-bold text-xl text-foreground">
                     {plan.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-1">{plan.petLabel}</p>
+                  <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">{plan.petLabel}</p>
                 </div>
 
                 <div className="text-center mb-6">
