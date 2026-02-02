@@ -578,13 +578,13 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
             
             return (
               <Card key={pet.id} className={!pet.is_available ? "opacity-60" : ""}>
-                <CardContent className="p-4">
-                  <div className="flex gap-4">
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     {/* Photos */}
                     <div className="flex gap-1 flex-shrink-0">
                       {displayPhotos.length > 0 ? (
                         <>
-                          <div className="w-20 h-20 rounded-lg bg-muted overflow-hidden">
+                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted overflow-hidden">
                             <img 
                               src={displayPhotos[0].photo_url} 
                               alt={pet.name}
@@ -594,7 +594,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                           {displayPhotos.length > 1 && (
                             <div className="flex flex-col gap-1">
                               {displayPhotos.slice(1, 3).map((photo, idx) => (
-                                <div key={idx} className="w-9 h-9 rounded bg-muted overflow-hidden">
+                                <div key={idx} className="w-7 h-7 sm:w-9 sm:h-9 rounded bg-muted overflow-hidden">
                                   <img 
                                     src={photo.photo_url} 
                                     alt={`${pet.name} ${idx + 2}`}
@@ -606,23 +606,23 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                           )}
                         </>
                       ) : (
-                        <div className="w-20 h-20 rounded-lg bg-muted flex items-center justify-center">
-                          <PawPrint className="h-8 w-8 text-muted-foreground" />
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted flex items-center justify-center">
+                          <PawPrint className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
                         </div>
                       )}
                     </div>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h4 className="font-medium">{pet.name}</h4>
-                          <div className="flex flex-wrap gap-2 mt-1">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                        <div className="min-w-0">
+                          <h4 className="font-medium truncate">{pet.name}</h4>
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs capitalize">
                               {pet.pet_type}
                             </Badge>
                             {pet.breed && (
-                              <Badge variant="outline" className="text-xs">
+                              <Badge variant="outline" className="text-xs truncate max-w-[120px]">
                                 {pet.breed}
                               </Badge>
                             )}
@@ -638,17 +638,15 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-2">
-                            <Label htmlFor={`available-${pet.id}`} className="text-xs text-muted-foreground">
-                              Available
-                            </Label>
-                            <Switch
-                              id={`available-${pet.id}`}
-                              checked={pet.is_available}
-                              onCheckedChange={() => toggleAvailability(pet)}
-                            />
-                          </div>
+                        <div className="flex items-center gap-2 self-start">
+                          <Label htmlFor={`available-${pet.id}`} className="text-xs text-muted-foreground">
+                            Available
+                          </Label>
+                          <Switch
+                            id={`available-${pet.id}`}
+                            checked={pet.is_available}
+                            onCheckedChange={() => toggleAvailability(pet)}
+                          />
                         </div>
                       </div>
                       {pet.description && (
