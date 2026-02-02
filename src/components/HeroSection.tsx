@@ -127,7 +127,7 @@ const HeroSection = () => {
               <p className="text-xs text-muted-foreground">/year</p>
             </div>
             
-            <div className="absolute -bottom-4 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2">
+            <div className="absolute -bottom-12 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                 <span className="text-green-600 text-lg">✓</span>
               </div>
