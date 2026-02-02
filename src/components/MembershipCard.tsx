@@ -36,8 +36,8 @@ const MembershipCard = ({
         </div>
 
         {/* Member info with QR code */}
-        <div className="relative flex justify-between items-start">
-          <div>
+        <div className="relative flex justify-between items-start mt-2">
+          <div className="pt-1">
             <p className="text-wooffy-light/70 text-xs">Member</p>
             <p className="font-display font-semibold text-base text-wooffy-sky">{memberName}</p>
             <p className="text-wooffy-light/70 text-xs mt-2">Furry Friend</p>
