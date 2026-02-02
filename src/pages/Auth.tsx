@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
+import ContactPopover from "@/components/ContactPopover";
 import {
   Dialog,
   DialogContent,
@@ -488,14 +489,14 @@ const Auth = () => {
         <DialogDescription className="text-base py-4">
           Unfortunately, your {rejectedDialog.type === "business" ? "business" : "shelter"} application was not approved at this time.
           <br /><br />
-          If you believe this was a mistake or would like more information, please contact us at:
-          <br />
-          <a 
-            href="mailto:hello@wooffy.app" 
-            className="text-primary font-semibold hover:underline"
-          >
-            hello@wooffy.app
-          </a>
+          If you believe this was a mistake or would like more information, please reach out:
+          <div className="mt-3">
+            <ContactPopover 
+              triggerText="Contact us" 
+              triggerVariant="default"
+              showIcon={true}
+            />
+          </div>
         </DialogDescription>
         <DialogFooter>
           <Button 

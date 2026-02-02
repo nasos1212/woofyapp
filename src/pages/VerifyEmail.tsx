@@ -4,6 +4,7 @@ import { CheckCircle, XCircle, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import DogLoader from "@/components/DogLoader";
+import ContactPopover from "@/components/ContactPopover";
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -93,11 +94,13 @@ const VerifyEmail = () => {
             <Button onClick={() => navigate("/auth")} className="w-full">
               Back to Login
             </Button>
-            <p className="text-sm text-gray-500">
-              Need help? Contact us at{" "}
-              <a href="mailto:hello@wooffy.app" className="text-wooffy-purple hover:underline">
-                hello@wooffy.app
-              </a>
+            <p className="text-sm text-gray-500 flex items-center justify-center gap-1">
+              Need help?{" "}
+              <ContactPopover 
+                triggerText="Contact us" 
+                asLink 
+                triggerClassName="text-wooffy-purple"
+              />
             </p>
           </div>
         </div>
