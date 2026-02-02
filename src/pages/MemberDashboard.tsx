@@ -371,8 +371,8 @@ const MemberDashboard = () => {
           />
         )}
 
-        <main className="w-full px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
-          <div className="mx-auto max-w-7xl">
+        <main className="w-full box-border px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+          <div className="w-full max-w-7xl mx-auto">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
