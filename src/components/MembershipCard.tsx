@@ -12,7 +12,7 @@ const MembershipCard = ({
   memberSince = "2026"
 }: MembershipCardProps) => {
   return (
-    <div className="relative w-full max-w-sm mx-auto group aspect-[1.6/1]">
+    <div className="relative w-full max-w-md lg:max-w-lg mx-auto group aspect-[1.6/1]">
       {/* Glow effect */}
       <div className="absolute -inset-2 bg-wooffy-blue/50 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
       
