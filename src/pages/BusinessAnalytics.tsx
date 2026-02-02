@@ -420,12 +420,10 @@ const BusinessAnalytics = () => {
                       </p>
                       <p className="text-xs text-slate-500">{offer.discount} off</p>
                     </div>
-                    <div className="text-right flex-shrink-0">
-                      <span className="text-sm font-semibold text-slate-900">
-                        {offer.redemptions}
-                      </span>
-                      <p className="text-[10px] text-slate-400">redeemed</p>
-                    </div>
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      <Tag className="w-3 h-3" />
+                      {offer.redemptions}
+                    </span>
                   </div>
                 ))}
               </div>
