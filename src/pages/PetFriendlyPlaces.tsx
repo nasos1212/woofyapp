@@ -13,7 +13,6 @@ import {
   Building2,
   Phone,
   Globe,
-  Star,
   Clock,
   AlertCircle,
   Filter
@@ -31,6 +30,7 @@ import {
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import SuggestPlaceDialog from "@/components/SuggestPlaceDialog";
+import PlaceRating from "@/components/PlaceRating";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
@@ -311,12 +311,14 @@ const PetFriendlyPlaces = () => {
                       )}
 
                       {/* Rating */}
-                      {place.rating && (
-                        <div className="flex items-center gap-1 mb-3">
-                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                          <span className="text-sm font-medium">{place.rating.toFixed(1)}</span>
-                        </div>
-                      )}
+                      <div className="mb-3">
+                        <PlaceRating 
+                          placeId={place.id} 
+                          currentRating={place.rating} 
+                          onRatingChange={fetchPlaces}
+                          size="sm"
+                        />
+                      </div>
 
                       {/* Actions */}
                       <div className="flex gap-2 pt-3 border-t">

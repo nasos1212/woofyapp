@@ -1436,6 +1436,41 @@ export type Database = {
           },
         ]
       }
+      pet_friendly_place_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          place_id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          place_id: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          place_id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_friendly_place_ratings_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "pet_friendly_places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_friendly_places: {
         Row: {
           added_by_user_id: string | null
