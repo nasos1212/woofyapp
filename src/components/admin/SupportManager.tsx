@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Loader2, User, Clock, CheckCircle2 } from "lucide-react";
+import { Send, Loader2, User, Clock, CheckCircle2, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,6 +49,7 @@ const SupportManager = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const SupportManager = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [statusFilter]);
+  }, [statusFilter, categoryFilter]);
 
   useEffect(() => {
     if (selectedConversation) {
@@ -120,6 +121,10 @@ const SupportManager = () => {
 
     if (statusFilter !== "all") {
       query = query.eq("status", statusFilter);
+    }
+
+    if (categoryFilter !== "all") {
+      query = query.eq("category", categoryFilter);
     }
 
     const { data: convData, error } = await query;
@@ -288,18 +293,39 @@ const SupportManager = () => {
               )}
             </CardTitle>
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="mt-2">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="resolved">Resolved</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex gap-2 mt-2">
+            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="general">
+                  <span className="flex items-center gap-2">
+                    General Support
+                  </span>
+                </SelectItem>
+                <SelectItem value="affiliate">
+                  <span className="flex items-center gap-2">
+                    <Users className="h-3 w-3" />
+                    Affiliate Inquiries
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="resolved">Resolved</SelectItem>
+                <SelectItem value="closed">Closed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
         <CardContent className="flex-1 overflow-hidden p-0">
           <ScrollArea className="h-full">
@@ -333,7 +359,16 @@ const SupportManager = () => {
                         </Badge>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      {conv.category === "affiliate" && (
+                        <Badge
+                          variant="outline"
+                          className="bg-purple-100 text-purple-700 border-purple-200 text-xs"
+                        >
+                          <Users className="h-3 w-3 mr-1" />
+                          Affiliate
+                        </Badge>
+                      )}
                       <Badge
                         variant="secondary"
                         className={`${getStatusColor(conv.status)} text-white text-xs`}
