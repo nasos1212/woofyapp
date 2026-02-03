@@ -95,6 +95,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     return url.includes("google.com/maps") || 
            url.includes("goo.gl/maps") || 
            url.includes("maps.google.com") ||
+           url.includes("maps.app.goo.gl") ||
            url.includes("maps.apple.com");
   };
 
