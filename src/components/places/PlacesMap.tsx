@@ -1,7 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import { MapPin, Phone, Globe, Clock, AlertCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useEffect, useRef, useState } from "react";
 import DogLoader from "@/components/DogLoader";
 
 interface Place {
@@ -27,18 +24,22 @@ interface PlacesMapProps {
 }
 
 const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [mapComponents, setMapComponents] = useState<any>(null);
-  const [leaflet, setLeaflet] = useState<any>(null);
   
-  // Cyprus center coordinates
-  const cyprusCenter: [number, number] = [35.1264, 33.4299];
+  const getPlaceConfig = (type: string) => {
+    return placeTypeConfig[type] || { label: "Other", color: "text-gray-600", bgColor: "bg-gray-100" };
+  };
 
   useEffect(() => {
-    // Dynamically import Leaflet and react-leaflet
-    const loadMapDependencies = async () => {
+    let map: any = null;
+    
+    const initMap = async () => {
+      if (!mapRef.current || mapInstanceRef.current) return;
+      
       try {
-        // Import CSS
+        // Import Leaflet CSS
         await import("leaflet/dist/leaflet.css");
         
         // Import Leaflet
@@ -51,153 +52,101 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
           iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
           shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
         });
+
+        // Cyprus center coordinates
+        const cyprusCenter: [number, number] = [35.1264, 33.4299];
         
-        // Import react-leaflet components
-        const reactLeaflet = await import("react-leaflet");
+        // Initialize map
+        map = L.map(mapRef.current).setView(cyprusCenter, 9);
+        mapInstanceRef.current = map;
         
-        setLeaflet(L);
-        setMapComponents(reactLeaflet);
+        // Add OpenStreetMap tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // Add markers for each place
+        const markers: any[] = [];
+        
+        places.forEach((place) => {
+          const config = getPlaceConfig(place.place_type);
+          
+          const popupContent = `
+            <div style="min-width: 200px; max-width: 280px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <strong style="font-size: 14px;">${place.name}</strong>
+                ${place.verified ? '<span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Verified</span>' : ''}
+              </div>
+              
+              <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
+                <span style="background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 11px;">${config.label}</span>
+                ${place.is_24_hour ? '<span style="background: #dbeafe; color: #2563eb; padding: 2px 8px; border-radius: 4px; font-size: 11px;">24h</span>' : ''}
+                ${place.is_emergency ? '<span style="background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Emergency</span>' : ''}
+              </div>
+              
+              ${place.description ? `<p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">${place.description.substring(0, 100)}${place.description.length > 100 ? '...' : ''}</p>` : ''}
+              
+              ${(place.address || place.city) ? `
+                <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
+                  📍 ${[place.address, place.city].filter(Boolean).join(", ")}
+                </p>
+              ` : ''}
+              
+              ${place.rating ? `
+                <p style="font-size: 12px; margin-bottom: 8px;">
+                  ⭐ ${place.rating.toFixed(1)}
+                </p>
+              ` : ''}
+              
+              <div style="display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                ${place.phone ? `<a href="tel:${place.phone}" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">📞 Call</a>` : ''}
+                ${place.website ? `<a href="${place.website}" target="_blank" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">🌐 Website</a>` : ''}
+              </div>
+            </div>
+          `;
+          
+          const marker = L.marker([place.latitude, place.longitude])
+            .addTo(map)
+            .bindPopup(popupContent);
+          
+          markers.push(marker);
+        });
+        
+        // Fit bounds if there are places
+        if (places.length > 0) {
+          const group = L.featureGroup(markers);
+          map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 13 });
+        }
+        
         setIsLoaded(true);
       } catch (error) {
-        console.error("Failed to load map dependencies:", error);
+        console.error("Failed to initialize map:", error);
       }
     };
 
-    loadMapDependencies();
-  }, []);
-
-  const getPlaceConfig = (type: string) => {
-    return placeTypeConfig[type] || { label: "Other", color: "text-gray-600", bgColor: "bg-gray-100" };
-  };
-
-  if (!isLoaded || !mapComponents || !leaflet) {
-    return (
-      <div className="flex items-center justify-center py-12 bg-white rounded-2xl shadow-soft h-[500px]">
-        <DogLoader size="md" />
-      </div>
-    );
-  }
-
-  const { MapContainer, TileLayer, Marker, Popup, useMap } = mapComponents;
-
-  // Component to fit bounds
-  const FitBounds = ({ places }: { places: Place[] }) => {
-    const map = useMap();
+    initMap();
     
-    useEffect(() => {
-      if (places.length > 0) {
-        const bounds = leaflet.latLngBounds(
-          places.map((p: Place) => [p.latitude, p.longitude] as [number, number])
-        );
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+    // Cleanup
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
       }
-    }, [places, map]);
-    
-    return null;
-  };
+    };
+  }, [places]);
 
   return (
-    <div className="rounded-2xl overflow-hidden shadow-soft bg-white">
-      <MapContainer
-        center={cyprusCenter}
-        zoom={9}
+    <div className="rounded-2xl overflow-hidden shadow-soft bg-white relative">
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
+          <DogLoader size="md" />
+        </div>
+      )}
+      <div 
+        ref={mapRef} 
         style={{ height: "500px", width: "100%" }}
         className="z-0"
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <FitBounds places={places} />
-        
-        {places.map((place) => {
-          const config = getPlaceConfig(place.place_type);
-          
-          return (
-            <Marker key={place.id} position={[place.latitude, place.longitude]}>
-              <Popup className="place-popup" maxWidth={300}>
-                <div className="p-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-foreground text-sm">
-                      {place.name}
-                    </h3>
-                    {place.verified && (
-                      <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
-                        Verified
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-1 flex-wrap mb-2">
-                    <Badge variant="outline" className="text-xs">
-                      {config.label}
-                    </Badge>
-                    {place.is_24_hour && (
-                      <Badge variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
-                        <Clock className="w-3 h-3 mr-1" />
-                        24h
-                      </Badge>
-                    )}
-                    {place.is_emergency && (
-                      <Badge variant="outline" className="text-xs bg-red-50 text-red-600 border-red-200">
-                        <AlertCircle className="w-3 h-3 mr-1" />
-                        Emergency
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  {place.description && (
-                    <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                      {place.description}
-                    </p>
-                  )}
-                  
-                  {(place.address || place.city) && (
-                    <div className="flex items-start gap-1 text-xs text-muted-foreground mb-2">
-                      <MapPin className="w-3 h-3 flex-shrink-0 mt-0.5" />
-                      <span className="line-clamp-2">
-                        {[place.address, place.city].filter(Boolean).join(", ")}
-                      </span>
-                    </div>
-                  )}
-                  
-                  {place.rating && (
-                    <div className="flex items-center gap-1 text-xs mb-2">
-                      <span className="text-yellow-500">★</span>
-                      <span>{place.rating.toFixed(1)}</span>
-                    </div>
-                  )}
-                  
-                  <div className="flex gap-1 pt-2 border-t">
-                    {place.phone && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-7 text-xs"
-                        onClick={() => window.open(`tel:${place.phone}`, "_self")}
-                      >
-                        <Phone className="w-3 h-3 mr-1" />
-                        Call
-                      </Button>
-                    )}
-                    {place.website && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 h-7 text-xs"
-                        onClick={() => window.open(place.website!, "_blank")}
-                      >
-                        <Globe className="w-3 h-3 mr-1" />
-                        Website
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+      />
     </div>
   );
 };
