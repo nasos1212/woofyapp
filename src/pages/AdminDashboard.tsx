@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,7 @@ import ExpiringMembershipsPanel from "@/components/admin/ExpiringMembershipsPane
 import EngagementAnalytics from "@/components/admin/EngagementAnalytics";
 import UserManagement from "@/components/admin/UserManagement";
 import SupportManager from "@/components/admin/SupportManager";
+import PlacesManager from "@/components/admin/PlacesManager";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -110,6 +111,10 @@ const AdminDashboard = () => {
               <Gift className="w-4 h-4" />
               Gifts
             </TabsTrigger>
+            <TabsTrigger value="places" className="gap-1">
+              <MapPin className="w-4 h-4" />
+              Places
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="support">
@@ -130,6 +135,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="gifts">
             <GiftMemberships />
+          </TabsContent>
+
+          <TabsContent value="places">
+            <PlacesManager />
           </TabsContent>
         </Tabs>
       </div>
