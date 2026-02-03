@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
+import SuggestPlaceDialog from "@/components/SuggestPlaceDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
@@ -66,25 +67,26 @@ const PetFriendlyPlaces = () => {
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
 
+  const fetchPlaces = async () => {
+    try {
+      setIsLoading(true);
+      let query = supabase
+        .from("pet_friendly_places")
+        .select("*")
+        .order("name", { ascending: true });
+
+      const { data, error } = await query;
+
+      if (error) throw error;
+      setPlaces(data || []);
+    } catch (error) {
+      console.error("Error fetching places:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        let query = supabase
-          .from("pet_friendly_places")
-          .select("*")
-          .order("name", { ascending: true });
-
-        const { data, error } = await query;
-
-        if (error) throw error;
-        setPlaces(data || []);
-      } catch (error) {
-        console.error("Error fetching places:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchPlaces();
   }, []);
 
@@ -139,18 +141,21 @@ const PetFriendlyPlaces = () => {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Dashboard
             </Link>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
-                <MapPin className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
+                    Pet-Friendly Places
+                  </h1>
+                  <p className="text-muted-foreground">
+                    Discover where your furry friend is welcome in Cyprus
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                  Pet-Friendly Places
-                </h1>
-                <p className="text-muted-foreground">
-                  Discover where your furry friend is welcome in Cyprus
-                </p>
-              </div>
+              <SuggestPlaceDialog onPlaceAdded={fetchPlaces} />
             </div>
           </div>
 
