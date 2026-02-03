@@ -643,6 +643,15 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">Report lost or found pets</p>
                     </div>
                   </Link>
+                  <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
+                    <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Pet-Friendly Places</p>
+                      <p className="text-xs text-muted-foreground">Beaches, cafés, hotels & more</p>
+                    </div>
+                  </Link>
                   <Link to="/member/history" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                       <History className="w-5 h-5 text-green-600" />
