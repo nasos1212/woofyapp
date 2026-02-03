@@ -2,15 +2,26 @@ import { useState, useEffect } from "react";
 import { 
   MapPin, 
   Check, 
-  X, 
   ExternalLink, 
   Phone,
   Trash2,
-  RefreshCw
+  RefreshCw,
+  Pencil,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -19,6 +30,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,8 +50,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 
 interface Place {
   id: string;
@@ -44,7 +65,26 @@ interface Place {
   website: string | null;
   description: string | null;
   verified: boolean | null;
+  latitude: number;
+  longitude: number;
+  is_24_hour: boolean | null;
+  is_emergency: boolean | null;
   created_at: string;
+}
+
+interface PlaceFormData {
+  name: string;
+  place_type: string;
+  city: string;
+  address: string;
+  phone: string;
+  website: string;
+  description: string;
+  latitude: string;
+  longitude: string;
+  is_24_hour: boolean;
+  is_emergency: boolean;
+  verified: boolean;
 }
 
 const placeTypeLabels: Record<string, string> = {
@@ -56,11 +96,30 @@ const placeTypeLabels: Record<string, string> = {
   other: "Other",
 };
 
+const defaultFormData: PlaceFormData = {
+  name: "",
+  place_type: "cafe",
+  city: "",
+  address: "",
+  phone: "",
+  website: "",
+  description: "",
+  latitude: "35.0",
+  longitude: "33.0",
+  is_24_hour: false,
+  is_emergency: false,
+  verified: true,
+};
+
 const PlacesManager = () => {
   const { toast } = useToast();
   const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
+  const [formData, setFormData] = useState<PlaceFormData>(defaultFormData);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchPlaces = async () => {
     setIsLoading(true);
@@ -95,6 +154,99 @@ const PlacesManager = () => {
     fetchPlaces();
   }, [filter]);
 
+  const handleEdit = (place: Place) => {
+    setEditingPlace(place);
+    setFormData({
+      name: place.name,
+      place_type: place.place_type,
+      city: place.city || "",
+      address: place.address || "",
+      phone: place.phone || "",
+      website: place.website || "",
+      description: place.description || "",
+      latitude: place.latitude?.toString() || "35.0",
+      longitude: place.longitude?.toString() || "33.0",
+      is_24_hour: place.is_24_hour || false,
+      is_emergency: place.is_emergency || false,
+      verified: place.verified || false,
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleAddNew = () => {
+    setEditingPlace(null);
+    setFormData(defaultFormData);
+    setEditDialogOpen(true);
+  };
+
+  const handleSave = async () => {
+    if (!formData.name.trim()) {
+      toast({
+        title: "Error",
+        description: "Name is required.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const placeData = {
+        name: formData.name.trim(),
+        place_type: formData.place_type,
+        city: formData.city || null,
+        address: formData.address || null,
+        phone: formData.phone || null,
+        website: formData.website || null,
+        description: formData.description || null,
+        latitude: parseFloat(formData.latitude) || 35.0,
+        longitude: parseFloat(formData.longitude) || 33.0,
+        is_24_hour: formData.is_24_hour,
+        is_emergency: formData.is_emergency,
+        verified: formData.verified,
+      };
+
+      if (editingPlace) {
+        // Update existing
+        const { error } = await supabase
+          .from("pet_friendly_places")
+          .update(placeData)
+          .eq("id", editingPlace.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Place updated ✓",
+          description: `"${formData.name}" has been updated.`,
+        });
+      } else {
+        // Create new
+        const { error } = await supabase
+          .from("pet_friendly_places")
+          .insert(placeData);
+
+        if (error) throw error;
+
+        toast({
+          title: "Place added ✓",
+          description: `"${formData.name}" has been created.`,
+        });
+      }
+
+      setEditDialogOpen(false);
+      fetchPlaces();
+    } catch (error) {
+      console.error("Error saving place:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save place.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleVerify = async (placeId: string) => {
     try {
       const { error } = await supabase
@@ -121,8 +273,6 @@ const PlacesManager = () => {
 
   const handleReject = async (placeId: string) => {
     try {
-      // For now, we'll just delete rejected places
-      // You could also add a "rejected" status if you want to keep them
       const { error } = await supabase
         .from("pet_friendly_places")
         .delete()
@@ -148,154 +298,338 @@ const PlacesManager = () => {
   const pendingCount = places.filter(p => !p.verified).length;
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="w-5 h-5" />
-            Pet-Friendly Places
-          </CardTitle>
-          <Button variant="outline" size="sm" onClick={fetchPlaces}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
-          <TabsList className="mb-4">
-            <TabsTrigger value="pending" className="gap-2">
-              Pending Review
-              {pendingCount > 0 && (
-                <Badge variant="destructive" className="ml-1">
-                  {pendingCount}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="verified">Verified</TabsTrigger>
-            <TabsTrigger value="all">All</TabsTrigger>
-          </TabsList>
+    <>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Pet-Friendly Places
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={fetchPlaces}>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+              <Button size="sm" onClick={handleAddNew}>
+                <Plus className="w-4 h-4 mr-2" />
+                Add Place
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
+            <TabsList className="mb-4">
+              <TabsTrigger value="pending" className="gap-2">
+                Pending Review
+                {pendingCount > 0 && (
+                  <Badge variant="destructive" className="ml-1">
+                    {pendingCount}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="verified">Verified</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+            </TabsList>
 
-          <TabsContent value={filter}>
-            {isLoading ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Loading...
-              </div>
-            ) : places.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                <p>No places to show</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>City</TableHead>
-                      <TableHead>Contact</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {places.map((place) => (
-                      <TableRow key={place.id}>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{place.name}</p>
-                            {place.address && (
-                              <p className="text-xs text-muted-foreground truncate max-w-[200px]">
-                                {place.address}
-                              </p>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {placeTypeLabels[place.place_type] || place.place_type}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{place.city || "-"}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            {place.phone && (
-                              <a href={`tel:${place.phone}`} className="text-muted-foreground hover:text-foreground">
-                                <Phone className="w-4 h-4" />
-                              </a>
-                            )}
-                            {place.website && (
-                              <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
-                            )}
-                            {!place.phone && !place.website && "-"}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {place.verified ? (
-                            <Badge className="bg-green-100 text-green-700">
-                              Verified
+            <TabsContent value={filter}>
+              {isLoading ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Loading...
+                </div>
+              ) : places.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>No places to show</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>City</TableHead>
+                        <TableHead>Contact</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {places.map((place) => (
+                        <TableRow key={place.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{place.name}</p>
+                              {place.address && (
+                                <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                                  {place.address}
+                                </p>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">
+                              {placeTypeLabels[place.place_type] || place.place_type}
                             </Badge>
-                          ) : (
-                            <Badge variant="secondary">
-                              Pending
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            {!place.verified && (
+                          </TableCell>
+                          <TableCell>{place.city || "-"}</TableCell>
+                          <TableCell>
+                            <div className="flex gap-2">
+                              {place.phone && (
+                                <a href={`tel:${place.phone}`} className="text-muted-foreground hover:text-foreground">
+                                  <Phone className="w-4 h-4" />
+                                </a>
+                              )}
+                              {place.website && (
+                                <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+                                  <ExternalLink className="w-4 h-4" />
+                                </a>
+                              )}
+                              {!place.phone && !place.website && "-"}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {place.verified ? (
+                              <Badge className="bg-green-100 text-green-700">
+                                Verified
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary">
+                                Pending
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                onClick={() => handleVerify(place.id)}
+                                onClick={() => handleEdit(place)}
                               >
-                                <Check className="w-4 h-4" />
+                                <Pencil className="w-4 h-4" />
                               </Button>
-                            )}
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
+                              {!place.verified && (
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                  onClick={() => handleVerify(place.id)}
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Check className="w-4 h-4" />
                                 </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Delete this place?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This will permanently remove "{place.name}" from the database.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleReject(place.id)}
-                                    className="bg-red-600 hover:bg-red-700"
+                              )}
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                   >
-                                    Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete this place?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This will permanently remove "{place.name}" from the database.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleReject(place.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Edit/Add Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingPlace ? "Edit Place" : "Add New Place"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingPlace 
+                ? "Update the details below." 
+                : "Fill in the details to add a new pet-friendly place."}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name *</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g., Paws & Coffee"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="type">Type</Label>
+                <Select 
+                  value={formData.place_type} 
+                  onValueChange={(v) => setFormData({ ...formData, place_type: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(placeTypeLabels).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>{label}</SelectItem>
                     ))}
-                  </TableBody>
-                </Table>
+                  </SelectContent>
+                </Select>
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </CardContent>
-    </Card>
+
+              <div className="grid gap-2">
+                <Label htmlFor="city">City</Label>
+                <Select 
+                  value={formData.city} 
+                  onValueChange={(v) => setFormData({ ...formData, city: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cyprusCityNames.map((city) => (
+                      <SelectItem key={city} value={city}>{city}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="address">Address</Label>
+              <Input
+                id="address"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                placeholder="Street address"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder="+357..."
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="website">Website</Label>
+                <Input
+                  id="website"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  placeholder="https://..."
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Brief description..."
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="latitude">Latitude</Label>
+                <Input
+                  id="latitude"
+                  type="number"
+                  step="0.0001"
+                  value={formData.latitude}
+                  onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="longitude">Longitude</Label>
+                <Input
+                  id="longitude"
+                  type="number"
+                  step="0.0001"
+                  value={formData.longitude}
+                  onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 pt-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="verified">Verified</Label>
+                <Switch
+                  id="verified"
+                  checked={formData.verified}
+                  onCheckedChange={(checked) => setFormData({ ...formData, verified: checked })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="is_24_hour">Open 24 Hours</Label>
+                <Switch
+                  id="is_24_hour"
+                  checked={formData.is_24_hour}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_24_hour: checked })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="is_emergency">Emergency Service</Label>
+                <Switch
+                  id="is_emergency"
+                  checked={formData.is_emergency}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_emergency: checked })}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving}>
+              {isSaving ? "Saving..." : editingPlace ? "Update" : "Create"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
