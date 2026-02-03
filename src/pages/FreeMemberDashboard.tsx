@@ -12,9 +12,9 @@ import {
   ArrowRight,
   MessageSquarePlus,
   Crown,
-  
   HelpCircle,
-  Bookmark
+  Bookmark,
+  MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -212,12 +212,12 @@ const FreeMemberDashboard = () => {
             </Card>
           </div>
 
-          {/* Lost Pet Alerts & Shelters Row */}
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
+          {/* Feature Cards Row */}
+          <div className="grid md:grid-cols-3 gap-4 mb-8">
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
               <CardContent className="p-5">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
                       <AlertTriangle className="w-5 h-5 text-amber-600" />
@@ -225,16 +225,43 @@ const FreeMemberDashboard = () => {
                     <div>
                       <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
                       <p className="text-sm text-muted-foreground">
-                        Help reunite pets with their families
+                        Help reunite pets with families
                       </p>
                     </div>
                   </div>
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
-                    className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2 w-full"
                   >
                     View Alerts
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pet-Friendly Places */}
+            <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200/50 hover:shadow-md transition-all">
+              <CardContent className="p-5">
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Pet-Friendly Places</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Discover where pets are welcome
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate("/member/pet-friendly-places")}
+                    className="border-teal-300 text-teal-700 hover:bg-teal-50 gap-2 w-full"
+                  >
+                    Explore Places
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -244,7 +271,7 @@ const FreeMemberDashboard = () => {
             {/* Shelters */}
             <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all">
               <CardContent className="p-5">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-col gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
                       <Heart className="w-5 h-5 text-rose-600" />
@@ -259,7 +286,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/shelters")}
-                    className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2"
+                    className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2 w-full"
                   >
                     View Shelters
                     <ArrowRight className="w-4 h-4" />
