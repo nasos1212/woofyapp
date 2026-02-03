@@ -178,11 +178,11 @@ const PetFriendlyPlaces = () => {
                 onValueChange={(value) => value && setViewMode(value as "list" | "map")}
                 className="bg-muted rounded-lg p-1"
               >
-                <ToggleGroupItem value="list" aria-label="List view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm">
+                <ToggleGroupItem value="list" aria-label="List view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm data-[state=on]:text-foreground">
                   <List className="w-4 h-4 mr-2" />
                   List
                 </ToggleGroupItem>
-                <ToggleGroupItem value="map" aria-label="Map view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm">
+                <ToggleGroupItem value="map" aria-label="Map view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm data-[state=on]:text-foreground">
                   <Map className="w-4 h-4 mr-2" />
                   Map
                 </ToggleGroupItem>
