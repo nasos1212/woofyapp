@@ -87,8 +87,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         description: formData.description || null,
         added_by_user_id: user.id,
         verified: false,
-        latitude: 0, // Default - can be updated by admin
-        longitude: 0, // Default - can be updated by admin
+        latitude: 35.1264, // Cyprus center - can be updated by admin
+        longitude: 33.4299, // Cyprus center - can be updated by admin
       });
 
       if (error) throw error;
