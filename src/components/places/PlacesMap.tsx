@@ -1,18 +1,8 @@
-import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useEffect, useState, useRef } from "react";
 import { MapPin, Phone, Globe, Clock, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-// Fix for default marker icons in Leaflet with bundlers
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
+import DogLoader from "@/components/DogLoader";
 
 interface Place {
   id: string;
@@ -36,28 +26,74 @@ interface PlacesMapProps {
   placeTypeConfig: Record<string, { label: string; color: string; bgColor: string }>;
 }
 
-// Component to fit bounds when places change
-const FitBounds = ({ places }: { places: Place[] }) => {
-  const map = useMap();
-  
-  useEffect(() => {
-    if (places.length > 0) {
-      const bounds = L.latLngBounds(
-        places.map(p => [p.latitude, p.longitude] as [number, number])
-      );
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
-    }
-  }, [places, map]);
-  
-  return null;
-};
-
 const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [mapComponents, setMapComponents] = useState<any>(null);
+  const [leaflet, setLeaflet] = useState<any>(null);
+  
   // Cyprus center coordinates
   const cyprusCenter: [number, number] = [35.1264, 33.4299];
-  
+
+  useEffect(() => {
+    // Dynamically import Leaflet and react-leaflet
+    const loadMapDependencies = async () => {
+      try {
+        // Import CSS
+        await import("leaflet/dist/leaflet.css");
+        
+        // Import Leaflet
+        const L = await import("leaflet");
+        
+        // Fix for default marker icons
+        delete (L.Icon.Default.prototype as any)._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+          iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+          shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+        });
+        
+        // Import react-leaflet components
+        const reactLeaflet = await import("react-leaflet");
+        
+        setLeaflet(L);
+        setMapComponents(reactLeaflet);
+        setIsLoaded(true);
+      } catch (error) {
+        console.error("Failed to load map dependencies:", error);
+      }
+    };
+
+    loadMapDependencies();
+  }, []);
+
   const getPlaceConfig = (type: string) => {
     return placeTypeConfig[type] || { label: "Other", color: "text-gray-600", bgColor: "bg-gray-100" };
+  };
+
+  if (!isLoaded || !mapComponents || !leaflet) {
+    return (
+      <div className="flex items-center justify-center py-12 bg-white rounded-2xl shadow-soft h-[500px]">
+        <DogLoader size="md" />
+      </div>
+    );
+  }
+
+  const { MapContainer, TileLayer, Marker, Popup, useMap } = mapComponents;
+
+  // Component to fit bounds
+  const FitBounds = ({ places }: { places: Place[] }) => {
+    const map = useMap();
+    
+    useEffect(() => {
+      if (places.length > 0) {
+        const bounds = leaflet.latLngBounds(
+          places.map((p: Place) => [p.latitude, p.longitude] as [number, number])
+        );
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+      }
+    }, [places, map]);
+    
+    return null;
   };
 
   return (
