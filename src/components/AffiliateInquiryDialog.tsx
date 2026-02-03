@@ -46,6 +46,24 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
     setIsSubmitting(true);
 
     try {
+      // Get current user if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      // Store in support_conversations for admin tracking
+      const { error: dbError } = await supabase
+        .from("support_conversations")
+        .insert({
+          user_id: user?.id || "00000000-0000-0000-0000-000000000000",
+          subject: `Affiliate Inquiry: ${formData.fullName}`,
+          category: "affiliate",
+          priority: "normal",
+          status: "open",
+        });
+
+      if (dbError) {
+        console.error("Error storing affiliate inquiry:", dbError);
+      }
+
       // Send notification email
       await supabase.functions.invoke("send-support-notification", {
         body: {
