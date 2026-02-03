@@ -51,7 +51,52 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     phone: "",
     website: "",
     description: "",
+    google_maps_link: "",
   });
+
+  // Extract coordinates from Google Maps link
+  const extractCoordinates = (url: string): { lat: number; lng: number } | null => {
+    try {
+      // Pattern 1: @lat,lng format (e.g., @35.1234,33.4567)
+      const atPattern = /@(-?\d+\.?\d*),(-?\d+\.?\d*)/;
+      const atMatch = url.match(atPattern);
+      if (atMatch) {
+        return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
+      }
+
+      // Pattern 2: ?q=lat,lng format
+      const qPattern = /[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)/;
+      const qMatch = url.match(qPattern);
+      if (qMatch) {
+        return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
+      }
+
+      // Pattern 3: /place/lat,lng format
+      const placePattern = /\/place\/(-?\d+\.?\d*),(-?\d+\.?\d*)/;
+      const placeMatch = url.match(placePattern);
+      if (placeMatch) {
+        return { lat: parseFloat(placeMatch[1]), lng: parseFloat(placeMatch[2]) };
+      }
+
+      // Pattern 4: ll=lat,lng format
+      const llPattern = /[?&]ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/;
+      const llMatch = url.match(llPattern);
+      if (llMatch) {
+        return { lat: parseFloat(llMatch[1]), lng: parseFloat(llMatch[2]) };
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const isValidMapsLink = (url: string): boolean => {
+    return url.includes("google.com/maps") || 
+           url.includes("goo.gl/maps") || 
+           url.includes("maps.google.com") ||
+           url.includes("maps.apple.com");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,14 +110,28 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
       return;
     }
 
-    if (!formData.name || !formData.place_type || !formData.city) {
+    if (!formData.name || !formData.place_type || !formData.city || !formData.google_maps_link) {
       toast({
         title: "Missing information",
-        description: "Please fill in the required fields (name, type, city).",
+        description: "Please fill in the required fields (name, type, city, map link).",
         variant: "destructive",
       });
       return;
     }
+
+    if (!isValidMapsLink(formData.google_maps_link)) {
+      toast({
+        title: "Invalid map link",
+        description: "Please paste a valid Google Maps or Apple Maps link.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Try to extract coordinates from the link
+    const coords = extractCoordinates(formData.google_maps_link);
+    const latitude = coords?.lat ?? 35.1264; // Default to Cyprus center
+    const longitude = coords?.lng ?? 33.4299;
 
     setIsSubmitting(true);
 
@@ -87,8 +146,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         description: formData.description || null,
         added_by_user_id: user.id,
         verified: false,
-        latitude: 35.1264, // Cyprus center - can be updated by admin
-        longitude: 33.4299, // Cyprus center - can be updated by admin
+        latitude,
+        longitude,
       });
 
       if (error) throw error;
@@ -106,6 +165,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         phone: "",
         website: "",
         description: "",
+        google_maps_link: "",
       });
       setOpen(false);
       onPlaceAdded?.();
@@ -192,6 +252,22 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Google Maps Link */}
+          <div className="space-y-2">
+            <Label htmlFor="google_maps_link">Google Maps Link *</Label>
+            <Input
+              id="google_maps_link"
+              type="url"
+              placeholder="Paste Google Maps or Apple Maps link..."
+              value={formData.google_maps_link}
+              onChange={(e) => setFormData({ ...formData, google_maps_link: e.target.value })}
+              required
+            />
+            <p className="text-xs text-muted-foreground">
+              Open the place in Google Maps, click "Share" and paste the link here
+            </p>
           </div>
 
           {/* Address */}
