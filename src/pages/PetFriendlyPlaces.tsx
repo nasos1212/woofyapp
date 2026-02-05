@@ -252,7 +252,7 @@ const PetFriendlyPlaces = () => {
                 Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"}
               </p>
               
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {filteredPlaces.map((place) => {
                   const config = getPlaceConfig(place.place_type);
                   const IconComponent = config.icon;
@@ -260,37 +260,28 @@ const PetFriendlyPlaces = () => {
                   return (
                     <div
                       key={place.id}
-                      className="bg-white rounded-2xl p-5 shadow-soft hover:shadow-md transition-shadow"
+                      className="bg-white rounded-xl p-3 shadow-soft hover:shadow-md transition-shadow"
                     >
                       {/* Header */}
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className={`w-12 h-12 ${config.bgColor} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                          <IconComponent className={`w-6 h-6 ${config.color}`} />
+                      <div className="flex items-start gap-2 mb-2">
+                        <div className={`w-9 h-9 ${config.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                          <IconComponent className={`w-4 h-4 ${config.color}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-foreground truncate">
-                              {place.name}
-                            </h3>
-                            {place.verified && (
-                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 flex-shrink-0">
-                                Verified
-                              </Badge>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="outline" className="text-xs">
+                          <h3 className="font-semibold text-sm text-foreground truncate">
+                            {place.name}
+                          </h3>
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                               {config.label}
                             </Badge>
                             {place.is_24_hour && (
-                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-600 border-blue-200">
-                                <Clock className="w-3 h-3 mr-1" />
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-50 text-blue-600 border-blue-200">
                                 24h
                               </Badge>
                             )}
                             {place.is_emergency && (
-                              <Badge variant="outline" className="text-xs bg-red-50 text-red-600 border-red-200">
-                                <AlertCircle className="w-3 h-3 mr-1" />
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-red-50 text-red-600 border-red-200">
                                 Emergency
                               </Badge>
                             )}
@@ -298,30 +289,23 @@ const PetFriendlyPlaces = () => {
                         </div>
                       </div>
 
-                      {/* Description */}
-                      {place.description && (
-                        <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                          {place.description}
-                        </p>
-                      )}
-
                       {/* Location */}
                       {(place.address || place.area || place.city) && (
                         <a 
                           href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-start gap-2 text-sm text-muted-foreground mb-3 hover:text-primary transition-colors group"
+                          className="flex items-start gap-1.5 text-xs text-muted-foreground mb-2 hover:text-primary transition-colors group"
                         >
-                          <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 group-hover:text-primary" />
-                          <span className="line-clamp-2 group-hover:underline">
-                            {[place.address, place.area, place.city].filter(Boolean).join(", ")}
+                          <MapPin className="w-3 h-3 flex-shrink-0 mt-0.5" />
+                          <span className="line-clamp-1 group-hover:underline">
+                            {[place.area, place.city].filter(Boolean).join(", ")}
                           </span>
                         </a>
                       )}
 
                       {/* Rating */}
-                      <div className="mb-3">
+                      <div className="mb-2">
                         <PlaceRating 
                           placeId={place.id} 
                           currentRating={place.rating} 
@@ -331,28 +315,27 @@ const PetFriendlyPlaces = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-2 pt-3 border-t flex-wrap">
-                        {/* Google Maps Button - always show */}
+                      <div className="flex gap-1.5 pt-2 border-t">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1"
+                          className="flex-1 h-7 text-xs px-2"
                           onClick={() => window.open(
                             place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`, 
                             "_blank"
                           )}
                         >
-                          <Navigation className="w-4 h-4 mr-1" />
-                          Directions
+                          <Navigation className="w-3 h-3 mr-1" />
+                          Go
                         </Button>
                         {place.phone && (
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1"
+                            className="flex-1 h-7 text-xs px-2"
                             onClick={() => window.open(`tel:${place.phone}`, "_self")}
                           >
-                            <Phone className="w-4 h-4 mr-1" />
+                            <Phone className="w-3 h-3 mr-1" />
                             Call
                           </Button>
                         )}
@@ -360,11 +343,10 @@ const PetFriendlyPlaces = () => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="flex-1"
+                            className="flex-1 h-7 text-xs px-2"
                             onClick={() => window.open(place.website!, "_blank")}
                           >
-                            <Globe className="w-4 h-4 mr-1" />
-                            Website
+                            <Globe className="w-3 h-3" />
                           </Button>
                         )}
                       </div>
