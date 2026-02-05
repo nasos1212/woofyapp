@@ -1069,7 +1069,7 @@ const BusinessDashboard = () => {
                     Recent Redemptions
                   </h3>
                   <Link 
-                    to="/business/analytics" 
+                    to="/business/redemption-history" 
                     className="text-sm text-primary hover:underline"
                   >
                     View All →
