@@ -35,9 +35,10 @@ interface Message {
 interface SupportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onMessagesRead?: () => void;
 }
 
-const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
+const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [view, setView] = useState<"list" | "new" | "conversation">("list");
@@ -133,6 +134,9 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
       .from("support_messages")
       .update({ is_read: true })
       .eq("id", messageId);
+    
+    // Notify parent to refresh unread count
+    onMessagesRead?.();
   };
 
   const createConversation = async () => {
