@@ -1480,6 +1480,7 @@ export type Database = {
           city: string | null
           created_at: string
           description: string | null
+          google_maps_url: string | null
           id: string
           is_24_hour: boolean | null
           is_emergency: boolean | null
@@ -1501,6 +1502,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          google_maps_url?: string | null
           id?: string
           is_24_hour?: boolean | null
           is_emergency?: boolean | null
@@ -1522,6 +1524,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          google_maps_url?: string | null
           id?: string
           is_24_hour?: boolean | null
           is_emergency?: boolean | null

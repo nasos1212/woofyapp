@@ -52,6 +52,7 @@ interface PetFriendlyPlace {
   verified: boolean | null;
   latitude: number;
   longitude: number;
+  google_maps_url: string | null;
 }
 
 const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
@@ -307,7 +308,7 @@ const PetFriendlyPlaces = () => {
                       {/* Location */}
                       {(place.address || place.area || place.city) && (
                         <a 
-                          href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+                          href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-start gap-2 text-sm text-muted-foreground mb-3 hover:text-primary transition-colors group"
@@ -336,7 +337,10 @@ const PetFriendlyPlaces = () => {
                           variant="outline"
                           size="sm"
                           className="flex-1"
-                          onClick={() => window.open(`https://www.google.com/maps?q=${place.latitude},${place.longitude}`, "_blank")}
+                          onClick={() => window.open(
+                            place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`, 
+                            "_blank"
+                          )}
                         >
                           <Navigation className="w-4 h-4 mr-1" />
                           Directions
