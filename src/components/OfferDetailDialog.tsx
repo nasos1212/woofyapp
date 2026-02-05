@@ -169,7 +169,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
             </div>
             <div className="flex-1">
               <Link
-                to={`/business/${offer.business.id}`}
+                to={`/business/${offer.business.id}?from=offers`}
                 className="font-semibold text-foreground hover:text-primary hover:underline transition-colors flex items-center gap-1"
                 onClick={onClose}
               >
@@ -315,7 +315,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
 
           {/* View Business Button */}
           <Link
-            to={`/business/${offer.business.id}`}
+            to={`/business/${offer.business.id}?from=offers`}
             onClick={onClose}
           >
             <Button className="w-full" variant={hasMembership ? "default" : "outline"}>
