@@ -22,7 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { cyprusCities, cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
+import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
 
 const placeTypes = [
   { value: "beach", label: "Beach" },
@@ -133,10 +133,11 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
       return;
     }
 
-    // Try to extract coordinates from the link
+    // Try to extract coordinates from the link, fallback to city/area coordinates
     const coords = extractCoordinates(formData.google_maps_link);
-    const latitude = coords?.lat ?? 35.1264; // Default to Cyprus center
-    const longitude = coords?.lng ?? 33.4299;
+    const fallbackCoords = getCoordinatesForLocation(formData.city, formData.area);
+    const latitude = coords?.lat ?? fallbackCoords.lat;
+    const longitude = coords?.lng ?? fallbackCoords.lng;
 
     setIsSubmitting(true);
 
