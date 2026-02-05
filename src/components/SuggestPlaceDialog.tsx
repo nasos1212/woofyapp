@@ -58,42 +58,9 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
   // Get available areas based on selected city
   const availableAreas = formData.city ? getAreasForCity(formData.city) : [];
 
-  // Extract coordinates from Google Maps link
-  const extractCoordinates = (url: string): { lat: number; lng: number } | null => {
-    try {
-      // Pattern 1: @lat,lng format (e.g., @35.1234,33.4567)
-      const atPattern = /@(-?\d+\.?\d*),(-?\d+\.?\d*)/;
-      const atMatch = url.match(atPattern);
-      if (atMatch) {
-        return { lat: parseFloat(atMatch[1]), lng: parseFloat(atMatch[2]) };
-      }
-
-      // Pattern 2: ?q=lat,lng format
-      const qPattern = /[?&]q=(-?\d+\.?\d*),(-?\d+\.?\d*)/;
-      const qMatch = url.match(qPattern);
-      if (qMatch) {
-        return { lat: parseFloat(qMatch[1]), lng: parseFloat(qMatch[2]) };
-      }
-
-      // Pattern 3: /place/lat,lng format
-      const placePattern = /\/place\/(-?\d+\.?\d*),(-?\d+\.?\d*)/;
-      const placeMatch = url.match(placePattern);
-      if (placeMatch) {
-        return { lat: parseFloat(placeMatch[1]), lng: parseFloat(placeMatch[2]) };
-      }
-
-      // Pattern 4: ll=lat,lng format
-      const llPattern = /[?&]ll=(-?\d+\.?\d*),(-?\d+\.?\d*)/;
-      const llMatch = url.match(llPattern);
-      if (llMatch) {
-        return { lat: parseFloat(llMatch[1]), lng: parseFloat(llMatch[2]) };
-      }
-
-      return null;
-    } catch {
-      return null;
-    }
-  };
+  // We don't extract coordinates from links as they can be inaccurate
+  // Instead, we store the google_maps_url and use it directly for navigation
+  // The coordinates are just fallback values based on city/area for database requirements
 
   const isValidMapsLink = (url: string): boolean => {
     return url.includes("google.com/maps") || 
@@ -134,11 +101,10 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
       return;
     }
 
-    // Try to extract coordinates from the link, fallback to city/area coordinates
-    const coords = extractCoordinates(formData.google_maps_link);
+    // Use city/area fallback coordinates for database (the actual navigation uses google_maps_url)
     const fallbackCoords = getCoordinatesForLocation(formData.city, formData.area);
-    const latitude = coords?.lat ?? fallbackCoords.lat;
-    const longitude = coords?.lng ?? fallbackCoords.lng;
+    const latitude = fallbackCoords.lat;
+    const longitude = fallbackCoords.lng;
 
     setIsSubmitting(true);
 
@@ -152,6 +118,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         phone: formData.phone || null,
         website: formData.website || null,
         description: formData.description || null,
+        google_maps_url: formData.google_maps_link,
         added_by_user_id: user.id,
         verified: false,
         latitude,
