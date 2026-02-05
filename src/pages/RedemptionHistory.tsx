@@ -402,7 +402,7 @@ const RedemptionHistory = () => {
                       className="w-full gap-2" 
                       onClick={() => {
                         setSelectedRedemption(null);
-                        navigate(`/business/${selectedRedemption.business?.id}`);
+                        navigate(`/business/${selectedRedemption.business?.id}?from=history`);
                       }}
                     >
                       <ExternalLink className="w-4 h-4" />

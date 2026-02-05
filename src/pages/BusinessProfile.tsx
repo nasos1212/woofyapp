@@ -373,10 +373,13 @@ export default function BusinessProfile() {
               variant="ghost"
               size="sm"
               onClick={() => {
-                if (window.history.length > 1) {
-                  navigate(-1);
-                } else {
+                const fromParam = searchParams.get("from");
+                if (fromParam === "history") {
+                  navigate("/member/history");
+                } else if (fromParam === "offers") {
                   navigate("/member/offers");
+                } else {
+                  navigate(-1);
                 }
               }}
               className="mb-4 gap-2"

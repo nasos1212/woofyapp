@@ -613,7 +613,7 @@ const MemberOffers = () => {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                             <Link 
-                              to={`/business/${offer.business.id}`}
+                              to={`/business/${offer.business.id}?from=offers`}
                               onClick={(e) => e.stopPropagation()}
                               className="font-medium text-foreground text-xs sm:text-sm hover:text-primary hover:underline transition-colors truncate"
                             >
