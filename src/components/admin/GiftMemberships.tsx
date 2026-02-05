@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { formatDate } from "@/lib/utils";
 
 interface PromoMembership {
   id: string;
@@ -305,7 +306,7 @@ const InfluencerMemberships = () => {
           user_id: editingMembership.user_id,
           type: "gift_membership_updated",
           title: "🎁 Your membership was updated!",
-          message: `Your gift membership has been ${changes.join(" and ")}. New expiry: ${newExpiryDate.toLocaleDateString()}.`,
+          message: `Your gift membership has been ${changes.join(" and ")}. New expiry: ${formatDate(newExpiryDate)}.`,
           data: { plan_type: editForm.plan_type, expires_at: newExpiryDate.toISOString() },
         });
       }
@@ -461,7 +462,7 @@ const InfluencerMemberships = () => {
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                       This user already has an active {getPlanLabel(existingMembership.plan_type)} membership 
-                      (expires {new Date(existingMembership.expires_at).toLocaleDateString()}).
+                      (expires {formatDate(new Date(existingMembership.expires_at))}).
                     </AlertDescription>
                   </Alert>
                 )}
@@ -576,7 +577,7 @@ const InfluencerMemberships = () => {
                     )}
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Expires: {new Date(pm.expires_at).toLocaleDateString()}
+                    Expires: {formatDate(new Date(pm.expires_at))}
                     {pm.notes && <span className="ml-2">• {pm.notes}</span>}
                   </div>
                 </div>
@@ -619,7 +620,7 @@ const InfluencerMemberships = () => {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-muted-foreground">Current Expiry:</span>
                   <span className={isExpired(editingMembership.expires_at) ? "text-red-400" : ""}>
-                    {new Date(editingMembership.expires_at).toLocaleDateString()}
+                    {formatDate(new Date(editingMembership.expires_at))}
                     {isExpired(editingMembership.expires_at) && " (Expired)"}
                   </span>
                 </div>
@@ -652,7 +653,7 @@ const InfluencerMemberships = () => {
                     New expiry: {(() => {
                       const newDate = new Date(editingMembership.expires_at);
                       newDate.setMonth(newDate.getMonth() + parseInt(editForm.extend_months));
-                      return newDate.toLocaleDateString();
+                      return formatDate(newDate);
                     })()}
                   </p>
                 )}

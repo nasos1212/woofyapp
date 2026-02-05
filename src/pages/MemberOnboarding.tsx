@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -341,7 +341,7 @@ const MemberOnboarding = () => {
                 </div>
                 <CardTitle className="font-display text-2xl">Welcome Back! 🐾</CardTitle>
                 <CardDescription className="text-base">
-                  Your membership expired on {new Date(existingMembership.expires_at).toLocaleDateString()}. 
+                  Your membership expired on {formatDate(new Date(existingMembership.expires_at))}. 
                   Reactivate now to continue enjoying exclusive discounts!
                 </CardDescription>
               </CardHeader>

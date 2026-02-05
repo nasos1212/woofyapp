@@ -20,6 +20,14 @@ const isValidUUID = (str: string): boolean => UUID_REGEX.test(str);
 const isValidMemberId = (str: string): boolean => 
   typeof str === 'string' && str.length > 0 && str.length <= MEMBER_ID_MAX_LENGTH;
 
+// Standard date format for the application: dd/MM/yyyy
+const formatDateStandard = (date: Date): string => {
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -185,7 +193,7 @@ serve(async (req) => {
           memberName: profile?.full_name || 'Member',
           petName: petNames,
           memberId: membership.member_number,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          expiryDate: formatDateStandard(new Date(membership.expires_at)),
           pendingBirthdayOffers: pendingBirthdayOffers || [],
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -208,7 +216,7 @@ serve(async (req) => {
           petName: petNames,
           memberId: membership.member_number,
           membershipId: membership.id,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          expiryDate: formatDateStandard(new Date(membership.expires_at)),
           pendingBirthdayOffers: pendingBirthdayOffers || [],
           availablePets: (pets || []).map(p => ({ id: p.id, name: p.pet_name })),
           totalPets: (pets || []).length,
@@ -293,7 +301,7 @@ serve(async (req) => {
             memberName: profile?.full_name || 'Member',
             petName: petNames,
             memberId: membership.member_number,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             offerTitle: offer?.title,
             message: `This offer is only for ${petTypeLabel}. You don't have any registered ${petTypeLabel}.`,
           }),
@@ -324,7 +332,7 @@ serve(async (req) => {
             petName: petNames,
             memberId: membership.member_number,
             membershipId: membership.id,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
             offerId: offerId,
             offerTitle: offer?.title,
@@ -355,7 +363,7 @@ serve(async (req) => {
             memberName: profile?.full_name || 'Member',
             petName: petNames,
             memberId: membership.member_number,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             offerTitle: offer?.title,
             message: frequencyMessage,
           }),
@@ -371,7 +379,7 @@ serve(async (req) => {
           petName: petNames,
           memberId: membership.member_number,
           membershipId: membership.id,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          expiryDate: formatDateStandard(new Date(membership.expires_at)),
           discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
           offerId: offerId,
           offerTitle: offer?.title,
@@ -402,7 +410,7 @@ serve(async (req) => {
             memberName: profile?.full_name || 'Member',
             petName: petNames,
             memberId: membership.member_number,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             offerTitle: offer?.title,
             message: `This offer is only for ${petTypeLabel}. You don't have any registered ${petTypeLabel}.`,
           }),
@@ -419,7 +427,7 @@ serve(async (req) => {
             petName: petNames,
             memberId: membership.member_number,
             membershipId: membership.id,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
             offerId: offerId,
             offerTitle: offer?.title,
@@ -458,7 +466,7 @@ serve(async (req) => {
             memberName: profile?.full_name || 'Member',
             petName: petNames,
             memberId: membership.member_number,
-            expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+            expiryDate: formatDateStandard(new Date(membership.expires_at)),
             offerTitle: offer?.title,
             message: frequencyMessage,
           }),
@@ -474,7 +482,7 @@ serve(async (req) => {
           petName: petNames,
           memberId: membership.member_number,
           membershipId: membership.id,
-          expiryDate: new Date(membership.expires_at).toLocaleDateString(),
+          expiryDate: formatDateStandard(new Date(membership.expires_at)),
           discount: offer ? `${offer.discount_value}${offer.discount_type === 'percentage' ? '%' : '€'} - ${offer.title}` : '',
           offerId: offerId,
           offerTitle: offer?.title,

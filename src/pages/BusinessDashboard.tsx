@@ -16,6 +16,7 @@ import BusinessHeader from "@/components/BusinessHeader";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import ContactPopover from "@/components/ContactPopover";
+import { formatDate } from "@/lib/utils";
 
 interface AvailablePet {
   id: string;
@@ -518,7 +519,7 @@ const BusinessDashboard = () => {
     if (diffMins < 60) return `${diffMins} mins ago`;
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours} hours ago`;
-    return date.toLocaleDateString();
+    return formatDate(date);
   };
 
   const handleQrScan = (result: { rawValue: string }[]) => {

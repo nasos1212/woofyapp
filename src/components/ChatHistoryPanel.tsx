@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Dog, Trash2, Pencil, Check, X, Plus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { formatDate as formatDateStandard } from "@/lib/utils";
 
 interface Pet {
   id: string;
@@ -117,7 +118,7 @@ const ChatHistoryPanel = ({
     if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays} days ago`;
     
-    return date.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    return formatDateStandard(date);
   };
 
   const totalSessions = chatSessions.length;
