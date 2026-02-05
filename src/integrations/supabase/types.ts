@@ -746,6 +746,7 @@ export type Database = {
           created_at: string
           helped_count: number | null
           id: string
+          is_anonymous: boolean
           is_featured: boolean | null
           is_pinned: boolean | null
           pet_id: string | null
@@ -764,6 +765,7 @@ export type Database = {
           created_at?: string
           helped_count?: number | null
           id?: string
+          is_anonymous?: boolean
           is_featured?: boolean | null
           is_pinned?: boolean | null
           pet_id?: string | null
@@ -782,6 +784,7 @@ export type Database = {
           created_at?: string
           helped_count?: number | null
           id?: string
+          is_anonymous?: boolean
           is_featured?: boolean | null
           is_pinned?: boolean | null
           pet_id?: string | null

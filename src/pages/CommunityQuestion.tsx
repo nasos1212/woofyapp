@@ -278,14 +278,22 @@ const CommunityQuestion = () => {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={question.author?.avatar_url || ''} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {question.author?.full_name?.charAt(0) || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
+                  {!question.is_anonymous ? (
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={question.author?.avatar_url || ''} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {question.author?.full_name?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <div className="h-12 w-12 flex items-center justify-center bg-muted rounded-full">
+                      <span className="text-muted-foreground text-lg">?</span>
+                    </div>
+                  )}
                   <div>
-                    <p className="font-medium">{question.author?.full_name || 'Anonymous'}</p>
+                    <p className="font-medium">
+                      {question.is_anonymous ? 'Anonymous' : (question.author?.full_name || 'Anonymous')}
+                    </p>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(new Date(question.created_at))} · {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
                     </p>
