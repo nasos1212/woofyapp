@@ -376,10 +376,9 @@ export default function BusinessProfile() {
                 const fromParam = searchParams.get("from");
                 if (fromParam === "history") {
                   navigate("/member/history");
-                } else if (fromParam === "offers") {
-                  navigate("/member/offers");
                 } else {
-                  navigate(-1);
+                  // Default to offers page for all other cases
+                  navigate("/member/offers");
                 }
               }}
               className="mb-4 gap-2"
