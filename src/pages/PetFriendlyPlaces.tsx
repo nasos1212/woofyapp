@@ -289,7 +289,13 @@ const PetFriendlyPlaces = () => {
                         </div>
                       </div>
 
-                      {/* Location */}
+                      {/* Description */}
+                      {place.description && (
+                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                          {place.description}
+                        </p>
+                      )}
+
                       {(place.address || place.area || place.city) && (
                         <a 
                           href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
