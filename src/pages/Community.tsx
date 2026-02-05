@@ -134,13 +134,20 @@ const Community = () => {
       >
         <CardContent className="p-3 sm:p-4">
           <div className="flex gap-3 sm:gap-4">
-            {/* Author Avatar - hidden on very small screens */}
-            <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 hidden xs:flex">
-              <AvatarImage src={question.author?.avatar_url || ''} />
-              <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                {question.author?.full_name?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            {/* Author Avatar - hidden on very small screens or if anonymous */}
+            {!question.is_anonymous && (
+              <Avatar className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 hidden xs:flex">
+                <AvatarImage src={question.author?.avatar_url || ''} />
+                <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                  {question.author?.full_name?.charAt(0) || 'U'}
+                </AvatarFallback>
+              </Avatar>
+            )}
+            {question.is_anonymous && (
+              <div className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 hidden xs:flex items-center justify-center bg-muted rounded-full">
+                <span className="text-muted-foreground text-sm">?</span>
+              </div>
+            )}
 
             <div className="flex-1 min-w-0">
               {/* Title and badges */}

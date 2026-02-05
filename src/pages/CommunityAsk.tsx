@@ -45,6 +45,7 @@ import {
   Send,
   Info,
   Dog,
+  EyeOff,
   Cat,
   ArrowLeft
 } from 'lucide-react';
@@ -78,6 +79,7 @@ const CommunityAsk = () => {
   const [breedOpen, setBreedOpen] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const playWarningSound = useCallback(() => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -189,7 +191,8 @@ const CommunityAsk = () => {
           animal_type: animalType,
           urgency,
           breed_tags: breedTags,
-          pet_id: selectedPetId || undefined
+          pet_id: selectedPetId || undefined,
+          is_anonymous: isAnonymous
         },
         photos
       );
@@ -460,6 +463,27 @@ const CommunityAsk = () => {
                       </label>
                     )}
                   </div>
+                </div>
+
+                {/* Anonymous Toggle */}
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center gap-3">
+                    <EyeOff className="w-5 h-5 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">Post anonymously</p>
+                      <p className="text-sm text-muted-foreground">
+                        Your name and avatar won't be shown to others
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    variant={isAnonymous ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setIsAnonymous(!isAnonymous)}
+                  >
+                    {isAnonymous ? 'On' : 'Off'}
+                  </Button>
                 </div>
 
                 {/* Tips */}

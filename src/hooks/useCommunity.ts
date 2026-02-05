@@ -24,6 +24,7 @@ export interface Question {
   status: 'open' | 'answered' | 'resolved' | 'closed';
   is_pinned: boolean;
   is_featured: boolean;
+  is_anonymous: boolean;
   view_count: number;
   helped_count: number;
   created_at: string;
@@ -285,6 +286,7 @@ export const useCommunity = () => {
     animal_type?: 'dog' | 'cat';
     breed_tags?: string[];
     pet_id?: string;
+    is_anonymous?: boolean;
   }, photos?: File[]): Promise<Question> => {
     if (!user) throw new Error('Must be logged in');
 
