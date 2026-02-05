@@ -171,10 +171,10 @@ export const useCommunity = () => {
       return [];
     }
 
-    // Fetch author profiles separately
+    // Fetch author profiles from public view (excludes sensitive data like email/phone)
     const userIds = [...new Set(data.map(q => q.user_id))];
     const { data: profiles } = await supabase
-      .from('profiles')
+      .from('profiles_public')
       .select('user_id, full_name, avatar_url')
       .in('user_id', userIds);
 
@@ -229,9 +229,9 @@ export const useCommunity = () => {
 
     if (error) throw error;
 
-    // Fetch author profile separately
+    // Fetch author profile from public view (excludes sensitive data)
     const { data: authorProfile } = await supabase
-      .from('profiles')
+      .from('profiles_public')
       .select('full_name, avatar_url')
       .eq('user_id', data.user_id)
       .maybeSingle();
@@ -355,11 +355,11 @@ export const useCommunity = () => {
     if (error) throw error;
     if (!data || data.length === 0) return [];
 
-    // Fetch author profiles separately
+    // Fetch author profiles from public view (excludes sensitive data)
     const userIds = [...new Set(data.map(a => a.user_id))];
     const [profilesRes, expertStatsRes] = await Promise.all([
       supabase
-        .from('profiles')
+        .from('profiles_public')
         .select('user_id, full_name, avatar_url')
         .in('user_id', userIds),
       supabase
@@ -640,10 +640,10 @@ export const useCommunity = () => {
     if (error) throw error;
     if (!data || data.length === 0) return [];
 
-    // Fetch author profiles separately
+    // Fetch author profiles from public view (excludes sensitive data)
     const userIds = [...new Set(data.map(q => q.user_id))];
     const { data: profiles } = await supabase
-      .from('profiles')
+      .from('profiles_public')
       .select('user_id, full_name, avatar_url')
       .in('user_id', userIds);
 
