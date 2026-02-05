@@ -100,7 +100,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
            url.includes("goo.gl/maps") || 
            url.includes("maps.google.com") ||
            url.includes("maps.app.goo.gl") ||
-           url.includes("maps.apple.com");
+           url.includes("maps.apple.com") ||
+           url.includes("share.google/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
