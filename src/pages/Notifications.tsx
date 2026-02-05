@@ -7,8 +7,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 import Header from "@/components/Header";
+import { BirthdayOfferViewDialog } from "@/components/BirthdayOfferViewDialog";
+
+interface NotificationData {
+  business_id?: string;
+  business_name?: string;
+  pet_name?: string;
+  discount?: number;
+  discount_type?: string;
+  share_code?: string;
+  alert_id?: string;
+  question_id?: string;
+}
 
 interface Notification {
+  id: string;
+  type: string;
+  title: string;
+  message: string;
+  data: NotificationData | null;
+  read: boolean;
+  created_at: string;
+  user_id: string;
+}
+
+type RawNotification = {
   id: string;
   type: string;
   title: string;
@@ -17,13 +40,14 @@ interface Notification {
   read: boolean;
   created_at: string;
   user_id: string;
-}
+};
 
 const Notifications = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedBirthdayOffer, setSelectedBirthdayOffer] = useState<Notification | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -43,7 +67,12 @@ const Notifications = () => {
         .limit(10);
 
       if (!error && data) {
-        setNotifications(data);
+        // Cast data to proper type
+        const typedNotifications: Notification[] = (data as RawNotification[]).map(n => ({
+          ...n,
+          data: n.data as NotificationData | null
+        }));
+        setNotifications(typedNotifications);
       }
       setIsLoading(false);
     };
@@ -79,7 +108,7 @@ const Notifications = () => {
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
     
-    const data = notification.data as Record<string, unknown> | null;
+    const data = notification.data;
     if (notification.type === "family_invite" && data?.share_code) {
       navigate(`/member/join-family?code=${data.share_code}`);
     } else if (notification.type === "redemption") {
@@ -91,8 +120,8 @@ const Notifications = () => {
     } else if (notification.type === "business_birthday_reminder") {
       navigate("/business/birthdays");
     } else if (notification.type === "birthday_offer" && data?.business_id) {
-      // Navigate to offers page filtered by the business that sent the birthday offer
-      navigate(`/member/offers?highlight=birthday&business=${data.business_id}`);
+      // Open birthday offer dialog to show full message
+      setSelectedBirthdayOffer(notification);
     }
   };
 
@@ -138,9 +167,9 @@ const Notifications = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
-      <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+      <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Button
@@ -201,7 +230,12 @@ const Notifications = () => {
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        {notification.message}
+                        {notification.type === "birthday_offer" 
+                          ? notification.message.slice(0, 100) + (notification.message.length > 100 ? "..." : "")
+                          : notification.message}
+                        {notification.type === "birthday_offer" && (
+                          <span className="ml-1 text-primary font-medium">Tap to read full message →</span>
+                        )}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
                         {formatDistanceToNow(new Date(notification.created_at), {
@@ -232,6 +266,22 @@ const Notifications = () => {
         <p className="text-xs text-muted-foreground text-center mt-6">
           Showing last 10 notifications
         </p>
+
+        {/* Birthday Offer Dialog */}
+        <BirthdayOfferViewDialog
+          open={!!selectedBirthdayOffer}
+          onOpenChange={(open) => !open && setSelectedBirthdayOffer(null)}
+          title={selectedBirthdayOffer?.title || ""}
+          message={selectedBirthdayOffer?.message || ""}
+          data={selectedBirthdayOffer?.data ? {
+            business_id: selectedBirthdayOffer.data.business_id || "",
+            business_name: selectedBirthdayOffer.data.business_name || "",
+            pet_name: selectedBirthdayOffer.data.pet_name || "",
+            discount: selectedBirthdayOffer.data.discount || 0,
+            discount_type: selectedBirthdayOffer.data.discount_type || "percentage",
+          } : null}
+          createdAt={selectedBirthdayOffer?.created_at || ""}
+        />
       </main>
     </div>
   );

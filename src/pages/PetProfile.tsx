@@ -427,10 +427,10 @@ const PetProfile = () => {
         <meta name="description" content={`View and manage ${pet.pet_name}'s profile and notes.`} />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
+      <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-2xl">
+        <main className="w-full max-w-2xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* Breadcrumbs */}
           <div className="mb-4">
             <Breadcrumbs
@@ -625,6 +625,7 @@ const PetProfile = () => {
                                 onChange={(e) => setEditedBirthday(e.target.value)}
                                 className="text-sm h-8"
                                 max={new Date().toISOString().split('T')[0]}
+                                min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                               />
                             ) : (
                               <div className="flex items-center gap-1">

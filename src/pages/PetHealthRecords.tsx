@@ -656,10 +656,10 @@ const PetHealthRecords = () => {
         <meta name="description" content="Track vaccinations, medications, vet visits, and health reminders for your pets." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background">
+      <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-4xl">
+        <main className="w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           <Button
             variant="ghost"
             size="sm"

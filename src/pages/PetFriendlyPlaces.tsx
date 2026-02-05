@@ -140,10 +140,10 @@ const PetFriendlyPlaces = () => {
         <meta name="description" content="Discover pet-friendly beaches, cafés, hotels, and more in Cyprus." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
         <Header />
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* Header */}
           <div className="mb-8">
             <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">

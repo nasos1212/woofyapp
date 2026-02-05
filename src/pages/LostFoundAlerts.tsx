@@ -574,10 +574,10 @@ const LostFoundAlerts = () => {
         <meta name="description" content="Community-powered lost and found pet alert system in Cyprus. Help reunite pets with their families." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background overflow-x-hidden">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           <Button
             variant="ghost"
             size="sm"
