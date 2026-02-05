@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Loader2, User, Clock, CheckCircle2, Users } from "lucide-react";
+import { Send, Loader2, User, Clock, CheckCircle2, Users, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +45,12 @@ interface Message {
   created_at: string;
 }
 
+interface ClientOption {
+  user_id: string;
+  user_name: string;
+  user_email: string;
+}
+
 const SupportManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -50,6 +62,9 @@ const SupportManager = () => {
   const [sending, setSending] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [clientFilter, setClientFilter] = useState<string>("all");
+  const [clients, setClients] = useState<ClientOption[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -75,16 +90,15 @@ const SupportManager = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [statusFilter, categoryFilter]);
+  }, [statusFilter, categoryFilter, clientFilter]);
 
   useEffect(() => {
-    if (selectedConversation) {
+    if (selectedConversation && dialogOpen) {
       fetchMessages(selectedConversation.id);
 
-      // Focus the input field when a conversation is selected
+      // Focus input after dialog opens
       setTimeout(() => {
         inputRef.current?.focus();
-        inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       }, 100);
 
       // Subscribe to new messages
@@ -113,11 +127,13 @@ const SupportManager = () => {
         supabase.removeChannel(channel);
       };
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, dialogOpen]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    if (dialogOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, dialogOpen]);
 
   const fetchConversations = async () => {
     setLoading(true);
@@ -132,6 +148,10 @@ const SupportManager = () => {
 
     if (categoryFilter !== "all") {
       query = query.eq("category", categoryFilter);
+    }
+
+    if (clientFilter !== "all") {
+      query = query.eq("user_id", clientFilter);
     }
 
     const { data: convData, error } = await query;
@@ -170,6 +190,20 @@ const SupportManager = () => {
     );
 
     setConversations(enrichedConversations);
+
+    // Build unique clients list for filter
+    const uniqueClients = new Map<string, ClientOption>();
+    enrichedConversations.forEach((conv) => {
+      if (!uniqueClients.has(conv.user_id)) {
+        uniqueClients.set(conv.user_id, {
+          user_id: conv.user_id,
+          user_name: conv.user_name || "Unknown",
+          user_email: conv.user_email || "",
+        });
+      }
+    });
+    setClients(Array.from(uniqueClients.values()));
+
     setLoading(false);
   };
 
@@ -218,25 +252,7 @@ const SupportManager = () => {
         await updateConversationStatus("pending");
       }
 
-      // Send notification email to the user
-      try {
-        await supabase.functions.invoke("send-support-notification", {
-          body: {
-            conversationId: selectedConversation.id,
-            subject: selectedConversation.subject,
-            message: newMessage.trim(),
-            userId: selectedConversation.user_id,
-            isReply: true,
-            isAdminReply: true,
-          },
-        });
-        console.log("Notification sent to user");
-      } catch (notifyError) {
-        console.error("Failed to send notification to user:", notifyError);
-        // Don't fail the message send if notification fails
-      }
-
-      // Create in-app notification for the user
+      // Create in-app notification for the user (no email)
       await supabase.from("notifications").insert({
         user_id: selectedConversation.user_id,
         type: "support_reply",
@@ -286,6 +302,19 @@ const SupportManager = () => {
     }
   };
 
+  const openConversation = (conv: Conversation) => {
+    setSelectedConversation(conv);
+    setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setSelectedConversation(null);
+    setMessages([]);
+    setNewMessage("");
+    fetchConversations(); // Refresh to update unread counts
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "open":
@@ -319,11 +348,10 @@ const SupportManager = () => {
   const totalUnread = conversations.reduce((acc, c) => acc + (c.unread_count || 0), 0);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[600px]">
-      {/* Conversations List */}
-      <Card className="lg:col-span-1 flex flex-col">
+    <>
+      <Card>
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <CardTitle className="text-lg flex items-center gap-2">
               Support Requests
               {totalUnread > 0 && (
@@ -331,28 +359,40 @@ const SupportManager = () => {
               )}
             </CardTitle>
           </div>
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-2 flex-wrap">
+            <Select value={clientFilter} onValueChange={setClientFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by Client" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Clients</SelectItem>
+                {clients.map((client) => (
+                  <SelectItem key={client.user_id} value={client.user_id}>
+                    <span className="flex items-center gap-2">
+                      <User className="h-3 w-3" />
+                      {client.user_name}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="flex-1">
+              <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="general">
-                  <span className="flex items-center gap-2">
-                    General Support
-                  </span>
-                </SelectItem>
+                <SelectItem value="general">General Support</SelectItem>
                 <SelectItem value="affiliate">
                   <span className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    Affiliate Inquiries
+                    Affiliate
                   </span>
                 </SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="flex-1">
+              <SelectTrigger className="w-[130px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -365,62 +405,58 @@ const SupportManager = () => {
             </Select>
           </div>
         </CardHeader>
-        <CardContent className="flex-1 overflow-hidden p-0">
-          <ScrollArea className="h-full">
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              </div>
-            ) : conversations.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground px-4">
-                <p>No support requests</p>
-              </div>
-            ) : (
-              <div className="space-y-1 p-2">
-                {conversations.map((conv) => (
-                  <button
-                    key={conv.id}
-                    onClick={() => setSelectedConversation(conv)}
-                    className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                      selectedConversation?.id === conv.id
-                        ? "bg-accent border-primary"
-                        : "hover:bg-accent"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-medium line-clamp-1 text-sm">
-                        {conv.subject}
-                      </span>
-                      {(conv.unread_count || 0) > 0 && (
-                        <Badge variant="destructive" className="text-xs">
-                          {conv.unread_count}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      {conv.category === "affiliate" && (
-                        <Badge
-                          variant="outline"
-                          className="bg-purple-100 text-purple-700 border-purple-200 text-xs"
-                        >
-                          <Users className="h-3 w-3 mr-1" />
-                          Affiliate
-                        </Badge>
-                      )}
-                      <Badge
-                        variant="secondary"
-                        className={`${getStatusColor(conv.status)} text-white text-xs`}
-                      >
-                        {conv.status}
+        <CardContent>
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : conversations.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <p>No support requests</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {conversations.map((conv) => (
+                <button
+                  key={conv.id}
+                  onClick={() => openConversation(conv)}
+                  className="w-full text-left p-4 rounded-lg border transition-colors hover:bg-accent"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-medium line-clamp-1">
+                      {conv.subject}
+                    </span>
+                    {(conv.unread_count || 0) > 0 && (
+                      <Badge variant="destructive" className="text-xs">
+                        {conv.unread_count}
                       </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    {conv.category === "affiliate" && (
                       <Badge
                         variant="outline"
-                        className={`${getPriorityColor(conv.priority)} text-white text-xs`}
+                        className="bg-purple-100 text-purple-700 border-purple-200 text-xs"
                       >
-                        {conv.priority}
+                        <Users className="h-3 w-3 mr-1" />
+                        Affiliate
                       </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                    )}
+                    <Badge
+                      variant="secondary"
+                      className={`${getStatusColor(conv.status)} text-white text-xs`}
+                    >
+                      {conv.status}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className={`${getPriorityColor(conv.priority)} text-white text-xs`}
+                    >
+                      {conv.priority}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
                       <User className="h-3 w-3" />
                       {conv.user_name}
                     </p>
@@ -430,30 +466,30 @@ const SupportManager = () => {
                         addSuffix: true,
                       })}
                     </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </ScrollArea>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Conversation View */}
-      <Card className="lg:col-span-2 flex flex-col">
-        {selectedConversation ? (
-          <>
-            <CardHeader className="pb-2 border-b">
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{selectedConversation.subject}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {selectedConversation.user_name} ({selectedConversation.user_email})
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Created {format(new Date(selectedConversation.created_at), "PPp")}
-                  </p>
-                </div>
-                <div className="flex gap-2">
+      {/* Conversation Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={(open) => !open && closeDialog()}>
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0">
+          {selectedConversation && (
+            <>
+              <DialogHeader className="p-4 border-b">
+                <div className="flex items-start justify-between pr-8">
+                  <div>
+                    <DialogTitle className="text-lg">{selectedConversation.subject}</DialogTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {selectedConversation.user_name} ({selectedConversation.user_email})
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Created {format(new Date(selectedConversation.created_at), "PPp")}
+                    </p>
+                  </div>
                   <Select
                     value={selectedConversation.status}
                     onValueChange={updateConversationStatus}
@@ -469,9 +505,8 @@ const SupportManager = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-hidden p-0 flex flex-col">
+              </DialogHeader>
+              
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-3">
                   {messages.map((msg) => (
@@ -507,6 +542,7 @@ const SupportManager = () => {
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
+
               {selectedConversation.status !== "closed" && selectedConversation.status !== "resolved" ? (
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
@@ -543,17 +579,11 @@ const SupportManager = () => {
                   This conversation has been {selectedConversation.status}. Change status to reply.
                 </div>
               )}
-            </CardContent>
-          </>
-        ) : (
-          <CardContent className="flex-1 flex items-center justify-center">
-            <p className="text-muted-foreground">
-              Select a conversation to view messages
-            </p>
-          </CardContent>
-        )}
-      </Card>
-    </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
