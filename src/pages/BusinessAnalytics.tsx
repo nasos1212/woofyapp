@@ -109,8 +109,8 @@ const BusinessAnalytics = () => {
       const lastMonthStart = startOfMonth(subDays(thisMonthStart, 1));
       const lastMonthEnd = endOfMonth(subDays(thisMonthStart, 1));
 
-      // Fetch all redemptions
-      const { data: allRedemptions, error } = await supabase
+      // Fetch all regular offer redemptions
+      const { data: regularRedemptions, error } = await supabase
         .from("offer_redemptions")
         .select(`
           id,
@@ -126,7 +126,39 @@ const BusinessAnalytics = () => {
 
       if (error) throw error;
 
-      const redemptions = allRedemptions || [];
+      // Fetch birthday redemptions for this business
+      const { data: birthdayRedemptions } = await supabase
+        .from("sent_birthday_offers")
+        .select(`
+          id,
+          redeemed_at,
+          pet_name,
+          owner_name,
+          owner_user_id,
+          discount_value,
+          discount_type
+        `)
+        .eq("redeemed_by_business_id", business.id)
+        .not("redeemed_at", "is", null)
+        .order("redeemed_at", { ascending: false });
+
+      // Normalize birthday redemptions to match regular redemption structure
+      const normalizedBirthdayRedemptions = (birthdayRedemptions || []).map((r) => ({
+        id: r.id,
+        redeemed_at: r.redeemed_at!,
+        membership_id: r.owner_user_id, // Use owner_user_id for unique customer tracking
+        member_number: "🎂 Birthday",
+        member_name: r.owner_name,
+        pet_names: r.pet_name,
+        offer: {
+          title: `🎂 Birthday: ${r.pet_name}`,
+          discount_value: r.discount_value,
+          discount_type: r.discount_type,
+        },
+      }));
+
+      // Combine all redemptions
+      const redemptions = [...(regularRedemptions || []), ...normalizedBirthdayRedemptions];
 
       // Calculate stats
       const thisMonthRedemptions = redemptions.filter(
