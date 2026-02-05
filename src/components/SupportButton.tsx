@@ -85,14 +85,12 @@ const SupportButton = () => {
         size="icon"
         aria-label="Get support"
       >
-        <div className="relative">
-          <MessageCircleQuestion className="h-7 w-7" />
-          {unreadCount > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </div>
+        <MessageCircleQuestion className="h-7 w-7" />
+        {unreadCount > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground z-10">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
       </Button>
       <SupportDialog open={open} onOpenChange={setOpen} />
     </>
