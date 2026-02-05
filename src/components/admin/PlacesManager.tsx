@@ -7,7 +7,11 @@ import {
   Trash2,
   RefreshCw,
   Pencil,
-  Plus
+  Plus,
+  Eye,
+  Clock,
+  AlertTriangle,
+  Navigation
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -120,6 +124,8 @@ const PlacesManager = () => {
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [formData, setFormData] = useState<PlaceFormData>(defaultFormData);
   const [isSaving, setIsSaving] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [viewingPlace, setViewingPlace] = useState<Place | null>(null);
 
   const fetchPlaces = async () => {
     setIsLoading(true);
@@ -177,6 +183,11 @@ const PlacesManager = () => {
     setEditingPlace(null);
     setFormData(defaultFormData);
     setEditDialogOpen(true);
+  };
+
+  const handleView = (place: Place) => {
+    setViewingPlace(place);
+    setViewDialogOpen(true);
   };
 
   const handleSave = async () => {
@@ -406,7 +417,16 @@ const PlacesManager = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                onClick={() => handleView(place)}
+                                title="View details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() => handleEdit(place)}
+                                title="Edit"
                               >
                                 <Pencil className="w-4 h-4" />
                               </Button>
@@ -460,6 +480,175 @@ const PlacesManager = () => {
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* View Details Dialog */}
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              {viewingPlace?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Full details for this pet-friendly place
+            </DialogDescription>
+          </DialogHeader>
+
+          {viewingPlace && (
+            <div className="space-y-4 py-4">
+              {/* Status Badge */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Status:</span>
+                {viewingPlace.verified ? (
+                  <Badge className="bg-green-100 text-green-700">Verified</Badge>
+                ) : (
+                  <Badge variant="secondary">Pending Review</Badge>
+                )}
+              </div>
+
+              {/* Type & City */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Type</span>
+                  <p className="mt-1">
+                    <Badge variant="outline">
+                      {placeTypeLabels[viewingPlace.place_type] || viewingPlace.place_type}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">City</span>
+                  <p className="mt-1">{viewingPlace.city || "Not specified"}</p>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div>
+                <span className="text-sm font-medium text-muted-foreground">Address</span>
+                <p className="mt-1">{viewingPlace.address || "Not provided"}</p>
+              </div>
+
+              {/* Description */}
+              <div>
+                <span className="text-sm font-medium text-muted-foreground">Description</span>
+                <p className="mt-1 text-sm">{viewingPlace.description || "No description provided"}</p>
+              </div>
+
+              {/* Contact Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Phone</span>
+                  <p className="mt-1">
+                    {viewingPlace.phone ? (
+                      <a href={`tel:${viewingPlace.phone}`} className="text-primary hover:underline flex items-center gap-1">
+                        <Phone className="w-3 h-3" />
+                        {viewingPlace.phone}
+                      </a>
+                    ) : (
+                      "Not provided"
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-sm font-medium text-muted-foreground">Website</span>
+                  <p className="mt-1">
+                    {viewingPlace.website ? (
+                      <a 
+                        href={viewingPlace.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-primary hover:underline flex items-center gap-1 break-all"
+                      >
+                        <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{viewingPlace.website}</span>
+                      </a>
+                    ) : (
+                      "Not provided"
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* Coordinates */}
+              <div>
+                <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
+                  <Navigation className="w-3 h-3" />
+                  Coordinates
+                </span>
+                <p className="mt-1 text-sm font-mono">
+                  {viewingPlace.latitude.toFixed(6)}, {viewingPlace.longitude.toFixed(6)}
+                </p>
+                <a
+                  href={`https://www.google.com/maps?q=${viewingPlace.latitude},${viewingPlace.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-primary hover:underline"
+                >
+                  Open in Google Maps →
+                </a>
+              </div>
+
+              {/* Special Flags */}
+              <div className="flex flex-wrap gap-2">
+                {viewingPlace.is_24_hour && (
+                  <Badge variant="outline" className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Open 24 Hours
+                  </Badge>
+                )}
+                {viewingPlace.is_emergency && (
+                  <Badge variant="outline" className="flex items-center gap-1 text-red-600 border-red-200">
+                    <AlertTriangle className="w-3 h-3" />
+                    Emergency Service
+                  </Badge>
+                )}
+              </div>
+
+              {/* Submission Date */}
+              <div>
+                <span className="text-sm font-medium text-muted-foreground">Submitted</span>
+                <p className="mt-1 text-sm">
+                  {new Date(viewingPlace.created_at).toLocaleDateString('en-GB', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {viewingPlace && !viewingPlace.verified && (
+              <Button
+                onClick={() => {
+                  handleVerify(viewingPlace.id);
+                  setViewDialogOpen(false);
+                }}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <Check className="w-4 h-4 mr-2" />
+                Approve Place
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (viewingPlace) handleEdit(viewingPlace);
+                setViewDialogOpen(false);
+              }}
+            >
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+            <Button variant="ghost" onClick={() => setViewDialogOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit/Add Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
