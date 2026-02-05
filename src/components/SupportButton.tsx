@@ -10,35 +10,36 @@ const SupportButton = () => {
   const { playBark } = useBarkSound();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const prevUnreadCountRef = useRef(0);
+
+  const fetchUnreadCount = async () => {
+    if (!user) return;
+    
+    // Get all user's conversations
+    const { data: conversations } = await supabase
+      .from("support_conversations")
+      .select("id")
+      .eq("user_id", user.id);
+
+    if (!conversations || conversations.length === 0) {
+      setUnreadCount(0);
+      return;
+    }
+
+    const conversationIds = conversations.map((c) => c.id);
+
+    // Count unread admin messages
+    const { count } = await supabase
+      .from("support_messages")
+      .select("*", { count: "exact", head: true })
+      .in("conversation_id", conversationIds)
+      .eq("sender_type", "admin")
+      .eq("is_read", false);
+
+    setUnreadCount(count || 0);
+  };
 
   useEffect(() => {
     if (!user) return;
-
-    const fetchUnreadCount = async () => {
-      // Get all user's conversations
-      const { data: conversations } = await supabase
-        .from("support_conversations")
-        .select("id")
-        .eq("user_id", user.id);
-
-      if (!conversations || conversations.length === 0) {
-        setUnreadCount(0);
-        return;
-      }
-
-      const conversationIds = conversations.map((c) => c.id);
-
-      // Count unread admin messages
-      const { count } = await supabase
-        .from("support_messages")
-        .select("*", { count: "exact", head: true })
-        .in("conversation_id", conversationIds)
-        .eq("sender_type", "admin")
-        .eq("is_read", false);
-
-      setUnreadCount(count || 0);
-    };
 
     fetchUnreadCount();
 
@@ -68,13 +69,6 @@ const SupportButton = () => {
     };
   }, [user, playBark]);
 
-  // Reset count when dialog opens
-  useEffect(() => {
-    if (open) {
-      // Count will be updated when messages are marked as read in the dialog
-    }
-  }, [open]);
-
   if (!user) return null;
 
   return (
@@ -92,7 +86,11 @@ const SupportButton = () => {
           </span>
         )}
       </Button>
-      <SupportDialog open={open} onOpenChange={setOpen} />
+      <SupportDialog 
+        open={open} 
+        onOpenChange={setOpen} 
+        onMessagesRead={fetchUnreadCount}
+      />
     </>
   );
 };
