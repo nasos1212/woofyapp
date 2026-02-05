@@ -22,7 +22,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { cyprusCityNames } from "@/data/cyprusLocations";
+import { cyprusCities, cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 
 const placeTypes = [
   { value: "beach", label: "Beach" },
@@ -47,12 +47,16 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     name: "",
     place_type: "",
     city: "",
+    area: "",
     address: "",
     phone: "",
     website: "",
     description: "",
     google_maps_link: "",
   });
+
+  // Get available areas based on selected city
+  const availableAreas = formData.city ? getAreasForCity(formData.city) : [];
 
   // Extract coordinates from Google Maps link
   const extractCoordinates = (url: string): { lat: number; lng: number } | null => {
@@ -141,6 +145,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         name: formData.name,
         place_type: formData.place_type,
         city: formData.city,
+        area: formData.area || null,
         address: formData.address || null,
         phone: formData.phone || null,
         website: formData.website || null,
@@ -162,6 +167,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         name: "",
         place_type: "",
         city: "",
+        area: "",
         address: "",
         phone: "",
         website: "",
@@ -240,7 +246,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             <Label htmlFor="city">City *</Label>
             <Select
               value={formData.city}
-              onValueChange={(value) => setFormData({ ...formData, city: value })}
+              onValueChange={(value) => setFormData({ ...formData, city: value, area: "" })}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select city" />
@@ -254,6 +260,31 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Area */}
+          {availableAreas.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="area">Area / Neighborhood</Label>
+              <Select
+                value={formData.area}
+                onValueChange={(value) => setFormData({ ...formData, area: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select area (optional)" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableAreas.map((area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">
+                This helps us place the pin more accurately on the map
+              </p>
+            </div>
+          )}
 
           {/* Google Maps Link */}
           <div className="space-y-2">

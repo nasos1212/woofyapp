@@ -1475,6 +1475,7 @@ export type Database = {
         Row: {
           added_by_user_id: string | null
           address: string | null
+          area: string | null
           business_id: string | null
           city: string | null
           created_at: string
@@ -1495,6 +1496,7 @@ export type Database = {
         Insert: {
           added_by_user_id?: string | null
           address?: string | null
+          area?: string | null
           business_id?: string | null
           city?: string | null
           created_at?: string
@@ -1515,6 +1517,7 @@ export type Database = {
         Update: {
           added_by_user_id?: string | null
           address?: string | null
+          area?: string | null
           business_id?: string | null
           city?: string | null
           created_at?: string
