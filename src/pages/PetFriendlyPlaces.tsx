@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navigate, Link } from "react-router-dom";
 import { 
@@ -16,8 +16,6 @@ import {
   Clock,
   AlertCircle,
   Filter,
-  List,
-  Map,
   Navigation
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,7 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import SuggestPlaceDialog from "@/components/SuggestPlaceDialog";
@@ -38,9 +35,6 @@ import PlaceRating from "@/components/PlaceRating";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
-
-// Lazy load the map component to avoid loading Leaflet until needed
-const PlacesMap = lazy(() => import("@/components/places/PlacesMap"));
 
 interface PetFriendlyPlace {
   id: string;
@@ -76,7 +70,7 @@ const PetFriendlyPlaces = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  
 
   const fetchPlaces = async () => {
     try {
@@ -169,26 +163,8 @@ const PetFriendlyPlaces = () => {
             </div>
           </div>
 
-          {/* Filters and View Toggle */}
+          {/* Filters */}
           <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-soft mb-6">
-            {/* View Toggle */}
-            <div className="flex justify-end mb-4">
-              <ToggleGroup 
-                type="single" 
-                value={viewMode} 
-                onValueChange={(value) => value && setViewMode(value as "list" | "map")}
-                className="bg-muted rounded-lg p-1"
-              >
-                <ToggleGroupItem value="list" aria-label="List view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm data-[state=on]:text-foreground">
-                  <List className="w-4 h-4 mr-2" />
-                  List
-                </ToggleGroupItem>
-                <ToggleGroupItem value="map" aria-label="Map view" className="px-3 data-[state=on]:bg-white data-[state=on]:shadow-sm data-[state=on]:text-foreground">
-                  <Map className="w-4 h-4 mr-2" />
-                  Map
-                </ToggleGroupItem>
-              </ToggleGroup>
-            </div>
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Search */}
               <div className="relative flex-1">
@@ -269,19 +245,6 @@ const PetFriendlyPlaces = () => {
                 </Button>
               )}
             </div>
-          ) : viewMode === "map" ? (
-            <>
-              <p className="text-sm text-muted-foreground mb-4">
-                Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"} on map
-              </p>
-              <Suspense fallback={
-                <div className="flex items-center justify-center py-12 bg-white rounded-2xl shadow-soft">
-                  <DogLoader size="md" />
-                </div>
-              }>
-                <PlacesMap places={filteredPlaces} placeTypeConfig={placeTypeConfig} />
-              </Suspense>
-            </>
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-4">
