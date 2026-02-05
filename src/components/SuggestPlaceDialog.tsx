@@ -67,7 +67,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
            url.includes("maps.google.com") ||
            url.includes("maps.app.goo.gl") ||
            url.includes("maps.apple.com") ||
-           url.includes("share.google/");
+           url.includes("share.google");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -258,7 +258,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             <Input
               id="google_maps_link"
               type="url"
-              placeholder="Paste Google Maps or Apple Maps link..."
+              placeholder="e.g. https://maps.app.goo.gl/YSWaKyiCztHkoiXa7"
               value={formData.google_maps_link}
               onChange={(e) => setFormData({ ...formData, google_maps_link: e.target.value })}
               required
