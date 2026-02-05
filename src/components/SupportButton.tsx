@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-
+import { useBarkSound } from "@/hooks/useBarkSound";
 const SupportButton = () => {
   const { user } = useAuth();
+  const { playBark } = useBarkSound();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const prevUnreadCountRef = useRef(0);
 
   useEffect(() => {
     if (!user) return;
@@ -46,12 +48,17 @@ const SupportButton = () => {
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "support_messages",
         },
-        () => {
-          fetchUnreadCount();
+        (payload) => {
+          // Check if this is an admin message for the user
+          if (payload.new && (payload.new as { sender_type: string }).sender_type === "admin") {
+            fetchUnreadCount();
+            // Play bark sound for new admin message
+            playBark();
+          }
         }
       )
       .subscribe();
@@ -59,7 +66,7 @@ const SupportButton = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user, playBark]);
 
   // Reset count when dialog opens
   useEffect(() => {
