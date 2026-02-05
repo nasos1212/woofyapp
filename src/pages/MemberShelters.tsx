@@ -71,10 +71,10 @@ const MemberShelters = () => {
         <meta name="description" content="Support local pet shelters in Cyprus. 10% of every Wooffy membership goes to helping shelters care for dogs in need." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-rose-50/50 via-background to-background">
+      <div className="min-h-screen bg-gradient-to-b from-rose-50/50 via-background to-background overflow-x-hidden">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* Back Button */}
           <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />

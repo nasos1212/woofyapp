@@ -53,11 +53,19 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
           shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
         });
 
-        // Cyprus center coordinates
+        // Cyprus center coordinates and bounds
         const cyprusCenter: [number, number] = [35.1264, 33.4299];
+        const cyprusBounds: [[number, number], [number, number]] = [
+          [34.4, 32.2],  // Southwest corner
+          [35.7, 34.6]   // Northeast corner
+        ];
         
-        // Initialize map
-        map = L.map(mapRef.current).setView(cyprusCenter, 9);
+        // Initialize map with bounds restricted to Cyprus
+        map = L.map(mapRef.current, {
+          minZoom: 9,
+          maxBounds: cyprusBounds,
+          maxBoundsViscosity: 1.0,
+        }).setView(cyprusCenter, 10);
         mapInstanceRef.current = map;
         
         // Add OpenStreetMap tiles
@@ -68,7 +76,13 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
         // Add markers for each place
         const markers: any[] = [];
         
-        places.forEach((place) => {
+        // Filter places to only show those within Cyprus bounds
+        const cyprusPlaces = places.filter(place => 
+          place.latitude >= 34.4 && place.latitude <= 35.7 &&
+          place.longitude >= 32.2 && place.longitude <= 34.6
+        );
+        
+        cyprusPlaces.forEach((place) => {
           const config = getPlaceConfig(place.place_type);
           
           const popupContent = `
@@ -112,10 +126,14 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
           markers.push(marker);
         });
         
-        // Fit bounds if there are places
-        if (places.length > 0) {
+        // Fit bounds if there are places, but stay within Cyprus
+        if (places.length > 0 && markers.length > 0) {
           const group = L.featureGroup(markers);
-          map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 13 });
+          const bounds = group.getBounds();
+          // Only fit if bounds are valid and within Cyprus
+          if (bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 13 });
+          }
         }
         
         setIsLoaded(true);

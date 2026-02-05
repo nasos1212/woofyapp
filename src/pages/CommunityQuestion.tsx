@@ -258,10 +258,10 @@ const CommunityQuestion = () => {
         <meta name="description" content={question.content.slice(0, 160)} />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Header />
         
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-4xl">
+        <main className="w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* Back button */}
           <Button
             variant="ghost"

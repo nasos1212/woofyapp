@@ -308,10 +308,10 @@ const MemberUpgrade = () => {
         <meta name="description" content="Upgrade, downgrade, or renew your Wooffy membership." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+      <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
         <Header />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] max-w-5xl">
+        <main className="w-full max-w-5xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           <Button
             variant="ghost"
             size="sm"

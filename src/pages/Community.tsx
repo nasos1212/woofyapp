@@ -248,9 +248,9 @@ const Community = () => {
         <meta name="description" content="Connect with fellow pet owners, ask questions, and share experiences in the Wooffy community." />
       </Helmet>
 
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Header />
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           <Button
             variant="ghost"
             size="sm"
