@@ -121,8 +121,9 @@ const defaultFormData: PlaceFormData = {
 const PlacesManager = () => {
   const { toast } = useToast();
   const [places, setPlaces] = useState<Place[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [filter, setFilter] = useState<"pending" | "verified" | "all">("pending");
+  const [filter, setFilter] = useState<"pending" | "verified" | "all">("all");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [formData, setFormData] = useState<PlaceFormData>(defaultFormData);
@@ -133,6 +134,15 @@ const PlacesManager = () => {
   const fetchPlaces = async () => {
     setIsLoading(true);
     try {
+      // Always fetch pending count first
+      const { count: pending } = await supabase
+        .from("pet_friendly_places")
+        .select("*", { count: "exact", head: true })
+        .or("verified.is.null,verified.eq.false");
+      
+      setPendingCount(pending || 0);
+
+      // Then fetch filtered places
       let query = supabase
         .from("pet_friendly_places")
         .select("*")
@@ -311,7 +321,7 @@ const PlacesManager = () => {
     }
   };
 
-  const pendingCount = places.filter(p => !p.verified).length;
+  
 
   return (
     <>
@@ -337,16 +347,16 @@ const PlacesManager = () => {
         <CardContent>
           <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
             <TabsList className="mb-4">
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="verified">Verified</TabsTrigger>
               <TabsTrigger value="pending" className="gap-2">
                 Pending Review
                 {pendingCount > 0 && (
-                  <Badge variant="destructive" className="ml-1">
+                  <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
                     {pendingCount}
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="verified">Verified</TabsTrigger>
-              <TabsTrigger value="all">All</TabsTrigger>
             </TabsList>
 
             <TabsContent value={filter}>
