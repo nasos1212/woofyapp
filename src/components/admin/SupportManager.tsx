@@ -51,6 +51,7 @@ const SupportManager = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchConversations();
@@ -79,6 +80,12 @@ const SupportManager = () => {
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages(selectedConversation.id);
+
+      // Focus the input field when a conversation is selected
+      setTimeout(() => {
+        inputRef.current?.focus();
+        inputRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 100);
 
       // Subscribe to new messages
       const channel = supabase
@@ -211,7 +218,38 @@ const SupportManager = () => {
         await updateConversationStatus("pending");
       }
 
+      // Send notification email to the user
+      try {
+        await supabase.functions.invoke("send-support-notification", {
+          body: {
+            conversationId: selectedConversation.id,
+            subject: selectedConversation.subject,
+            message: newMessage.trim(),
+            userId: selectedConversation.user_id,
+            isReply: true,
+            isAdminReply: true,
+          },
+        });
+        console.log("Notification sent to user");
+      } catch (notifyError) {
+        console.error("Failed to send notification to user:", notifyError);
+        // Don't fail the message send if notification fails
+      }
+
+      // Create in-app notification for the user
+      await supabase.from("notifications").insert({
+        user_id: selectedConversation.user_id,
+        type: "support_reply",
+        title: "New Support Reply",
+        message: `You have a new reply to your support request: "${selectedConversation.subject}"`,
+        data: { conversation_id: selectedConversation.id },
+      });
+
       setNewMessage("");
+      toast({
+        title: "Reply sent",
+        description: "Your reply has been sent and the user has been notified.",
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
@@ -473,6 +511,7 @@ const SupportManager = () => {
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <Input
+                      ref={inputRef}
                       placeholder="Type your response..."
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}

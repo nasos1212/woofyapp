@@ -16,6 +16,7 @@ interface SupportNotificationRequest {
   message?: string;
   userId?: string;
   isReply?: boolean;
+  isAdminReply?: boolean;
   // Affiliate inquiry fields
   type?: string;
   fullName?: string;
@@ -49,7 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Standard support notification flow
-    const { conversationId, subject, message, userId, isReply } = body;
+    const { conversationId, subject, message, userId, isReply, isAdminReply } = body;
 
     // Validate required fields
     if (!conversationId || !subject || !message || !userId) {
@@ -78,7 +79,73 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const userName = profile?.full_name || "Unknown User";
-    const userEmail = profile?.email || "No email";
+    const userEmail = profile?.email || "";
+
+    // Handle admin reply to user
+    if (isAdminReply && userEmail) {
+      console.log("Sending admin reply notification to user:", userEmail);
+      
+      const emailResponse = await resend.emails.send({
+        from: "Wooffy Support <hello@wooffy.app>",
+        to: [userEmail],
+        subject: `Re: ${subject} - Wooffy Support`,
+        html: `<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+.container { max-width: 600px; margin: 0 auto; padding: 20px; }
+.header { background: linear-gradient(135deg, #1A1A2E, #2D2D44); color: #7DD3FC; padding: 30px 20px; border-radius: 8px 8px 0 0; text-align: center; }
+.content { background: #f9fafb; padding: 30px 20px; border: 1px solid #e5e7eb; border-top: none; }
+.message-box { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #7DD3FC; margin: 20px 0; }
+.footer { text-align: center; padding: 20px; color: #6b7280; font-size: 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; }
+.btn { display: inline-block; background: #1A1A2E; color: #7DD3FC !important; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin-top: 15px; }
+.preview-text { display: none; max-height: 0; overflow: hidden; }
+</style>
+</head>
+<body>
+<div class="preview-text">New reply from Wooffy Support Team regarding: ${subject}</div>
+<div class="container">
+<div class="header">
+<h1 style="margin: 0; font-size: 24px;">🐾 Support Reply</h1>
+<p style="margin: 10px 0 0 0; opacity: 0.9;">We've responded to your request</p>
+</div>
+<div class="content">
+<p>Hi ${userName}! 👋</p>
+<p>We've replied to your support request: <strong>"${subject}"</strong></p>
+
+<div class="message-box">
+<p style="white-space: pre-wrap; margin: 0;">${message}</p>
+</div>
+
+<p>You can view the full conversation and reply directly in the app:</p>
+<p style="text-align: center;">
+<a href="https://www.wooffy.app" class="btn">Open Wooffy App</a>
+</p>
+
+<p style="margin-top: 20px; color: #6b7280; font-size: 14px;">
+If you have any further questions, simply reply to this email or respond through the app.
+</p>
+</div>
+<div class="footer">
+<p style="margin: 0;">© 2026 Wooffy. Your pet's best friend. 🐕</p>
+<p style="margin: 5px 0 0 0; font-size: 12px;">This email was sent because you have an active support request with us.</p>
+</div>
+</div>
+</body>
+</html>`,
+      });
+
+      console.log("Admin reply email sent to user:", emailResponse);
+
+      return new Response(
+        JSON.stringify({ success: true, emailResponse, sentTo: "user" }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
 
     // Get user membership info if available
     const { data: membership } = await supabase
@@ -92,7 +159,7 @@ const handler = async (req: Request): Promise<Response> => {
       ? `Member #${membership.member_number} (${membership.plan_type})` 
       : "No active membership";
 
-    // Send email notification to support team
+    // Send email notification to support team (user's message to admin)
     const emailSubject = isReply 
       ? `[Wooffy Support] Reply: ${subject}`
       : `[Wooffy Support] New Request: ${subject}`;
