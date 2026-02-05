@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { MessageCircleQuestion } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
@@ -11,7 +11,7 @@ const SupportButton = () => {
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     if (!user) return;
     
     // Get all user's conversations
@@ -35,30 +35,38 @@ const SupportButton = () => {
       .eq("sender_type", "admin")
       .eq("is_read", false);
 
+    console.log("[SupportButton] Unread admin messages:", count);
     setUnreadCount(count || 0);
-  };
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
 
     fetchUnreadCount();
 
-    // Subscribe to new messages
+    // Subscribe to new messages and updates
     const channel = supabase
       .channel("support-unread-count")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "support_messages",
         },
         (payload) => {
-          // Check if this is an admin message for the user
+          console.log("[SupportButton] Realtime event:", payload.eventType, payload.new);
+          // Check if this is an admin message
           if (payload.new && (payload.new as { sender_type: string }).sender_type === "admin") {
             fetchUnreadCount();
-            // Play bark sound for new admin message
-            playBark();
+            // Play bark sound only for new admin messages
+            if (payload.eventType === "INSERT") {
+              playBark();
+            }
+          }
+          // Also refresh on UPDATE (when messages are marked as read)
+          if (payload.eventType === "UPDATE") {
+            fetchUnreadCount();
           }
         }
       )
@@ -67,7 +75,7 @@ const SupportButton = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, playBark]);
+  }, [user, playBark, fetchUnreadCount]);
 
   if (!user) return null;
 
