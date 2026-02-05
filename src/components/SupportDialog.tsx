@@ -74,10 +74,10 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
             filter: `conversation_id=eq.${selectedConversation.id}`,
           },
           (payload) => {
-            const newMsg = payload.new as Message & { sender_id?: string };
+            const newMsg = payload.new as Message;
             setMessages((prev) => [...prev, newMsg]);
-            // Mark admin messages as read only if we didn't send them ourselves
-            if (newMsg.sender_type === "admin" && newMsg.sender_id !== user?.id) {
+            // Mark admin messages as read when user views them
+            if (newMsg.sender_type === "admin") {
               markMessageAsRead(newMsg.id);
             }
           }
@@ -119,9 +119,9 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
 
     if (!error && data) {
       setMessages(data as Message[]);
-      // Mark all admin messages as read (only those not sent by current user)
+      // Mark all admin messages as read when user views them
       const unreadAdminMessages = data.filter(
-        (m) => m.sender_type === "admin" && !m.is_read && m.sender_id !== user?.id
+        (m) => m.sender_type === "admin" && !m.is_read
       );
       for (const msg of unreadAdminMessages) {
         markMessageAsRead(msg.id);
