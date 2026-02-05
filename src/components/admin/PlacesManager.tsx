@@ -75,6 +75,7 @@ interface Place {
   is_24_hour: boolean | null;
   is_emergency: boolean | null;
   created_at: string;
+  google_maps_url: string | null;
 }
 
 interface PlaceFormData {
@@ -590,23 +591,25 @@ const PlacesManager = () => {
                 </div>
               </div>
 
-              {/* Coordinates */}
+              {/* Google Maps Link */}
               <div>
                 <span className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                   <Navigation className="w-3 h-3" />
-                  Coordinates
+                  Location
                 </span>
-                <p className="mt-1 text-sm font-mono">
-                  {viewingPlace.latitude.toFixed(6)}, {viewingPlace.longitude.toFixed(6)}
-                </p>
-                <a
-                  href={`https://www.google.com/maps?q=${viewingPlace.latitude},${viewingPlace.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-primary hover:underline"
-                >
-                  Open in Google Maps →
-                </a>
+                {viewingPlace.google_maps_url ? (
+                  <a
+                    href={viewingPlace.google_maps_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-primary hover:underline flex items-center gap-1 mt-1"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Open in Google Maps →
+                  </a>
+                ) : (
+                  <p className="mt-1 text-sm text-muted-foreground">No map link provided</p>
+                )}
               </div>
 
               {/* Special Flags */}
