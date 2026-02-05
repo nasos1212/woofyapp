@@ -21,6 +21,7 @@ import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import { BirthdayOfferModal } from "@/components/BirthdayOfferModal";
+import { SentBirthdayOfferViewDialog } from "@/components/SentBirthdayOfferViewDialog";
 
 interface CustomerPet {
   pet_id: string;
@@ -86,6 +87,7 @@ const BusinessCustomerBirthdays = () => {
   const [selectedPetForOffer, setSelectedPetForOffer] = useState<UpcomingBirthday | null>(null);
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [showSentOffers, setShowSentOffers] = useState(false);
+  const [selectedSentOffer, setSelectedSentOffer] = useState<SentBirthdayOffer | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -608,7 +610,11 @@ const BusinessCustomerBirthdays = () => {
               {showSentOffers && (
                 <div className="space-y-3">
                   {sentOffers.map((offer) => (
-                    <Card key={offer.id} className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20">
+                    <Card 
+                      key={offer.id} 
+                      className="border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/20 cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => setSelectedSentOffer(offer)}
+                    >
                       <CardContent className="py-4">
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
@@ -624,6 +630,9 @@ const BusinessCustomerBirthdays = () => {
                             <p className="text-sm text-muted-foreground line-clamp-2 italic">
                               "{offer.message.substring(0, 100)}{offer.message.length > 100 ? "..." : ""}"
                             </p>
+                            {offer.message.length > 100 && (
+                              <p className="text-xs text-primary mt-1">Tap to read full message →</p>
+                            )}
                           </div>
                           <div className="text-right text-xs text-muted-foreground shrink-0">
                             <p>{formatDate(new Date(offer.sent_at))}</p>
@@ -673,6 +682,12 @@ const BusinessCustomerBirthdays = () => {
               });
           }
         }}
+      />
+
+      <SentBirthdayOfferViewDialog
+        open={!!selectedSentOffer}
+        onOpenChange={(open) => !open && setSelectedSentOffer(null)}
+        offer={selectedSentOffer}
       />
 
       <BusinessMobileNav />
