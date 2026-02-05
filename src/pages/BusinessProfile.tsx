@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
-import { ensureHttps } from "@/lib/utils";
+import { ensureHttps, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -698,7 +698,7 @@ export default function BusinessProfile() {
                         </p>
                       )}
                       <p className="text-xs text-muted-foreground pl-10 mt-1">
-                        {new Date(review.created_at).toLocaleDateString()}
+                        {formatDate(new Date(review.created_at))}
                       </p>
                     </div>
                   ))}

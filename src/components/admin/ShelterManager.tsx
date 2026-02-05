@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ensureHttps } from "@/lib/utils";
+import { ensureHttps, formatDate } from "@/lib/utils";
 
 interface Shelter {
   id: string;
@@ -197,7 +197,7 @@ const ShelterManager = () => {
                         <p className="text-sm text-muted-foreground mt-3 line-clamp-2">{shelter.description}</p>
                       )}
                       <p className="text-xs text-muted-foreground mt-2">
-                        Applied: {new Date(shelter.created_at).toLocaleDateString()}
+                        Applied: {formatDate(new Date(shelter.created_at))}
                       </p>
                     </div>
                     <div className="flex gap-2">
