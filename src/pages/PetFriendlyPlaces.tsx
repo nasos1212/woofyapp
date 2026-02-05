@@ -81,12 +81,11 @@ const PetFriendlyPlaces = () => {
   const fetchPlaces = async () => {
     try {
       setIsLoading(true);
-      let query = supabase
+      const { data, error } = await supabase
         .from("pet_friendly_places")
         .select("*")
+        .eq("verified", true)
         .order("name", { ascending: true });
-
-      const { data, error } = await query;
 
       if (error) throw error;
       setPlaces(data || []);
