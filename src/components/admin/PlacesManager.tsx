@@ -57,13 +57,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { cyprusCityNames } from "@/data/cyprusLocations";
+import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 
 interface Place {
   id: string;
   name: string;
   place_type: string;
   city: string | null;
+  area: string | null;
   address: string | null;
   phone: string | null;
   website: string | null;
@@ -80,6 +81,7 @@ interface PlaceFormData {
   name: string;
   place_type: string;
   city: string;
+  area: string;
   address: string;
   phone: string;
   website: string;
@@ -104,6 +106,7 @@ const defaultFormData: PlaceFormData = {
   name: "",
   place_type: "cafe",
   city: "",
+  area: "",
   address: "",
   phone: "",
   website: "",
@@ -166,6 +169,7 @@ const PlacesManager = () => {
       name: place.name,
       place_type: place.place_type,
       city: place.city || "",
+      area: place.area || "",
       address: place.address || "",
       phone: place.phone || "",
       website: place.website || "",
@@ -206,6 +210,7 @@ const PlacesManager = () => {
         name: formData.name.trim(),
         place_type: formData.place_type,
         city: formData.city || null,
+        area: formData.area || null,
         address: formData.address || null,
         phone: formData.phone || null,
         website: formData.website || null,
@@ -522,6 +527,12 @@ const PlacesManager = () => {
                 </div>
               </div>
 
+              {/* Area */}
+              <div>
+                <span className="text-sm font-medium text-muted-foreground">Area / Neighborhood</span>
+                <p className="mt-1">{viewingPlace.area || "Not specified"}</p>
+              </div>
+
               {/* Address */}
               <div>
                 <span className="text-sm font-medium text-muted-foreground">Address</span>
@@ -697,7 +708,7 @@ const PlacesManager = () => {
                 <Label htmlFor="city">City</Label>
                 <Select 
                   value={formData.city} 
-                  onValueChange={(v) => setFormData({ ...formData, city: v })}
+                  onValueChange={(v) => setFormData({ ...formData, city: v, area: "" })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select city" />
@@ -710,6 +721,27 @@ const PlacesManager = () => {
                 </Select>
               </div>
             </div>
+
+            {/* Area - only show if city is selected */}
+            {formData.city && getAreasForCity(formData.city).length > 0 && (
+              <div className="grid gap-2">
+                <Label htmlFor="area">Area / Neighborhood</Label>
+                <Select 
+                  value={formData.area} 
+                  onValueChange={(v) => setFormData({ ...formData, area: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select area (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAreasForCity(formData.city).map((area) => (
+                      <SelectItem key={area} value={area}>{area}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">Helps place the pin more accurately</p>
+              </div>
+            )}
 
             <div className="grid gap-2">
               <Label htmlFor="address">Address</Label>

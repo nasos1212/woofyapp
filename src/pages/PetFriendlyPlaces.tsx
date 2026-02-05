@@ -17,7 +17,8 @@ import {
   AlertCircle,
   Filter,
   List,
-  Map
+  Map,
+  Navigation
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,6 +48,7 @@ interface PetFriendlyPlace {
   description: string | null;
   address: string | null;
   city: string | null;
+  area: string | null;
   place_type: string;
   phone: string | null;
   website: string | null;
@@ -341,13 +343,18 @@ const PetFriendlyPlaces = () => {
                       )}
 
                       {/* Location */}
-                      {(place.address || place.city) && (
-                        <div className="flex items-start gap-2 text-sm text-muted-foreground mb-3">
-                          <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                          <span className="line-clamp-2">
-                            {[place.address, place.city].filter(Boolean).join(", ")}
+                      {(place.address || place.area || place.city) && (
+                        <a 
+                          href={`https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-2 text-sm text-muted-foreground mb-3 hover:text-primary transition-colors group"
+                        >
+                          <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5 group-hover:text-primary" />
+                          <span className="line-clamp-2 group-hover:underline">
+                            {[place.address, place.area, place.city].filter(Boolean).join(", ")}
                           </span>
-                        </div>
+                        </a>
                       )}
 
                       {/* Rating */}
@@ -361,7 +368,17 @@ const PetFriendlyPlaces = () => {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-2 pt-3 border-t">
+                      <div className="flex gap-2 pt-3 border-t flex-wrap">
+                        {/* Google Maps Button - always show */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1"
+                          onClick={() => window.open(`https://www.google.com/maps?q=${place.latitude},${place.longitude}`, "_blank")}
+                        >
+                          <Navigation className="w-4 h-4 mr-1" />
+                          Directions
+                        </Button>
                         {place.phone && (
                           <Button
                             variant="outline"
@@ -383,11 +400,6 @@ const PetFriendlyPlaces = () => {
                             <Globe className="w-4 h-4 mr-1" />
                             Website
                           </Button>
-                        )}
-                        {!place.phone && !place.website && (
-                          <span className="text-xs text-muted-foreground py-2">
-                            No contact info available
-                          </span>
                         )}
                       </div>
                     </div>
