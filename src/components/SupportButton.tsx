@@ -4,10 +4,9 @@ import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { useBarkSound } from "@/hooks/useBarkSound";
+
 const SupportButton = () => {
   const { user } = useAuth();
-  const { playBark } = useBarkSound();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -59,10 +58,6 @@ const SupportButton = () => {
           // Check if this is an admin message
           if (payload.new && (payload.new as { sender_type: string }).sender_type === "admin") {
             fetchUnreadCount();
-            // Play bark sound only for new admin messages
-            if (payload.eventType === "INSERT") {
-              playBark();
-            }
           }
           // Also refresh on UPDATE (when messages are marked as read)
           if (payload.eventType === "UPDATE") {
@@ -75,7 +70,7 @@ const SupportButton = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, playBark, fetchUnreadCount]);
+  }, [user, fetchUnreadCount]);
 
   if (!user) return null;
 
