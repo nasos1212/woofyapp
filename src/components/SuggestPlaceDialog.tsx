@@ -48,7 +48,6 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     place_type: "",
     city: "",
     area: "",
-    address: "",
     phone: "",
     website: "",
     description: "",
@@ -114,7 +113,6 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         place_type: formData.place_type,
         city: formData.city,
         area: formData.area || null,
-        address: formData.address || null,
         phone: formData.phone || null,
         website: formData.website || null,
         description: formData.description || null,
@@ -137,7 +135,6 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         place_type: "",
         city: "",
         area: "",
-        address: "",
         phone: "",
         website: "",
         description: "",
@@ -271,16 +268,6 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             </p>
           </div>
 
-          {/* Address */}
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <Input
-              id="address"
-              placeholder="e.g. 123 Main Street"
-              value={formData.address}
-              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-            />
-          </div>
 
           {/* Phone */}
           <div className="space-y-2">
