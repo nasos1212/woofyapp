@@ -88,6 +88,7 @@ const BusinessCustomerBirthdays = () => {
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [showSentOffers, setShowSentOffers] = useState(false);
   const [selectedSentOffer, setSelectedSentOffer] = useState<SentBirthdayOffer | null>(null);
+  const [birthdayFilter, setBirthdayFilter] = useState<"all" | "week" | "month">("all");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -438,23 +439,29 @@ const BusinessCustomerBirthdays = () => {
             </Card>
           )}
 
-          {/* Stats */}
+          {/* Stats / Filter Tabs */}
           <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
-            <Card>
+            <Card 
+              className={`cursor-pointer transition-all hover:shadow-md ${birthdayFilter === "all" ? "ring-2 ring-primary border-primary" : ""}`}
+              onClick={() => setBirthdayFilter("all")}
+            >
               <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-                  <Users className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                  <Users className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "all" ? "text-primary" : "text-muted-foreground"}`} />
                   <div>
-                    <p className="text-lg sm:text-2xl font-bold">{customerPets.length}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">Pets</p>
+                    <p className="text-lg sm:text-2xl font-bold">{customerPets.filter(p => p.birthday).length}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">All Pets</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Card className={upcomingBirthdays.filter(b => b.daysUntil <= 7).length > 0 ? "border-pink-500" : ""}>
+            <Card 
+              className={`cursor-pointer transition-all hover:shadow-md ${birthdayFilter === "week" ? "ring-2 ring-pink-500 border-pink-500" : upcomingBirthdays.filter(b => b.daysUntil <= 7).length > 0 ? "border-pink-500" : ""}`}
+              onClick={() => setBirthdayFilter("week")}
+            >
               <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-                  <Cake className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
+                  <Cake className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "week" ? "text-pink-500" : "text-pink-500"}`} />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.filter(b => b.daysUntil <= 7).length}</p>
                     <p className="text-xs sm:text-sm text-muted-foreground">This Week</p>
@@ -462,10 +469,13 @@ const BusinessCustomerBirthdays = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card 
+              className={`cursor-pointer transition-all hover:shadow-md ${birthdayFilter === "month" ? "ring-2 ring-amber-500 border-amber-500" : ""}`}
+              onClick={() => setBirthdayFilter("month")}
+            >
               <CardContent className="p-3 sm:pt-6 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-                  <Gift className="h-6 w-6 sm:h-8 sm:w-8 text-amber-500" />
+                  <Gift className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "month" ? "text-amber-500" : "text-amber-500"}`} />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.length}</p>
                     <p className="text-xs sm:text-sm text-muted-foreground">This Month</p>
@@ -476,32 +486,48 @@ const BusinessCustomerBirthdays = () => {
           </div>
 
           {/* Upcoming Birthdays */}
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <PartyPopper className="h-5 w-5" />
-            Upcoming Birthdays
-          </h2>
+          {(() => {
+            const filteredBirthdays = birthdayFilter === "week" 
+              ? upcomingBirthdays.filter(b => b.daysUntil <= 7)
+              : birthdayFilter === "month"
+              ? upcomingBirthdays
+              : upcomingBirthdays; // "all" shows upcoming (within 30 days)
 
-          {loading ? (
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <Skeleton key={i} className="h-24 w-full" />
-              ))}
-            </div>
-          ) : upcomingBirthdays.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <Cake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No upcoming birthdays</h3>
-                <p className="text-muted-foreground">
-                  {customerPets.length === 0 
-                    ? "You don't have any customer interactions yet. Birthdays will appear here once customers redeem offers."
-                    : "No pet birthdays in the next 30 days. Check back soon!"}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {upcomingBirthdays.map((pet) => (
+            const filterLabel = birthdayFilter === "week" ? "This Week" : birthdayFilter === "month" ? "This Month" : "Upcoming";
+
+            return (
+              <>
+                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                  <PartyPopper className="h-5 w-5" />
+                  {filterLabel} Birthdays
+                  {filteredBirthdays.length > 0 && (
+                    <Badge variant="secondary">{filteredBirthdays.length}</Badge>
+                  )}
+                </h2>
+
+                {loading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-24 w-full" />
+                    ))}
+                  </div>
+                ) : filteredBirthdays.length === 0 ? (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <Cake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No birthdays {filterLabel.toLowerCase()}</h3>
+                      <p className="text-muted-foreground">
+                        {customerPets.length === 0 
+                          ? "You don't have any customer interactions yet. Birthdays will appear here once customers redeem offers."
+                          : birthdayFilter === "week" 
+                          ? "No pet birthdays in the next 7 days."
+                          : "No pet birthdays in the next 30 days. Check back soon!"}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredBirthdays.map((pet) => (
                 <Card key={pet.pet_id} className={pet.daysUntil === 0 ? "border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50" : ""}>
                   <CardContent className="py-4">
                     <div className="flex items-start justify-between gap-4">
@@ -552,6 +578,9 @@ const BusinessCustomerBirthdays = () => {
               ))}
             </div>
           )}
+              </>
+            );
+          })()}
 
           {/* All Customer Pets */}
           {customerPets.length > 0 && (
