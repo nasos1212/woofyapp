@@ -18,8 +18,9 @@ const MembershipCardFull = ({
   memberId = "WF-2026-XXXX-XXXX",
   expiryDate = "25/12/2025"
 }: MembershipCardFullProps) => {
-  // Generate a verification URL for the QR code
-  const verificationUrl = `https://wooffy.app/verify/${memberId}`;
+  // QR code contains just the member ID for businesses to scan
+  // Businesses use their dashboard scanner which extracts and verifies this ID
+  const qrValue = memberId;
 
   // Format pet display - show all pet names
   const formatPetDisplay = () => {
@@ -67,7 +68,7 @@ const MembershipCardFull = ({
           <div className="flex flex-col items-center">
             <div className="bg-white p-2 rounded-lg">
               <QRCodeSVG 
-                value={verificationUrl}
+                value={qrValue}
                 size={88}
                 level="M"
                 bgColor="#ffffff"
