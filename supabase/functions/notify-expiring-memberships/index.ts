@@ -176,7 +176,7 @@ Deno.serve(async (req) => {
 <p style="font-size: 14px; color: #6b7280; text-align: center;">Don't lose access to exclusive pet discounts across Cyprus!</p>
 </div>
 <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
-<p style="font-size: 12px; color: #9ca3af; margin: 0;">© 2026 Wooffy. An effort to unite pet lovers all over Cyprus.</p>
+<p style="font-size: 12px; color: #9ca3af; margin: 0;">© 2026 Wooffy. An effort to unite pet lovers all over Cyprus. 🐾</p>
 </div>
 </div>
 </body>
