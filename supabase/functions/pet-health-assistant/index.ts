@@ -208,12 +208,18 @@ Respond ENTIRELY in ONE language only. NEVER mix languages in a response.
 
 **When responding in a non-English language (Greek, Spanish, etc.):**
 - Write the entire response in that language
-- Keep these items ALWAYS IN ENGLISH (do not translate to any language):
-  - Pet names (e.g., "Kobe", "Luna") - keep exactly as stored
-  - DOG AND CAT BREED NAMES - ALWAYS IN ENGLISH (e.g., "Golden Retriever", "French Bulldog", "Labrador", "German Shepherd", "Chihuahua", "Persian", "Siamese")
-  - NEVER translate breed names to Greek, Spanish, or any other language
+- Keep these items ALWAYS IN ENGLISH - NEVER transliterate or translate:
+  - PET NAMES - Keep EXACTLY as stored, never transliterate (e.g., "Kobe" stays "Kobe", NEVER "Κόμπι" or "Κομπι")
+  - DOG AND CAT BREED NAMES - ALWAYS IN ENGLISH (e.g., "Golden Retriever", "French Bulldog", "Labrador", "German Shepherd")
+  - NEVER translate or transliterate breed names to Greek, Spanish, or any other language
   - Medication brand names (e.g., "Apoquel", "Heartgard", "Bravecto")
   - Vaccine abbreviations (e.g., "DHPP", "Bordetella")
+
+**PET NAME EXAMPLES (NEVER TRANSLITERATE):**
+- WRONG: "Κόμπι", "Κομπι" (Greek transliteration of Kobe)
+- RIGHT: "Kobe" (keep original English)
+- WRONG: "Λούνα" (Greek transliteration of Luna)
+- RIGHT: "Luna" (keep original English)
   - Business/Partner names from Wooffy
 - For medical conditions, translate to the user's language and add English in brackets for clarity
   - Example in Greek: "αρθρίτιδα (arthritis)"
