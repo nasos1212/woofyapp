@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { MessageCircleQuestion } from "lucide-react";
+import { MessageCircleQuestion, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
 import { useAuth } from "@/hooks/useAuth";
@@ -9,6 +9,9 @@ const SupportButton = () => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isMinimized, setIsMinimized] = useState(() => {
+    return localStorage.getItem("support-widget-minimized") === "true";
+  });
 
   const fetchUnreadCount = useCallback(async () => {
     if (!user) return;
@@ -95,23 +98,64 @@ const SupportButton = () => {
     };
   }, [user, fetchUnreadCount]);
 
+  const handleMinimize = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMinimized(true);
+    localStorage.setItem("support-widget-minimized", "true");
+  };
+
+  const handleExpand = () => {
+    setIsMinimized(false);
+    localStorage.setItem("support-widget-minimized", "false");
+  };
+
   if (!user) return null;
+
+  // Minimized state - small dot that can be expanded
+  if (isMinimized) {
+    return (
+      <button
+        onClick={handleExpand}
+        className="fixed bottom-6 right-4 z-50 h-8 w-8 rounded-full bg-primary shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+        aria-label="Expand support"
+      >
+        {unreadCount > 0 ? (
+          <span className="text-[10px] font-bold text-primary-foreground">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        ) : (
+          <MessageCircleQuestion className="h-4 w-4 text-primary-foreground" />
+        )}
+      </button>
+    );
+  }
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-4 z-50 h-14 w-14 rounded-full shadow-lg"
-        size="icon"
-        aria-label="Get support"
-      >
-        <MessageCircleQuestion className="h-7 w-7" />
-        {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground z-10">
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
-        )}
-      </Button>
+      <div className="fixed bottom-6 right-4 z-50 flex items-center gap-1">
+        <Button
+          onClick={handleMinimize}
+          className="h-8 w-8 rounded-full shadow-lg opacity-80 hover:opacity-100"
+          size="icon"
+          variant="secondary"
+          aria-label="Minimize support widget"
+        >
+          <Minus className="h-4 w-4" />
+        </Button>
+        <Button
+          onClick={() => setOpen(true)}
+          className="h-14 w-14 rounded-full shadow-lg"
+          size="icon"
+          aria-label="Get support"
+        >
+          <MessageCircleQuestion className="h-7 w-7" />
+          {unreadCount > 0 && (
+            <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground z-10">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </Button>
+      </div>
       <SupportDialog 
         open={open} 
         onOpenChange={setOpen} 
