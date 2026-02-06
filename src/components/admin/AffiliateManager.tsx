@@ -216,40 +216,41 @@ const AffiliateManager = () => {
               {inquiries.map((inquiry) => (
                 <div
                   key={inquiry.id}
-                  className="p-4 rounded-lg border transition-colors hover:bg-accent"
+                  className="p-3 sm:p-4 rounded-lg border transition-colors hover:bg-accent"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <button
                       onClick={() => openInquiry(inquiry)}
-                      className="flex-1 text-left"
+                      className="flex-1 text-left min-w-0"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{inquiry.full_name}</span>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium truncate">{inquiry.full_name}</span>
                         <Badge
                           variant="secondary"
-                          className={`${getStatusColor(inquiry.status)} text-white text-xs`}
+                          className={`${getStatusColor(inquiry.status)} text-white text-xs shrink-0`}
                         >
                           {inquiry.status}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Mail className="h-3 w-3" />
-                          {inquiry.email}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 mt-1 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1 truncate">
+                          <Mail className="h-3 w-3 shrink-0" />
+                          <span className="truncate">{inquiry.email}</span>
                         </span>
                         <span className="flex items-center gap-1">
-                          <Phone className="h-3 w-3" />
+                          <Phone className="h-3 w-3 shrink-0" />
                           {inquiry.phone}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground mt-1 truncate">
                         Audience: {audienceLabels[inquiry.audience] || inquiry.audience}
                       </p>
                     </button>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
                         onClick={() => openInquiry(inquiry)}
                       >
                         <Eye className="h-4 w-4" />
@@ -257,6 +258,7 @@ const AffiliateManager = () => {
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 sm:h-9 sm:w-9"
                         onClick={() => {
                           setInquiryToDelete(inquiry.id);
                           setDeleteDialogOpen(true);
@@ -267,7 +269,7 @@ const AffiliateManager = () => {
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
+                    <Clock className="h-3 w-3 shrink-0" />
                     {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                   </p>
                 </div>
