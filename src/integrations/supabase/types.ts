@@ -2216,6 +2216,7 @@ export type Database = {
           category: string | null
           created_at: string
           id: string
+          metadata: Json | null
           priority: string
           resolved_at: string | null
           status: string
@@ -2227,6 +2228,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: string
+          metadata?: Json | null
           priority?: string
           resolved_at?: string | null
           status?: string
@@ -2238,6 +2240,7 @@ export type Database = {
           category?: string | null
           created_at?: string
           id?: string
+          metadata?: Json | null
           priority?: string
           resolved_at?: string | null
           status?: string

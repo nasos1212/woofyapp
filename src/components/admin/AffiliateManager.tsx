@@ -38,13 +38,11 @@ interface AffiliateInquiry {
   status: string;
   created_at: string;
   updated_at: string;
-  // Parsed from message content
   fullName?: string;
   email?: string;
   phone?: string;
   audience?: string;
   message?: string;
-  rawContent?: string;
 }
 
 const audienceLabels: Record<string, string> = {
@@ -90,25 +88,6 @@ const AffiliateManager = () => {
     };
   }, [statusFilter]);
 
-  const parseMessageContent = (content: string): Partial<AffiliateInquiry> => {
-    const parsed: Partial<AffiliateInquiry> = { rawContent: content };
-    
-    // Parse markdown-style content
-    const nameMatch = content.match(/\*\*Name:\*\*\s*(.+)/);
-    const emailMatch = content.match(/\*\*Email:\*\*\s*(.+)/);
-    const phoneMatch = content.match(/\*\*Phone:\*\*\s*(.+)/);
-    const audienceMatch = content.match(/\*\*Audience:\*\*\s*(.+)/);
-    const messageMatch = content.match(/\*\*Message:\*\*\s*(.+)/s);
-
-    if (nameMatch) parsed.fullName = nameMatch[1].trim();
-    if (emailMatch) parsed.email = emailMatch[1].trim();
-    if (phoneMatch) parsed.phone = phoneMatch[1].trim();
-    if (audienceMatch) parsed.audience = audienceMatch[1].trim();
-    if (messageMatch) parsed.message = messageMatch[1].trim();
-
-    return parsed;
-  };
-
   const fetchInquiries = async () => {
     setLoading(true);
     
@@ -130,31 +109,31 @@ const AffiliateManager = () => {
       return;
     }
 
-    // Fetch message content for each inquiry
-    const enrichedInquiries = await Promise.all(
-      (convData || []).map(async (conv) => {
-        const { data: messages } = await supabase
-          .from("support_messages")
-          .select("content")
-          .eq("conversation_id", conv.id)
-          .order("created_at", { ascending: true })
-          .limit(1);
+    // Map conversations to affiliate inquiries, extracting metadata
+    const mappedInquiries: AffiliateInquiry[] = (convData || []).map((conv) => {
+      const metadata = conv.metadata as {
+        fullName?: string;
+        email?: string;
+        phone?: string;
+        audience?: string;
+        message?: string;
+      } | null;
 
-        const messageContent = messages?.[0]?.content || "";
-        const parsed = parseMessageContent(messageContent);
+      return {
+        id: conv.id,
+        subject: conv.subject,
+        status: conv.status,
+        created_at: conv.created_at,
+        updated_at: conv.updated_at,
+        fullName: metadata?.fullName || conv.subject.replace("Affiliate Inquiry: ", ""),
+        email: metadata?.email,
+        phone: metadata?.phone,
+        audience: metadata?.audience,
+        message: metadata?.message,
+      };
+    });
 
-        return {
-          id: conv.id,
-          subject: conv.subject,
-          status: conv.status,
-          created_at: conv.created_at,
-          updated_at: conv.updated_at,
-          ...parsed,
-        };
-      })
-    );
-
-    setInquiries(enrichedInquiries);
+    setInquiries(mappedInquiries);
     setLoading(false);
   };
 
