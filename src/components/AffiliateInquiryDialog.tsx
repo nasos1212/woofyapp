@@ -51,8 +51,12 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
     setIsSubmitting(true);
 
     try {
+      console.log("Attempting to insert affiliate inquiry...");
+      
       // Store directly in affiliate_inquiries table
-      const { data, error: dbError } = await supabase
+      // Note: We don't use .select() because the INSERT policy allows anyone,
+      // but SELECT policy is admin-only, so we can't read back the inserted row
+      const { error: dbError } = await supabase
         .from("affiliate_inquiries")
         .insert({
           full_name: formData.fullName,
@@ -60,18 +64,14 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
           phone: formData.phone,
           audience: formData.audience,
           message: formData.message || null,
-        })
-        .select()
-        .single();
+        });
 
       if (dbError) {
         console.error("Error storing affiliate inquiry:", dbError);
         throw new Error(dbError.message || "Failed to submit inquiry");
       }
 
-      if (!data) {
-        throw new Error("No data returned from insert");
-      }
+      console.log("Affiliate inquiry inserted successfully");
 
       // Send notification email
       await supabase.functions.invoke("send-support-notification", {
