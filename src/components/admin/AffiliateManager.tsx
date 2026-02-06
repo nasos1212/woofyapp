@@ -158,14 +158,12 @@ const AffiliateManager = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "open":
-        return "bg-blue-500";
-      case "contacted":
+      case "pending":
         return "bg-yellow-500";
-      case "approved":
+      case "accepted":
         return "bg-green-500";
-      case "declined":
-        return "bg-muted";
+      case "denied":
+        return "bg-red-500";
       default:
         return "bg-muted";
     }
@@ -196,10 +194,9 @@ const AffiliateManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="contacted">Contacted</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="declined">Declined</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="accepted">Accepted</SelectItem>
+                <SelectItem value="denied">Denied</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -347,10 +344,9 @@ const AffiliateManager = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="open">Open</SelectItem>
-                      <SelectItem value="contacted">Contacted</SelectItem>
-                      <SelectItem value="approved">Approved</SelectItem>
-                      <SelectItem value="declined">Declined</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="accepted">Accepted</SelectItem>
+                      <SelectItem value="denied">Denied</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
