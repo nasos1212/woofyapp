@@ -43,32 +43,55 @@ const SupportButton = () => {
 
     fetchUnreadCount();
 
-    // Subscribe to new messages and updates
-    const channel = supabase
-      .channel("support-unread-count")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "support_messages",
-        },
-        (payload) => {
-          console.log("[SupportButton] Realtime event:", payload.eventType, payload.new);
-          // Check if this is an admin message
-          if (payload.new && (payload.new as { sender_type: string }).sender_type === "admin") {
-            fetchUnreadCount();
+    // Get user's conversation IDs first, then subscribe
+    const setupSubscription = async () => {
+      const { data: conversations } = await supabase
+        .from("support_conversations")
+        .select("id")
+        .eq("user_id", user.id);
+      
+      const userConversationIds = conversations?.map(c => c.id) || [];
+      
+      // Subscribe to new messages and updates
+      const channel = supabase
+        .channel("support-unread-count")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "support_messages",
+          },
+          (payload) => {
+            const message = payload.new as { sender_type: string; conversation_id: string } | null;
+            
+            // Only process if this message is for one of the user's conversations
+            if (message && userConversationIds.includes(message.conversation_id)) {
+              console.log("[SupportButton] Realtime event for user's conversation:", payload.eventType, message);
+              
+              // Check if this is an admin message INSERT
+              if (payload.eventType === "INSERT" && message.sender_type === "admin") {
+                fetchUnreadCount();
+              }
+              // Also refresh on UPDATE (when messages are marked as read)
+              if (payload.eventType === "UPDATE") {
+                fetchUnreadCount();
+              }
+            }
           }
-          // Also refresh on UPDATE (when messages are marked as read)
-          if (payload.eventType === "UPDATE") {
-            fetchUnreadCount();
-          }
-        }
-      )
-      .subscribe();
+        )
+        .subscribe();
+      
+      return channel;
+    };
+
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    setupSubscription().then(ch => { channel = ch; });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [user, fetchUnreadCount]);
 
