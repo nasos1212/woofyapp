@@ -68,6 +68,42 @@ export type Database = {
           },
         ]
       }
+      affiliate_inquiries: {
+        Row: {
+          audience: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string | null
+          phone: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          audience: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message?: string | null
+          phone: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ai_chat_messages: {
         Row: {
           content: string
