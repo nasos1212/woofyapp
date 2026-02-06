@@ -528,54 +528,64 @@ const BusinessCustomerBirthdays = () => {
                 ) : (
                   <div className="space-y-4">
                     {filteredBirthdays.map((pet) => (
-                <Card key={pet.pet_id} className={pet.daysUntil === 0 ? "border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50" : ""}>
-                  <CardContent className="py-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-lg">{pet.pet_name}</h3>
-                          {getBirthdayBadge(pet.daysUntil)}
-                          <span className="text-sm text-muted-foreground">
-                            Turning {pet.age}!
-                          </span>
-                        </div>
-                        <p className="text-muted-foreground mb-1">
-                          {pet.pet_breed && `${pet.pet_breed} • `}
-                          Owner: <span className="font-medium">{pet.owner_name || pet.owner_email}</span>
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-4 w-4" />
-                            {formatDate(pet.nextBirthday)}
-                          </span>
-                          {pet.last_interaction && (
-                            <span>Last visit: {formatDate(new Date(pet.last_interaction))}</span>
-                          )}
-                        </div>
-                      </div>
-                      {pet.alreadySentOffer ? (
-                        <Badge variant="secondary" className="shrink-0 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                          <Gift className="mr-1 h-3 w-3" />
-                          Offer Sent
-                        </Badge>
-                      ) : (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="shrink-0"
-                          onClick={() => {
-                            setSelectedPetForOffer(pet);
-                            setOfferModalOpen(true);
-                          }}
-                        >
-                          <Gift className="mr-2 h-4 w-4" />
-                          Send Offer
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      <Card key={pet.pet_id} className={pet.daysUntil === 0 ? "border-pink-500 bg-gradient-to-r from-pink-50 to-purple-50" : ""}>
+                        <CardContent className="py-4 px-3 sm:px-6">
+                          {/* Mobile: Stack layout */}
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                            <div className="flex-1 min-w-0">
+                              {/* Pet name and badge row */}
+                              <div className="flex flex-wrap items-center gap-2 mb-2">
+                                <h3 className="font-semibold text-base sm:text-lg">{pet.pet_name}</h3>
+                                {getBirthdayBadge(pet.daysUntil)}
+                                <span className="text-xs sm:text-sm text-muted-foreground">
+                                  Turning {pet.age}!
+                                </span>
+                              </div>
+                              
+                              {/* Owner info */}
+                              <p className="text-sm text-muted-foreground mb-1 truncate">
+                                {pet.pet_breed && <span className="hidden sm:inline">{pet.pet_breed} • </span>}
+                                Owner: <span className="font-medium">{pet.owner_name || pet.owner_email || "Unknown"}</span>
+                              </p>
+                              
+                              {/* Date info - simplified on mobile */}
+                              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  {formatDate(pet.nextBirthday)}
+                                </span>
+                                {pet.last_interaction && (
+                                  <span className="hidden sm:inline">Last visit: {formatDate(new Date(pet.last_interaction))}</span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Action button - full width on mobile */}
+                            <div className="flex justify-end sm:block">
+                              {pet.alreadySentOffer ? (
+                                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                                  <Gift className="mr-1 h-3 w-3" />
+                                  Sent
+                                </Badge>
+                              ) : (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="text-xs sm:text-sm"
+                                  onClick={() => {
+                                    setSelectedPetForOffer(pet);
+                                    setOfferModalOpen(true);
+                                  }}
+                                >
+                                  <Gift className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                                  Send Offer
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
             </div>
           )}
               </>
