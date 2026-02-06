@@ -236,7 +236,8 @@ const Auth = () => {
         return;
       }
 
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      // Use Supabase's generateLink to create a proper reset token, then send via our branded email
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
@@ -247,6 +248,12 @@ const Auth = () => {
           variant: "destructive",
         });
       } else {
+        // Also send our branded email via edge function
+        const resetUrl = `${window.location.origin}/reset-password`;
+        await supabase.functions.invoke("send-password-reset", {
+          body: { email: email.trim(), resetUrl }
+        }).catch(err => console.error("Branded reset email error:", err));
+        
         setResetEmailSent(true);
         toast({
           title: "Check your email",

@@ -31,7 +31,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "Wooffy <hello@wooffy.app>",
       to: [email],
-      subject: "Reset Your Wooffy Password 🔐",
+      subject: "[Wooffy] Reset Your Password 🔐",
       html: `<!DOCTYPE html>
 <html>
 <head>
@@ -45,6 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
 <div class="preview-text">Reset your Wooffy password - this link expires in 1 hour.</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
+<img src="https://www.wooffy.app/wooffy-logo.png" alt="Wooffy" style="height: 50px; margin-bottom: 16px;" />
 <h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Password Reset 🔐</h1>
 </div>
 <div style="padding: 40px;">
