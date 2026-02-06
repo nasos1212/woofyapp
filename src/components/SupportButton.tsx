@@ -116,7 +116,7 @@ const SupportButton = () => {
     return (
       <button
         onClick={handleExpand}
-        className="fixed bottom-6 right-4 z-50 h-8 w-8 rounded-full bg-primary shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed bottom-[5.5rem] md:bottom-6 right-4 z-50 h-8 w-8 rounded-full bg-primary shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
         aria-label="Expand support"
       >
         {unreadCount > 0 ? (
@@ -132,7 +132,7 @@ const SupportButton = () => {
 
   return (
     <>
-      <div className="fixed bottom-6 right-4 z-50 flex items-center gap-1">
+      <div className="fixed bottom-[5.5rem] md:bottom-6 right-4 z-50 flex items-center gap-1">
         <Button
           onClick={handleMinimize}
           className="h-8 w-8 rounded-full shadow-lg opacity-80 hover:opacity-100"
