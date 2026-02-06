@@ -2611,6 +2611,10 @@ export type Database = {
       }
     }
     Functions: {
+      business_can_view_membership: {
+        Args: { _business_user_id: string; _membership_id: string }
+        Returns: boolean
+      }
       can_edit_pet_birthday: { Args: { _pet_id: string }; Returns: boolean }
       can_view_lost_pet_contact: {
         Args: { alert_id: string; alert_owner_id: string }
