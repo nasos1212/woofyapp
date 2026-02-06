@@ -69,7 +69,7 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
 ${formData.message ? `**Message:** ${formData.message}` : ""}
       `.trim();
       
-      // Store in support_conversations for admin tracking
+      // Store in support_conversations with metadata for admin tracking
       const { data: convData, error: dbError } = await supabase
         .from("support_conversations")
         .insert({
@@ -78,25 +78,19 @@ ${formData.message ? `**Message:** ${formData.message}` : ""}
           category: "affiliate",
           priority: "normal",
           status: "open",
+          metadata: {
+            fullName: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            audience: formData.audience,
+            message: formData.message || null,
+          },
         })
         .select("id")
         .single();
 
       if (dbError) {
         console.error("Error storing affiliate inquiry:", dbError);
-      } else if (convData) {
-        // Store the full details as a message so admin can see them
-        const { error: msgError } = await supabase.from("support_messages").insert({
-          conversation_id: convData.id,
-          sender_type: "user",
-          sender_id: user?.id ?? null,
-          content: fullMessage,
-          is_read: false,
-        });
-        
-        if (msgError) {
-          console.error("Error storing affiliate message:", msgError);
-        }
       }
 
       // Send notification email
