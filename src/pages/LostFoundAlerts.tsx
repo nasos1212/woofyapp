@@ -821,6 +821,7 @@ const LostFoundAlerts = () => {
                           type="date"
                           value={lastSeenDate}
                           onChange={(e) => setLastSeenDate(e.target.value)}
+                          max={new Date().toISOString().split('T')[0]}
                           required
                         />
                       </div>
