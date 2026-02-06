@@ -820,7 +820,16 @@ const LostFoundAlerts = () => {
                         <Input
                           type="date"
                           value={lastSeenDate}
-                          onChange={(e) => setLastSeenDate(e.target.value)}
+                          onChange={(e) => {
+                            const selectedDate = e.target.value;
+                            const today = new Date().toISOString().split('T')[0];
+                            // Prevent future dates
+                            if (selectedDate > today) {
+                              toast.error("Date cannot be in the future");
+                              return;
+                            }
+                            setLastSeenDate(selectedDate);
+                          }}
                           max={new Date().toISOString().split('T')[0]}
                           required
                         />
