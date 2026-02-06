@@ -140,6 +140,7 @@ const SupportManager = () => {
     let query = supabase
       .from("support_conversations")
       .select("*")
+      .neq("category", "affiliate") // Exclude affiliates - they have their own tab
       .order("updated_at", { ascending: false });
 
     if (statusFilter !== "all") {
@@ -383,12 +384,6 @@ const SupportManager = () => {
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
                 <SelectItem value="general">General Support</SelectItem>
-                <SelectItem value="affiliate">
-                  <span className="flex items-center gap-2">
-                    <Users className="h-3 w-3" />
-                    Affiliate
-                  </span>
-                </SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
