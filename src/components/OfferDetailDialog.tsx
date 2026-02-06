@@ -219,8 +219,8 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
 
           {/* Redemption Rules */}
           {(offer.redemption_scope || offer.redemption_frequency || offer.valid_days?.length || offer.valid_hours_start) && (
-            <div className="bg-muted/30 rounded-lg p-2.5 sm:p-3 space-y-2">
-              <h4 className="font-medium text-foreground text-xs sm:text-sm">Redemption Rules</h4>
+            <div className="space-y-1.5">
+              <h4 className="font-medium text-foreground text-sm">Redemption Rules</h4>
               <div className="flex flex-wrap gap-1.5">
                 {offer.redemption_scope && offer.redemption_scope !== 'per_member' && (
                   <Badge variant="outline" className={`text-xs ${
@@ -269,8 +269,8 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
 
           {/* Description */}
           {offer.description && (
-            <div>
-              <h4 className="font-medium text-foreground mb-1 text-sm">Description</h4>
+            <div className="space-y-1.5">
+              <h4 className="font-medium text-foreground text-sm">Description</h4>
               <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                 {offer.description}
               </p>
@@ -279,8 +279,8 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
 
           {/* Terms */}
           {offer.terms && (
-            <div>
-              <h4 className="font-medium text-foreground mb-1 text-sm">Terms & Conditions</h4>
+            <div className="space-y-1.5">
+              <h4 className="font-medium text-foreground text-sm">Terms & Conditions</h4>
               <p className="text-muted-foreground text-xs sm:text-sm italic leading-relaxed">
                 {offer.terms}
               </p>
