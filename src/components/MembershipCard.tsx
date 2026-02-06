@@ -62,9 +62,9 @@ const MembershipCard = ({
         {/* Card number */}
         <div className="relative pt-2 border-t border-wooffy-blue/30 flex justify-between items-center">
           <div>
-            <p className="text-wooffy-light/70 text-[10px]">Member ID</p>
+          <p className="text-wooffy-light/70 text-[10px]">Member ID</p>
             <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
-              WF-2026-XXXX-XXXX
+              WF-2026-XXXXXX
             </p>
           </div>
           <p className="text-wooffy-light/70 text-xs">
