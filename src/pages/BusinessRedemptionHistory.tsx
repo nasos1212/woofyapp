@@ -27,6 +27,7 @@ interface Redemption {
   member_name: string | null;
   pet_names: string | null;
   member_number: string | null;
+  membership_id?: string | null;
   offer: {
     id: string;
     title: string;
@@ -110,6 +111,7 @@ const BusinessRedemptionHistory = () => {
           member_name,
           pet_names,
           member_number,
+          membership_id,
           offer:offers(id, title, discount_value, discount_type)
         `)
         .eq('business_id', businessData.id)
@@ -121,14 +123,16 @@ const BusinessRedemptionHistory = () => {
         isBirthday: false,
       })) as Redemption[];
 
-      // Fetch birthday offer redemptions for this business
+      // Fetch birthday offer redemptions for this business (include pet_id for profile lookup)
       const { data: birthdayData } = await supabase
         .from('sent_birthday_offers')
         .select(`
           id,
           redeemed_at,
           pet_name,
+          pet_id,
           owner_name,
+          owner_user_id,
           discount_value,
           discount_type
         `)
@@ -136,20 +140,61 @@ const BusinessRedemptionHistory = () => {
         .not('redeemed_at', 'is', null)
         .order('redeemed_at', { ascending: false });
 
-      const birthdayRedemptions: Redemption[] = (birthdayData || []).map((r) => ({
-        id: r.id,
-        redeemed_at: r.redeemed_at!,
-        member_name: r.owner_name,
-        pet_names: r.pet_name,
-        member_number: '🎂 Birthday',
-        offer: {
-          id: 'birthday',
-          title: `🎂 Birthday: ${r.pet_name}`,
-          discount_value: r.discount_value,
-          discount_type: r.discount_type,
-        },
-        isBirthday: true,
-      }));
+      // For birthday redemptions where owner_name is null, try to look up from profiles
+      const ownerUserIds = [...new Set((birthdayData || [])
+        .filter(r => !r.owner_name && r.owner_user_id)
+        .map(r => r.owner_user_id))];
+      
+      let userToNameMap: Record<string, string> = {};
+      if (ownerUserIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .in('user_id', ownerUserIds);
+        
+        (profilesData || []).forEach(p => {
+          if (p.full_name) {
+            userToNameMap[p.user_id] = p.full_name;
+          }
+        });
+      }
+
+      // Get pet IDs from birthday redemptions to lookup their membership_ids
+      const petIds = [...new Set((birthdayData || []).map(r => r.pet_id).filter(Boolean))];
+      let petToMembershipMap: Record<string, string> = {};
+      
+      if (petIds.length > 0) {
+        const { data: petsData } = await supabase
+          .from('pets')
+          .select('id, membership_id')
+          .in('id', petIds);
+        
+        (petsData || []).forEach(pet => {
+          petToMembershipMap[pet.id] = pet.membership_id;
+        });
+      }
+
+      const birthdayRedemptions: Redemption[] = (birthdayData || []).map((r) => {
+        // Get membership_id from pet for proper customer tracking
+        const membershipId = r.pet_id ? petToMembershipMap[r.pet_id] : null;
+        
+        return {
+          id: r.id,
+          redeemed_at: r.redeemed_at!,
+          // Use owner_name if available, otherwise look up from profiles
+          member_name: r.owner_name || (r.owner_user_id ? userToNameMap[r.owner_user_id] : null) || null,
+          pet_names: r.pet_name,
+          member_number: '🎂 Birthday',
+          membership_id: membershipId || r.owner_user_id, // Use membership_id or fallback to owner_user_id
+          offer: {
+            id: 'birthday',
+            title: `🎂 Birthday: ${r.pet_name}`,
+            discount_value: r.discount_value,
+            discount_type: r.discount_type,
+          },
+          isBirthday: true,
+        };
+      });
 
       // Combine and sort by date
       const allRedemptions = [...regularRedemptions, ...birthdayRedemptions]
@@ -335,7 +380,7 @@ const BusinessRedemptionHistory = () => {
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
               <p className="text-slate-500 text-xs sm:text-sm">Customers</p>
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">
-                {new Set(filteredRedemptions.map(r => r.member_number).filter(Boolean)).size}
+                {new Set(filteredRedemptions.map(r => r.membership_id || r.member_number).filter(Boolean)).size}
               </p>
             </div>
           </div>
