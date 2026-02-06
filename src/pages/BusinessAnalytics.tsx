@@ -177,17 +177,38 @@ const BusinessAnalytics = () => {
         });
       }
 
+      // Get all unique membership IDs to look up member_numbers
+      const allMembershipIds = [
+        ...new Set([
+          ...(petIds.length > 0 ? Object.values(petToMembershipMap) : []),
+        ])
+      ].filter(Boolean);
+
+      let membershipToNumberMap: Record<string, string> = {};
+      if (allMembershipIds.length > 0) {
+        const { data: membershipsData } = await supabase
+          .from('memberships')
+          .select('id, member_number')
+          .in('id', allMembershipIds);
+        
+        (membershipsData || []).forEach(m => {
+          membershipToNumberMap[m.id] = m.member_number;
+        });
+      }
+
       // Normalize birthday redemptions to match regular redemption structure
       const normalizedBirthdayRedemptions = (birthdayRedemptions || []).map((r) => {
         // Get membership_id from pet for proper customer tracking
         const membershipId = r.pet_id ? petToMembershipMap[r.pet_id] : null;
+        // Get actual member_number from memberships table
+        const memberNumber = membershipId ? membershipToNumberMap[membershipId] : null;
         
         return {
           id: r.id,
           redeemed_at: r.redeemed_at!,
           // Use the looked-up membership_id for proper customer tracking
           membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
-          member_number: "🎂 Birthday",
+          member_number: memberNumber || "🎂 Birthday", // Use actual member_number, fallback to birthday indicator
           // Use owner_name if available, otherwise look up from profiles
           member_name: r.owner_name || (r.owner_user_id ? userToNameMap[r.owner_user_id] : null) || null,
           pet_names: r.pet_name,
