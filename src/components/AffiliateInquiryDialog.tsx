@@ -86,13 +86,17 @@ ${formData.message ? `**Message:** ${formData.message}` : ""}
         console.error("Error storing affiliate inquiry:", dbError);
       } else if (convData) {
         // Store the full details as a message so admin can see them
-        await supabase.from("support_messages").insert({
+        const { error: msgError } = await supabase.from("support_messages").insert({
           conversation_id: convData.id,
           sender_type: "user",
-          sender_id: user?.id || null,
+          sender_id: user?.id ?? null,
           content: fullMessage,
           is_read: false,
         });
+        
+        if (msgError) {
+          console.error("Error storing affiliate message:", msgError);
+        }
       }
 
       // Send notification email
