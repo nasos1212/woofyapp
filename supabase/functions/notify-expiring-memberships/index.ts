@@ -86,11 +86,11 @@ Deno.serve(async (req) => {
       } else if (daysLeft <= 7) {
         notificationType = "expiry_7_days";
         title = "📅 Membership Expiring Soon";
-        message = `Your membership expires in ${daysLeft} days. Renew early and save with our loyalty discount!`;
+        message = `Your membership expires in ${daysLeft} days. Renew now to keep enjoying exclusive pet discounts across Cyprus!`;
       } else if (daysLeft <= 30) {
         notificationType = "expiry_30_days";
         title = "🔔 Membership Renewal Reminder";
-        message = `Your Wooffy membership expires on ${expiryDate.toLocaleDateString()}. Plan ahead and renew to continue saving!`;
+        message = `Your Wooffy membership expires on ${expiryDate.toLocaleDateString()}. Renew to keep your exclusive discounts and pet perks!`;
       }
 
       if (notificationType) {
