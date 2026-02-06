@@ -542,10 +542,13 @@ const BusinessCustomerBirthdays = () => {
                                 </span>
                               </div>
                               
-                              {/* Pet breed and owner info */}
+                              {/* Pet breed */}
+                              {pet.pet_breed && (
+                                <p className="text-sm text-muted-foreground mb-1">{pet.pet_breed}</p>
+                              )}
+                              {/* Owner info */}
                               <p className="text-sm text-muted-foreground mb-1">
-                                {pet.pet_breed && <span>{pet.pet_breed} • </span>}
-                                Owner: <span className="font-medium truncate">{pet.owner_name || pet.owner_email || "Unknown"}</span>
+                                Owner: <span className="font-medium">{pet.owner_name || pet.owner_email || "Unknown"}</span>
                               </p>
                               
                               {/* Date info - simplified on mobile */}
