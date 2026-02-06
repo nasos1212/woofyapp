@@ -22,23 +22,73 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email }: PasswordResetRequest = await req.json();
-    console.log("Processing password reset for:", email);
+    console.log("Processing password reset request");
 
     if (!email) {
       throw new Error("Email is required");
     }
 
-    // Create admin client to generate the reset link without sending default email
+    // Create admin client
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
+    // Check if user exists in our system (profiles table)
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, user_id")
+      .eq("email", email.trim().toLowerCase())
+      .maybeSingle();
+
+    if (profileError) {
+      console.error("Error checking profile:", profileError);
+    }
+
+    // If no profile found, return success anyway (security: don't reveal if email exists)
+    if (!profile) {
+      console.log("No profile found for email - returning success silently");
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    // User exists - now verify they're a legitimate user type (member, business, or shelter)
+    const [membershipResult, businessResult, shelterResult] = await Promise.all([
+      supabaseAdmin.from("memberships").select("id").eq("user_id", profile.user_id).maybeSingle(),
+      supabaseAdmin.from("businesses").select("id").eq("user_id", profile.user_id).maybeSingle(),
+      supabaseAdmin.from("shelters").select("id").eq("user_id", profile.user_id).maybeSingle(),
+    ]);
+
+    // Also check for user roles (freemium members have 'member' role but no membership record)
+    const { data: userRole } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", profile.user_id)
+      .maybeSingle();
+
+    const hasMembership = !!membershipResult.data;
+    const hasBusiness = !!businessResult.data;
+    const hasShelter = !!shelterResult.data;
+    const hasRole = !!userRole;
+
+    // If user has no membership, business, shelter, or role - they're not a real user
+    if (!hasMembership && !hasBusiness && !hasShelter && !hasRole) {
+      console.log("User has no valid account type - returning success silently");
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
+    }
+
+    console.log("Valid user found, generating reset link");
+
     // Generate the password reset link using admin API (doesn't send an email)
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
-      email: email,
+      email: email.trim(),
       options: {
         redirectTo: "https://www.wooffy.app/reset-password",
       },
@@ -46,15 +96,23 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (linkError) {
       console.error("Error generating reset link:", linkError);
-      throw new Error(linkError.message);
+      // Still return success to not reveal if user exists
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
     const resetUrl = linkData.properties?.action_link;
     if (!resetUrl) {
-      throw new Error("Failed to generate reset link");
+      console.error("Failed to generate reset link");
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      });
     }
 
-    console.log("Reset link generated successfully");
+    console.log("Reset link generated, sending branded email");
 
     const emailResponse = await resend.emails.send({
       from: "Wooffy <hello@wooffy.app>",
@@ -99,11 +157,12 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
-    console.error("Error sending password reset email:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
-    );
+    console.error("Error in password reset:", error);
+    // Always return success to not reveal any information
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
   }
 };
 

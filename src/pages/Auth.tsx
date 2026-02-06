@@ -258,7 +258,7 @@ const Auth = () => {
         setResetEmailSent(true);
         toast({
           title: "Check your email",
-          description: "We've sent you a password reset link.",
+          description: "If this email is registered, you'll receive a password reset link shortly.",
         });
       }
     } catch (error) {
