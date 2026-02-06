@@ -46,51 +46,20 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
     setIsSubmitting(true);
 
     try {
-      // Get current user if logged in
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      // Build the full message with all affiliate details
-      const audienceLabels: Record<string, string> = {
-        friends_family: "Friends & Family",
-        social_media: "Social Media Followers",
-        pet_community: "Pet Community / Groups",
-        workplace: "Colleagues / Workplace",
-        clients: "My Clients / Customers",
-        other: "Other",
-      };
-      
-      const fullMessage = `
-**Affiliate Inquiry**
-
-**Name:** ${formData.fullName}
-**Email:** ${formData.email}
-**Phone:** ${formData.phone}
-**Audience:** ${audienceLabels[formData.audience] || formData.audience}
-${formData.message ? `**Message:** ${formData.message}` : ""}
-      `.trim();
-      
-      // Store in support_conversations with metadata for admin tracking
-      const { data: convData, error: dbError } = await supabase
-        .from("support_conversations")
+      // Store directly in affiliate_inquiries table
+      const { error: dbError } = await supabase
+        .from("affiliate_inquiries")
         .insert({
-          user_id: user?.id || "00000000-0000-0000-0000-000000000000",
-          subject: `Affiliate Inquiry: ${formData.fullName}`,
-          category: "affiliate",
-          priority: "normal",
-          status: "open",
-          metadata: {
-            fullName: formData.fullName,
-            email: formData.email,
-            phone: formData.phone,
-            audience: formData.audience,
-            message: formData.message || null,
-          },
-        })
-        .select("id")
-        .single();
+          full_name: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          audience: formData.audience,
+          message: formData.message || null,
+        });
 
       if (dbError) {
         console.error("Error storing affiliate inquiry:", dbError);
+        throw dbError;
       }
 
       // Send notification email

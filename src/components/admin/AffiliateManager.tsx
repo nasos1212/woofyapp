@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Users, Loader2, Clock, CheckCircle2, Mail, Phone, Eye, Trash2 } from "lucide-react";
+import { Users, Loader2, Clock, Mail, Phone, Eye, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -34,15 +33,14 @@ import { formatDistanceToNow, format } from "date-fns";
 
 interface AffiliateInquiry {
   id: string;
-  subject: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  audience: string;
+  message: string | null;
   status: string;
   created_at: string;
   updated_at: string;
-  fullName?: string;
-  email?: string;
-  phone?: string;
-  audience?: string;
-  message?: string;
 }
 
 const audienceLabels: Record<string, string> = {
@@ -74,8 +72,7 @@ const AffiliateManager = () => {
         {
           event: "*",
           schema: "public",
-          table: "support_conversations",
-          filter: "category=eq.affiliate",
+          table: "affiliate_inquiries",
         },
         () => {
           fetchInquiries();
@@ -92,16 +89,15 @@ const AffiliateManager = () => {
     setLoading(true);
     
     let query = supabase
-      .from("support_conversations")
+      .from("affiliate_inquiries")
       .select("*")
-      .eq("category", "affiliate")
       .order("created_at", { ascending: false });
 
     if (statusFilter !== "all") {
       query = query.eq("status", statusFilter);
     }
 
-    const { data: convData, error } = await query;
+    const { data, error } = await query;
 
     if (error) {
       console.error("Error fetching affiliate inquiries:", error);
@@ -109,41 +105,14 @@ const AffiliateManager = () => {
       return;
     }
 
-    // Map conversations to affiliate inquiries, extracting metadata
-    const mappedInquiries: AffiliateInquiry[] = (convData || []).map((conv) => {
-      const metadata = conv.metadata as {
-        fullName?: string;
-        email?: string;
-        phone?: string;
-        audience?: string;
-        message?: string;
-      } | null;
-
-      return {
-        id: conv.id,
-        subject: conv.subject,
-        status: conv.status,
-        created_at: conv.created_at,
-        updated_at: conv.updated_at,
-        fullName: metadata?.fullName || conv.subject.replace("Affiliate Inquiry: ", ""),
-        email: metadata?.email,
-        phone: metadata?.phone,
-        audience: metadata?.audience,
-        message: metadata?.message,
-      };
-    });
-
-    setInquiries(mappedInquiries);
+    setInquiries(data || []);
     setLoading(false);
   };
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
-      .from("support_conversations")
-      .update({ 
-        status,
-        resolved_at: status === "resolved" ? new Date().toISOString() : null 
-      })
+      .from("affiliate_inquiries")
+      .update({ status })
       .eq("id", id);
 
     if (!error) {
@@ -161,14 +130,8 @@ const AffiliateManager = () => {
   const deleteInquiry = async () => {
     if (!inquiryToDelete) return;
 
-    // Delete messages first (foreign key constraint)
-    await supabase
-      .from("support_messages")
-      .delete()
-      .eq("conversation_id", inquiryToDelete);
-
     const { error } = await supabase
-      .from("support_conversations")
+      .from("affiliate_inquiries")
       .delete()
       .eq("id", inquiryToDelete);
 
@@ -197,11 +160,11 @@ const AffiliateManager = () => {
     switch (status) {
       case "open":
         return "bg-blue-500";
-      case "pending":
+      case "contacted":
         return "bg-yellow-500";
-      case "resolved":
+      case "approved":
         return "bg-green-500";
-      case "closed":
+      case "declined":
         return "bg-muted";
       default:
         return "bg-muted";
@@ -219,7 +182,7 @@ const AffiliateManager = () => {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <CardTitle className="text-lg flex items-center gap-2">
-              <Users className="h-5 w-5 text-purple-600" />
+              <Users className="h-5 w-5 text-primary" />
               Affiliate Inquiries
               {inquiries.length > 0 && (
                 <Badge variant="secondary">{inquiries.length}</Badge>
@@ -234,9 +197,9 @@ const AffiliateManager = () => {
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
                 <SelectItem value="open">Open</SelectItem>
-                <SelectItem value="pending">Contacted</SelectItem>
-                <SelectItem value="resolved">Approved</SelectItem>
-                <SelectItem value="closed">Declined</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="approved">Approved</SelectItem>
+                <SelectItem value="declined">Declined</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -264,35 +227,27 @@ const AffiliateManager = () => {
                       className="flex-1 text-left"
                     >
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">
-                          {inquiry.fullName || "Unknown"}
-                        </span>
+                        <span className="font-medium">{inquiry.full_name}</span>
                         <Badge
                           variant="secondary"
                           className={`${getStatusColor(inquiry.status)} text-white text-xs`}
                         >
-                          {inquiry.status === "pending" ? "contacted" : inquiry.status}
+                          {inquiry.status}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                        {inquiry.email && (
-                          <span className="flex items-center gap-1">
-                            <Mail className="h-3 w-3" />
-                            {inquiry.email}
-                          </span>
-                        )}
-                        {inquiry.phone && (
-                          <span className="flex items-center gap-1">
-                            <Phone className="h-3 w-3" />
-                            {inquiry.phone}
-                          </span>
-                        )}
+                        <span className="flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
+                          {inquiry.email}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Phone className="h-3 w-3" />
+                          {inquiry.phone}
+                        </span>
                       </div>
-                      {inquiry.audience && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Audience: {inquiry.audience}
-                        </p>
-                      )}
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Audience: {audienceLabels[inquiry.audience] || inquiry.audience}
+                      </p>
                     </button>
                     <div className="flex items-center gap-1">
                       <Button
@@ -332,7 +287,7 @@ const AffiliateManager = () => {
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-purple-600" />
+                  <Users className="h-5 w-5 text-primary" />
                   Affiliate Inquiry
                 </DialogTitle>
                 <DialogDescription>
@@ -344,7 +299,7 @@ const AffiliateManager = () => {
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Name</p>
-                    <p className="font-medium">{selectedInquiry.fullName || "Not provided"}</p>
+                    <p className="font-medium">{selectedInquiry.full_name}</p>
                   </div>
                   
                   <div>
@@ -354,7 +309,7 @@ const AffiliateManager = () => {
                       className="text-primary hover:underline flex items-center gap-1"
                     >
                       <Mail className="h-4 w-4" />
-                      {selectedInquiry.email || "Not provided"}
+                      {selectedInquiry.email}
                     </a>
                   </div>
                   
@@ -365,13 +320,13 @@ const AffiliateManager = () => {
                       className="text-primary hover:underline flex items-center gap-1"
                     >
                       <Phone className="h-4 w-4" />
-                      {selectedInquiry.phone || "Not provided"}
+                      {selectedInquiry.phone}
                     </a>
                   </div>
                   
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Target Audience</p>
-                    <p>{selectedInquiry.audience || "Not specified"}</p>
+                    <p>{audienceLabels[selectedInquiry.audience] || selectedInquiry.audience}</p>
                   </div>
                   
                   {selectedInquiry.message && (
@@ -393,9 +348,9 @@ const AffiliateManager = () => {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="open">Open</SelectItem>
-                      <SelectItem value="pending">Contacted</SelectItem>
-                      <SelectItem value="resolved">Approved</SelectItem>
-                      <SelectItem value="closed">Declined</SelectItem>
+                      <SelectItem value="contacted">Contacted</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="declined">Declined</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
