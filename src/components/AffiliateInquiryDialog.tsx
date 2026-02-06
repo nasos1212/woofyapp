@@ -36,12 +36,17 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Affiliate form submitted with data:", formData);
+    
     const validation = affiliateSchema.safeParse(formData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
+      console.error("Validation failed:", validation.error.errors);
       toast.error(firstError.message);
       return;
     }
+    
+    console.log("Validation passed, inserting to database...");
 
     setIsSubmitting(true);
 
