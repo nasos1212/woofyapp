@@ -161,8 +161,8 @@ If you have any further questions, simply reply to this email or respond through
 
     // Send email notification to support team (user's message to admin)
     const emailSubject = isReply 
-      ? `[Wooffy Support] Reply: ${subject}`
-      : `[Wooffy Support] New Request: ${subject}`;
+      ? `[Support Reply] ${userName} - ${subject}`
+      : `[New Support] ${userName} - ${subject}`;
 
     const emailResponse = await resend.emails.send({
       from: "Wooffy Support <hello@wooffy.app>",
@@ -251,7 +251,7 @@ async function handleAffiliateInquiry(body: SupportNotificationRequest): Promise
   const emailResponse = await resend.emails.send({
     from: "Wooffy Affiliates <hello@wooffy.app>",
     to: ["hello@wooffy.app"],
-    subject: `[Wooffy] New Affiliate Inquiry: ${fullName}`,
+    subject: `[New Affiliate] ${fullName}`,
     html: `<!DOCTYPE html>
 <html>
 <head>
