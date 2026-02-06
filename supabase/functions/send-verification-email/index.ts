@@ -85,7 +85,7 @@ const handler = async (req: Request): Promise<Response> => {
 <p style="font-size: 14px; color: #6b7280; line-height: 1.6;">If you didn't create an account on Wooffy, you can safely ignore this email.</p>
 </div>
 <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
-<p style="font-size: 12px; color: #9ca3af; margin: 0;">© 2026 Wooffy. Made with ❤️ for pets in Cyprus.</p>
+<p style="font-size: 12px; color: #9ca3af; margin: 0;">© 2026 Wooffy. An effort to unite pet lovers all over Cyprus.</p>
 </div>
 </div>
 </body>
