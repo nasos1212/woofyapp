@@ -33,27 +33,40 @@ const ExpiringMembershipsPanel = () => {
       const thirtyDaysFromNow = new Date(now);
       thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
-      const { data, error } = await supabase
+      // Fetch memberships first
+      const { data: membershipData, error: membershipError } = await supabase
         .from("memberships")
-        .select(`
-          id,
-          user_id,
-          expires_at,
-          plan_type,
-          member_number,
-          profiles(full_name, email)
-        `)
+        .select("id, user_id, expires_at, plan_type, member_number")
         .eq("is_active", true)
         .lte("expires_at", thirtyDaysFromNow.toISOString())
         .gt("expires_at", now.toISOString())
         .order("expires_at", { ascending: true });
 
-      if (error) throw error;
+      if (membershipError) throw membershipError;
       
-      // Transform data to handle the profiles array from join
-      const transformed = (data || []).map(m => ({
+      if (!membershipData || membershipData.length === 0) {
+        setMemberships([]);
+        return;
+      }
+
+      // Fetch profiles for these users
+      const userIds = [...new Set(membershipData.map(m => m.user_id))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, email")
+        .in("user_id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create a map for quick lookup
+      const profilesMap = new Map(
+        (profilesData || []).map(p => [p.user_id, { full_name: p.full_name, email: p.email }])
+      );
+
+      // Combine the data
+      const transformed: ExpiringMembership[] = membershipData.map(m => ({
         ...m,
-        profiles: Array.isArray(m.profiles) ? m.profiles[0] : m.profiles
+        profiles: profilesMap.get(m.user_id) || null
       }));
       
       setMemberships(transformed);
