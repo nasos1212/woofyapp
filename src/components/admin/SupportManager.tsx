@@ -443,12 +443,6 @@ const SupportManager = () => {
                     >
                       {conv.status}
                     </Badge>
-                    <Badge
-                      variant="outline"
-                      className={`${getPriorityColor(conv.priority)} text-white text-xs`}
-                    >
-                      {conv.priority}
-                    </Badge>
                   </div>
                   <div className="flex items-center justify-between mt-2">
                     <p className="text-sm text-muted-foreground flex items-center gap-1">
