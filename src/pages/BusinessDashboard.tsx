@@ -158,13 +158,14 @@ const BusinessDashboard = () => {
       .eq('business_id', businessData.id)
       .order('redeemed_at', { ascending: true });
 
-    // Fetch ALL birthday redemptions for this business
+    // Fetch ALL birthday redemptions for this business (with pet_id to get membership)
     const { data: birthdayRedemptionsData } = await supabase
       .from('sent_birthday_offers')
       .select(`
         id,
         redeemed_at,
         pet_name,
+        pet_id,
         owner_name,
         owner_user_id,
         discount_value,
@@ -173,6 +174,38 @@ const BusinessDashboard = () => {
       .eq('redeemed_by_business_id', businessData.id)
       .not('redeemed_at', 'is', null)
       .order('redeemed_at', { ascending: true });
+
+    // Get pet IDs from birthday redemptions to lookup their membership_ids
+    const petIds = [...new Set((birthdayRedemptionsData || []).map(r => r.pet_id).filter(Boolean))];
+    let petToMembershipMap: Record<string, string> = {};
+    
+    if (petIds.length > 0) {
+      const { data: petsData } = await supabase
+        .from('pets')
+        .select('id, membership_id')
+        .in('id', petIds);
+      
+      (petsData || []).forEach(pet => {
+        petToMembershipMap[pet.id] = pet.membership_id;
+      });
+    }
+
+    // Also build a mapping from owner_user_id to membership_id using regular redemptions + pets
+    // Collect all membership_ids from regular redemptions
+    const membershipIds = [...new Set((allRedemptionsData || []).map(r => r.membership_id))];
+    let userToMembershipMap: Record<string, string> = {};
+    
+    if (membershipIds.length > 0) {
+      // Get the user_id for each membership
+      const { data: membershipsData } = await supabase
+        .from('memberships')
+        .select('id, user_id')
+        .in('id', membershipIds);
+      
+      (membershipsData || []).forEach(m => {
+        userToMembershipMap[m.user_id] = m.id;
+      });
+    }
 
     // Combine regular and birthday redemptions
     const regularRedemptions: Redemption[] = (allRedemptionsData || []).map(r => ({
@@ -186,20 +219,32 @@ const BusinessDashboard = () => {
       offer: r.offer as unknown as Redemption['offer'],
     }));
 
-    const birthdayRedemptions: Redemption[] = (birthdayRedemptionsData || []).map(r => ({
-      id: r.id,
-      redeemed_at: r.redeemed_at!,
-      member_name: r.owner_name,
-      pet_names: r.pet_name,
-      member_number: null,
-      membership_id: r.owner_user_id, // Use owner_user_id for customer tracking
-      isBirthday: true,
-      offer: {
-        title: `🎂 Birthday: ${r.pet_name}`,
-        discount_value: r.discount_value,
-        discount_type: r.discount_type,
-      },
-    }));
+    // For birthday redemptions, use pet_id to get membership_id for proper customer tracking
+    const birthdayRedemptions: Redemption[] = (birthdayRedemptionsData || []).map(r => {
+      // Try to get membership_id from pet first
+      let membershipId = r.pet_id ? petToMembershipMap[r.pet_id] : null;
+      
+      // If not found, try user_id mapping
+      if (!membershipId && r.owner_user_id) {
+        membershipId = userToMembershipMap[r.owner_user_id];
+      }
+      
+      return {
+        id: r.id,
+        redeemed_at: r.redeemed_at!,
+        member_name: r.owner_name,
+        pet_names: r.pet_name,
+        member_number: null,
+        // Use the looked-up membership_id for proper customer tracking
+        membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
+        isBirthday: true,
+        offer: {
+          title: `🎂 Birthday: ${r.pet_name}`,
+          discount_value: r.discount_value,
+          discount_type: r.discount_type,
+        },
+      };
+    });
 
     // Combine all redemptions
     const allCombinedRedemptions = [...regularRedemptions, ...birthdayRedemptions];
