@@ -326,34 +326,35 @@ const PlacesManager = () => {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="w-5 h-5" />
+      <Card className="border-border/50">
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+              <MapPin className="w-5 h-5 shrink-0" />
               Pet-Friendly Places
             </CardTitle>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={fetchPlaces}>
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh
+              <Button variant="outline" size="sm" onClick={fetchPlaces} className="flex-1 sm:flex-none">
+                <RefreshCw className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Refresh</span>
               </Button>
-              <Button size="sm" onClick={handleAddNew}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Place
+              <Button size="sm" onClick={handleAddNew} className="flex-1 sm:flex-none">
+                <Plus className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Add Place</span>
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
           <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
-            <TabsList className="mb-4">
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="verified">Verified</TabsTrigger>
-              <TabsTrigger value="pending" className="gap-2">
-                Pending Review
+            <TabsList className="mb-4 w-full sm:w-auto grid grid-cols-3 sm:flex">
+              <TabsTrigger value="all" className="text-xs sm:text-sm">All</TabsTrigger>
+              <TabsTrigger value="verified" className="text-xs sm:text-sm">Verified</TabsTrigger>
+              <TabsTrigger value="pending" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+                <span className="hidden sm:inline">Pending Review</span>
+                <span className="sm:hidden">Pending</span>
                 {pendingCount > 0 && (
-                  <Badge variant="destructive" className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                  <Badge variant="destructive" className="ml-1 h-4 w-4 sm:h-5 sm:w-5 p-0 flex items-center justify-center text-[10px] sm:text-xs">
                     {pendingCount}
                   </Badge>
                 )}
@@ -371,126 +372,240 @@ const PlacesManager = () => {
                   <p>No places to show</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>City</TableHead>
-                        <TableHead>Contact</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {places.map((place) => (
-                        <TableRow key={place.id}>
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{place.name}</p>
-                              {place.address && (
-                                <p className="text-xs text-muted-foreground truncate max-w-[200px]">
-                                  {place.address}
-                                </p>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {placeTypeLabels[place.place_type] || place.place_type}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{place.city || "-"}</TableCell>
-                          <TableCell>
-                            <div className="flex gap-2">
-                              {place.phone && (
-                                <a href={`tel:${place.phone}`} className="text-muted-foreground hover:text-foreground">
-                                  <Phone className="w-4 h-4" />
-                                </a>
-                              )}
-                              {place.website && (
-                                <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
-                                  <ExternalLink className="w-4 h-4" />
-                                </a>
-                              )}
-                              {!place.phone && !place.website && "-"}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {place.verified ? (
-                              <Badge className="bg-green-100 text-green-700">
-                                Verified
+                <>
+                  {/* Desktop Table View */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>City</TableHead>
+                          <TableHead>Contact</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {places.map((place) => (
+                          <TableRow key={place.id}>
+                            <TableCell>
+                              <div>
+                                <p className="font-medium">{place.name}</p>
+                                {place.address && (
+                                  <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                                    {place.address}
+                                  </p>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">
+                                {placeTypeLabels[place.place_type] || place.place_type}
                               </Badge>
-                            ) : (
-                              <Badge variant="secondary">
-                                Pending
-                              </Badge>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleView(place)}
-                                title="View details"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleEdit(place)}
-                                title="Edit"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </Button>
-                              {!place.verified && (
+                            </TableCell>
+                            <TableCell>{place.city || "-"}</TableCell>
+                            <TableCell>
+                              <div className="flex gap-2">
+                                {place.phone && (
+                                  <a href={`tel:${place.phone}`} className="text-muted-foreground hover:text-foreground">
+                                    <Phone className="w-4 h-4" />
+                                  </a>
+                                )}
+                                {place.website && (
+                                  <a href={place.website} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+                                    <ExternalLink className="w-4 h-4" />
+                                  </a>
+                                )}
+                                {!place.phone && !place.website && "-"}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {place.verified ? (
+                                <Badge className="bg-green-100 text-green-700">
+                                  Verified
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary">
+                                  Pending
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                                  onClick={() => handleVerify(place.id)}
+                                  onClick={() => handleView(place)}
+                                  title="View details"
                                 >
-                                  <Check className="w-4 h-4" />
+                                  <Eye className="w-4 h-4" />
                                 </Button>
-                              )}
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleEdit(place)}
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </Button>
+                                {!place.verified && (
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={() => handleVerify(place.id)}
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Check className="w-4 h-4" />
                                   </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete this place?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This will permanently remove "{place.name}" from the database.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleReject(place.id)}
-                                      className="bg-red-600 hover:bg-red-700"
+                                )}
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                     >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                                      <Trash2 className="w-4 h-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete this place?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will permanently remove "{place.name}" from the database.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleReject(place.id)}
+                                        className="bg-red-600 hover:bg-red-700"
+                                      >
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-3">
+                    {places.map((place) => (
+                      <div
+                        key={place.id}
+                        className="p-3 rounded-lg bg-muted/30 border border-border/50"
+                      >
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-medium truncate">{place.name}</p>
+                            {place.address && (
+                              <p className="text-xs text-muted-foreground truncate">
+                                {place.address}
+                              </p>
+                            )}
+                          </div>
+                          {place.verified ? (
+                            <Badge className="bg-green-100 text-green-700 shrink-0 text-xs">
+                              Verified
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="shrink-0 text-xs">
+                              Pending
+                            </Badge>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 mb-3 text-xs text-muted-foreground">
+                          <Badge variant="outline" className="text-xs">
+                            {placeTypeLabels[place.place_type] || place.place_type}
+                          </Badge>
+                          {place.city && (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              {place.city}
+                            </span>
+                          )}
+                          {place.phone && (
+                            <a href={`tel:${place.phone}`} className="flex items-center gap-1 hover:text-foreground">
+                              <Phone className="w-3 h-3" />
+                              Call
+                            </a>
+                          )}
+                          {place.website && (
+                            <a href={place.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-foreground">
+                              <ExternalLink className="w-3 h-3" />
+                              Website
+                            </a>
+                          )}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleView(place)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(place)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          {!place.verified && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              onClick={() => handleVerify(place.id)}
+                            >
+                              <Check className="w-4 h-4" />
+                            </Button>
+                          )}
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="mx-4 max-w-[calc(100%-2rem)]">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete this place?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently remove "{place.name}" from the database.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleReject(place.id)}
+                                  className="bg-red-600 hover:bg-red-700"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </TabsContent>
           </Tabs>
