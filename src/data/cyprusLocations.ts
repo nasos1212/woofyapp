@@ -15,7 +15,7 @@ export interface CyprusCityWithCoords {
 
 export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
   {
-    name: "Nicosia (Lefkosia)",
+    name: "Nicosia",
     lat: 35.1856,
     lng: 33.3823,
     areas: [
@@ -33,7 +33,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
     ],
   },
   {
-    name: "Limassol (Lemesos)",
+    name: "Limassol",
     lat: 34.6786,
     lng: 33.0413,
     areas: [
@@ -51,7 +51,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
     ],
   },
   {
-    name: "Larnaca (Larnaka)",
+    name: "Larnaca",
     lat: 34.9229,
     lng: 33.6232,
     areas: [
@@ -68,7 +68,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
     ],
   },
   {
-    name: "Paphos (Pafos)",
+    name: "Paphos",
     lat: 34.7754,
     lng: 32.4245,
     areas: [
@@ -85,7 +85,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
     ],
   },
   {
-    name: "Famagusta (Ammochostos)",
+    name: "Famagusta",
     lat: 35.1174,
     lng: 33.9420,
     areas: [
