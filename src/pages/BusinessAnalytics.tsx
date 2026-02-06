@@ -133,6 +133,7 @@ const BusinessAnalytics = () => {
           id,
           redeemed_at,
           pet_name,
+          pet_id,
           owner_name,
           owner_user_id,
           discount_value,
@@ -142,20 +143,61 @@ const BusinessAnalytics = () => {
         .not("redeemed_at", "is", null)
         .order("redeemed_at", { ascending: false });
 
+      // For birthday redemptions where owner_name is null, try to look up from profiles
+      const ownerUserIds = [...new Set((birthdayRedemptions || [])
+        .filter(r => !r.owner_name && r.owner_user_id)
+        .map(r => r.owner_user_id))];
+      
+      let userToNameMap: Record<string, string> = {};
+      if (ownerUserIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .in('user_id', ownerUserIds);
+        
+        (profilesData || []).forEach(p => {
+          if (p.full_name) {
+            userToNameMap[p.user_id] = p.full_name;
+          }
+        });
+      }
+
+      // Get pet IDs from birthday redemptions to lookup their membership_ids
+      const petIds = [...new Set((birthdayRedemptions || []).map(r => r.pet_id).filter(Boolean))];
+      let petToMembershipMap: Record<string, string> = {};
+      
+      if (petIds.length > 0) {
+        const { data: petsData } = await supabase
+          .from('pets')
+          .select('id, membership_id')
+          .in('id', petIds);
+        
+        (petsData || []).forEach(pet => {
+          petToMembershipMap[pet.id] = pet.membership_id;
+        });
+      }
+
       // Normalize birthday redemptions to match regular redemption structure
-      const normalizedBirthdayRedemptions = (birthdayRedemptions || []).map((r) => ({
-        id: r.id,
-        redeemed_at: r.redeemed_at!,
-        membership_id: r.owner_user_id, // Use owner_user_id for unique customer tracking
-        member_number: "🎂 Birthday",
-        member_name: r.owner_name,
-        pet_names: r.pet_name,
-        offer: {
-          title: `🎂 Birthday: ${r.pet_name}`,
-          discount_value: r.discount_value,
-          discount_type: r.discount_type,
-        },
-      }));
+      const normalizedBirthdayRedemptions = (birthdayRedemptions || []).map((r) => {
+        // Get membership_id from pet for proper customer tracking
+        const membershipId = r.pet_id ? petToMembershipMap[r.pet_id] : null;
+        
+        return {
+          id: r.id,
+          redeemed_at: r.redeemed_at!,
+          // Use the looked-up membership_id for proper customer tracking
+          membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
+          member_number: "🎂 Birthday",
+          // Use owner_name if available, otherwise look up from profiles
+          member_name: r.owner_name || (r.owner_user_id ? userToNameMap[r.owner_user_id] : null) || null,
+          pet_names: r.pet_name,
+          offer: {
+            title: `🎂 Birthday: ${r.pet_name}`,
+            discount_value: r.discount_value,
+            discount_type: r.discount_type,
+          },
+        };
+      });
 
       // Combine all redemptions
       const redemptions = [...(regularRedemptions || []), ...normalizedBirthdayRedemptions];
