@@ -102,7 +102,7 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-wooffy-blue/30 text-center text-sm text-wooffy-light/50">
-          <p>© 2026 Wooffy. Made with ❤️ for pet lovers everywhere.</p>
+          <p>© 2026 Wooffy. An effort to unite pet lovers all over Cyprus.</p>
         </div>
       </div>
 
