@@ -49,8 +49,28 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
       // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
       
+      // Build the full message with all affiliate details
+      const audienceLabels: Record<string, string> = {
+        friends_family: "Friends & Family",
+        social_media: "Social Media Followers",
+        pet_community: "Pet Community / Groups",
+        workplace: "Colleagues / Workplace",
+        clients: "My Clients / Customers",
+        other: "Other",
+      };
+      
+      const fullMessage = `
+**Affiliate Inquiry**
+
+**Name:** ${formData.fullName}
+**Email:** ${formData.email}
+**Phone:** ${formData.phone}
+**Audience:** ${audienceLabels[formData.audience] || formData.audience}
+${formData.message ? `**Message:** ${formData.message}` : ""}
+      `.trim();
+      
       // Store in support_conversations for admin tracking
-      const { error: dbError } = await supabase
+      const { data: convData, error: dbError } = await supabase
         .from("support_conversations")
         .insert({
           user_id: user?.id || "00000000-0000-0000-0000-000000000000",
@@ -58,10 +78,21 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
           category: "affiliate",
           priority: "normal",
           status: "open",
-        });
+        })
+        .select("id")
+        .single();
 
       if (dbError) {
         console.error("Error storing affiliate inquiry:", dbError);
+      } else if (convData) {
+        // Store the full details as a message so admin can see them
+        await supabase.from("support_messages").insert({
+          conversation_id: convData.id,
+          sender_type: "user",
+          sender_id: user?.id || null,
+          content: fullMessage,
+          is_read: false,
+        });
       }
 
       // Send notification email
