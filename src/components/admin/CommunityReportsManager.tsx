@@ -179,7 +179,17 @@ const CommunityReportsManager = () => {
 
     setDeleting(true);
     try {
-      // Delete the question (this will cascade delete the report due to ON DELETE CASCADE)
+      // First mark the report as deleted (before cascade removes it)
+      await supabase
+        .from("community_reports")
+        .update({
+          status: "deleted",
+          resolved_at: new Date().toISOString(),
+          resolved_by: user.id,
+        })
+        .eq("id", selectedReport.id);
+
+      // Delete the question (this will cascade delete related data)
       const { error } = await supabase
         .from("community_questions")
         .delete()
@@ -213,10 +223,10 @@ const CommunityReportsManager = () => {
         return <Badge variant="secondary" className="bg-yellow-500 text-white">Pending</Badge>;
       case "reviewing":
         return <Badge variant="secondary" className="bg-blue-500 text-white">Reviewing</Badge>;
-      case "resolved":
-        return <Badge variant="secondary" className="bg-green-500 text-white">Resolved</Badge>;
+      case "deleted":
+        return <Badge variant="secondary" className="bg-red-500 text-white">Deleted</Badge>;
       case "dismissed":
-        return <Badge variant="secondary" className="bg-gray-500 text-white">Dismissed</Badge>;
+        return <Badge variant="secondary" className="bg-muted text-muted-foreground">Dismissed</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -254,7 +264,7 @@ const CommunityReportsManager = () => {
               <SelectItem value="all">All Reports</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="reviewing">Reviewing</SelectItem>
-              <SelectItem value="resolved">Resolved</SelectItem>
+              <SelectItem value="deleted">Deleted</SelectItem>
               <SelectItem value="dismissed">Dismissed</SelectItem>
             </SelectContent>
           </Select>
@@ -417,32 +427,20 @@ const CommunityReportsManager = () => {
                       <Trash2 className="h-4 w-4 mr-2" />
                       Delete Post
                     </Button>
-                    <div className="flex gap-2 w-full sm:w-auto">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          updateReportStatus(selectedReport.id, "dismissed");
-                          closeDetailDialog();
-                        }}
-                        className="flex-1 sm:flex-none"
-                      >
-                        <XCircle className="h-4 w-4 mr-2" />
-                        Dismiss
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          updateReportStatus(selectedReport.id, "resolved");
-                          closeDetailDialog();
-                        }}
-                        className="flex-1 sm:flex-none"
-                      >
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Resolved
-                      </Button>
-                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        updateReportStatus(selectedReport.id, "dismissed");
+                        closeDetailDialog();
+                      }}
+                      className="w-full sm:w-auto"
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Dismiss
+                    </Button>
                   </>
                 )}
-                {(selectedReport.status === "resolved" || selectedReport.status === "dismissed") && (
+                {(selectedReport.status === "deleted" || selectedReport.status === "dismissed") && (
                   <Button variant="outline" onClick={closeDetailDialog}>
                     Close
                   </Button>
