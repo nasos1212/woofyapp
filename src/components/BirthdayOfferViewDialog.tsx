@@ -1,9 +1,8 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Gift, Cake, Calendar, MapPin } from "lucide-react";
+import { Building2, Gift, Cake, Calendar } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
 
 interface BirthdayOfferData {
   business_id: string;
@@ -30,8 +29,6 @@ export function BirthdayOfferViewDialog({
   data,
   createdAt,
 }: BirthdayOfferViewDialogProps) {
-  const navigate = useNavigate();
-
   if (!data) return null;
 
   const discountText = data.discount_type === 'percentage' 
@@ -79,27 +76,22 @@ export function BirthdayOfferViewDialog({
             <Calendar className="w-4 h-4" />
             <span>Received on {formatDate(new Date(createdAt))}</span>
           </div>
+
+          {/* Instructions */}
+          <div className="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              💡 Show this message to the business when you visit to redeem your birthday offer!
+            </p>
+          </div>
         </div>
 
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="flex-1"
-          >
-            Close
-          </Button>
-          <Button
-            onClick={() => {
-              onOpenChange(false);
-              navigate(`/member/offers?highlight=birthday&business=${data.business_id}`);
-            }}
-            className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-          >
-            <MapPin className="w-4 h-4 mr-2" />
-            View Offers
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          onClick={() => onOpenChange(false)}
+          className="w-full"
+        >
+          Close
+        </Button>
       </DialogContent>
     </Dialog>
   );
