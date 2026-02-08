@@ -6,7 +6,6 @@ const freeFeatures = [
   "Lost & Found Pet Alerts",
   "Pet-Friendly Places Map",
   "Community Q&A Access",
-  "Basic Pet Profiles",
 ];
 
 const premiumFeatures = [
