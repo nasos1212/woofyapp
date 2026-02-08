@@ -1,39 +1,29 @@
-import { useEffect, useState, useCallback } from "react";
-import { toast } from "sonner";
-import { RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 
 const PWAUpdatePrompt = () => {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
-
-  const updateSW = useCallback(() => {
-    if (waitingWorker) {
-      waitingWorker.postMessage({ type: "SKIP_WAITING" });
-      window.location.reload();
-    }
-  }, [waitingWorker]);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      // Check for waiting service worker on load
+      // Get the service worker registration
       navigator.serviceWorker.ready.then((reg) => {
         setRegistration(reg);
         
+        // If there's a waiting worker, activate it immediately
         if (reg.waiting) {
-          setWaitingWorker(reg.waiting);
+          reg.waiting.postMessage({ type: "SKIP_WAITING" });
         }
       });
 
-      // Listen for new service worker updates
+      // Listen for controller changes and reload
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         window.location.reload();
       });
 
-      // Check for updates periodically
+      // Check for updates every 15 seconds (more aggressive)
       const interval = setInterval(() => {
         registration?.update();
-      }, 60 * 1000);
+      }, 15 * 1000);
 
       return () => clearInterval(interval);
     }
@@ -45,35 +35,15 @@ const PWAUpdatePrompt = () => {
         const newWorker = registration.installing;
         if (newWorker) {
           newWorker.addEventListener("statechange", () => {
+            // Auto-activate the new worker as soon as it's installed
             if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              setWaitingWorker(newWorker);
+              newWorker.postMessage({ type: "SKIP_WAITING" });
             }
           });
         }
       });
     }
   }, [registration]);
-
-  useEffect(() => {
-    if (waitingWorker) {
-      toast(
-        <div className="flex items-center gap-3">
-          <RefreshCw className="w-5 h-5 text-primary" />
-          <div className="flex-1">
-            <p className="font-medium">New version available!</p>
-            <p className="text-sm text-muted-foreground">Click to update</p>
-          </div>
-          <Button size="sm" onClick={updateSW}>
-            Update
-          </Button>
-        </div>,
-        {
-          duration: Infinity,
-          id: "pwa-update",
-        }
-      );
-    }
-  }, [waitingWorker, updateSW]);
 
   return null;
 };
