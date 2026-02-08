@@ -324,8 +324,6 @@ const SupportManager = () => {
         return "bg-yellow-500";
       case "resolved":
         return "bg-green-500";
-      case "closed":
-        return "bg-muted";
       default:
         return "bg-muted";
     }
@@ -395,7 +393,6 @@ const SupportManager = () => {
                 <SelectItem value="open">Open</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="resolved">Resolved</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -490,7 +487,6 @@ const SupportManager = () => {
                       <SelectItem value="open">Open</SelectItem>
                       <SelectItem value="pending">Pending</SelectItem>
                       <SelectItem value="resolved">Resolved</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
