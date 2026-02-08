@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
+import PWAUpdatePrompt from "./components/PWAUpdatePrompt";
 
 import SupportButton from "./components/SupportButton";
 import Index from "./pages/Index";
@@ -52,6 +53,7 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
+          <PWAUpdatePrompt />
           <Toaster />
           <Sonner />
           <BrowserRouter>
