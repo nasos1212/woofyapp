@@ -332,6 +332,16 @@ const CommunityQuestion = () => {
       <Helmet>
         <title>{question.title} | Wooffy Community</title>
         <meta name="description" content={question.content.slice(0, 160)} />
+        {/* Open Graph tags for social sharing */}
+        <meta property="og:title" content={`${question.title} | Wooffy Community`} />
+        <meta property="og:description" content={question.content.slice(0, 160)} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://woofyapp.lovable.app/community/question/${question.id}`} />
+        <meta property="og:site_name" content="Wooffy" />
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={`${question.title} | Wooffy Community`} />
+        <meta name="twitter:description" content={question.content.slice(0, 160)} />
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
