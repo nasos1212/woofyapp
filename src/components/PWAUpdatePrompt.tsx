@@ -1,49 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const PWAUpdatePrompt = () => {
-  const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      // Get the service worker registration
-      navigator.serviceWorker.ready.then((reg) => {
-        setRegistration(reg);
-        
+    if (!("serviceWorker" in navigator)) return;
+
+    const setupServiceWorker = async () => {
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        registrationRef.current = reg;
+
         // If there's a waiting worker, activate it immediately
         if (reg.waiting) {
           reg.waiting.postMessage({ type: "SKIP_WAITING" });
         }
-      });
 
-      // Listen for controller changes and reload
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        window.location.reload();
-      });
+        // Listen for new updates
+        reg.addEventListener("updatefound", () => {
+          const newWorker = reg.installing;
+          if (newWorker) {
+            newWorker.addEventListener("statechange", () => {
+              if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                newWorker.postMessage({ type: "SKIP_WAITING" });
+              }
+            });
+          }
+        });
+      } catch (error) {
+        console.error("Service worker setup error:", error);
+      }
+    };
 
-      // Check for updates every 15 seconds (more aggressive)
-      const interval = setInterval(() => {
-        registration?.update();
-      }, 15 * 1000);
+    setupServiceWorker();
 
-      return () => clearInterval(interval);
-    }
-  }, [registration]);
+    // Listen for controller changes and reload
+    const handleControllerChange = () => {
+      window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener("controllerchange", handleControllerChange);
 
-  useEffect(() => {
-    if (registration) {
-      registration.addEventListener("updatefound", () => {
-        const newWorker = registration.installing;
-        if (newWorker) {
-          newWorker.addEventListener("statechange", () => {
-            // Auto-activate the new worker as soon as it's installed
-            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              newWorker.postMessage({ type: "SKIP_WAITING" });
-            }
-          });
-        }
-      });
-    }
-  }, [registration]);
+    // Check for updates every 15 seconds
+    const interval = setInterval(() => {
+      registrationRef.current?.update();
+    }, 15 * 1000);
+
+    return () => {
+      clearInterval(interval);
+      navigator.serviceWorker.removeEventListener("controllerchange", handleControllerChange);
+    };
+  }, []);
 
   return null;
 };
