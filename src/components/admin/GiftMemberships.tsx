@@ -188,8 +188,9 @@ const InfluencerMemberships = () => {
       const expiresAt = new Date();
       expiresAt.setMonth(expiresAt.getMonth() + parseInt(newMembership.duration_months));
 
-      // First create a membership for the user
-      const memberNumber = `WF-${new Date().getFullYear()}-${Math.floor(Math.random() * 999999).toString().padStart(6, "0")}`;
+      // Generate sequential member number using database function
+      const { data: memberNumberData } = await supabase.rpc('generate_member_number');
+      const memberNumber = memberNumberData || `WF-${new Date().getFullYear()}-1`;
       
       const { data: membershipData, error: membershipError } = await supabase
         .from("memberships")

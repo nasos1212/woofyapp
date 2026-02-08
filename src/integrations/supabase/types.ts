@@ -1215,6 +1215,21 @@ export type Database = {
           },
         ]
       }
+      member_number_sequences: {
+        Row: {
+          current_value: number
+          year: number
+        }
+        Insert: {
+          current_value?: number
+          year: number
+        }
+        Update: {
+          current_value?: number
+          year?: number
+        }
+        Relationships: []
+      }
       membership_expiry_notifications: {
         Row: {
           days_until_expiry: number

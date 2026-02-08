@@ -227,13 +227,17 @@ const MemberOnboarding = () => {
 
       // If no membership exists, create one (demo/free mode - no payment required)
       if (!membership) {
+        // Generate sequential member number using database function
+        const { data: memberNumberData } = await supabase.rpc('generate_member_number');
+        const memberNumber = memberNumberData || `WF-${new Date().getFullYear()}-1`;
+        
         const { data: newMembership, error: createError } = await supabase
           .from("memberships")
           .insert({
             user_id: user.id,
             plan_type: selectedPlan.id,
             max_pets: selectedPlan.pets,
-            member_number: `WF-${new Date().getFullYear()}-${Math.floor(Math.random() * 999999).toString().padStart(6, '0')}`,
+            member_number: memberNumber,
             expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year from now
             is_active: true,
           })
