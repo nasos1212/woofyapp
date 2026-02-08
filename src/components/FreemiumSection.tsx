@@ -12,7 +12,6 @@ const premiumFeatures = [
   "Exclusive Partner Discounts",
   "AI Pet Health Assistant",
   "Vaccination & Health Reminders",
-  "Priority Support",
   "Pet Birthday Offers",
 ];
 
