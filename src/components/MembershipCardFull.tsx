@@ -15,7 +15,7 @@ const MembershipCardFull = ({
   petName = "Your Pet's Name",
   petNames,
   memberSince = "2026",
-  memberId = "WF-2026-XXXXXX",
+  memberId = "WF-2026-XX",
   expiryDate = "25/12/2025"
 }: MembershipCardFullProps) => {
   // QR code contains just the member ID for businesses to scan

@@ -48,7 +48,7 @@ const MembershipCard = ({
           <div className="flex flex-col items-center">
             <div className="bg-white p-2 rounded-lg">
               <QRCodeSVG 
-                value="https://wooffy.app/member/WF-2026-DEMO" 
+                value="WF-2026-DEMO" 
                 size={88}
                 level="M"
                 bgColor="#ffffff"
@@ -64,7 +64,7 @@ const MembershipCard = ({
           <div>
           <p className="text-wooffy-light/70 text-[10px]">Member ID</p>
             <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
-              WF-2026-XXXXXX
+              WF-2026-XX
             </p>
           </div>
           <p className="text-wooffy-light/70 text-xs">
