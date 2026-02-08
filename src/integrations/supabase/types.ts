@@ -2026,6 +2026,7 @@ export type Database = {
           business_id: string
           discount_type: string
           discount_value: number
+          expires_at: string | null
           id: string
           message: string
           owner_name: string | null
@@ -2040,6 +2041,7 @@ export type Database = {
           business_id: string
           discount_type?: string
           discount_value: number
+          expires_at?: string | null
           id?: string
           message: string
           owner_name?: string | null
@@ -2054,6 +2056,7 @@ export type Database = {
           business_id?: string
           discount_type?: string
           discount_value?: number
+          expires_at?: string | null
           id?: string
           message?: string
           owner_name?: string | null

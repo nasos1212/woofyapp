@@ -128,7 +128,10 @@ export function BirthdayOfferModal({
 
       if (notifError) throw notifError;
 
-      // Also save to sent_birthday_offers for tracking
+      // Also save to sent_birthday_offers for tracking (expires in 30 days)
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 30);
+      
       const { error: trackError } = await supabase.from("sent_birthday_offers").insert({
         business_id: businessId,
         pet_id: pet.pet_id,
@@ -138,6 +141,7 @@ export function BirthdayOfferModal({
         discount_value: finalDiscountValue,
         discount_type: finalDiscountType,
         message: message,
+        expires_at: expiresAt.toISOString(),
       });
 
       if (trackError) {
