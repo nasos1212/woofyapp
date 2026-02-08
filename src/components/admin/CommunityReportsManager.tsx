@@ -18,10 +18,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { Link } from "react-router-dom";
 
 interface Report {
@@ -44,6 +51,22 @@ const CommunityReportsManager = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("pending");
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+
+  const openReportDetail = (report: Report) => {
+    setSelectedReport(report);
+    setDetailDialogOpen(true);
+    // Auto-update to reviewing if pending
+    if (report.status === "pending") {
+      updateReportStatus(report.id, "reviewing", false);
+    }
+  };
+
+  const closeDetailDialog = () => {
+    setDetailDialogOpen(false);
+    setSelectedReport(null);
+  };
 
   useEffect(() => {
     fetchReports();
@@ -97,7 +120,7 @@ const CommunityReportsManager = () => {
     setLoading(false);
   };
 
-  const updateReportStatus = async (reportId: string, newStatus: string) => {
+  const updateReportStatus = async (reportId: string, newStatus: string, showToast = true) => {
     if (!user) return;
 
     const updateData: { status: string; resolved_at?: string; resolved_by?: string } = {
@@ -123,10 +146,17 @@ const CommunityReportsManager = () => {
       return;
     }
 
-    toast({
-      title: "Report updated",
-      description: `Report marked as ${newStatus}`,
-    });
+    if (showToast) {
+      toast({
+        title: "Report updated",
+        description: `Report marked as ${newStatus}`,
+      });
+    }
+
+    // Update selected report if open
+    if (selectedReport?.id === reportId) {
+      setSelectedReport({ ...selectedReport, status: newStatus });
+    }
 
     fetchReports();
   };
@@ -237,34 +267,14 @@ const CommunityReportsManager = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
-                        {report.status === "pending" && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateReportStatus(report.id, "reviewing")}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-green-600 hover:text-green-700"
-                              onClick={() => updateReportStatus(report.id, "resolved")}
-                            >
-                              <CheckCircle className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-muted-foreground hover:text-foreground"
-                              onClick={() => updateReportStatus(report.id, "dismissed")}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                        {report.status === "reviewing" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openReportDetail(report)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        {(report.status === "pending" || report.status === "reviewing") && (
                           <>
                             <Button
                               size="sm"
@@ -293,6 +303,97 @@ const CommunityReportsManager = () => {
           </div>
         )}
       </CardContent>
+
+      {/* Report Detail Dialog */}
+      <Dialog open={detailDialogOpen} onOpenChange={(open) => !open && closeDetailDialog()}>
+        <DialogContent className="max-w-lg">
+          {selectedReport && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Flag className="h-5 w-5 text-destructive" />
+                  Report Details
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Reported Question</p>
+                  <Link
+                    to={`/community/question/${selectedReport.question_id}`}
+                    className="text-primary hover:underline flex items-center gap-1 mt-1"
+                    target="_blank"
+                  >
+                    {selectedReport.question_title}
+                    <ExternalLink className="h-3 w-3" />
+                  </Link>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Reason</p>
+                  <p className="mt-1 font-medium">{getReasonLabel(selectedReport.reason)}</p>
+                </div>
+
+                {selectedReport.details && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Additional Details</p>
+                    <p className="mt-1 text-sm bg-muted p-3 rounded-md">{selectedReport.details}</p>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Reporter</p>
+                    <p className="mt-1">{selectedReport.reporter_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Status</p>
+                    <div className="mt-1">{getStatusBadge(selectedReport.status)}</div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Reported</p>
+                  <p className="mt-1 text-sm">
+                    {format(new Date(selectedReport.created_at), "PPp")}
+                  </p>
+                </div>
+              </div>
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                {(selectedReport.status === "pending" || selectedReport.status === "reviewing") && (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        updateReportStatus(selectedReport.id, "dismissed");
+                        closeDetailDialog();
+                      }}
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Dismiss
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        updateReportStatus(selectedReport.id, "resolved");
+                        closeDetailDialog();
+                      }}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Mark Resolved
+                    </Button>
+                  </>
+                )}
+                {(selectedReport.status === "resolved" || selectedReport.status === "dismissed") && (
+                  <Button variant="outline" onClick={closeDetailDialog}>
+                    Close
+                  </Button>
+                )}
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
