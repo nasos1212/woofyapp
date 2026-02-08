@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flag, Loader2, Eye, CheckCircle, XCircle, ExternalLink } from "lucide-react";
+import { Flag, Loader2, Eye, CheckCircle, XCircle, ExternalLink, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -53,6 +64,8 @@ const CommunityReportsManager = () => {
   const [statusFilter, setStatusFilter] = useState<string>("pending");
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const openReportDetail = (report: Report) => {
     setSelectedReport(report);
@@ -159,6 +172,39 @@ const CommunityReportsManager = () => {
     }
 
     fetchReports();
+  };
+
+  const deleteQuestion = async () => {
+    if (!selectedReport || !user) return;
+
+    setDeleting(true);
+    try {
+      // Delete the question (this will cascade delete the report due to ON DELETE CASCADE)
+      const { error } = await supabase
+        .from("community_questions")
+        .delete()
+        .eq("id", selectedReport.question_id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Question deleted",
+        description: "The reported question has been removed",
+      });
+
+      setDeleteDialogOpen(false);
+      closeDetailDialog();
+      fetchReports();
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete the question",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -360,28 +406,40 @@ const CommunityReportsManager = () => {
                 </div>
               </div>
 
-              <DialogFooter className="gap-2 sm:gap-0">
+              <DialogFooter className="flex-col gap-2 sm:flex-row">
                 {(selectedReport.status === "pending" || selectedReport.status === "reviewing") && (
                   <>
                     <Button
-                      variant="outline"
-                      onClick={() => {
-                        updateReportStatus(selectedReport.id, "dismissed");
-                        closeDetailDialog();
-                      }}
+                      variant="destructive"
+                      onClick={() => setDeleteDialogOpen(true)}
+                      className="w-full sm:w-auto"
                     >
-                      <XCircle className="h-4 w-4 mr-2" />
-                      Dismiss
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete Post
                     </Button>
-                    <Button
-                      onClick={() => {
-                        updateReportStatus(selectedReport.id, "resolved");
-                        closeDetailDialog();
-                      }}
-                    >
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Mark Resolved
-                    </Button>
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          updateReportStatus(selectedReport.id, "dismissed");
+                          closeDetailDialog();
+                        }}
+                        className="flex-1 sm:flex-none"
+                      >
+                        <XCircle className="h-4 w-4 mr-2" />
+                        Dismiss
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          updateReportStatus(selectedReport.id, "resolved");
+                          closeDetailDialog();
+                        }}
+                        className="flex-1 sm:flex-none"
+                      >
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Resolved
+                      </Button>
+                    </div>
                   </>
                 )}
                 {(selectedReport.status === "resolved" || selectedReport.status === "dismissed") && (
@@ -394,6 +452,38 @@ const CommunityReportsManager = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this question?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the question "{selectedReport?.question_title}" and all its answers. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deleteQuestion}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };
