@@ -70,10 +70,6 @@ const CommunityReportsManager = () => {
   const openReportDetail = (report: Report) => {
     setSelectedReport(report);
     setDetailDialogOpen(true);
-    // Auto-update to reviewing if pending
-    if (report.status === "pending") {
-      updateReportStatus(report.id, "reviewing", false);
-    }
   };
 
   const closeDetailDialog = () => {
@@ -221,8 +217,6 @@ const CommunityReportsManager = () => {
     switch (status) {
       case "pending":
         return <Badge variant="secondary" className="bg-yellow-500 text-white">Pending</Badge>;
-      case "reviewing":
-        return <Badge variant="secondary" className="bg-blue-500 text-white">Reviewing</Badge>;
       case "deleted":
         return <Badge variant="secondary" className="bg-red-500 text-white">Deleted</Badge>;
       case "dismissed":
@@ -263,7 +257,6 @@ const CommunityReportsManager = () => {
             <SelectContent>
               <SelectItem value="all">All Reports</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="reviewing">Reviewing</SelectItem>
               <SelectItem value="deleted">Deleted</SelectItem>
               <SelectItem value="dismissed">Dismissed</SelectItem>
             </SelectContent>
@@ -396,7 +389,7 @@ const CommunityReportsManager = () => {
               </div>
 
               <DialogFooter className="flex-col gap-2 sm:flex-row">
-                {(selectedReport.status === "pending" || selectedReport.status === "reviewing") && (
+                {selectedReport.status === "pending" && (
                   <>
                     <Button
                       variant="destructive"
