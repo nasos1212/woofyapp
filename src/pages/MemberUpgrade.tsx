@@ -198,8 +198,9 @@ const MemberUpgrade = () => {
     setSelectedPlan(planId);
 
     try {
-      // Generate member number
-      const memberNumber = `WF${Date.now().toString(36).toUpperCase()}`;
+      // Generate sequential member number using database function
+      const { data: memberNumberData } = await supabase.rpc('generate_member_number');
+      const memberNumber = memberNumberData || `WF-${new Date().getFullYear()}-1`;
       const expiryDate = addYears(new Date(), 1);
 
       const { error } = await supabase
