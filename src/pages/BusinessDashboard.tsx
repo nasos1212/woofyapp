@@ -1165,7 +1165,6 @@ const BusinessDashboard = () => {
                             <td className="py-3 px-2">
                               <div>
                                 <p className="font-medium text-slate-900">
-                                  {redemption.isBirthday && '🎂 '}
                                   {redemption.member_name || 'Customer'}
                                 </p>
                                 <p className="text-xs text-slate-500 font-mono">
