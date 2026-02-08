@@ -93,7 +93,7 @@ const FreemiumSection = () => {
               </div>
               <div>
                 <h3 className="font-display font-bold text-xl text-foreground">Paid Member</h3>
-                <p className="text-sm text-muted-foreground">Unlock all features</p>
+                <p className="text-sm text-muted-foreground">Unlock all premium benefits</p>
               </div>
             </div>
 
