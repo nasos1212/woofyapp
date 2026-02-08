@@ -36,7 +36,7 @@ const FreemiumSection = () => {
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Create your account for free and enjoy essential pet community features. 
-            When you're ready for exclusive discounts and premium perks, upgrade to a paid plan!
+            When you're ready for exclusive discounts and premium benefits, upgrade to a paid plan!
           </p>
         </div>
 
