@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Flag, Loader2, Eye, CheckCircle, XCircle, ExternalLink, Trash2 } from "lucide-react";
+import { Flag, Loader2, Eye, XCircle, ExternalLink, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -322,35 +322,14 @@ const CommunityReportsManager = () => {
                       {formatDistanceToNow(new Date(report.created_at), { addSuffix: true })}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => openReportDetail(report)}
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        {(report.status === "pending" || report.status === "reviewing") && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-green-600 hover:text-green-700"
-                              onClick={() => updateReportStatus(report.id, "resolved")}
-                            >
-                              <CheckCircle className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-muted-foreground hover:text-foreground"
-                              onClick={() => updateReportStatus(report.id, "dismissed")}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openReportDetail(report)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
