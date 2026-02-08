@@ -207,6 +207,25 @@ const BusinessDashboard = () => {
       });
     }
 
+    // Get all unique membership IDs from birthday redemptions to fetch member_numbers
+    const birthdayMembershipIds = [...new Set(
+      (birthdayRedemptionsData || [])
+        .map(r => r.pet_id ? petToMembershipMap[r.pet_id] : null)
+        .filter(Boolean)
+    )];
+    let membershipToNumberMap: Record<string, string> = {};
+    
+    if (birthdayMembershipIds.length > 0) {
+      const { data: membershipNumbersData } = await supabase
+        .from('memberships')
+        .select('id, member_number')
+        .in('id', birthdayMembershipIds);
+      
+      (membershipNumbersData || []).forEach(m => {
+        membershipToNumberMap[m.id] = m.member_number;
+      });
+    }
+
     // Combine regular and birthday redemptions
     const regularRedemptions: Redemption[] = (allRedemptionsData || []).map(r => ({
       id: r.id,
@@ -228,13 +247,16 @@ const BusinessDashboard = () => {
       if (!membershipId && r.owner_user_id) {
         membershipId = userToMembershipMap[r.owner_user_id];
       }
+
+      // Get member_number from the membership
+      const memberNumber = membershipId ? membershipToNumberMap[membershipId] : null;
       
       return {
         id: r.id,
         redeemed_at: r.redeemed_at!,
         member_name: r.owner_name,
         pet_names: r.pet_name,
-        member_number: null,
+        member_number: memberNumber,
         // Use the looked-up membership_id for proper customer tracking
         membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
         isBirthday: true,
