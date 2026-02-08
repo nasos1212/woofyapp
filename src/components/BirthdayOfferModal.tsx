@@ -357,7 +357,7 @@ export function BirthdayOfferModal({
               placeholder="Write a special birthday message..."
             />
             <p className="text-xs text-muted-foreground">
-              This message will be sent as a notification to the pet owner.
+              This message will be sent as a notification to the pet owner. The offer is valid for 30 days.
             </p>
           </div>
         </div>
