@@ -148,7 +148,7 @@ const PetProfile = () => {
             .from('sent_birthday_offers')
             .select(`
               id, business_id, pet_name, discount_value, 
-              discount_type, message, sent_at, redeemed_at,
+              discount_type, message, sent_at, redeemed_at, expires_at,
               businesses:business_id(business_name, logo_url)
             `)
             .eq('pet_id', petData.id)
