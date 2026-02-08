@@ -848,6 +848,50 @@ export type Database = {
           },
         ]
       }
+      community_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          question_id: string
+          reason: string
+          reporter_user_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          question_id: string
+          reason: string
+          reporter_user_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          question_id?: string
+          reason?: string
+          reporter_user_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_reports_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       community_saved_questions: {
         Row: {
           created_at: string

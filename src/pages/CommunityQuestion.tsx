@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
 import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import DogLoader from '@/components/DogLoader';
 import ContributorBadges from '@/components/ContributorBadges';
@@ -14,6 +15,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,6 +28,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Bookmark,
   Bell,
@@ -93,6 +104,10 @@ const CommunityQuestion = () => {
   const [answerPhotos, setAnswerPhotos] = useState<File[]>([]);
   const [answerPhotoUrls, setAnswerPhotoUrls] = useState<string[]>([]);
   const [showPhotoGallery, setShowPhotoGallery] = useState<string | null>(null);
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDetails, setReportDetails] = useState('');
+  const [isSubmittingReport, setIsSubmittingReport] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -224,6 +239,67 @@ const CommunityQuestion = () => {
       loadData(); // Reload to show new answer
     } catch (error) {
       console.error('Error submitting answer:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!question) return;
+    
+    const shareUrl = `${window.location.origin}/community/question/${question.id}`;
+    const shareData = {
+      title: question.title,
+      text: `Check out this question on Wooffy Community: ${question.title}`,
+      url: shareUrl,
+    };
+
+    try {
+      // Try native share dialog first
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+        toast.success('Shared successfully!');
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success('Link copied to clipboard!');
+      }
+    } catch (error) {
+      // User cancelled or error - try clipboard as fallback
+      if ((error as Error).name !== 'AbortError') {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          toast.success('Link copied to clipboard!');
+        } catch {
+          toast.error('Failed to share');
+        }
+      }
+    }
+  };
+
+  const handleReport = async () => {
+    if (!question || !user || !reportReason) return;
+    
+    setIsSubmittingReport(true);
+    try {
+      const { error } = await supabase
+        .from('community_reports')
+        .insert({
+          question_id: question.id,
+          reporter_user_id: user.id,
+          reason: reportReason,
+          details: reportDetails.trim() || null,
+        });
+
+      if (error) throw error;
+
+      toast.success('Report submitted. Thank you for helping keep our community safe.');
+      setShowReportDialog(false);
+      setReportReason('');
+      setReportDetails('');
+    } catch (error) {
+      console.error('Error submitting report:', error);
+      toast.error('Failed to submit report. Please try again.');
+    } finally {
+      setIsSubmittingReport(false);
     }
   };
 
@@ -415,11 +491,14 @@ const CommunityQuestion = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleShare}>
                         <Share2 className="w-4 h-4 mr-2" />
                         Share
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="text-destructive">
+                      <DropdownMenuItem 
+                        className="text-destructive"
+                        onClick={() => setShowReportDialog(true)}
+                      >
                         <Flag className="w-4 h-4 mr-2" />
                         Report
                       </DropdownMenuItem>
@@ -653,6 +732,82 @@ const CommunityQuestion = () => {
               />
             </div>
           )}
+
+          {/* Report Dialog */}
+          <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Flag className="w-5 h-5 text-destructive" />
+                  Report Question
+                </DialogTitle>
+                <DialogDescription>
+                  Help us keep the community safe by reporting inappropriate content.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-4 py-4">
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Why are you reporting this?</Label>
+                  <RadioGroup value={reportReason} onValueChange={setReportReason}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="spam" id="spam" />
+                      <Label htmlFor="spam" className="font-normal">Spam or misleading</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="inappropriate" id="inappropriate" />
+                      <Label htmlFor="inappropriate" className="font-normal">Inappropriate content</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="harassment" id="harassment" />
+                      <Label htmlFor="harassment" className="font-normal">Harassment or abuse</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="misinformation" id="misinformation" />
+                      <Label htmlFor="misinformation" className="font-normal">Harmful misinformation</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="other" id="other" />
+                      <Label htmlFor="other" className="font-normal">Other</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="report-details" className="text-sm font-medium">
+                    Additional details (optional)
+                  </Label>
+                  <Textarea
+                    id="report-details"
+                    placeholder="Provide more context about your report..."
+                    value={reportDetails}
+                    onChange={(e) => setReportDetails(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowReportDialog(false);
+                    setReportReason('');
+                    setReportDetails('');
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleReport}
+                  disabled={!reportReason || isSubmittingReport}
+                >
+                  {isSubmittingReport ? 'Submitting...' : 'Submit Report'}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </>
