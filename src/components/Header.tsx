@@ -139,7 +139,7 @@ const Header = () => {
     { name: "Offers", href: "/member/offers", isRoute: true },
     { name: "Community", href: "/community", isRoute: true },
     { name: "Shelters", href: "#shelters" },
-    { name: "Pricing", href: "#pricing" },
+    { name: "Pricing", href: "#freemium" },
   ];
 
   // Logo links to dashboard when logged in, home when not
