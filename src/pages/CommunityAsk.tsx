@@ -466,24 +466,36 @@ const CommunityAsk = () => {
                 </div>
 
                 {/* Anonymous Toggle */}
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
-                  <div className="flex items-center gap-3">
+                <div className="p-4 bg-muted/50 rounded-lg border">
+                  <div className="flex items-center gap-3 mb-3">
                     <EyeOff className="w-5 h-5 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">Post anonymously</p>
+                      <p className="font-medium">Show your name on this post?</p>
                       <p className="text-sm text-muted-foreground">
-                        Your name won't be shown to others
+                        Choose whether others can see who posted this
                       </p>
                     </div>
                   </div>
-                  <Button
-                    type="button"
-                    variant={isAnonymous ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setIsAnonymous(!isAnonymous)}
-                  >
-                    {isAnonymous ? 'On' : 'Off'}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={!isAnonymous ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setIsAnonymous(false)}
+                      className="flex-1"
+                    >
+                      Yes, show my name
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={isAnonymous ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setIsAnonymous(true)}
+                      className="flex-1"
+                    >
+                      No, post anonymously
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Tips */}
