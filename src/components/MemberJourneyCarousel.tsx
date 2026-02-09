@@ -32,10 +32,10 @@ const journeySteps = [
     id: 3,
     title: "Upgrade Anytime",
     icon: Sparkles,
-    description: "Unlock the full experience",
+    description: "3 flexible plans based on how many pets you have",
     color: "from-amber-500 to-orange-500",
     bgColor: "bg-amber-50",
-    features: ["Plans for 1, 2, or 3-5 pets", "Cancel anytime"],
+    features: ["Flexible plans", "Cancel anytime"],
   },
   {
     id: 4,
