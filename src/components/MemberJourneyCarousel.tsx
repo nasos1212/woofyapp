@@ -63,7 +63,7 @@ const MemberJourneyCarousel = () => {
 
   return (
     <div className="w-full mt-8">
-      <p className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
+      <p className="text-center text-sm font-semibold text-foreground mb-4 uppercase tracking-wide bg-card/80 backdrop-blur-sm rounded-full px-4 py-2 w-fit mx-auto shadow-soft border border-border">
         Your Wooffy Journey
       </p>
       
