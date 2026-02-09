@@ -34,7 +34,6 @@ interface PlanOption {
   name: string;
   petLabel: string;
   price: number;
-  renewalPrice: number;
   maxPets: number;
   icon: typeof Dog;
   popular?: boolean;
@@ -54,7 +53,6 @@ const plans: PlanOption[] = [
     name: "Solo Paw",
     petLabel: "For your one & only furball 🐾",
     price: 59,
-    renewalPrice: 49,
     maxPets: 1,
     icon: Dog,
   },
@@ -63,7 +61,6 @@ const plans: PlanOption[] = [
     name: "Dynamic Duo",
     petLabel: "Because one buddy wasn't enough! 🐶🐱",
     price: 99,
-    renewalPrice: 79,
     maxPets: 2,
     icon: Users,
     popular: true,
@@ -73,7 +70,6 @@ const plans: PlanOption[] = [
     name: "Pack Leader",
     petLabel: "You run the zoo — we've got you 🦁",
     price: 139,
-    renewalPrice: 109,
     maxPets: 5,
     icon: Crown,
   },
@@ -331,7 +327,7 @@ const MemberUpgrade = () => {
                 {isExpired ? (
                   <span className="font-medium">Your membership has expired! Renew now to continue enjoying Wooffy benefits.</span>
                 ) : (
-                  <span>Your membership expires in <strong>{daysUntilExpiry} days</strong>. Renew now and save up to €30!</span>
+                  <span>Your membership expires in <strong>{daysUntilExpiry} days</strong>. Renew now to keep your benefits!</span>
                 )}
               </AlertDescription>
             </Alert>
@@ -350,7 +346,7 @@ const MemberUpgrade = () => {
               {isFreemiumUser 
                 ? "One Membership, Endless Value" 
                 : isExpiringSoon || isExpired 
-                  ? "Renew & Save 🎉" 
+                  ? "Renew Your Plan" 
                   : "Choose Your Plan"}
             </h1>
             
@@ -358,7 +354,7 @@ const MemberUpgrade = () => {
               {isFreemiumUser
                 ? "All plans include the same great benefits. Choose based on how many pets you have!"
                 : isExpiringSoon || isExpired 
-                  ? "Renew your membership with special loyalty discounts - save up to €30/year!"
+                  ? "Renew your membership to continue enjoying all your Wooffy benefits."
                   : "Upgrade or change your plan anytime to fit your furry family."}
             </p>
           </div>
@@ -371,7 +367,6 @@ const MemberUpgrade = () => {
               const isDowngrade = !isFreemiumUser && index < currentPlanIndex;
               const isUpgrade = !isFreemiumUser && index > currentPlanIndex;
               const showRenewalPrice = !isFreemiumUser && (isExpiringSoon || isExpired);
-              const savings = plan.price - plan.renewalPrice;
 
               return (
                 <div key={plan.id} className="relative">
@@ -395,7 +390,7 @@ const MemberUpgrade = () => {
                   {showRenewalPrice && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                       <div className="bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
-                        {isCurrentPlan ? "Renew Now" : `Save €${savings}/year!`}
+                        {isCurrentPlan ? "Renew Now" : "Switch & Renew"}
                       </div>
                     </div>
                   )}
@@ -421,23 +416,10 @@ const MemberUpgrade = () => {
                     </div>
 
                     <div className="text-center mb-6">
-                      {showRenewalPrice ? (
-                        <div className="space-y-1">
-                          <div className="flex items-baseline justify-center gap-1">
-                            <span className="font-display font-bold text-4xl text-gradient">€{plan.renewalPrice}</span>
-                            <span className="text-muted-foreground">/year</span>
-                          </div>
-                          <div className="text-xs">
-                            <span className="line-through text-muted-foreground">€{plan.price}</span>
-                            <span className="ml-2 text-green-600 font-medium">Save €{savings}!</span>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-baseline justify-center gap-1">
-                          <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
-                          <span className="text-muted-foreground">/year</span>
-                        </div>
-                      )}
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
+                        <span className="text-muted-foreground">/year</span>
+                      </div>
                     </div>
 
                     <div className="flex-1" />
@@ -469,7 +451,7 @@ const MemberUpgrade = () => {
                           ) : (
                             <>
                               <RefreshCw className="w-4 h-4 mr-2" />
-                              Renew for €{plan.renewalPrice}
+                              Renew for €{plan.price}
                             </>
                           )}
                         </Button>
