@@ -63,7 +63,7 @@ const MemberJourneyCarousel = () => {
 
   return (
     <div className="w-full mt-8">
-      <p className="text-center text-xs font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
+      <p className="text-center text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide">
         Your Wooffy Journey
       </p>
       
@@ -80,28 +80,28 @@ const MemberJourneyCarousel = () => {
             <CarouselItem key={step.id} className="pl-2 basis-1/2">
               <div className={`relative overflow-hidden ${step.bgColor} rounded-xl p-4 border border-border/50 h-full`}>
                 {/* Step number */}
-                <div className={`absolute top-2 right-2 w-5 h-5 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center`}>
-                  <span className="text-[10px] font-bold text-white">{step.id}</span>
+                <div className={`absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center`}>
+                  <span className="text-xs font-bold text-white">{step.id}</span>
                 </div>
                 
                 {/* Icon */}
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-2 shadow-sm`}>
-                  <step.icon className="w-5 h-5 text-white" />
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${step.color} flex items-center justify-center mb-3 shadow-sm`}>
+                  <step.icon className="w-6 h-6 text-white" />
                 </div>
                 
                 {/* Content */}
-                <h3 className="font-display font-bold text-sm text-foreground mb-1">
+                <h3 className="font-display font-bold text-base text-foreground mb-1">
                   {step.title}
                 </h3>
-                <p className="text-xs text-muted-foreground mb-2 line-clamp-1">
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                   {step.description}
                 </p>
                 
                 {/* Features */}
-                <ul className="space-y-1">
+                <ul className="space-y-1.5">
                   {step.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-1.5 text-xs text-foreground/70">
-                      <div className={`w-1 h-1 rounded-full bg-gradient-to-br ${step.color} flex-shrink-0`} />
+                    <li key={idx} className="flex items-center gap-2 text-sm text-foreground/80">
+                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${step.color} flex-shrink-0`} />
                       {feature}
                     </li>
                   ))}
