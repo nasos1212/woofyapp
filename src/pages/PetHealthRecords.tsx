@@ -314,8 +314,8 @@ const PetHealthRecords = () => {
       const baseDate = dateAdministered ? new Date(dateAdministered) : new Date();
       calculatedNextDueDate = format(addDays(baseDate, intervalDays), "yyyy-MM-dd");
     } else if (!hasInterval) {
-      // For other record types, use the manually entered next due date
-      calculatedNextDueDate = nextDueDate || null;
+      // For other record types, use dateAdministered as the due date when reminders are set
+      calculatedNextDueDate = (reminderDaysBefore.length > 0 && dateAdministered) ? dateAdministered : null;
     }
 
     setIsAdding(true);
@@ -523,7 +523,7 @@ const PetHealthRecords = () => {
       const intervalDays = getIntervalDays();
       calculatedNextDueDate = format(addDays(new Date(dateAdministered), intervalDays), "yyyy-MM-dd");
     } else if (!hasInterval) {
-      calculatedNextDueDate = nextDueDate || null;
+      calculatedNextDueDate = (reminderDaysBefore.length > 0 && dateAdministered) ? dateAdministered : null;
     }
 
     setIsAdding(true);
@@ -865,27 +865,17 @@ const PetHealthRecords = () => {
                     </div>
                   ) : (
                     <>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Date</Label>
-                          <Input
-                            type="date"
-                            value={dateAdministered}
-                            onChange={(e) => setDateAdministered(e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Scheduled / Due Date (Optional)</Label>
-                          <Input
-                            type="date"
-                            value={nextDueDate}
-                            onChange={(e) => setNextDueDate(e.target.value)}
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label>Date</Label>
+                        <Input
+                          type="date"
+                          value={dateAdministered}
+                          onChange={(e) => setDateAdministered(e.target.value)}
+                        />
                       </div>
 
                       {/* Remind Me options for non-vaccination/medication records */}
-                      {nextDueDate && (
+                      {dateAdministered && (
                         <div className="space-y-2">
                           <Label className="flex items-center gap-2">
                             <Bell className="w-4 h-4" />
