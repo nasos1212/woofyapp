@@ -226,12 +226,10 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  {hasMembership && (
-                    <DropdownMenuItem onClick={() => navigate("/member/offers")}>
-                      <Tag className="mr-2 h-4 w-4" />
-                      Browse Offers
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                    <Tag className="mr-2 h-4 w-4" />
+                    Browse Offers
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
@@ -294,12 +292,10 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  {hasMembership && (
-                    <DropdownMenuItem onClick={() => navigate("/member/offers")}>
-                      <Tag className="mr-2 h-4 w-4" />
-                      Browse Offers
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                    <Tag className="mr-2 h-4 w-4" />
+                    Browse Offers
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
