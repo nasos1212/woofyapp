@@ -234,7 +234,7 @@ const SheltersSection = () => {
         {/* CTA */}
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            Are you a registered animal shelter? Apply to join our whitelist.
+            Are you an animal shelter? Apply to join our whitelist.
           </p>
           {existingShelter ? (
             <Button 
