@@ -111,25 +111,29 @@ const MemberJourneyCarousel = () => {
           ))}
         </CarouselContent>
         
-        <CarouselPrevious className="-left-3 h-8 w-8" />
-        <CarouselNext className="-right-3 h-8 w-8" />
+        {/* Navigation: arrows + dots */}
+        <div className="flex items-center justify-center gap-3 mt-4">
+          <CarouselPrevious className="static translate-x-0 translate-y-0 h-7 w-7" />
+          
+          {/* Dots indicator */}
+          <div className="flex gap-1.5">
+            {[0, 1].map((idx) => (
+              <button
+                key={idx}
+                onClick={() => api?.scrollTo(idx * 2)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  Math.floor(current / 2) === idx 
+                    ? "bg-primary w-4" 
+                    : "bg-muted-foreground/30 w-1.5"
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+          
+          <CarouselNext className="static translate-x-0 translate-y-0 h-7 w-7" />
+        </div>
       </Carousel>
-      
-      {/* Dots indicator */}
-      <div className="flex justify-center gap-1.5 mt-4">
-        {[0, 1].map((idx) => (
-          <button
-            key={idx}
-            onClick={() => api?.scrollTo(idx * 2)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              Math.floor(current / 2) === idx 
-                ? "bg-primary w-4" 
-                : "bg-muted-foreground/30 w-1.5"
-            }`}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
     </div>
   );
 };
