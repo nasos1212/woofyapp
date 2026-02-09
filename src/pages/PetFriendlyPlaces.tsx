@@ -80,6 +80,7 @@ const PetFriendlyPlaces = () => {
         .from("pet_friendly_places")
         .select("*")
         .eq("verified", true)
+        .neq("place_type", "vet")
         .order("name", { ascending: true });
 
       if (error) throw error;
