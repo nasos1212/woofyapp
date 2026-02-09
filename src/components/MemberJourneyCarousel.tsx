@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserPlus, Gift, Sparkles, Crown } from "lucide-react";
+import { UserPlus, Gift, Crown } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -30,21 +30,12 @@ const journeySteps = [
   },
   {
     id: 3,
-    title: "Upgrade Anytime",
-    icon: Sparkles,
-    description: "3 flexible plans based on how many pets you have",
-    color: "from-amber-500 to-orange-500",
-    bgColor: "bg-amber-50",
-    features: ["3 plans based on pet count", "Flexible & affordable"],
-  },
-  {
-    id: 4,
     title: "Premium Member",
     icon: Crown,
     description: "Full membership benefits",
     color: "from-primary to-purple-500",
     bgColor: "bg-primary/5",
-    features: ["Exclusive discounts", "AI health assistant"],
+    features: ["Exclusive discounts", "AI health assistant", "3 flexible plans based on pet count"],
   },
 ];
 
