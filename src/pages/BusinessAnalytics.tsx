@@ -392,6 +392,15 @@ const BusinessAnalytics = () => {
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
           <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/business")}
+              className="mb-6 gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Dashboard
+            </Button>
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
