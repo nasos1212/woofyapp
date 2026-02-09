@@ -117,8 +117,8 @@ const MemberShelters = () => {
                   <Euro className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm">Donated So Far</p>
-                  <p className="text-2xl md:text-3xl font-bold">€1,250+</p>
+                  <p className="text-white/80 text-sm">Target for 2026</p>
+                  <p className="text-2xl md:text-3xl font-bold">€1,000</p>
                 </div>
               </CardContent>
             </Card>
