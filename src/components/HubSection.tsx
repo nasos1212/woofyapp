@@ -24,7 +24,7 @@ const hubFeatures = [
   {
     icon: MapPin,
     title: "Pet-Friendly Map",
-    description: "Find dog parks, pet-friendly restaurants, vets, and hidden gems in your area.",
+    description: "Find dog parks, pet-friendly restaurants, and hidden gems in your area.",
     image: "🗺️",
   },
   {
