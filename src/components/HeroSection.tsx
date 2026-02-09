@@ -1,6 +1,7 @@
 import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
+import MemberJourneyCarousel from "./MemberJourneyCarousel";
 import heroImage from "@/assets/hero-dog.jpg";
 import { useNavigate } from "react-router-dom";
 const HeroSection = () => {
@@ -136,6 +137,9 @@ const HeroSection = () => {
                 <p className="text-xs text-muted-foreground">Join the pack</p>
               </div>
             </div>
+            
+            {/* Member Journey Carousel */}
+            <MemberJourneyCarousel />
           </div>
         </div>
       </div>
