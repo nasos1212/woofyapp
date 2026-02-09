@@ -472,7 +472,7 @@ const CommunityAsk = () => {
                     <div>
                       <p className="font-medium">Post anonymously</p>
                       <p className="text-sm text-muted-foreground">
-                        Your name and avatar won't be shown to others
+                        Your name won't be shown to others
                       </p>
                     </div>
                   </div>
