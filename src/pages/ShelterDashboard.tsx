@@ -505,32 +505,13 @@ const ShelterDashboard = () => {
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="branding" className="space-y-6">
-                    {/* Preview Button */}
-                    <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border">
-                      <div>
-                        <h4 className="font-medium">Preview Your Profile</h4>
-                        <p className="text-sm text-muted-foreground">
-                          See how your shelter appears to visitors
-                        </p>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={`/shelter/${shelter.id}`} target="_blank" rel="noopener noreferrer">
-                          View Public Profile
-                          <ExternalLink className="h-3 w-3 ml-2" />
-                        </a>
-                      </Button>
-                    </div>
-
-                    <ShelterHeaderUpload 
-                      shelterId={shelter.id} 
-                      currentLogoUrl={shelter.logo_url}
-                      currentCoverUrl={shelter.cover_photo_url}
-                      currentCoverPosition={shelter.cover_photo_position}
-                    />
-
-                    <ShelterGalleryUpload shelterId={shelter.id} />
-                  </TabsContent>
+                   <div className="flex justify-start mt-6 pt-4 border-t">
+                    <Button type="submit" disabled={updateMutation.isPending}>
+                      <Save className="h-4 w-4 mr-2" />
+                      {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                    </Button>
+                  </div>
+                </form>
 
                   <TabsContent value="adoptable-pets">
                     <ShelterAdoptablePets shelterId={shelter.id} />
@@ -539,14 +520,6 @@ const ShelterDashboard = () => {
                   <TabsContent value="inquiries">
                     <ShelterAdoptionInquiries shelterId={shelter.id} />
                   </TabsContent>
-
-                  <div className="flex justify-start mt-6 pt-4 border-t">
-                    <Button type="submit" disabled={updateMutation.isPending}>
-                      <Save className="h-4 w-4 mr-2" />
-                      {updateMutation.isPending ? "Saving..." : "Save Changes"}
-                    </Button>
-                  </div>
-                </form>
               </Tabs>
             </CardContent>
           </Card>
