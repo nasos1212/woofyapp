@@ -78,11 +78,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send welcome email now that they're verified
     try {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('full_name')
-        .eq('user_id', tokenData.user_id)
-        .single();
+      const [profileResult, petsResult] = await Promise.all([
+        supabase.from('profiles').select('full_name').eq('user_id', tokenData.user_id).single(),
+        supabase.from('pets').select('pet_name').eq('owner_user_id', tokenData.user_id).limit(5),
+      ]);
+      
+      const petNames = (petsResult.data || []).map(p => p.pet_name).filter(Boolean);
       
       // Call welcome email function via direct HTTP since we're in edge function
       const response = await fetch(`${supabaseUrl}/functions/v1/send-welcome-email`, {
@@ -93,7 +94,8 @@ const handler = async (req: Request): Promise<Response> => {
         },
         body: JSON.stringify({
           email: tokenData.email,
-          fullName: profile?.full_name || ''
+          fullName: profileResult.data?.full_name || '',
+          petNames,
         })
       });
       
