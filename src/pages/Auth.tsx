@@ -783,7 +783,7 @@ const Auth = () => {
                   <Input
                     id="fullName"
                     type="text"
-                    placeholder={accountType === "shelter" ? "The Asher House" : "Maria Georgiou"}
+                    placeholder={accountType === "shelter" ? "The Asher House" : accountType === "business" ? "Pet Shop Ltd" : "Maria Georgiou"}
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="pl-10"
