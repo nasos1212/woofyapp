@@ -141,7 +141,7 @@ const HeroSection = () => {
         </div>
 
         {/* Member Journey Carousel - full width below hero */}
-        <div className="mt-16 max-w-3xl mx-auto">
+        <div className="mt-24 max-w-3xl mx-auto">
           <MemberJourneyCarousel />
         </div>
       </div>
