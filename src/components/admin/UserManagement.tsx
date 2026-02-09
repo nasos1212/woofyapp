@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Search, Users, Building2, Home, Crown, Bell, Send, Filter, CreditCard, UserCog, Mail, Calendar, ExternalLink, Phone, Globe, MapPin, Check, X, ChevronDown, ChevronUp, RefreshCw, UserX, Clock } from "lucide-react";
+import { Search, Users, Building2, Home, Crown, Bell, Send, Filter, CreditCard, UserCog, Mail, Calendar, ExternalLink, Phone, Globe, MapPin, Check, X, ChevronDown, ChevronUp, RefreshCw, UserX, Clock, PawPrint, Pencil, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -67,6 +67,18 @@ interface ShelterInfo {
   verified_at: string | null;
 }
 
+interface PetInfo {
+  id: string;
+  pet_name: string;
+  pet_type: string;
+  pet_breed: string | null;
+  birthday: string | null;
+  age_years: number | null;
+  gender: string | null;
+  photo_url: string | null;
+  created_at: string;
+}
+
 interface UserData {
   id: string;
   user_id: string;
@@ -77,6 +89,7 @@ interface UserData {
   membership: MembershipInfo | null;
   business: BusinessInfo | null;
   shelter: ShelterInfo | null;
+  pets: PetInfo[];
 }
 
 type UserCategory = "all" | "members" | "freemium" | "paid" | "businesses" | "shelters";
@@ -98,8 +111,12 @@ const UserManagement = () => {
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  
-  
+  // Pet editing state
+  const [editingPetId, setEditingPetId] = useState<string | null>(null);
+  const [editPetBirthday, setEditPetBirthday] = useState<string>("");
+  const [editPetAge, setEditPetAge] = useState<string>("");
+  const [savingPet, setSavingPet] = useState(false);
+
   // Notification dialog state
   const [notifyDialogOpen, setNotifyDialogOpen] = useState(false);
   const [notifyTarget, setNotifyTarget] = useState<UserCategory>("all");
@@ -123,12 +140,13 @@ const UserManagement = () => {
     setLoading(true);
     try {
       // Fetch all data in parallel with full details
-      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult] = await Promise.all([
+      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult, petsResult] = await Promise.all([
         supabase.from("profiles").select("id, user_id, full_name, email, created_at").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("memberships").select("*"),
         supabase.from("businesses").select("*"),
         supabase.from("shelters").select("*"),
+        supabase.from("pets").select("id, pet_name, pet_type, pet_breed, birthday, age_years, gender, photo_url, created_at, owner_user_id"),
       ]);
 
       if (profilesResult.error) throw profilesResult.error;
@@ -190,6 +208,24 @@ const UserManagement = () => {
         verified_at: s.verified_at,
       }));
 
+      // Create pets map (one user can have multiple pets)
+      const petsMap = new Map<string, PetInfo[]>();
+      (petsResult.data || []).forEach((p: any) => {
+        const existing = petsMap.get(p.owner_user_id) || [];
+        existing.push({
+          id: p.id,
+          pet_name: p.pet_name,
+          pet_type: p.pet_type,
+          pet_breed: p.pet_breed,
+          birthday: p.birthday,
+          age_years: p.age_years,
+          gender: p.gender,
+          photo_url: p.photo_url,
+          created_at: p.created_at,
+        });
+        petsMap.set(p.owner_user_id, existing);
+      });
+
       // Combine all data
       const combinedUsers: UserData[] = (profilesResult.data || []).map(profile => ({
         id: profile.id,
@@ -201,6 +237,7 @@ const UserManagement = () => {
         membership: membershipsMap.get(profile.user_id) || null,
         business: businessesMap.get(profile.user_id) || null,
         shelter: sheltersMap.get(profile.user_id) || null,
+        pets: petsMap.get(profile.user_id) || [],
       }));
 
       setUsers(combinedUsers);
@@ -420,6 +457,56 @@ const UserManagement = () => {
       fetchAllUsers();
     } catch (error: any) {
       toast.error(error.message || "Failed to update membership");
+    }
+  };
+
+  const startEditingPet = (pet: PetInfo) => {
+    setEditingPetId(pet.id);
+    setEditPetBirthday(pet.birthday || "");
+    setEditPetAge(pet.age_years?.toString() || "");
+  };
+
+  const savePetChanges = async (petId: string) => {
+    setSavingPet(true);
+    try {
+      const updateData: any = {};
+      if (editPetBirthday) {
+        // Validate birthday is not more than 25 years ago
+        const minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - 25);
+        const bday = new Date(editPetBirthday);
+        if (bday < minDate) {
+          toast.error("Birthday cannot be more than 25 years ago");
+          setSavingPet(false);
+          return;
+        }
+        if (bday > new Date()) {
+          toast.error("Birthday cannot be in the future");
+          setSavingPet(false);
+          return;
+        }
+        updateData.birthday = editPetBirthday;
+      } else {
+        updateData.birthday = null;
+      }
+
+      const ageVal = editPetAge ? parseInt(editPetAge) : null;
+      if (ageVal !== null && (ageVal < 0 || ageVal > 25)) {
+        toast.error("Age must be between 0 and 25");
+        setSavingPet(false);
+        return;
+      }
+      updateData.age_years = ageVal;
+
+      const { error } = await supabase.from("pets").update(updateData).eq("id", petId);
+      if (error) throw error;
+      toast.success("Pet updated successfully");
+      setEditingPetId(null);
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update pet");
+    } finally {
+      setSavingPet(false);
     }
   };
 
@@ -942,6 +1029,97 @@ const UserManagement = () => {
                                     {user.membership.is_active ? "Paid" : "Freemium"}
                                   </Badge>
                                 </div>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Pets Section */}
+                          {user.pets.length > 0 && (
+                            <div className="bg-amber-500/5 rounded-lg p-4">
+                              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                                <PawPrint className="w-4 h-4 text-amber-500" />
+                                Pets ({user.pets.length})
+                              </h4>
+                              <div className="space-y-3">
+                                {user.pets.map((pet) => {
+                                  const isEditing = editingPetId === pet.id;
+                                  const today = new Date().toISOString().split("T")[0];
+                                  const minDate = new Date();
+                                  minDate.setFullYear(minDate.getFullYear() - 25);
+                                  const minDateStr = minDate.toISOString().split("T")[0];
+
+                                  return (
+                                    <div key={pet.id} className="bg-background/50 rounded-lg p-3 border border-border/50">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-2">
+                                          {pet.photo_url && (
+                                            <img src={pet.photo_url} alt={pet.pet_name} className="w-8 h-8 rounded-full object-cover" />
+                                          )}
+                                          <span className="font-medium">{pet.pet_name}</span>
+                                          <Badge variant="outline" className="text-xs capitalize">{pet.pet_type}</Badge>
+                                          {pet.pet_breed && <span className="text-xs text-muted-foreground">{pet.pet_breed}</span>}
+                                          {pet.gender && <span className="text-xs text-muted-foreground">({pet.gender})</span>}
+                                        </div>
+                                        {isEditing ? (
+                                          <div className="flex gap-1">
+                                            <Button size="sm" variant="ghost" onClick={() => setEditingPetId(null)} disabled={savingPet}>
+                                              <X className="w-4 h-4" />
+                                            </Button>
+                                            <Button size="sm" onClick={() => savePetChanges(pet.id)} disabled={savingPet}>
+                                              <Save className="w-4 h-4 mr-1" />
+                                              {savingPet ? "Saving..." : "Save"}
+                                            </Button>
+                                          </div>
+                                        ) : (
+                                          <Button size="sm" variant="ghost" onClick={() => startEditingPet(pet)}>
+                                            <Pencil className="w-4 h-4" />
+                                          </Button>
+                                        )}
+                                      </div>
+                                      {isEditing ? (
+                                        <div className="grid grid-cols-2 gap-3 text-sm">
+                                          <div className="space-y-1">
+                                            <Label className="text-xs">Birthday</Label>
+                                            <Input
+                                              type="date"
+                                              value={editPetBirthday}
+                                              onChange={(e) => setEditPetBirthday(e.target.value)}
+                                              min={minDateStr}
+                                              max={today}
+                                            />
+                                          </div>
+                                          <div className="space-y-1">
+                                            <Label className="text-xs">Age (years)</Label>
+                                            <Input
+                                              type="number"
+                                              value={editPetAge}
+                                              onChange={(e) => {
+                                                const val = e.target.value ? parseInt(e.target.value) : "";
+                                                if (val === "" || (typeof val === "number" && val >= 0 && val <= 25)) {
+                                                  setEditPetAge(e.target.value);
+                                                }
+                                              }}
+                                              min="0"
+                                              max="25"
+                                              placeholder="0-25"
+                                            />
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="grid grid-cols-2 gap-3 text-sm">
+                                          <div>
+                                            <span className="text-muted-foreground">Birthday:</span>{" "}
+                                            {pet.birthday ? formatDate(new Date(pet.birthday)) : "Not set"}
+                                          </div>
+                                          <div>
+                                            <span className="text-muted-foreground">Age:</span>{" "}
+                                            {pet.age_years != null ? `${pet.age_years} years` : "Not set"}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
                               </div>
                             </div>
                           )}
