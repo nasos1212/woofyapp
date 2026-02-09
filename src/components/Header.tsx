@@ -226,18 +226,22 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
-                    <Tag className="mr-2 h-4 w-4" />
-                    Browse Offers
-                  </DropdownMenuItem>
+                  {hasMembership && (
+                    <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                      <Tag className="mr-2 h-4 w-4" />
+                      Browse Offers
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/history")}>
-                    <History className="mr-2 h-4 w-4" />
-                    Redemption History
-                  </DropdownMenuItem>
+                  {hasMembership && (
+                    <DropdownMenuItem onClick={() => navigate("/member/history")}>
+                      <History className="mr-2 h-4 w-4" />
+                      Redemption History
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
@@ -290,18 +294,22 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
-                    <Tag className="mr-2 h-4 w-4" />
-                    Browse Offers
-                  </DropdownMenuItem>
+                  {hasMembership && (
+                    <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                      <Tag className="mr-2 h-4 w-4" />
+                      Browse Offers
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/history")}>
-                    <History className="mr-2 h-4 w-4" />
-                    Redemption History
-                  </DropdownMenuItem>
+                  {hasMembership && (
+                    <DropdownMenuItem onClick={() => navigate("/member/history")}>
+                      <History className="mr-2 h-4 w-4" />
+                      Redemption History
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
