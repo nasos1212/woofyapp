@@ -164,14 +164,14 @@ export const AIProactiveAlerts = () => {
       .select("*, pets!inner(pet_name)")
       .eq("owner_user_id", user.id)
       .not("next_due_date", "is", null)
-      .order("next_due_date", { ascending: true });
+      .order("next_due_date", { ascending: true }) as { data: any[] | null };
 
     const TIMEZONE = "Europe/Athens";
     const now = toZonedTime(new Date(), TIMEZONE);
     const todayDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const upcomingReminders: UpcomingReminder[] = [];
 
-    // Process health records (vaccinations)
+    // Process health records (vaccinations/medications use blanket window, others use reminder_days_before)
     if (healthRecords) {
       for (const record of healthRecords) {
         const dueDate = new Date(record.next_due_date);
@@ -179,8 +179,21 @@ export const AIProactiveAlerts = () => {
         const daysUntil = Math.round((dueDateOnly.getTime() - todayDateOnly.getTime()) / (1000 * 60 * 60 * 24));
         const isDueToday = daysUntil === 0;
 
-        // Include overdue (up to 30 days) and upcoming (up to 30 days)
-        if (daysUntil >= -30 && daysUntil <= 30) {
+        const isAutoReminder = record.record_type === 'vaccination' || record.record_type === 'medication';
+        const reminderDaysBefore: number[] | null = record.reminder_days_before;
+
+        // For vaccination/medication: show in blanket 30-day window
+        // For other types: only show if reminder_days_before matches or if overdue
+        let shouldShow = false;
+
+        if (isAutoReminder) {
+          shouldShow = daysUntil >= -30 && daysUntil <= 30;
+        } else if (reminderDaysBefore && reminderDaysBefore.length > 0) {
+          // Show if any of the selected reminder days match, or if overdue (up to 7 days)
+          shouldShow = reminderDaysBefore.includes(daysUntil) || (daysUntil >= -7 && daysUntil < 0);
+        }
+
+        if (shouldShow) {
           let status: UpcomingReminder["status"] = "upcoming";
           if (daysUntil < 0) status = "overdue";
           else if (isDueToday) status = "today";
