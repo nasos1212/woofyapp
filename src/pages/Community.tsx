@@ -497,14 +497,24 @@ const Community = () => {
                     <MessageSquarePlus className="w-4 h-4 mr-2" />
                     Ask a Question
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start opacity-50 cursor-not-allowed"
-                    disabled
-                  >
-                    🔒 Ask Wooffy AI
-                    <Badge variant="secondary" className="ml-auto text-xs">Premium</Badge>
-                  </Button>
+                  {hasMembership ? (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => navigate('/member/pet-health')}
+                    >
+                      🤖 Ask Wooffy AI
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start opacity-50 cursor-not-allowed"
+                      disabled
+                    >
+                      🔒 Ask Wooffy AI
+                      <Badge variant="secondary" className="ml-auto text-xs">Premium</Badge>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
 
