@@ -294,9 +294,9 @@ serve(async (req) => {
           }
         });
 
-      // Create rating prompt (triggers review request after 2 hours)
+      // Create rating prompt (triggers review request next day)
       const promptAfter = new Date();
-      promptAfter.setHours(promptAfter.getHours() + 2);
+      promptAfter.setHours(promptAfter.getHours() + 24);
       
       await supabaseAdmin
         .from('rating_prompts')
@@ -455,9 +455,9 @@ serve(async (req) => {
           }
         });
 
-      // Create rating prompt (triggers review request after 2 hours)
+      // Create rating prompt (triggers review request next day)
       const promptAfter = new Date();
-      promptAfter.setHours(promptAfter.getHours() + 2);
+      promptAfter.setHours(promptAfter.getHours() + 24);
       
       await supabaseAdmin
         .from('rating_prompts')
