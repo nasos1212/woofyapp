@@ -36,6 +36,7 @@ interface HealthRecord {
   reminder_interval_type: string | null;
   reminder_interval_days: number | null;
   preferred_time: string | null;
+  reminder_days_before: number[] | null;
   created_at: string;
 }
 
@@ -137,7 +138,20 @@ const PetHealthRecords = () => {
   const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [preferredTime, setPreferredTime] = useState("");
+  const [reminderDaysBefore, setReminderDaysBefore] = useState<number[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const REMINDER_OPTIONS = [
+    { value: 3, label: "3 days before" },
+    { value: 1, label: "1 day before" },
+    { value: 0, label: "On the day" },
+  ];
+
+  const toggleReminderDay = (day: number) => {
+    setReminderDaysBefore(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day].sort((a, b) => b - a)
+    );
+  };
 
   useEffect(() => {
     if (!loading && !accountTypeLoading) {
@@ -321,6 +335,7 @@ const PetHealthRecords = () => {
         reminder_interval_type: hasInterval ? intervalType : null,
         reminder_interval_days: hasInterval ? getIntervalDays() : null,
         preferred_time: (recordType === 'medication' && intervalType === 'daily' && preferredTime) ? preferredTime : null,
+        reminder_days_before: (!hasInterval && reminderDaysBefore.length > 0) ? reminderDaysBefore : null,
       }).select().single();
 
       if (error) throw error;
@@ -465,6 +480,7 @@ const PetHealthRecords = () => {
     setEditingRecord(null);
     setRemoveExistingDocument(false);
     setPreferredTime("");
+    setReminderDaysBefore([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -484,6 +500,7 @@ const PetHealthRecords = () => {
     setCustomDays(String(record.reminder_interval_days || 365));
     setSelectedPreset("");
     setPreferredTime(record.preferred_time || "");
+    setReminderDaysBefore(record.reminder_days_before || []);
     setDocumentFile(null);
     setRemoveExistingDocument(false);
     setShowAddDialog(true);
@@ -557,6 +574,7 @@ const PetHealthRecords = () => {
           reminder_interval_type: hasInterval ? intervalType : null,
           reminder_interval_days: hasInterval ? getIntervalDays() : null,
           preferred_time: (recordType === 'medication' && intervalType === 'daily' && preferredTime) ? preferredTime : null,
+          reminder_days_before: (!hasInterval && reminderDaysBefore.length > 0) ? reminderDaysBefore : null,
         })
         .eq("id", editingRecord.id);
 
@@ -846,24 +864,56 @@ const PetHealthRecords = () => {
                       </p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Date</Label>
-                        <Input
-                          type="date"
-                          value={dateAdministered}
-                          onChange={(e) => setDateAdministered(e.target.value)}
-                        />
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label>Date</Label>
+                          <Input
+                            type="date"
+                            value={dateAdministered}
+                            onChange={(e) => setDateAdministered(e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>Scheduled / Due Date (Optional)</Label>
+                          <Input
+                            type="date"
+                            value={nextDueDate}
+                            onChange={(e) => setNextDueDate(e.target.value)}
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label>Next Due Date (Optional)</Label>
-                        <Input
-                          type="date"
-                          value={nextDueDate}
-                          onChange={(e) => setNextDueDate(e.target.value)}
-                        />
-                      </div>
-                    </div>
+
+                      {/* Remind Me options for non-vaccination/medication records */}
+                      {nextDueDate && (
+                        <div className="space-y-2">
+                          <Label className="flex items-center gap-2">
+                            <Bell className="w-4 h-4" />
+                            Remind Me
+                          </Label>
+                          <div className="flex flex-wrap gap-2">
+                            {REMINDER_OPTIONS.map((option) => (
+                              <Button
+                                key={option.value}
+                                type="button"
+                                variant={reminderDaysBefore.includes(option.value) ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => toggleReminderDay(option.value)}
+                                className="gap-1.5"
+                              >
+                                {reminderDaysBefore.includes(option.value) && <CheckCircle className="w-3.5 h-3.5" />}
+                                {option.label}
+                              </Button>
+                            ))}
+                          </div>
+                          {reminderDaysBefore.length > 0 && (
+                            <p className="text-xs text-primary">
+                              ✓ You'll be reminded in your Wooffy Reminders
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </>
                   )}
 
                   {/* Interval options for vaccinations and medications */}

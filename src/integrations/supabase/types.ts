@@ -1667,6 +1667,7 @@ export type Database = {
           pet_id: string
           preferred_time: string | null
           record_type: string
+          reminder_days_before: number[] | null
           reminder_interval_days: number | null
           reminder_interval_type: string | null
           title: string
@@ -1686,6 +1687,7 @@ export type Database = {
           pet_id: string
           preferred_time?: string | null
           record_type: string
+          reminder_days_before?: number[] | null
           reminder_interval_days?: number | null
           reminder_interval_type?: string | null
           title: string
@@ -1705,6 +1707,7 @@ export type Database = {
           pet_id?: string
           preferred_time?: string | null
           record_type?: string
+          reminder_days_before?: number[] | null
           reminder_interval_days?: number | null
           reminder_interval_type?: string | null
           title?: string
