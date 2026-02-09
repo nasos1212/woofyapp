@@ -137,10 +137,12 @@ const HeroSection = () => {
                 <p className="text-xs text-muted-foreground">Join the pack</p>
               </div>
             </div>
-            
-            {/* Member Journey Carousel */}
-            <MemberJourneyCarousel />
           </div>
+        </div>
+
+        {/* Member Journey Carousel - full width below hero */}
+        <div className="mt-16 max-w-3xl mx-auto">
+          <MemberJourneyCarousel />
         </div>
       </div>
     </section>
