@@ -505,17 +505,18 @@ const CommunityQuestion = () => {
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleHelped}
-                    disabled={isOwner}
-                    className="text-xs sm:text-sm"
-                  >
-                    <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                    <span className="hidden sm:inline">This helped me</span>
-                    <span className="sm:hidden">Helped</span>
-                  </Button>
+                  {!isOwner && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleHelped}
+                      className="text-xs sm:text-sm"
+                    >
+                      <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                      <span className="hidden sm:inline">This helped me</span>
+                      <span className="sm:hidden">Helped</span>
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="sm"
@@ -524,24 +525,26 @@ const CommunityQuestion = () => {
                   >
                     <Bookmark className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${question.is_saved ? 'fill-current' : ''}`} />
                   </Button>
-                  <Button
-                    variant={question.is_following ? "default" : "outline"}
-                    size="sm"
-                    onClick={handleFollowToggle}
-                    className="text-xs sm:text-sm"
-                  >
-                    {question.is_following ? (
-                      <>
-                        <BellOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
-                        <span className="hidden sm:inline">Unfollow</span>
-                      </>
-                    ) : (
-                      <>
-                        <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
-                        <span className="hidden sm:inline">Follow</span>
-                      </>
-                    )}
-                  </Button>
+                  {!isOwner && (
+                    <Button
+                      variant={question.is_following ? "default" : "outline"}
+                      size="sm"
+                      onClick={handleFollowToggle}
+                      className="text-xs sm:text-sm"
+                    >
+                      {question.is_following ? (
+                        <>
+                          <BellOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
+                          <span className="hidden sm:inline">Unfollow</span>
+                        </>
+                      ) : (
+                        <>
+                          <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
+                          <span className="hidden sm:inline">Follow</span>
+                        </>
+                      )}
+                    </Button>
+                  )}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" size="sm">
