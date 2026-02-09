@@ -516,6 +516,25 @@ const UserManagement = () => {
       if (status === "approved") updateData.verified_at = new Date().toISOString();
       const { error } = await supabase.from("businesses").update(updateData).eq("id", businessId);
       if (error) throw error;
+
+      // Send welcome email on approval
+      if (status === "approved") {
+        const { data: business } = await supabase
+          .from("businesses")
+          .select("email, business_name")
+          .eq("id", businessId)
+          .maybeSingle();
+
+        if (business?.email) {
+          supabase.functions.invoke("send-business-welcome-email", {
+            body: {
+              email: business.email,
+              businessName: business.business_name,
+            },
+          }).catch((err) => console.error("Failed to send business welcome email:", err));
+        }
+      }
+
       toast.success(`Business ${status}!`);
       fetchAllUsers();
     } catch (error: any) {
