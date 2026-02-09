@@ -111,8 +111,8 @@ const PetFriendlyPlaces = () => {
     return matchesSearch && matchesType && matchesCity;
   });
 
-  // Get unique place types from data
-  const availableTypes = [...new Set(places.map(p => p.place_type))];
+  // Show all defined place types in the filter dropdown
+  const availableTypes = Object.keys(placeTypeConfig);
 
   if (loading) {
     return (
