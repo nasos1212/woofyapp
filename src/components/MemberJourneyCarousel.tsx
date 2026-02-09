@@ -26,7 +26,7 @@ const journeySteps = [
     description: "Enjoy free features forever",
     color: "from-emerald-500 to-teal-500",
     bgColor: "bg-emerald-50",
-    features: ["Lost & Found alerts", "Community Q&A"],
+    features: ["Lost & Found alerts", "Community Q&A", "Pet-friendly places"],
   },
   {
     id: 3,
