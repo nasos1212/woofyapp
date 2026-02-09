@@ -30,38 +30,26 @@ const Index = () => {
       
       setCheckingMembership(true);
       
-      // Check user roles and status in parallel
-      const [shelterRoleResult, businessRoleResult, shelterResult, businessResult, membershipResult] = await Promise.all([
-        supabase.from("user_roles").select("id").eq("user_id", user.id).eq("role", "shelter").maybeSingle(),
-        supabase.from("user_roles").select("id").eq("user_id", user.id).eq("role", "business").maybeSingle(),
+      // Check entity records and membership in parallel (records take priority over roles)
+      const [shelterResult, businessResult, membershipResult] = await Promise.all([
         supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
         supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
         supabase.from("memberships").select("id, is_active").eq("user_id", user.id).maybeSingle(),
       ]);
       
-      const hasShelterRole = !!shelterRoleResult.data;
-      const hasBusinessRole = !!businessRoleResult.data;
       const hasShelter = !!shelterResult.data;
       const hasBusiness = !!businessResult.data;
       const hasMembership = !!membershipResult.data;
       
-      // Shelter users - redirect to appropriate page
+      // Shelter users - redirect to dashboard (only if they have an actual record)
       if (hasShelter) {
         navigate("/shelter-dashboard");
         return;
       }
-      if (hasShelterRole) {
-        navigate("/shelter-onboarding");
-        return;
-      }
       
-      // Business users - redirect to business dashboard
+      // Business users - redirect to business dashboard (only if they have an actual record)
       if (hasBusiness) {
         navigate("/business");
-        return;
-      }
-      if (hasBusinessRole) {
-        navigate("/partner-register");
         return;
       }
       
