@@ -35,7 +35,7 @@ const journeySteps = [
     description: "3 flexible plans based on how many pets you have",
     color: "from-amber-500 to-orange-500",
     bgColor: "bg-amber-50",
-    features: ["Flexible plans", "Cancel anytime"],
+    features: ["3 plans based on pet count", "Flexible & affordable"],
   },
   {
     id: 4,
