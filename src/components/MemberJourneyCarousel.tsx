@@ -21,7 +21,7 @@ const journeySteps = [
   },
   {
     id: 2,
-    title: "Freemium Access",
+    title: "Your Free Account",
     icon: Gift,
     description: "Enjoy free features forever",
     color: "from-emerald-500 to-teal-500",
@@ -35,7 +35,7 @@ const journeySteps = [
     description: "Unlock the full experience",
     color: "from-amber-500 to-orange-500",
     bgColor: "bg-amber-50",
-    features: ["Flexible plans", "Cancel anytime"],
+    features: ["Plans for 1, 2, or 3-5 pets", "Cancel anytime"],
   },
   {
     id: 4,
