@@ -111,7 +111,7 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
             Become an Affiliate
           </DialogTitle>
           <DialogDescription>
-            Earn rewards by introducing pet owners to Wooffy. Share with your network and earn commissions on every signup!
+            Earn rewards by introducing pet owners to Wooffy.
           </DialogDescription>
         </DialogHeader>
 
