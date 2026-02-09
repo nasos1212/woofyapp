@@ -110,6 +110,9 @@ const MemberJourneyCarousel = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
+        
+        <CarouselPrevious className="-left-3 h-8 w-8" />
+        <CarouselNext className="-right-3 h-8 w-8" />
       </Carousel>
       
       {/* Dots indicator */}
