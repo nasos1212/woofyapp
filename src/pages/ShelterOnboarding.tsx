@@ -302,7 +302,7 @@ const ShelterOnboarding = () => {
                     <Label htmlFor="shelterName">Shelter Name *</Label>
                     <Input
                       id="shelterName"
-                      placeholder="e.g., Happy Tails Rescue"
+                      placeholder="e.g., The Asher House"
                       value={shelterName}
                       onChange={(e) => setShelterName(e.target.value)}
                     />
