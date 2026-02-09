@@ -57,7 +57,8 @@ import {
   Share2,
   Flag,
   MoreVertical,
-  ChevronLeft
+  ChevronLeft,
+  Trash2
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { formatDate } from "@/lib/utils";
@@ -105,6 +106,8 @@ const CommunityQuestion = () => {
   const [answerPhotoUrls, setAnswerPhotoUrls] = useState<string[]>([]);
   const [showPhotoGallery, setShowPhotoGallery] = useState<string | null>(null);
   const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDetails, setReportDetails] = useState('');
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
@@ -302,6 +305,51 @@ const CommunityQuestion = () => {
       setIsSubmittingReport(false);
     }
   };
+
+  const handleDeleteQuestion = async () => {
+    if (!question || !user || user.id !== question.user_id) return;
+    
+    setIsDeleting(true);
+    try {
+      // Delete related data first
+      const { data: answerIds } = await supabase
+        .from('community_answers')
+        .select('id')
+        .eq('question_id', question.id);
+      
+      if (answerIds && answerIds.length > 0) {
+        const ids = answerIds.map(a => a.id);
+        await supabase.from('community_answer_photos').delete().in('answer_id', ids);
+        await supabase.from('community_votes').delete().in('answer_id', ids);
+        await supabase.from('community_answers').delete().eq('question_id', question.id);
+      }
+
+      await Promise.all([
+        supabase.from('community_question_photos').delete().eq('question_id', question.id),
+        supabase.from('community_question_followers').delete().eq('question_id', question.id),
+        supabase.from('community_saved_questions').delete().eq('question_id', question.id),
+        supabase.from('community_helped').delete().eq('question_id', question.id),
+        supabase.from('community_reports').delete().eq('question_id', question.id),
+      ]);
+
+      const { error } = await supabase
+        .from('community_questions')
+        .delete()
+        .eq('id', question.id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast.success('Question deleted successfully');
+      navigate('/community');
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      toast.error('Failed to delete question. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
 
   if (authLoading || loading) {
     return (
@@ -505,13 +553,24 @@ const CommunityQuestion = () => {
                         <Share2 className="w-4 h-4 mr-2" />
                         Share
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        className="text-destructive"
-                        onClick={() => setShowReportDialog(true)}
-                      >
-                        <Flag className="w-4 h-4 mr-2" />
-                        Report
-                      </DropdownMenuItem>
+                      {!isOwner && (
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => setShowReportDialog(true)}
+                        >
+                          <Flag className="w-4 h-4 mr-2" />
+                          Report
+                        </DropdownMenuItem>
+                      )}
+                      {isOwner && (
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => setShowDeleteDialog(true)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete Question
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -818,6 +877,28 @@ const CommunityQuestion = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          {/* Delete Confirmation Dialog */}
+          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete this question?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete your question and all its answers. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteQuestion}
+                  disabled={isDeleting}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  {isDeleting ? 'Deleting...' : 'Yes, delete'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </main>
       </div>
     </>
