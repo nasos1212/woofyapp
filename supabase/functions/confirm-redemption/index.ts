@@ -294,6 +294,35 @@ serve(async (req) => {
           }
         });
 
+      // Create rating prompt (triggers review request after 2 hours)
+      const promptAfter = new Date();
+      promptAfter.setHours(promptAfter.getHours() + 2);
+      
+      await supabaseAdmin
+        .from('rating_prompts')
+        .insert({
+          user_id: membership.user_id,
+          business_id: businessId,
+          redemption_id: redemption.id,
+          prompt_after: promptAfter.toISOString(),
+        });
+
+      // Create delayed review reminder notification
+      await supabaseAdmin
+        .from('notifications')
+        .insert({
+          user_id: membership.user_id,
+          type: 'review_request',
+          title: `How was your visit to ${business.business_name}? ⭐`,
+          message: `You recently used "${offer.title}" — tap here to leave a review and help other pet parents!`,
+          data: {
+            business_id: businessId,
+            business_name: business.business_name,
+            redemption_id: redemption.id,
+            action_url: `/business/${businessId}`,
+          }
+        });
+
       // Track analytics event for admin dashboard
       await supabaseAdmin
         .from('analytics_events')
@@ -423,6 +452,35 @@ serve(async (req) => {
             business_name: business.business_name,
             discount_value: offer.discount_value,
             discount_type: offer.discount_type,
+          }
+        });
+
+      // Create rating prompt (triggers review request after 2 hours)
+      const promptAfter = new Date();
+      promptAfter.setHours(promptAfter.getHours() + 2);
+      
+      await supabaseAdmin
+        .from('rating_prompts')
+        .insert({
+          user_id: membership.user_id,
+          business_id: businessId,
+          redemption_id: redemption.id,
+          prompt_after: promptAfter.toISOString(),
+        });
+
+      // Create delayed review reminder notification
+      await supabaseAdmin
+        .from('notifications')
+        .insert({
+          user_id: membership.user_id,
+          type: 'review_request',
+          title: `How was your visit to ${business.business_name}? ⭐`,
+          message: `You recently used "${offer.title}" — tap here to leave a review and help other pet parents!`,
+          data: {
+            business_id: businessId,
+            business_name: business.business_name,
+            redemption_id: redemption.id,
+            action_url: `/business/${businessId}`,
           }
         });
 

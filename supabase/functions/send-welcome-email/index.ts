@@ -11,6 +11,7 @@ const corsHeaders = {
 interface WelcomeEmailRequest {
   email: string;
   fullName: string;
+  petNames?: string[];
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -21,15 +22,24 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, fullName }: WelcomeEmailRequest = await req.json();
+    const { email, fullName, petNames }: WelcomeEmailRequest = await req.json();
     console.log("Sending welcome email to:", email);
 
     if (!email) {
       throw new Error("Email is required");
     }
 
-    const greeting = fullName ? `Hi ${fullName},` : "Hi there,";
+    const hasPets = petNames && petNames.length > 0;
+    const petList = hasPets ? petNames.join(" & ") : "";
     
+    const greeting = fullName 
+      ? (hasPets ? `Hi ${fullName} & ${petList},` : `Hi ${fullName},`)
+      : "Hi there,";
+    
+    const welcomeMessage = hasPets
+      ? `Welcome to the Wooffy family! We're thrilled to have you and ${petList} join our community of pet lovers in Cyprus.`
+      : `Welcome to the Wooffy family! We're thrilled to have you and your furry friend join our community of pet lovers in Cyprus.`;
+
     const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
@@ -40,7 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
 </style>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
-<div class="preview-text">Welcome to the Wooffy family! Start exploring exclusive pet benefits in Cyprus.</div>
+<div class="preview-text">Welcome to the Wooffy family${hasPets ? `, ${petList}` : ''}! Start exploring exclusive pet benefits in Cyprus.</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
 <h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome to Wooffy! 🐾</h1>
@@ -48,7 +58,7 @@ const handler = async (req: Request): Promise<Response> => {
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Welcome to the Wooffy family! We're thrilled to have you and your furry friend join our community of pet lovers in Cyprus.
+${welcomeMessage}
 </p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
 With Wooffy, you can:

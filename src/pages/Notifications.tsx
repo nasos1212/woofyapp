@@ -18,6 +18,7 @@ interface NotificationData {
   share_code?: string;
   alert_id?: string;
   question_id?: string;
+  action_url?: string;
 }
 
 interface Notification {
@@ -122,6 +123,12 @@ const Notifications = () => {
     } else if (notification.type === "birthday_offer" && data?.business_id) {
       // Open birthday offer dialog to show full message
       setSelectedBirthdayOffer(notification);
+    } else if (notification.type === "review_request" && data?.business_id) {
+      navigate(`/business/${data.business_id}`);
+    } else if (notification.type === "pet_birthday") {
+      navigate("/member");
+    } else if (notification.type === "anniversary") {
+      navigate("/member");
     }
   };
 
@@ -151,6 +158,12 @@ const Notifications = () => {
         return "🎂";
       case "birthday_offer":
         return "🎁";
+      case "review_request":
+        return "⭐";
+      case "pet_birthday":
+        return "🎂";
+      case "anniversary":
+        return "🎊";
       default:
         return "🔔";
     }
