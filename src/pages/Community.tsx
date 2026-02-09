@@ -501,7 +501,7 @@ const Community = () => {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
-                      onClick={() => navigate('/member/pet-health')}
+                      onClick={() => navigate('/member/health-assistant')}
                     >
                       🤖 Ask Wooffy AI
                     </Button>
