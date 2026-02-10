@@ -17,6 +17,21 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     console.log("Starting membership expiry check...");
 
     // Find all active memberships that have been expired for more than 7 days
@@ -26,19 +41,16 @@ Deno.serve(async (req) => {
 
     console.log(`Looking for memberships expired before: ${sevenDaysAgoISO}`);
 
-    // Get memberships that are still active but expired more than 7 days ago
-    const { data: expiredMemberships, error: fetchError } = await supabase
-      .from("memberships")
-      .select("id, user_id, member_number, expires_at")
-      .eq("is_active", true)
-      .lt("expires_at", sevenDaysAgoISO);
+    // Get memberships that are still active but expired more than 7 days ago (paginated)
+    const expiredMemberships = await fetchAll(
+      supabase
+        .from("memberships")
+        .select("id, user_id, member_number, expires_at")
+        .eq("is_active", true)
+        .lt("expires_at", sevenDaysAgoISO)
+    );
 
-    if (fetchError) {
-      console.error("Error fetching expired memberships:", fetchError);
-      throw fetchError;
-    }
-
-    console.log(`Found ${expiredMemberships?.length || 0} memberships to deactivate`);
+    console.log(`Found ${expiredMemberships.length} memberships to deactivate`);
 
     if (!expiredMemberships || expiredMemberships.length === 0) {
       return new Response(

@@ -16,6 +16,21 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     console.log('Checking for membership anniversaries...');
 
     // Get today's date
@@ -24,17 +39,15 @@ serve(async (req) => {
     const todayDay = today.getDate();
     const todayStr = today.toISOString().split('T')[0];
 
-    // Find memberships where created_at matches today's month and day (anniversary)
-    // and membership is at least 1 year old
-    const { data: memberships, error } = await supabase
-      .from('memberships')
-      .select('id, user_id, created_at, is_active, plan_type')
-      .eq('is_active', true);
+    // Find all active memberships (paginated)
+    const memberships = await fetchAll(
+      supabase
+        .from('memberships')
+        .select('id, user_id, created_at, is_active, plan_type')
+        .eq('is_active', true)
+    );
 
-    if (error) {
-      console.error('Error fetching memberships:', error);
-      throw error;
-    }
+    console.log(`Fetched ${memberships.length} active memberships`);
 
     let notificationsSent = 0;
 
