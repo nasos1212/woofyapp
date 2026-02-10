@@ -650,7 +650,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                         </div>
                       </div>
                       {pet.description && (
-                        <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                        <p className="text-sm text-muted-foreground mt-2">
                           {pet.description}
                         </p>
                       )}
