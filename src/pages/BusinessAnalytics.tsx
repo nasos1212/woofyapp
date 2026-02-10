@@ -524,7 +524,7 @@ const BusinessAnalytics = () => {
                       </p>
                       <p className="text-xs text-slate-500">{offer.discount} off</p>
                     </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
                       <Tag className="w-3 h-3" />
                       {offer.redemptions}
                     </span>
