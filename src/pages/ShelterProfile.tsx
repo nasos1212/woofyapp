@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet-async";
 import { ensureHttps } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import AdoptionInquiryDialog from "@/components/AdoptionInquiryDialog";
@@ -29,6 +30,7 @@ import {
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
+  const [viewingPet, setViewingPet] = useState<any | null>(null);
   const { trackShelterView } = useAnalyticsTracking();
 
   const { data: shelter, isLoading: shelterLoading } = useQuery({
@@ -282,7 +284,8 @@ const ShelterProfile = () => {
                     return (
                       <div 
                         key={pet.id} 
-                        className="rounded-lg overflow-hidden bg-muted border group"
+                        className="rounded-lg overflow-hidden bg-muted border group cursor-pointer"
+                        onClick={() => setViewingPet(pet)}
                       >
                         <div className="aspect-square relative">
                           {mainPhoto ? (
@@ -320,19 +323,10 @@ const ShelterProfile = () => {
                             )}
                           </div>
                           {pet.description && (
-                            <p className="text-sm text-muted-foreground mt-2">
+                            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
                               {pet.description}
                             </p>
                           )}
-                          <Button
-                            variant="default"
-                            size="sm"
-                            className="w-full mt-3 gap-2"
-                            onClick={() => setSelectedPet({ id: pet.id, name: pet.name, shelter_id: pet.shelter_id })}
-                          >
-                            <MessageSquare className="h-4 w-4" />
-                            Inquire About {pet.name}
-                          </Button>
                         </div>
                       </div>
                     );
@@ -454,6 +448,64 @@ const ShelterProfile = () => {
           </div>
         </div>
       </div>
+
+      {/* Pet Detail Dialog */}
+      <Dialog open={!!viewingPet} onOpenChange={(open) => !open && setViewingPet(null)}>
+        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+          {viewingPet && (() => {
+            const allPhotos = petPhotos?.filter(p => p.pet_id === viewingPet.id) || [];
+            const displayPhotos = allPhotos.length > 0 
+              ? allPhotos.map(p => p.photo_url) 
+              : (viewingPet.photo_url ? [viewingPet.photo_url] : []);
+            
+            return (
+              <>
+                {displayPhotos.length > 0 && (
+                  <div className="-mx-6 -mt-6">
+                    {displayPhotos.length === 1 ? (
+                      <img src={displayPhotos[0]} alt={viewingPet.name} className="w-full aspect-square object-cover rounded-t-lg" />
+                    ) : (
+                      <div className="grid grid-cols-2 gap-1">
+                        {displayPhotos.map((url: string, idx: number) => (
+                          <img key={idx} src={url} alt={`${viewingPet.name} ${idx + 1}`} className={`w-full object-cover ${idx === 0 && displayPhotos.length % 2 !== 0 ? 'col-span-2 aspect-video' : 'aspect-square'} ${idx === 0 ? 'rounded-tl-lg' : ''} ${idx === 1 ? 'rounded-tr-lg' : ''}`} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <DialogHeader>
+                  <DialogTitle className="text-xl">{viewingPet.name}</DialogTitle>
+                </DialogHeader>
+
+                <div className="flex flex-wrap gap-1.5">
+                  <Badge variant="secondary" className="capitalize">{viewingPet.pet_type}</Badge>
+                  {viewingPet.breed && <Badge variant="outline">{viewingPet.breed}</Badge>}
+                  {viewingPet.age && <Badge variant="outline">{viewingPet.age}</Badge>}
+                  {viewingPet.gender && <Badge variant="outline" className="capitalize">{viewingPet.gender}</Badge>}
+                </div>
+
+                {viewingPet.description && (
+                  <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                    {viewingPet.description}
+                  </p>
+                )}
+
+                <Button
+                  className="w-full gap-2 mt-2"
+                  onClick={() => {
+                    setSelectedPet({ id: viewingPet.id, name: viewingPet.name, shelter_id: viewingPet.shelter_id });
+                    setViewingPet(null);
+                  }}
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  Inquire About {viewingPet.name}
+                </Button>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
 
       {/* Adoption Inquiry Dialog */}
       {selectedPet && (
