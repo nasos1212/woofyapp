@@ -98,14 +98,29 @@ Deno.serve(async (req) => {
     // Log this dangerous operation
     console.log(`CRITICAL: Delete all users initiated by admin: ${user.id} (${user.email})`);
 
-    // List all users
-    const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
+    // List ALL users (paginate through all pages)
+    const users: typeof usersData.users = [];
+    let page = 1;
+    const perPage = 1000;
+    
+    while (true) {
+      const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage,
+      });
 
-    if (listError) {
-      throw listError;
+      if (listError) {
+        throw listError;
+      }
+
+      users.push(...(usersData.users || []));
+      
+      // If we got fewer than perPage, we've reached the last page
+      if (!usersData.users || usersData.users.length < perPage) {
+        break;
+      }
+      page++;
     }
-
-    const users = usersData.users || [];
     const deletedEmails: string[] = [];
     const errors: string[] = [];
 
