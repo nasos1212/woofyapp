@@ -507,7 +507,7 @@ const BusinessAnalytics = () => {
           </div>
 
           {/* Top Offers */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 mb-6">
+          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 mb-6">
             <h2 className="font-display font-semibold text-slate-900 mb-4">Top Offers</h2>
             {topOffers.length === 0 ? (
               <p className="text-slate-500 text-sm">No redemptions yet</p>
@@ -535,8 +535,8 @@ const BusinessAnalytics = () => {
           </div>
 
           {/* Customer Insights */}
-          <div className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-6 border-b border-slate-200">
+          <div className="mt-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="p-4 sm:p-6 border-b border-slate-200">
               <h2 className="font-display font-semibold text-slate-900">Top Customers</h2>
             </div>
             {customers.length === 0 ? (
@@ -545,17 +545,17 @@ const BusinessAnalytics = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-slate-50">
-                    <tr>
-                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-6 py-3">
+                     <tr>
+                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
                         Customer
                       </th>
-                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-6 py-3">
+                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3 hidden sm:table-cell">
                         Pets
                       </th>
-                      <th className="text-center text-xs font-medium text-slate-500 uppercase px-6 py-3">
+                      <th className="text-center text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
                         Redemptions
                       </th>
-                      <th className="text-right text-xs font-medium text-slate-500 uppercase px-6 py-3">
+                      <th className="text-right text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
                         Last Visit
                       </th>
                     </tr>
@@ -563,7 +563,7 @@ const BusinessAnalytics = () => {
                   <tbody className="divide-y divide-slate-100">
                     {customers.map((customer) => (
                       <tr key={customer.member_id} className="hover:bg-slate-50">
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <div>
                             <p className="text-sm font-medium text-slate-900">
                               {customer.member_name || "Unknown"}
@@ -573,18 +573,18 @@ const BusinessAnalytics = () => {
                             </p>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 hidden sm:table-cell">
                           <span className="text-sm text-slate-600">
                             {customer.pet_names || "-"}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                           <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm font-medium">
                             {customer.total_redemptions}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="text-sm text-slate-500 flex items-center justify-end gap-1">
+                        <td className="px-3 sm:px-6 py-3 sm:py-4 text-right">
+                          <span className="text-xs sm:text-sm text-slate-500 flex items-center justify-end gap-1">
                             <Calendar className="w-3 h-3" />
                             {formatDate(new Date(customer.last_visit))}
                           </span>
