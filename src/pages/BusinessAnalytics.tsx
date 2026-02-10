@@ -512,22 +512,24 @@ const BusinessAnalytics = () => {
             {topOffers.length === 0 ? (
               <p className="text-slate-500 text-sm">No redemptions yet</p>
             ) : (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
                 {topOffers.map((offer, i) => (
-                  <div key={offer.title} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
-                    <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-medium flex items-center justify-center">
+                  <div key={offer.title} className="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 bg-slate-50 rounded-xl">
+                    <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-medium flex items-center justify-center shrink-0 mt-0.5">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-900 truncate">
+                      <p className="text-xs sm:text-sm font-medium text-slate-900 break-words">
                         {offer.title}
                       </p>
-                      <p className="text-xs text-slate-500">{offer.discount} off</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <p className="text-xs text-slate-500">{offer.discount} off</p>
+                        <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-medium shrink-0">
+                          <Tag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                          {offer.redemptions}
+                        </span>
+                      </div>
                     </div>
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium shrink-0">
-                      <Tag className="w-3 h-3" />
-                      {offer.redemptions}
-                    </span>
                   </div>
                 ))}
               </div>
