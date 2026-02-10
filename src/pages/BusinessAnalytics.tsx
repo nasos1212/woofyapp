@@ -391,7 +391,7 @@ const BusinessAnalytics = () => {
         </Helmet>
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
-          <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
+          <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
             <Button
               variant="ghost"
               size="sm"
@@ -428,7 +428,7 @@ const BusinessAnalytics = () => {
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
         <BusinessHeader />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
+        <main className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
           <Button
             variant="ghost"
             size="sm"
