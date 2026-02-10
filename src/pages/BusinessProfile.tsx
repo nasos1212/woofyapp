@@ -372,15 +372,7 @@ export default function BusinessProfile() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => {
-                const fromParam = searchParams.get("from");
-                if (fromParam === "history") {
-                  navigate("/member/history");
-                } else {
-                  // Default to offers page for all other cases
-                  navigate("/member/offers");
-                }
-              }}
+              onClick={() => navigate(-1)}
               className="mb-4 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
