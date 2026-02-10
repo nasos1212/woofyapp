@@ -39,6 +39,7 @@ const ShelterDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
+  const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState({
     shelter_name: "",
     contact_name: "",
@@ -305,7 +306,7 @@ const ShelterDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="basic">
+              <Tabs defaultValue="basic" onValueChange={setActiveTab}>
                 <div className="relative mb-6">
                   {/* Left fade gradient */}
                   <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
@@ -505,6 +506,16 @@ const ShelterDashboard = () => {
                     </div>
                   </TabsContent>
 
+                  {["basic", "about", "social"].includes(activeTab) && (
+                    <div className="flex justify-start mt-6 pt-4 border-t">
+                      <Button type="submit" disabled={updateMutation.isPending}>
+                        <Save className="h-4 w-4 mr-2" />
+                        {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                      </Button>
+                    </div>
+                  )}
+                </form>
+
                   <TabsContent value="branding" className="space-y-6">
                     <div>
                       <h3 className="text-lg font-medium mb-1">Cover Photo</h3>
@@ -522,14 +533,6 @@ const ShelterDashboard = () => {
                       <ShelterGalleryUpload shelterId={shelter.id} />
                     </div>
                   </TabsContent>
-
-                   <div className="flex justify-start mt-6 pt-4 border-t">
-                    <Button type="submit" disabled={updateMutation.isPending}>
-                      <Save className="h-4 w-4 mr-2" />
-                      {updateMutation.isPending ? "Saving..." : "Save Changes"}
-                    </Button>
-                  </div>
-                </form>
 
                   <TabsContent value="adoptable-pets">
                     <ShelterAdoptablePets shelterId={shelter.id} />
