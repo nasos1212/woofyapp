@@ -24,13 +24,16 @@ import {
   Dog,
   ExternalLink,
   PawPrint,
-  MessageSquare
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
+  const [photoIndex, setPhotoIndex] = useState(0);
   const { trackShelterView } = useAnalyticsTracking();
 
   const { data: shelter, isLoading: shelterLoading } = useQuery({
@@ -285,7 +288,7 @@ const ShelterProfile = () => {
                       <div 
                         key={pet.id} 
                         className="rounded-lg overflow-hidden bg-muted border group cursor-pointer"
-                        onClick={() => setViewingPet(pet)}
+                        onClick={() => { setPhotoIndex(0); setViewingPet(pet); }}
                       >
                         <div className="aspect-square relative">
                           {mainPhoto ? (
@@ -461,15 +464,36 @@ const ShelterProfile = () => {
             return (
               <>
                 {displayPhotos.length > 0 && (
-                  <div className="-mx-6 -mt-6">
-                    {displayPhotos.length === 1 ? (
-                      <img src={displayPhotos[0]} alt={viewingPet.name} className="w-full aspect-square object-cover rounded-t-lg" />
-                    ) : (
-                      <div className="grid grid-cols-2 gap-1">
-                        {displayPhotos.map((url: string, idx: number) => (
-                          <img key={idx} src={url} alt={`${viewingPet.name} ${idx + 1}`} className={`w-full object-cover ${idx === 0 && displayPhotos.length % 2 !== 0 ? 'col-span-2 aspect-video' : 'aspect-square'} ${idx === 0 ? 'rounded-tl-lg' : ''} ${idx === 1 ? 'rounded-tr-lg' : ''}`} />
-                        ))}
-                      </div>
+                  <div className="-mx-6 -mt-6 relative">
+                    <img 
+                      src={displayPhotos[photoIndex]} 
+                      alt={`${viewingPet.name} photo ${photoIndex + 1}`} 
+                      className="w-full aspect-square object-cover rounded-t-lg" 
+                    />
+                    {displayPhotos.length > 1 && (
+                      <>
+                        <button
+                          onClick={() => setPhotoIndex((prev) => (prev - 1 + displayPhotos.length) % displayPhotos.length)}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors"
+                        >
+                          <ChevronLeft className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => setPhotoIndex((prev) => (prev + 1) % displayPhotos.length)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 transition-colors"
+                        >
+                          <ChevronRight className="h-5 w-5" />
+                        </button>
+                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                          {displayPhotos.map((_: string, idx: number) => (
+                            <button
+                              key={idx}
+                              onClick={() => setPhotoIndex(idx)}
+                              className={`w-2 h-2 rounded-full transition-colors ${idx === photoIndex ? 'bg-white' : 'bg-white/50'}`}
+                            />
+                          ))}
+                        </div>
+                      </>
                     )}
                   </div>
                 )}
