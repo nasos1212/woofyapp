@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
+import ShelterDetailDialog from "@/components/ShelterDetailDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
@@ -30,6 +31,7 @@ const MemberShelters = () => {
   const { user, loading: authLoading } = useAuth();
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedShelter, setSelectedShelter] = useState<Shelter | null>(null);
 
   useEffect(() => {
     const fetchShelters = async () => {
@@ -139,7 +141,7 @@ const MemberShelters = () => {
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {shelters.map((shelter) => (
-                <Link key={shelter.id} to={`/shelter/${shelter.id}`}>
+                <div key={shelter.id} onClick={() => setSelectedShelter(shelter)} className="cursor-pointer">
                   <Card className="h-full hover:shadow-lg transition-all overflow-hidden group">
                     {/* Cover Image */}
                     <div className="h-32 bg-gradient-to-br from-rose-100 to-pink-100 relative overflow-hidden">
@@ -195,7 +197,7 @@ const MemberShelters = () => {
                             size="sm"
                             className="h-7 px-2 text-xs gap-1"
                             onClick={(e) => {
-                              e.preventDefault();
+                              e.stopPropagation();
                               window.open(ensureHttps(shelter.website!), "_blank");
                             }}
                           >
@@ -206,7 +208,7 @@ const MemberShelters = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </Link>
+                </div>
               ))}
             </div>
           )}
@@ -221,6 +223,11 @@ const MemberShelters = () => {
               </p>
             </CardContent>
           </Card>
+          <ShelterDetailDialog
+            shelter={selectedShelter}
+            open={!!selectedShelter}
+            onOpenChange={(open) => !open && setSelectedShelter(null)}
+          />
         </main>
       </div>
     </>
