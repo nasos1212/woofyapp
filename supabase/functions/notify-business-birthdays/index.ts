@@ -19,6 +19,21 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     console.log('Starting business birthday notification check...');
 
     // Fetch all business birthday settings where reminders are enabled
@@ -68,10 +83,13 @@ serve(async (req) => {
       }
 
       // Get all redemptions for this business to find customer pets
-      const { data: redemptionsData, error: redemptionsError } = await supabase
-        .from('offer_redemptions')
-        .select('membership_id')
-        .eq('business_id', business_id);
+      const redemptionsData = await fetchAll(
+        supabase
+          .from('offer_redemptions')
+          .select('membership_id')
+          .eq('business_id', business_id)
+      );
+      const redemptionsError = null;
 
       if (redemptionsError) {
         console.error(`Error fetching redemptions for business ${business_id}:`, redemptionsError);
@@ -87,11 +105,14 @@ serve(async (req) => {
       }
 
       // Get pets for these memberships with birthdays
-      const { data: petsData, error: petsError } = await supabase
-        .from('pets')
-        .select('id, pet_name, pet_breed, birthday, owner_user_id')
-        .in('membership_id', membershipIds)
-        .not('birthday', 'is', null);
+      const petsData = await fetchAll(
+        supabase
+          .from('pets')
+          .select('id, pet_name, pet_breed, birthday, owner_user_id')
+          .in('membership_id', membershipIds)
+          .not('birthday', 'is', null)
+      );
+      const petsError = null;
 
       if (petsError) {
         console.error(`Error fetching pets for business ${business_id}:`, petsError);

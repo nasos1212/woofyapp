@@ -20,6 +20,21 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     console.log("Starting expiring membership notification check...");
 
     // Get current date
@@ -27,18 +42,17 @@ Deno.serve(async (req) => {
     const thirtyDaysFromNow = new Date(now);
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
-    // Fetch active memberships expiring within 30 days
-    const { data: expiringMemberships, error: fetchError } = await supabase
-      .from("memberships")
-      .select("id, user_id, expires_at, plan_type")
-      .eq("is_active", true)
-      .lte("expires_at", thirtyDaysFromNow.toISOString())
-      .gt("expires_at", now.toISOString());
+    // Fetch active memberships expiring within 30 days (paginated)
+    const expiringMemberships = await fetchAll(
+      supabase
+        .from("memberships")
+        .select("id, user_id, expires_at, plan_type")
+        .eq("is_active", true)
+        .lte("expires_at", thirtyDaysFromNow.toISOString())
+        .gt("expires_at", now.toISOString())
+    );
 
-    if (fetchError) {
-      console.error("Error fetching expiring memberships:", fetchError);
-      throw fetchError;
-    }
+    console.log(`Fetched ${expiringMemberships.length} expiring memberships`);
 
     console.log(`Found ${expiringMemberships?.length || 0} expiring memberships`);
 

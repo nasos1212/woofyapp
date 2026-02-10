@@ -16,6 +16,21 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     console.log('Checking for pet birthdays...');
 
     const today = new Date();
@@ -23,16 +38,15 @@ serve(async (req) => {
     const todayDay = today.getDate();
     const todayStr = today.toISOString().split('T')[0];
 
-    // Fetch all pets with birthdays
-    const { data: pets, error } = await supabase
-      .from('pets')
-      .select('id, pet_name, pet_breed, pet_type, birthday, owner_user_id, photo_url')
-      .not('birthday', 'is', null);
+    // Fetch all pets with birthdays (paginated)
+    const pets = await fetchAll(
+      supabase
+        .from('pets')
+        .select('id, pet_name, pet_breed, pet_type, birthday, owner_user_id, photo_url')
+        .not('birthday', 'is', null)
+    );
 
-    if (error) {
-      console.error('Error fetching pets:', error);
-      throw error;
-    }
+    console.log(`Fetched ${pets.length} pets with birthdays`);
 
     let notificationsSent = 0;
 

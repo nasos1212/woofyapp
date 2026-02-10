@@ -30,6 +30,21 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Helper to fetch all rows with pagination
+    async function fetchAll(query: any) {
+      const pageSize = 1000;
+      let allData: any[] = [];
+      let from = 0;
+      while (true) {
+        const { data, error } = await query.range(from, from + pageSize - 1);
+        if (error) throw error;
+        allData = allData.concat(data || []);
+        if (!data || data.length < pageSize) break;
+        from += pageSize;
+      }
+      return allData;
+    }
+
     const { audience, subject, title, message, ctaText, ctaUrl }: BulkEmailRequest = await req.json();
     console.log("Sending bulk email to audience:", audience);
 
@@ -37,38 +52,36 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Audience, subject, title, and message are required");
     }
 
-    // Get users based on audience
+    // Get users based on audience (paginated)
     let emails: string[] = [];
 
     if (audience === "all_users") {
-      const { data, error } = await supabase.from("profiles").select("email");
-      if (error) throw error;
-      emails = (data || []).map((p: { email: string }) => p.email).filter(Boolean);
+      const data = await fetchAll(supabase.from("profiles").select("email"));
+      emails = data.map((p: { email: string }) => p.email).filter(Boolean);
     } else if (audience === "all_members") {
-      const { data, error } = await supabase
-        .from("memberships")
-        .select("user_id, profiles!inner(email)");
-      if (error) throw error;
-      emails = [...new Set((data || []).map((m: any) => m.profiles?.email).filter(Boolean))];
+      const data = await fetchAll(
+        supabase.from("memberships").select("user_id, profiles!inner(email)")
+      );
+      emails = [...new Set(data.map((m: any) => m.profiles?.email).filter(Boolean))];
     } else if (audience === "active_members") {
-      const { data, error } = await supabase
-        .from("memberships")
-        .select("user_id, profiles!inner(email)")
-        .eq("is_active", true)
-        .gt("expires_at", new Date().toISOString());
-      if (error) throw error;
-      emails = [...new Set((data || []).map((m: any) => m.profiles?.email).filter(Boolean))];
+      const data = await fetchAll(
+        supabase.from("memberships")
+          .select("user_id, profiles!inner(email)")
+          .eq("is_active", true)
+          .gt("expires_at", new Date().toISOString())
+      );
+      emails = [...new Set(data.map((m: any) => m.profiles?.email).filter(Boolean))];
     } else if (audience === "expiring_soon") {
       const thirtyDaysFromNow = new Date();
       thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-      const { data, error } = await supabase
-        .from("memberships")
-        .select("user_id, profiles!inner(email)")
-        .eq("is_active", true)
-        .lt("expires_at", thirtyDaysFromNow.toISOString())
-        .gt("expires_at", new Date().toISOString());
-      if (error) throw error;
-      emails = [...new Set((data || []).map((m: any) => m.profiles?.email).filter(Boolean))];
+      const data = await fetchAll(
+        supabase.from("memberships")
+          .select("user_id, profiles!inner(email)")
+          .eq("is_active", true)
+          .lt("expires_at", thirtyDaysFromNow.toISOString())
+          .gt("expires_at", new Date().toISOString())
+      );
+      emails = [...new Set(data.map((m: any) => m.profiles?.email).filter(Boolean))];
     }
 
     console.log("Found", emails.length, "recipients");
