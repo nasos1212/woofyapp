@@ -505,6 +505,24 @@ const ShelterDashboard = () => {
                     </div>
                   </TabsContent>
 
+                  <TabsContent value="branding" className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-medium mb-1">Cover Photo</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        This photo appears at the top of your public shelter profile.
+                      </p>
+                      <ShelterHeaderUpload shelterId={shelter.id} currentLogoUrl={shelter.logo_url} currentCoverUrl={shelter.cover_photo_url} currentCoverPosition={shelter.cover_photo_position} />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-medium mb-1">Photo Gallery</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Upload photos of your shelter, dogs, and activities. These will be displayed on your public profile.
+                      </p>
+                      <ShelterGalleryUpload shelterId={shelter.id} />
+                    </div>
+                  </TabsContent>
+
                    <div className="flex justify-start mt-6 pt-4 border-t">
                     <Button type="submit" disabled={updateMutation.isPending}>
                       <Save className="h-4 w-4 mr-2" />
