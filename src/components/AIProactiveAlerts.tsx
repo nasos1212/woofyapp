@@ -189,8 +189,10 @@ export const AIProactiveAlerts = () => {
         if (isAutoReminder) {
           shouldShow = daysUntil >= -30 && daysUntil <= 30;
         } else if (reminderDaysBefore && reminderDaysBefore.length > 0) {
-          // Show if any of the selected reminder days match, or if overdue (up to 7 days)
-          shouldShow = reminderDaysBefore.includes(daysUntil) || (daysUntil >= -7 && daysUntil < 0);
+          // Show if we're within the earliest reminder window (e.g. 3 days before → show from day 3 onwards)
+          // Also show if overdue (up to 7 days past)
+          const earliestReminder = Math.max(...reminderDaysBefore);
+          shouldShow = (daysUntil >= 0 && daysUntil <= earliestReminder) || (daysUntil >= -7 && daysUntil < 0);
         }
 
         if (shouldShow) {
