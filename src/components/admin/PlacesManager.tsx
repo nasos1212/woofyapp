@@ -935,15 +935,6 @@ const PlacesManager = () => {
                   onCheckedChange={(checked) => setFormData({ ...formData, is_24_hour: checked })}
                 />
               </div>
-
-              <div className="flex items-center justify-between">
-                <Label htmlFor="is_emergency">Emergency Service</Label>
-                <Switch
-                  id="is_emergency"
-                  checked={formData.is_emergency}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_emergency: checked })}
-                />
-              </div>
             </div>
           </div>
 
