@@ -249,7 +249,7 @@ const EngagementAnalytics = () => {
   ].filter(d => d.value > 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-x-hidden">
       {/* Header with controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -585,13 +585,13 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-4">
                 {/* Summary stats */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-pink-500/10 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-pink-500">{birthdayOffers.length}</p>
+                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                  <div className="bg-pink-500/10 rounded-lg p-2 sm:p-3 text-center">
+                    <p className="text-xl sm:text-2xl font-bold text-pink-500">{birthdayOffers.length}</p>
                     <p className="text-xs text-muted-foreground">Sent</p>
                   </div>
-                  <div className="bg-green-500/10 rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-green-500">
+                  <div className="bg-green-500/10 rounded-lg p-2 sm:p-3 text-center">
+                    <p className="text-xl sm:text-2xl font-bold text-green-500">
                       {birthdayOffers.filter(b => b.redeemed_at).length}
                     </p>
                     <p className="text-xs text-muted-foreground">Redeemed</p>

@@ -130,9 +130,9 @@ const ExpiringMembershipsPanel = () => {
     <Card className="border-border/50">
       <CardHeader className="pb-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
             <Clock className="w-5 h-5 text-amber-500 shrink-0" />
-            Expiring Memberships ({memberships.length})
+            <span className="truncate">Expiring ({memberships.length})</span>
           </CardTitle>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={fetchExpiringMemberships} disabled={loading}>
