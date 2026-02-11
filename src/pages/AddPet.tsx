@@ -172,6 +172,11 @@ const AddPet = () => {
       return;
     }
 
+    if (knowsBirthday && petBirthday && petBirthday > new Date().toISOString().split('T')[0]) {
+      toast.error("Birthday cannot be a future date");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -487,8 +492,13 @@ const AddPet = () => {
                         onChange={(e) => setPetBirthday(e.target.value)}
                         max={new Date().toISOString().split('T')[0]}
                         min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
+                        className={cn(petBirthday > new Date().toISOString().split('T')[0] && "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive")}
                       />
-                      <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
+                      {petBirthday > new Date().toISOString().split('T')[0] ? (
+                        <p className="text-xs text-destructive font-medium">Birthday cannot be a future date</p>
+                      ) : (
+                        <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
+                      )}
                     </div>
                   ) : (
                     <div className="space-y-2">

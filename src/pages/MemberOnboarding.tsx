@@ -193,11 +193,23 @@ const MemberOnboarding = () => {
     setStep("pets");
   };
 
+  const hasFutureBirthday = (pet: Pet) => {
+    if (!pet.knowsBirthday || !pet.birthday) return false;
+    const today = new Date().toISOString().split('T')[0];
+    return pet.birthday > today;
+  };
+
   const handlePetsSubmit = () => {
     // Validate at least one pet has a name
     const validPets = pets.filter((p) => p.name.trim());
     if (validPets.length === 0) {
       toast.error("Please add at least one pet with a name");
+      return;
+    }
+    // Check for future birthdays
+    const futureBirthdayPet = validPets.find(hasFutureBirthday);
+    if (futureBirthdayPet) {
+      toast.error(`${futureBirthdayPet.name || "A pet"}'s birthday cannot be a future date`);
       return;
     }
     setStep("location");
@@ -680,8 +692,13 @@ const MemberOnboarding = () => {
                               onChange={(e) => updatePet(pet.id, "birthday", e.target.value)}
                               max={new Date().toISOString().split('T')[0]}
                               min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
+                              className={cn(hasFutureBirthday(pet) && "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive")}
                             />
-                            <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
+                            {hasFutureBirthday(pet) ? (
+                              <p className="text-xs text-destructive font-medium">Birthday cannot be a future date</p>
+                            ) : (
+                              <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
+                            )}
                           </div>
                         ) : (
                           <div className="space-y-2">
