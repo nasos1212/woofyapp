@@ -192,21 +192,28 @@ const Auth = () => {
         return;
       }
       
-      // CASE 3: User selected shelter type - redirect to shelter onboarding
+      // CASE 3+4: Only apply account-type-based redirects for NEW signups, not existing logins
+      // If user is logging in (isLogin=true) and has no records, send to free member dashboard
+      // If user is signing up, use their selected accountType
+      if (isLogin) {
+        // Existing user with no records - default to free member
+        showWelcomeToast();
+        navigate("/member/free");
+        return;
+      }
+      
+      // New signup - use selected account type
       if (accountType === "shelter") {
         navigate("/shelter-onboarding");
         return;
       }
       
-      // CASE 4: User has neither business role nor membership - they're new
-      // If they selected business type, add role and redirect to partner registration
       if (accountType === "business") {
         const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
         navigate(`/partner-register${nameParam}`);
         return;
       }
       
-      // If they selected member type and have no membership, go to free member dashboard
       if (accountType === "member") {
         showWelcomeToast();
         navigate("/member/free");
@@ -217,7 +224,7 @@ const Auth = () => {
     };
     
     checkAndRedirect();
-  }, [user, navigate, accountType, toast]);
+  }, [user, navigate, accountType, toast, isLogin]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
