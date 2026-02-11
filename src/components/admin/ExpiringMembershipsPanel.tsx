@@ -129,9 +129,9 @@ const ExpiringMembershipsPanel = () => {
   return (
     <Card className="border-border/50">
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Clock className="w-5 h-5 text-amber-500" />
+            <Clock className="w-5 h-5 text-amber-500 shrink-0" />
             Expiring Memberships ({memberships.length})
           </CardTitle>
           <div className="flex gap-2">
@@ -179,19 +179,19 @@ const ExpiringMembershipsPanel = () => {
               {memberships.map((membership) => (
                 <div
                   key={membership.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-muted/30 border border-border/50"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-lg bg-muted/30 border border-border/50"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <User className="w-5 h-5 text-primary" />
                     </div>
-                    <div>
-                      <p className="font-medium">{membership.profiles?.full_name || "Unknown"}</p>
-                      <p className="text-sm text-muted-foreground">{membership.profiles?.email}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{membership.profiles?.full_name || "Unknown"}</p>
+                      <p className="text-sm text-muted-foreground truncate">{membership.profiles?.email}</p>
                       <p className="text-xs text-muted-foreground">{membership.member_number}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-right">
+                  <div className="flex items-center gap-3 ml-13 sm:ml-0">
                     <div>
                       <Badge variant="outline" className="mb-1">{getPlanLabel(membership.plan_type)}</Badge>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">

@@ -251,7 +251,7 @@ const EngagementAnalytics = () => {
   return (
     <div className="space-y-6">
       {/* Header with controls */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-primary" />
           Engagement Analytics

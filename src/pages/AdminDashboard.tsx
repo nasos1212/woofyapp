@@ -82,7 +82,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+      <div className="container mx-auto px-3 sm:px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
 
         <Breadcrumbs items={[{ label: "Admin Dashboard" }]} />
         
