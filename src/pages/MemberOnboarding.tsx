@@ -704,10 +704,13 @@ const MemberOnboarding = () => {
                               <PopoverContent className="w-auto p-0" align="start">
                                 <Calendar
                                   mode="single"
+                                  captionLayout="dropdown-buttons"
                                   selected={pet.birthday ? new Date(pet.birthday + "T00:00:00") : undefined}
                                   onSelect={(date) => {
                                     updatePet(pet.id, "birthday", date ? format(date, "yyyy-MM-dd") : "");
                                   }}
+                                  fromYear={new Date().getFullYear() - 25}
+                                  toYear={new Date().getFullYear()}
                                   fromDate={new Date(new Date().setFullYear(new Date().getFullYear() - 25))}
                                   toDate={new Date()}
                                   initialFocus
