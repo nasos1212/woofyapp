@@ -418,15 +418,13 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topBusinessesByClicks.map((business, index) => (
-                  <div key={business.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
-                        {index + 1}
-                      </Badge>
-                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
-                    </div>
-                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
-                      {business.count} clicks
+                  <div key={business.name} className="flex items-center gap-2 min-w-0">
+                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
+                      {index + 1}
+                    </Badge>
+                    <span className="text-sm font-medium truncate flex-1 min-w-0">{business.name}</span>
+                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0 text-xs">
+                      {business.count}
                     </Badge>
                   </div>
                 ))}
@@ -449,15 +447,13 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topBusinessesByRedemptions.map((business, index) => (
-                  <div key={business.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
-                        {index + 1}
-                      </Badge>
-                      <span className="text-sm font-medium truncate max-w-[140px]">{business.name}</span>
-                    </div>
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
-                      {business.count} redeemed
+                  <div key={business.name} className="flex items-center gap-2 min-w-0">
+                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
+                      {index + 1}
+                    </Badge>
+                    <span className="text-sm font-medium truncate flex-1 min-w-0">{business.name}</span>
+                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0 text-xs">
+                      {business.count}
                     </Badge>
                   </div>
                 ))}
@@ -483,19 +479,19 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topOffersByClicks.map((offer, index) => (
-                  <div key={`${offer.name}-${offer.businessName}`} className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div key={`${offer.name}-${offer.businessName}`} className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 min-w-0">
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
                         {index + 1}
                       </Badge>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{offer.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
                       </div>
+                      <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0 text-xs">
+                        {offer.count}
+                      </Badge>
                     </div>
-                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0">
-                      {offer.count} clicks
-                    </Badge>
                   </div>
                 ))}
               </div>
@@ -517,19 +513,19 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topOffersByRedemptions.map((offer, index) => (
-                  <div key={`${offer.name}-${offer.businessName}`} className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <div key={`${offer.name}-${offer.businessName}`} className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 min-w-0">
                       <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
                         {index + 1}
                       </Badge>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium truncate">{offer.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
                       </div>
+                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0 text-xs">
+                        {offer.count}
+                      </Badge>
                     </div>
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0">
-                      {offer.count} redeemed
-                    </Badge>
                   </div>
                 ))}
               </div>
@@ -554,15 +550,13 @@ const EngagementAnalytics = () => {
             ) : (
               <div className="space-y-3">
                 {topSheltersByViews.map((shelter, index) => (
-                  <div key={shelter.name} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center">
-                        {index + 1}
-                      </Badge>
-                      <span className="text-sm font-medium truncate max-w-[180px]">{shelter.name}</span>
-                    </div>
-                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-                      {shelter.count} views
+                  <div key={shelter.name} className="flex items-center gap-2 min-w-0">
+                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
+                      {index + 1}
+                    </Badge>
+                    <span className="text-sm font-medium truncate flex-1 min-w-0">{shelter.name}</span>
+                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 shrink-0 text-xs">
+                      {shelter.count}
                     </Badge>
                   </div>
                 ))}
