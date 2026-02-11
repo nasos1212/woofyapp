@@ -489,7 +489,15 @@ const AddPet = () => {
                       <Input
                         type="date"
                         value={petBirthday}
-                        onChange={(e) => setPetBirthday(e.target.value)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          const today = new Date().toISOString().split('T')[0];
+                          const minDate = new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0];
+                          if (val && (val > today || val < minDate)) {
+                            return;
+                          }
+                          setPetBirthday(val);
+                        }}
                         max={new Date().toISOString().split('T')[0]}
                         min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                         className={cn(petBirthday > new Date().toISOString().split('T')[0] && "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive")}

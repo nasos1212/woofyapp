@@ -689,7 +689,16 @@ const MemberOnboarding = () => {
                             <Input
                               type="date"
                               value={pet.birthday}
-                              onChange={(e) => updatePet(pet.id, "birthday", e.target.value)}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                const today = new Date().toISOString().split('T')[0];
+                                const minDate = new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0];
+                                if (val && (val > today || val < minDate)) {
+                                  // Don't update — keep invalid value out
+                                  return;
+                                }
+                                updatePet(pet.id, "birthday", val);
+                              }}
                               max={new Date().toISOString().split('T')[0]}
                               min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                               className={cn(hasFutureBirthday(pet) && "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive")}
