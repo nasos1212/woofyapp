@@ -485,7 +485,7 @@ const EngagementAnalytics = () => {
                         {index + 1}
                       </Badge>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium truncate">{offer.name}</p>
+                        <p className="text-sm font-medium line-clamp-2">{offer.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
                       </div>
                       <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0 text-xs">
@@ -519,7 +519,7 @@ const EngagementAnalytics = () => {
                         {index + 1}
                       </Badge>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium truncate">{offer.name}</p>
+                        <p className="text-sm font-medium line-clamp-2">{offer.name}</p>
                         <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
                       </div>
                       <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0 text-xs">
