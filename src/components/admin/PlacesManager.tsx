@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { 
+import {
   MapPin, 
   Check, 
   ExternalLink, 
@@ -57,7 +57,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
+import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
 
 interface Place {
   id: string;
@@ -83,12 +83,10 @@ interface PlaceFormData {
   place_type: string;
   city: string;
   area: string;
-  address: string;
   phone: string;
   website: string;
   description: string;
-  latitude: string;
-  longitude: string;
+  google_maps_link: string;
   is_24_hour: boolean;
   is_emergency: boolean;
   verified: boolean;
@@ -108,12 +106,10 @@ const defaultFormData: PlaceFormData = {
   place_type: "cafe",
   city: "",
   area: "",
-  address: "",
   phone: "",
   website: "",
   description: "",
-  latitude: "35.0",
-  longitude: "33.0",
+  google_maps_link: "",
   is_24_hour: false,
   is_emergency: false,
   verified: true,
@@ -181,12 +177,10 @@ const PlacesManager = () => {
       place_type: place.place_type,
       city: place.city || "",
       area: place.area || "",
-      address: place.address || "",
       phone: place.phone || "",
       website: place.website || "",
       description: place.description || "",
-      latitude: place.latitude?.toString() || "35.0",
-      longitude: place.longitude?.toString() || "33.0",
+      google_maps_link: place.google_maps_url || "",
       is_24_hour: place.is_24_hour || false,
       is_emergency: place.is_emergency || false,
       verified: place.verified || false,
@@ -217,17 +211,18 @@ const PlacesManager = () => {
 
     setIsSaving(true);
     try {
+      const fallbackCoords = getCoordinatesForLocation(formData.city, formData.area);
       const placeData = {
         name: formData.name.trim(),
         place_type: formData.place_type,
         city: formData.city || null,
         area: formData.area || null,
-        address: formData.address || null,
         phone: formData.phone || null,
         website: formData.website || null,
         description: formData.description || null,
-        latitude: parseFloat(formData.latitude) || 35.0,
-        longitude: parseFloat(formData.longitude) || 33.0,
+        google_maps_url: formData.google_maps_link || null,
+        latitude: fallbackCoords.lat,
+        longitude: fallbackCoords.lng,
         is_24_hour: formData.is_24_hour,
         is_emergency: formData.is_emergency,
         verified: formData.verified,
@@ -871,71 +866,55 @@ const PlacesManager = () => {
               </div>
             )}
 
+            {/* Google Maps Link */}
             <div className="grid gap-2">
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="google_maps_link">Google Maps Link *</Label>
               <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                placeholder="Street address"
+                id="google_maps_link"
+                type="url"
+                placeholder="e.g. https://maps.app.goo.gl/YSWaKyiCztHkoiXa7"
+                value={formData.google_maps_link}
+                onChange={(e) => setFormData({ ...formData, google_maps_link: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">
+                Open the place in Google Maps, click "Share" and paste the link here
+              </p>
+            </div>
+
+            {/* Phone */}
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+357 XX XXXXXX"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+357..."
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="website">Website</Label>
-                <Input
-                  id="website"
-                  value={formData.website}
-                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  placeholder="https://..."
-                />
-              </div>
+            {/* Website */}
+            <div className="grid gap-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                type="url"
+                placeholder="https://..."
+                value={formData.website}
+                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+              />
             </div>
 
+            {/* Description */}
             <div className="grid gap-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
+                placeholder="Tell us what makes this place pet-friendly..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Brief description..."
                 rows={3}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="latitude">Latitude</Label>
-                <Input
-                  id="latitude"
-                  type="number"
-                  step="0.0001"
-                  value={formData.latitude}
-                  onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                />
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="longitude">Longitude</Label>
-                <Input
-                  id="longitude"
-                  type="number"
-                  step="0.0001"
-                  value={formData.longitude}
-                  onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                />
-              </div>
             </div>
 
             <div className="flex flex-col gap-3 pt-2">
