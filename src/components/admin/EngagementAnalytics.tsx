@@ -466,14 +466,14 @@ const EngagementAnalytics = () => {
       {/* Top Content - Row 2: Offers */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Top Offers by Clicks */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <MousePointer className="w-4 h-4 text-yellow-500" />
-              Top Offers (by Clicks)
+            <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+              <MousePointer className="w-4 h-4 text-yellow-500 shrink-0" />
+              <span className="truncate">Top Offers (Clicks)</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6">
             {topOffersByClicks.length === 0 ? (
               <p className="text-muted-foreground text-sm py-4 text-center">No clicks yet</p>
             ) : (
@@ -500,14 +500,14 @@ const EngagementAnalytics = () => {
         </Card>
 
         {/* Top Offers by Redemptions */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 overflow-hidden">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Gift className="w-4 h-4 text-green-500" />
-              Top Offers (by Redemptions)
+            <CardTitle className="text-sm sm:text-base flex items-center gap-2">
+              <Gift className="w-4 h-4 text-green-500 shrink-0" />
+              <span className="truncate">Top Offers (Redeemed)</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-3 sm:px-6">
             {topOffersByRedemptions.length === 0 ? (
               <p className="text-muted-foreground text-sm py-4 text-center">No redemptions yet</p>
             ) : (
