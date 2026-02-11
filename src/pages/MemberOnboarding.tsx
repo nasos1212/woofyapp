@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown, RefreshCw, Sparkles } from "lucide-react";
+import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown, RefreshCw, Sparkles, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn, formatDate } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
 import { ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -686,28 +688,34 @@ const MemberOnboarding = () => {
 
                         {pet.knowsBirthday ? (
                           <div className="space-y-2">
-                            <Input
-                              type="date"
-                              value={pet.birthday}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                const today = new Date().toISOString().split('T')[0];
-                                const minDate = new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0];
-                                if (val && (val > today || val < minDate)) {
-                                  // Don't update — keep invalid value out
-                                  return;
-                                }
-                                updatePet(pet.id, "birthday", val);
-                              }}
-                              max={new Date().toISOString().split('T')[0]}
-                              min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
-                              className={cn(hasFutureBirthday(pet) && "border-destructive bg-destructive/10 text-destructive focus-visible:ring-destructive")}
-                            />
-                            {hasFutureBirthday(pet) ? (
-                              <p className="text-xs text-destructive font-medium">Birthday cannot be a future date</p>
-                            ) : (
-                              <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
-                            )}
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !pet.birthday && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {pet.birthday ? format(new Date(pet.birthday + "T00:00:00"), "PPP") : <span>Pick a date</span>}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  mode="single"
+                                  selected={pet.birthday ? new Date(pet.birthday + "T00:00:00") : undefined}
+                                  onSelect={(date) => {
+                                    updatePet(pet.id, "birthday", date ? format(date, "yyyy-MM-dd") : "");
+                                  }}
+                                  fromDate={new Date(new Date().setFullYear(new Date().getFullYear() - 25))}
+                                  toDate={new Date()}
+                                  initialFocus
+                                  className={cn("p-3 pointer-events-auto")}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
                           </div>
                         ) : (
                           <div className="space-y-2">
