@@ -259,8 +259,16 @@ const PetProfile = () => {
   const calculateAge = (birthday: string | null, ageYears: number | null) => {
     if (birthday) {
       const birthDate = new Date(birthday);
-      const years = differenceInYears(new Date(), birthDate);
-      const months = differenceInMonths(new Date(), birthDate) % 12;
+      const now = new Date();
+      
+      // If birthday is in the future, show countdown instead
+      if (birthDate > now) {
+        const daysUntil = differenceInDays(birthDate, now);
+        return `Birthday in ${daysUntil} day${daysUntil !== 1 ? "s" : ""}`;
+      }
+      
+      const years = differenceInYears(now, birthDate);
+      const months = differenceInMonths(now, birthDate) % 12;
       
       if (years === 0) {
         return `${months} month${months !== 1 ? "s" : ""} old`;
