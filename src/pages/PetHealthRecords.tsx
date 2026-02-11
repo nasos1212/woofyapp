@@ -1324,7 +1324,7 @@ const PetHealthRecords = () => {
                               {record.date_administered && (
                                 <span>Date: {formatDate(new Date(record.date_administered))}</span>
                               )}
-                              {record.next_due_date && (
+                              {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
                                 <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                               {record.veterinarian_name && <span>Vet: {record.veterinarian_name}</span>}
@@ -1413,7 +1413,7 @@ const PetHealthRecords = () => {
                               {record.date_administered && (
                                 <span>Last: {formatDate(new Date(record.date_administered))}</span>
                               )}
-                              {record.next_due_date && (
+                              {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
                                 <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
@@ -1488,7 +1488,7 @@ const PetHealthRecords = () => {
                               {record.date_administered && (
                                 <span>Last: {formatDate(new Date(record.date_administered))}</span>
                               )}
-                              {record.next_due_date && (
+                              {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
                                 <span>Next: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
