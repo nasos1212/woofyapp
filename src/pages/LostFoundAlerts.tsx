@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,7 +76,14 @@ const LostFoundAlerts = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  const [activeTab, setActiveTab] = useState<"lost" | "found" | "reunited">("lost");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const activeTab: "lost" | "found" | "reunited" = 
+    tabParam === "found" || tabParam === "reunited" ? tabParam : "lost";
+
+  const setActiveTab = (tab: "lost" | "found" | "reunited") => {
+    setSearchParams(tab === "lost" ? {} : { tab }, { replace: true });
+  };
 
   // Notification preferences state
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreferences | null>(null);
