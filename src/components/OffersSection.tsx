@@ -199,12 +199,12 @@ const OffersSection = () => {
               <Card
                 key={offer.id}
                 className={`border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group ${
-                  index < 4 ? "ring-2 ring-amber-400/60 border-amber-400/40 relative" : ""
+                  index < 2 ? "ring-2 ring-amber-400/60 border-amber-400/40 relative" : ""
                 }`}
                 onClick={() => handleOfferClick(offer)}
               >
                 {/* MOCK: Featured badge preview - remove when building real feature */}
-                {index < 4 && (
+                {index < 2 && (
                   <div className="absolute -top-2.5 left-4 z-10">
                     <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 shadow-sm text-xs gap-1">
                       ⭐ Featured
