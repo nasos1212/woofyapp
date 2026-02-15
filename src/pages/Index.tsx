@@ -12,6 +12,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import FreemiumSection from "@/components/FreemiumSection";
 import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
+import FounderSection from "@/components/FounderSection";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -102,6 +103,7 @@ const Index = () => {
           <SheltersSection />
           <TestimonialsSection />
           <HubSection />
+          <FounderSection />
           <FreemiumSection />
           <PricingSection />
           <CTASection />
