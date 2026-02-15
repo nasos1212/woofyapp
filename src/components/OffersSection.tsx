@@ -192,25 +192,15 @@ const OffersSection = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {offers.map((offer, index) => {
+          {offers.map((offer) => {
             const timeIndicator = getTimeIndicator(offer);
             
             return (
               <Card
                 key={offer.id}
-                className={`border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group ${
-                  index < 2 ? "ring-2 ring-amber-400/60 border-amber-400/40 relative" : ""
-                }`}
+                className="border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group"
                 onClick={() => handleOfferClick(offer)}
               >
-                {/* MOCK: Featured badge preview - remove when building real feature */}
-                {index < 2 && (
-                  <div className="absolute -top-2.5 left-4 z-10">
-                    <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 shadow-sm text-xs gap-1">
-                      ⭐ Featured
-                    </Badge>
-                  </div>
-                )}
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <Badge className="bg-primary/20 text-primary border-primary/30">
