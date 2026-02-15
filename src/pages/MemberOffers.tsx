@@ -583,19 +583,30 @@ const MemberOffers = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {filteredOffers.map((offer) => {
+              {filteredOffers.map((offer, index) => {
                 const timeIndicator = getTimeIndicator(offer);
+                const isFeaturedMock = index < 2; // MOCK: Featured badge preview
                 
                 return (
                   <button
                     key={offer.id}
                     onClick={() => setSelectedOffer(offer as OfferWithDetails)}
-                    className={`bg-white rounded-2xl p-4 sm:p-5 shadow-soft border transition-all hover:shadow-card text-left w-full ${
-                      offer.isRedeemed
-                        ? "border-muted opacity-75"
-                        : "border-transparent hover:border-primary/30"
+                    className={`bg-white rounded-2xl p-4 sm:p-5 shadow-soft border transition-all hover:shadow-card text-left w-full relative ${
+                      isFeaturedMock
+                        ? "ring-2 ring-amber-400/60 border-amber-400/40"
+                        : offer.isRedeemed
+                          ? "border-muted opacity-75"
+                          : "border-transparent hover:border-primary/30"
                     }`}
                   >
+                    {/* MOCK: Featured badge preview - remove when building real feature */}
+                    {isFeaturedMock && (
+                      <div className="absolute -top-2.5 left-4 z-10">
+                        <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white border-0 shadow-sm text-xs gap-1">
+                          ⭐ Featured
+                        </Badge>
+                      </div>
+                    )}
                     {/* Header */}
                     <div className="flex items-start justify-between mb-3 gap-2">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
