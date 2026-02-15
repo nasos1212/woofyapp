@@ -8,7 +8,7 @@ import OffersSection from "@/components/OffersSection";
 import PartnersSection from "@/components/PartnersSection";
 import SheltersSection from "@/components/SheltersSection";
 import HubSection from "@/components/HubSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
+
 import FreemiumSection from "@/components/FreemiumSection";
 import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
@@ -101,7 +101,7 @@ const Index = () => {
           <BenefitsSection />
           <PartnersSection />
           <SheltersSection />
-          <TestimonialsSection />
+          
           <HubSection />
           <OffersSection />
           <FreemiumSection />
