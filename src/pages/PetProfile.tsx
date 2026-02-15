@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock, Gift, Building2 } from "lucide-react";
@@ -90,6 +91,8 @@ const PetProfile = () => {
   const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -290,7 +293,7 @@ const PetProfile = () => {
     }
   };
 
-  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user || !pet) return;
 
@@ -300,6 +303,17 @@ const PetProfile = () => {
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCropperSrc(reader.result as string);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = async (blob: Blob) => {
+    if (!user || !pet) return;
 
     setIsUploadingPhoto(true);
     try {
@@ -311,22 +325,18 @@ const PetProfile = () => {
         }
       }
 
-      // Upload new photo
-      const fileExt = file.name.split('.').pop()?.toLowerCase();
-      const filePath = `${user.id}/${pet.id}/${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${pet.id}/${Date.now()}.webp`;
 
       const { error: uploadError } = await supabase.storage
         .from('pet-photos')
-        .upload(filePath, file);
+        .upload(filePath, blob, { contentType: 'image/webp' });
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('pet-photos')
         .getPublicUrl(filePath);
 
-      // Update pet record
       const { error: updateError } = await supabase
         .from('pets')
         .update({ photo_url: publicUrl })
@@ -467,7 +477,7 @@ const PetProfile = () => {
                     ref={fileInputRef}
                     type="file"
                     accept="image/jpeg,image/png,image/gif,image/webp"
-                    onChange={handlePhotoUpload}
+                    onChange={handlePhotoSelect}
                     className="hidden"
                     id="pet-photo-upload"
                   />
@@ -1022,6 +1032,21 @@ const PetProfile = () => {
           </div>
         </main>
       </div>
+
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) {
+              setCropperSrc(null);
+              if (fileInputRef.current) fileInputRef.current.value = "";
+            }
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </>
   );
 };
