@@ -593,7 +593,7 @@ const MemberOffers = () => {
                     onClick={() => setSelectedOffer(offer as OfferWithDetails)}
                     className={`bg-white rounded-2xl p-4 sm:p-5 shadow-soft border transition-all hover:shadow-card text-left w-full relative ${
                       isFeaturedMock
-                        ? "ring-2 ring-amber-400/60 border-amber-400/40"
+                        ? "ring-[3px] ring-amber-400/80 border-amber-400/60"
                         : offer.isRedeemed
                           ? "border-muted opacity-75"
                           : "border-transparent hover:border-primary/30"
