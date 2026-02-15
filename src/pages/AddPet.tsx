@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Dog, Cat, Check, ArrowRight, ArrowLeft, Camera, X, CalendarIcon } from "lucide-react";
@@ -42,6 +43,8 @@ const AddPet = () => {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Get breeds based on selected pet type
@@ -126,12 +129,19 @@ const AddPet = () => {
       return;
     }
 
-    setPhotoFile(file);
+    // Open cropper with the selected image
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPhotoPreview(reader.result as string);
+      setCropperSrc(reader.result as string);
+      setShowCropper(true);
     };
     reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = (blob: Blob) => {
+    const file = new File([blob], "pet-photo.webp", { type: "image/webp" });
+    setPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(blob));
   };
 
   const removePhoto = () => {
@@ -565,6 +575,21 @@ const AddPet = () => {
           </Card>
         </div>
       </div>
+
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) {
+              setCropperSrc(null);
+              if (fileInputRef.current) fileInputRef.current.value = "";
+            }
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+        />
+      )}
     </>
   );
 };
