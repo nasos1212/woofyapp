@@ -97,13 +97,13 @@ const Index = () => {
         <Header />
         <main>
           <HeroSection />
+          <FounderSection />
           <BenefitsSection />
-          <OffersSection />
           <PartnersSection />
           <SheltersSection />
           <TestimonialsSection />
           <HubSection />
-          <FounderSection />
+          <OffersSection />
           <FreemiumSection />
           <PricingSection />
           <CTASection />
