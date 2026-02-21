@@ -69,8 +69,8 @@ const Footer = () => {
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Support</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
               <li><button onClick={() => setShowAffiliateDialog(true)} className="hover:text-wooffy-sky transition-colors">Affiliate Program</button></li>
-              <li><a href="mailto:hello@wooffy.app?subject=Privacy Policy Inquiry" className="hover:text-wooffy-sky transition-colors">Privacy Policy</a></li>
-              <li><a href="mailto:hello@wooffy.app?subject=Terms of Service Inquiry" className="hover:text-wooffy-sky transition-colors">Terms of Service</a></li>
+              <li><Link to="/terms#privacy-policy" className="hover:text-wooffy-sky transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-wooffy-sky transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
 
