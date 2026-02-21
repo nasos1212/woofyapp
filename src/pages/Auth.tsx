@@ -863,13 +863,13 @@ const Auth = () => {
                 />
                 <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
                   I agree to the{" "}
-                  <Link to="/terms" target="_blank" className="text-primary hover:underline font-medium">
+                  <a href="https://www.wooffy.app/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
                     Terms &amp; Conditions
-                  </Link>{" "}
+                  </a>{" "}
                   and{" "}
-                  <Link to="/terms#privacy-policy" target="_blank" className="text-primary hover:underline font-medium">
+                  <a href="https://www.wooffy.app/terms#privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
                     Privacy Policy
-                  </Link>
+                  </a>
                 </label>
               </div>
             )}
