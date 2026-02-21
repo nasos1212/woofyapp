@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home, AlertTriangle } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +44,7 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   
   const [rejectedDialog, setRejectedDialog] = useState<{ open: boolean; type: "business" | "shelter" | null }>({ open: false, type: null });
   const [searchParams] = useSearchParams();
@@ -850,15 +852,34 @@ const Auth = () => {
                 </button>
               </div>
             </div>
-
-
+            {!isLogin && (
+              <div className="flex items-start gap-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary"
+                />
+                <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
+                  I agree to the{" "}
+                  <Link to="/terms" target="_blank" className="text-primary hover:underline font-medium">
+                    Terms &amp; Conditions
+                  </Link>{" "}
+                  and{" "}
+                  <Link to="/terms#privacy-policy" target="_blank" className="text-primary hover:underline font-medium">
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+            )}
 
 
             <Button
               type="submit"
               variant="hero"
               className="w-full"
-              disabled={isLoading}
+              disabled={isLoading || (!isLogin && !acceptedTerms)}
             >
               {isLoading ? <DogLoader size="sm" /> : isLogin ? "Sign In" : "Create Account"}
             </Button>

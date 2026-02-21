@@ -45,6 +45,7 @@ import ShelterOnboarding from "./pages/ShelterOnboarding";
 import MemberShelters from "./pages/MemberShelters";
 import PetFriendlyPlaces from "./pages/PetFriendlyPlaces";
 import VerifyEmail from "./pages/VerifyEmail";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -95,6 +96,7 @@ const App = () => (
               <Route path="/shelter-dashboard" element={<ShelterDashboard />} />
               <Route path="/shelter-onboarding" element={<ShelterOnboarding />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             
