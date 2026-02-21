@@ -252,7 +252,7 @@ const Terms = () => {
             <p>Updates will be communicated via email and in-app notification.</p>
 
             <h2>12. Contact</h2>
-            <p>For privacy inquiries: <a href="mailto:privacy@wooffy.app" className="text-primary">privacy@wooffy.app</a></p>
+            <p>For privacy inquiries: <a href="mailto:hello@wooffy.app" className="text-primary">hello@wooffy.app</a></p>
 
             {/* Shelter Agreement */}
             <hr className="my-10" />
@@ -318,7 +318,7 @@ const Terms = () => {
             <p>By registering on Wooffy.App, the Shelter confirms that it has authority to bind the organization and agrees to this Agreement.</p>
 
             <hr className="my-10" />
-            <p className="text-sm text-muted-foreground">For questions or support, contact: <a href="mailto:support@wooffy.app" className="text-primary">support@wooffy.app</a></p>
+            <p className="text-sm text-muted-foreground">For questions or support, contact: <a href="mailto:hello@wooffy.app" className="text-primary">hello@wooffy.app</a></p>
           </article>
         </div>
       </div>
