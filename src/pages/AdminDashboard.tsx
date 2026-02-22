@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
@@ -16,11 +17,24 @@ import PlacesManager from "@/components/admin/PlacesManager";
 import AffiliateManager from "@/components/admin/AffiliateManager";
 import CommunityReportsManager from "@/components/admin/CommunityReportsManager";
 
+interface PendingCounts {
+  support: number;
+  affiliates: number;
+  places: number;
+  reports: number;
+}
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pendingCounts, setPendingCounts] = useState<PendingCounts>({
+    support: 0,
+    affiliates: 0,
+    places: 0,
+    reports: 0,
+  });
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -46,10 +60,51 @@ const AdminDashboard = () => {
 
       setIsAdmin(data);
       setLoading(false);
+
+      if (data) {
+        fetchPendingCounts();
+      }
     } catch (error) {
       console.error("Error checking admin status:", error);
       setIsAdmin(false);
       setLoading(false);
+    }
+  };
+
+  const fetchPendingCounts = async () => {
+    try {
+      const [supportRes, affiliatesRes, placesRes, reportsRes] = await Promise.all([
+        // Open/pending support conversations (excluding affiliates)
+        supabase
+          .from("support_conversations")
+          .select("*", { count: "exact", head: true })
+          .neq("category", "affiliate")
+          .neq("status", "resolved"),
+        // Pending affiliate inquiries
+        supabase
+          .from("affiliate_inquiries")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+        // Unverified places
+        supabase
+          .from("pet_friendly_places")
+          .select("*", { count: "exact", head: true })
+          .or("verified.is.null,verified.eq.false"),
+        // Pending community reports
+        supabase
+          .from("community_reports")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "pending"),
+      ]);
+
+      setPendingCounts({
+        support: supportRes.count || 0,
+        affiliates: affiliatesRes.count || 0,
+        places: placesRes.count || 0,
+        reports: reportsRes.count || 0,
+      });
+    } catch (error) {
+      console.error("Error fetching pending counts:", error);
     }
   };
 
@@ -79,6 +134,15 @@ const AdminDashboard = () => {
     );
   }
 
+  const TabBadge = ({ count }: { count: number }) => {
+    if (count === 0) return null;
+    return (
+      <span className="ml-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-destructive-foreground">
+        {count > 99 ? "99+" : count}
+      </span>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
@@ -96,10 +160,12 @@ const AdminDashboard = () => {
             <TabsTrigger value="support" className="gap-1">
               <MessageCircleQuestion className="w-4 h-4" />
               Support
+              <TabBadge count={pendingCounts.support} />
             </TabsTrigger>
             <TabsTrigger value="affiliates" className="gap-1">
               <UserPlus className="w-4 h-4" />
               Affiliates
+              <TabBadge count={pendingCounts.affiliates} />
             </TabsTrigger>
             <TabsTrigger value="users" className="gap-1">
               <Users className="w-4 h-4" />
@@ -120,10 +186,12 @@ const AdminDashboard = () => {
             <TabsTrigger value="places" className="gap-1">
               <MapPin className="w-4 h-4" />
               Places
+              <TabBadge count={pendingCounts.places} />
             </TabsTrigger>
             <TabsTrigger value="reports" className="gap-1">
               <Flag className="w-4 h-4" />
               Reports
+              <TabBadge count={pendingCounts.reports} />
             </TabsTrigger>
           </TabsList>
 
