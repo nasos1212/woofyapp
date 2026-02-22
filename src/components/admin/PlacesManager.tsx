@@ -11,7 +11,9 @@ import {
   Eye,
   Clock,
   AlertTriangle,
-  Navigation
+  Navigation,
+  Search,
+  Copy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -118,15 +120,33 @@ const defaultFormData: PlaceFormData = {
 const PlacesManager = () => {
   const { toast } = useToast();
   const [places, setPlaces] = useState<Place[]>([]);
+  const [allPlaces, setAllPlaces] = useState<Place[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"pending" | "verified" | "all">("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [formData, setFormData] = useState<PlaceFormData>(defaultFormData);
   const [isSaving, setIsSaving] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingPlace, setViewingPlace] = useState<Place | null>(null);
+
+  const findDuplicates = (place: Place, allVerified: Place[]): Place[] => {
+    const normalizedName = place.name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
+    return allVerified.filter((p) => {
+      if (p.id === place.id) return false;
+      const otherName = p.name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
+      // Check name similarity
+      if (normalizedName === otherName) return true;
+      if (normalizedName.includes(otherName) || otherName.includes(normalizedName)) return true;
+      // Check if same city and similar name (first word match)
+      const firstWord = normalizedName.split(' ')[0];
+      const otherFirstWord = otherName.split(' ')[0];
+      if (firstWord.length > 3 && firstWord === otherFirstWord && place.city === p.city) return true;
+      return false;
+    });
+  };
 
   const fetchPlaces = async () => {
     setIsLoading(true);
@@ -138,6 +158,14 @@ const PlacesManager = () => {
         .or("verified.is.null,verified.eq.false");
       
       setPendingCount(pending || 0);
+
+      // Fetch ALL places for duplicate detection
+      const { data: allData } = await supabase
+        .from("pet_friendly_places")
+        .select("*")
+        .order("created_at", { ascending: false });
+      
+      setAllPlaces(allData || []);
 
       // Then fetch filtered places
       let query = supabase
@@ -169,6 +197,21 @@ const PlacesManager = () => {
   useEffect(() => {
     fetchPlaces();
   }, [filter]);
+
+  // Filter places by search query
+  const filteredPlaces = places.filter((place) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      place.name.toLowerCase().includes(q) ||
+      (place.city || '').toLowerCase().includes(q) ||
+      (place.area || '').toLowerCase().includes(q) ||
+      (place.place_type || '').toLowerCase().includes(q) ||
+      (place.phone || '').toLowerCase().includes(q)
+    );
+  });
+
+  const verifiedPlaces = allPlaces.filter(p => p.verified);
 
   const handleEdit = (place: Place) => {
     setEditingPlace(place);
@@ -356,15 +399,26 @@ const PlacesManager = () => {
               </TabsTrigger>
             </TabsList>
 
+            {/* Search Bar */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by name, city, area, type..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
             <TabsContent value={filter}>
               {isLoading ? (
                 <div className="text-center py-8 text-muted-foreground">
                   Loading...
                 </div>
-              ) : places.length === 0 ? (
+              ) : filteredPlaces.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <MapPin className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>No places to show</p>
+                  <p>{searchQuery ? "No places match your search" : "No places to show"}</p>
                 </div>
               ) : (
                 <>
@@ -382,7 +436,9 @@ const PlacesManager = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {places.map((place) => (
+                        {filteredPlaces.map((place) => {
+                          const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                          return (
                           <TableRow key={place.id}>
                             <TableCell>
                               <div>
@@ -390,6 +446,12 @@ const PlacesManager = () => {
                                 {place.address && (
                                   <p className="text-xs text-muted-foreground truncate max-w-[200px]">
                                     {place.address}
+                                  </p>
+                                )}
+                                {duplicates.length > 0 && (
+                                  <p className="text-xs text-orange-600 flex items-center gap-1 mt-1">
+                                    <Copy className="w-3 h-3" />
+                                    Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                                   </p>
                                 )}
                               </div>
@@ -485,14 +547,17 @@ const PlacesManager = () => {
                               </div>
                             </TableCell>
                           </TableRow>
-                        ))}
+                          );
+                        })}
                       </TableBody>
                     </Table>
                   </div>
 
                   {/* Mobile Card View */}
                   <div className="md:hidden space-y-3">
-                    {places.map((place) => (
+                    {filteredPlaces.map((place) => {
+                      const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                      return (
                       <div
                         key={place.id}
                         className="p-3 rounded-lg bg-muted/30 border border-border/50"
@@ -503,6 +568,12 @@ const PlacesManager = () => {
                             {place.address && (
                               <p className="text-xs text-muted-foreground truncate">
                                 {place.address}
+                              </p>
+                            )}
+                            {duplicates.length > 0 && (
+                              <p className="text-xs text-orange-600 flex items-center gap-1 mt-1">
+                                <Copy className="w-3 h-3" />
+                                Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                               </p>
                             )}
                           </div>
@@ -598,7 +669,8 @@ const PlacesManager = () => {
                           </AlertDialog>
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </>
               )}
@@ -632,7 +704,23 @@ const PlacesManager = () => {
                 )}
               </div>
 
-              {/* Type & City */}
+              {/* Duplicate Warning */}
+              {!viewingPlace.verified && (() => {
+                const dupes = findDuplicates(viewingPlace, verifiedPlaces);
+                if (dupes.length === 0) return null;
+                return (
+                  <div className="flex items-start gap-2 p-3 rounded-lg bg-orange-50 border border-orange-200 text-orange-800">
+                    <Copy className="w-4 h-4 mt-0.5 shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium">Possible duplicate detected</p>
+                      <p className="text-orange-600 mt-1">
+                        Similar to: {dupes.map(d => `"${d.name}" (${d.city || 'no city'})`).join(', ')}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })()}
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <span className="text-sm font-medium text-muted-foreground">Type</span>
