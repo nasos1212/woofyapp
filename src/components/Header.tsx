@@ -196,14 +196,8 @@ const Header = () => {
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {user && <NotificationBell />}
-            {!user && (
-              <Link to="/partner-register">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Building2 className="w-4 h-4" />
-                  For Business
-                </Button>
-              </Link>
-            )}
+
+
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
