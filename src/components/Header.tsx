@@ -158,7 +158,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-8">
             {navLinks.map((link) => (
               link.isRoute ? (
                 <Link
@@ -194,7 +194,7 @@ const Header = () => {
           </nav>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {user && <NotificationBell />}
             {!user && (
               <Link to="/partner-register">
@@ -277,7 +277,7 @@ const Header = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center gap-1">
+          <div className="lg:hidden flex items-center gap-1">
             {user && <NotificationBell />}
             {user ? (
               <DropdownMenu>
@@ -362,7 +362,7 @@ const Header = () => {
 
         {/* Mobile menu for non-logged-in users */}
         {mobileMenuOpen && !user && (
-          <div className="md:hidden border-t border-border py-4 space-y-2">
+          <div className="lg:hidden border-t border-border py-4 space-y-2">
             {navLinks.map((link) => (
               link.isRoute ? (
                 <Link
