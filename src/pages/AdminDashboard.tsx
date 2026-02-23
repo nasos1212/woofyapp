@@ -74,12 +74,13 @@ const AdminDashboard = () => {
   const fetchPendingCounts = async () => {
     try {
       const [supportRes, affiliatesRes, placesRes, reportsRes] = await Promise.all([
-        // Open/pending support conversations (excluding affiliates)
+        // Support conversations with unread user messages (excluding affiliates)
         supabase
-          .from("support_conversations")
-          .select("*", { count: "exact", head: true })
-          .neq("category", "affiliate")
-          .neq("status", "resolved"),
+          .from("support_messages")
+          .select("conversation_id, support_conversations!inner(category, status)", { count: "exact", head: true })
+          .eq("sender_type", "user")
+          .eq("is_read", false)
+          .neq("support_conversations.category", "affiliate"),
         // Pending affiliate inquiries
         supabase
           .from("affiliate_inquiries")

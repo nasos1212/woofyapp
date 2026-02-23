@@ -227,11 +227,12 @@ const SupportManager = ({ onCountsChanged }: { onCountsChanged?: () => void }) =
     }
   };
 
-  const markMessageAsRead = async (messageId: string) => {
+   const markMessageAsRead = async (messageId: string) => {
     await supabase
       .from("support_messages")
       .update({ is_read: true })
       .eq("id", messageId);
+    onCountsChanged?.();
   };
 
   const sendMessage = async () => {
