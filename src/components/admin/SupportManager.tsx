@@ -51,7 +51,7 @@ interface ClientOption {
   user_email: string;
 }
 
-const SupportManager = () => {
+const SupportManager = ({ onCountsChanged }: { onCountsChanged?: () => void }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -314,6 +314,7 @@ const SupportManager = () => {
     setMessages([]);
     setNewMessage("");
     fetchConversations(); // Refresh to update unread counts
+    onCountsChanged?.(); // Refresh tab badge counts
   };
 
   const getStatusColor = (status: string) => {

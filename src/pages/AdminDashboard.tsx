@@ -196,7 +196,7 @@ const AdminDashboard = () => {
           </TabsList>
 
           <TabsContent value="support">
-            <SupportManager />
+            <SupportManager onCountsChanged={fetchPendingCounts} />
           </TabsContent>
 
           <TabsContent value="affiliates">
