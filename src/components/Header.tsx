@@ -390,12 +390,8 @@ const Header = () => {
               )
             ))}
             <div className="px-4 pt-2 space-y-2">
-              <Link to="/partner-register" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full justify-start gap-2">
-                  <Building2 className="w-4 h-4" />
-                  For Business
-                </Button>
-              </Link>
+
+
               <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="hero" size="default" className="w-full">
                   Join Now
