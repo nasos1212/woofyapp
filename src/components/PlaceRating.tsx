@@ -113,7 +113,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
             onClick={() => setShowReviews(!showReviews)}
           >
             <MessageSquare className="w-3 h-3" />
-            {showReviews ? "Hide" : `${reviewsWithContent.length}`}
+            {showReviews ? "Hide Reviews" : "View Reviews"}
           </Button>
         )}
       </div>
