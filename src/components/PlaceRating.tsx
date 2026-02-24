@@ -1,140 +1,80 @@
 import { useState, useEffect } from "react";
-import { Star } from "lucide-react";
+import { Star, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import PlaceReviewDialog from "@/components/PlaceReviewDialog";
 
 interface PlaceRatingProps {
   placeId: string;
+  placeName?: string;
   currentRating: number | null;
   onRatingChange?: () => void;
   size?: "sm" | "md";
 }
 
-const PlaceRating = ({ placeId, currentRating, onRatingChange, size = "md" }: PlaceRatingProps) => {
+interface ReviewData {
+  rating: number;
+  review_text: string | null;
+  photo_url: string | null;
+  user_id: string;
+  created_at: string;
+}
+
+const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size = "md" }: PlaceRatingProps) => {
   const { user } = useAuth();
-  const { toast } = useToast();
-  const [userRating, setUserRating] = useState<number | null>(null);
-  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [userReview, setUserReview] = useState<ReviewData | null>(null);
+  const [reviews, setReviews] = useState<ReviewData[]>([]);
   const [ratingCount, setRatingCount] = useState<number>(0);
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [showReviews, setShowReviews] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      fetchUserRating();
-    }
-    fetchRatingCount();
+    fetchReviews();
   }, [user, placeId]);
 
-  const fetchUserRating = async () => {
-    if (!user) return;
-    
+  const fetchReviews = async () => {
+    // Fetch all reviews for this place
     const { data } = await supabase
       .from("pet_friendly_place_ratings")
-      .select("rating")
+      .select("rating, review_text, photo_url, user_id, created_at")
       .eq("place_id", placeId)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    
+      .order("created_at", { ascending: false });
+
     if (data) {
-      setUserRating(data.rating);
-    }
-  };
-
-  const fetchRatingCount = async () => {
-    const { count } = await supabase
-      .from("pet_friendly_place_ratings")
-      .select("*", { count: "exact", head: true })
-      .eq("place_id", placeId);
-    
-    setRatingCount(count || 0);
-  };
-
-  const handleRate = async (rating: number) => {
-    if (!user) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to rate places.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      if (userRating) {
-        // Update existing rating
-        const { error } = await supabase
-          .from("pet_friendly_place_ratings")
-          .update({ rating, updated_at: new Date().toISOString() })
-          .eq("place_id", placeId)
-          .eq("user_id", user.id);
-
-        if (error) throw error;
-      } else {
-        // Insert new rating
-        const { error } = await supabase
-          .from("pet_friendly_place_ratings")
-          .insert({
-            place_id: placeId,
-            user_id: user.id,
-            rating,
-          });
-
-        if (error) throw error;
+      setReviews(data);
+      setRatingCount(data.length);
+      if (user) {
+        const mine = data.find((r) => r.user_id === user.id);
+        setUserReview(mine || null);
       }
-
-      setUserRating(rating);
-      toast({
-        title: "Thanks for rating! ⭐",
-        description: userRating ? "Your rating has been updated." : "Your rating has been saved.",
-      });
-      
-      onRatingChange?.();
-      fetchRatingCount();
-    } catch (error) {
-      console.error("Error rating place:", error);
-      toast({
-        title: "Error",
-        description: "Failed to save your rating. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
+  const reviewsWithContent = reviews.filter((r) => r.review_text || r.photo_url);
   const starSize = size === "sm" ? "w-4 h-4" : "w-5 h-5";
-  const displayRating = hoveredRating || userRating || 0;
+
+  const handleReviewSubmitted = () => {
+    fetchReviews();
+    onRatingChange?.();
+  };
 
   return (
     <div className="flex flex-col gap-1">
+      {/* Rating display */}
       <div className="flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
-          <button
+          <Star
             key={star}
-            type="button"
-            disabled={isLoading}
             className={cn(
-              "transition-transform hover:scale-110 disabled:opacity-50",
-              isLoading && "cursor-not-allowed"
+              starSize,
+              star <= (currentRating || 0)
+                ? "text-amber-500 fill-amber-500"
+                : "text-gray-300"
             )}
-            onMouseEnter={() => setHoveredRating(star)}
-            onMouseLeave={() => setHoveredRating(null)}
-            onClick={() => handleRate(star)}
-          >
-            <Star
-              className={cn(
-                starSize,
-                "transition-colors",
-                star <= displayRating
-                  ? "text-amber-500 fill-amber-500"
-                  : "text-gray-300"
-              )}
-            />
-          </button>
+          />
         ))}
         {currentRating && (
           <span className="text-sm font-medium ml-1">
@@ -142,14 +82,87 @@ const PlaceRating = ({ placeId, currentRating, onRatingChange, size = "md" }: Pl
           </span>
         )}
       </div>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+
+      {/* Info row */}
+      <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
         {ratingCount > 0 && (
-          <span>({ratingCount} {ratingCount === 1 ? "rating" : "ratings"})</span>
+          <span>({ratingCount} {ratingCount === 1 ? "review" : "reviews"})</span>
         )}
-        {userRating && (
-          <span className="text-primary">• Your rating: {userRating}★</span>
+        {userReview && (
+          <span className="text-primary">• Your rating: {userReview.rating}★</span>
         )}
       </div>
+
+      {/* Action buttons */}
+      <div className="flex items-center gap-1.5 mt-1">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-7 text-xs px-2 gap-1"
+          onClick={() => setReviewDialogOpen(true)}
+        >
+          <Star className="w-3 h-3" />
+          {userReview ? "Edit Review" : "Write Review"}
+        </Button>
+
+        {reviewsWithContent.length > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 text-xs px-2 gap-1"
+            onClick={() => setShowReviews(!showReviews)}
+          >
+            <MessageSquare className="w-3 h-3" />
+            {showReviews ? "Hide" : `${reviewsWithContent.length}`}
+          </Button>
+        )}
+      </div>
+
+      {/* Reviews list */}
+      {showReviews && reviewsWithContent.length > 0 && (
+        <div className="mt-2 space-y-2 max-h-48 overflow-y-auto">
+          {reviewsWithContent.map((review, i) => (
+            <div key={i} className="bg-muted/50 rounded-lg p-2 text-xs space-y-1">
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((s) => (
+                  <Star
+                    key={s}
+                    className={cn(
+                      "w-3 h-3",
+                      s <= review.rating ? "text-amber-500 fill-amber-500" : "text-gray-300"
+                    )}
+                  />
+                ))}
+                {review.user_id === user?.id && (
+                  <span className="text-primary ml-1 font-medium">You</span>
+                )}
+              </div>
+              {review.review_text && (
+                <p className="text-muted-foreground">{review.review_text}</p>
+              )}
+              {review.photo_url && (
+                <img
+                  src={review.photo_url}
+                  alt="Review photo"
+                  className="w-full h-24 object-cover rounded-md"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Review Dialog */}
+      <PlaceReviewDialog
+        open={reviewDialogOpen}
+        onClose={() => setReviewDialogOpen(false)}
+        placeId={placeId}
+        placeName={placeName || "this place"}
+        existingRating={userReview?.rating}
+        existingReviewText={userReview?.review_text}
+        existingPhotoUrl={userReview?.photo_url}
+        onReviewSubmitted={handleReviewSubmitted}
+      />
     </div>
   );
 };

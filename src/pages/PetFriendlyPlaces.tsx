@@ -313,8 +313,9 @@ const PetFriendlyPlaces = () => {
 
                       {/* Rating */}
                       <div className="mb-2">
-                        <PlaceRating 
+                      <PlaceRating 
                           placeId={place.id} 
+                          placeName={place.name}
                           currentRating={place.rating} 
                           onRatingChange={fetchPlaces}
                           size="sm"
