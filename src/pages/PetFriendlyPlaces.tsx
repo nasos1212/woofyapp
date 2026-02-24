@@ -250,7 +250,8 @@ const PetFriendlyPlaces = () => {
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-4">
-                Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"} · All places are verified and approved by the Wooffy team 🐾
+                Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"}
+                <span className="ml-2 text-xs italic opacity-75">(All places are verified & approved by the Wooffy team 🐾)</span>
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
