@@ -1538,24 +1538,30 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          photo_url: string | null
           place_id: string
           rating: number
+          review_text: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          photo_url?: string | null
           place_id: string
           rating: number
+          review_text?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          photo_url?: string | null
           place_id?: string
           rating?: number
+          review_text?: string | null
           updated_at?: string
           user_id?: string
         }
