@@ -21,6 +21,7 @@ interface ReviewData {
   photo_url: string | null;
   user_id: string;
   created_at: string;
+  reviewer_name?: string | null;
 }
 
 const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size = "md" }: PlaceRatingProps) => {
@@ -44,10 +45,26 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
       .order("created_at", { ascending: false });
 
     if (data) {
-      setReviews(data);
-      setRatingCount(data.length);
+      // Fetch reviewer names from profiles_limited
+      const userIds = [...new Set(data.map((r) => r.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles_limited")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+
+      const profileMap = new Map(
+        (profiles || []).map((p) => [p.user_id, p.full_name])
+      );
+
+      const enriched = data.map((r) => ({
+        ...r,
+        reviewer_name: profileMap.get(r.user_id) || null,
+      }));
+
+      setReviews(enriched);
+      setRatingCount(enriched.length);
       if (user) {
-        const mine = data.find((r) => r.user_id === user.id);
+        const mine = enriched.find((r) => r.user_id === user.id);
         setUserReview(mine || null);
       }
     }
@@ -133,9 +150,11 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                     )}
                   />
                 ))}
-                {review.user_id === user?.id && (
-                  <span className="text-primary ml-1 font-medium">You</span>
-                )}
+                <span className="ml-1 font-medium text-foreground">
+                  {review.user_id === user?.id
+                    ? "You"
+                    : review.reviewer_name || "Anonymous"}
+                </span>
               </div>
               {review.review_text && (
                 <p className="text-muted-foreground">{review.review_text}</p>
@@ -144,7 +163,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                 <img
                   src={review.photo_url}
                   alt="Review photo"
-                  className="w-full h-24 object-cover rounded-md"
+                  className="w-full max-h-48 object-contain rounded-md bg-muted"
                 />
               )}
             </div>
