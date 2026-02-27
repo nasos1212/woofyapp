@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Star, MessageSquare, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,6 +32,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
   const [ratingCount, setRatingCount] = useState<number>(0);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [showReviews, setShowReviews] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchReviews();
@@ -163,7 +165,8 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                 <img
                   src={review.photo_url}
                   alt="Review photo"
-                  className="w-full max-h-48 object-contain rounded-md bg-muted"
+                  className="w-full max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => setLightboxUrl(review.photo_url)}
                 />
               )}
             </div>
@@ -182,6 +185,18 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
         existingPhotoUrl={userReview?.photo_url}
         onReviewSubmitted={handleReviewSubmitted}
       />
+      {/* Photo Lightbox */}
+      <Dialog open={!!lightboxUrl} onOpenChange={() => setLightboxUrl(null)}>
+        <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 flex items-center justify-center">
+          {lightboxUrl && (
+            <img
+              src={lightboxUrl}
+              alt="Review photo full size"
+              className="max-w-full max-h-[85vh] object-contain rounded-md"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
