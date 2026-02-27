@@ -10,6 +10,7 @@ import {
   Hotel, 
   Coffee,
   TreePine,
+  Footprints,
   Building2,
   Phone,
   Globe,
@@ -61,6 +62,7 @@ const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; 
   restaurant: { label: "Restaurant", icon: UtensilsCrossed, color: "text-orange-600", bgColor: "bg-orange-100" },
   hotel: { label: "Hotel", icon: Hotel, color: "text-purple-600", bgColor: "bg-purple-100" },
   park: { label: "Park", icon: TreePine, color: "text-green-600", bgColor: "bg-green-100" },
+  nature_trail: { label: "Nature Trail", icon: Footprints, color: "text-emerald-600", bgColor: "bg-emerald-100" },
   other: { label: "Other", icon: Building2, color: "text-gray-600", bgColor: "bg-gray-100" },
 };
 
