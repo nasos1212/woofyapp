@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Star, MessageSquare, Image as ImageIcon } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Star, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -20,6 +19,7 @@ interface ReviewData {
   rating: number;
   review_text: string | null;
   photo_url: string | null;
+  photo_url_2: string | null;
   user_id: string;
   created_at: string;
   reviewer_name?: string | null;
@@ -39,15 +39,13 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
   }, [user, placeId]);
 
   const fetchReviews = async () => {
-    // Fetch all reviews for this place
     const { data } = await supabase
       .from("pet_friendly_place_ratings")
-      .select("rating, review_text, photo_url, user_id, created_at")
+      .select("rating, review_text, photo_url, photo_url_2, user_id, created_at")
       .eq("place_id", placeId)
       .order("created_at", { ascending: false });
 
     if (data) {
-      // Fetch reviewer names from profiles_limited
       const userIds = [...new Set(data.map((r) => r.user_id))];
       const { data: profiles } = await supabase
         .from("profiles_limited")
@@ -72,7 +70,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
     }
   };
 
-  const reviewsWithContent = reviews.filter((r) => r.review_text || r.photo_url);
+  const reviewsWithContent = reviews.filter((r) => r.review_text || r.photo_url || r.photo_url_2);
   const starSize = size === "sm" ? "w-4 h-4" : "w-5 h-5";
 
   const handleReviewSubmitted = () => {
@@ -161,13 +159,32 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
               {review.review_text && (
                 <p className="text-muted-foreground">{review.review_text}</p>
               )}
-              {review.photo_url && (
-                <img
-                  src={review.photo_url}
-                  alt="Review photo"
-                  className="w-full max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => setLightboxUrl(review.photo_url)}
-                />
+              {/* Review photos */}
+              {(review.photo_url || review.photo_url_2) && (
+                <div className="flex gap-1.5">
+                  {review.photo_url && (
+                    <img
+                      src={review.photo_url}
+                      alt="Review photo 1"
+                      className={cn(
+                        "max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity",
+                        review.photo_url_2 ? "w-1/2" : "w-full"
+                      )}
+                      onClick={() => setLightboxUrl(review.photo_url)}
+                    />
+                  )}
+                  {review.photo_url_2 && (
+                    <img
+                      src={review.photo_url_2}
+                      alt="Review photo 2"
+                      className={cn(
+                        "max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity",
+                        review.photo_url ? "w-1/2" : "w-full"
+                      )}
+                      onClick={() => setLightboxUrl(review.photo_url_2)}
+                    />
+                  )}
+                </div>
               )}
             </div>
           ))}
@@ -183,6 +200,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
         existingRating={userReview?.rating}
         existingReviewText={userReview?.review_text}
         existingPhotoUrl={userReview?.photo_url}
+        existingPhotoUrl2={userReview?.photo_url_2}
         onReviewSubmitted={handleReviewSubmitted}
       />
       {/* Photo Lightbox */}

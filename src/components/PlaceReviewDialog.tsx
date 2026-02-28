@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Star, Upload, X, Loader2, Camera } from "lucide-react";
+import { Star, X, Loader2, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -22,8 +22,11 @@ interface PlaceReviewDialogProps {
   existingRating?: number | null;
   existingReviewText?: string | null;
   existingPhotoUrl?: string | null;
+  existingPhotoUrl2?: string | null;
   onReviewSubmitted?: () => void;
 }
+
+const MAX_PHOTOS = 2;
 
 const PlaceReviewDialog = ({
   open,
@@ -33,16 +36,23 @@ const PlaceReviewDialog = ({
   existingRating,
   existingReviewText,
   existingPhotoUrl,
+  existingPhotoUrl2,
   onReviewSubmitted,
 }: PlaceReviewDialogProps) => {
   const { user } = useAuth();
   const [rating, setRating] = useState(existingRating || 0);
   const [hoverRating, setHoverRating] = useState(0);
   const [reviewText, setReviewText] = useState(existingReviewText || "");
-  const [photoPreview, setPhotoPreview] = useState<string | null>(existingPhotoUrl || null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Track two photo slots
+  const [photoPreviews, setPhotoPreviews] = useState<(string | null)[]>([
+    existingPhotoUrl || null,
+    existingPhotoUrl2 || null,
+  ]);
+  const [selectedFiles, setSelectedFiles] = useState<(File | null)[]>([null, null]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeSlot, setActiveSlot] = useState<number>(0);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,14 +64,47 @@ const PlaceReviewDialog = ({
       return;
     }
 
-    setSelectedFile(file);
-    setPhotoPreview(URL.createObjectURL(file));
+    const newFiles = [...selectedFiles];
+    const newPreviews = [...photoPreviews];
+    newFiles[activeSlot] = file;
+    newPreviews[activeSlot] = URL.createObjectURL(file);
+    setSelectedFiles(newFiles);
+    setPhotoPreviews(newPreviews);
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const clearPhoto = () => {
-    setSelectedFile(null);
-    setPhotoPreview(existingPhotoUrl || null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+  const clearPhoto = (index: number) => {
+    const newFiles = [...selectedFiles];
+    const newPreviews = [...photoPreviews];
+    newFiles[index] = null;
+    newPreviews[index] = index === 0 ? (existingPhotoUrl || null) : (existingPhotoUrl2 || null);
+    // If clearing, also clear the existing reference
+    newPreviews[index] = null;
+    setSelectedFiles(newFiles);
+    setPhotoPreviews(newPreviews);
+  };
+
+  const openFilePicker = (slot: number) => {
+    setActiveSlot(slot);
+    fileInputRef.current?.click();
+  };
+
+  const uploadPhoto = async (file: File): Promise<string> => {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user!.id}/${placeId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("place-review-photos")
+      .upload(fileName, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from("place-review-photos")
+      .getPublicUrl(fileName);
+
+    return publicUrl;
   };
 
   const handleSubmit = async () => {
@@ -69,25 +112,20 @@ const PlaceReviewDialog = ({
 
     setIsSubmitting(true);
     try {
-      let photoUrl = existingPhotoUrl || null;
+      // Resolve photo URLs
+      let photoUrl = photoPreviews[0] && !selectedFiles[0] ? photoPreviews[0] : null;
+      let photoUrl2 = photoPreviews[1] && !selectedFiles[1] ? photoPreviews[1] : null;
 
-      // Upload photo if a new one was selected
-      if (selectedFile) {
-        const fileExt = selectedFile.name.split(".").pop();
-        const fileName = `${user.id}/${placeId}/${Date.now()}.${fileExt}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from("place-review-photos")
-          .upload(fileName, selectedFile);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from("place-review-photos")
-          .getPublicUrl(fileName);
-
-        photoUrl = publicUrl;
+      if (selectedFiles[0]) {
+        photoUrl = await uploadPhoto(selectedFiles[0]);
       }
+      if (selectedFiles[1]) {
+        photoUrl2 = await uploadPhoto(selectedFiles[1]);
+      }
+
+      // If preview was cleared (null) and no new file, set to null
+      if (!photoPreviews[0]) photoUrl = null;
+      if (!photoPreviews[1]) photoUrl2 = null;
 
       // Check if user already has a rating
       const { data: existing } = await supabase
@@ -104,6 +142,7 @@ const PlaceReviewDialog = ({
             rating,
             review_text: reviewText.trim() || null,
             photo_url: photoUrl,
+            photo_url_2: photoUrl2,
             updated_at: new Date().toISOString(),
           })
           .eq("place_id", placeId)
@@ -119,6 +158,7 @@ const PlaceReviewDialog = ({
             rating,
             review_text: reviewText.trim() || null,
             photo_url: photoUrl,
+            photo_url_2: photoUrl2,
           });
 
         if (error) throw error;
@@ -134,6 +174,8 @@ const PlaceReviewDialog = ({
       setIsSubmitting(false);
     }
   };
+
+  const filledSlots = photoPreviews.filter(Boolean).length;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -194,7 +236,7 @@ const PlaceReviewDialog = ({
             {reviewText.length}/500
           </p>
 
-          {/* Photo Upload */}
+          {/* Photo Upload - Two slots */}
           <div>
             <input
               type="file"
@@ -204,32 +246,43 @@ const PlaceReviewDialog = ({
               className="hidden"
             />
 
-            {photoPreview ? (
-              <div className="relative rounded-lg overflow-hidden">
-                <img
-                  src={photoPreview}
-                  alt="Review photo"
-                  className="w-full h-40 object-cover rounded-lg"
-                />
-                <Button
-                  size="icon"
-                  variant="destructive"
-                  className="absolute top-2 right-2 h-7 w-7"
-                  onClick={clearPhoto}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full border-2 border-dashed border-border/50 rounded-lg p-4 text-center hover:border-primary/50 transition-colors flex items-center justify-center gap-2"
-              >
-                <Camera className="w-5 h-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Add a photo (optional)</span>
-              </button>
-            )}
+            <div className="grid grid-cols-2 gap-2">
+              {[0, 1].map((index) => (
+                <div key={index}>
+                  {photoPreviews[index] ? (
+                    <div className="relative rounded-lg overflow-hidden">
+                      <img
+                        src={photoPreviews[index]!}
+                        alt={`Review photo ${index + 1}`}
+                        className="w-full h-28 object-cover rounded-lg"
+                      />
+                      <Button
+                        size="icon"
+                        variant="destructive"
+                        className="absolute top-1 right-1 h-6 w-6"
+                        onClick={() => clearPhoto(index)}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => openFilePicker(index)}
+                      className="w-full h-28 border-2 border-dashed border-border/50 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-primary/50 transition-colors"
+                    >
+                      <Camera className="w-5 h-5 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground">
+                        Photo {index + 1}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Add up to {MAX_PHOTOS} photos (optional)
+            </p>
           </div>
 
           {/* Submit */}
