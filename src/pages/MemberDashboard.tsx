@@ -652,13 +652,13 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">Beaches, cafés, hotels & more</p>
                     </div>
                   </Link>
-                  <Link to="/member/history" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+                  <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                      <History className="w-5 h-5 text-green-600" />
+                      <Gift className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Redemption History</p>
-                      <p className="text-xs text-muted-foreground">View your savings & activity</p>
+                      <p className="font-medium text-foreground text-sm">Browse Offers</p>
+                      <p className="text-xs text-muted-foreground">Discover deals & discounts</p>
                     </div>
                   </Link>
                   <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
