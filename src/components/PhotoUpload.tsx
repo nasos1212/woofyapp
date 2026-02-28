@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 // Allowed image types - explicitly exclude SVG for security (can contain scripts)
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 interface PhotoUploadProps {
   businessId: string;
@@ -39,7 +39,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
 
     // Validate file size (max 5MB)
     if (file.size > MAX_FILE_SIZE) {
-      toast.error("Image must be less than 5MB");
+      toast.error("Image must be less than 8MB");
       return;
     }
 
@@ -121,7 +121,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
             Click to upload a photo
           </p>
           <p className="text-xs text-muted-foreground">
-            JPG, PNG, GIF up to 5MB
+            JPG, PNG, GIF up to 8MB
           </p>
         </div>
       ) : (
