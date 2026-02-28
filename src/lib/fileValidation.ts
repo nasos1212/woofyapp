@@ -6,10 +6,12 @@ export const ALLOWED_IMAGE_TYPES = [
   'image/jpg',
   'image/png',
   'image/gif',
-  'image/webp'
+  'image/webp',
+  'image/heic',
+  'image/heif'
 ];
 
-export const VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+export const VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'];
 export const MAX_IMAGE_SIZE = 8 * 1024 * 1024; // 8MB
 export const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -40,7 +42,7 @@ export const validateImageFile = (file: File): FileValidationResult => {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
     return {
       valid: false,
-      error: 'Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.'
+      error: 'Invalid file type. Only JPEG, PNG, GIF, WebP, and HEIC/HEIF images are allowed.'
     };
   }
 
@@ -49,7 +51,7 @@ export const validateImageFile = (file: File): FileValidationResult => {
   if (!extension || !VALID_IMAGE_EXTENSIONS.includes(extension)) {
     return {
       valid: false,
-      error: 'Invalid file extension. Allowed extensions: JPG, PNG, GIF, WebP.'
+      error: 'Invalid file extension. Allowed extensions: JPG, PNG, GIF, WebP, HEIC, HEIF.'
     };
   }
 

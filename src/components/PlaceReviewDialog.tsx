@@ -242,7 +242,7 @@ const PlaceReviewDialog = ({
               type="file"
               ref={fileInputRef}
               onChange={handleFileSelect}
-              accept="image/jpeg,image/png,image/gif,image/webp"
+              accept="image/jpeg,image/png,image/gif,image/webp,image/heic,image/heif"
               className="hidden"
             />
 
