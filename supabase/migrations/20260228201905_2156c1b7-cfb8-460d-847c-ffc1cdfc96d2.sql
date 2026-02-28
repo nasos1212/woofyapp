@@ -1,0 +1,1 @@
+ALTER TABLE public.pet_friendly_place_ratings ADD COLUMN photo_url_2 text;

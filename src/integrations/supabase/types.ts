@@ -1539,6 +1539,7 @@ export type Database = {
           created_at: string
           id: string
           photo_url: string | null
+          photo_url_2: string | null
           place_id: string
           rating: number
           review_text: string | null
@@ -1549,6 +1550,7 @@ export type Database = {
           created_at?: string
           id?: string
           photo_url?: string | null
+          photo_url_2?: string | null
           place_id: string
           rating: number
           review_text?: string | null
@@ -1559,6 +1561,7 @@ export type Database = {
           created_at?: string
           id?: string
           photo_url?: string | null
+          photo_url_2?: string | null
           place_id?: string
           rating?: number
           review_text?: string | null
