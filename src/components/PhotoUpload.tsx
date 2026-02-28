@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 // Allowed image types - explicitly exclude SVG for security (can contain scripts)
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
 const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8MB
 
 interface PhotoUploadProps {
@@ -25,15 +25,15 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
 
     // Validate file type - explicitly check against allowed types (no SVG)
     if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
-      toast.error("Please select a valid image file (JPEG, PNG, GIF, or WebP)");
+      toast.error("Please select a valid image file (JPEG, PNG, GIF, WebP, or HEIC/HEIF)");
       return;
     }
 
     // Validate file extension matches type to prevent MIME type spoofing
     const extension = file.name.split('.').pop()?.toLowerCase();
-    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'];
     if (!extension || !validExtensions.includes(extension)) {
-      toast.error("Invalid file extension. Allowed: JPG, PNG, GIF, WebP");
+      toast.error("Invalid file extension. Allowed: JPG, PNG, GIF, WebP, HEIC, HEIF");
       return;
     }
 
@@ -107,7 +107,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
         type="file"
         ref={fileInputRef}
         onChange={handleFileSelect}
-        accept="image/*"
+        accept="image/jpeg,image/png,image/gif,image/webp,image/heic,image/heif"
         className="hidden"
       />
 
