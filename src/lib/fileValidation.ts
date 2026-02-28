@@ -10,7 +10,7 @@ export const ALLOWED_IMAGE_TYPES = [
 ];
 
 export const VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-export const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_IMAGE_SIZE = 8 * 1024 * 1024; // 8MB
 export const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB
 
 export const ALLOWED_DOCUMENT_TYPES = [
@@ -57,7 +57,7 @@ export const validateImageFile = (file: File): FileValidationResult => {
   if (file.size > MAX_IMAGE_SIZE) {
     return {
       valid: false,
-      error: 'Image must be less than 5MB.'
+      error: 'Image must be less than 8MB.'
     };
   }
 
