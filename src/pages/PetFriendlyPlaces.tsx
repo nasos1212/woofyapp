@@ -295,7 +295,7 @@ const PetFriendlyPlaces = () => {
 
                       {/* Description */}
                       {place.description && (
-                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                        <p className="text-xs text-muted-foreground mb-2">
                           {place.description}
                         </p>
                       )}
