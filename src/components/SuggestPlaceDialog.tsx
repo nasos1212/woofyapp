@@ -301,9 +301,17 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               id="description"
               placeholder="Tell us what makes this place pet-friendly..."
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) => {
+                if (e.target.value.length <= 138) {
+                  setFormData({ ...formData, description: e.target.value });
+                }
+              }}
+              maxLength={138}
               rows={3}
             />
+            <p className="text-xs text-muted-foreground text-right">
+              {formData.description.length}/138
+            </p>
           </div>
 
           <div className="flex gap-3 pt-4">
