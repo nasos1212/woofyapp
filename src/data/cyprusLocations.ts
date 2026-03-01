@@ -269,7 +269,7 @@ export const cyprusCityNames = cyprusCitiesWithCoords.map((city) => city.name);
 // Get areas for a specific city
 export const getAreasForCity = (cityName: string): string[] => {
   const city = cyprusCitiesWithCoords.find((c) => c.name === cityName);
-  return city ? city.areas.map(a => a.name) : [];
+  return city ? city.areas.map(a => a.name).sort((a, b) => a.localeCompare(b)) : [];
 };
 
 // Get coordinates for a specific city and optionally area

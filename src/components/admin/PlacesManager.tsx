@@ -15,6 +15,7 @@ import {
   Search,
   Copy
 } from "lucide-react";
+import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -938,19 +939,11 @@ const PlacesManager = () => {
             {formData.city && getAreasForCity(formData.city).length > 0 && (
               <div className="grid gap-2">
                 <Label htmlFor="area">Area / Neighborhood</Label>
-                <Select 
-                  value={formData.area} 
+                <SearchableAreaSelect
+                  areas={getAreasForCity(formData.city)}
+                  value={formData.area}
                   onValueChange={(v) => setFormData({ ...formData, area: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select area (optional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getAreasForCity(formData.city).map((area) => (
-                      <SelectItem key={area} value={area}>{area}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                />
                 <p className="text-xs text-muted-foreground">Helps place the pin more accurately</p>
               </div>
             )}
