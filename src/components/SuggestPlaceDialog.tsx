@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -232,21 +233,11 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
           {availableAreas.length > 0 && (
             <div className="space-y-2">
               <Label htmlFor="area">Area / Neighborhood</Label>
-              <Select
+              <SearchableAreaSelect
+                areas={availableAreas}
                 value={formData.area}
                 onValueChange={(value) => setFormData({ ...formData, area: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select area (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableAreas.map((area) => (
-                    <SelectItem key={area} value={area}>
-                      {area}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              />
               <p className="text-xs text-muted-foreground">
                 This helps us place the pin more accurately on the map
               </p>
