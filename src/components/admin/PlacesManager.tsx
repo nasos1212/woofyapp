@@ -100,6 +100,7 @@ const placeTypeLabels: Record<string, string> = {
   restaurant: "Restaurant",
   hotel: "Hotel",
   park: "Park",
+  nature_trail: "Nature Trail",
   other: "Other",
 };
 
