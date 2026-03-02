@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,11 @@ const SearchableAreaSelect = ({
   placeholder = "Select area (optional)",
 }: SearchableAreaSelectProps) => {
   const [open, setOpen] = useState(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.stopPropagation();
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -44,32 +49,45 @@ const SearchableAreaSelect = ({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[--radix-popover-trigger-width] p-0 max-h-[60vh]" align="start" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <PopoverContent
+        className="w-[--radix-popover-trigger-width] p-0"
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <Command>
           <CommandInput placeholder="Search area..." />
-          <CommandList>
-            <CommandEmpty>No area found.</CommandEmpty>
-            <CommandGroup>
-              {areas.map((area) => (
-                <CommandItem
-                  key={area}
-                  value={area}
-                  onSelect={() => {
-                    onValueChange(area === value ? "" : area);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === area ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {area}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
+          <div
+            onTouchMove={handleTouchMove}
+            onWheel={(e) => e.stopPropagation()}
+          >
+            <CommandList
+              ref={listRef}
+              className="max-h-[40vh]"
+              style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}
+            >
+              <CommandEmpty>No area found.</CommandEmpty>
+              <CommandGroup>
+                {areas.map((area) => (
+                  <CommandItem
+                    key={area}
+                    value={area}
+                    onSelect={() => {
+                      onValueChange(area === value ? "" : area);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        value === area ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    {area}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </div>
         </Command>
       </PopoverContent>
     </Popover>
