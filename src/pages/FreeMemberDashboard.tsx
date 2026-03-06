@@ -25,6 +25,7 @@ import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
+import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
