@@ -138,6 +138,7 @@ const FreeMemberDashboard = () => {
 
       <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background overflow-x-hidden">
         <Header />
+        <FreemiumOnboardingTour />
 
         <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* Welcome Header - Simple & Clean */}
