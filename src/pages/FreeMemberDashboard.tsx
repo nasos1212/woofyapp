@@ -14,10 +14,12 @@ import {
   Crown,
   HelpCircle,
   Bookmark,
-  MapPin
+  MapPin,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
@@ -31,6 +33,7 @@ const FreeMemberDashboard = () => {
   const [profileName, setProfileName] = useState<string | null>(null);
   const [checkingRoles, setCheckingRoles] = useState(true);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
@@ -306,7 +309,7 @@ const FreeMemberDashboard = () => {
                 variant="link" 
                 size="sm" 
                 className="text-primary gap-1 p-0 h-auto"
-                onClick={() => navigate("/member/onboarding")}
+                onClick={() => setShowComingSoon(true)}
               >
                 See membership benefits
                 <ArrowRight className="w-3 h-3" />
@@ -322,7 +325,7 @@ const FreeMemberDashboard = () => {
               ].map(({ icon: Icon, label, color }) => (
                 <button
                   key={label}
-                  onClick={() => navigate("/member/onboarding")}
+                  onClick={() => setShowComingSoon(true)}
                   className="group p-3 rounded-xl bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all text-center"
                 >
                   <div className="flex flex-col items-center gap-2">
@@ -351,7 +354,7 @@ const FreeMemberDashboard = () => {
               </div>
               <Button 
                 size="sm"
-                onClick={() => navigate("/member/onboarding")}
+                onClick={() => setShowComingSoon(true)}
                 className="gap-2 shrink-0"
               >
                 <Crown className="w-4 h-4" />
@@ -359,6 +362,27 @@ const FreeMemberDashboard = () => {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Coming Soon Dialog */}
+          <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
+            <DialogContent className="sm:max-w-md text-center">
+              <DialogHeader className="items-center">
+                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Sparkles className="w-7 h-7 text-primary" />
+                </div>
+                <DialogTitle className="font-display text-xl">Something Exciting is Coming!</DialogTitle>
+                <DialogDescription className="text-muted-foreground text-sm leading-relaxed pt-2">
+                  We're putting the finishing touches on our premium membership plans with exclusive partner discounts, AI pet health tools, and much more. Stay tuned — it'll be worth the wait! 🐾
+                </DialogDescription>
+              </DialogHeader>
+              <Button 
+                className="mt-2 w-full" 
+                onClick={() => setShowComingSoon(false)}
+              >
+                Got it!
+              </Button>
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
     </>
