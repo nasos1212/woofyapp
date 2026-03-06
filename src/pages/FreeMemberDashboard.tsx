@@ -14,10 +14,12 @@ import {
   Crown,
   HelpCircle,
   Bookmark,
-  MapPin
+  MapPin,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
