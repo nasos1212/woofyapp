@@ -374,7 +374,6 @@ const FreeMemberDashboard = () => {
                 <DialogDescription className="text-muted-foreground text-sm leading-relaxed pt-2">
                   Premium plans are on their way! In the meantime, enjoy everything your free membership has to offer — Lost & Found alerts, pet-friendly places, and our community Q&A are all yours. We'll let you know as soon as upgrade options are available! 🐾
                 </DialogDescription>
-                </DialogDescription>
               </DialogHeader>
               <Button 
                 className="mt-2 w-full" 
