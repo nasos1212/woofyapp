@@ -34,7 +34,6 @@ const FreeMemberDashboard = () => {
   const [checkingRoles, setCheckingRoles] = useState(true);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
-  const [redirectPath, setRedirectPath] = useState<string | null>(null);
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
