@@ -372,7 +372,7 @@ const FreeMemberDashboard = () => {
                 </div>
                 <DialogTitle className="font-display text-xl">Something Exciting is Coming!</DialogTitle>
                 <DialogDescription className="text-muted-foreground text-sm leading-relaxed pt-2">
-                  We're putting the finishing touches on our premium membership plans with exclusive partner discounts, AI pet health tools, and much more. Stay tuned — it'll be worth the wait! 🐾
+                  Premium plans are on their way! In the meantime, enjoy everything your free membership has to offer — Lost & Found alerts, pet-friendly places, and our community Q&A are all yours. We'll let you know as soon as upgrade options are available! 🐾
                 </DialogDescription>
               </DialogHeader>
               <Button 
