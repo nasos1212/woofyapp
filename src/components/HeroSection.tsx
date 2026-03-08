@@ -53,7 +53,7 @@ const HeroSection = () => {
               <span className="text-gradient">Pet Benefits</span>
             </h1>
 
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 hidden sm:block">
               Join our growing community of pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
               Plus access our community hub for tips, events & connections.
             </p>
