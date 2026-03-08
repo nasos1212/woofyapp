@@ -16,7 +16,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen pt-[calc(6rem+env(safe-area-inset-top))] pb-16 overflow-hidden">
+    <section className="relative min-h-screen pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-8 sm:pb-16 overflow-hidden">
       {/* Background image with overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
@@ -42,28 +42,28 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
-          <div className="text-center lg:text-left space-y-8">
+          <div className="text-center lg:text-left space-y-4 sm:space-y-8">
             <div className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-muted-foreground">The Ultimate Pet Owner Membership</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
               Unlock a World of{" "}
               <span className="text-gradient">Pet Benefits</span>
             </h1>
 
-            <p className="text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 hidden sm:block">
               Join our growing community of pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
               Plus access our community hub for tips, events & connections.
             </p>
 
             {/* Our Aim */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-3xl p-8 shadow-card border border-primary/20">
+            <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-card border border-primary/20">
               <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-              <p className="text-base font-semibold text-primary mb-6 flex items-center justify-center gap-2">
-                <Sparkles className="w-5 h-5" />
+              <p className="text-sm sm:text-base font-semibold text-primary mb-3 sm:mb-6 flex items-center justify-center gap-2">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
                 Our targets for 2026
               </p>
               <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 relative">
