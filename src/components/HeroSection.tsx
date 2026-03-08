@@ -48,7 +48,7 @@ const HeroSection = () => {
               <span className="text-sm font-medium text-muted-foreground">The Ultimate Pet Owner Membership</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
               Unlock a World of{" "}
               <span className="text-gradient">Pet Benefits</span>
             </h1>
