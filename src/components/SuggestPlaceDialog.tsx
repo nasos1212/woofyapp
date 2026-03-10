@@ -264,6 +264,24 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             </p>
           </div>
 
+          {/* Submitted By */}
+          <div className="space-y-2">
+            <Label>Who is submitting? *</Label>
+            <RadioGroup 
+              value={formData.submitted_by} 
+              onValueChange={(v) => setFormData({ ...formData, submitted_by: v as "owner" | "someone_else" })} 
+              className="flex gap-4"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="owner" id="suggest-owner" />
+                <Label htmlFor="suggest-owner" className="font-normal cursor-pointer">I own/manage this place</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="someone_else" id="suggest-someone" />
+                <Label htmlFor="suggest-someone" className="font-normal cursor-pointer">Recommending a place</Label>
+              </div>
+            </RadioGroup>
+          </div>
 
           {/* Phone */}
           <div className="space-y-2">
