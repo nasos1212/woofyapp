@@ -17,7 +17,10 @@ import {
   Clock,
   AlertCircle,
   Filter,
-  Navigation
+  Navigation,
+  Wine,
+  Pill,
+  ShoppingBag
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
