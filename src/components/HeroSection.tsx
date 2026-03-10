@@ -45,7 +45,7 @@ const HeroSection = () => {
           <div className="text-center lg:text-left space-y-4 sm:space-y-8">
             <div className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">The Ultimate Pet Owner Membership</span>
+              <span className="text-sm font-medium text-muted-foreground">Join Free · No Credit Card Needed</span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold text-foreground leading-tight">
@@ -54,8 +54,8 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Join our growing community of pet parents. Get exclusive discounts at pet shops, trainers, hotels & more. 
-              Plus access our community hub for tips, events & connections.
+              Start for free — discover pet-friendly places, report lost pets & join our community. 
+              Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
             </p>
 
             {/* Our Aim */}
@@ -94,7 +94,7 @@ const HeroSection = () => {
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button variant="hero" size="xl" className="group" onClick={handleGetPass}>
-                Get Your Wooffy Pass
+                Join Free Today
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="heroOutline" size="xl" onClick={handleExploreBenefits}>
@@ -105,13 +105,13 @@ const HeroSection = () => {
             {/* Trust badges */}
             <div className="flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
-                <Heart className="w-4 h-4 text-destructive" />
-                <span>Loved by pet parents</span>
+                <MapPin className="w-4 h-4 text-primary" />
+                <span>Pet-Friendly Places Map</span>
               </div>
               <div className="w-1 h-1 bg-muted-foreground rounded-full" />
               <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-primary" />
-                <span>Partners across Cyprus</span>
+                <Heart className="w-4 h-4 text-destructive" />
+                <span>Loved by pet parents</span>
               </div>
             </div>
           </div>
