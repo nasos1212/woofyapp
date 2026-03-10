@@ -61,6 +61,7 @@ const PetFriendlyPlaceRequestDialog = () => {
         place_name: name.trim(),
         place_type: placeType,
         google_maps_url: googleMapsUrl.trim(),
+        submitted_by: submittedBy,
       });
 
       if (error) throw error;
