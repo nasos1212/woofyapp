@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home, AlertTriangle, MapPin, ExternalLink, Check } from "lucide-react";
+import { Dog, Mail, Lock, User, ArrowLeft, Building2, Eye, EyeOff, Home, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
 import ContactPopover from "@/components/ContactPopover";
+import PetFriendlyPlaceRequestDialog from "@/components/PetFriendlyPlaceRequestDialog";
 import {
   Dialog,
   DialogContent,
@@ -615,41 +616,7 @@ const Auth = () => {
               </button>
             </div>
 
-            {/* Pet-Friendly Place Listing Info */}
-            <div className="mt-6 p-5 rounded-xl border border-dashed border-primary/30 bg-primary/5">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <MapPin className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold text-sm text-foreground">Are you a pet-friendly place?</h3>
-                  <p className="text-xs text-muted-foreground">Cafés, restaurants, hotels, beaches & more</p>
-                </div>
-              </div>
-              
-              <p className="text-xs text-muted-foreground mb-3">
-                No account needed! Reach out and we'll add you to our <strong className="text-foreground">Pet-Friendly Places Map</strong> for free after a quick verification.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-2">
-                <a
-                  href="mailto:hello@wooffy.app?subject=Pet-Friendly Place Listing Request&body=Hi Wooffy team,%0A%0AI'd like to list my place on the Pet-Friendly Map.%0A%0APlace name:%0ACity:%0AAddress:%0AGoogle Maps link:%0AType (café, restaurant, beach, etc.):%0A%0AThank you!"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2 text-xs font-medium hover:bg-primary/90 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5" />
-                  Email Us to Get Listed
-                </a>
-                <a
-                  href="https://wa.me/35799123456?text=Hi!%20I'd%20like%20to%20list%20my%20pet-friendly%20place%20on%20the%20Wooffy%20map."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card text-foreground px-4 py-2 text-xs font-medium hover:bg-muted transition-colors"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  WhatsApp Us
-                </a>
-              </div>
-            </div>
+            <PetFriendlyPlaceRequestDialog />
           </div>
         </div>
       </div>

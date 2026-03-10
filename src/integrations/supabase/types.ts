@@ -1578,6 +1578,33 @@ export type Database = {
           },
         ]
       }
+      pet_friendly_place_requests: {
+        Row: {
+          created_at: string
+          google_maps_url: string
+          id: string
+          place_name: string
+          place_type: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          google_maps_url: string
+          id?: string
+          place_name: string
+          place_type: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          google_maps_url?: string
+          id?: string
+          place_name?: string
+          place_type?: string
+          status?: string
+        }
+        Relationships: []
+      }
       pet_friendly_places: {
         Row: {
           added_by_user_id: string | null
