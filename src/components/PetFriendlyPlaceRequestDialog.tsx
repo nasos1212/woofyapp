@@ -33,6 +33,7 @@ const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
   city: z.string().min(1, "Please select a city"),
+  phone: z.string().trim().min(1, "Phone number is required").max(20, "Phone too long"),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
   submittedBy: z.enum(["owner", "someone_else"]),
 });
