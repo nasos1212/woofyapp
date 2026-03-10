@@ -56,6 +56,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     website: "",
     description: "",
     google_maps_link: "",
+    submitted_by: "someone_else" as "owner" | "someone_else",
   });
 
   // Get available areas based on selected city
