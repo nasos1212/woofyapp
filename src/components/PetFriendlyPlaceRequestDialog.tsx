@@ -55,7 +55,7 @@ const PetFriendlyPlaceRequestDialog = () => {
 
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("pet_friendly_place_requests").insert({
+      const { error } = await supabase.from("pet_friendly_place_requests" as any).insert({
         place_name: name.trim(),
         place_type: placeType,
         google_maps_url: googleMapsUrl.trim(),
