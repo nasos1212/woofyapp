@@ -178,13 +178,14 @@ const PetFriendlyPlaceRequestDialog = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="place-phone">Phone</Label>
+            <Label htmlFor="place-phone">Phone *</Label>
             <Input
               id="place-phone"
               type="tel"
               placeholder="+357 XX XXXXXX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              required
             />
           </div>
 
