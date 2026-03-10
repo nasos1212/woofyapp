@@ -33,6 +33,7 @@ const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
   city: z.string().min(1, "Please select a city"),
+  phone: z.string().trim().min(1, "Phone number is required").max(20, "Phone too long"),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
   submittedBy: z.enum(["owner", "someone_else"]),
 });
@@ -54,7 +55,7 @@ const PetFriendlyPlaceRequestDialog = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, placeType, city, googleMapsUrl, submittedBy });
+    const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, submittedBy });
     if (!result.success) {
       toast({
         title: "Validation Error",
@@ -177,13 +178,14 @@ const PetFriendlyPlaceRequestDialog = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="place-phone">Phone</Label>
+            <Label htmlFor="place-phone">Phone *</Label>
             <Input
               id="place-phone"
               type="tel"
               placeholder="+357 XX XXXXXX"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              required
             />
           </div>
 
@@ -217,7 +219,7 @@ const PetFriendlyPlaceRequestDialog = () => {
             type="submit"
             variant="hero"
             className="w-full"
-            disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
+            disabled={isSubmitting || !name.trim() || !placeType || !city || !phone.trim() || !googleMapsUrl.trim()}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
