@@ -1586,6 +1586,7 @@ export type Database = {
           place_name: string
           place_type: string
           status: string
+          submitted_by: string
         }
         Insert: {
           created_at?: string
@@ -1594,6 +1595,7 @@ export type Database = {
           place_name: string
           place_type: string
           status?: string
+          submitted_by?: string
         }
         Update: {
           created_at?: string
@@ -1602,6 +1604,7 @@ export type Database = {
           place_name?: string
           place_type?: string
           status?: string
+          submitted_by?: string
         }
         Relationships: []
       }
@@ -1624,6 +1627,7 @@ export type Database = {
           phone: string | null
           place_type: string
           rating: number | null
+          submitted_by: string | null
           updated_at: string
           verified: boolean | null
           website: string | null
@@ -1646,6 +1650,7 @@ export type Database = {
           phone?: string | null
           place_type: string
           rating?: number | null
+          submitted_by?: string | null
           updated_at?: string
           verified?: boolean | null
           website?: string | null
@@ -1668,6 +1673,7 @@ export type Database = {
           phone?: string | null
           place_type?: string
           rating?: number | null
+          submitted_by?: string | null
           updated_at?: string
           verified?: boolean | null
           website?: string | null
