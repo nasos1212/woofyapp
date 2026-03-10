@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,7 @@ const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
+  submittedBy: z.enum(["owner", "someone_else"]),
 });
 
 const PetFriendlyPlaceRequestDialog = () => {
@@ -37,13 +39,14 @@ const PetFriendlyPlaceRequestDialog = () => {
   const [name, setName] = useState("");
   const [placeType, setPlaceType] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  const [submittedBy, setSubmittedBy] = useState<"owner" | "someone_else">("owner");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, placeType, googleMapsUrl });
+    const result = formSchema.safeParse({ name, placeType, googleMapsUrl, submittedBy });
     if (!result.success) {
       toast({
         title: "Validation Error",
@@ -59,6 +62,7 @@ const PetFriendlyPlaceRequestDialog = () => {
         place_name: name.trim(),
         place_type: placeType,
         google_maps_url: googleMapsUrl.trim(),
+        submitted_by: submittedBy,
       });
 
       if (error) throw error;
@@ -70,6 +74,7 @@ const PetFriendlyPlaceRequestDialog = () => {
       setName("");
       setPlaceType("");
       setGoogleMapsUrl("");
+      setSubmittedBy("owner");
       setOpen(false);
     } catch (error: any) {
       toast({
@@ -140,6 +145,20 @@ const PetFriendlyPlaceRequestDialog = () => {
               maxLength={500}
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Who is submitting? *</Label>
+            <RadioGroup value={submittedBy} onValueChange={(v) => setSubmittedBy(v as "owner" | "someone_else")} className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="owner" id="req-owner" />
+                <Label htmlFor="req-owner" className="font-normal cursor-pointer">I own/manage this place</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="someone_else" id="req-someone" />
+                <Label htmlFor="req-someone" className="font-normal cursor-pointer">Recommending a place</Label>
+              </div>
+            </RadioGroup>
           </div>
 
           <Button

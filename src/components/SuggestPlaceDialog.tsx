@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { MapPin, Plus } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,6 +55,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     website: "",
     description: "",
     google_maps_link: "",
+    submitted_by: "someone_else" as "owner" | "someone_else",
   });
 
   // Get available areas based on selected city
@@ -123,6 +125,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         verified: false,
         latitude,
         longitude,
+        submitted_by: formData.submitted_by,
       });
 
       if (error) throw error;
@@ -141,6 +144,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         website: "",
         description: "",
         google_maps_link: "",
+        submitted_by: "someone_else",
       });
       setOpen(false);
       onPlaceAdded?.();
@@ -260,6 +264,24 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             </p>
           </div>
 
+          {/* Submitted By */}
+          <div className="space-y-2">
+            <Label>Who is submitting? *</Label>
+            <RadioGroup 
+              value={formData.submitted_by} 
+              onValueChange={(v) => setFormData({ ...formData, submitted_by: v as "owner" | "someone_else" })} 
+              className="flex gap-4"
+            >
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="owner" id="suggest-owner" />
+                <Label htmlFor="suggest-owner" className="font-normal cursor-pointer">I own/manage this place</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <RadioGroupItem value="someone_else" id="suggest-someone" />
+                <Label htmlFor="suggest-someone" className="font-normal cursor-pointer">Recommending a place</Label>
+              </div>
+            </RadioGroup>
+          </div>
 
           {/* Phone */}
           <div className="space-y-2">
