@@ -527,6 +527,58 @@ const PartnerRegister = () => {
             </>
           )}
         </div>
+
+        {/* Pet-Friendly Place Listing Info */}
+        <div className="mt-8 bg-card rounded-2xl shadow-card p-6 md:p-8 border border-primary/20">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+              <MapPin className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-display text-lg font-bold text-foreground">Are you a pet-friendly place?</h2>
+              <p className="text-sm text-muted-foreground">Cafés, restaurants, hotels, beaches & more</p>
+            </div>
+          </div>
+          
+          <p className="text-sm text-muted-foreground mb-4">
+            If your place welcomes pets and you'd like to be listed on our <strong>Pet-Friendly Places Map</strong>, 
+            you don't need to create an account! Simply reach out to us and we'll add your location after a quick verification.
+          </p>
+
+          <div className="space-y-3 mb-5">
+            <div className="flex items-start gap-3 text-sm">
+              <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-muted-foreground"><strong className="text-foreground">Free listing</strong> — no account or fees required</span>
+            </div>
+            <div className="flex items-start gap-3 text-sm">
+              <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-muted-foreground"><strong className="text-foreground">Verified badge</strong> — all places are approved by the Wooffy team 🐾</span>
+            </div>
+            <div className="flex items-start gap-3 text-sm">
+              <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-muted-foreground"><strong className="text-foreground">More visibility</strong> — get discovered by pet owners across Cyprus</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="mailto:hello@wooffy.app?subject=Pet-Friendly Place Listing Request&body=Hi Wooffy team,%0A%0AI'd like to list my place on the Pet-Friendly Map.%0A%0APlace name:%0ACity:%0AAddress:%0AGoogle Maps link:%0AType (café, restaurant, beach, etc.):%0A%0AThank you!"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              <Mail className="w-4 h-4" />
+              Email Us to Get Listed
+            </a>
+            <a
+              href="https://wa.me/35799123456?text=Hi!%20I'd%20like%20to%20list%20my%20pet-friendly%20place%20on%20the%20Wooffy%20map."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card text-foreground px-5 py-2.5 text-sm font-medium hover:bg-muted transition-colors"
+            >
+              <ExternalLink className="w-4 h-4" />
+              WhatsApp Us
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
