@@ -219,7 +219,7 @@ const PetFriendlyPlaceRequestDialog = () => {
             type="submit"
             variant="hero"
             className="w-full"
-            disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
+            disabled={isSubmitting || !name.trim() || !placeType || !city || !phone.trim() || !googleMapsUrl.trim()}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
