@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
 import ContactPopover from "@/components/ContactPopover";
+import PetFriendlyPlaceRequestDialog from "@/components/PetFriendlyPlaceRequestDialog";
 import {
   Dialog,
   DialogContent,
