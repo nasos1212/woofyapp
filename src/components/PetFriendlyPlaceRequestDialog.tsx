@@ -55,7 +55,7 @@ const PetFriendlyPlaceRequestDialog = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, placeType, city, googleMapsUrl, submittedBy });
+    const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, submittedBy });
     if (!result.success) {
       toast({
         title: "Validation Error",
