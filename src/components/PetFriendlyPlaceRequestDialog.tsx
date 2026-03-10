@@ -30,6 +30,7 @@ const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
+  submittedBy: z.enum(["owner", "someone_else"]),
 });
 
 const PetFriendlyPlaceRequestDialog = () => {
