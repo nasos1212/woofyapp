@@ -145,6 +145,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         website: "",
         description: "",
         google_maps_link: "",
+        submitted_by: "someone_else",
       });
       setOpen(false);
       onPlaceAdded?.();
