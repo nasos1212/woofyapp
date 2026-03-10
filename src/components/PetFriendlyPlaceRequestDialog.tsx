@@ -73,6 +73,7 @@ const PetFriendlyPlaceRequestDialog = () => {
       setName("");
       setPlaceType("");
       setGoogleMapsUrl("");
+      setSubmittedBy("owner");
       setOpen(false);
     } catch (error: any) {
       toast({
