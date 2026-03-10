@@ -1580,27 +1580,36 @@ export type Database = {
       }
       pet_friendly_place_requests: {
         Row: {
+          area: string | null
+          city: string | null
           created_at: string
           google_maps_url: string
           id: string
+          phone: string | null
           place_name: string
           place_type: string
           status: string
           submitted_by: string
         }
         Insert: {
+          area?: string | null
+          city?: string | null
           created_at?: string
           google_maps_url: string
           id?: string
+          phone?: string | null
           place_name: string
           place_type: string
           status?: string
           submitted_by?: string
         }
         Update: {
+          area?: string | null
+          city?: string | null
           created_at?: string
           google_maps_url?: string
           id?: string
+          phone?: string | null
           place_name?: string
           place_type?: string
           status?: string

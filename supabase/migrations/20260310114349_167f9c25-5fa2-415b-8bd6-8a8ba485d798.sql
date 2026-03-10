@@ -1,0 +1,4 @@
+ALTER TABLE public.pet_friendly_place_requests 
+  ADD COLUMN IF NOT EXISTS city TEXT,
+  ADD COLUMN IF NOT EXISTS area TEXT,
+  ADD COLUMN IF NOT EXISTS phone TEXT;
