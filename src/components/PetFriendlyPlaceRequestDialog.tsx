@@ -90,9 +90,11 @@ const PetFriendlyPlaceRequestDialog = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="mt-6 w-full flex items-center justify-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors py-2">
-          <MapPin className="w-4 h-4" />
-          <span>Are you a pet-friendly place? <strong>Get listed for free!</strong></span>
+        <button className="mt-6 w-full flex items-center gap-3 rounded-xl border border-dashed border-primary/40 bg-primary/5 hover:bg-primary/10 px-4 py-3 transition-colors">
+          <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
+            <MapPin className="w-5 h-5 text-primary" />
+          </div>
+          <span className="text-sm text-left text-foreground">Are you a pet-friendly place? <strong className="text-primary">Get listed for free!</strong></span>
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
