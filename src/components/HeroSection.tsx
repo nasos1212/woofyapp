@@ -105,13 +105,13 @@ const HeroSection = () => {
             {/* Trust badges */}
             <div className="flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
-                <Heart className="w-4 h-4 text-destructive" />
-                <span>Loved by pet parents</span>
+                <MapPin className="w-4 h-4 text-primary" />
+                <span>Pet-Friendly Places Map</span>
               </div>
               <div className="w-1 h-1 bg-muted-foreground rounded-full" />
               <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-primary" />
-                <span>Partners across Cyprus</span>
+                <Heart className="w-4 h-4 text-destructive" />
+                <span>Loved by pet parents</span>
               </div>
             </div>
           </div>
