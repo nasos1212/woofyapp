@@ -81,7 +81,7 @@ const PetFriendlyPlaceRequestDialog = () => {
 
       toast({
         title: "Request Submitted! 🎉",
-        description: "We'll review your place and add it to the map shortly.",
+        description: "We'll review your place and add it to the list shortly.",
       });
       setName("");
       setPlaceType("");
