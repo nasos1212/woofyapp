@@ -16,6 +16,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
+import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 
 const placeTypes = [
   { value: "cafe", label: "Café" },
@@ -30,6 +32,7 @@ const placeTypes = [
 const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
+  city: z.string().min(1, "Please select a city"),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
   submittedBy: z.enum(["owner", "someone_else"]),
 });
@@ -38,15 +41,20 @@ const PetFriendlyPlaceRequestDialog = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [placeType, setPlaceType] = useState("");
+  const [city, setCity] = useState("");
+  const [area, setArea] = useState("");
+  const [phone, setPhone] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [submittedBy, setSubmittedBy] = useState<"owner" | "someone_else">("owner");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
+  const availableAreas = city ? getAreasForCity(city) : [];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, placeType, googleMapsUrl, submittedBy });
+    const result = formSchema.safeParse({ name, placeType, city, googleMapsUrl, submittedBy });
     if (!result.success) {
       toast({
         title: "Validation Error",
@@ -61,6 +69,9 @@ const PetFriendlyPlaceRequestDialog = () => {
       const { error } = await supabase.from("pet_friendly_place_requests" as any).insert({
         place_name: name.trim(),
         place_type: placeType,
+        city: city,
+        area: area || null,
+        phone: phone.trim() || null,
         google_maps_url: googleMapsUrl.trim(),
         submitted_by: submittedBy,
       });
@@ -73,6 +84,9 @@ const PetFriendlyPlaceRequestDialog = () => {
       });
       setName("");
       setPlaceType("");
+      setCity("");
+      setArea("");
+      setPhone("");
       setGoogleMapsUrl("");
       setSubmittedBy("owner");
       setOpen(false);
@@ -97,7 +111,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           <span className="text-sm text-left text-foreground">Are you a pet-friendly place? <strong className="text-primary">Get listed for free!</strong></span>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
@@ -138,6 +152,42 @@ const PetFriendlyPlaceRequestDialog = () => {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="place-city">City *</Label>
+            <Select value={city} onValueChange={(v) => { setCity(v); setArea(""); }}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select city" />
+              </SelectTrigger>
+              <SelectContent>
+                {cyprusCityNames.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {availableAreas.length > 0 && (
+            <div className="space-y-2">
+              <Label>Area / Neighborhood</Label>
+              <SearchableAreaSelect
+                areas={availableAreas}
+                value={area}
+                onValueChange={setArea}
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label htmlFor="place-phone">Phone</Label>
+            <Input
+              id="place-phone"
+              type="tel"
+              placeholder="+357 XX XXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="google-maps">Google Maps Link *</Label>
             <Input
               id="google-maps"
@@ -167,7 +217,7 @@ const PetFriendlyPlaceRequestDialog = () => {
             type="submit"
             variant="hero"
             className="w-full"
-            disabled={isSubmitting || !name.trim() || !placeType || !googleMapsUrl.trim()}
+            disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
