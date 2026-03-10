@@ -30,9 +30,12 @@ const placeTypes = [
   { value: "beach", label: "Beach" },
   { value: "cafe", label: "Café" },
   { value: "restaurant", label: "Restaurant" },
+  { value: "bar", label: "Bar" },
   { value: "hotel", label: "Hotel" },
   { value: "park", label: "Park" },
   { value: "nature_trail", label: "Nature Trail" },
+  { value: "pharmacy", label: "Pharmacy" },
+  { value: "store", label: "Store" },
   { value: "other", label: "Other" },
 ];
 
