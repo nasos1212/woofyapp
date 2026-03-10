@@ -38,6 +38,7 @@ const PetFriendlyPlaceRequestDialog = () => {
   const [name, setName] = useState("");
   const [placeType, setPlaceType] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
+  const [submittedBy, setSubmittedBy] = useState<"owner" | "someone_else">("owner");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
