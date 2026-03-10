@@ -126,6 +126,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         verified: false,
         latitude,
         longitude,
+        submitted_by: formData.submitted_by,
       });
 
       if (error) throw error;
