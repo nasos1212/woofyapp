@@ -243,7 +243,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
                 onValueChange={(value) => setFormData({ ...formData, area: value })}
               />
               <p className="text-xs text-muted-foreground">
-                This helps us place the pin more accurately on the map
+                This helps us categorize the place more accurately
               </p>
             </div>
           )}

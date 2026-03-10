@@ -116,7 +116,7 @@ const PetFriendlyPlaceRequestDialog = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
-            Get Listed on Our Map
+            Get Listed on Our Directory
           </DialogTitle>
           <DialogDescription>
             No account needed! Fill in your details and we'll add your place after a quick verification.

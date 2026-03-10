@@ -105,7 +105,7 @@ const HeroSection = () => {
             <div className="flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>Pet-Friendly Places Map</span>
+                <span>Pet-Friendly Places List</span>
               </div>
               <div className="w-1 h-1 bg-muted-foreground rounded-full" />
               <div className="flex items-center gap-1">
