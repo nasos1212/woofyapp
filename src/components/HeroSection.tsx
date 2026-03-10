@@ -57,6 +57,16 @@ const HeroSection = () => {
               Start for free — discover pet-friendly places, report lost pets & join our community. 
               Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
             </p>
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button variant="hero" size="xl" className="group" onClick={handleGetPass}>
+                Join Free Today
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button variant="heroOutline" size="xl" onClick={handleExploreBenefits}>
+                Explore Benefits
+              </Button>
+            </div>
 
             {/* Our Aim */}
             <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-card border border-primary/20">
@@ -89,17 +99,6 @@ const HeroSection = () => {
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">Shelters Supported</p>
                 </div>
               </div>
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button variant="hero" size="xl" className="group" onClick={handleGetPass}>
-                Join Free Today
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button variant="heroOutline" size="xl" onClick={handleExploreBenefits}>
-                Explore Benefits
-              </Button>
             </div>
 
             {/* Trust badges */}
