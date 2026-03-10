@@ -1,6 +1,8 @@
 import { useState } from "react";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { MapPin, Plus } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { MapPin, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
