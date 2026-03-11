@@ -99,9 +99,12 @@ const placeTypeLabels: Record<string, string> = {
   beach: "Beach",
   cafe: "Café",
   restaurant: "Restaurant",
+  bar: "Bar",
   hotel: "Hotel",
   park: "Park",
   nature_trail: "Nature Trail",
+  pharmacy: "Pharmacy",
+  store: "Store",
   other: "Other",
 };
 
