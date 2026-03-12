@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,8 +37,10 @@ const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   placeType: z.string().min(1, "Please select a type"),
   city: z.string().min(1, "Please select a city"),
-  phone: z.string().trim().min(1, "Phone number is required").max(20, "Phone too long"),
+  phone: z.string().trim().max(20, "Phone too long").optional().or(z.literal("")),
   googleMapsUrl: z.string().trim().min(1, "Google Maps link is required").max(500, "URL too long"),
+  website: z.string().trim().max(500, "URL too long").optional().or(z.literal("")),
+  description: z.string().trim().max(140, "Description too long").optional().or(z.literal("")),
   submittedBy: z.enum(["owner", "someone_else"]),
 });
 
@@ -48,6 +51,8 @@ const PetFriendlyPlaceRequestDialog = () => {
   const [city, setCity] = useState("");
   const [area, setArea] = useState("");
   const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
+  const [description, setDescription] = useState("");
   const [googleMapsUrl, setGoogleMapsUrl] = useState("");
   const [submittedBy, setSubmittedBy] = useState<"owner" | "someone_else">("owner");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,7 +63,7 @@ const PetFriendlyPlaceRequestDialog = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, submittedBy });
+    const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, website, description, submittedBy });
     if (!result.success) {
       toast({
         title: "Validation Error",
@@ -76,6 +81,8 @@ const PetFriendlyPlaceRequestDialog = () => {
         city: city,
         area: area || null,
         phone: phone.trim() || null,
+        website: website.trim() || null,
+        description: description.trim() || null,
         google_maps_url: googleMapsUrl.trim(),
         submitted_by: submittedBy,
       });
@@ -91,6 +98,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       setCity("");
       setArea("");
       setPhone("");
+      setWebsite("");
+      setDescription("");
       setGoogleMapsUrl("");
       setSubmittedBy("owner");
       setOpen(false);
@@ -181,18 +190,6 @@ const PetFriendlyPlaceRequestDialog = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="place-phone">Phone *</Label>
-            <Input
-              id="place-phone"
-              type="tel"
-              placeholder="+357 XX XXXXXX"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="google-maps">Google Maps Link *</Label>
             <Input
               id="google-maps"
@@ -202,6 +199,9 @@ const PetFriendlyPlaceRequestDialog = () => {
               maxLength={500}
               required
             />
+            <p className="text-xs text-muted-foreground">
+              Open the place in Google Maps, click "Share" and paste the link here
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -218,11 +218,52 @@ const PetFriendlyPlaceRequestDialog = () => {
             </RadioGroup>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="place-phone">Phone</Label>
+            <Input
+              id="place-phone"
+              type="tel"
+              placeholder="+357 XX XXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="place-website">Website</Label>
+            <Input
+              id="place-website"
+              type="url"
+              placeholder="https://..."
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="place-description">Description</Label>
+            <Textarea
+              id="place-description"
+              placeholder="Tell us what makes this place pet-friendly..."
+              value={description}
+              onChange={(e) => {
+                if (e.target.value.length <= 140) {
+                  setDescription(e.target.value);
+                }
+              }}
+              maxLength={140}
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground text-right">
+              {description.length}/140
+            </p>
+          </div>
+
           <Button
             type="submit"
             variant="hero"
             className="w-full"
-            disabled={isSubmitting || !name.trim() || !placeType || !city || !phone.trim() || !googleMapsUrl.trim()}
+            disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
