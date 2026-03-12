@@ -242,7 +242,7 @@ const PetFriendlyPlaces = () => {
               </h3>
               <p className="text-muted-foreground mb-4">
                 {places.length === 0 
-                  ? "Pet-friendly places will be added soon. Check back later!"
+                  ? "Dog-friendly places will be added soon. Check back later!"
                   : "Try adjusting your filters or search query."}
               </p>
               {places.length > 0 && (

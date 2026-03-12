@@ -106,9 +106,9 @@ const Terms = () => {
             <ul>
               <li>Pet Community Hub</li>
               <li>Lost &amp; Found Pets Service</li>
-              <li>Pet Friendly Places</li>
+              <li>Dog-Friendly Places</li>
             </ul>
-            <p>All Pet Friendly Places listed on the Platform are subject to prior review and approval by the Wooffy.App administrator before publication. Wooffy reserves the right to verify, modify, suspend, or remove any Pet Friendly Place listing at its discretion.</p>
+            <p>All Dog-Friendly Places listed on the Platform are subject to prior review and approval by the Wooffy.App administrator before publication. Wooffy reserves the right to verify, modify, suspend, or remove any Dog-Friendly Place listing at its discretion.</p>
 
             <h2>6. Discounts, Offers &amp; QR Code Redemption</h2>
             <ul>

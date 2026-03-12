@@ -18,10 +18,10 @@ const GetListedSection = () => {
         </h2>
 
         <p className="text-muted-foreground text-base sm:text-lg mb-4 max-w-xl mx-auto">
-          No sign-up, no account, no fees. Just fill in a quick form and we'll add your pet-friendly place to our directory after a quick review.
+          No sign-up, no account, no fees. Just fill in a quick form and we'll add your dog-friendly place to our directory after a quick review.
         </p>
         <p className="text-xs text-muted-foreground/70 italic mb-8 max-w-xl mx-auto">
-          (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+          (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

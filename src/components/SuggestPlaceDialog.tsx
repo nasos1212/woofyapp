@@ -318,7 +318,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              placeholder="Tell us what makes this place pet-friendly..."
+              placeholder="Tell us what makes this place dog-friendly..."
               value={formData.description}
               onChange={(e) => {
                 if (e.target.value.length <= 140) {

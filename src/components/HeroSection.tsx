@@ -119,7 +119,7 @@ const HeroSection = () => {
               className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium mt-1"
             >
               <MapPin className="w-4 h-4" />
-              Own a pet-friendly place? Get listed free — no sign-up needed
+              Own a dog-friendly place? Get listed free — no sign-up needed
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

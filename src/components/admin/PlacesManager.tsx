@@ -995,7 +995,7 @@ const PlacesManager = () => {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                placeholder="Tell us what makes this place pet-friendly..."
+                placeholder="Tell us what makes this place dog-friendly..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
