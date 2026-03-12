@@ -63,8 +63,8 @@ const HeroSection = () => {
                 Join Free Today
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="heroOutline" size="xl" onClick={handleExploreBenefits}>
-                Explore Benefits
+              <Button variant="heroOutline" size="xl" onClick={() => navigate("/pet-friendly-places")}>
+                Pet-Friendly Places
               </Button>
             </div>
 
