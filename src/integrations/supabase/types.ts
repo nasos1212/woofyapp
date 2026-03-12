@@ -1583,6 +1583,7 @@ export type Database = {
           area: string | null
           city: string | null
           created_at: string
+          description: string | null
           google_maps_url: string
           id: string
           phone: string | null
@@ -1590,11 +1591,13 @@ export type Database = {
           place_type: string
           status: string
           submitted_by: string
+          website: string | null
         }
         Insert: {
           area?: string | null
           city?: string | null
           created_at?: string
+          description?: string | null
           google_maps_url: string
           id?: string
           phone?: string | null
@@ -1602,11 +1605,13 @@ export type Database = {
           place_type: string
           status?: string
           submitted_by?: string
+          website?: string | null
         }
         Update: {
           area?: string | null
           city?: string | null
           created_at?: string
+          description?: string | null
           google_maps_url?: string
           id?: string
           phone?: string | null
@@ -1614,6 +1619,7 @@ export type Database = {
           place_type?: string
           status?: string
           submitted_by?: string
+          website?: string | null
         }
         Relationships: []
       }
