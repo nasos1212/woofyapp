@@ -167,6 +167,9 @@ const PetFriendlyPlaces = () => {
                   <p className="text-muted-foreground">
                     Discover where your furry friend is welcome in Cyprus
                   </p>
+                  <p className="text-xs text-muted-foreground/70 italic mt-1">
+                    (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+                  </p>
                 </div>
               </div>
               <SuggestPlaceDialog onPlaceAdded={fetchPlaces} />
