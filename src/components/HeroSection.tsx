@@ -63,7 +63,7 @@ const HeroSection = () => {
                 Join Free Today
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="heroOutline" size="xl" onClick={() => navigate("/pet-friendly-places")}>
+              <Button variant="heroOutline" size="xl" onClick={() => document.getElementById("get-listed")?.scrollIntoView({ behavior: "smooth" })}>
                 Pet-Friendly Places
               </Button>
             </div>
