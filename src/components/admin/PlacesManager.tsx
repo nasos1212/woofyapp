@@ -887,7 +887,7 @@ const PlacesManager = () => {
             <DialogDescription>
               {editingPlace 
                 ? "Update the details below." 
-                : "Fill in the details to add a new pet-friendly place."}
+                : "Fill in the details to add a new dog-friendly place."}
             </DialogDescription>
           </DialogHeader>
 
