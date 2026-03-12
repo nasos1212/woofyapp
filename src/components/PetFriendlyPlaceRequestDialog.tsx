@@ -29,7 +29,7 @@ const placeTypes = [
   { value: "park", label: "Park" },
   { value: "nature_trail", label: "Nature Trail" },
   { value: "pharmacy", label: "Pharmacy" },
-  { value: "store", label: "Store" },
+  { value: "store", label: "Retail Store" },
   { value: "other", label: "Other" },
 ];
 
