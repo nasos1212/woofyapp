@@ -175,7 +175,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
-            Suggest a Pet-Friendly Place
+            Suggest a Dog-Friendly Place
           </DialogTitle>
           <DialogDescription>
             Know a place that welcomes pets? Share it with the community!
