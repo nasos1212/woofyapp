@@ -190,18 +190,6 @@ const PetFriendlyPlaceRequestDialog = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="place-phone">Phone *</Label>
-            <Input
-              id="place-phone"
-              type="tel"
-              placeholder="+357 XX XXXXXX"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
             <Label htmlFor="google-maps">Google Maps Link *</Label>
             <Input
               id="google-maps"
@@ -211,6 +199,9 @@ const PetFriendlyPlaceRequestDialog = () => {
               maxLength={500}
               required
             />
+            <p className="text-xs text-muted-foreground">
+              Open the place in Google Maps, click "Share" and paste the link here
+            </p>
           </div>
 
           <div className="space-y-2">
@@ -227,11 +218,52 @@ const PetFriendlyPlaceRequestDialog = () => {
             </RadioGroup>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="place-phone">Phone</Label>
+            <Input
+              id="place-phone"
+              type="tel"
+              placeholder="+357 XX XXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="place-website">Website</Label>
+            <Input
+              id="place-website"
+              type="url"
+              placeholder="https://..."
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="place-description">Description</Label>
+            <Textarea
+              id="place-description"
+              placeholder="Tell us what makes this place pet-friendly..."
+              value={description}
+              onChange={(e) => {
+                if (e.target.value.length <= 140) {
+                  setDescription(e.target.value);
+                }
+              }}
+              maxLength={140}
+              rows={3}
+            />
+            <p className="text-xs text-muted-foreground text-right">
+              {description.length}/140
+            </p>
+          </div>
+
           <Button
             type="submit"
             variant="hero"
             className="w-full"
-            disabled={isSubmitting || !name.trim() || !placeType || !city || !phone.trim() || !googleMapsUrl.trim()}
+            disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
           >
             {isSubmitting ? "Submitting..." : "Submit Request"}
           </Button>
