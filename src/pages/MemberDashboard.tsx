@@ -650,7 +650,7 @@ const MemberDashboard = () => {
                     <div>
                       <p className="font-medium text-foreground text-sm">Dog-Friendly Places</p>
                       <p className="text-xs text-muted-foreground">Beaches, cafés, hotels & more</p>
-                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">(No horses or crocodiles please 🐊)</p>
+                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">(Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)</p>
                     </div>
                   </Link>
                   <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">

@@ -181,7 +181,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             Know a place that welcomes pets? Share it with the community!
             Your suggestion will be reviewed before being published.
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+              (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
             </span>
           </DialogDescription>
         </DialogHeader>

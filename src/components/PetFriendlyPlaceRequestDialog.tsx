@@ -133,7 +133,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           <DialogDescription>
             No account needed! Fill in your details and we'll add your place after a quick verification.
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+              (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
             </span>
           </DialogDescription>
         </DialogHeader>

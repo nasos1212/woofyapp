@@ -21,7 +21,7 @@ const GetListedSection = () => {
           No sign-up, no account, no fees. Just fill in a quick form and we'll add your dog-friendly place to our directory after a quick review.
         </p>
         <p className="text-xs text-muted-foreground/70 italic mb-8 max-w-xl mx-auto">
-          (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+          (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

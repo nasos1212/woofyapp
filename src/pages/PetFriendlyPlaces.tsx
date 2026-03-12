@@ -168,7 +168,7 @@ const PetFriendlyPlaces = () => {
                     Discover where your furry friend is welcome in Cyprus
                   </p>
                   <p className="text-xs text-muted-foreground/70 italic mt-1">
-                    (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+                    (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
                   </p>
                 </div>
               </div>
