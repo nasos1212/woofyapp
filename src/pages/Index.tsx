@@ -100,15 +100,14 @@ const Index = () => {
           <HeroSection />
           <FounderSection />
           <BenefitsSection />
-          <PartnersSection />
+          <div id="get-listed">
+            <GetListedSection />
+          </div>
           <SheltersSection />
           
           <HubSection />
           <OffersSection />
           <FreemiumSection />
-          <div id="get-listed">
-            <GetListedSection />
-          </div>
           <PricingSection />
           <CTASection />
         </main>
