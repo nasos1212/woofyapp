@@ -51,7 +51,7 @@ const handler = async (req: Request): Promise<Response> => {
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Great news! <strong>${businessName}</strong> has been approved as a Wooffy partner. You're now part of Cyprus's growing pet-friendly business network!
+Great news! <strong>${businessName}</strong> has been approved as a Wooffy partner. You're now part of Cyprus's growing dog-friendly business network!
 </p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
 Here's what you can do next:
