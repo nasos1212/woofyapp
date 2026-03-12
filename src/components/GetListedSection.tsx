@@ -10,7 +10,7 @@ const GetListedSection = () => {
       <div className="container mx-auto px-4 max-w-3xl text-center">
         <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-700 dark:text-green-400 rounded-full px-4 py-1.5 text-sm font-medium mb-6">
           <Store className="w-4 h-4" />
-          For Pet-Friendly Businesses
+          For Dog-Friendly Businesses
         </div>
 
         <h2 className="text-2xl sm:text-4xl font-display font-bold text-foreground mb-4">
