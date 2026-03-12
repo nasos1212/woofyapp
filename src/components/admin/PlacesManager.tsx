@@ -374,7 +374,7 @@ const PlacesManager = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <MapPin className="w-5 h-5 shrink-0" />
-              Pet-Friendly Places
+              Dog-Friendly Places
             </CardTitle>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={fetchPlaces} className="flex-1 sm:flex-none">
