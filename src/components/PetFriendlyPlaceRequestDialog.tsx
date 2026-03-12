@@ -98,6 +98,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       setCity("");
       setArea("");
       setPhone("");
+      setWebsite("");
+      setDescription("");
       setGoogleMapsUrl("");
       setSubmittedBy("owner");
       setOpen(false);
