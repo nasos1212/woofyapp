@@ -102,17 +102,26 @@ const HeroSection = () => {
             </div>
 
             {/* Trust badges */}
-            <div className="flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4 text-primary" />
                 <span>Pet-Friendly Places Directory</span>
               </div>
-              <div className="w-1 h-1 bg-muted-foreground rounded-full" />
+              <div className="w-1 h-1 bg-muted-foreground rounded-full hidden sm:block" />
               <div className="flex items-center gap-1">
                 <Heart className="w-4 h-4 text-destructive" />
                 <span>Loved by pet parents</span>
               </div>
             </div>
+
+            <a
+              href="#get-listed"
+              className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium mt-1"
+            >
+              <MapPin className="w-4 h-4" />
+              Own a pet-friendly place? Get listed free — no sign-up needed
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
           </div>
 
           {/* Card */}
