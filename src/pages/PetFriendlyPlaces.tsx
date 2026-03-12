@@ -141,8 +141,8 @@ const PetFriendlyPlaces = () => {
   return (
     <>
       <Helmet>
-        <title>Pet-Friendly Places | Wooffy</title>
-        <meta name="description" content="Discover pet-friendly beaches, cafés, hotels, and more in Cyprus." />
+        <title>Dog-Friendly Places | Wooffy</title>
+        <meta name="description" content="Discover dog-friendly beaches, cafés, hotels, and more in Cyprus." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
