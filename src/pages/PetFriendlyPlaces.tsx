@@ -162,13 +162,13 @@ const PetFriendlyPlaces = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                    Pet-Friendly Places
+                    Dog-Friendly Places
                   </h1>
                   <p className="text-muted-foreground">
                     Discover where your furry friend is welcome in Cyprus
                   </p>
                   <p className="text-xs text-muted-foreground/70 italic mt-1">
-                    (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+                    (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
                   </p>
                 </div>
               </div>
