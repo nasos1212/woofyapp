@@ -10,6 +10,7 @@ import SheltersSection from "@/components/SheltersSection";
 import HubSection from "@/components/HubSection";
 
 import FreemiumSection from "@/components/FreemiumSection";
+import GetListedSection from "@/components/GetListedSection";
 import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
 import FounderSection from "@/components/FounderSection";
