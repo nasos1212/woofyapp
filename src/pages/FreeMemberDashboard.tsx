@@ -255,7 +255,7 @@ const FreeMemberDashboard = () => {
                       <MapPin className="w-5 h-5 text-teal-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Pet-Friendly Places</h3>
+                      <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
                       <p className="text-sm text-muted-foreground">
                         Discover where pets are welcome
                       </p>
