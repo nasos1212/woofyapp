@@ -260,7 +260,7 @@ const FreeMemberDashboard = () => {
                         Discover where pets are welcome
                       </p>
                       <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
-                        (Dogs & cats only — no horses or crocodiles please 🐊)
+                        (No horses or crocodiles please 🐊)
                       </p>
                     </div>
                   </div>
