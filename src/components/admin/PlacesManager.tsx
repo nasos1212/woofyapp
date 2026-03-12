@@ -693,7 +693,7 @@ const PlacesManager = () => {
               {viewingPlace?.name}
             </DialogTitle>
             <DialogDescription>
-              Full details for this pet-friendly place
+              Full details for this dog-friendly place
             </DialogDescription>
           </DialogHeader>
 
