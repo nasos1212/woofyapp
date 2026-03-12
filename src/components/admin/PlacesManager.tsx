@@ -104,7 +104,7 @@ const placeTypeLabels: Record<string, string> = {
   park: "Park",
   nature_trail: "Nature Trail",
   pharmacy: "Pharmacy",
-  store: "Store",
+  store: "Retail Store",
   other: "Other",
 };
 

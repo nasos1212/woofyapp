@@ -68,7 +68,7 @@ const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; 
   park: { label: "Park", icon: TreePine, color: "text-green-600", bgColor: "bg-green-100" },
   nature_trail: { label: "Nature Trail", icon: Footprints, color: "text-emerald-600", bgColor: "bg-emerald-100" },
   pharmacy: { label: "Pharmacy", icon: Pill, color: "text-blue-600", bgColor: "bg-blue-100" },
-  store: { label: "Store", icon: ShoppingBag, color: "text-indigo-600", bgColor: "bg-indigo-100" },
+  store: { label: "Retail Store", icon: ShoppingBag, color: "text-indigo-600", bgColor: "bg-indigo-100" },
   other: { label: "Other", icon: Building2, color: "text-gray-600", bgColor: "bg-gray-100" },
 };
 
