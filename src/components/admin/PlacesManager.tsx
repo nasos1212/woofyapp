@@ -374,7 +374,7 @@ const PlacesManager = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <MapPin className="w-5 h-5 shrink-0" />
-              Pet-Friendly Places
+              Dog-Friendly Places
             </CardTitle>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={fetchPlaces} className="flex-1 sm:flex-none">
@@ -693,7 +693,7 @@ const PlacesManager = () => {
               {viewingPlace?.name}
             </DialogTitle>
             <DialogDescription>
-              Full details for this pet-friendly place
+              Full details for this dog-friendly place
             </DialogDescription>
           </DialogHeader>
 
@@ -887,7 +887,7 @@ const PlacesManager = () => {
             <DialogDescription>
               {editingPlace 
                 ? "Update the details below." 
-                : "Fill in the details to add a new pet-friendly place."}
+                : "Fill in the details to add a new dog-friendly place."}
             </DialogDescription>
           </DialogHeader>
 
@@ -995,7 +995,7 @@ const PlacesManager = () => {
               <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
-                placeholder="Tell us what makes this place pet-friendly..."
+                placeholder="Tell us what makes this place dog-friendly..."
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}

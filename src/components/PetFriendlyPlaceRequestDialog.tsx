@@ -121,7 +121,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
             <MapPin className="w-5 h-5 text-primary" />
           </div>
-          <span className="text-sm text-left text-foreground">Are you a pet-friendly place? <strong className="text-primary">Get listed for free!</strong></span>
+          <span className="text-sm text-left text-foreground">Are you a dog-friendly place? <strong className="text-primary">Get listed for free!</strong></span>
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
@@ -133,7 +133,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           <DialogDescription>
             No account needed! Fill in your details and we'll add your place after a quick verification.
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+              (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
             </span>
           </DialogDescription>
         </DialogHeader>

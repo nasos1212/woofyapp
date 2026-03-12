@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const freeFeatures = [
   "Lost & Found Pet Alerts",
-  "Pet-Friendly Places Directory",
+  "Dog-Friendly Places Directory",
   "Community Q&A Access",
 ];
 

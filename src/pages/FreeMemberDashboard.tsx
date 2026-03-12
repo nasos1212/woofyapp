@@ -255,12 +255,12 @@ const FreeMemberDashboard = () => {
                       <MapPin className="w-5 h-5 text-teal-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Pet-Friendly Places</h3>
+                      <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
                       <p className="text-sm text-muted-foreground">
                         Discover where pets are welcome
                       </p>
                       <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
-                        (Dogs & cats only — no horses or crocodiles please 🐊)
+                        (No horses or crocodiles please 🐊)
                       </p>
                     </div>
                   </div>
@@ -377,7 +377,7 @@ const FreeMemberDashboard = () => {
                 </div>
                 <DialogTitle className="font-display text-xl">Something Exciting is Coming!</DialogTitle>
                 <DialogDescription className="text-muted-foreground text-sm leading-relaxed pt-2">
-                  Premium plans are on their way! In the meantime, enjoy everything your free membership has to offer — Lost & Found alerts, pet-friendly places, and our community Q&A are all yours. We'll let you know as soon as upgrade options are available! 🐾
+                  Premium plans are on their way! In the meantime, enjoy everything your free membership has to offer — Lost & Found alerts, dog-friendly places, and our community Q&A are all yours. We'll let you know as soon as upgrade options are available! 🐾
                 </DialogDescription>
               </DialogHeader>
               <Button 

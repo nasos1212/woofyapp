@@ -175,13 +175,13 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
-            Suggest a Pet-Friendly Place
+            Suggest a Dog-Friendly Place
           </DialogTitle>
           <DialogDescription>
             Know a place that welcomes pets? Share it with the community!
             Your suggestion will be reviewed before being published.
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+              (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
             </span>
           </DialogDescription>
         </DialogHeader>
@@ -318,7 +318,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              placeholder="Tell us what makes this place pet-friendly..."
+              placeholder="Tell us what makes this place dog-friendly..."
               value={formData.description}
               onChange={(e) => {
                 if (e.target.value.length <= 140) {

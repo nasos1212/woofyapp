@@ -54,7 +54,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Start for free — discover pet-friendly places, report lost pets & join our community. 
+              Start for free — discover dog-friendly places, report lost pets & join our community. 
               Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
             </p>
             {/* CTAs */}
@@ -64,7 +64,7 @@ const HeroSection = () => {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="heroOutline" size="xl" onClick={() => document.getElementById("get-listed")?.scrollIntoView({ behavior: "smooth" })}>
-                Pet-Friendly Places
+                Dog-Friendly Places
               </Button>
             </div>
 
@@ -105,7 +105,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span>Pet-Friendly Places Directory</span>
+                <span>Dog-Friendly Places Directory</span>
               </div>
               <div className="w-1 h-1 bg-muted-foreground rounded-full hidden sm:block" />
               <div className="flex items-center gap-1">
@@ -119,7 +119,7 @@ const HeroSection = () => {
               className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium mt-1"
             >
               <MapPin className="w-4 h-4" />
-              Own a pet-friendly place? Get listed free — no sign-up needed
+              Own a dog-friendly place? Get listed free — no sign-up needed
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>

@@ -141,8 +141,8 @@ const PetFriendlyPlaces = () => {
   return (
     <>
       <Helmet>
-        <title>Pet-Friendly Places | Wooffy</title>
-        <meta name="description" content="Discover pet-friendly beaches, cafés, hotels, and more in Cyprus." />
+        <title>Dog-Friendly Places | Wooffy</title>
+        <meta name="description" content="Discover dog-friendly beaches, cafés, hotels, and more in Cyprus." />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
@@ -162,13 +162,13 @@ const PetFriendlyPlaces = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                    Pet-Friendly Places
+                    Dog-Friendly Places
                   </h1>
                   <p className="text-muted-foreground">
                     Discover where your furry friend is welcome in Cyprus
                   </p>
                   <p className="text-xs text-muted-foreground/70 italic mt-1">
-                    (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+                    (Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
                   </p>
                 </div>
               </div>
@@ -242,7 +242,7 @@ const PetFriendlyPlaces = () => {
               </h3>
               <p className="text-muted-foreground mb-4">
                 {places.length === 0 
-                  ? "Pet-friendly places will be added soon. Check back later!"
+                  ? "Dog-friendly places will be added soon. Check back later!"
                   : "Try adjusting your filters or search query."}
               </p>
               {places.length > 0 && (

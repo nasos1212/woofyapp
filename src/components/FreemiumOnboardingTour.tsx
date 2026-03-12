@@ -51,7 +51,7 @@ const tourSteps: TourStep[] = [
     icon: MapPin,
     iconBg: "bg-teal-100",
     iconColor: "text-teal-600",
-    title: "Pet-Friendly Places",
+    title: "Dog-Friendly Places",
     description: "Discover cafés, parks, beaches and more that welcome your furry friends. Rate and review your favourites!",
     emoji: "📍",
   },
