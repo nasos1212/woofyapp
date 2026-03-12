@@ -180,6 +180,9 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
           <DialogDescription>
             Know a place that welcomes pets? Share it with the community!
             Your suggestion will be reviewed before being published.
+            <span className="block text-[11px] italic opacity-70 mt-1">
+              (Pet-friendly places are for dogs and cats only. Please do not bring your horse or crocodile to the cafés. Thanks 🐊)
+            </span>
           </DialogDescription>
         </DialogHeader>
 
