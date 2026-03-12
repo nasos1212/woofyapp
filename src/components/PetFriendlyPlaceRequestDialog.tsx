@@ -81,6 +81,8 @@ const PetFriendlyPlaceRequestDialog = () => {
         city: city,
         area: area || null,
         phone: phone.trim() || null,
+        website: website.trim() || null,
+        description: description.trim() || null,
         google_maps_url: googleMapsUrl.trim(),
         submitted_by: submittedBy,
       });
