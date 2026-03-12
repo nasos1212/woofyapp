@@ -54,7 +54,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Start for free — discover pet-friendly places, report lost pets & join our community. 
+              Start for free — discover dog-friendly places, report lost pets & join our community. 
               Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
             </p>
             {/* CTAs */}
