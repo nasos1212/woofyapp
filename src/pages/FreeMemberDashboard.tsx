@@ -395,20 +395,83 @@ const FreeMemberDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Coming Soon Dialog */}
+          {/* Membership Benefits Dialog */}
           <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
-            <DialogContent className="sm:max-w-md text-center">
-              <DialogHeader className="items-center">
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader className="items-center text-center">
                 <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
                   <Sparkles className="w-7 h-7 text-primary" />
                 </div>
-                <DialogTitle className="font-display text-xl">Something Exciting is Coming!</DialogTitle>
-                <DialogDescription className="text-muted-foreground text-sm leading-relaxed pt-2">
-                  Premium plans are on their way! In the meantime, enjoy everything your free membership has to offer — Lost & Found alerts, dog-friendly places, and our community Q&A are all yours. We'll let you know as soon as upgrade options are available! 🐾
-                </DialogDescription>
+                <DialogTitle className="font-display text-xl">Your Wooffy Membership</DialogTitle>
               </DialogHeader>
+
+              {/* Free Features */}
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-700 rounded-full px-3 py-1 text-xs font-bold">
+                      ✨ Free — Yours Now
+                    </span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {[
+                      { icon: MapPin, label: "Dog-Friendly Directory", desc: "Find dog-friendly cafés, parks and more", color: "text-teal-600 bg-teal-100" },
+                      { icon: AlertTriangle, label: "Lost & Found Alerts", desc: "Report and search for lost or found pets", color: "text-amber-600 bg-amber-100" },
+                      { icon: Users, label: "Community Q&A", desc: "Ask questions and help fellow pet parents", color: "text-indigo-600 bg-indigo-100" },
+                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
+                      { icon: Gift, label: "Browse Offers", desc: "Preview exclusive partner deals", color: "text-purple-600 bg-purple-100" },
+                    ].map(({ icon: Icon, label, desc, color }) => (
+                      <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
+                          <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-foreground">{label}</p>
+                          <p className="text-xs text-muted-foreground">{desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Premium Features */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-bold">
+                      👑 Premium — Coming Soon
+                    </span>
+                  </div>
+                  <div className="space-y-2.5">
+                    {[
+                      { icon: Gift, label: "Exclusive Discounts", desc: "Save at pet shops, trainers, groomers, hotels & more", color: "text-primary bg-primary/10" },
+                      { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
+                      { icon: Bot, label: "AI Health Assistant", desc: "24/7 AI-powered pet health guidance", color: "text-violet-600 bg-violet-100" },
+                    ].map(({ icon: Icon, label, desc, color }) => (
+                      <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
+                          <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-foreground">{label}</p>
+                            <Lock className="w-3 h-3 text-muted-foreground" />
+                          </div>
+                          <p className="text-xs text-muted-foreground">{desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-primary/5 rounded-xl p-3 border border-primary/20 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    Premium plans starting at <span className="font-bold text-primary">€29/year</span> — we'll notify you when they launch! 🐾
+                  </p>
+                </div>
+              </div>
+
               <Button 
-                className="mt-2 w-full" 
+                className="w-full mt-1" 
                 onClick={() => setShowComingSoon(false)}
               >
                 Got it!
