@@ -135,7 +135,7 @@ const Header = () => {
     { name: "Offers", href: "/member/offers", isRoute: true },
     { name: "Community", href: "/community", isRoute: true },
 ] : [
-    { name: "Partners", href: "#partners" },
+    { name: "Benefits", href: "#benefits" },
     { name: "Offers", href: "/member/offers", isRoute: true },
     { name: "Community", href: "/community", isRoute: true },
     { name: "Shelters", href: "#shelters" },
