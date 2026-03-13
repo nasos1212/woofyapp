@@ -116,11 +116,14 @@ const HeroSection = () => {
 
             <a
               href="#get-listed"
-              className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium mt-1"
+              className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium mt-1 flex-wrap justify-center lg:justify-start"
             >
               <MapPin className="w-4 h-4" />
-              Own a dog-friendly place? Get listed free — no sign-up needed
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>Own a dog-friendly place? No sign-up needed</span>
+              <span className="inline-flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-bold shadow-soft whitespace-nowrap">
+                Get Listed for Free
+                <ArrowRight className="w-3 h-3" />
+              </span>
             </a>
           </div>
 
