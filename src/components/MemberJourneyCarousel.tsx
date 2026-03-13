@@ -35,7 +35,7 @@ const journeySteps = [
     description: "Full membership benefits",
     color: "from-primary to-purple-500",
     bgColor: "bg-primary/5",
-    features: ["Exclusive discounts", "AI health assistant", "Health records directory"],
+    features: ["Exclusive discounts", "AI health assistant", "Pet health records"],
   },
 ];
 
