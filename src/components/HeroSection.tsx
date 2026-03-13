@@ -42,7 +42,7 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
-          <div className="text-center lg:text-left space-y-4 sm:space-y-8">
+          <div className="text-center lg:text-left space-y-4 sm:space-y-8 relative z-10">
             <div className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-muted-foreground">Join Free · No Credit Card Needed</span>
