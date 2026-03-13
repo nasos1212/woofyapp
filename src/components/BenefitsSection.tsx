@@ -31,6 +31,12 @@ const freeFeatures = [
     description: "Connect with fellow pet parents. Share tips, ask questions, and help each other.",
     emoji: "💬",
   },
+  {
+    icon: Dog,
+    title: "Pet Profiles",
+    description: "Create detailed profiles for all your pets with photos, breed info and birthdays.",
+    emoji: "🐾",
+  },
 ];
 
 const premiumFeatures = [
