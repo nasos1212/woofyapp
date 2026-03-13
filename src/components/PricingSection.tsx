@@ -25,7 +25,7 @@ const plans = [
     name: "Dynamic Duo",
     pets: 2,
     petLabel: "Because one buddy wasn't enough! 🐶🐱",
-    price: 99,
+    price: 49,
     popular: true,
     icon: Users,
   },
