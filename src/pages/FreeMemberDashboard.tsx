@@ -218,7 +218,7 @@ const FreeMemberDashboard = () => {
           </div>
 
           {/* Feature Cards Row */}
-          <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
               <CardContent className="p-5">
