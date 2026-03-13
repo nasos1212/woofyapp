@@ -104,8 +104,6 @@ const Index = () => {
             <GetListedSection />
           </div>
           <SheltersSection />
-          
-          <HubSection />
           <OffersSection />
           <FreemiumSection />
           <PricingSection />
