@@ -48,8 +48,8 @@ const premiumFeatures = [
   },
   {
     icon: Stethoscope,
-    title: "Vet & Health Savings",
-    description: "Discounts on vet visits, plus pet health records to track vaccinations and appointments.",
+    title: "Pet Health Records",
+    description: "Track vaccinations, appointments and vet visits. Plus discounts on vet care.",
     emoji: "🏥",
   },
   {
