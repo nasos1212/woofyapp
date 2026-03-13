@@ -53,12 +53,6 @@ const premiumFeatures = [
     emoji: "🏥",
   },
   {
-    icon: Dog,
-    title: "Pet Profiles",
-    description: "Create detailed profiles for all your pets with photos, breed info and birthdays.",
-    emoji: "🐾",
-  },
-  {
     icon: Bot,
     title: "AI Health Assistant",
     description: "Get instant guidance on pet health questions powered by AI — available 24/7.",
