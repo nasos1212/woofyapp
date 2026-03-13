@@ -192,6 +192,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
       { name: "Xylotymbou", lat: 34.9800, lng: 33.7500 },
       { name: "Softades", lat: 34.9200, lng: 33.5500 },
       { name: "Kofinou", lat: 34.8200, lng: 33.3800 },
+      { name: "Agios Theodoros", lat: 34.7997, lng: 33.3839 },
       { name: "Kornos", lat: 34.8800, lng: 33.3900 },
       { name: "Maroni", lat: 34.7700, lng: 33.3300 },
       { name: "Zygi", lat: 34.7300, lng: 33.3300 },
