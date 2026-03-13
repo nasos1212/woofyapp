@@ -20,7 +20,8 @@ import {
   Navigation,
   Wine,
   Pill,
-  ShoppingBag
+  ShoppingBag,
+  Briefcase
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
