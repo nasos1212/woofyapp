@@ -16,7 +16,7 @@ const plans = [
     name: "Solo Paw",
     pets: 1,
     petLabel: "For your one & only furball 🐾",
-    price: 59,
+    price: 29,
     popular: false,
     icon: Dog,
   },
