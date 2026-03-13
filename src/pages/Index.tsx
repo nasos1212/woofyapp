@@ -7,7 +7,7 @@ import BenefitsSection from "@/components/BenefitsSection";
 import OffersSection from "@/components/OffersSection";
 import PartnersSection from "@/components/PartnersSection";
 import SheltersSection from "@/components/SheltersSection";
-import HubSection from "@/components/HubSection";
+
 
 import FreemiumSection from "@/components/FreemiumSection";
 import GetListedSection from "@/components/GetListedSection";
