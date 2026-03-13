@@ -55,7 +55,7 @@ const HeroSection = () => {
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
               Start for free — discover dog-friendly places, report lost pets & join our community. 
-              Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
+              Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more, plus health records for your pets.
             </p>
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
