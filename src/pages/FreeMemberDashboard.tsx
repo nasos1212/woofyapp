@@ -355,21 +355,20 @@ const FreeMemberDashboard = () => {
                 { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
                 { icon: Syringe, label: "Health Records", color: "text-blue-500" },
               ].map(({ icon: Icon, label, color }) => (
-                <button
+                <div
                   key={label}
-                  onClick={() => setShowComingSoon(true)}
-                  className="group p-3 rounded-xl bg-muted/50 hover:bg-muted border border-transparent hover:border-border transition-all text-center"
+                  className="p-3 rounded-xl bg-muted/50 border border-transparent text-center"
                 >
                   <div className="flex flex-col items-center gap-2">
                     <div className="relative">
-                      <Icon className={`w-5 h-5 ${color} opacity-60 group-hover:opacity-100 transition-opacity`} />
+                      <Icon className={`w-5 h-5 ${color} opacity-60`} />
                       <Lock className="w-3 h-3 text-muted-foreground absolute -bottom-1 -right-1" />
                     </div>
-                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                    <span className="text-xs text-muted-foreground">
                       {label}
                     </span>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>
