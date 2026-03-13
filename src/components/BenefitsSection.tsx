@@ -58,12 +58,6 @@ const premiumFeatures = [
     description: "Get instant guidance on pet health questions powered by AI — available 24/7.",
     emoji: "🤖",
   },
-  {
-    icon: Home,
-    title: "Pet Hotel Benefits",
-    description: "Special rates and perks at partner pet hotels and boarding facilities.",
-    emoji: "🏨",
-  },
 ];
 
 const BenefitsSection = () => {
