@@ -97,7 +97,7 @@ const FreemiumSection = () => {
 
             <div className="text-center mb-6 py-4 bg-primary/5 rounded-xl">
               <span className="text-muted-foreground mr-1">From</span>
-              <span className="font-display font-bold text-3xl text-gradient">€59</span>
+              <span className="font-display font-bold text-3xl text-gradient">€29</span>
               <span className="text-muted-foreground ml-1">/year</span>
             </div>
 

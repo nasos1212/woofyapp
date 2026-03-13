@@ -117,7 +117,7 @@ const BenefitsSection = () => {
             <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-4 py-1.5 text-sm font-bold">
               👑 Premium Membership
             </span>
-            <span className="text-sm text-muted-foreground">Starting at €59/year</span>
+            <span className="text-sm text-muted-foreground">Starting at €29/year</span>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {premiumFeatures.map((feature) => (
