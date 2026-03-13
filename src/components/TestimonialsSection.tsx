@@ -13,7 +13,7 @@ const testimonials = [
     pet: "Owner of Max & Bella",
     avatar: "🐾",
     rating: 5,
-    text: "The community events are amazing. My pets have made so many friends, and so have I! Best €59 I've ever spent.",
+    text: "The community events are amazing. My pets have made so many friends, and so have I! Best €29 I've ever spent.",
   },
   {
     name: "Emma L.",

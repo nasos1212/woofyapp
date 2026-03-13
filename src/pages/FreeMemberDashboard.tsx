@@ -363,7 +363,7 @@ const FreeMemberDashboard = () => {
                 className="gap-2 shrink-0"
               >
                 <Crown className="w-4 h-4" />
-                Upgrade · €59/year
+                Upgrade · €29/year
               </Button>
             </CardContent>
           </Card>

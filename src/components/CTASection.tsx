@@ -27,7 +27,7 @@ const CTASection = () => {
             className="bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-light hover:scale-105 shadow-lg group"
             onClick={() => navigate("/auth")}
           >
-            Get Wooffy for €59/year
+            Get Wooffy for €29/year
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
 

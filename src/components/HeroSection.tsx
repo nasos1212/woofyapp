@@ -135,7 +135,7 @@ const HeroSection = () => {
             
             {/* Floating badges */}
             <div className="absolute -top-4 -right-4 bg-card rounded-2xl p-4 shadow-card border border-border animate-bounce-slow hidden lg:block">
-              <p className="font-display font-bold text-2xl text-primary">€59</p>
+              <p className="font-display font-bold text-2xl text-primary">€29</p>
               <p className="text-xs text-muted-foreground">/year</p>
             </div>
             

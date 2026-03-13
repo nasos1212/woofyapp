@@ -86,7 +86,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Wooffy - The Ultimate Membership for Pet Lovers | €59/year</title>
+        <title>Wooffy - The Ultimate Membership for Pet Lovers | €29/year</title>
         <meta 
           name="description" 
           content="Join 250+ pet parents. Get exclusive discounts at 500+ pet shops, trainers, hotels & more. 10% goes to animal shelters. Save €500+ yearly with Wooffy membership." 

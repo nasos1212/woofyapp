@@ -90,9 +90,9 @@ const Terms = () => {
             <div className="not-prose overflow-x-auto mb-4">
               <table className="w-full text-sm border border-border rounded-lg">
                 <tbody>
-                  <tr className="border-b border-border"><td className="p-3 font-semibold">€59/year</td><td className="p-3">for 1 pet</td></tr>
-                  <tr className="border-b border-border"><td className="p-3 font-semibold">€99/year</td><td className="p-3">for 2 pets</td></tr>
-                  <tr><td className="p-3 font-semibold">€139/year</td><td className="p-3">for 3–5 pets</td></tr>
+                  <tr className="border-b border-border"><td className="p-3 font-semibold">€29/year</td><td className="p-3">for 1 pet</td></tr>
+                  <tr className="border-b border-border"><td className="p-3 font-semibold">€49/year</td><td className="p-3">for 2 pets</td></tr>
+                  <tr><td className="p-3 font-semibold">€79/year</td><td className="p-3">for 3–5 pets</td></tr>
                 </tbody>
               </table>
             </div>
