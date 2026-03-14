@@ -220,20 +220,20 @@ const FreeMemberDashboard = () => {
           {/* Feature Cards Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {/* Lost Pet Alerts */}
-            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                      <AlertTriangle className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Help reunite pets with families
-                      </p>
-                    </div>
+            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Help reunite pets with families
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
