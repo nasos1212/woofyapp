@@ -230,7 +230,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((city) => (
                   <SelectItem key={city} value={city}>
                     {city}

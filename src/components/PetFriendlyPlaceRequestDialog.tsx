@@ -174,7 +174,7 @@ const PetFriendlyPlaceRequestDialog = () => {
               <SelectTrigger>
                 <SelectValue placeholder="Select city" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((c) => (
                   <SelectItem key={c} value={c}>{c}</SelectItem>
                 ))}
