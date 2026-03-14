@@ -6,7 +6,7 @@ const testimonials = [
     pet: "Owner of Luna",
     avatar: "🐕‍🦺",
     rating: 5,
-    text: "Wooffy has saved me over €150 in just a few months! The discounts at my local pet shop alone made it worth it.",
+    text: "Wooffy has saved me over €200 in just a few months! The discounts at my local pet shop alone made it worth it.",
   },
   {
     name: "Michael K.",
