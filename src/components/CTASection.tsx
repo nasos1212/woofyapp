@@ -32,7 +32,7 @@ const CTASection = () => {
           </Button>
 
           <p className="text-sm text-wooffy-light/60 mt-4">
-            That's less than €5/month for unlimited benefits
+            That's less than €3/month for unlimited benefits
           </p>
         </div>
       </div>
