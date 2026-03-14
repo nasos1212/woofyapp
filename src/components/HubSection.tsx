@@ -1,14 +1,8 @@
-import { Dog, Calendar, MessageSquare, MapPin, Bell } from "lucide-react";
+import { Calendar, MessageSquare, MapPin, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
 const hubFeatures = [
-  {
-    icon: Dog,
-    title: "Pet Profiles",
-    description: "Create detailed profiles for all your pets. Track health records, birthdays, and milestones.",
-    image: "🐾",
-  },
   {
     icon: Calendar,
     title: "Events & Meetups",

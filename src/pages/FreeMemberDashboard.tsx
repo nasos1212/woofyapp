@@ -417,7 +417,6 @@ const FreeMemberDashboard = () => {
                       { icon: MapPin, label: "Dog-Friendly Directory", desc: "Find dog-friendly cafés, parks and more", color: "text-teal-600 bg-teal-100" },
                       { icon: AlertTriangle, label: "Lost & Found Alerts", desc: "Report and search for lost or found pets", color: "text-amber-600 bg-amber-100" },
                       { icon: Users, label: "Community Q&A", desc: "Ask questions and help fellow pet parents", color: "text-indigo-600 bg-indigo-100" },
-                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
                       { icon: Gift, label: "Browse Offers", desc: "Preview exclusive partner deals", color: "text-purple-600 bg-purple-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
@@ -442,6 +441,7 @@ const FreeMemberDashboard = () => {
                   </div>
                   <div className="space-y-2.5">
                     {[
+                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
                       { icon: Gift, label: "Exclusive Discounts", desc: "Save at pet shops, trainers, groomers, hotels & more", color: "text-primary bg-primary/10" },
                       { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
                       { icon: Bot, label: "AI Health Assistant", desc: "24/7 AI-powered pet health guidance", color: "text-violet-600 bg-violet-100" },

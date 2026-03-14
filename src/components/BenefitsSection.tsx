@@ -31,15 +31,15 @@ const freeFeatures = [
     description: "Connect with fellow pet parents. Share tips, ask questions, and help each other.",
     emoji: "💬",
   },
+];
+
+const premiumFeatures = [
   {
     icon: Dog,
     title: "Pet Profiles",
     description: "Create detailed profiles for all your pets with photos, breed info and birthdays.",
     emoji: "🐾",
   },
-];
-
-const premiumFeatures = [
   {
     icon: Percent,
     title: "Exclusive Discounts",
