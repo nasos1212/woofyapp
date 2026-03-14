@@ -88,7 +88,7 @@ const HeroSection = () => {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
                     <PiggyBank className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   </div>
-                  <p className="font-display font-bold text-2xl sm:text-3xl text-green-600">€300+</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-green-600">€150+</p>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">Avg. Yearly Savings</p>
                 </div>
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
