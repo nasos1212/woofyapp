@@ -1,4 +1,4 @@
-import { Dog, Calendar, MessageSquare, MapPin, Bell } from "lucide-react";
+import { Calendar, MessageSquare, MapPin, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
