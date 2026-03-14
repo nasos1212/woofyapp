@@ -220,20 +220,20 @@ const FreeMemberDashboard = () => {
           {/* Feature Cards Row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {/* Lost Pet Alerts */}
-            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                      <AlertTriangle className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Help reunite pets with families
-                      </p>
-                    </div>
+            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Help reunite pets with families
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
@@ -247,23 +247,23 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Pet-Friendly Places */}
-            <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200/50 hover:shadow-md transition-all">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-teal-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Discover where pets are welcome
-                      </p>
-                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
-                        (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
-                      </p>
-                    </div>
+            <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
+                    <MapPin className="w-5 h-5 text-teal-600" />
                   </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Discover where pets are welcome
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
+                      (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/pet-friendly-places")}
@@ -277,20 +277,20 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Shelters */}
-            <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-rose-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Pet Shelters</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Support local pet shelters
-                      </p>
-                    </div>
+            <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
+                    <Heart className="w-5 h-5 text-rose-600" />
                   </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Pet Shelters</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Support local pet shelters
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/shelters")}
@@ -304,20 +304,20 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Browse Offers */}
-            <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/50 hover:shadow-md transition-all">
-              <CardContent className="p-5">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <Gift className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-foreground">Browse Offers</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Preview exclusive member deals
-                      </p>
-                    </div>
+            <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
+                    <Gift className="w-5 h-5 text-purple-600" />
                   </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Browse Offers</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Preview exclusive member deals
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/offers")}
