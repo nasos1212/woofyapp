@@ -58,8 +58,8 @@ const Footer = () => {
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">Quick Links</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
               <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">Benefits</button></li>
-              <li><button onClick={() => scrollToSection("partners")} className="hover:text-wooffy-sky transition-colors">Partners</button></li>
-              <li><button onClick={() => scrollToSection("hub")} className="hover:text-wooffy-sky transition-colors">Pet Hub</button></li>
+              <li><button onClick={() => scrollToSection("get-listed")} className="hover:text-wooffy-sky transition-colors">Dog-Friendly Places</button></li>
+              <li><button onClick={() => scrollToSection("shelters")} className="hover:text-wooffy-sky transition-colors">Shelters</button></li>
               <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">Pricing</button></li>
             </ul>
           </div>
