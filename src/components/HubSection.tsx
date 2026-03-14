@@ -4,12 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const hubFeatures = [
   {
-    icon: Dog,
-    title: "Pet Profiles",
-    description: "Create detailed profiles for all your pets. Track health records, birthdays, and milestones.",
-    image: "🐾",
-  },
-  {
     icon: Calendar,
     title: "Events & Meetups",
     description: "Discover and join local pet events, dog walks, training sessions, and community gatherings.",

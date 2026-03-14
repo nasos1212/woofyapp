@@ -35,6 +35,12 @@ const freeFeatures = [
 
 const premiumFeatures = [
   {
+    icon: Dog,
+    title: "Pet Profiles",
+    description: "Create detailed profiles for all your pets with photos, breed info and birthdays.",
+    emoji: "🐾",
+  },
+  {
     icon: Percent,
     title: "Exclusive Discounts",
     description: "Save at pet shops, trainers, groomers, hotels and more with your membership card.",
