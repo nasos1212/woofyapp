@@ -210,7 +210,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               <SelectTrigger>
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper" className="max-h-[40vh]">
                 {placeTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {type.label}
