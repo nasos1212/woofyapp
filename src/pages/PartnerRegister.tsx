@@ -46,6 +46,7 @@ const PartnerRegister = () => {
     return nameFromUrl || "";
   });
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [useDifferentEmail, setUseDifferentEmail] = useState(false);
   const [otherCategoryDescription, setOtherCategoryDescription] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
