@@ -476,10 +476,9 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.instagram_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                      className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
-                      <InstagramIcon className="w-4 h-4" style={{ color: '#E4405F' }} />
-                      Instagram
+                      <InstagramIcon className="w-5 h-5" />
                     </a>
                   )}
                   {business.facebook_url && (
@@ -487,10 +486,9 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.facebook_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                      className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
-                      <FacebookIcon className="w-4 h-4" style={{ color: '#1877F2' }} />
-                      Facebook
+                      <FacebookIcon className="w-5 h-5" />
                     </a>
                   )}
                   {business.tiktok_url && (
@@ -498,10 +496,9 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.tiktok_url)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                      className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
-                      <TikTokIcon className="w-4 h-4" style={{ color: '#000000' }} />
-                      TikTok
+                      <TikTokIcon className="w-5 h-5" />
                     </a>
                   )}
                 </div>
