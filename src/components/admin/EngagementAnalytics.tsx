@@ -283,9 +283,9 @@ const EngagementAnalytics = () => {
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="vG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f97316" stopOpacity={0.45} /><stop offset="100%" stopColor="#f97316" stopOpacity={0.05} /></linearGradient>
-                      <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eab308" stopOpacity={0.45} /><stop offset="100%" stopColor="#eab308" stopOpacity={0.05} /></linearGradient>
-                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity={0.45} /><stop offset="100%" stopColor="#22c55e" stopOpacity={0.05} /></linearGradient>
+                      <linearGradient id="vG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f97316" stopOpacity={0.55} /><stop offset="100%" stopColor="#f97316" stopOpacity={0.08} /></linearGradient>
+                      <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eab308" stopOpacity={0.55} /><stop offset="100%" stopColor="#eab308" stopOpacity={0.08} /></linearGradient>
+                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity={0.55} /><stop offset="100%" stopColor="#22c55e" stopOpacity={0.08} /></linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
                     <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />

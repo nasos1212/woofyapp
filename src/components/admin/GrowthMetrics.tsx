@@ -247,8 +247,8 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
                       <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
                     </linearGradient>
                     <linearGradient id="freeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
