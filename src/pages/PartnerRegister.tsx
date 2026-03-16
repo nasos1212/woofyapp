@@ -387,7 +387,15 @@ const PartnerRegister = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Business Contact Email</Label>
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor="email">Business Contact Email</Label>
+                      <div className="group relative">
+                        <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                          This email will be shown on your public business profile so customers can contact you. By default, we use your login email. If you'd prefer a different customer-facing email (e.g. info@yourbusiness.com), click the link below to add one.
+                        </div>
+                      </div>
+                    </div>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
