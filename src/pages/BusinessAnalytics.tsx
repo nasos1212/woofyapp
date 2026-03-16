@@ -17,6 +17,7 @@ import {
   MousePointerClick,
   LayoutGrid,
 } from "lucide-react";
+import MetricTooltip from "@/components/admin/MetricTooltip";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
