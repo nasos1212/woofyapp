@@ -51,6 +51,9 @@ const PartnerRegister = () => {
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [tiktokUrl, setTiktokUrl] = useState("");
   
   // Primary location
   const [primaryLocation, setPrimaryLocation] = useState({
