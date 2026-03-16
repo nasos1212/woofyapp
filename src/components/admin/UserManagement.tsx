@@ -46,6 +46,9 @@ interface BusinessInfo {
   logo_url: string | null;
   created_at: string;
   verified_at: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  tiktok_url: string | null;
 }
 
 // Full shelter info
@@ -188,6 +191,9 @@ const UserManagement = () => {
         logo_url: b.logo_url,
         created_at: b.created_at,
         verified_at: b.verified_at,
+        instagram_url: (b as any).instagram_url || null,
+        facebook_url: (b as any).facebook_url || null,
+        tiktok_url: (b as any).tiktok_url || null,
       }));
 
       const sheltersMap = new Map<string, ShelterInfo>();
@@ -1162,6 +1168,21 @@ const UserManagement = () => {
                                 {user.business.website && (
                                   <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.website!), "_blank")}>
                                     <Globe className="w-4 h-4 mr-1" /> Website
+                                  </Button>
+                                )}
+                                {user.business.instagram_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.instagram_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> Instagram
+                                  </Button>
+                                )}
+                                {user.business.facebook_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.facebook_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> Facebook
+                                  </Button>
+                                )}
+                                {user.business.tiktok_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.tiktok_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> TikTok
                                   </Button>
                                 )}
                                 {user.business.verification_status !== "approved" && (
