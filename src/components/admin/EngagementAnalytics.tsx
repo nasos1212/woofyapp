@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check } from "lucide-react";
 import CommunityAnalytics from "./CommunityAnalytics";
 import PlacesAnalytics from "./PlacesAnalytics";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import BreedInsights from "./BreedInsights";
+import ConversionFunnel from "./ConversionFunnel";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
 import { format, subDays } from "date-fns";
-import { formatDate } from "@/lib/utils";
 
 interface AnalyticsEvent {
   id: string;
@@ -18,6 +18,7 @@ interface AnalyticsEvent {
   entity_id: string | null;
   entity_name: string | null;
   created_at: string;
+  metadata?: any;
 }
 
 interface Redemption {
@@ -45,30 +46,106 @@ interface TopOfferEntity {
   name: string;
   businessName: string;
   count: number;
-  entityId: string;
 }
 
 interface TopEntity {
   name: string;
   count: number;
-  entityId: string;
-}
-
-interface ConversionData {
-  name: string;
-  clicks: number;
-  redemptions: number;
-  rate: number;
 }
 
 const COLORS = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
+
+const StatCard = ({ icon: Icon, value, label, colorClass, bgClass }: {
+  icon: any;
+  value: number;
+  label: string;
+  colorClass: string;
+  bgClass: string;
+}) => (
+  <Card className="border-border/50 hover:border-border transition-colors">
+    <CardContent className="pt-4 pb-3">
+      <div className="flex items-center gap-3">
+        <div className={`p-2.5 rounded-xl ${bgClass}`}>
+          <Icon className={`w-5 h-5 ${colorClass}`} />
+        </div>
+        <div>
+          <p className="text-2xl font-bold tabular-nums">{value.toLocaleString()}</p>
+          <p className="text-xs text-muted-foreground">{label}</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+);
+
+const RankList = ({ items, colorClass, emptyText }: {
+  items: TopEntity[];
+  colorClass: string;
+  emptyText: string;
+}) => {
+  if (items.length === 0) return <p className="text-muted-foreground text-sm py-4 text-center">{emptyText}</p>;
+  const maxVal = items[0]?.count || 1;
+  return (
+    <div className="space-y-2.5">
+      {items.map((item, index) => {
+        const pct = Math.round((item.count / maxVal) * 100);
+        return (
+          <div key={item.name} className="space-y-1">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-xs text-muted-foreground font-medium w-4 shrink-0">{index + 1}.</span>
+                <span className="font-medium truncate">{item.name}</span>
+              </div>
+              <Badge variant="secondary" className="shrink-0 text-xs font-semibold tabular-nums">{item.count}</Badge>
+            </div>
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className={`h-full rounded-full transition-all duration-500 ${colorClass}`} style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const OfferRankList = ({ items, colorClass, emptyText }: {
+  items: TopOfferEntity[];
+  colorClass: string;
+  emptyText: string;
+}) => {
+  if (items.length === 0) return <p className="text-muted-foreground text-sm py-4 text-center">{emptyText}</p>;
+  const maxVal = items[0]?.count || 1;
+  return (
+    <div className="space-y-2.5">
+      {items.map((offer, index) => {
+        const pct = Math.round((offer.count / maxVal) * 100);
+        return (
+          <div key={`${offer.name}-${offer.businessName}`} className="space-y-1">
+            <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="text-xs text-muted-foreground font-medium w-4 shrink-0">{index + 1}.</span>
+                <div className="min-w-0">
+                  <p className="font-medium line-clamp-1">{offer.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
+                </div>
+              </div>
+              <Badge variant="secondary" className="shrink-0 text-xs font-semibold tabular-nums ml-2">{offer.count}</Badge>
+            </div>
+            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className={`h-full rounded-full transition-all duration-500 ${colorClass}`} style={{ width: `${pct}%` }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 const EngagementAnalytics = () => {
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d">("7d");
+  const [dateRange, setDateRange] = useState<"7d" | "30d" | "90d">("30d");
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -76,7 +153,6 @@ const EngagementAnalytics = () => {
       const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
       const startDate = subDays(new Date(), days);
 
-      // Fetch analytics events, redemptions, and birthday offers in parallel
       const [eventsResult, redemptionsResult, birthdayResult] = await Promise.all([
         supabase
           .from("analytics_events")
@@ -86,37 +162,20 @@ const EngagementAnalytics = () => {
           .limit(5000),
         supabase
           .from("offer_redemptions")
-          .select(`
-            id,
-            redeemed_at,
-            offer_id,
-            business_id,
-            member_name,
-            offers:offer_id (title),
-            businesses:business_id (business_name)
-          `)
+          .select(`id, redeemed_at, offer_id, business_id, member_name, offers:offer_id (title), businesses:business_id (business_name)`)
           .gte("redeemed_at", startDate.toISOString())
           .order("redeemed_at", { ascending: false }),
         supabase
           .from("sent_birthday_offers")
-          .select(`
-            id,
-            pet_name,
-            owner_name,
-            discount_value,
-            discount_type,
-            sent_at,
-            redeemed_at,
-            business_id
-          `)
+          .select(`id, pet_name, owner_name, discount_value, discount_type, sent_at, redeemed_at, business_id`)
           .gte("sent_at", startDate.toISOString())
-          .order("sent_at", { ascending: false })
+          .order("sent_at", { ascending: false }),
       ]);
 
       if (eventsResult.error) throw eventsResult.error;
       if (redemptionsResult.error) throw redemptionsResult.error;
       if (birthdayResult.error) throw birthdayResult.error;
-      
+
       setEvents(eventsResult.data || []);
       setRedemptions(redemptionsResult.data || []);
       setBirthdayOffers(birthdayResult.data || []);
@@ -131,133 +190,102 @@ const EngagementAnalytics = () => {
     fetchAnalytics();
   }, [dateRange]);
 
-  // Calculate metrics from analytics_events
   const businessViews = events.filter(e => e.event_type === "business_view");
   const offerClicks = events.filter(e => e.event_type === "offer_click");
   const shelterViews = events.filter(e => e.event_type === "shelter_view");
-  
-  // Use actual redemptions count from offer_redemptions table
-  const actualRedemptionsCount = redemptions.length;
+  const offerViews = events.filter(e => e.event_type === "offer_view");
+  const socialClicks = events.filter(e => e.event_type === "social_click");
+  const contactClicks = events.filter(e => e.event_type === "contact_click");
+  const directoryImpressions = events.filter(e => e.event_type === "directory_impression");
 
-
-  // Top businesses by offer clicks
+  // Top businesses by clicks
   const topBusinessesByClicks: TopEntity[] = Object.entries(
     offerClicks.reduce((acc, e) => {
-      // Get business name from metadata if available
-      const metadata = (e as any).metadata;
-      const businessName = metadata?.business_name || e.entity_name || "Unknown";
-      if (businessName !== "Unknown") {
-        acc[businessName] = (acc[businessName] || 0) + 1;
-      }
+      const name = e.metadata?.business_name || e.entity_name || "Unknown";
+      if (name !== "Unknown") acc[name] = (acc[name] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
-  )
-    .map(([name, count]) => ({ name, count, entityId: "" }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  ).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 5);
 
   // Top shelters by views
   const topSheltersByViews: TopEntity[] = Object.entries(
     shelterViews.reduce((acc, e) => {
-      if (e.entity_name) {
-        acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
-      }
+      if (e.entity_name) acc[e.entity_name] = (acc[e.entity_name] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
-  )
-    .map(([name, count]) => ({ name, count, entityId: "" }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  ).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 5);
 
-  // Top offers by clicks (with business name)
+  // Top offers by clicks
   const topOffersByClicks: TopOfferEntity[] = Object.entries(
     offerClicks.reduce((acc, e) => {
       if (e.entity_name) {
-        const metadata = (e as any).metadata;
-        const key = `${e.entity_name}||${metadata?.business_name || "Unknown"}`;
+        const key = `${e.entity_name}||${e.metadata?.business_name || "Unknown"}`;
         acc[key] = (acc[key] || 0) + 1;
       }
       return acc;
     }, {} as Record<string, number>)
-  )
-    .map(([key, count]) => {
-      const [name, businessName] = key.split("||");
-      return { name, businessName, count, entityId: "" };
-    })
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  ).map(([key, count]) => {
+    const [name, businessName] = key.split("||");
+    return { name, businessName, count };
+  }).sort((a, b) => b.count - a.count).slice(0, 5);
 
-  // Top offers by redemptions (with business name)
+  // Top offers by redemptions
   const topOffersByRedemptions: TopOfferEntity[] = Object.entries(
     redemptions.reduce((acc, r) => {
-      const offerTitle = r.offers?.title || "Unknown Offer";
-      const businessName = r.businesses?.business_name || "Unknown";
-      const key = `${offerTitle}||${businessName}`;
+      const key = `${r.offers?.title || "Unknown"}||${r.businesses?.business_name || "Unknown"}`;
       acc[key] = (acc[key] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
-  )
-    .map(([key, count]) => {
-      const [name, businessName] = key.split("||");
-      return { name, businessName, count, entityId: "" };
-    })
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  ).map(([key, count]) => {
+    const [name, businessName] = key.split("||");
+    return { name, businessName, count };
+  }).sort((a, b) => b.count - a.count).slice(0, 5);
 
   // Top businesses by redemptions
   const topBusinessesByRedemptions: TopEntity[] = Object.entries(
     redemptions.reduce((acc, r) => {
-      const businessName = r.businesses?.business_name || "Unknown Business";
-      acc[businessName] = (acc[businessName] || 0) + 1;
+      const name = r.businesses?.business_name || "Unknown";
+      acc[name] = (acc[name] || 0) + 1;
       return acc;
     }, {} as Record<string, number>)
-  )
-    .map(([name, count]) => ({ name, count, entityId: "" }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 5);
+  ).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 5);
 
-
-  // Daily activity chart data - combine events and redemptions
+  // Daily activity trend (area chart)
   const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
-  
   events.forEach(e => {
-    const day = format(new Date(e.created_at), "dd/MM");
-    if (!dailyActivity[day]) {
-      dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
-    }
+    const day = format(new Date(e.created_at), "dd MMM");
+    if (!dailyActivity[day]) dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
     if (e.event_type === "business_view") dailyActivity[day].views++;
     if (e.event_type === "offer_click") dailyActivity[day].clicks++;
   });
-  
-  // Add actual redemptions to the chart
   redemptions.forEach(r => {
-    const day = format(new Date(r.redeemed_at), "dd/MM");
-    if (!dailyActivity[day]) {
-      dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
-    }
+    const day = format(new Date(r.redeemed_at), "dd MMM");
+    if (!dailyActivity[day]) dailyActivity[day] = { day, views: 0, clicks: 0, redeems: 0 };
     dailyActivity[day].redeems++;
   });
+  const chartData = Object.values(dailyActivity).slice(-14);
 
-  const chartData = Object.values(dailyActivity)
-    .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime())
-    .slice(-14);
-
-  // Event type distribution - use actual data
+  // Event distribution
   const eventDistribution = [
-    { name: "Business Views", value: businessViews.length, color: COLORS[0] },
+    { name: "Profile Views", value: businessViews.length, color: COLORS[0] },
     { name: "Offer Clicks", value: offerClicks.length, color: COLORS[1] },
-    { name: "Redemptions", value: actualRedemptionsCount, color: COLORS[2] },
+    { name: "Redemptions", value: redemptions.length, color: COLORS[2] },
     { name: "Shelter Views", value: shelterViews.length, color: COLORS[3] },
+    { name: "Social Clicks", value: socialClicks.length, color: COLORS[4] },
+    { name: "Contact Clicks", value: contactClicks.length, color: COLORS[5] },
   ].filter(d => d.value > 0);
 
   return (
-    <div className="space-y-6 overflow-x-hidden">
-      {/* Header with controls */}
+    <div className="space-y-8 overflow-x-hidden">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          Engagement Analytics
-        </h2>
+        <div>
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            Analytics Dashboard
+          </h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Track engagement across all platform features</p>
+        </div>
         <Tabs value={dateRange} onValueChange={(v) => setDateRange(v as typeof dateRange)}>
           <TabsList>
             <TabsTrigger value="7d">7 Days</TabsTrigger>
@@ -267,366 +295,224 @@ const EngagementAnalytics = () => {
         </Tabs>
       </div>
 
-      {/* Summary Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="border-border/50">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-500/20 rounded-lg">
-                <Eye className="w-5 h-5 text-orange-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{businessViews.length}</p>
-                <p className="text-xs text-muted-foreground">Business Views</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/20 rounded-lg">
-                <MousePointer className="w-5 h-5 text-yellow-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{offerClicks.length}</p>
-                <p className="text-xs text-muted-foreground">Offer Clicks</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <Gift className="w-5 h-5 text-green-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{actualRedemptionsCount}</p>
-                <p className="text-xs text-muted-foreground">Redemptions</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="border-border/50">
-          <CardContent className="pt-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <Home className="w-5 h-5 text-blue-500" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{shelterViews.length}</p>
-                <p className="text-xs text-muted-foreground">Shelter Views</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* ───── SECTION: Key Metrics ───── */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Key Metrics</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <StatCard icon={Eye} value={businessViews.length} label="Profile Views" colorClass="text-orange-500" bgClass="bg-orange-500/15" />
+          <StatCard icon={MousePointer} value={offerClicks.length} label="Offer Clicks" colorClass="text-yellow-500" bgClass="bg-yellow-500/15" />
+          <StatCard icon={Gift} value={redemptions.length} label="Redemptions" colorClass="text-green-500" bgClass="bg-green-500/15" />
+          <StatCard icon={Home} value={shelterViews.length} label="Shelter Views" colorClass="text-blue-500" bgClass="bg-blue-500/15" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
+          <StatCard icon={Eye} value={offerViews.length} label="Offer Views" colorClass="text-purple-500" bgClass="bg-purple-500/15" />
+          <StatCard icon={MousePointer} value={socialClicks.length} label="Social Clicks" colorClass="text-pink-500" bgClass="bg-pink-500/15" />
+          <StatCard icon={Store} value={contactClicks.length} label="Contact Clicks" colorClass="text-teal-500" bgClass="bg-teal-500/15" />
+          <StatCard icon={Eye} value={directoryImpressions.length} label="Directory Impressions" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" />
+        </div>
       </div>
 
-      {/* Charts Row */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Activity Over Time */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Daily Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {chartData.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-                No data yet
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="day" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                  <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: "hsl(var(--card))", 
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px"
-                    }}
-                  />
-                  <Bar dataKey="views" fill="#f97316" name="Views" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="clicks" fill="#eab308" name="Clicks" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="redeems" fill="#22c55e" name="Redeems" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </CardContent>
-        </Card>
+      {/* ───── SECTION: Funnel & Trends ───── */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Conversion & Trends</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <ConversionFunnel
+            businessViews={businessViews.length}
+            offerClicks={offerClicks.length}
+            redemptions={redemptions.length}
+          />
 
-        {/* Event Distribution */}
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Activity Trend
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {chartData.length === 0 ? (
+                <div className="h-[220px] flex items-center justify-center text-muted-foreground text-sm">No data yet</div>
+              ) : (
+                <ResponsiveContainer width="100%" height={220}>
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="viewsGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#f97316" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#f97316" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="clicksGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#eab308" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#eab308" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="redeemsGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#22c55e" stopOpacity={0.3} />
+                        <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--card))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: "8px",
+                        fontSize: "12px",
+                      }}
+                    />
+                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#viewsGrad)" name="Views" strokeWidth={2} />
+                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#clicksGrad)" name="Clicks" strokeWidth={2} />
+                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#redeemsGrad)" name="Redeems" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* ───── SECTION: Event Distribution ───── */}
+      {eventDistribution.length > 0 && (
         <Card className="border-border/50">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Event Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            {eventDistribution.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted-foreground">
-                No data yet
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <ResponsiveContainer width={180} height={180}>
+                <PieChart>
+                  <Pie data={eventDistribution} cx="50%" cy="50%" innerRadius={45} outerRadius={75} dataKey="value" strokeWidth={2} stroke="hsl(var(--card))">
+                    {eventDistribution.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
+                {eventDistribution.map((item) => (
+                  <div key={item.name} className="flex items-center gap-2 text-sm">
+                    <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                    <span className="text-muted-foreground">{item.name}</span>
+                    <span className="font-semibold tabular-nums">{item.value}</span>
+                  </div>
+                ))}
               </div>
-            ) : (
-              <div className="flex items-center gap-4">
-                <ResponsiveContainer width="50%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={eventDistribution}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={70}
-                      dataKey="value"
-                    >
-                      {eventDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="space-y-2">
-                  {eventDistribution.map((item) => (
-                    <div key={item.name} className="flex items-center gap-2 text-sm">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                      <span className="text-muted-foreground">{item.name}</span>
-                      <span className="font-medium">{item.value}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ───── SECTION: Top Performers ───── */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Top Performers</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top Businesses (Clicks)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RankList items={topBusinessesByClicks} colorClass="bg-yellow-500" emptyText="No clicks yet" />
+            </CardContent>
+          </Card>
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top Businesses (Redemptions)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RankList items={topBusinessesByRedemptions} colorClass="bg-green-500" emptyText="No redemptions yet" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <Card className="border-border/50 overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top Offers (Clicks)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OfferRankList items={topOffersByClicks} colorClass="bg-yellow-500" emptyText="No clicks yet" />
+            </CardContent>
+          </Card>
+          <Card className="border-border/50 overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top Offers (Redeemed)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OfferRankList items={topOffersByRedemptions} colorClass="bg-green-500" emptyText="No redemptions yet" />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Top Shelters (Views)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RankList items={topSheltersByViews} colorClass="bg-blue-500" emptyText="No shelter views yet" />
+            </CardContent>
+          </Card>
+
+          {/* Birthday Offers */}
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Cake className="w-4 h-4 text-pink-500" />
+                Birthday Offers
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {birthdayOffers.length === 0 ? (
+                <p className="text-muted-foreground text-sm py-4 text-center">No birthday offers sent yet</p>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-pink-500/10 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-pink-500">{birthdayOffers.length}</p>
+                      <p className="text-xs text-muted-foreground">Sent</p>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Content - Row 1: Businesses */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Top Businesses by Offer Clicks */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <MousePointer className="w-4 h-4 text-yellow-500" />
-              Top Businesses (by Clicks)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {topBusinessesByClicks.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No clicks yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topBusinessesByClicks.map((business, index) => (
-                  <div key={business.name} className="flex items-center gap-2 min-w-0">
-                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                      {index + 1}
-                    </Badge>
-                    <span className="text-sm font-medium truncate flex-1 min-w-0">{business.name}</span>
-                    <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0 text-xs">
-                      {business.count}
-                    </Badge>
+                    <div className="bg-green-500/10 rounded-lg p-3 text-center">
+                      <p className="text-2xl font-bold text-green-500">{birthdayOffers.filter(b => b.redeemed_at).length}</p>
+                      <p className="text-xs text-muted-foreground">Redeemed</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Top Businesses by Redemptions */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Store className="w-4 h-4 text-green-500" />
-              Top Businesses (by Redemptions)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {topBusinessesByRedemptions.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No redemptions yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topBusinessesByRedemptions.map((business, index) => (
-                  <div key={business.name} className="flex items-center gap-2 min-w-0">
-                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                      {index + 1}
-                    </Badge>
-                    <span className="text-sm font-medium truncate flex-1 min-w-0">{business.name}</span>
-                    <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0 text-xs">
-                      {business.count}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Content - Row 2: Offers */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Top Offers by Clicks */}
-        <Card className="border-border/50 overflow-hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-              <MousePointer className="w-4 h-4 text-yellow-500 shrink-0" />
-              <span className="truncate">Top Offers (Clicks)</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-3 sm:px-6">
-            {topOffersByClicks.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No clicks yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topOffersByClicks.map((offer, index) => (
-                  <div key={`${offer.name}-${offer.businessName}`} className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                        {index + 1}
-                      </Badge>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium line-clamp-2">{offer.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
+                  <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground font-medium">Recent</p>
+                    {birthdayOffers.slice(0, 5).map((offer) => (
+                      <div key={offer.id} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="truncate">{offer.pet_name}</span>
+                          <span className="text-muted-foreground text-xs">
+                            ({offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`})
+                          </span>
+                        </div>
+                        {offer.redeemed_at ? (
+                          <Badge className="bg-green-500/20 text-green-400 border-green-500/30 gap-1 text-xs">
+                            <Check className="w-3 h-3" /> Redeemed
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-xs">Pending</Badge>
+                        )}
                       </div>
-                      <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 shrink-0 text-xs">
-                        {offer.count}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Top Offers by Redemptions */}
-        <Card className="border-border/50 overflow-hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-              <Gift className="w-4 h-4 text-green-500 shrink-0" />
-              <span className="truncate">Top Offers (Redeemed)</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-3 sm:px-6">
-            {topOffersByRedemptions.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No redemptions yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topOffersByRedemptions.map((offer, index) => (
-                  <div key={`${offer.name}-${offer.businessName}`} className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                        {index + 1}
-                      </Badge>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium line-clamp-2">{offer.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{offer.businessName}</p>
-                      </div>
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 shrink-0 text-xs">
-                        {offer.count}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Content - Row 3: Shelters & Birthday Offers */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Top Shelters by Views */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Home className="w-4 h-4 text-blue-500" />
-              Top Shelters (by Views)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {topSheltersByViews.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No shelter views yet</p>
-            ) : (
-              <div className="space-y-3">
-                {topSheltersByViews.map((shelter, index) => (
-                  <div key={shelter.name} className="flex items-center gap-2 min-w-0">
-                    <Badge variant="outline" className="w-6 h-6 p-0 justify-center shrink-0">
-                      {index + 1}
-                    </Badge>
-                    <span className="text-sm font-medium truncate flex-1 min-w-0">{shelter.name}</span>
-                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 shrink-0 text-xs">
-                      {shelter.count}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Birthday Offers Stats */}
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Cake className="w-4 h-4 text-pink-500" />
-              Birthday Offers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {birthdayOffers.length === 0 ? (
-              <p className="text-muted-foreground text-sm py-4 text-center">No birthday offers sent yet</p>
-            ) : (
-              <div className="space-y-4">
-                {/* Summary stats */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                  <div className="bg-pink-500/10 rounded-lg p-2 sm:p-3 text-center">
-                    <p className="text-xl sm:text-2xl font-bold text-pink-500">{birthdayOffers.length}</p>
-                    <p className="text-xs text-muted-foreground">Sent</p>
-                  </div>
-                  <div className="bg-green-500/10 rounded-lg p-2 sm:p-3 text-center">
-                    <p className="text-xl sm:text-2xl font-bold text-green-500">
-                      {birthdayOffers.filter(b => b.redeemed_at).length}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Redeemed</p>
+                    ))}
                   </div>
                 </div>
-                {/* Recent birthday offers */}
-                <div className="space-y-2">
-                  <p className="text-xs text-muted-foreground font-medium">Recent Offers</p>
-                  {birthdayOffers.slice(0, 5).map((offer) => (
-                    <div key={offer.id} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="truncate">{offer.pet_name}</span>
-                        <span className="text-muted-foreground text-xs">
-                          ({offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`})
-                        </span>
-                      </div>
-                      {offer.redeemed_at ? (
-                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30 gap-1">
-                          <Check className="w-3 h-3" />
-                          Redeemed
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="text-xs">Pending</Badge>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      {/* Community Hub Analytics */}
+      {/* ───── SECTION: Breed & Pet Insights ───── */}
+      <div className="border-t border-border/50 pt-6">
+        <BreedInsights dateRange={dateRange} />
+      </div>
+
+      {/* ───── SECTION: Community Hub ───── */}
       <div className="border-t border-border/50 pt-6">
         <CommunityAnalytics dateRange={dateRange} />
       </div>
 
-      {/* Pet-Friendly Places Analytics */}
+      {/* ───── SECTION: Pet-Friendly Places ───── */}
       <div className="border-t border-border/50 pt-6">
         <PlacesAnalytics />
       </div>
