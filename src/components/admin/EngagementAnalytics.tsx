@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check } from "lucide-react";
+import CommunityAnalytics from "./CommunityAnalytics";
+import PlacesAnalytics from "./PlacesAnalytics";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 import { formatDate } from "@/lib/utils";
@@ -617,6 +619,16 @@ const EngagementAnalytics = () => {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Community Hub Analytics */}
+      <div className="border-t border-border/50 pt-6">
+        <CommunityAnalytics dateRange={dateRange} />
+      </div>
+
+      {/* Pet-Friendly Places Analytics */}
+      <div className="border-t border-border/50 pt-6">
+        <PlacesAnalytics />
       </div>
     </div>
   );
