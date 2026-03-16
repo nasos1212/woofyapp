@@ -248,6 +248,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "instagram");
                             window.open(ensureHttps(partner.instagram_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -259,6 +260,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "facebook");
                             window.open(ensureHttps(partner.facebook_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -270,6 +272,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "tiktok");
                             window.open(ensureHttps(partner.tiktok_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -281,6 +284,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "website");
                             window.open(ensureHttps(partner.website!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors ml-auto"
