@@ -13,8 +13,7 @@ import BreedInsights from "./BreedInsights";
 import CommunityAnalytics from "./CommunityAnalytics";
 import PlacesAnalytics from "./PlacesAnalytics";
 import ConversionFunnel from "./ConversionFunnel";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { format, subDays } from "date-fns";
+import { format, subDays, isAfter, isBefore } from "date-fns";
 
 interface AnalyticsEvent {
   id: string;
