@@ -9,10 +9,13 @@ export const businessCategories: BusinessCategoryOption[] = [
   { value: "hotel", label: "Pet Hotel" },
   { value: "grooming", label: "Grooming" },
   { value: "vet", label: "Veterinary" },
-  { value: "daycare", label: "Daycare" },
+  { value: "daycare", label: "Daycare / Pet Sitter" },
   { value: "physio", label: "Physiotherapy" },
   { value: "accessories", label: "Accessories" },
-  { value: "food", label: "Food & Treats" },
+  { value: "pet_transport", label: "Pet Transport" },
+  { value: "pet_photography", label: "Pet Photography" },
+  { value: "dog_walking", label: "Dog Walking" },
+  { value: "pet_insurance", label: "Pet Insurance" },
   { value: "other", label: "Other" },
 ];
 
