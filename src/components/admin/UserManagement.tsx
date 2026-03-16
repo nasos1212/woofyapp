@@ -175,6 +175,7 @@ const UserManagement = () => {
         id: b.id,
         business_name: b.business_name,
         category: b.category,
+        categories: (b as any).categories || [b.category],
         verification_status: b.verification_status,
         city: b.city,
         address: b.address,
