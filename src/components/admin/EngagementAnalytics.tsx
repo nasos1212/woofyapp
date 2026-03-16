@@ -204,11 +204,73 @@ const EngagementAnalytics = () => {
     redemptions.reduce((acc, r) => { const n = r.businesses?.business_name || "Unknown"; acc[n] = (acc[n] || 0) + 1; return acc; }, {} as Record<string, number>)
   ).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count).slice(0, 5);
 
-  // Daily activity
-  const dailyActivity: Record<string, { day: string; views: number; clicks: number; redeems: number }> = {};
-  events.forEach(e => { const d = format(new Date(e.created_at), "dd MMM"); if (!dailyActivity[d]) dailyActivity[d] = { day: d, views: 0, clicks: 0, redeems: 0 }; if (e.event_type === "business_view") dailyActivity[d].views++; if (e.event_type === "offer_click") dailyActivity[d].clicks++; });
-  redemptions.forEach(r => { const d = format(new Date(r.redeemed_at), "dd MMM"); if (!dailyActivity[d]) dailyActivity[d] = { day: d, views: 0, clicks: 0, redeems: 0 }; dailyActivity[d].redeems++; });
-  const chartData = Object.values(dailyActivity).slice(-14);
+  // WoW and MoM growth calculations
+  const now = new Date();
+  const oneWeekAgo = subDays(now, 7);
+  const twoWeeksAgo = subDays(now, 14);
+  const oneMonthAgo = subDays(now, 30);
+  const twoMonthsAgo = subDays(now, 60);
+
+  const countInRange = (items: { created_at?: string; redeemed_at?: string }[], start: Date, end: Date) =>
+    items.filter(item => {
+      const d = new Date(item.created_at || item.redeemed_at || "");
+      return isAfter(d, start) && !isAfter(d, end);
+    }).length;
+
+  const calcGrowth = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return Math.round(((current - previous) / previous) * 100);
+  };
+
+  const growthMetrics = [
+    {
+      label: "Profile Views",
+      thisWeek: countInRange(businessViews, oneWeekAgo, now),
+      lastWeek: countInRange(businessViews, twoWeeksAgo, oneWeekAgo),
+      thisMonth: countInRange(businessViews, oneMonthAgo, now),
+      lastMonth: countInRange(businessViews, twoMonthsAgo, oneMonthAgo),
+      colorClass: "text-orange-500",
+      bgClass: "bg-orange-500/15",
+    },
+    {
+      label: "Offer Clicks",
+      thisWeek: countInRange(offerClicks, oneWeekAgo, now),
+      lastWeek: countInRange(offerClicks, twoWeeksAgo, oneWeekAgo),
+      thisMonth: countInRange(offerClicks, oneMonthAgo, now),
+      lastMonth: countInRange(offerClicks, twoMonthsAgo, oneMonthAgo),
+      colorClass: "text-yellow-500",
+      bgClass: "bg-yellow-500/15",
+    },
+    {
+      label: "Redemptions",
+      thisWeek: countInRange(redemptions.map(r => ({ created_at: r.redeemed_at })), oneWeekAgo, now),
+      lastWeek: countInRange(redemptions.map(r => ({ created_at: r.redeemed_at })), twoWeeksAgo, oneWeekAgo),
+      thisMonth: countInRange(redemptions.map(r => ({ created_at: r.redeemed_at })), oneMonthAgo, now),
+      lastMonth: countInRange(redemptions.map(r => ({ created_at: r.redeemed_at })), twoMonthsAgo, oneMonthAgo),
+      colorClass: "text-green-500",
+      bgClass: "bg-green-500/15",
+    },
+    {
+      label: "Directory Views",
+      thisWeek: countInRange(directoryImpressions, oneWeekAgo, now),
+      lastWeek: countInRange(directoryImpressions, twoWeeksAgo, oneWeekAgo),
+      thisMonth: countInRange(directoryImpressions, oneMonthAgo, now),
+      lastMonth: countInRange(directoryImpressions, twoMonthsAgo, oneMonthAgo),
+      colorClass: "text-indigo-500",
+      bgClass: "bg-indigo-500/15",
+    },
+  ];
+
+  const GrowthBadge = ({ pct }: { pct: number }) => {
+    if (pct === 0) return <span className="flex items-center gap-0.5 text-xs text-muted-foreground font-medium"><Minus className="w-3 h-3" />0%</span>;
+    const isPositive = pct > 0;
+    return (
+      <span className={`flex items-center gap-0.5 text-xs font-semibold ${isPositive ? "text-green-600" : "text-red-500"}`}>
+        {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+        {isPositive ? "+" : ""}{pct}%
+      </span>
+    );
+  };
 
   const eventDistribution = [
     { name: "Profile Views", value: businessViews.length, color: COLORS[0] },
