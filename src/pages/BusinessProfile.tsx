@@ -29,6 +29,9 @@ interface Business {
   website: string | null;
   logo_url: string | null;
   google_maps_url: string | null;
+  instagram_url?: string | null;
+  facebook_url?: string | null;
+  tiktok_url?: string | null;
 }
 
 interface Offer {
