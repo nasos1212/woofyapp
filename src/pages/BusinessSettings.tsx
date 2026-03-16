@@ -625,7 +625,7 @@ const BusinessSettings = () => {
                       <div className="space-y-2">
                         <Label htmlFor="facebook_url">Facebook</Label>
                         <div className="relative">
-                          <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#1877F2' }} />
                           <Input
                             id="facebook_url"
                             placeholder="https://facebook.com/yourbusiness"
