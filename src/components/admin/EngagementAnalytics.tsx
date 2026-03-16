@@ -401,11 +401,11 @@ const EngagementAnalytics = () => {
 
         {/* Top performers */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">
-          <Card className="border-border/50"><CardHeader className="pb-2"><CardTitle className="text-base">Top Businesses (Clicks)</CardTitle></CardHeader><CardContent><RankList items={topBusinessesByClicks} colorClass="bg-yellow-500" emptyText="No clicks yet" /></CardContent></Card>
+          <Card className="border-border/50"><CardHeader className="pb-2"><CardTitle className="text-base">Top Businesses (Offer Clicks)</CardTitle></CardHeader><CardContent><RankList items={topBusinessesByClicks} colorClass="bg-yellow-500" emptyText="No offer clicks yet" /></CardContent></Card>
           <Card className="border-border/50"><CardHeader className="pb-2"><CardTitle className="text-base">Top Businesses (Redemptions)</CardTitle></CardHeader><CardContent><RankList items={topBusinessesByRedemptions} colorClass="bg-green-500" emptyText="No redemptions yet" /></CardContent></Card>
         </div>
         <div className="grid md:grid-cols-2 gap-6 mb-6">
-          <Card className="border-border/50 overflow-hidden"><CardHeader className="pb-2"><CardTitle className="text-base">Top Offers (Clicks)</CardTitle></CardHeader><CardContent><OfferRankList items={topOffersByClicks} colorClass="bg-yellow-500" emptyText="No clicks yet" /></CardContent></Card>
+          <Card className="border-border/50 overflow-hidden"><CardHeader className="pb-2"><CardTitle className="text-base">Top Offers (Offer Clicks)</CardTitle></CardHeader><CardContent><OfferRankList items={topOffersByClicks} colorClass="bg-yellow-500" emptyText="No offer clicks yet" /></CardContent></Card>
           <Card className="border-border/50 overflow-hidden"><CardHeader className="pb-2"><CardTitle className="text-base">Top Offers (Redeemed)</CardTitle></CardHeader><CardContent><OfferRankList items={topOffersByRedemptions} colorClass="bg-green-500" emptyText="No redemptions yet" /></CardContent></Card>
         </div>
         <div className="grid md:grid-cols-2 gap-6">
