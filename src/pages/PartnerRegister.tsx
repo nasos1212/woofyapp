@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,6 +51,9 @@ const PartnerRegister = () => {
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
+  const [facebookUrl, setFacebookUrl] = useState("");
+  const [tiktokUrl, setTiktokUrl] = useState("");
   
   // Primary location
   const [primaryLocation, setPrimaryLocation] = useState({
@@ -81,9 +84,12 @@ const PartnerRegister = () => {
       primaryLocation.google_maps_url !== "" ||
       additionalLocations.length > 0 ||
       email !== "" ||
-      website !== ""
+      website !== "" ||
+      instagramUrl !== "" ||
+      facebookUrl !== "" ||
+      tiktokUrl !== ""
     );
-  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
+  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website, instagramUrl, facebookUrl, tiktokUrl]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -171,8 +177,11 @@ const PartnerRegister = () => {
           city: allCities.join(", "),
           phone: primaryLocation.phone,
           email: email || user.email || "",
-          website: website ? ensureHttps(website) : null,
-          google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
+           website: website ? ensureHttps(website) : null,
+           instagram_url: instagramUrl ? ensureHttps(instagramUrl) : null,
+           facebook_url: facebookUrl ? ensureHttps(facebookUrl) : null,
+           tiktok_url: tiktokUrl ? ensureHttps(tiktokUrl) : null,
+           google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
         } as any)
         .select()
         .single();
@@ -442,18 +451,74 @@ const PartnerRegister = () => {
                       </div>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="website">Website *</Label>
-                    <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="website"
-                        placeholder="https://www.yourbusiness.com"
-                        value={website}
-                        onChange={(e) => setWebsite(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
+                </div>
+
+                {/* Web & Social Presence */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1.5">
+                    <Label className="font-semibold">Web & Social Presence *</Label>
+                    <div className="group relative">
+                      <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        Provide at least one link so customers can find you online. This can be a website or any social media profile.
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Add at least one: website or social media link.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="website" className="text-sm">Website</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="website"
+                          placeholder="www.yourbusiness.com"
+                          value={website}
+                          onChange={(e) => setWebsite(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="instagram" className="text-sm">Instagram</Label>
+                      <div className="relative">
+                        <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="instagram"
+                          placeholder="instagram.com/yourbusiness"
+                          value={instagramUrl}
+                          onChange={(e) => setInstagramUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="facebook" className="text-sm">Facebook</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="facebook"
+                          placeholder="facebook.com/yourbusiness"
+                          value={facebookUrl}
+                          onChange={(e) => setFacebookUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="tiktok" className="text-sm">TikTok</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="tiktok"
+                          placeholder="tiktok.com/@yourbusiness"
+                          value={tiktokUrl}
+                          onChange={(e) => setTiktokUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -463,7 +528,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
+                  disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || (!website.trim() && !instagramUrl.trim() && !facebookUrl.trim() && !tiktokUrl.trim()) || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
                 >
                   Review & Submit
                 </Button>

@@ -479,10 +479,13 @@ export type Database = {
           created_at: string
           description: string | null
           email: string
+          facebook_url: string | null
           google_maps_url: string | null
           id: string
+          instagram_url: string | null
           logo_url: string | null
           phone: string | null
+          tiktok_url: string | null
           updated_at: string
           user_id: string
           verification_status: Database["public"]["Enums"]["verification_status"]
@@ -498,10 +501,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           email: string
+          facebook_url?: string | null
           google_maps_url?: string | null
           id?: string
+          instagram_url?: string | null
           logo_url?: string | null
           phone?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
@@ -517,10 +523,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string
+          facebook_url?: string | null
           google_maps_url?: string | null
           id?: string
+          instagram_url?: string | null
           logo_url?: string | null
           phone?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string
           verification_status?: Database["public"]["Enums"]["verification_status"]
