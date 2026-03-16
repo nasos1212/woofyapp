@@ -66,8 +66,8 @@ const SectionHeader = ({ icon: Icon, title, subtitle }: { icon: any; title: stri
 );
 
 // ─── Stat Card ───
-const StatCard = ({ icon: Icon, value, label, colorClass, bgClass }: {
-  icon: any; value: number; label: string; colorClass: string; bgClass: string;
+const StatCard = ({ icon: Icon, value, label, colorClass, bgClass, tip }: {
+  icon: any; value: number; label: string; colorClass: string; bgClass: string; tip?: string;
 }) => (
   <Card className="border-border/50 hover:border-border transition-colors">
     <CardContent className="pt-4 pb-3">
@@ -75,9 +75,12 @@ const StatCard = ({ icon: Icon, value, label, colorClass, bgClass }: {
         <div className={`p-2 rounded-xl ${bgClass}`}>
           <Icon className={`w-4 h-4 ${colorClass}`} />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <p className="text-xl font-bold tabular-nums">{value.toLocaleString()}</p>
-          <p className="text-[11px] text-muted-foreground leading-tight">{label}</p>
+          <div className="flex items-center gap-1">
+            <p className="text-[11px] text-muted-foreground leading-tight">{label}</p>
+            {tip && <MetricTooltip text={tip} />}
+          </div>
         </div>
       </div>
     </CardContent>
