@@ -772,45 +772,61 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Button
-          variant="ghost"
-          onClick={() => setAccountType(null)}
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Change Account Type
-        </Button>
+        {isLogin ? (
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/?stay=true")}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setAccountType(null);
+              setShowAccountTypeSelection(true);
+            }}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Change Account Type
+          </Button>
+        )}
 
         <div className="bg-card rounded-2xl shadow-card p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className={`w-16 h-16 ${getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
-              {getAccountIcon()}
+            <div className={`w-16 h-16 ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+              {isLogin ? <Dog className="w-8 h-8 text-primary-foreground" /> : getAccountIcon()}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome to Wooffy" : "Join Wooffy"}
+              {isLogin ? "Welcome Back" : "Join Wooffy"}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {getAccountDescription()}
+              {isLogin ? "Sign in to your account" : getAccountDescription()}
             </p>
-            <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
-              {isBusiness ? (
-                <>
-                  <Building2 className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              ) : isShelter ? (
-                <>
-                  <Home className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              ) : (
-                <>
-                  <Dog className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              )}
-            </div>
+            {!isLogin && (
+              <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
+                {isBusiness ? (
+                  <>
+                    <Building2 className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                ) : isShelter ? (
+                  <>
+                    <Home className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                ) : (
+                  <>
+                    <Dog className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Form */}
@@ -905,7 +921,6 @@ const Auth = () => {
               </div>
             )}
 
-
             <Button
               type="submit"
               variant="hero"
@@ -920,7 +935,18 @@ const Auth = () => {
           <div className="mt-6 text-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                if (isLogin) {
+                  // Sign In → go to account type selection for sign up
+                  setShowAccountTypeSelection(true);
+                  setAccountType(null);
+                } else {
+                  // Sign Up → go back to sign in
+                  setIsLogin(true);
+                  setAccountType(null);
+                  setShowAccountTypeSelection(false);
+                }
+              }}
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               {isLogin ? (
