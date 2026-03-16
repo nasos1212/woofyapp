@@ -95,7 +95,7 @@ export default function BusinessProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const { trackBusinessView } = useAnalyticsTracking();
+  const { trackBusinessView, trackSocialClick, trackContactClick } = useAnalyticsTracking();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
