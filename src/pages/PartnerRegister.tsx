@@ -88,6 +88,10 @@ const PartnerRegister = () => {
     if (!loading && !user) {
       navigate("/auth?type=business");
     }
+    // Pre-fill email from auth user
+    if (user?.email && !email) {
+      setEmail(user.email);
+    }
   }, [user, loading, navigate]);
 
   useEffect(() => {
