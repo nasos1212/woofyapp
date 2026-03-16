@@ -262,8 +262,8 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="paid" stroke="hsl(var(--primary))" fill="url(#paidGradient)" name="Paid members" strokeWidth={2} />
-                  <Area type="monotone" dataKey="free" stroke="hsl(var(--accent-foreground))" fill="url(#freeGradient)" name="Free members" strokeWidth={2} />
+                  <Area type="monotone" dataKey="paid" stroke="hsl(var(--primary))" fill="url(#paidGradient)" name="Paid members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--primary))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
+                  <Area type="monotone" dataKey="free" stroke="hsl(var(--accent-foreground))" fill="url(#freeGradient)" name="Free members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--accent-foreground))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
