@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { Dog, Cat, PawPrint } from "lucide-react";
+import { Dog, PawPrint } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import MetricTooltip from "./MetricTooltip";
 
 const AGE_COLORS = ["#22c55e", "#3b82f6", "#8b5cf6", "#f97316", "#ef4444", "#64748b"];
-const GENDER_COLORS = { Male: "#3b82f6", Female: "#ec4899", Unknown: "#94a3b8" };
+const GENDER_COLORS: Record<string, string> = { Male: "#3b82f6", Female: "#ec4899", Unknown: "#94a3b8" };
 
 const PetDemographics = () => {
   const [loading, setLoading] = useState(true);
@@ -33,7 +34,6 @@ const PetDemographics = () => {
       const profiles = profilesRes.data || [];
       setTotalPets(pets.length);
 
-      // City lookup
       const cityMap: Record<string, string> = {};
       profiles.forEach(p => { if (p.preferred_city) cityMap[p.user_id] = p.preferred_city; });
 
@@ -49,16 +49,8 @@ const PetDemographics = () => {
 
       // Breed distribution (top 15)
       const breedMap: Record<string, number> = {};
-      pets.forEach(p => {
-        const breed = p.pet_breed || "Unknown";
-        breedMap[breed] = (breedMap[breed] || 0) + 1;
-      });
-      setBreedStats(
-        Object.entries(breedMap)
-          .map(([breed, count]) => ({ breed, count }))
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 15)
-      );
+      pets.forEach(p => { breedMap[p.pet_breed || "Unknown"] = (breedMap[p.pet_breed || "Unknown"] || 0) + 1; });
+      setBreedStats(Object.entries(breedMap).map(([breed, count]) => ({ breed, count })).sort((a, b) => b.count - a.count).slice(0, 15));
 
       // Age distribution
       const now = new Date();
@@ -71,42 +63,25 @@ const PetDemographics = () => {
         { range: "Unknown", min: -1, max: -1 },
       ];
       const ageCounts = ageRanges.map(r => ({ ...r, count: 0 }));
-
       pets.forEach(p => {
         let age: number | null = null;
         if (p.birthday) {
-          const bd = new Date(p.birthday);
-          age = (now.getTime() - bd.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
+          age = (now.getTime() - new Date(p.birthday).getTime()) / (365.25 * 24 * 60 * 60 * 1000);
         } else if (p.age_years !== null) {
           age = p.age_years;
         }
-
-        if (age === null) {
-          ageCounts[5].count++;
-        } else {
+        if (age === null) { ageCounts[5].count++; }
+        else {
           const bucket = ageCounts.find(a => age! >= a.min && age! < a.max);
-          if (bucket) bucket.count++;
-          else ageCounts[5].count++;
+          if (bucket) bucket.count++; else ageCounts[5].count++;
         }
       });
-
-      setAgeDistribution(
-        ageCounts
-          .filter(a => a.count > 0)
-          .map((a, i) => ({ range: a.range, count: a.count, color: AGE_COLORS[i % AGE_COLORS.length] }))
-      );
+      setAgeDistribution(ageCounts.filter(a => a.count > 0).map((a, i) => ({ range: a.range, count: a.count, color: AGE_COLORS[i % AGE_COLORS.length] })));
 
       // Gender distribution
       const genderMap: Record<string, number> = {};
-      pets.forEach(p => {
-        const g = p.gender ? p.gender.charAt(0).toUpperCase() + p.gender.slice(1) : "Unknown";
-        genderMap[g] = (genderMap[g] || 0) + 1;
-      });
-      setGenderStats(
-        Object.entries(genderMap)
-          .map(([name, value]) => ({ name, value, color: (GENDER_COLORS as any)[name] || "#94a3b8" }))
-          .sort((a, b) => b.value - a.value)
-      );
+      pets.forEach(p => { const g = p.gender ? p.gender.charAt(0).toUpperCase() + p.gender.slice(1) : "Unknown"; genderMap[g] = (genderMap[g] || 0) + 1; });
+      setGenderStats(Object.entries(genderMap).map(([name, value]) => ({ name, value, color: GENDER_COLORS[name] || "#94a3b8" })).sort((a, b) => b.value - a.value));
 
       // Top breed per city
       const cityBreeds: Record<string, Record<string, number>> = {};
@@ -120,12 +95,8 @@ const PetDemographics = () => {
       });
       setBreedByCity(
         Object.entries(cityBreeds)
-          .map(([city, breeds]) => {
-            const sorted = Object.entries(breeds).sort((a, b) => b[1] - a[1]);
-            return { city, topBreed: sorted[0]?.[0] || "Unknown", count: sorted[0]?.[1] || 0 };
-          })
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 6)
+          .map(([city, breeds]) => { const sorted = Object.entries(breeds).sort((a, b) => b[1] - a[1]); return { city, topBreed: sorted[0]?.[0] || "Unknown", count: sorted[0]?.[1] || 0 }; })
+          .sort((a, b) => b.count - a.count).slice(0, 6)
       );
     } catch (error) {
       console.error("Error fetching pet demographics:", error);
@@ -134,28 +105,24 @@ const PetDemographics = () => {
     }
   };
 
-  if (loading) {
-    return <p className="text-muted-foreground text-sm py-8 text-center">Loading pet demographics...</p>;
-  }
+  if (loading) return <p className="text-muted-foreground text-sm py-8 text-center">Loading pet demographics...</p>;
 
   return (
     <div className="space-y-6">
-      {/* Type + Gender + Age summary row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Pet Type */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Pet Types</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Pet Types</CardTitle>
+              <MetricTooltip text="Distribution of registered pets by species (dogs, cats, etc.). All-time data from all registered pets on the platform." />
+            </div>
             <p className="text-xs text-muted-foreground">{totalPets.toLocaleString()} total pets registered</p>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
               <ResponsiveContainer width={120} height={120}>
-                <PieChart>
-                  <Pie data={petTypeStats} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value" strokeWidth={2} stroke="hsl(var(--card))">
-                    {petTypeStats.map((e, i) => <Cell key={i} fill={e.color} />)}
-                  </Pie>
-                </PieChart>
+                <PieChart><Pie data={petTypeStats} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value" strokeWidth={2} stroke="hsl(var(--card))">{petTypeStats.map((e, i) => <Cell key={i} fill={e.color} />)}</Pie></PieChart>
               </ResponsiveContainer>
               <div className="space-y-2">
                 {petTypeStats.map(t => (
@@ -173,16 +140,15 @@ const PetDemographics = () => {
         {/* Gender */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Gender Split</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Gender Split</CardTitle>
+              <MetricTooltip text="Male vs Female distribution of all registered pets. 'Unknown' means gender wasn't specified during registration." />
+            </div>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-4">
               <ResponsiveContainer width={120} height={120}>
-                <PieChart>
-                  <Pie data={genderStats} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value" strokeWidth={2} stroke="hsl(var(--card))">
-                    {genderStats.map((e, i) => <Cell key={i} fill={e.color} />)}
-                  </Pie>
-                </PieChart>
+                <PieChart><Pie data={genderStats} cx="50%" cy="50%" innerRadius={30} outerRadius={50} dataKey="value" strokeWidth={2} stroke="hsl(var(--card))">{genderStats.map((e, i) => <Cell key={i} fill={e.color} />)}</Pie></PieChart>
               </ResponsiveContainer>
               <div className="space-y-2">
                 {genderStats.map(g => (
@@ -200,7 +166,10 @@ const PetDemographics = () => {
         {/* Age Distribution */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Age Distribution</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Age Distribution</CardTitle>
+              <MetricTooltip text="Pet age groups calculated from birthday or manually entered age. Helps understand which life stages are most represented — valuable for targeted product recommendations." />
+            </div>
           </CardHeader>
           <CardContent>
             {ageDistribution.length === 0 ? (
@@ -228,15 +197,13 @@ const PetDemographics = () => {
         </Card>
       </div>
 
-      {/* Breed Distribution Chart */}
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Dog className="w-4 h-4 text-primary" />
-              Top Breeds
-            </CardTitle>
-            <p className="text-xs text-muted-foreground">Most popular breeds on the platform</p>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base flex items-center gap-2"><Dog className="w-4 h-4 text-primary" />Top Breeds</CardTitle>
+              <MetricTooltip text="The 15 most popular breeds registered on the platform. This data is highly valuable for pet food, insurance, and product companies to understand market demand." />
+            </div>
           </CardHeader>
           <CardContent>
             {breedStats.length === 0 ? (
@@ -247,9 +214,7 @@ const PetDemographics = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                   <YAxis type="category" dataKey="breed" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" width={110} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
-                  />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
                   <Bar dataKey="count" fill="hsl(var(--primary))" name="Pets" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -257,11 +222,12 @@ const PetDemographics = () => {
           </CardContent>
         </Card>
 
-        {/* Top Breed by City */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Top Breed by City</CardTitle>
-            <p className="text-xs text-muted-foreground">Most popular breed in each city</p>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Top Breed by City</CardTitle>
+              <MetricTooltip text="The most popular breed in each city, based on pet owners' preferred city. Useful for regional product distribution and targeted marketing." />
+            </div>
           </CardHeader>
           <CardContent>
             {breedByCity.length === 0 ? (
@@ -272,9 +238,7 @@ const PetDemographics = () => {
                   <div key={item.city} className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium">{item.city}</p>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <PawPrint className="w-3 h-3" /> {item.topBreed}
-                      </p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1"><PawPrint className="w-3 h-3" /> {item.topBreed}</p>
                     </div>
                     <Badge variant="secondary" className="text-xs tabular-nums">{item.count} pets</Badge>
                   </div>

@@ -1,35 +1,48 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, Users, UserPlus, Crown } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { format, subMonths, startOfMonth } from "date-fns";
+import { format, subMonths, startOfMonth, subDays } from "date-fns";
+import MetricTooltip from "./MetricTooltip";
 
 const PLAN_COLORS: Record<string, string> = {
   single: "#f97316",
-  couple: "#3b82f6",
-  family: "#8b5cf6",
+  duo: "#3b82f6",
+  pack: "#8b5cf6",
   free: "#64748b",
 };
 
-const GrowthMetrics = () => {
+const PLAN_LABELS: Record<string, string> = {
+  single: "Solo Paw",
+  duo: "Dynamic Duo",
+  pack: "Pack Leader",
+};
+
+interface GrowthMetricsProps {
+  dateRange: "7d" | "30d" | "90d";
+}
+
+const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
   const [loading, setLoading] = useState(true);
   const [totalMembers, setTotalMembers] = useState(0);
   const [activeMembers, setActiveMembers] = useState(0);
   const [totalPets, setTotalPets] = useState(0);
   const [monthlyGrowth, setMonthlyGrowth] = useState<{ month: string; members: number; cumulative: number }[]>([]);
   const [planDistribution, setPlanDistribution] = useState<{ name: string; value: number; color: string }[]>([]);
-  const [newThisMonth, setNewThisMonth] = useState(0);
+  const [newInPeriod, setNewInPeriod] = useState(0);
   const [freeMembers, setFreeMembers] = useState(0);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [dateRange]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
+      const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
+      const periodStart = subDays(new Date(), days);
+
       const [membershipsRes, activeMembershipsRes, petsRes, profilesRes] = await Promise.all([
         supabase.from("memberships").select("id, created_at, plan_type, is_active"),
         supabase.from("memberships").select("*", { count: "exact", head: true }).eq("is_active", true),
@@ -45,6 +58,9 @@ const GrowthMetrics = () => {
       // Free members = profiles without a membership (approximate)
       const totalProfiles = profilesRes.count || 0;
       setFreeMembers(Math.max(0, totalProfiles - memberships.length));
+
+      // New members in selected period
+      setNewInPeriod(memberships.filter(m => new Date(m.created_at) >= periodStart).length);
 
       // Monthly growth over last 12 months
       const monthMap: Record<string, number> = {};
@@ -70,10 +86,6 @@ const GrowthMetrics = () => {
       });
       setMonthlyGrowth(growth);
 
-      // This month's new members
-      const thisMonthStart = startOfMonth(now);
-      setNewThisMonth(memberships.filter(m => new Date(m.created_at) >= thisMonthStart).length);
-
       // Plan distribution
       const planCounts: Record<string, number> = {};
       memberships.forEach(m => {
@@ -82,10 +94,10 @@ const GrowthMetrics = () => {
       });
       setPlanDistribution(
         Object.entries(planCounts)
-          .map(([name, value]) => ({
-            name: name.charAt(0).toUpperCase() + name.slice(1),
+          .map(([key, value]) => ({
+            name: PLAN_LABELS[key] || key.charAt(0).toUpperCase() + key.slice(1),
             value,
-            color: PLAN_COLORS[name] || "#a3a3a3",
+            color: PLAN_COLORS[key] || "#a3a3a3",
           }))
           .sort((a, b) => b.value - a.value)
       );
@@ -100,16 +112,18 @@ const GrowthMetrics = () => {
     return <p className="text-muted-foreground text-sm py-8 text-center">Loading growth metrics...</p>;
   }
 
+  const periodLabel = dateRange === "7d" ? "Last 7 Days" : dateRange === "30d" ? "Last 30 Days" : "Last 90 Days";
+
   return (
     <div className="space-y-6">
       {/* Headline stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {[
-          { icon: Users, label: "Total Members", value: totalMembers, color: "text-primary", bg: "bg-primary/15" },
-          { icon: TrendingUp, label: "Active Members", value: activeMembers, color: "text-green-500", bg: "bg-green-500/15" },
-          { icon: UserPlus, label: "New This Month", value: newThisMonth, color: "text-blue-500", bg: "bg-blue-500/15" },
-          { icon: Users, label: "Free Members", value: freeMembers, color: "text-muted-foreground", bg: "bg-muted" },
-          { icon: Crown, label: "Total Pets", value: totalPets, color: "text-orange-500", bg: "bg-orange-500/15" },
+          { icon: Users, label: "Total Members", value: totalMembers, color: "text-primary", bg: "bg-primary/15", tip: "Total number of users who have purchased any membership plan (Solo Paw, Dynamic Duo, or Pack Leader), regardless of whether it's currently active or expired." },
+          { icon: TrendingUp, label: "Active Members", value: activeMembers, color: "text-green-500", bg: "bg-green-500/15", tip: "Members whose membership is currently active and hasn't expired. These are paying customers who can redeem offers." },
+          { icon: UserPlus, label: `New (${periodLabel})`, value: newInPeriod, color: "text-blue-500", bg: "bg-blue-500/15", tip: `Number of new memberships created within the selected time period (${periodLabel}).` },
+          { icon: Users, label: "Free Members", value: freeMembers, color: "text-muted-foreground", bg: "bg-muted", tip: "Registered users who have a profile but haven't purchased a membership. These are potential conversion targets." },
+          { icon: Crown, label: "Total Pets", value: totalPets, color: "text-orange-500", bg: "bg-orange-500/15", tip: "Total number of pets registered on the platform across all memberships." },
         ].map((stat) => (
           <Card key={stat.label} className="border-border/50">
             <CardContent className="pt-4 pb-3">
@@ -117,9 +131,12 @@ const GrowthMetrics = () => {
                 <div className={`p-2 rounded-xl ${stat.bg}`}>
                   <stat.icon className={`w-4 h-4 ${stat.color}`} />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-xl font-bold tabular-nums">{stat.value.toLocaleString()}</p>
-                  <p className="text-[11px] text-muted-foreground leading-tight">{stat.label}</p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-[11px] text-muted-foreground leading-tight">{stat.label}</p>
+                    <MetricTooltip text={stat.tip} />
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -131,7 +148,10 @@ const GrowthMetrics = () => {
         {/* Growth Over Time */}
         <Card className="border-border/50 md:col-span-2">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Member Growth (12 Months)</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Member Growth (12 Months)</CardTitle>
+              <MetricTooltip text="Shows cumulative total members (solid line) and new sign-ups per month (dashed line) over the past 12 months. This is an all-time view and not affected by the date range filter." />
+            </div>
           </CardHeader>
           <CardContent>
             {monthlyGrowth.length === 0 ? (
@@ -167,7 +187,10 @@ const GrowthMetrics = () => {
         {/* Plan Distribution */}
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Plan Distribution</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base">Plan Distribution</CardTitle>
+              <MetricTooltip text="Breakdown of all memberships by plan type: Solo Paw (1 pet), Dynamic Duo (2 pets), Pack Leader (5 pets). Shows which plans members choose most." />
+            </div>
           </CardHeader>
           <CardContent>
             {planDistribution.length === 0 ? (
