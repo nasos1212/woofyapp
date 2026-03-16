@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram, Facebook, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -497,7 +497,7 @@ const PartnerRegister = () => {
                     <div className="space-y-1.5">
                       <Label htmlFor="facebook" className="text-sm">Facebook</Label>
                       <div className="relative">
-                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="facebook"
                           placeholder="facebook.com/yourbusiness"
@@ -510,7 +510,7 @@ const PartnerRegister = () => {
                     <div className="space-y-1.5">
                       <Label htmlFor="tiktok" className="text-sm">TikTok</Label>
                       <div className="relative">
-                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Music className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
                           id="tiktok"
                           placeholder="tiktok.com/@yourbusiness"
