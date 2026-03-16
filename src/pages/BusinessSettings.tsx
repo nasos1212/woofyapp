@@ -102,6 +102,7 @@ const BusinessSettings = () => {
     business_name: "",
     description: "",
     category: "other" as BusinessCategory,
+    categories: [],
     phone: "",
     email: "",
     address: "",
