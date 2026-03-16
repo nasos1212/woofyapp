@@ -522,25 +522,15 @@ const BusinessSettings = () => {
                     />
                   </div>
 
-                  {/* Category */}
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as BusinessCategory }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categoryOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Categories */}
+                  <BusinessCategoryMultiSelect
+                    selected={formData.categories}
+                    onChange={(cats) => setFormData(prev => ({ 
+                      ...prev, 
+                      categories: cats,
+                      category: (cats[0] || "other") as BusinessCategory,
+                    }))}
+                  />
 
                   {/* Description */}
                   <div className="space-y-2">
