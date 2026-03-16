@@ -38,6 +38,7 @@ const authSchema = z.object({
 const Auth = () => {
   const [accountType, setAccountType] = useState<"member" | "business" | "shelter" | null>(null);
   const [isLogin, setIsLogin] = useState(true);
+  const [showAccountTypeSelection, setShowAccountTypeSelection] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,11 +55,13 @@ const Auth = () => {
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
 
-  // Check URL params for account type
+  // Check URL params for account type (for direct links)
   useEffect(() => {
     const typeParam = searchParams.get("type");
     if (typeParam === "business" || typeParam === "member" || typeParam === "shelter") {
       setAccountType(typeParam);
+      setIsLogin(false);
+      setShowAccountTypeSelection(false);
     }
   }, [searchParams]);
 
@@ -537,8 +540,8 @@ const Auth = () => {
     </Dialog>
   );
 
-  // Account Type Selection View
-  if (!accountType) {
+  // Account Type Selection View (only shown when signing up)
+  if (showAccountTypeSelection && !accountType) {
     return (
       <>
         <RejectedDialog />
@@ -546,11 +549,14 @@ const Auth = () => {
         <div className="w-full max-w-lg">
           <Button
             variant="ghost"
-            onClick={() => navigate("/?stay=true")}
+            onClick={() => {
+              setShowAccountTypeSelection(false);
+              setIsLogin(true);
+            }}
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            Back to Sign In
           </Button>
 
           <div className="bg-card rounded-2xl shadow-card p-8">
@@ -559,16 +565,16 @@ const Auth = () => {
                 <Dog className="w-8 h-8 text-primary-foreground" />
               </div>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                Welcome to Wooffy
+                Create an Account
               </h1>
               <p className="text-muted-foreground mt-2">
-                How would you like to continue?
+                What type of account would you like?
               </p>
             </div>
 
             <div className="grid gap-4">
               <button
-                onClick={() => setAccountType("member")}
+                onClick={() => { setAccountType("member"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -587,7 +593,7 @@ const Auth = () => {
               </button>
 
               <button
-                onClick={() => setAccountType("business")}
+                onClick={() => { setAccountType("business"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -606,7 +612,7 @@ const Auth = () => {
               </button>
 
               <button
-                onClick={() => setAccountType("shelter")}
+                onClick={() => { setAccountType("shelter"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-rose-400 bg-card hover:bg-rose-50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -622,6 +628,19 @@ const Auth = () => {
                     </p>
                   </div>
                 </div>
+              </button>
+            </div>
+
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAccountTypeSelection(false);
+                  setIsLogin(true);
+                }}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Already have an account? <span className="font-semibold text-primary">Sign in</span>
               </button>
             </div>
 
@@ -753,45 +772,61 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Button
-          variant="ghost"
-          onClick={() => setAccountType(null)}
-          className="mb-6 gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Change Account Type
-        </Button>
+        {isLogin ? (
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/?stay=true")}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setAccountType(null);
+              setShowAccountTypeSelection(true);
+            }}
+            className="mb-6 gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Change Account Type
+          </Button>
+        )}
 
         <div className="bg-card rounded-2xl shadow-card p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className={`w-16 h-16 ${getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
-              {getAccountIcon()}
+            <div className={`w-16 h-16 ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
+              {isLogin ? <Dog className="w-8 h-8 text-primary-foreground" /> : getAccountIcon()}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome to Wooffy" : "Join Wooffy"}
+              {isLogin ? "Welcome Back" : "Join Wooffy"}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {getAccountDescription()}
+              {isLogin ? "Sign in to your account" : getAccountDescription()}
             </p>
-            <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
-              {isBusiness ? (
-                <>
-                  <Building2 className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              ) : isShelter ? (
-                <>
-                  <Home className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              ) : (
-                <>
-                  <Dog className="w-4 h-4" />
-                  {getAccountLabel()}
-                </>
-              )}
-            </div>
+            {!isLogin && (
+              <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
+                {isBusiness ? (
+                  <>
+                    <Building2 className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                ) : isShelter ? (
+                  <>
+                    <Home className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                ) : (
+                  <>
+                    <Dog className="w-4 h-4" />
+                    {getAccountLabel()}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Form */}
@@ -886,7 +921,6 @@ const Auth = () => {
               </div>
             )}
 
-
             <Button
               type="submit"
               variant="hero"
@@ -901,7 +935,18 @@ const Auth = () => {
           <div className="mt-6 text-center">
             <button
               type="button"
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={() => {
+                if (isLogin) {
+                  // Sign In → go to account type selection for sign up
+                  setShowAccountTypeSelection(true);
+                  setAccountType(null);
+                } else {
+                  // Sign Up → go back to sign in
+                  setIsLogin(true);
+                  setAccountType(null);
+                  setShowAccountTypeSelection(false);
+                }
+              }}
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               {isLogin ? (

@@ -17,6 +17,7 @@ import {
   MousePointerClick,
   LayoutGrid,
 } from "lucide-react";
+import MetricTooltip from "@/components/admin/MetricTooltip";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
@@ -548,18 +549,21 @@ const BusinessAnalytics = () => {
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                <span
-                  className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 ${
-                    monthChange >= 0 ? "text-green-600" : "text-red-600"
-                  }`}
-                >
-                  {monthChange >= 0 ? (
-                    <ArrowUpRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                  ) : (
-                    <ArrowDownRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                  )}
-                  {Math.abs(monthChange)}%
-                </span>
+                <div className="flex items-center gap-1">
+                  <MetricTooltip text="Number of times members used your offers this month. The percentage shows month-over-month change." />
+                  <span
+                    className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 ${
+                      monthChange >= 0 ? "text-green-600" : "text-red-600"
+                    }`}
+                  >
+                    {monthChange >= 0 ? (
+                      <ArrowUpRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    ) : (
+                      <ArrowDownRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    )}
+                    {Math.abs(monthChange)}%
+                  </span>
+                </div>
               </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.thisMonth}
@@ -568,7 +572,10 @@ const BusinessAnalytics = () => {
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 mb-1 sm:mb-2" />
+              <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+                <MetricTooltip text="Total unique Wooffy members who have redeemed at least one of your offers." />
+              </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.uniqueCustomers}
               </div>
@@ -576,7 +583,10 @@ const BusinessAnalytics = () => {
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500 mb-1 sm:mb-2" />
+              <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
+                <MetricTooltip text="Number of times members visited your business profile page." />
+              </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {engagementStats.profileViews}
               </div>
@@ -584,7 +594,10 @@ const BusinessAnalytics = () => {
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
-              <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mb-1 sm:mb-2" />
+              <div className="flex items-center justify-between mb-1 sm:mb-2">
+                <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
+                <MetricTooltip text="How many times your business appeared in the partners directory listing." />
+              </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {engagementStats.directoryImpressions}
               </div>
@@ -598,6 +611,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Eye className="w-4 h-4 text-indigo-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Offer Views</h3>
+                <MetricTooltip text="Number of times members viewed the details of one of your offers." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.offerViews}
@@ -609,6 +623,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Share2 className="w-4 h-4 text-pink-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Social Clicks</h3>
+                <MetricTooltip text="Clicks on your social media links (Instagram, Facebook, TikTok, Website) from your profile." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.socialClicks}
@@ -628,6 +643,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <MousePointerClick className="w-4 h-4 text-emerald-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Contact Clicks</h3>
+                <MetricTooltip text="Clicks on your phone number or Google Maps link from your profile." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.contactClicks}
