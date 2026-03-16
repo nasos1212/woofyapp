@@ -283,17 +283,17 @@ const EngagementAnalytics = () => {
                 <ResponsiveContainer width="100%" height={220}>
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="vG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f97316" stopOpacity={0.45} /><stop offset="100%" stopColor="#f97316" stopOpacity={0.05} /></linearGradient>
-                      <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eab308" stopOpacity={0.45} /><stop offset="100%" stopColor="#eab308" stopOpacity={0.05} /></linearGradient>
-                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity={0.45} /><stop offset="100%" stopColor="#22c55e" stopOpacity={0.05} /></linearGradient>
+                      <linearGradient id="vG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f97316" stopOpacity={0.55} /><stop offset="100%" stopColor="#f97316" stopOpacity={0.08} /></linearGradient>
+                      <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eab308" stopOpacity={0.55} /><stop offset="100%" stopColor="#eab308" stopOpacity={0.08} /></linearGradient>
+                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity={0.55} /><stop offset="100%" stopColor="#22c55e" stopOpacity={0.08} /></linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
                     <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                     <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                     <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
-                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#vG)" name="Views" strokeWidth={2.5} dot={{ r: 3, fill: "#f97316" }} />
-                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#cG)" name="Clicks" strokeWidth={2.5} dot={{ r: 3, fill: "#eab308" }} />
-                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#rG)" name="Redeems" strokeWidth={2.5} dot={{ r: 3, fill: "#22c55e" }} />
+                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#vG)" name="Views" strokeWidth={3} dot={{ r: 4, fill: "#f97316", strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#cG)" name="Clicks" strokeWidth={3} dot={{ r: 4, fill: "#eab308", strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#rG)" name="Redeems" strokeWidth={3} dot={{ r: 4, fill: "#22c55e", strokeWidth: 0 }} activeDot={{ r: 6 }} />
                   </AreaChart>
                 </ResponsiveContainer>
               )}

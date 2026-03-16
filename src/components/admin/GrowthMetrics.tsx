@@ -243,12 +243,12 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
                 <AreaChart data={growthTrend}>
                   <defs>
                     <linearGradient id="paidGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.5} />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
                     </linearGradient>
                     <linearGradient id="freeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.25} />
-                      <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0} />
+                      <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.05} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -262,8 +262,8 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
                       fontSize: "12px",
                     }}
                   />
-                  <Area type="monotone" dataKey="paid" stroke="hsl(var(--primary))" fill="url(#paidGradient)" name="Paid members" strokeWidth={2} />
-                  <Area type="monotone" dataKey="free" stroke="hsl(var(--accent-foreground))" fill="url(#freeGradient)" name="Free members" strokeWidth={2} />
+                  <Area type="monotone" dataKey="paid" stroke="hsl(var(--primary))" fill="url(#paidGradient)" name="Paid members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--primary))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
+                  <Area type="monotone" dataKey="free" stroke="hsl(var(--accent-foreground))" fill="url(#freeGradient)" name="Free members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--accent-foreground))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
                 </AreaChart>
               </ResponsiveContainer>
             )}
