@@ -153,9 +153,6 @@ const PartnerRegister = () => {
         : description;
 
       const primaryCategory = selectedCategories[0] as BusinessCategory;
-        ? `[${otherCategoryDescription.trim()}] ${description}`.trim()
-        : description;
-      
       // Create business with primary location info
       const { data: business, error: businessError } = await supabase
         .from("businesses")
