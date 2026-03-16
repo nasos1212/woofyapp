@@ -44,7 +44,7 @@ const PartnerRegister = () => {
     const nameFromUrl = searchParams.get("name");
     return nameFromUrl || "";
   });
-  const [category, setCategory] = useState<BusinessCategory | "">("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [otherCategoryDescription, setOtherCategoryDescription] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
