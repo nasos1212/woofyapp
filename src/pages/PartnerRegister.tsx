@@ -256,10 +256,10 @@ const PartnerRegister = () => {
             <AlertDialogHeader>
               <AlertDialogTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
-                Unsaved Changes
+                Leave Registration?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                You have unsaved business information. If you leave now, your progress will be lost. Are you sure you want to exit?
+                You will be signed out, but don't worry — your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
