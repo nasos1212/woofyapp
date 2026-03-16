@@ -260,10 +260,10 @@ const EngagementAnalytics = () => {
 
         {/* Quick stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <StatCard icon={Eye} value={businessViews.length} label="Profile Views" colorClass="text-orange-500" bgClass="bg-orange-500/15" />
-          <StatCard icon={MousePointer} value={offerClicks.length} label="Offer Clicks" colorClass="text-yellow-500" bgClass="bg-yellow-500/15" />
-          <StatCard icon={Gift} value={redemptions.length} label="Redemptions" colorClass="text-green-500" bgClass="bg-green-500/15" />
-          <StatCard icon={Store} value={directoryImpressions.length} label="Directory Views" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" />
+          <StatCard icon={Eye} value={businessViews.length} label="Profile Views" colorClass="text-orange-500" bgClass="bg-orange-500/15" tip="Number of times members viewed a business profile page. High views indicate strong brand visibility." />
+          <StatCard icon={MousePointer} value={offerClicks.length} label="Offer Clicks" colorClass="text-yellow-500" bgClass="bg-yellow-500/15" tip="How many times members clicked on an offer to see its details. Indicates interest in deals." />
+          <StatCard icon={Gift} value={redemptions.length} label="Redemptions" colorClass="text-green-500" bgClass="bg-green-500/15" tip="Number of offers actually redeemed by members at partner businesses. This is the key revenue-driving metric." />
+          <StatCard icon={Store} value={directoryImpressions.length} label="Directory Views" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" tip="Times a business appeared in the directory listing. Shows general exposure even before a profile click." />
         </div>
 
         {/* Funnel + Trend */}
