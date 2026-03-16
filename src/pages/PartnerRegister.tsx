@@ -342,7 +342,7 @@ const PartnerRegister = () => {
                   required
                 />
 
-                {category === "other" && (
+                {selectedCategories.includes("other") && (
                   <div className="space-y-2">
                     <Label htmlFor="otherCategoryDescription">What type of business or service? *</Label>
                     <Input
