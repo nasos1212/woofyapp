@@ -113,6 +113,9 @@ const BusinessSettings = () => {
     website: "",
     google_maps_url: "",
     logo_url: "",
+    instagram_url: "",
+    facebook_url: "",
+    tiktok_url: "",
   });
 
   useEffect(() => {
