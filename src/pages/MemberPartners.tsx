@@ -90,6 +90,18 @@ const MemberPartners = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Track directory impressions for visible partners (once per session)
+  useEffect(() => {
+    if (!isLoading && filtered.length > 0) {
+      filtered.forEach((partner) => {
+        if (!trackedImpressions.current.has(partner.id)) {
+          trackedImpressions.current.add(partner.id);
+          trackDirectoryImpression(partner.id, partner.business_name);
+        }
+      });
+    }
+  }, [filtered, isLoading, trackDirectoryImpression]);
+
   return (
     <>
       <Helmet>
