@@ -38,10 +38,12 @@ interface Partner {
 const MemberPartners = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { trackDirectoryImpression, trackSocialClick } = useAnalyticsTracking();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
     const fetchPartners = async () => {
