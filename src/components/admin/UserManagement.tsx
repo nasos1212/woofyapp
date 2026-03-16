@@ -191,6 +191,9 @@ const UserManagement = () => {
         logo_url: b.logo_url,
         created_at: b.created_at,
         verified_at: b.verified_at,
+        instagram_url: (b as any).instagram_url || null,
+        facebook_url: (b as any).facebook_url || null,
+        tiktok_url: (b as any).tiktok_url || null,
       }));
 
       const sheltersMap = new Map<string, ShelterInfo>();
