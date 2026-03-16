@@ -61,6 +61,15 @@ const BusinessAnalytics = () => {
     lastMonth: 0,
     uniqueCustomers: 0,
   });
+  const [engagementStats, setEngagementStats] = useState({
+    profileViews: 0,
+    offerViews: 0,
+    socialClicks: 0,
+    contactClicks: 0,
+    directoryImpressions: 0,
+    socialBreakdown: {} as Record<string, number>,
+    contactBreakdown: {} as Record<string, number>,
+  });
   const [dailyData, setDailyData] = useState<DailyData[]>([]);
   const [topOffers, setTopOffers] = useState<TopOffer[]>([]);
   const [customers, setCustomers] = useState<CustomerInsight[]>([]);
