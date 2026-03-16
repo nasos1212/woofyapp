@@ -34,6 +34,7 @@ interface BusinessInfo {
   id: string;
   business_name: string;
   category: string;
+  categories: string[];
   verification_status: string;
   city: string | null;
   address: string | null;
