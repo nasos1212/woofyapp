@@ -43,6 +43,7 @@ import ShelterProfile from "./pages/ShelterProfile";
 import ShelterDashboard from "./pages/ShelterDashboard";
 import ShelterOnboarding from "./pages/ShelterOnboarding";
 import MemberShelters from "./pages/MemberShelters";
+import MemberPartners from "./pages/MemberPartners";
 import PetFriendlyPlaces from "./pages/PetFriendlyPlaces";
 import VerifyEmail from "./pages/VerifyEmail";
 import Terms from "./pages/Terms";
@@ -78,6 +79,7 @@ const App = () => (
               <Route path="/member/upgrade" element={<MemberUpgrade />} />
               <Route path="/member/add-pet" element={<AddPet />} />
               <Route path="/member/shelters" element={<MemberShelters />} />
+              <Route path="/member/partners" element={<MemberPartners />} />
               <Route path="/member/pet-friendly-places" element={<PetFriendlyPlaces />} />
               <Route path="/community" element={<Community />} />
               <Route path="/community/ask" element={<CommunityAsk />} />
