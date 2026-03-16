@@ -548,6 +548,7 @@ export default function BusinessProfile() {
                           <a
                             href={`tel:${location.phone}`}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                            onClick={() => trackContactClick(business.id, business.business_name, "phone")}
                           >
                             <Phone className="w-3.5 h-3.5" />
                             {location.phone}
@@ -560,6 +561,7 @@ export default function BusinessProfile() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                            onClick={() => trackContactClick(business.id, business.business_name, "google_maps")}
                           >
                             <MapPin className="w-3.5 h-3.5" />
                             Directions
