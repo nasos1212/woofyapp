@@ -63,6 +63,9 @@ interface BusinessData {
   website: string | null;
   google_maps_url: string | null;
   logo_url: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  tiktok_url: string | null;
 }
 
 const formatFileSize = (bytes: number): string => {
@@ -110,6 +113,9 @@ const BusinessSettings = () => {
     website: "",
     google_maps_url: "",
     logo_url: "",
+    instagram_url: "",
+    facebook_url: "",
+    tiktok_url: "",
   });
 
   useEffect(() => {
@@ -155,6 +161,9 @@ const BusinessSettings = () => {
         website: business.website || "",
         google_maps_url: business.google_maps_url || "",
         logo_url: business.logo_url || "",
+        instagram_url: business.instagram_url || "",
+        facebook_url: business.facebook_url || "",
+        tiktok_url: business.tiktok_url || "",
       });
 
       // Fetch photos
@@ -214,6 +223,9 @@ const BusinessSettings = () => {
           city: formData.city?.trim() || null,
           website: formData.website?.trim() || null,
           google_maps_url: formData.google_maps_url?.trim() || null,
+          instagram_url: formData.instagram_url?.trim() || null,
+          facebook_url: formData.facebook_url?.trim() || null,
+          tiktok_url: formData.tiktok_url?.trim() || null,
         } as any)
         .eq("id", formData.id);
 
@@ -589,6 +601,52 @@ const BusinessSettings = () => {
                         onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
                         className="pl-10"
                       />
+                    </div>
+                  </div>
+
+                  {/* Social Media Links */}
+                  <div className="space-y-4">
+                    <Label className="text-base font-semibold">Social Media</Label>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="instagram_url">Instagram</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="instagram_url"
+                            placeholder="https://instagram.com/yourbusiness"
+                            value={formData.instagram_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, instagram_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="facebook_url">Facebook</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="facebook_url"
+                            placeholder="https://facebook.com/yourbusiness"
+                            value={formData.facebook_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, facebook_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tiktok_url">TikTok</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="tiktok_url"
+                            placeholder="https://tiktok.com/@yourbusiness"
+                            value={formData.tiktok_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, tiktok_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
 

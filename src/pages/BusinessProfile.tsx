@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
+import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft, Instagram } from "lucide-react";
 import { ensureHttps, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,6 +29,9 @@ interface Business {
   website: string | null;
   logo_url: string | null;
   google_maps_url: string | null;
+  instagram_url?: string | null;
+  facebook_url?: string | null;
+  tiktok_url?: string | null;
 }
 
 interface Offer {
@@ -135,7 +138,7 @@ export default function BusinessProfile() {
         // Check if owner
         const { data: ownerCheck } = await supabase
           .from("businesses")
-          .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url")
+          .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
           .eq("id", id)
           .eq("user_id", user.id)
           .maybeSingle();
@@ -152,7 +155,7 @@ export default function BusinessProfile() {
           if (isAdmin) {
             const { data: adminCheck } = await supabase
               .from("businesses")
-              .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url")
+              .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
               .eq("id", id)
               .maybeSingle();
             
@@ -465,6 +468,39 @@ export default function BusinessProfile() {
                     >
                       <Globe className="w-4 h-4" />
                       Website
+                    </a>
+                  )}
+                  {business.instagram_url && (
+                    <a
+                      href={ensureHttps(business.instagram_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Instagram className="w-4 h-4" />
+                      Instagram
+                    </a>
+                  )}
+                  {business.facebook_url && (
+                    <a
+                      href={ensureHttps(business.facebook_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="w-4 h-4" />
+                      Facebook
+                    </a>
+                  )}
+                  {business.tiktok_url && (
+                    <a
+                      href={ensureHttps(business.tiktok_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="w-4 h-4" />
+                      TikTok
                     </a>
                   )}
                 </div>
