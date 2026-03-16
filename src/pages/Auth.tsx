@@ -38,6 +38,7 @@ const authSchema = z.object({
 const Auth = () => {
   const [accountType, setAccountType] = useState<"member" | "business" | "shelter" | null>(null);
   const [isLogin, setIsLogin] = useState(true);
+  const [showAccountTypeSelection, setShowAccountTypeSelection] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -54,11 +55,13 @@ const Auth = () => {
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
 
-  // Check URL params for account type
+  // Check URL params for account type (for direct links)
   useEffect(() => {
     const typeParam = searchParams.get("type");
     if (typeParam === "business" || typeParam === "member" || typeParam === "shelter") {
       setAccountType(typeParam);
+      setIsLogin(false);
+      setShowAccountTypeSelection(false);
     }
   }, [searchParams]);
 
