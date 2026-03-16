@@ -382,7 +382,7 @@ const PartnerRegister = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Business Email</Label>
+                    <Label htmlFor="email">Business Contact Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -394,6 +394,9 @@ const PartnerRegister = () => {
                         className="pl-10"
                       />
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                      Pre-filled with your login email. Change it if your customer-facing email is different.
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="website">Website *</Label>
