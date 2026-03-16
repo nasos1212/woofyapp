@@ -328,37 +328,45 @@ const EngagementAnalytics = () => {
           <StatCard icon={Store} value={directoryImpressions.length} label="Directory Views" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" tip="Times a business appeared in the directory listing. Shows general exposure even before a profile click." />
         </div>
 
-        {/* Funnel + Trend */}
+        {/* Funnel + WoW/MoM Growth */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <ConversionFunnel businessViews={businessViews.length} offerClicks={offerClicks.length} redemptions={redemptions.length} />
           <Card className="border-border/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base flex items-center gap-2">
-                <BarChart3 className="w-4 h-4" />
-                Activity Trend
-              </CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Growth Overview
+                </CardTitle>
+                <MetricTooltip text="Week-over-week and month-over-month comparison of key engagement metrics. Shows absolute numbers and percentage change." />
+              </div>
             </CardHeader>
             <CardContent>
-              {chartData.length === 0 ? (
-                <div className="h-[220px] flex items-center justify-center text-muted-foreground text-sm">No data yet</div>
-              ) : (
-                <ResponsiveContainer width="100%" height={220}>
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient id="vG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#f97316" stopOpacity={0.55} /><stop offset="100%" stopColor="#f97316" stopOpacity={0.08} /></linearGradient>
-                      <linearGradient id="cG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#eab308" stopOpacity={0.55} /><stop offset="100%" stopColor="#eab308" stopOpacity={0.08} /></linearGradient>
-                      <linearGradient id="rG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#22c55e" stopOpacity={0.55} /><stop offset="100%" stopColor="#22c55e" stopOpacity={0.08} /></linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.5} />
-                    <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                    <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                    <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
-                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#vG)" name="Views" strokeWidth={3} dot={{ r: 4, fill: "#f97316", strokeWidth: 0 }} activeDot={{ r: 6 }} />
-                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#cG)" name="Clicks" strokeWidth={3} dot={{ r: 4, fill: "#eab308", strokeWidth: 0 }} activeDot={{ r: 6 }} />
-                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#rG)" name="Redeems" strokeWidth={3} dot={{ r: 4, fill: "#22c55e", strokeWidth: 0 }} activeDot={{ r: 6 }} />
-                  </AreaChart>
-                </ResponsiveContainer>
-              )}
+              <div className="space-y-4">
+                {/* Header row */}
+                <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium border-b border-border/50 pb-2">
+                  <div>Metric</div>
+                  <div className="text-center">Week over Week</div>
+                  <div className="text-center">Month over Month</div>
+                </div>
+                {growthMetrics.map((m) => {
+                  const wowPct = calcGrowth(m.thisWeek, m.lastWeek);
+                  const momPct = calcGrowth(m.thisMonth, m.lastMonth);
+                  return (
+                    <div key={m.label} className="grid grid-cols-3 gap-2 items-center py-1.5">
+                      <div className="text-sm font-medium">{m.label}</div>
+                      <div className="text-center space-y-0.5">
+                        <div className="text-sm font-bold tabular-nums">{m.thisWeek} <span className="text-muted-foreground font-normal text-xs">vs {m.lastWeek}</span></div>
+                        <GrowthBadge pct={wowPct} />
+                      </div>
+                      <div className="text-center space-y-0.5">
+                        <div className="text-sm font-bold tabular-nums">{m.thisMonth} <span className="text-muted-foreground font-normal text-xs">vs {m.lastMonth}</span></div>
+                        <GrowthBadge pct={momPct} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </CardContent>
           </Card>
         </div>
