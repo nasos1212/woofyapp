@@ -46,6 +46,9 @@ interface BusinessInfo {
   logo_url: string | null;
   created_at: string;
   verified_at: string | null;
+  instagram_url: string | null;
+  facebook_url: string | null;
+  tiktok_url: string | null;
 }
 
 // Full shelter info
