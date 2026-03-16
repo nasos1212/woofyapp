@@ -2829,6 +2829,10 @@ export type Database = {
         | "accessories"
         | "other"
         | "physio"
+        | "pet_transport"
+        | "pet_photography"
+        | "dog_walking"
+        | "pet_insurance"
       verification_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -2969,6 +2973,10 @@ export const Constants = {
         "accessories",
         "other",
         "physio",
+        "pet_transport",
+        "pet_photography",
+        "dog_walking",
+        "pet_insurance",
       ],
       verification_status: ["pending", "approved", "rejected"],
     },
