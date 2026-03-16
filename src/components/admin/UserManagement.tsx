@@ -954,7 +954,7 @@ const UserManagement = () => {
                             {user.business && (
                               <span className="flex items-center gap-1">
                                 <Building2 className="w-3 h-3" />
-                                {user.business.business_name} • {getCategoryLabel(user.business.category)}
+                                {user.business.business_name} • {getCategoriesLabel(user.business.categories)}
                               </span>
                             )}
                             {user.shelter && (
