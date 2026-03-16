@@ -14,6 +14,7 @@ import {
   Save,
   Clock,
 } from "lucide-react";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
@@ -611,7 +612,7 @@ const BusinessSettings = () => {
                       <div className="space-y-2">
                         <Label htmlFor="instagram_url">Instagram</Label>
                         <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <Input
                             id="instagram_url"
                             placeholder="https://instagram.com/yourbusiness"
@@ -624,7 +625,7 @@ const BusinessSettings = () => {
                       <div className="space-y-2">
                         <Label htmlFor="facebook_url">Facebook</Label>
                         <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <Input
                             id="facebook_url"
                             placeholder="https://facebook.com/yourbusiness"
@@ -637,7 +638,7 @@ const BusinessSettings = () => {
                       <div className="space-y-2">
                         <Label htmlFor="tiktok_url">TikTok</Label>
                         <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <TikTokIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <Input
                             id="tiktok_url"
                             placeholder="https://tiktok.com/@yourbusiness"

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft, Instagram } from "lucide-react";
+import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import { ensureHttps, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -477,7 +478,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <Instagram className="w-4 h-4" />
+                      <InstagramIcon className="w-4 h-4" />
                       Instagram
                     </a>
                   )}
@@ -488,7 +489,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <Globe className="w-4 h-4" />
+                      <FacebookIcon className="w-4 h-4" />
                       Facebook
                     </a>
                   )}
@@ -499,7 +500,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <Globe className="w-4 h-4" />
+                      <TikTokIcon className="w-4 h-4" />
                       TikTok
                     </a>
                   )}
