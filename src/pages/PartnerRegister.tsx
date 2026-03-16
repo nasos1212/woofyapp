@@ -70,7 +70,7 @@ const PartnerRegister = () => {
   const hasUnsavedChanges = useMemo(() => {
     return (
       businessName !== initialName ||
-      category !== "" ||
+      selectedCategories.length > 0 ||
       otherCategoryDescription !== "" ||
       description !== "" ||
       primaryLocation.city !== "" ||
@@ -81,7 +81,7 @@ const PartnerRegister = () => {
       email !== "" ||
       website !== ""
     );
-  }, [businessName, initialName, category, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
+  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
 
   useEffect(() => {
     if (!loading && !user) {
