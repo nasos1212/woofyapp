@@ -137,8 +137,8 @@ const PartnerRegister = () => {
   ];
 
   const handleSubmit = async () => {
-    if (!user || !category || !primaryLocation.city) return;
-    if (category === "other" && !otherCategoryDescription.trim()) return;
+    if (!user || selectedCategories.length === 0 || !primaryLocation.city) return;
+    if (selectedCategories.includes("other") && !otherCategoryDescription.trim()) return;
     
     setIsSubmitting(true);
     
