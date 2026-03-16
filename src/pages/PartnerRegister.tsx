@@ -84,9 +84,12 @@ const PartnerRegister = () => {
       primaryLocation.google_maps_url !== "" ||
       additionalLocations.length > 0 ||
       email !== "" ||
-      website !== ""
+      website !== "" ||
+      instagramUrl !== "" ||
+      facebookUrl !== "" ||
+      tiktokUrl !== ""
     );
-  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
+  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website, instagramUrl, facebookUrl, tiktokUrl]);
 
   useEffect(() => {
     if (!loading && !user) {
