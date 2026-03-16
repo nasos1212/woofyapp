@@ -620,6 +620,16 @@ const EngagementAnalytics = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Community Hub Analytics */}
+      <div className="border-t border-border/50 pt-6">
+        <CommunityAnalytics dateRange={dateRange} />
+      </div>
+
+      {/* Pet-Friendly Places Analytics */}
+      <div className="border-t border-border/50 pt-6">
+        <PlacesAnalytics />
+      </div>
     </div>
   );
 };
