@@ -236,7 +236,7 @@ const EngagementAnalytics = () => {
       {/* ═══════ 1. GROWTH & RETENTION ═══════ */}
       <section>
         <SectionHeader icon={TrendingUp} title="Growth & Retention" subtitle="Member acquisition, plan distribution, and platform adoption" />
-        <GrowthMetrics />
+        <GrowthMetrics dateRange={dateRange} />
       </section>
 
       {/* ═══════ 2. PET DEMOGRAPHICS ═══════ */}
