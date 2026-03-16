@@ -330,26 +330,17 @@ const PartnerRegister = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
-                  <Select value={category} onValueChange={(v) => {
-                    setCategory(v as BusinessCategory);
-                    if (v !== "other") {
+                <BusinessCategoryMultiSelect
+                  selected={selectedCategories}
+                  onChange={(cats) => {
+                    setSelectedCategories(cats);
+                    if (!cats.includes("other")) {
                       setOtherCategoryDescription("");
                     }
-                  }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your business category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                  }}
+                  label="Business Categories"
+                  required
+                />
 
                 {category === "other" && (
                   <div className="space-y-2">
