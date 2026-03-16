@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, MapPin, Globe, Search, Filter } from "lucide-react";
@@ -18,6 +18,7 @@ import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
 
 interface Partner {
