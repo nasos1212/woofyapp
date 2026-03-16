@@ -177,8 +177,11 @@ const PartnerRegister = () => {
           city: allCities.join(", "),
           phone: primaryLocation.phone,
           email: email || user.email || "",
-          website: website ? ensureHttps(website) : null,
-          google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
+           website: website ? ensureHttps(website) : null,
+           instagram_url: instagramUrl ? ensureHttps(instagramUrl) : null,
+           facebook_url: facebookUrl ? ensureHttps(facebookUrl) : null,
+           tiktok_url: tiktokUrl ? ensureHttps(tiktokUrl) : null,
+           google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
         } as any)
         .select()
         .single();
