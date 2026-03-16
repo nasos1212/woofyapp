@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram, Facebook, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
