@@ -478,7 +478,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <InstagramIcon className="w-4 h-4" />
+                      <InstagramIcon className="w-4 h-4" style={{ color: '#E4405F' }} />
                       Instagram
                     </a>
                   )}
@@ -489,7 +489,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <FacebookIcon className="w-4 h-4" />
+                      <FacebookIcon className="w-4 h-4" style={{ color: '#1877F2' }} />
                       Facebook
                     </a>
                   )}
@@ -500,7 +500,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <TikTokIcon className="w-4 h-4" />
+                      <TikTokIcon className="w-4 h-4" style={{ color: '#000000' }} />
                       TikTok
                     </a>
                   )}
