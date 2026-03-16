@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import BusinessCategoryMultiSelect from "@/components/BusinessCategoryMultiSelect";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
