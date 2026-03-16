@@ -470,6 +470,39 @@ export default function BusinessProfile() {
                       Website
                     </a>
                   )}
+                  {business.instagram_url && (
+                    <a
+                      href={ensureHttps(business.instagram_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Instagram className="w-4 h-4" />
+                      Instagram
+                    </a>
+                  )}
+                  {business.facebook_url && (
+                    <a
+                      href={ensureHttps(business.facebook_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="w-4 h-4" />
+                      Facebook
+                    </a>
+                  )}
+                  {business.tiktok_url && (
+                    <a
+                      href={ensureHttps(business.tiktok_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                    >
+                      <Globe className="w-4 h-4" />
+                      TikTok
+                    </a>
+                  )}
                 </div>
 
                 {/* Primary Address */}

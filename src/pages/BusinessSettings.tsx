@@ -604,6 +604,52 @@ const BusinessSettings = () => {
                     </div>
                   </div>
 
+                  {/* Social Media Links */}
+                  <div className="space-y-4">
+                    <Label className="text-base font-semibold">Social Media</Label>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="instagram_url">Instagram</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="instagram_url"
+                            placeholder="https://instagram.com/yourbusiness"
+                            value={formData.instagram_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, instagram_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="facebook_url">Facebook</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="facebook_url"
+                            placeholder="https://facebook.com/yourbusiness"
+                            value={formData.facebook_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, facebook_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tiktok_url">TikTok</Label>
+                        <div className="relative">
+                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <Input
+                            id="tiktok_url"
+                            placeholder="https://tiktok.com/@yourbusiness"
+                            value={formData.tiktok_url || ""}
+                            onChange={(e) => setFormData(prev => ({ ...prev, tiktok_url: e.target.value }))}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Save Button */}
                   <div className="flex justify-end pt-4">
                     <Button onClick={handleSave} disabled={isSaving} className="gap-2">
