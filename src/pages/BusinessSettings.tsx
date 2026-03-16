@@ -207,13 +207,14 @@ const BusinessSettings = () => {
           business_name: formData.business_name.trim(),
           description: formData.description?.trim() || null,
           category: formData.category,
+          categories: formData.categories,
           phone: formData.phone?.trim() || null,
           email: formData.email.trim(),
           address: formData.address?.trim() || null,
           city: formData.city?.trim() || null,
           website: formData.website?.trim() || null,
           google_maps_url: formData.google_maps_url?.trim() || null,
-        })
+        } as any)
         .eq("id", formData.id);
 
       if (error) throw error;
