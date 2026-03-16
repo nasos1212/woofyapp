@@ -451,18 +451,74 @@ const PartnerRegister = () => {
                       </div>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="website">Website *</Label>
-                    <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input
-                        id="website"
-                        placeholder="https://www.yourbusiness.com"
-                        value={website}
-                        onChange={(e) => setWebsite(e.target.value)}
-                        className="pl-10"
-                        required
-                      />
+                </div>
+
+                {/* Web & Social Presence */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1.5">
+                    <Label className="font-semibold">Web & Social Presence *</Label>
+                    <div className="group relative">
+                      <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                        Provide at least one link so customers can find you online. This can be a website or any social media profile.
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Add at least one: website or social media link.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="website" className="text-sm">Website</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="website"
+                          placeholder="www.yourbusiness.com"
+                          value={website}
+                          onChange={(e) => setWebsite(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="instagram" className="text-sm">Instagram</Label>
+                      <div className="relative">
+                        <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="instagram"
+                          placeholder="instagram.com/yourbusiness"
+                          value={instagramUrl}
+                          onChange={(e) => setInstagramUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="facebook" className="text-sm">Facebook</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="facebook"
+                          placeholder="facebook.com/yourbusiness"
+                          value={facebookUrl}
+                          onChange={(e) => setFacebookUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="tiktok" className="text-sm">TikTok</Label>
+                      <div className="relative">
+                        <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input
+                          id="tiktok"
+                          placeholder="tiktok.com/@yourbusiness"
+                          value={tiktokUrl}
+                          onChange={(e) => setTiktokUrl(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
