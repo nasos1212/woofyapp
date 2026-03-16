@@ -540,8 +540,8 @@ const Auth = () => {
     </Dialog>
   );
 
-  // Account Type Selection View
-  if (!accountType) {
+  // Account Type Selection View (only shown when signing up)
+  if (showAccountTypeSelection && !accountType) {
     return (
       <>
         <RejectedDialog />
@@ -549,11 +549,14 @@ const Auth = () => {
         <div className="w-full max-w-lg">
           <Button
             variant="ghost"
-            onClick={() => navigate("/?stay=true")}
+            onClick={() => {
+              setShowAccountTypeSelection(false);
+              setIsLogin(true);
+            }}
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            Back to Sign In
           </Button>
 
           <div className="bg-card rounded-2xl shadow-card p-8">
@@ -562,16 +565,16 @@ const Auth = () => {
                 <Dog className="w-8 h-8 text-primary-foreground" />
               </div>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                Welcome to Wooffy
+                Create an Account
               </h1>
               <p className="text-muted-foreground mt-2">
-                How would you like to continue?
+                What type of account would you like?
               </p>
             </div>
 
             <div className="grid gap-4">
               <button
-                onClick={() => setAccountType("member")}
+                onClick={() => { setAccountType("member"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -590,7 +593,7 @@ const Auth = () => {
               </button>
 
               <button
-                onClick={() => setAccountType("business")}
+                onClick={() => { setAccountType("business"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-primary bg-card hover:bg-secondary/50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -609,7 +612,7 @@ const Auth = () => {
               </button>
 
               <button
-                onClick={() => setAccountType("shelter")}
+                onClick={() => { setAccountType("shelter"); setIsLogin(false); setShowAccountTypeSelection(false); }}
                 className="group p-6 rounded-xl border-2 border-border hover:border-rose-400 bg-card hover:bg-rose-50 transition-all duration-300 text-left"
               >
                 <div className="flex items-center gap-4">
@@ -625,6 +628,19 @@ const Auth = () => {
                     </p>
                   </div>
                 </div>
+              </button>
+            </div>
+
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAccountTypeSelection(false);
+                  setIsLogin(true);
+                }}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Already have an account? <span className="font-semibold text-primary">Sign in</span>
               </button>
             </div>
 
