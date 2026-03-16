@@ -544,7 +544,7 @@ const BusinessAnalytics = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -575,6 +575,73 @@ const BusinessAnalytics = () => {
               <p className="text-xs sm:text-sm text-slate-500">Customers</p>
             </div>
 
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
+                {engagementStats.profileViews}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500">Profile Views</p>
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
+                {engagementStats.directoryImpressions}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500">Directory Impressions</p>
+            </div>
+          </div>
+
+          {/* Engagement Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Eye className="w-4 h-4 text-indigo-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Offer Views</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.offerViews}
+              </div>
+              <p className="text-xs text-slate-500">Times your offers were seen</p>
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Share2 className="w-4 h-4 text-pink-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Social Clicks</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.socialClicks}
+              </div>
+              {Object.keys(engagementStats.socialBreakdown).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {Object.entries(engagementStats.socialBreakdown).map(([platform, count]) => (
+                    <span key={platform} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full capitalize">
+                      {platform}: {count}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <MousePointerClick className="w-4 h-4 text-emerald-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Contact Clicks</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.contactClicks}
+              </div>
+              {Object.keys(engagementStats.contactBreakdown).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {Object.entries(engagementStats.contactBreakdown).map(([type, count]) => (
+                    <span key={type} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                      {type === "phone" ? "📞 Phone" : "📍 Maps"}: {count}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Top Offers */}
