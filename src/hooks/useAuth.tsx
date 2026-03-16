@@ -65,21 +65,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password,
     });
     
-    // If login successful, ensure profile exists (handles cases where profile was deleted)
     if (!error && data.user) {
-      const { data: existingProfile } = await supabase
+      // Check if email is verified
+      const { data: profile } = await supabase
         .from("profiles")
-        .select("id")
+        .select("id, email_verified")
         .eq("user_id", data.user.id)
         .maybeSingle();
       
-      if (!existingProfile) {
+      if (!profile) {
         // Create profile if it doesn't exist
         await supabase.from("profiles").insert({
           user_id: data.user.id,
           email: data.user.email || email,
           full_name: data.user.user_metadata?.full_name || "",
         });
+        // New profile = unverified, sign out
+        await supabase.auth.signOut({ scope: 'local' });
+        return { error: new Error("Please verify your email before signing in. Check your inbox for the verification link.") };
+      }
+      
+      if (!profile.email_verified) {
+        // Sign out the unverified user
+        await supabase.auth.signOut({ scope: 'local' });
+        return { error: new Error("Please verify your email before signing in. Check your inbox for the verification link.") };
       }
     }
     
