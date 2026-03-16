@@ -48,6 +48,7 @@ const Auth = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   
   const [rejectedDialog, setRejectedDialog] = useState<{ open: boolean; type: "business" | "shelter" | null }>({ open: false, type: null });
+  const [isLoginInProgress, setIsLoginInProgress] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -64,6 +65,9 @@ const Auth = () => {
   useEffect(() => {
     const checkAndRedirect = async () => {
       if (!user) return;
+      
+      // Skip redirect during login-in-progress (prevents welcome toast for unverified users)
+      if (isLoginInProgress) return;
       
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -227,7 +231,7 @@ const Auth = () => {
     };
     
     checkAndRedirect();
-  }, [user, navigate, accountType, toast, isLogin]);
+  }, [user, navigate, accountType, toast, isLogin, isLoginInProgress]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -305,11 +309,16 @@ const Auth = () => {
       }
 
       if (isLogin) {
+        setIsLoginInProgress(true);
         const { error } = await signIn(email, password);
+        setIsLoginInProgress(false);
         if (error) {
+          const isVerificationError = error.message.includes("verify your email");
           toast({
-            title: "Login Failed",
-            description: error.message,
+            title: isVerificationError ? "Email Not Verified" : "Login Failed",
+            description: isVerificationError 
+              ? "Please check your inbox for the verification link and verify your email before signing in." 
+              : error.message,
             variant: "destructive",
           });
         }
