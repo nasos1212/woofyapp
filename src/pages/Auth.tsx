@@ -231,7 +231,7 @@ const Auth = () => {
     };
     
     checkAndRedirect();
-  }, [user, navigate, accountType, toast, isLogin]);
+  }, [user, navigate, accountType, toast, isLogin, isLoginInProgress]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
