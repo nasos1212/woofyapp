@@ -60,7 +60,7 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
   const [activeMembers, setActiveMembers] = useState(0);
   const [totalPaidMembers, setTotalPaidMembers] = useState(0);
   const [totalPets, setTotalPets] = useState(0);
-  const [growthTrend, setGrowthTrend] = useState<{ day: string; paid: number; free: number }[]>([]);
+  const [memberGrowth, setMemberGrowth] = useState<{ paidWoW: [number, number]; freeWoW: [number, number]; paidMoM: [number, number]; freeMoM: [number, number] }>({ paidWoW: [0, 0], freeWoW: [0, 0], paidMoM: [0, 0], freeMoM: [0, 0] });
   const [planDistribution, setPlanDistribution] = useState<{ name: string; value: number; color: string }[]>([]);
 
   useEffect(() => {
