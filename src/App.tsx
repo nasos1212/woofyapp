@@ -43,6 +43,7 @@ import ShelterProfile from "./pages/ShelterProfile";
 import ShelterDashboard from "./pages/ShelterDashboard";
 import ShelterOnboarding from "./pages/ShelterOnboarding";
 import MemberShelters from "./pages/MemberShelters";
+import MemberPartners from "./pages/MemberPartners";
 import PetFriendlyPlaces from "./pages/PetFriendlyPlaces";
 import VerifyEmail from "./pages/VerifyEmail";
 import Terms from "./pages/Terms";
