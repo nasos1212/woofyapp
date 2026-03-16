@@ -230,42 +230,45 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
         <Card className="border-border/50 md:col-span-2">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-base">Growth Trend ({periodLabel})</CardTitle>
-              <MetricTooltip text="Daily breakdown of new paid members versus new free members for the selected period. This chart updates when you switch 7D, 30D, or 90D." />
+              <CardTitle className="text-base">Member Growth</CardTitle>
+              <MetricTooltip text="Week-over-week and month-over-month comparison of new paid and free member signups." />
             </div>
           </CardHeader>
           <CardContent>
-            {growthTrend.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted-foreground text-sm">No data</div>
-            ) : (
-              <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={growthTrend}>
-                  <defs>
-                    <linearGradient id="paidGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.5} />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.05} />
-                    </linearGradient>
-                    <linearGradient id="freeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.4} />
-                      <stop offset="100%" stopColor="hsl(var(--accent-foreground))" stopOpacity={0.05} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
-                  <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" allowDecimals={false} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                    }}
-                  />
-                  <Area type="monotone" dataKey="paid" stroke="hsl(var(--primary))" fill="url(#paidGradient)" name="Paid members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--primary))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
-                  <Area type="monotone" dataKey="free" stroke="hsl(var(--accent-foreground))" fill="url(#freeGradient)" name="Free members" strokeWidth={3} dot={{ r: 3, fill: "hsl(var(--accent-foreground))", strokeWidth: 0 }} activeDot={{ r: 5 }} />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
+            {(() => {
+              const calcPct = (curr: number, prev: number) => prev === 0 ? (curr > 0 ? 100 : 0) : Math.round(((curr - prev) / prev) * 100);
+              const GrowthBadge = ({ pct }: { pct: number }) => {
+                if (pct === 0) return <span className="flex items-center justify-center gap-0.5 text-xs text-muted-foreground font-medium"><Minus className="w-3 h-3" />0%</span>;
+                const pos = pct > 0;
+                return <span className={`flex items-center justify-center gap-0.5 text-xs font-semibold ${pos ? "text-green-600" : "text-red-500"}`}>{pos ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}{pos ? "+" : ""}{pct}%</span>;
+              };
+              const rows = [
+                { label: "Paid Members", wow: memberGrowth.paidWoW, mom: memberGrowth.paidMoM },
+                { label: "Free Members", wow: memberGrowth.freeWoW, mom: memberGrowth.freeMoM },
+              ];
+              return (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-2 text-[10px] uppercase tracking-wider text-muted-foreground font-medium border-b border-border/50 pb-2">
+                    <div>Metric</div>
+                    <div className="text-center">Week over Week</div>
+                    <div className="text-center">Month over Month</div>
+                  </div>
+                  {rows.map((r) => (
+                    <div key={r.label} className="grid grid-cols-3 gap-2 items-center py-1.5">
+                      <div className="text-sm font-medium">{r.label}</div>
+                      <div className="text-center space-y-0.5">
+                        <div className="text-sm font-bold tabular-nums">{r.wow[0]} <span className="text-muted-foreground font-normal text-xs">vs {r.wow[1]}</span></div>
+                        <GrowthBadge pct={calcPct(r.wow[0], r.wow[1])} />
+                      </div>
+                      <div className="text-center space-y-0.5">
+                        <div className="text-sm font-bold tabular-nums">{r.mom[0]} <span className="text-muted-foreground font-normal text-xs">vs {r.mom[1]}</span></div>
+                        <GrowthBadge pct={calcPct(r.mom[0], r.mom[1])} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </CardContent>
         </Card>
 
