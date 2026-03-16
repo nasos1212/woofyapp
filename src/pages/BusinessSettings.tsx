@@ -147,6 +147,7 @@ const BusinessSettings = () => {
         business_name: business.business_name,
         description: business.description || "",
         category: business.category,
+        categories: (business as any).categories || [business.category],
         phone: business.phone || "",
         email: business.email,
         address: business.address || "",
