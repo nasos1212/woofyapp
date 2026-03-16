@@ -12,7 +12,10 @@ type EventType =
   | "shelter_view"
   | "pet_view"
   | "search"
-  | "button_click";
+  | "button_click"
+  | "social_click"
+  | "contact_click"
+  | "directory_impression";
 
 interface TrackEventParams {
   eventType: EventType;
@@ -104,6 +107,57 @@ export const useAnalyticsTracking = () => {
     [trackEvent]
   );
 
+  const trackSocialClick = useCallback(
+    (businessId: string, businessName: string, platform: "instagram" | "facebook" | "tiktok" | "website") => {
+      trackEvent({
+        eventType: "social_click",
+        entityType: "business",
+        entityId: businessId,
+        entityName: businessName,
+        metadata: { platform } as Json,
+      });
+    },
+    [trackEvent]
+  );
+
+  const trackContactClick = useCallback(
+    (businessId: string, businessName: string, contactType: "phone" | "google_maps") => {
+      trackEvent({
+        eventType: "contact_click",
+        entityType: "business",
+        entityId: businessId,
+        entityName: businessName,
+        metadata: { contact_type: contactType } as Json,
+      });
+    },
+    [trackEvent]
+  );
+
+  const trackOfferView = useCallback(
+    (offerId: string, offerTitle: string, businessId: string) => {
+      trackEvent({
+        eventType: "offer_view",
+        entityType: "offer",
+        entityId: offerId,
+        entityName: offerTitle,
+        metadata: { business_id: businessId } as Json,
+      });
+    },
+    [trackEvent]
+  );
+
+  const trackDirectoryImpression = useCallback(
+    (businessId: string, businessName: string) => {
+      trackEvent({
+        eventType: "directory_impression",
+        entityType: "business",
+        entityId: businessId,
+        entityName: businessName,
+      });
+    },
+    [trackEvent]
+  );
+
   return {
     trackEvent,
     trackBusinessView,
@@ -111,5 +165,9 @@ export const useAnalyticsTracking = () => {
     trackOfferRedeem,
     trackShelterView,
     trackSearch,
+    trackSocialClick,
+    trackContactClick,
+    trackOfferView,
+    trackDirectoryImpression,
   };
 };
