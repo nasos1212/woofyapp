@@ -447,11 +447,10 @@ const PartnerRegister = () => {
                       <span className="font-medium">{businessName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Category:</span>
-                      <span className="font-medium">
-                        {category === "other" && otherCategoryDescription 
-                          ? `Other: ${otherCategoryDescription}` 
-                          : categories.find(c => c.value === category)?.label}
+                      <span className="text-muted-foreground">Categories:</span>
+                      <span className="font-medium text-right">
+                        {getCategoriesLabel(selectedCategories)}
+                        {selectedCategories.includes("other") && otherCategoryDescription && ` (${otherCategoryDescription})`}
                       </span>
                     </div>
                   </div>
