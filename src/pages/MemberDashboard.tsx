@@ -662,6 +662,15 @@ const MemberDashboard = () => {
                       <p className="text-xs text-muted-foreground">Discover deals & discounts</p>
                     </div>
                   </Link>
+                  <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Our Partners</p>
+                      <p className="text-xs text-muted-foreground">Browse partner businesses</p>
+                    </div>
+                  </Link>
                   <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
                     <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
                       <Heart className="w-5 h-5 text-amber-600" />
