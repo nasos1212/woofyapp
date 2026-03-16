@@ -161,7 +161,8 @@ const PartnerRegister = () => {
         .insert({
           user_id: user.id,
           business_name: businessName,
-          category: category as BusinessCategory,
+          category: primaryCategory,
+          categories: selectedCategories,
           description: fullDescription,
           address: primaryLocation.address,
           city: allCities.join(", "),
@@ -169,7 +170,7 @@ const PartnerRegister = () => {
           email: email || user.email || "",
           website: website ? ensureHttps(website) : null,
           google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
-        })
+        } as any)
         .select()
         .single();
       
