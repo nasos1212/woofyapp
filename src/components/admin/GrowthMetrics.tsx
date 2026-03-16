@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, Users, UserPlus, Crown, Activity } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { eachDayOfInterval, format, startOfDay, subDays } from "date-fns";
+import { TrendingUp, Users, UserPlus, Crown, Activity, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { format, startOfDay, subDays, isAfter } from "date-fns";
 import MetricTooltip from "./MetricTooltip";
 
 const PLAN_COLORS: Record<string, string> = {
