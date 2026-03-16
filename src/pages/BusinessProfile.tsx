@@ -500,7 +500,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <Globe className="w-4 h-4" />
+                      <TikTokIcon className="w-4 h-4" />
                       TikTok
                     </a>
                   )}
