@@ -147,7 +147,11 @@ const PartnerRegister = () => {
       const allCities = allLocations.map(loc => loc.city);
       
       // Build description - prepend "other" category type if selected
-      const fullDescription = category === "other" && otherCategoryDescription
+      const fullDescription = selectedCategories.includes("other") && otherCategoryDescription
+        ? `[${otherCategoryDescription.trim()}] ${description}`.trim()
+        : description;
+
+      const primaryCategory = selectedCategories[0] as BusinessCategory;
         ? `[${otherCategoryDescription.trim()}] ${description}`.trim()
         : description;
       
