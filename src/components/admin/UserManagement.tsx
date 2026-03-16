@@ -419,14 +419,7 @@ const UserManagement = () => {
     return labels[planType] || planType;
   };
 
-  const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      trainer: "Dog Trainer", pet_shop: "Pet Shop", hotel: "Pet Hotel", grooming: "Grooming",
-      vet: "Veterinary", daycare: "Daycare", food: "Food & Treats", accessories: "Accessories",
-      physio: "Physiotherapy", other: "Other",
-    };
-    return labels[category] || category;
-  };
+  // getCategoryLabel is now imported from @/data/businessCategories
 
   const getExpiryStatus = (expiresAt: string) => {
     const now = new Date();
