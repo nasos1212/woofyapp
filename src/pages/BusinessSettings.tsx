@@ -82,7 +82,7 @@ const categoryOptions = [
   { value: "accessories", label: "Accessories" },
   { value: "food", label: "Food & Treats" },
   { value: "other", label: "Other" },
-];
+]; // kept for reference but using multi-select now
 
 const BusinessSettings = () => {
   const { user, loading: authLoading } = useAuth();
