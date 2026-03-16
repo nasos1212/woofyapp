@@ -161,6 +161,9 @@ const BusinessSettings = () => {
         website: business.website || "",
         google_maps_url: business.google_maps_url || "",
         logo_url: business.logo_url || "",
+        instagram_url: business.instagram_url || "",
+        facebook_url: business.facebook_url || "",
+        tiktok_url: business.tiktok_url || "",
       });
 
       // Fetch photos
