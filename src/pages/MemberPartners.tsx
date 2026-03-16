@@ -66,18 +66,7 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <DogLoader size="lg" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
+  // Track directory impressions for visible partners (once per session)
   const filtered = partners.filter((p) => {
     const matchesSearch =
       !search ||
@@ -90,7 +79,6 @@ const MemberPartners = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Track directory impressions for visible partners (once per session)
   useEffect(() => {
     if (!isLoading && filtered.length > 0) {
       filtered.forEach((partner) => {
@@ -101,6 +89,18 @@ const MemberPartners = () => {
       });
     }
   }, [filtered, isLoading, trackDirectoryImpression]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <DogLoader size="lg" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   return (
     <>
