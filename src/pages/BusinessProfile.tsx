@@ -478,7 +478,7 @@ export default function BusinessProfile() {
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
-                      <Instagram className="w-4 h-4" />
+                      <InstagramIcon className="w-4 h-4" />
                       Instagram
                     </a>
                   )}
