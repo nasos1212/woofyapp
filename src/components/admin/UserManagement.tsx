@@ -1170,6 +1170,21 @@ const UserManagement = () => {
                                     <Globe className="w-4 h-4 mr-1" /> Website
                                   </Button>
                                 )}
+                                {user.business.instagram_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.instagram_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> Instagram
+                                  </Button>
+                                )}
+                                {user.business.facebook_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.facebook_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> Facebook
+                                  </Button>
+                                )}
+                                {user.business.tiktok_url && (
+                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.tiktok_url!), "_blank")}>
+                                    <Globe className="w-4 h-4 mr-1" /> TikTok
+                                  </Button>
+                                )}
                                 {user.business.verification_status !== "approved" && (
                                   <Button size="sm" onClick={() => updateBusinessStatus(user.business!.id, "approved")} className="bg-green-600 hover:bg-green-700">
                                     <Check className="w-4 h-4 mr-1" /> Approve
