@@ -55,6 +55,7 @@ interface BusinessData {
   business_name: string;
   description: string | null;
   category: BusinessCategory;
+  categories: string[];
   phone: string | null;
   email: string;
   address: string | null;
