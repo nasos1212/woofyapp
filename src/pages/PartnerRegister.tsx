@@ -25,19 +25,6 @@ import { ensureHttps } from "@/lib/utils";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
-const categories: { value: BusinessCategory; label: string }[] = [
-  { value: "trainer", label: "Dog Trainer" },
-  { value: "pet_shop", label: "Pet Shop" },
-  { value: "hotel", label: "Pet Hotel" },
-  { value: "grooming", label: "Grooming" },
-  { value: "vet", label: "Veterinary" },
-  { value: "daycare", label: "Daycare" },
-  { value: "physio", label: "Physiotherapy" },
-  { value: "accessories", label: "Accessories" },
-  { value: "food", label: "Food & Treats" },
-  { value: "other", label: "Other" },
-];
-
 const PartnerRegister = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
