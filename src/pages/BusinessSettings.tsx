@@ -223,6 +223,9 @@ const BusinessSettings = () => {
           city: formData.city?.trim() || null,
           website: formData.website?.trim() || null,
           google_maps_url: formData.google_maps_url?.trim() || null,
+          instagram_url: formData.instagram_url?.trim() || null,
+          facebook_url: formData.facebook_url?.trim() || null,
+          tiktok_url: formData.tiktok_url?.trim() || null,
         } as any)
         .eq("id", formData.id);
 
