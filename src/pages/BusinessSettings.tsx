@@ -612,7 +612,7 @@ const BusinessSettings = () => {
                       <div className="space-y-2">
                         <Label htmlFor="instagram_url">Instagram</Label>
                         <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                          <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                           <Input
                             id="instagram_url"
                             placeholder="https://instagram.com/yourbusiness"
