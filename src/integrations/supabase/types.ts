@@ -473,6 +473,7 @@ export type Database = {
         Row: {
           address: string | null
           business_name: string
+          categories: string[] | null
           category: Database["public"]["Enums"]["business_category"]
           city: string | null
           created_at: string
@@ -491,6 +492,7 @@ export type Database = {
         Insert: {
           address?: string | null
           business_name: string
+          categories?: string[] | null
           category: Database["public"]["Enums"]["business_category"]
           city?: string | null
           created_at?: string
@@ -509,6 +511,7 @@ export type Database = {
         Update: {
           address?: string | null
           business_name?: string
+          categories?: string[] | null
           category?: Database["public"]["Enums"]["business_category"]
           city?: string | null
           created_at?: string

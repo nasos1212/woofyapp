@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import BusinessCategoryMultiSelect from "@/components/BusinessCategoryMultiSelect";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,6 +55,7 @@ interface BusinessData {
   business_name: string;
   description: string | null;
   category: BusinessCategory;
+  categories: string[];
   phone: string | null;
   email: string;
   address: string | null;
@@ -80,7 +82,7 @@ const categoryOptions = [
   { value: "accessories", label: "Accessories" },
   { value: "food", label: "Food & Treats" },
   { value: "other", label: "Other" },
-];
+]; // kept for reference but using multi-select now
 
 const BusinessSettings = () => {
   const { user, loading: authLoading } = useAuth();
@@ -100,6 +102,7 @@ const BusinessSettings = () => {
     business_name: "",
     description: "",
     category: "other" as BusinessCategory,
+    categories: [],
     phone: "",
     email: "",
     address: "",
@@ -144,6 +147,7 @@ const BusinessSettings = () => {
         business_name: business.business_name,
         description: business.description || "",
         category: business.category,
+        categories: (business as any).categories || [business.category],
         phone: business.phone || "",
         email: business.email,
         address: business.address || "",
@@ -203,13 +207,14 @@ const BusinessSettings = () => {
           business_name: formData.business_name.trim(),
           description: formData.description?.trim() || null,
           category: formData.category,
+          categories: formData.categories,
           phone: formData.phone?.trim() || null,
           email: formData.email.trim(),
           address: formData.address?.trim() || null,
           city: formData.city?.trim() || null,
           website: formData.website?.trim() || null,
           google_maps_url: formData.google_maps_url?.trim() || null,
-        })
+        } as any)
         .eq("id", formData.id);
 
       if (error) throw error;
@@ -517,25 +522,15 @@ const BusinessSettings = () => {
                     />
                   </div>
 
-                  {/* Category */}
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, category: value as BusinessCategory }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categoryOptions.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  {/* Categories */}
+                  <BusinessCategoryMultiSelect
+                    selected={formData.categories}
+                    onChange={(cats) => setFormData(prev => ({ 
+                      ...prev, 
+                      categories: cats,
+                      category: (cats[0] || "other") as BusinessCategory,
+                    }))}
+                  />
 
                   {/* Description */}
                   <div className="space-y-2">

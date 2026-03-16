@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import BusinessCategoryMultiSelect from "@/components/BusinessCategoryMultiSelect";
+import { businessCategories, getCategoriesLabel } from "@/data/businessCategories";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,19 +25,6 @@ import BusinessLocationManager, { BusinessLocation } from "@/components/Business
 import { ensureHttps } from "@/lib/utils";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
-
-const categories: { value: BusinessCategory; label: string }[] = [
-  { value: "trainer", label: "Dog Trainer" },
-  { value: "pet_shop", label: "Pet Shop" },
-  { value: "hotel", label: "Pet Hotel" },
-  { value: "grooming", label: "Grooming" },
-  { value: "vet", label: "Veterinary" },
-  { value: "daycare", label: "Daycare" },
-  { value: "physio", label: "Physiotherapy" },
-  { value: "accessories", label: "Accessories" },
-  { value: "food", label: "Food & Treats" },
-  { value: "other", label: "Other" },
-];
 
 const PartnerRegister = () => {
   const navigate = useNavigate();
@@ -57,7 +45,7 @@ const PartnerRegister = () => {
     const nameFromUrl = searchParams.get("name");
     return nameFromUrl || "";
   });
-  const [category, setCategory] = useState<BusinessCategory | "">("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [otherCategoryDescription, setOtherCategoryDescription] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -83,7 +71,7 @@ const PartnerRegister = () => {
   const hasUnsavedChanges = useMemo(() => {
     return (
       businessName !== initialName ||
-      category !== "" ||
+      selectedCategories.length > 0 ||
       otherCategoryDescription !== "" ||
       description !== "" ||
       primaryLocation.city !== "" ||
@@ -94,7 +82,7 @@ const PartnerRegister = () => {
       email !== "" ||
       website !== ""
     );
-  }, [businessName, initialName, category, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
+  }, [businessName, initialName, selectedCategories, otherCategoryDescription, description, primaryLocation, additionalLocations, email, website]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -150,8 +138,8 @@ const PartnerRegister = () => {
   ];
 
   const handleSubmit = async () => {
-    if (!user || !category || !primaryLocation.city) return;
-    if (category === "other" && !otherCategoryDescription.trim()) return;
+    if (!user || selectedCategories.length === 0 || !primaryLocation.city) return;
+    if (selectedCategories.includes("other") && !otherCategoryDescription.trim()) return;
     
     setIsSubmitting(true);
     
@@ -160,17 +148,19 @@ const PartnerRegister = () => {
       const allCities = allLocations.map(loc => loc.city);
       
       // Build description - prepend "other" category type if selected
-      const fullDescription = category === "other" && otherCategoryDescription
+      const fullDescription = selectedCategories.includes("other") && otherCategoryDescription
         ? `[${otherCategoryDescription.trim()}] ${description}`.trim()
         : description;
-      
+
+      const primaryCategory = selectedCategories[0] as BusinessCategory;
       // Create business with primary location info
       const { data: business, error: businessError } = await supabase
         .from("businesses")
         .insert({
           user_id: user.id,
           business_name: businessName,
-          category: category as BusinessCategory,
+          category: primaryCategory,
+          categories: selectedCategories,
           description: fullDescription,
           address: primaryLocation.address,
           city: allCities.join(", "),
@@ -178,7 +168,7 @@ const PartnerRegister = () => {
           email: email || user.email || "",
           website: website ? ensureHttps(website) : null,
           google_maps_url: primaryLocation.google_maps_url ? ensureHttps(primaryLocation.google_maps_url) : null,
-        })
+        } as any)
         .select()
         .single();
       
@@ -340,28 +330,19 @@ const PartnerRegister = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
-                  <Select value={category} onValueChange={(v) => {
-                    setCategory(v as BusinessCategory);
-                    if (v !== "other") {
+                <BusinessCategoryMultiSelect
+                  selected={selectedCategories}
+                  onChange={(cats) => {
+                    setSelectedCategories(cats);
+                    if (!cats.includes("other")) {
                       setOtherCategoryDescription("");
                     }
-                  }}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your business category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                  }}
+                  label="Business Categories"
+                  required
+                />
 
-                {category === "other" && (
+                {selectedCategories.includes("other") && (
                   <div className="space-y-2">
                     <Label htmlFor="otherCategoryDescription">What type of business or service? *</Label>
                     <Input
@@ -435,7 +416,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || !category || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (category === "other" && !otherCategoryDescription.trim())}
+                  disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
                 >
                   Review & Submit
                 </Button>
@@ -466,11 +447,10 @@ const PartnerRegister = () => {
                       <span className="font-medium">{businessName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Category:</span>
-                      <span className="font-medium">
-                        {category === "other" && otherCategoryDescription 
-                          ? `Other: ${otherCategoryDescription}` 
-                          : categories.find(c => c.value === category)?.label}
+                      <span className="text-muted-foreground">Categories:</span>
+                      <span className="font-medium text-right">
+                        {getCategoriesLabel(selectedCategories)}
+                        {selectedCategories.includes("other") && otherCategoryDescription && ` (${otherCategoryDescription})`}
                       </span>
                     </div>
                   </div>

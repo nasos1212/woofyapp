@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns";
 import { ensureHttps, formatDate } from "@/lib/utils";
+import { getCategoryLabel, getCategoriesLabel } from "@/data/businessCategories";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
@@ -34,6 +35,7 @@ interface BusinessInfo {
   id: string;
   business_name: string;
   category: string;
+  categories: string[];
   verification_status: string;
   city: string | null;
   address: string | null;
@@ -175,6 +177,7 @@ const UserManagement = () => {
         id: b.id,
         business_name: b.business_name,
         category: b.category,
+        categories: (b as any).categories || [b.category],
         verification_status: b.verification_status,
         city: b.city,
         address: b.address,
@@ -416,14 +419,7 @@ const UserManagement = () => {
     return labels[planType] || planType;
   };
 
-  const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      trainer: "Dog Trainer", pet_shop: "Pet Shop", hotel: "Pet Hotel", grooming: "Grooming",
-      vet: "Veterinary", daycare: "Daycare", food: "Food & Treats", accessories: "Accessories",
-      physio: "Physiotherapy", other: "Other",
-    };
-    return labels[category] || category;
-  };
+  // getCategoryLabel is now imported from @/data/businessCategories
 
   const getExpiryStatus = (expiresAt: string) => {
     const now = new Date();
@@ -958,7 +954,7 @@ const UserManagement = () => {
                             {user.business && (
                               <span className="flex items-center gap-1">
                                 <Building2 className="w-3 h-3" />
-                                {user.business.business_name} • {getCategoryLabel(user.business.category)}
+                                {user.business.business_name} • {getCategoriesLabel(user.business.categories)}
                               </span>
                             )}
                             {user.shelter && (
@@ -1153,7 +1149,7 @@ const UserManagement = () => {
                               </h4>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-3">
                                 <div><span className="text-muted-foreground">Name:</span> {user.business.business_name}</div>
-                                <div><span className="text-muted-foreground">Category:</span> {getCategoryLabel(user.business.category)}</div>
+                                <div><span className="text-muted-foreground">Categories:</span> {getCategoriesLabel(user.business.categories)}</div>
                                 <div><span className="text-muted-foreground">City:</span> {user.business.city || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Email:</span> {user.business.email}</div>
                                 <div><span className="text-muted-foreground">Phone:</span> {user.business.phone || "N/A"}</div>
