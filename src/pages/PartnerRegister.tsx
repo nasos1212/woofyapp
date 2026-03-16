@@ -88,6 +88,10 @@ const PartnerRegister = () => {
     if (!loading && !user) {
       navigate("/auth?type=business");
     }
+    // Pre-fill email from auth user
+    if (user?.email && !email) {
+      setEmail(user.email);
+    }
   }, [user, loading, navigate]);
 
   useEffect(() => {
@@ -256,10 +260,10 @@ const PartnerRegister = () => {
             <AlertDialogHeader>
               <AlertDialogTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
-                Unsaved Changes
+                Leave Registration?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                You have unsaved business information. If you leave now, your progress will be lost. Are you sure you want to exit?
+                You will be signed out, but don't worry — your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -382,7 +386,7 @@ const PartnerRegister = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Business Email</Label>
+                    <Label htmlFor="email">Business Contact Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -394,6 +398,9 @@ const PartnerRegister = () => {
                         className="pl-10"
                       />
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                      Pre-filled with your login email. Change it if your customer-facing email is different.
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="website">Website *</Label>
