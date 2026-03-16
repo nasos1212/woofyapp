@@ -46,6 +46,7 @@ const PartnerRegister = () => {
     return nameFromUrl || "";
   });
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [useDifferentEmail, setUseDifferentEmail] = useState(false);
   const [otherCategoryDescription, setOtherCategoryDescription] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -392,15 +393,46 @@ const PartnerRegister = () => {
                       <Input
                         id="email"
                         type="email"
-                        placeholder="contact@business.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
+                        value={user?.email || ""}
+                        disabled
+                        className="pl-10 bg-muted/50 text-muted-foreground"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      Pre-filled with your login email. Change it if your customer-facing email is different.
-                    </p>
+                    {!useDifferentEmail ? (
+                      <button
+                        type="button"
+                        onClick={() => setUseDifferentEmail(true)}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Use a different email for customers?
+                      </button>
+                    ) : (
+                      <div className="space-y-1.5 mt-2">
+                        <Label htmlFor="customEmail" className="text-xs">Customer-facing email</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="customEmail"
+                            type="email"
+                            placeholder="info@yourbusiness.com"
+                            value={email !== user?.email ? email : ""}
+                            onChange={(e) => setEmail(e.target.value || user?.email || "")}
+                            className="pl-10"
+                            autoFocus
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setUseDifferentEmail(false);
+                            setEmail(user?.email || "");
+                          }}
+                          className="text-xs text-muted-foreground hover:underline"
+                        >
+                          Cancel — use login email
+                        </button>
+                      </div>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="website">Website *</Label>
