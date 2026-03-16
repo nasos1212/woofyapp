@@ -643,6 +643,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <MousePointerClick className="w-4 h-4 text-emerald-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Contact Clicks</h3>
+                <MetricTooltip text="Clicks on your phone number or Google Maps link from your profile." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.contactClicks}
