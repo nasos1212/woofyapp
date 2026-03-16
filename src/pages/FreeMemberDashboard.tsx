@@ -15,7 +15,8 @@ import {
   HelpCircle,
   Bookmark,
   MapPin,
-  Sparkles
+  Sparkles,
+  Building2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -218,7 +219,7 @@ const FreeMemberDashboard = () => {
           </div>
 
           {/* Feature Cards Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
@@ -324,6 +325,33 @@ const FreeMemberDashboard = () => {
                     className="border-purple-300 text-purple-700 hover:bg-purple-50 gap-2 w-full"
                   >
                     View Offers
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Our Partners */}
+            <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
+                    <Building2 className="w-5 h-5 text-sky-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Our Partners</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Browse partner businesses
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate("/member/partners")}
+                    className="border-sky-300 text-sky-700 hover:bg-sky-50 gap-2 w-full"
+                  >
+                    View Partners
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
