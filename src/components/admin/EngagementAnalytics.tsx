@@ -291,9 +291,9 @@ const EngagementAnalytics = () => {
                     <XAxis dataKey="day" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                     <YAxis tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
                     <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
-                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#vG)" name="Views" strokeWidth={2.5} dot={{ r: 3, fill: "#f97316" }} />
-                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#cG)" name="Clicks" strokeWidth={2.5} dot={{ r: 3, fill: "#eab308" }} />
-                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#rG)" name="Redeems" strokeWidth={2.5} dot={{ r: 3, fill: "#22c55e" }} />
+                    <Area type="monotone" dataKey="views" stroke="#f97316" fill="url(#vG)" name="Views" strokeWidth={3} dot={{ r: 4, fill: "#f97316", strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                    <Area type="monotone" dataKey="clicks" stroke="#eab308" fill="url(#cG)" name="Clicks" strokeWidth={3} dot={{ r: 4, fill: "#eab308", strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                    <Area type="monotone" dataKey="redeems" stroke="#22c55e" fill="url(#rG)" name="Redeems" strokeWidth={3} dot={{ r: 4, fill: "#22c55e", strokeWidth: 0 }} activeDot={{ r: 6 }} />
                   </AreaChart>
                 </ResponsiveContainer>
               )}
