@@ -353,6 +353,64 @@ const BusinessAnalytics = () => {
           .sort((a, b) => b.total_redemptions - a.total_redemptions)
           .slice(0, 10)
       );
+      // Fetch engagement analytics from analytics_events table
+      const [profileViewsResult, offerViewsResult, socialClicksResult, contactClicksResult, directoryResult] = await Promise.all([
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "business_view")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "offer_view")
+          .eq("metadata->>business_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("metadata")
+          .eq("event_type", "social_click")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("metadata")
+          .eq("event_type", "contact_click")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "directory_impression")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+      ]);
+
+      // Calculate social breakdown
+      const socialBreakdown: Record<string, number> = {};
+      (socialClicksResult.data || []).forEach((event) => {
+        const platform = (event.metadata as Record<string, string>)?.platform || "unknown";
+        socialBreakdown[platform] = (socialBreakdown[platform] || 0) + 1;
+      });
+
+      // Calculate contact breakdown
+      const contactBreakdown: Record<string, number> = {};
+      (contactClicksResult.data || []).forEach((event) => {
+        const contactType = (event.metadata as Record<string, string>)?.contact_type || "unknown";
+        contactBreakdown[contactType] = (contactBreakdown[contactType] || 0) + 1;
+      });
+
+      setEngagementStats({
+        profileViews: profileViewsResult.count || 0,
+        offerViews: offerViewsResult.count || 0,
+        socialClicks: socialClicksResult.data?.length || 0,
+        contactClicks: contactClicksResult.data?.length || 0,
+        directoryImpressions: directoryResult.count || 0,
+        socialBreakdown,
+        contactBreakdown,
+      });
+
     } catch (error) {
       console.error("Error fetching analytics:", error);
       toast.error("Failed to load analytics");
