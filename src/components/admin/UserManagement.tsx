@@ -1149,7 +1149,7 @@ const UserManagement = () => {
                               </h4>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm mb-3">
                                 <div><span className="text-muted-foreground">Name:</span> {user.business.business_name}</div>
-                                <div><span className="text-muted-foreground">Category:</span> {getCategoryLabel(user.business.category)}</div>
+                                <div><span className="text-muted-foreground">Categories:</span> {getCategoriesLabel(user.business.categories)}</div>
                                 <div><span className="text-muted-foreground">City:</span> {user.business.city || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Email:</span> {user.business.email}</div>
                                 <div><span className="text-muted-foreground">Phone:</span> {user.business.phone || "N/A"}</div>
