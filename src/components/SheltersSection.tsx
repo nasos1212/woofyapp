@@ -211,7 +211,7 @@ const SheltersSection = () => {
               ))
             ) : (
               // Show placeholder cards if no shelters yet
-              [...Array(4)].map((_, index) => (
+              [...Array(2)].map((_, index) => (
                 <div 
                   key={index}
                   className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
