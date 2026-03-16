@@ -127,26 +127,25 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
             .sort((a, b) => b.value - a.value)
         );
 
-        const buckets = eachDayOfInterval({ start: periodStart, end: periodEnd }).map((date) => ({
-          key: format(date, "yyyy-MM-dd"),
-          day: format(date, days <= 30 ? "dd MMM" : "dd MMM"),
-          paid: 0,
-          free: 0,
-        }));
+        // WoW and MoM growth
+        const now = new Date();
+        const oneWeekAgo = subDays(now, 7);
+        const twoWeeksAgo = subDays(now, 14);
+        const oneMonthAgo = subDays(now, 30);
+        const twoMonthsAgo = subDays(now, 60);
 
-        const bucketMap = Object.fromEntries(buckets.map((bucket) => [bucket.key, bucket]));
+        const countInRange = (items: { created_at: string }[], start: Date, end: Date) =>
+          items.filter(i => { const d = new Date(i.created_at); return isAfter(d, start) && !isAfter(d, end); }).length;
 
-        membershipsInPeriod.forEach((membership) => {
-          const key = format(new Date(membership.created_at), "yyyy-MM-dd");
-          if (bucketMap[key]) bucketMap[key].paid += 1;
+        const paidItems = normalizedMemberships.map(m => ({ created_at: m.created_at }));
+        const freeItems = profiles.filter(p => !allPaidUserIds.has(p.user_id)).map(p => ({ created_at: p.created_at }));
+
+        setMemberGrowth({
+          paidWoW: [countInRange(paidItems, oneWeekAgo, now), countInRange(paidItems, twoWeeksAgo, oneWeekAgo)],
+          freeWoW: [countInRange(freeItems, oneWeekAgo, now), countInRange(freeItems, twoWeeksAgo, oneWeekAgo)],
+          paidMoM: [countInRange(paidItems, oneMonthAgo, now), countInRange(paidItems, twoMonthsAgo, oneMonthAgo)],
+          freeMoM: [countInRange(freeItems, oneMonthAgo, now), countInRange(freeItems, twoMonthsAgo, oneMonthAgo)],
         });
-
-        freeProfilesInPeriod.forEach((profile) => {
-          const key = format(new Date(profile.created_at), "yyyy-MM-dd");
-          if (bucketMap[key]) bucketMap[key].free += 1;
-        });
-
-        setGrowthTrend(buckets.map(({ key, ...rest }) => rest));
       } catch (error) {
         console.error("Error fetching growth metrics:", error);
       } finally {
