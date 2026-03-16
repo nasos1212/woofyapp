@@ -611,6 +611,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Eye className="w-4 h-4 text-indigo-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Offer Views</h3>
+                <MetricTooltip text="Number of times members viewed the details of one of your offers." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.offerViews}
@@ -622,6 +623,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center gap-2 mb-3">
                 <Share2 className="w-4 h-4 text-pink-500" />
                 <h3 className="font-semibold text-slate-900 text-sm">Social Clicks</h3>
+                <MetricTooltip text="Clicks on your social media links (Instagram, Facebook, TikTok, Website) from your profile." />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.socialClicks}
