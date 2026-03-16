@@ -14,6 +14,7 @@ import {
   Save,
   Clock,
 } from "lucide-react";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
 import BusinessHeader from "@/components/BusinessHeader";
