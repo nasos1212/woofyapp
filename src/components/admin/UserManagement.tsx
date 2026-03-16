@@ -1166,23 +1166,31 @@ const UserManagement = () => {
                               )}
                               <div className="flex gap-2 flex-wrap">
                                 {user.business.website && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.website!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> Website
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.business.website)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> Website
+                                    </a>
                                   </Button>
                                 )}
                                 {user.business.instagram_url && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.instagram_url!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> Instagram
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.business.instagram_url)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> Instagram
+                                    </a>
                                   </Button>
                                 )}
                                 {user.business.facebook_url && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.facebook_url!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> Facebook
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.business.facebook_url)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> Facebook
+                                    </a>
                                   </Button>
                                 )}
                                 {user.business.tiktok_url && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.business!.tiktok_url!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> TikTok
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.business.tiktok_url)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> TikTok
+                                    </a>
                                   </Button>
                                 )}
                                 {user.business.verification_status !== "approved" && (
@@ -1261,8 +1269,10 @@ const UserManagement = () => {
                               )}
                               <div className="flex gap-2 flex-wrap">
                                 {user.shelter.website && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.shelter!.website!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> Website
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.shelter.website)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> Website
+                                    </a>
                                   </Button>
                                 )}
                                 {user.shelter.verification_status !== "approved" && (
