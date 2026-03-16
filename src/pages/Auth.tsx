@@ -48,6 +48,7 @@ const Auth = () => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   
   const [rejectedDialog, setRejectedDialog] = useState<{ open: boolean; type: "business" | "shelter" | null }>({ open: false, type: null });
+  const [isLoginInProgress, setIsLoginInProgress] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
