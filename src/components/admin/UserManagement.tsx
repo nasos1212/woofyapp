@@ -1269,8 +1269,10 @@ const UserManagement = () => {
                               )}
                               <div className="flex gap-2 flex-wrap">
                                 {user.shelter.website && (
-                                  <Button size="sm" variant="outline" onClick={() => window.open(ensureHttps(user.shelter!.website!), "_blank")}>
-                                    <Globe className="w-4 h-4 mr-1" /> Website
+                                  <Button size="sm" variant="outline" asChild>
+                                    <a href={ensureHttps(user.shelter.website)} target="_blank" rel="noopener noreferrer">
+                                      <Globe className="w-4 h-4 mr-1" /> Website
+                                    </a>
                                   </Button>
                                 )}
                                 {user.shelter.verification_status !== "approved" && (
