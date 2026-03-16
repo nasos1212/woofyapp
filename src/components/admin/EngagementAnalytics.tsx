@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle } from "lucide-react";
+import MetricTooltip from "./MetricTooltip";
 import GrowthMetrics from "./GrowthMetrics";
 import PetDemographics from "./PetDemographics";
 import GeographicIntelligence from "./GeographicIntelligence";
@@ -65,8 +66,8 @@ const SectionHeader = ({ icon: Icon, title, subtitle }: { icon: any; title: stri
 );
 
 // ─── Stat Card ───
-const StatCard = ({ icon: Icon, value, label, colorClass, bgClass }: {
-  icon: any; value: number; label: string; colorClass: string; bgClass: string;
+const StatCard = ({ icon: Icon, value, label, colorClass, bgClass, tip }: {
+  icon: any; value: number; label: string; colorClass: string; bgClass: string; tip?: string;
 }) => (
   <Card className="border-border/50 hover:border-border transition-colors">
     <CardContent className="pt-4 pb-3">
@@ -74,9 +75,12 @@ const StatCard = ({ icon: Icon, value, label, colorClass, bgClass }: {
         <div className={`p-2 rounded-xl ${bgClass}`}>
           <Icon className={`w-4 h-4 ${colorClass}`} />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <p className="text-xl font-bold tabular-nums">{value.toLocaleString()}</p>
-          <p className="text-[11px] text-muted-foreground leading-tight">{label}</p>
+          <div className="flex items-center gap-1">
+            <p className="text-[11px] text-muted-foreground leading-tight">{label}</p>
+            {tip && <MetricTooltip text={tip} />}
+          </div>
         </div>
       </div>
     </CardContent>
@@ -235,7 +239,7 @@ const EngagementAnalytics = () => {
       {/* ═══════ 1. GROWTH & RETENTION ═══════ */}
       <section>
         <SectionHeader icon={TrendingUp} title="Growth & Retention" subtitle="Member acquisition, plan distribution, and platform adoption" />
-        <GrowthMetrics />
+        <GrowthMetrics dateRange={dateRange} />
       </section>
 
       {/* ═══════ 2. PET DEMOGRAPHICS ═══════ */}
@@ -256,10 +260,10 @@ const EngagementAnalytics = () => {
 
         {/* Quick stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-          <StatCard icon={Eye} value={businessViews.length} label="Profile Views" colorClass="text-orange-500" bgClass="bg-orange-500/15" />
-          <StatCard icon={MousePointer} value={offerClicks.length} label="Offer Clicks" colorClass="text-yellow-500" bgClass="bg-yellow-500/15" />
-          <StatCard icon={Gift} value={redemptions.length} label="Redemptions" colorClass="text-green-500" bgClass="bg-green-500/15" />
-          <StatCard icon={Store} value={directoryImpressions.length} label="Directory Views" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" />
+          <StatCard icon={Eye} value={businessViews.length} label="Profile Views" colorClass="text-orange-500" bgClass="bg-orange-500/15" tip="Number of times members viewed a business profile page. High views indicate strong brand visibility." />
+          <StatCard icon={MousePointer} value={offerClicks.length} label="Offer Clicks" colorClass="text-yellow-500" bgClass="bg-yellow-500/15" tip="How many times members clicked on an offer to see its details. Indicates interest in deals." />
+          <StatCard icon={Gift} value={redemptions.length} label="Redemptions" colorClass="text-green-500" bgClass="bg-green-500/15" tip="Number of offers actually redeemed by members at partner businesses. This is the key revenue-driving metric." />
+          <StatCard icon={Store} value={directoryImpressions.length} label="Directory Views" colorClass="text-indigo-500" bgClass="bg-indigo-500/15" tip="Times a business appeared in the directory listing. Shows general exposure even before a profile click." />
         </div>
 
         {/* Funnel + Trend */}
