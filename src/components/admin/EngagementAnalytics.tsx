@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart3, Eye, MousePointer, TrendingUp, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle } from "lucide-react";
+import MetricTooltip from "./MetricTooltip";
 import GrowthMetrics from "./GrowthMetrics";
 import PetDemographics from "./PetDemographics";
 import GeographicIntelligence from "./GeographicIntelligence";
