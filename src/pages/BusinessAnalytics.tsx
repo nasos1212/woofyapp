@@ -12,6 +12,10 @@ import {
   ArrowDownRight,
   ArrowLeft,
   Clock,
+  Eye,
+  Share2,
+  MousePointerClick,
+  LayoutGrid,
 } from "lucide-react";
 import DogLoader from "@/components/DogLoader";
 import BusinessMobileNav from "@/components/BusinessMobileNav";
@@ -56,6 +60,15 @@ const BusinessAnalytics = () => {
     thisMonth: 0,
     lastMonth: 0,
     uniqueCustomers: 0,
+  });
+  const [engagementStats, setEngagementStats] = useState({
+    profileViews: 0,
+    offerViews: 0,
+    socialClicks: 0,
+    contactClicks: 0,
+    directoryImpressions: 0,
+    socialBreakdown: {} as Record<string, number>,
+    contactBreakdown: {} as Record<string, number>,
   });
   const [dailyData, setDailyData] = useState<DailyData[]>([]);
   const [topOffers, setTopOffers] = useState<TopOffer[]>([]);
@@ -340,6 +353,64 @@ const BusinessAnalytics = () => {
           .sort((a, b) => b.total_redemptions - a.total_redemptions)
           .slice(0, 10)
       );
+      // Fetch engagement analytics from analytics_events table
+      const [profileViewsResult, offerViewsResult, socialClicksResult, contactClicksResult, directoryResult] = await Promise.all([
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "business_view")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "offer_view")
+          .eq("metadata->>business_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("metadata")
+          .eq("event_type", "social_click")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("metadata")
+          .eq("event_type", "contact_click")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+        supabase
+          .from("analytics_events")
+          .select("*", { count: "exact", head: true })
+          .eq("event_type", "directory_impression")
+          .eq("entity_id", business.id)
+          .gte("created_at", startDate.toISOString()),
+      ]);
+
+      // Calculate social breakdown
+      const socialBreakdown: Record<string, number> = {};
+      (socialClicksResult.data || []).forEach((event) => {
+        const platform = (event.metadata as Record<string, string>)?.platform || "unknown";
+        socialBreakdown[platform] = (socialBreakdown[platform] || 0) + 1;
+      });
+
+      // Calculate contact breakdown
+      const contactBreakdown: Record<string, number> = {};
+      (contactClicksResult.data || []).forEach((event) => {
+        const contactType = (event.metadata as Record<string, string>)?.contact_type || "unknown";
+        contactBreakdown[contactType] = (contactBreakdown[contactType] || 0) + 1;
+      });
+
+      setEngagementStats({
+        profileViews: profileViewsResult.count || 0,
+        offerViews: offerViewsResult.count || 0,
+        socialClicks: socialClicksResult.data?.length || 0,
+        contactClicks: contactClicksResult.data?.length || 0,
+        directoryImpressions: directoryResult.count || 0,
+        socialBreakdown,
+        contactBreakdown,
+      });
+
     } catch (error) {
       console.error("Error fetching analytics:", error);
       toast.error("Failed to load analytics");
@@ -473,7 +544,7 @@ const BusinessAnalytics = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -504,6 +575,73 @@ const BusinessAnalytics = () => {
               <p className="text-xs sm:text-sm text-slate-500">Customers</p>
             </div>
 
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
+                {engagementStats.profileViews}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500">Profile Views</p>
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
+              <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 mb-1 sm:mb-2" />
+              <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
+                {engagementStats.directoryImpressions}
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500">Directory Impressions</p>
+            </div>
+          </div>
+
+          {/* Engagement Stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Eye className="w-4 h-4 text-indigo-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Offer Views</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.offerViews}
+              </div>
+              <p className="text-xs text-slate-500">Times your offers were seen</p>
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Share2 className="w-4 h-4 text-pink-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Social Clicks</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.socialClicks}
+              </div>
+              {Object.keys(engagementStats.socialBreakdown).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {Object.entries(engagementStats.socialBreakdown).map(([platform, count]) => (
+                    <span key={platform} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full capitalize">
+                      {platform}: {count}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-2 mb-3">
+                <MousePointerClick className="w-4 h-4 text-emerald-500" />
+                <h3 className="font-semibold text-slate-900 text-sm">Contact Clicks</h3>
+              </div>
+              <div className="text-2xl font-display font-bold text-slate-900 mb-1">
+                {engagementStats.contactClicks}
+              </div>
+              {Object.keys(engagementStats.contactBreakdown).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {Object.entries(engagementStats.contactBreakdown).map(([type, count]) => (
+                    <span key={type} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                      {type === "phone" ? "📞 Phone" : "📍 Maps"}: {count}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Top Offers */}

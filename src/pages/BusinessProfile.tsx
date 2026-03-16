@@ -95,7 +95,7 @@ export default function BusinessProfile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const { trackBusinessView } = useAnalyticsTracking();
+  const { trackBusinessView, trackSocialClick, trackContactClick } = useAnalyticsTracking();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -453,6 +453,7 @@ export default function BusinessProfile() {
                   {business.phone && (
                     <a
                       href={`tel:${business.phone}`}
+                      onClick={() => trackContactClick(business.id, business.business_name, "phone")}
                       className="inline-flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                     >
                       <Phone className="w-4 h-4" />
@@ -465,6 +466,7 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.website)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackSocialClick(business.id, business.business_name, "website")}
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
                       <Globe className="w-4 h-4" />
@@ -476,6 +478,7 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.instagram_url)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackSocialClick(business.id, business.business_name, "instagram")}
                       className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
                       <InstagramIcon className="w-5 h-5" />
@@ -486,6 +489,7 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.facebook_url)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackSocialClick(business.id, business.business_name, "facebook")}
                       className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
                       <FacebookIcon className="w-5 h-5" />
@@ -496,6 +500,7 @@ export default function BusinessProfile() {
                       href={ensureHttps(business.tiktok_url)}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackSocialClick(business.id, business.business_name, "tiktok")}
                       className="inline-flex items-center justify-center w-10 h-10 bg-secondary rounded-lg hover:bg-secondary/80 transition-colors"
                     >
                       <TikTokIcon className="w-5 h-5" />
@@ -543,6 +548,7 @@ export default function BusinessProfile() {
                           <a
                             href={`tel:${location.phone}`}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                            onClick={() => trackContactClick(business.id, business.business_name, "phone")}
                           >
                             <Phone className="w-3.5 h-3.5" />
                             {location.phone}
@@ -555,6 +561,7 @@ export default function BusinessProfile() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
+                            onClick={() => trackContactClick(business.id, business.business_name, "google_maps")}
                           >
                             <MapPin className="w-3.5 h-3.5" />
                             Directions

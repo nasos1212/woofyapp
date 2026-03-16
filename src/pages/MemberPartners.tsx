@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, MapPin, Globe, Search, Filter } from "lucide-react";
@@ -18,6 +18,7 @@ import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
 
 interface Partner {
@@ -37,10 +38,12 @@ interface Partner {
 const MemberPartners = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { trackDirectoryImpression, trackSocialClick } = useAnalyticsTracking();
   const [partners, setPartners] = useState<Partner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
     const fetchPartners = async () => {
@@ -63,18 +66,7 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <DogLoader size="lg" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
+  // Track directory impressions for visible partners (once per session)
   const filtered = partners.filter((p) => {
     const matchesSearch =
       !search ||
@@ -86,6 +78,29 @@ const MemberPartners = () => {
       p.categories?.includes(categoryFilter);
     return matchesSearch && matchesCategory;
   });
+
+  useEffect(() => {
+    if (!isLoading && filtered.length > 0) {
+      filtered.forEach((partner) => {
+        if (!trackedImpressions.current.has(partner.id)) {
+          trackedImpressions.current.add(partner.id);
+          trackDirectoryImpression(partner.id, partner.business_name);
+        }
+      });
+    }
+  }, [filtered, isLoading, trackDirectoryImpression]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <DogLoader size="lg" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   return (
     <>
@@ -233,6 +248,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "instagram");
                             window.open(ensureHttps(partner.instagram_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -244,6 +260,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "facebook");
                             window.open(ensureHttps(partner.facebook_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -255,6 +272,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "tiktok");
                             window.open(ensureHttps(partner.tiktok_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
@@ -266,6 +284,7 @@ const MemberPartners = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            trackSocialClick(partner.id, partner.business_name, "website");
                             window.open(ensureHttps(partner.website!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors ml-auto"

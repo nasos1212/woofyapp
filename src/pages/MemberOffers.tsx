@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
@@ -88,6 +89,17 @@ const MemberOffers = () => {
   const [userPetTypes, setUserPetTypes] = useState<PetType[]>([]);
   
   const { isFavorite, toggleFavorite } = useFavoriteOffers();
+  const { trackOfferView } = useAnalyticsTracking();
+
+  // Track offer views when offers finish loading
+  useEffect(() => {
+    if (!isLoading && filteredOffers.length > 0) {
+      // Track first page of visible offers (batch, max 20)
+      filteredOffers.slice(0, 20).forEach((offer) => {
+        trackOfferView(offer.id, offer.title, offer.business.id);
+      });
+    }
+  }, [isLoading, filteredOffers.length]); // only on load/filter change
 
   useEffect(() => {
     if (!loading && !accountTypeLoading) {
