@@ -416,7 +416,7 @@ const PartnerRegister = () => {
                 <Button
                   variant="hero"
                   onClick={() => setStep(2)}
-                  disabled={!businessName || !category || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (category === "other" && !otherCategoryDescription.trim())}
+                  disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || !website.trim() || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
                 >
                   Review & Submit
                 </Button>
