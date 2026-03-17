@@ -19,6 +19,7 @@ import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
+import NotificationBell from "@/components/NotificationBell";
 import { 
   Home, 
   Clock, 
