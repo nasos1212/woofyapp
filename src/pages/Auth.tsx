@@ -384,6 +384,7 @@ const Auth = () => {
           return;
         }
 
+        setIsSignUpInProgress(true);
         const { error, data } = await signUp(email, password, fullName);
         if (error) {
           if (error.message.includes("already registered")) {
