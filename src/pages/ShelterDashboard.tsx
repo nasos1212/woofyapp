@@ -93,6 +93,7 @@ const ShelterDashboard = () => {
         years_operating: shelter.years_operating || "",
         facebook_url: shelter.facebook_url || "",
         instagram_url: shelter.instagram_url || "",
+        tiktok_url: shelter.tiktok_url || "",
         donation_link: shelter.donation_link || "",
       });
     }
