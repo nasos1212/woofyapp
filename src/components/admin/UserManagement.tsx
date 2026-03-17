@@ -31,6 +31,13 @@ interface MembershipInfo {
 }
 
 // Full business info
+interface BusinessLocation {
+  id: string;
+  business_id: string;
+  city: string;
+  phone: string | null;
+}
+
 interface BusinessInfo {
   id: string;
   business_name: string;
@@ -49,6 +56,7 @@ interface BusinessInfo {
   instagram_url: string | null;
   facebook_url: string | null;
   tiktok_url: string | null;
+  locations: BusinessLocation[];
 }
 
 // Full shelter info
@@ -145,13 +153,14 @@ const UserManagement = () => {
     setLoading(true);
     try {
       // Fetch all data in parallel with full details
-      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult, petsResult] = await Promise.all([
+      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult, petsResult, locationsResult] = await Promise.all([
         supabase.from("profiles").select("id, user_id, full_name, email, created_at").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("memberships").select("*"),
         supabase.from("businesses").select("*"),
         supabase.from("shelters").select("*"),
         supabase.from("pets").select("id, pet_name, pet_type, pet_breed, birthday, age_years, gender, photo_url, created_at, owner_user_id"),
+        supabase.from("business_locations").select("id, business_id, city, phone"),
       ]);
 
       if (profilesResult.error) throw profilesResult.error;
@@ -175,6 +184,14 @@ const UserManagement = () => {
         created_at: m.created_at,
       }));
 
+      // Build locations map by business_id
+      const locationsMap = new Map<string, BusinessLocation[]>();
+      (locationsResult.data || []).forEach((loc: any) => {
+        const existing = locationsMap.get(loc.business_id) || [];
+        existing.push(loc);
+        locationsMap.set(loc.business_id, existing);
+      });
+
       const businessesMap = new Map<string, BusinessInfo>();
       (businessesResult.data || []).forEach(b => businessesMap.set(b.user_id, {
         id: b.id,
@@ -194,6 +211,7 @@ const UserManagement = () => {
         instagram_url: (b as any).instagram_url || null,
         facebook_url: (b as any).facebook_url || null,
         tiktok_url: (b as any).tiktok_url || null,
+        locations: locationsMap.get(b.id) || [],
       }));
 
       const sheltersMap = new Map<string, ShelterInfo>();
@@ -1178,7 +1196,17 @@ const UserManagement = () => {
                                 <div><span className="text-muted-foreground">Categories:</span> {getCategoriesLabel(user.business.categories)}</div>
                                 <div><span className="text-muted-foreground">City:</span> {user.business.city || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Email:</span> {user.business.email}</div>
-                                <div><span className="text-muted-foreground">Phone:</span> {user.business.phone || "N/A"}</div>
+                                <div>
+                                  <span className="text-muted-foreground">Phone:</span>{" "}
+                                  {user.business.phone || "N/A"}
+                                  {user.business.locations
+                                    .filter((loc) => loc.phone && loc.phone !== user.business!.phone)
+                                    .map((loc) => (
+                                      <span key={loc.id} className="ml-1 text-muted-foreground">
+                                        • {loc.phone} ({loc.city})
+                                      </span>
+                                    ))}
+                                </div>
                                 <div><span className="text-muted-foreground">Created:</span> {formatDate(new Date(user.business.created_at))}</div>
                               </div>
                               {user.business.description && (
