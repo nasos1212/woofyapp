@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = async (email: string, password: string, fullName: string, accountType?: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
     const { error, data } = await supabase.auth.signUp({
@@ -49,12 +49,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         emailRedirectTo: redirectUrl,
         data: {
           full_name: fullName,
+          account_type: accountType || "member",
         },
       },
     });
-    
-    // NOTE: Role assignment is handled in Auth.tsx based on account type
-    // Don't auto-assign member role here - it causes business/shelter users to get incorrect roles
     
     return { error, data: data ? { user: data.user } : null };
   };
