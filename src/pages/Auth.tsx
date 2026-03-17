@@ -491,6 +491,7 @@ const Auth = () => {
         variant: "destructive",
       });
     } finally {
+      setIsSignUpInProgress(false);
       setIsLoading(false);
     }
   };
