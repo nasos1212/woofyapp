@@ -346,7 +346,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/partners")}
-                    className="border-sky-300 text-sky-700 hover:bg-sky-50 gap-2 w-full"
+                    className="border-sky-300 text-sky-700 hover:bg-sky-200 hover:text-sky-900 gap-2 w-full"
                   >
                     View Partners
                     <ArrowRight className="w-4 h-4" />
