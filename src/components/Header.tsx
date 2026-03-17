@@ -132,7 +132,7 @@ const Header = () => {
     { name: "Dashboard", href: dashboardPath, isRoute: true },
   ] : user ? [
     { name: "Dashboard", href: dashboardPath, isRoute: true },
-    { name: "Offers", href: "/member/offers", isRoute: true },
+    ...(!isShelter ? [{ name: "Offers", href: "/member/offers", isRoute: true }] : []),
     { name: "Community", href: "/community", isRoute: true },
 ] : [
     { name: "Benefits", href: "#benefits" },
