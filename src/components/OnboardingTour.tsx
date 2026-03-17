@@ -50,7 +50,9 @@ const OnboardingTour = ({
     const checkTourEligibility = async () => {
       if (loading || !user) return;
 
-      localStorage.removeItem(storageKey);
+      if (!localStorage.getItem(scopedStorageKey)) {
+        localStorage.removeItem(storageKey);
+      }
 
       const seen = localStorage.getItem(scopedStorageKey);
       if (seen) return;
