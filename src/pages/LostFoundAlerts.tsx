@@ -306,7 +306,11 @@ const LostFoundAlerts = () => {
     if (lastSeenTime) {
       lastSeenDateTime = new Date(`${lastSeenDate}T${lastSeenTime}`);
     } else {
-      lastSeenDateTime = new Date(`${lastSeenDate}T12:00:00`);
+      // Default to current time if no time specified
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      lastSeenDateTime = new Date(`${lastSeenDate}T${hours}:${minutes}:00`);
     }
 
     setIsCreating(true);
