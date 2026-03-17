@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Helmet } from "react-helmet-async";
+import ShelterOnboardingTour from "@/components/ShelterOnboardingTour";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -210,6 +211,7 @@ const ShelterDashboard = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
+        <ShelterOnboardingTour />
         {/* Header */}
         <header className="border-b bg-card pt-[env(safe-area-inset-top)]">
           <div className="w-full max-w-4xl mx-auto px-4 py-4 box-border">

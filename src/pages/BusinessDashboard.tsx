@@ -17,6 +17,7 @@ import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import ContactPopover from "@/components/ContactPopover";
 import { formatDate } from "@/lib/utils";
+import BusinessOnboardingTour from "@/components/BusinessOnboardingTour";
 
 interface AvailablePet {
   id: string;
@@ -640,6 +641,7 @@ const BusinessDashboard = () => {
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
         <BusinessHeader />
+        <BusinessOnboardingTour />
 
         <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
           {/* Pending Approval Banner */}

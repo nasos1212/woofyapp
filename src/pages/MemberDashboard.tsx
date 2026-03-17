@@ -21,6 +21,7 @@ import { formatDate } from "@/lib/utils";
 import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
+import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
@@ -358,6 +359,7 @@ const MemberDashboard = () => {
 
         <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-screen max-w-[100vw] overflow-x-hidden">
         <Header />
+        <PaidMemberOnboardingTour />
         {/* Rating Prompt Dialog */}
         {currentPrompt && (
           <RatingPromptDialog
