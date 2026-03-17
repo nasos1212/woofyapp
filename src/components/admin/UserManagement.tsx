@@ -31,6 +31,13 @@ interface MembershipInfo {
 }
 
 // Full business info
+interface BusinessLocation {
+  id: string;
+  business_id: string;
+  city: string;
+  phone: string | null;
+}
+
 interface BusinessInfo {
   id: string;
   business_name: string;
@@ -49,6 +56,7 @@ interface BusinessInfo {
   instagram_url: string | null;
   facebook_url: string | null;
   tiktok_url: string | null;
+  locations: BusinessLocation[];
 }
 
 // Full shelter info
