@@ -223,7 +223,7 @@ const FreeMemberDashboard = () => {
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
                     <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
@@ -250,7 +250,7 @@ const FreeMemberDashboard = () => {
             {/* Pet-Friendly Places */}
             <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
                     <MapPin className="w-5 h-5 text-teal-600" />
                   </div>
@@ -277,7 +277,7 @@ const FreeMemberDashboard = () => {
             {/* Shelters */}
             <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
                     <Heart className="w-5 h-5 text-rose-600" />
                   </div>
@@ -304,7 +304,7 @@ const FreeMemberDashboard = () => {
             {/* Browse Offers */}
             <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
                     <Gift className="w-5 h-5 text-purple-600" />
                   </div>
@@ -331,7 +331,7 @@ const FreeMemberDashboard = () => {
             {/* Our Partners */}
             <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
                     <Building2 className="w-5 h-5 text-sky-600" />
                   </div>
