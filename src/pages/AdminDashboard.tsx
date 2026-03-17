@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,8 @@ interface PendingCounts {
   affiliates: number;
   places: number;
   reports: number;
+  businesses: number;
+  shelters: number;
 }
 
 const AdminDashboard = () => {
@@ -34,6 +36,8 @@ const AdminDashboard = () => {
     affiliates: 0,
     places: 0,
     reports: 0,
+    businesses: 0,
+    shelters: 0,
   });
 
   useEffect(() => {
@@ -73,7 +77,7 @@ const AdminDashboard = () => {
 
   const fetchPendingCounts = async () => {
     try {
-      const [supportRes, affiliatesRes, placesRes, reportsRes] = await Promise.all([
+      const [supportRes, affiliatesRes, placesRes, reportsRes, businessesRes, sheltersRes] = await Promise.all([
         // Support conversations with unread user messages (excluding affiliates)
         supabase
           .from("support_messages")
@@ -96,6 +100,16 @@ const AdminDashboard = () => {
           .from("community_reports")
           .select("*", { count: "exact", head: true })
           .eq("status", "pending"),
+        // Pending businesses
+        supabase
+          .from("businesses")
+          .select("*", { count: "exact", head: true })
+          .eq("verification_status", "pending"),
+        // Pending shelters
+        supabase
+          .from("shelters")
+          .select("*", { count: "exact", head: true })
+          .eq("verification_status", "pending"),
       ]);
 
       setPendingCounts({
@@ -103,6 +117,8 @@ const AdminDashboard = () => {
         affiliates: affiliatesRes.count || 0,
         places: placesRes.count || 0,
         reports: reportsRes.count || 0,
+        businesses: businessesRes.count || 0,
+        shelters: sheltersRes.count || 0,
       });
     } catch (error) {
       console.error("Error fetching pending counts:", error);
@@ -171,6 +187,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="users" className="gap-1">
               <Users className="w-4 h-4" />
               Users
+              <TabBadge count={pendingCounts.businesses + pendingCounts.shelters} />
             </TabsTrigger>
             <TabsTrigger value="engagement" className="gap-1">
               <TrendingUp className="w-4 h-4" />
