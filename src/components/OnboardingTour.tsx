@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface TourStep {
   icon: React.ElementType;
@@ -25,52 +26,71 @@ const OnboardingTour = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const { user, loading } = useAuth();
+  const scopedStorageKey = user ? `${storageKey}:${user.id}` : storageKey;
 
   useEffect(() => {
     let isMounted = true;
     let openTimer: number | null = null;
 
     const markTourSeen = async (userId: string) => {
-      localStorage.setItem(storageKey, "true");
+      localStorage.setItem(scopedStorageKey, "true");
 
-      await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({ onboarding_tour_seen_at: new Date().toISOString() })
         .eq("user_id", userId)
         .is("onboarding_tour_seen_at", null);
+
+      if (error) {
+        console.error("Failed to persist onboarding tour status:", error);
+      }
     };
 
     const checkTourEligibility = async () => {
-      const seen = localStorage.getItem(storageKey);
+      if (loading || !user) return;
+
+      if (!localStorage.getItem(scopedStorageKey)) {
+        localStorage.removeItem(storageKey);
+      }
+
+      const seen = localStorage.getItem(scopedStorageKey);
       if (seen) return;
 
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user || !isMounted) return;
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const { data: profile } = await supabase
+      if (!session?.user || session.user.id !== user.id || !isMounted) return;
+
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("login_count, onboarding_tour_seen_at")
-        .eq("user_id", user.id)
-        .single();
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Failed to load onboarding tour eligibility:", error);
+        return;
+      }
 
       if (!profile || !isMounted) return;
 
       if (profile.onboarding_tour_seen_at) {
-        localStorage.setItem(storageKey, "true");
+        localStorage.setItem(scopedStorageKey, "true");
         return;
       }
 
       const isFirstVerifiedSignIn = profile.login_count === null || profile.login_count <= 1;
 
       if (!isFirstVerifiedSignIn) {
-        await markTourSeen(user.id);
+        await markTourSeen(session.user.id);
         return;
       }
 
-      void markTourSeen(user.id);
+      void markTourSeen(session.user.id);
       openTimer = window.setTimeout(() => {
+        if (isMounted) setCurrentStep(0);
         if (isMounted) setIsOpen(true);
       }, 800);
     };
@@ -83,11 +103,11 @@ const OnboardingTour = ({
         window.clearTimeout(openTimer);
       }
     };
-  }, [storageKey]);
+  }, [storageKey, scopedStorageKey, user?.id, loading]);
 
   const handleClose = () => {
     setIsOpen(false);
-    localStorage.setItem(storageKey, "true");
+    localStorage.setItem(scopedStorageKey, "true");
   };
 
   const handleNext = () => {
