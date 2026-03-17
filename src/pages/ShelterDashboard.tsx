@@ -54,6 +54,7 @@ const ShelterDashboard = () => {
     dogs_in_care: "",
     years_operating: "",
     facebook_url: "",
+    tiktok_url: "",
     instagram_url: "",
     donation_link: "",
   });
