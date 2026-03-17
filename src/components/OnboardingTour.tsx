@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface TourStep {
   icon: React.ElementType;
@@ -27,10 +28,27 @@ const OnboardingTour = ({
 
   useEffect(() => {
     const seen = localStorage.getItem(storageKey);
-    if (!seen) {
-      const timer = setTimeout(() => setIsOpen(true), 800);
-      return () => clearTimeout(timer);
-    }
+    if (seen) return;
+
+    // Only show tour for genuinely new users (account created within last 10 minutes)
+    const checkIfNewUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const createdAt = new Date(user.created_at);
+      const now = new Date();
+      const minutesSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60);
+
+      if (minutesSinceCreation <= 10) {
+        const timer = setTimeout(() => setIsOpen(true), 800);
+        return () => clearTimeout(timer);
+      } else {
+        // Mark as seen for existing users so we never check again
+        localStorage.setItem(storageKey, "true");
+      }
+    };
+
+    checkIfNewUser();
   }, [storageKey]);
 
   const handleClose = () => {
