@@ -292,7 +292,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/shelters")}
-                    className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2 w-full"
+                    className="border-rose-300 text-rose-700 hover:bg-rose-200 hover:text-rose-900 gap-2 w-full"
                   >
                     View Shelters
                     <ArrowRight className="w-4 h-4" />
