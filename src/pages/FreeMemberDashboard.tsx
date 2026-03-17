@@ -331,7 +331,7 @@ const FreeMemberDashboard = () => {
             {/* Our Partners */}
             <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
                     <Building2 className="w-5 h-5 text-sky-600" />
                   </div>
