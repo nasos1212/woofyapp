@@ -36,6 +36,8 @@ const AdminDashboard = () => {
     affiliates: 0,
     places: 0,
     reports: 0,
+    businesses: 0,
+    shelters: 0,
   });
 
   useEffect(() => {
