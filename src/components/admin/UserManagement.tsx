@@ -153,13 +153,14 @@ const UserManagement = () => {
     setLoading(true);
     try {
       // Fetch all data in parallel with full details
-      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult, petsResult] = await Promise.all([
+      const [profilesResult, rolesResult, membershipsResult, businessesResult, sheltersResult, petsResult, locationsResult] = await Promise.all([
         supabase.from("profiles").select("id, user_id, full_name, email, created_at").order("created_at", { ascending: false }),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("memberships").select("*"),
         supabase.from("businesses").select("*"),
         supabase.from("shelters").select("*"),
         supabase.from("pets").select("id, pet_name, pet_type, pet_breed, birthday, age_years, gender, photo_url, created_at, owner_user_id"),
+        supabase.from("business_locations").select("id, business_id, city, phone"),
       ]);
 
       if (profilesResult.error) throw profilesResult.error;
