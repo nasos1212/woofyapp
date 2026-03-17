@@ -1196,7 +1196,17 @@ const UserManagement = () => {
                                 <div><span className="text-muted-foreground">Categories:</span> {getCategoriesLabel(user.business.categories)}</div>
                                 <div><span className="text-muted-foreground">City:</span> {user.business.city || "N/A"}</div>
                                 <div><span className="text-muted-foreground">Email:</span> {user.business.email}</div>
-                                <div><span className="text-muted-foreground">Phone:</span> {user.business.phone || "N/A"}</div>
+                                <div>
+                                  <span className="text-muted-foreground">Phone:</span>{" "}
+                                  {user.business.phone || "N/A"}
+                                  {user.business.locations
+                                    .filter((loc) => loc.phone && loc.phone !== user.business!.phone)
+                                    .map((loc) => (
+                                      <span key={loc.id} className="ml-1 text-muted-foreground">
+                                        • {loc.phone} ({loc.city})
+                                      </span>
+                                    ))}
+                                </div>
                                 <div><span className="text-muted-foreground">Created:</span> {formatDate(new Date(user.business.created_at))}</div>
                               </div>
                               {user.business.description && (
