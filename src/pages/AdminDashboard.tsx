@@ -77,7 +77,7 @@ const AdminDashboard = () => {
 
   const fetchPendingCounts = async () => {
     try {
-      const [supportRes, affiliatesRes, placesRes, reportsRes] = await Promise.all([
+      const [supportRes, affiliatesRes, placesRes, reportsRes, businessesRes, sheltersRes] = await Promise.all([
         // Support conversations with unread user messages (excluding affiliates)
         supabase
           .from("support_messages")
@@ -100,6 +100,16 @@ const AdminDashboard = () => {
           .from("community_reports")
           .select("*", { count: "exact", head: true })
           .eq("status", "pending"),
+        // Pending businesses
+        supabase
+          .from("businesses")
+          .select("*", { count: "exact", head: true })
+          .eq("verification_status", "pending"),
+        // Pending shelters
+        supabase
+          .from("shelters")
+          .select("*", { count: "exact", head: true })
+          .eq("verification_status", "pending"),
       ]);
 
       setPendingCounts({
@@ -107,6 +117,8 @@ const AdminDashboard = () => {
         affiliates: affiliatesRes.count || 0,
         places: placesRes.count || 0,
         reports: reportsRes.count || 0,
+        businesses: businessesRes.count || 0,
+        shelters: sheltersRes.count || 0,
       });
     } catch (error) {
       console.error("Error fetching pending counts:", error);
