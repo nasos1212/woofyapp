@@ -34,14 +34,26 @@ const handler = async (req: Request): Promise<Response> => {
       .from('email_verification_tokens')
       .select('*')
       .eq('token', token)
-      .is('verified_at', null)
       .single();
 
     if (tokenError || !tokenData) {
-      console.error("Token not found or already used:", tokenError);
+      console.error("Token not found:", tokenError);
       return new Response(
         JSON.stringify({ success: false, error: "Invalid or expired verification link" }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // If already verified, return success (handles race conditions / double-clicks)
+    if (tokenData.verified_at) {
+      console.log("Token already verified, returning success for user:", tokenData.user_id);
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          message: "Email already verified!",
+          email: tokenData.email 
+        }),
+        { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
 
