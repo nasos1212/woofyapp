@@ -238,7 +238,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
-                    className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2 w-full"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-200 hover:text-amber-900 gap-2 w-full"
                   >
                     View Alerts
                     <ArrowRight className="w-4 h-4" />
@@ -259,16 +259,13 @@ const FreeMemberDashboard = () => {
                     <p className="text-sm text-muted-foreground">
                       Discover where pets are welcome
                     </p>
-                    <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
-                      (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
-                    </p>
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/pet-friendly-places")}
-                    className="border-teal-300 text-teal-700 hover:bg-teal-50 gap-2 w-full"
+                    className="border-teal-300 text-teal-700 hover:bg-teal-200 hover:text-teal-900 gap-2 w-full"
                   >
                     Explore Places
                     <ArrowRight className="w-4 h-4" />
@@ -295,7 +292,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/shelters")}
-                    className="border-rose-300 text-rose-700 hover:bg-rose-50 gap-2 w-full"
+                    className="border-rose-300 text-rose-700 hover:bg-rose-200 hover:text-rose-900 gap-2 w-full"
                   >
                     View Shelters
                     <ArrowRight className="w-4 h-4" />
@@ -322,7 +319,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/offers")}
-                    className="border-purple-300 text-purple-700 hover:bg-purple-50 gap-2 w-full"
+                    className="border-purple-300 text-purple-700 hover:bg-purple-200 hover:text-purple-900 gap-2 w-full"
                   >
                     View Offers
                     <ArrowRight className="w-4 h-4" />
@@ -349,7 +346,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/partners")}
-                    className="border-sky-300 text-sky-700 hover:bg-sky-50 gap-2 w-full"
+                    className="border-sky-300 text-sky-700 hover:bg-sky-200 hover:text-sky-900 gap-2 w-full"
                   >
                     View Partners
                     <ArrowRight className="w-4 h-4" />
