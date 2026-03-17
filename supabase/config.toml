@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.verify-email-token]
 verify_jwt = false
+
+[functions.delete-single-user]
+verify_jwt = false
