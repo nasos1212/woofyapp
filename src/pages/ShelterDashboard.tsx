@@ -442,12 +442,12 @@ const ShelterDashboard = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="years_operating">Years Operating</Label>
+                        <Label htmlFor="years_operating">Operating Since (Year)</Label>
                         <Input
                           id="years_operating"
                           value={formData.years_operating}
                           onChange={(e) => setFormData(prev => ({ ...prev, years_operating: e.target.value }))}
-                          placeholder="e.g., 5+"
+                          placeholder="e.g., 2020"
                         />
                       </div>
                     </div>
