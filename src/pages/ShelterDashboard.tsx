@@ -19,6 +19,7 @@ import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
+import NotificationBell from "@/components/NotificationBell";
 import { 
   Home, 
   Clock, 
@@ -74,6 +75,22 @@ const ShelterDashboard = () => {
       return data;
     },
     enabled: !!user?.id,
+  });
+
+  // Fetch pending inquiry count for badge
+  const { data: pendingInquiryCount = 0 } = useQuery({
+    queryKey: ['pending-inquiry-count', shelter?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('adoption_inquiries')
+        .select('*', { count: 'exact', head: true })
+        .eq('shelter_id', shelter!.id)
+        .eq('status', 'pending');
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!shelter?.id,
   });
 
   // Update form when shelter data loads
@@ -227,6 +244,7 @@ const ShelterDashboard = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {getStatusBadge()}
+                <NotificationBell />
                 <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:flex">
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
@@ -333,8 +351,13 @@ const ShelterDashboard = () => {
                       <TabsTrigger value="adoptable-pets">
                         Pets
                       </TabsTrigger>
-                      <TabsTrigger value="inquiries">
+                      <TabsTrigger value="inquiries" className="relative">
                         Inquiries
+                        {pendingInquiryCount > 0 && (
+                          <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
+                            {pendingInquiryCount}
+                          </span>
+                        )}
                       </TabsTrigger>
                     </TabsList>
                   </div>
