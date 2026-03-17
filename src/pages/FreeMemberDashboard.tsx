@@ -259,9 +259,6 @@ const FreeMemberDashboard = () => {
                     <p className="text-sm text-muted-foreground">
                       Discover where pets are welcome
                     </p>
-                    <p className="text-[10px] text-muted-foreground/70 italic mt-0.5">
-                      (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
-                    </p>
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
