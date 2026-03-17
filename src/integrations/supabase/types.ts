@@ -2318,6 +2318,7 @@ export type Database = {
           mission_statement: string | null
           phone: string | null
           shelter_name: string
+          tiktok_url: string | null
           updated_at: string
           user_id: string | null
           verification_status: Database["public"]["Enums"]["verification_status"]
@@ -2345,6 +2346,7 @@ export type Database = {
           mission_statement?: string | null
           phone?: string | null
           shelter_name: string
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string | null
           verification_status?: Database["public"]["Enums"]["verification_status"]
@@ -2372,6 +2374,7 @@ export type Database = {
           mission_statement?: string | null
           phone?: string | null
           shelter_name?: string
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string | null
           verification_status?: Database["public"]["Enums"]["verification_status"]
