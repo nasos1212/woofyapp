@@ -223,7 +223,7 @@ const FreeMemberDashboard = () => {
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
                     <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
