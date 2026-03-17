@@ -15,6 +15,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
@@ -33,7 +41,11 @@ import {
   Instagram,
   ExternalLink,
   ImageIcon,
-  ChevronRight
+  ChevronRight,
+  User,
+  MessageCircle,
+  Bell,
+  Shield
 } from "lucide-react";
 
 const ShelterDashboard = () => {
