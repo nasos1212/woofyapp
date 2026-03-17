@@ -77,10 +77,10 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to verify token");
     }
 
-    // Update user profile as verified
+    // Update user profile as verified and reset login_count so first real login triggers tour
     const { error: updateProfileError } = await supabase
       .from('profiles')
-      .update({ email_verified: true })
+      .update({ email_verified: true, login_count: 0 })
       .eq('user_id', tokenData.user_id);
 
     if (updateProfileError) {
