@@ -54,6 +54,7 @@ const ShelterDashboard = () => {
     dogs_in_care: "",
     years_operating: "",
     facebook_url: "",
+    tiktok_url: "",
     instagram_url: "",
     donation_link: "",
   });
@@ -92,6 +93,7 @@ const ShelterDashboard = () => {
         years_operating: shelter.years_operating || "",
         facebook_url: shelter.facebook_url || "",
         instagram_url: shelter.instagram_url || "",
+        tiktok_url: shelter.tiktok_url || "",
         donation_link: shelter.donation_link || "",
       });
     }
@@ -107,6 +109,7 @@ const ShelterDashboard = () => {
         donation_link: data.donation_link ? ensureHttps(data.donation_link) : null,
         facebook_url: data.facebook_url ? ensureHttps(data.facebook_url) : null,
         instagram_url: data.instagram_url ? ensureHttps(data.instagram_url) : null,
+        tiktok_url: data.tiktok_url ? ensureHttps(data.tiktok_url) : null,
         updated_at: new Date().toISOString(),
       };
       
@@ -290,8 +293,8 @@ const ShelterDashboard = () => {
               <Card>
                 <CardContent className="py-4 text-center">
                   <Globe className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{shelter.years_operating || '-'}</div>
-                  <div className="text-sm text-muted-foreground">Years Operating</div>
+                  <div className="text-2xl font-bold">{shelter.years_operating ? `Since ${shelter.years_operating}` : '-'}</div>
+                  <div className="text-sm text-muted-foreground">Operating Since</div>
                 </CardContent>
               </Card>
             </div>
@@ -439,12 +442,12 @@ const ShelterDashboard = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="years_operating">Years Operating</Label>
+                        <Label htmlFor="years_operating">Operating Since (Year)</Label>
                         <Input
                           id="years_operating"
                           value={formData.years_operating}
                           onChange={(e) => setFormData(prev => ({ ...prev, years_operating: e.target.value }))}
-                          placeholder="e.g., 5+"
+                          placeholder="e.g., 2020"
                         />
                       </div>
                     </div>
@@ -501,6 +504,18 @@ const ShelterDashboard = () => {
                           value={formData.instagram_url}
                           onChange={(e) => setFormData(prev => ({ ...prev, instagram_url: e.target.value }))}
                           placeholder="https://instagram.com/yourpage"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tiktok_url" className="flex items-center gap-2">
+                          TikTok URL
+                        </Label>
+                        <Input
+                          id="tiktok_url"
+                          type="url"
+                          value={formData.tiktok_url}
+                          onChange={(e) => setFormData(prev => ({ ...prev, tiktok_url: e.target.value }))}
+                          placeholder="https://tiktok.com/@yourpage"
                         />
                       </div>
                     </div>

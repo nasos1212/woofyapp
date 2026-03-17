@@ -212,7 +212,7 @@ const ShelterProfile = () => {
                           <>
                             <span>•</span>
                             <Calendar className="h-4 w-4" />
-                            <span>{shelter.years_operating} years</span>
+                            <span>Since {shelter.years_operating}</span>
                           </>
                         )}
                       </div>
@@ -420,8 +420,8 @@ const ShelterProfile = () => {
               </div>
 
               {/* Social Links */}
-              {(shelter.facebook_url || shelter.instagram_url) && (
-                <div className="flex gap-3 mt-6 pt-4 border-t">
+              {(shelter.facebook_url || shelter.instagram_url || shelter.tiktok_url) && (
+                <div className="flex flex-wrap gap-3 mt-6 pt-4 border-t">
                   {shelter.facebook_url && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={ensureHttps(shelter.facebook_url)} target="_blank" rel="noopener noreferrer">
@@ -435,6 +435,13 @@ const ShelterProfile = () => {
                       <a href={ensureHttps(shelter.instagram_url)} target="_blank" rel="noopener noreferrer">
                         <Instagram className="h-4 w-4 mr-2" />
                         Instagram
+                      </a>
+                    </Button>
+                  )}
+                  {shelter.tiktok_url && (
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={ensureHttps(shelter.tiktok_url)} target="_blank" rel="noopener noreferrer">
+                        TikTok
                       </a>
                     </Button>
                   )}
