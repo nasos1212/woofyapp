@@ -351,8 +351,13 @@ const ShelterDashboard = () => {
                       <TabsTrigger value="adoptable-pets">
                         Pets
                       </TabsTrigger>
-                      <TabsTrigger value="inquiries">
+                      <TabsTrigger value="inquiries" className="relative">
                         Inquiries
+                        {pendingInquiryCount > 0 && (
+                          <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
+                            {pendingInquiryCount}
+                          </span>
+                        )}
                       </TabsTrigger>
                     </TabsList>
                   </div>
