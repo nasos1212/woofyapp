@@ -109,6 +109,7 @@ const ShelterDashboard = () => {
         donation_link: data.donation_link ? ensureHttps(data.donation_link) : null,
         facebook_url: data.facebook_url ? ensureHttps(data.facebook_url) : null,
         instagram_url: data.instagram_url ? ensureHttps(data.instagram_url) : null,
+        tiktok_url: data.tiktok_url ? ensureHttps(data.tiktok_url) : null,
         updated_at: new Date().toISOString(),
       };
       
