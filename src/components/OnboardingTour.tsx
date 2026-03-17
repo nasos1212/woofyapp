@@ -26,6 +26,7 @@ const OnboardingTour = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -34,27 +35,39 @@ const OnboardingTour = ({
     const markTourSeen = async (userId: string) => {
       localStorage.setItem(storageKey, "true");
 
-      await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({ onboarding_tour_seen_at: new Date().toISOString() })
         .eq("user_id", userId)
         .is("onboarding_tour_seen_at", null);
+
+      if (error) {
+        console.error("Failed to persist onboarding tour status:", error);
+      }
     };
 
     const checkTourEligibility = async () => {
+      if (loading || !user) return;
+
       const seen = localStorage.getItem(storageKey);
       if (seen) return;
 
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user || !isMounted) return;
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const { data: profile } = await supabase
+      if (!session?.user || session.user.id !== user.id || !isMounted) return;
+
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("login_count, onboarding_tour_seen_at")
-        .eq("user_id", user.id)
-        .single();
+        .eq("user_id", session.user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Failed to load onboarding tour eligibility:", error);
+        return;
+      }
 
       if (!profile || !isMounted) return;
 
@@ -66,12 +79,13 @@ const OnboardingTour = ({
       const isFirstVerifiedSignIn = profile.login_count === null || profile.login_count <= 1;
 
       if (!isFirstVerifiedSignIn) {
-        await markTourSeen(user.id);
+        await markTourSeen(session.user.id);
         return;
       }
 
-      void markTourSeen(user.id);
+      void markTourSeen(session.user.id);
       openTimer = window.setTimeout(() => {
+        if (isMounted) setCurrentStep(0);
         if (isMounted) setIsOpen(true);
       }, 800);
     };
@@ -84,7 +98,7 @@ const OnboardingTour = ({
         window.clearTimeout(openTimer);
       }
     };
-  }, [storageKey]);
+  }, [storageKey, user?.id, loading]);
 
   const handleClose = () => {
     setIsOpen(false);
