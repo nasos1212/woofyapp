@@ -27,20 +27,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(session?.user ?? null);
         setLoading(false);
 
-        // Increment login_count on sign in
+        // Increment login_count on sign in, but only for verified users
         if (event === 'SIGNED_IN' && session?.user) {
           supabase
             .from('profiles')
-            .select('login_count')
+            .select('login_count, email_verified')
             .eq('user_id', session.user.id)
             .single()
             .then(({ data }) => {
-              const currentCount = data?.login_count ?? 0;
-              supabase
-                .from('profiles')
-                .update({ login_count: currentCount + 1 })
-                .eq('user_id', session.user.id)
-                .then(() => {});
+              if (data?.email_verified) {
+                const currentCount = data?.login_count ?? 0;
+                supabase
+                  .from('profiles')
+                  .update({ login_count: currentCount + 1 })
+                  .eq('user_id', session.user.id)
+                  .then(() => {});
+              }
             });
         }
       }
