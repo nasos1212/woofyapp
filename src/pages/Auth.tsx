@@ -70,8 +70,8 @@ const Auth = () => {
     const checkAndRedirect = async () => {
       if (!user) return;
       
-      // Skip redirect during login-in-progress (prevents welcome toast for unverified users)
-      if (isLoginInProgress) return;
+      // Skip redirect during login or signup in progress
+      if (isLoginInProgress || isSignUpInProgress) return;
       
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 300));
