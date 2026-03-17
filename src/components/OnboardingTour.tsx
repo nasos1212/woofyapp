@@ -27,13 +27,14 @@ const OnboardingTour = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [animating, setAnimating] = useState(false);
   const { user, loading } = useAuth();
+  const scopedStorageKey = user ? `${storageKey}:${user.id}` : storageKey;
 
   useEffect(() => {
     let isMounted = true;
     let openTimer: number | null = null;
 
     const markTourSeen = async (userId: string) => {
-      localStorage.setItem(storageKey, "true");
+      localStorage.setItem(scopedStorageKey, "true");
 
       const { error } = await supabase
         .from("profiles")
@@ -49,7 +50,9 @@ const OnboardingTour = ({
     const checkTourEligibility = async () => {
       if (loading || !user) return;
 
-      const seen = localStorage.getItem(storageKey);
+      localStorage.removeItem(storageKey);
+
+      const seen = localStorage.getItem(scopedStorageKey);
       if (seen) return;
 
       const {
@@ -72,7 +75,7 @@ const OnboardingTour = ({
       if (!profile || !isMounted) return;
 
       if (profile.onboarding_tour_seen_at) {
-        localStorage.setItem(storageKey, "true");
+        localStorage.setItem(scopedStorageKey, "true");
         return;
       }
 
@@ -98,11 +101,11 @@ const OnboardingTour = ({
         window.clearTimeout(openTimer);
       }
     };
-  }, [storageKey, user?.id, loading]);
+  }, [storageKey, scopedStorageKey, user?.id, loading]);
 
   const handleClose = () => {
     setIsOpen(false);
-    localStorage.setItem(storageKey, "true");
+    localStorage.setItem(scopedStorageKey, "true");
   };
 
   const handleNext = () => {
