@@ -423,13 +423,6 @@ const Auth = () => {
                 body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
               }).catch(err => console.error("Verification email error:", err));
             }
-            
-            toast({
-              title: "Account Created!",
-              description: "Please check your email to verify your account, then complete your business registration.",
-            });
-            // Pass the full name to pre-fill business name
-            navigate(`/partner-register?name=${encodeURIComponent(fullName)}`);
           } else if (accountType === "shelter") {
             // For shelter accounts, update role to shelter (replacing member role from trigger)
             const { data: userData } = await supabase.auth.getUser();
@@ -458,17 +451,8 @@ const Auth = () => {
                 body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
               }).catch(err => console.error("Verification email error:", err));
             }
-            
-            toast({
-              title: "Account Created!",
-              description: "Please check your email to verify your account, then complete your shelter application.",
-            });
-            // Navigate to shelter onboarding
-            navigate("/shelter-onboarding");
           } else {
-            // For member accounts, add member role and redirect to free dashboard
-            // User will be a "free member" with community access only
-            // They can upgrade to paid membership later via onboarding
+            // For member accounts, add member role
             const { data: userData } = await supabase.auth.getUser();
             if (userData?.user) {
               await supabase
@@ -483,12 +467,20 @@ const Auth = () => {
                 body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
               }).catch(err => console.error("Verification email error:", err));
             }
-            
-            toast({
-              title: "Account Created!",
-              description: "Please check your email to verify your account.",
-            });
           }
+          
+          // Sign out immediately after signup to enforce email verification
+          // User must verify email before they can access any dashboard
+          await supabase.auth.signOut({ scope: 'local' });
+          
+          toast({
+            title: "Account Created! ✉️",
+            description: "Please check your email to verify your account before signing in.",
+          });
+          
+          // Navigate to verify-email page which shows "Check Your Email" instructions
+          navigate("/verify-email");
+        }
         }
       }
     } catch (error) {
