@@ -385,7 +385,7 @@ const Auth = () => {
         }
 
         setIsSignUpInProgress(true);
-        const { error, data } = await signUp(email, password, fullName);
+        const { error, data } = await signUp(email, password, fullName, accountType || "member");
         if (error) {
           if (error.message.includes("already registered")) {
             toast({
@@ -401,74 +401,13 @@ const Auth = () => {
             });
           }
         } else {
-          // For business accounts, update role to business (replacing member role from trigger)
-          if (accountType === "business") {
-            const { data: userData } = await supabase.auth.getUser();
-            if (userData?.user) {
-              // First delete the member role that was auto-assigned by trigger
-              await supabase
-                .from("user_roles")
-                .delete()
-                .eq("user_id", userData.user.id)
-                .eq("role", "member");
-              
-              // Then insert business role
-              await supabase
-                .from("user_roles")
-                .insert({
-                  user_id: userData.user.id,
-                  role: "business" as const,
-                });
-              
-              // Send verification email from hello@wooffy.app
-              supabase.functions.invoke("send-verification-email", {
-                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
-              }).catch(err => console.error("Verification email error:", err));
-            }
-          } else if (accountType === "shelter") {
-            // For shelter accounts, update role to shelter (replacing member role from trigger)
-            const { data: userData } = await supabase.auth.getUser();
-            if (userData?.user) {
-              // First delete the member role that was auto-assigned by trigger
-              await supabase
-                .from("user_roles")
-                .delete()
-                .eq("user_id", userData.user.id)
-                .eq("role", "member");
-              
-              // Then insert shelter role
-              const { error: roleError } = await supabase
-                .from("user_roles")
-                .insert({
-                  user_id: userData.user.id,
-                  role: "shelter" as const,
-                });
-              
-              if (roleError) {
-                console.error("Error adding shelter role:", roleError);
-              }
-              
-              // Send verification email from hello@wooffy.app
-              supabase.functions.invoke("send-verification-email", {
-                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
-              }).catch(err => console.error("Verification email error:", err));
-            }
-          } else {
-            // For member accounts, add member role
-            const { data: userData } = await supabase.auth.getUser();
-            if (userData?.user) {
-              await supabase
-                .from("user_roles")
-                .upsert(
-                  { user_id: userData.user.id, role: "member" as const },
-                  { onConflict: "user_id,role" }
-                );
-              
-              // Send verification email from hello@wooffy.app
-              supabase.functions.invoke("send-verification-email", {
-                body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
-              }).catch(err => console.error("Verification email error:", err));
-            }
+          // Role is now assigned by the handle_new_user trigger based on account_type metadata
+          // Just send the verification email
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData?.user) {
+            supabase.functions.invoke("send-verification-email", {
+              body: { email: email.trim(), userId: userData.user.id, fullName: fullName.trim() }
+            }).catch(err => console.error("Verification email error:", err));
           }
           
           // Sign out immediately after signup to enforce email verification
