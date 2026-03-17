@@ -293,8 +293,8 @@ const ShelterDashboard = () => {
               <Card>
                 <CardContent className="py-4 text-center">
                   <Globe className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{shelter.years_operating || '-'}</div>
-                  <div className="text-sm text-muted-foreground">Years Operating</div>
+                  <div className="text-2xl font-bold">{shelter.years_operating ? `Since ${shelter.years_operating}` : '-'}</div>
+                  <div className="text-sm text-muted-foreground">Operating Since</div>
                 </CardContent>
               </Card>
             </div>
