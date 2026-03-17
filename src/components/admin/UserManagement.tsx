@@ -184,6 +184,14 @@ const UserManagement = () => {
         created_at: m.created_at,
       }));
 
+      // Build locations map by business_id
+      const locationsMap = new Map<string, BusinessLocation[]>();
+      (locationsResult.data || []).forEach((loc: any) => {
+        const existing = locationsMap.get(loc.business_id) || [];
+        existing.push(loc);
+        locationsMap.set(loc.business_id, existing);
+      });
+
       const businessesMap = new Map<string, BusinessInfo>();
       (businessesResult.data || []).forEach(b => businessesMap.set(b.user_id, {
         id: b.id,
@@ -203,6 +211,7 @@ const UserManagement = () => {
         instagram_url: (b as any).instagram_url || null,
         facebook_url: (b as any).facebook_url || null,
         tiktok_url: (b as any).tiktok_url || null,
+        locations: locationsMap.get(b.id) || [],
       }));
 
       const sheltersMap = new Map<string, ShelterInfo>();
