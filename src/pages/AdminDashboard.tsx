@@ -22,6 +22,8 @@ interface PendingCounts {
   affiliates: number;
   places: number;
   reports: number;
+  businesses: number;
+  shelters: number;
 }
 
 const AdminDashboard = () => {
