@@ -414,11 +414,7 @@ const Auth = () => {
           // User must verify email before they can access any dashboard
           await supabase.auth.signOut({ scope: 'local' });
           
-          toast({
-            title: "Account Created! ✉️",
-            description: "Please check your email to verify your account before signing in.",
-            duration: 10000,
-          });
+          // No toast needed — the /verify-email page shows full "Check Your Email" instructions
           
           // Navigate to verify-email page which shows "Check Your Email" instructions
           navigate("/verify-email");
