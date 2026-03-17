@@ -410,9 +410,16 @@ export default function BusinessProfile() {
                     <h1 className="text-2xl font-bold text-foreground mb-1">
                       {business.business_name}
                     </h1>
-                    <Badge variant="secondary" className="mb-3">
-                      {categoryLabels[business.category] || business.category}
-                    </Badge>
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {((business as any).categories && (business as any).categories.length > 0
+                        ? (business as any).categories
+                        : [business.category]
+                      ).map((cat: string) => (
+                        <Badge key={cat} variant="secondary">
+                          {categoryLabels[cat] || cat}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
