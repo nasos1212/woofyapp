@@ -77,18 +77,8 @@ interface BusinessHour {
   close_time: string | null;
 }
 
-const categoryLabels: Record<string, string> = {
-  trainer: "Dog Trainer",
-  pet_shop: "Pet Shop",
-  hotel: "Pet Hotel",
-  grooming: "Grooming",
-  vet: "Veterinary",
-  daycare: "Daycare",
-  physio: "Physiotherapy",
-  accessories: "Accessories",
-  food: "Food & Treats",
-  other: "Other"
-};
+// Use shared category labels
+import { getCategoryLabel } from "@/data/businessCategories";
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
