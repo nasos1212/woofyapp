@@ -212,7 +212,7 @@ const ShelterProfile = () => {
                           <>
                             <span>•</span>
                             <Calendar className="h-4 w-4" />
-                            <span>{shelter.years_operating} years</span>
+                            <span>Since {shelter.years_operating}</span>
                           </>
                         )}
                       </div>
