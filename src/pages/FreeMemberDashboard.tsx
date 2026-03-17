@@ -319,7 +319,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/offers")}
-                    className="border-purple-300 text-purple-700 hover:bg-purple-50 gap-2 w-full"
+                    className="border-purple-300 text-purple-700 hover:bg-purple-200 hover:text-purple-900 gap-2 w-full"
                   >
                     View Offers
                     <ArrowRight className="w-4 h-4" />
