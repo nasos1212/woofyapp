@@ -304,7 +304,7 @@ const FreeMemberDashboard = () => {
             {/* Browse Offers */}
             <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
                     <Gift className="w-5 h-5 text-purple-600" />
                   </div>
