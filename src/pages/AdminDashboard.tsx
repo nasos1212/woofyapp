@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
