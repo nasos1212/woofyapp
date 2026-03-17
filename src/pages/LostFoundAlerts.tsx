@@ -845,28 +845,6 @@ const LostFoundAlerts = () => {
                           required
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label>Time (optional)</Label>
-                        <Input
-                          type="text"
-                          placeholder="HH:MM"
-                          value={lastSeenTime}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "" || /^([0-1]?[0-9]|2[0-3])?:?[0-5]?[0-9]?$/.test(value)) {
-                              setLastSeenTime(value);
-                            }
-                          }}
-                          onBlur={(e) => {
-                            const value = e.target.value;
-                            if (value && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
-                              const [hours, mins] = value.split(":");
-                              setLastSeenTime(`${hours.padStart(2, "0")}:${mins}`);
-                            }
-                          }}
-                          maxLength={5}
-                        />
-                      </div>
                     </div>
 
                     <div className="space-y-2">
