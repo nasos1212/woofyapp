@@ -454,9 +454,22 @@ export default function BusinessProfile() {
                       className="inline-flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                     >
                       <Phone className="w-4 h-4" />
-                      Call Now
+                      {business.phone}
                     </a>
                   )}
+                  {locations
+                    .filter((loc) => loc.phone && loc.phone !== business.phone)
+                    .map((loc) => (
+                      <a
+                        key={loc.id}
+                        href={`tel:${loc.phone}`}
+                        onClick={() => trackContactClick(business.id, business.business_name, "phone")}
+                        className="inline-flex items-center gap-2 px-3 py-2 bg-primary/90 text-primary-foreground rounded-lg hover:bg-primary/80 transition-colors text-sm font-medium"
+                      >
+                        <Phone className="w-4 h-4" />
+                        {loc.phone} <span className="text-primary-foreground/70 text-xs">({loc.city})</span>
+                      </a>
+                    ))}
                   
                   {business.website && (
                     <a
