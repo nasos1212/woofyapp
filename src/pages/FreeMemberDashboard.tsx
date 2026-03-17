@@ -238,7 +238,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
-                    className="border-amber-300 text-amber-700 hover:bg-amber-50 gap-2 w-full"
+                    className="border-amber-300 text-amber-700 hover:bg-amber-200 hover:text-amber-900 gap-2 w-full"
                   >
                     View Alerts
                     <ArrowRight className="w-4 h-4" />
