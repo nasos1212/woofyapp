@@ -77,18 +77,8 @@ interface BusinessHour {
   close_time: string | null;
 }
 
-const categoryLabels: Record<string, string> = {
-  trainer: "Dog Trainer",
-  pet_shop: "Pet Shop",
-  hotel: "Pet Hotel",
-  grooming: "Grooming",
-  vet: "Veterinary",
-  daycare: "Daycare",
-  physio: "Physiotherapy",
-  accessories: "Accessories",
-  food: "Food & Treats",
-  other: "Other"
-};
+// Use shared category labels
+import { getCategoryLabel } from "@/data/businessCategories";
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
@@ -139,7 +129,7 @@ export default function BusinessProfile() {
         // Check if owner
         const { data: ownerCheck } = await supabase
           .from("businesses")
-          .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
+          .select("id, user_id, business_name, description, category, categories, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
           .eq("id", id)
           .eq("user_id", user.id)
           .maybeSingle();
@@ -156,7 +146,7 @@ export default function BusinessProfile() {
           if (isAdmin) {
             const { data: adminCheck } = await supabase
               .from("businesses")
-              .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
+              .select("id, user_id, business_name, description, category, categories, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
               .eq("id", id)
               .maybeSingle();
             
@@ -410,9 +400,16 @@ export default function BusinessProfile() {
                     <h1 className="text-2xl font-bold text-foreground mb-1">
                       {business.business_name}
                     </h1>
-                    <Badge variant="secondary" className="mb-3">
-                      {categoryLabels[business.category] || business.category}
-                    </Badge>
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {((business as any).categories && (business as any).categories.length > 0
+                        ? (business as any).categories
+                        : [business.category]
+                      ).map((cat: string) => (
+                        <Badge key={cat} variant="secondary">
+                          {getCategoryLabel(cat)}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                   
                   <div className="flex items-center gap-2 flex-wrap">
