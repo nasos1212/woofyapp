@@ -25,6 +25,7 @@ interface Shelter {
   donation_link: string | null;
   
   dogs_in_care: string | null;
+  tiktok_url: string | null;
 }
 
 const MemberShelters = () => {
