@@ -358,20 +358,18 @@ const SheltersSection = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="yearsOperating">Years Operating *</Label>
+                <Label htmlFor="yearsOperating">Operating Since *</Label>
                 <Select
                   value={formData.yearsOperating}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, yearsOperating: value }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select range" />
+                    <SelectValue placeholder="Select year" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="<1">Less than 1 year</SelectItem>
-                    <SelectItem value="1-3">1-3 years</SelectItem>
-                    <SelectItem value="3-5">3-5 years</SelectItem>
-                    <SelectItem value="5-10">5-10 years</SelectItem>
-                    <SelectItem value="10+">10+ years</SelectItem>
+                    {Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                      <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

@@ -279,7 +279,7 @@ const ShelterManager = () => {
                         <p><span className="text-muted-foreground">Phone:</span> {shelter.phone || "Not provided"}</p>
                         <p><span className="text-muted-foreground">Website:</span> {shelter.website || "Not provided"}</p>
                         <p><span className="text-muted-foreground">Dogs in Care:</span> {shelter.dogs_in_care || "N/A"}</p>
-                        <p><span className="text-muted-foreground">Years Operating:</span> {shelter.years_operating || "N/A"}</p>
+                        <p><span className="text-muted-foreground">Operating Since:</span> {shelter.years_operating || "N/A"}</p>
                       </div>
                       {shelter.description && (
                         <p className="text-sm"><span className="text-muted-foreground">Description:</span> {shelter.description}</p>
