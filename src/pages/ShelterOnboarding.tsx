@@ -469,10 +469,10 @@ const ShelterOnboarding = () => {
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="yearsOperating">Years Operating</Label>
+                      <Label htmlFor="yearsOperating">Operating Since (Year)</Label>
                       <Input
                         id="yearsOperating"
-                        placeholder="e.g., 5"
+                        placeholder="e.g., 2020"
                         value={yearsOperating}
                         onChange={(e) => setYearsOperating(e.target.value)}
                       />

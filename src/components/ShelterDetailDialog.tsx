@@ -17,6 +17,7 @@ interface Shelter {
   website: string | null;
   donation_link: string | null;
   dogs_in_care: string | null;
+  tiktok_url: string | null;
 }
 
 interface ShelterDetailDialogProps {

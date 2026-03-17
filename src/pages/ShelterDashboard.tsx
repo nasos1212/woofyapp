@@ -506,6 +506,18 @@ const ShelterDashboard = () => {
                           placeholder="https://instagram.com/yourpage"
                         />
                       </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="tiktok_url" className="flex items-center gap-2">
+                          TikTok URL
+                        </Label>
+                        <Input
+                          id="tiktok_url"
+                          type="url"
+                          value={formData.tiktok_url}
+                          onChange={(e) => setFormData(prev => ({ ...prev, tiktok_url: e.target.value }))}
+                          placeholder="https://tiktok.com/@yourpage"
+                        />
+                      </div>
                     </div>
                   </TabsContent>
 
