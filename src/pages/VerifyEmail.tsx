@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { CheckCircle, XCircle, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ const VerifyEmail = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState("");
 
+  const verifyingRef = useRef(false);
+
   useEffect(() => {
     const token = searchParams.get("token");
     
@@ -20,6 +22,10 @@ const VerifyEmail = () => {
       setStatus("no-token");
       return;
     }
+
+    // Prevent double invocation (React StrictMode)
+    if (verifyingRef.current) return;
+    verifyingRef.current = true;
 
     const verifyToken = async () => {
       try {
