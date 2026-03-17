@@ -277,7 +277,7 @@ const FreeMemberDashboard = () => {
             {/* Shelters */}
             <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
                     <Heart className="w-5 h-5 text-rose-600" />
                   </div>
