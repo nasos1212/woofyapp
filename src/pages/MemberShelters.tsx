@@ -39,7 +39,7 @@ const MemberShelters = () => {
       try {
         const { data, error } = await supabase
           .from("shelters")
-          .select("id, shelter_name, location, city, description, mission_statement, logo_url, cover_photo_url, cover_photo_position, website, donation_link, dogs_in_care")
+          .select("id, shelter_name, location, city, description, mission_statement, logo_url, cover_photo_url, cover_photo_position, website, donation_link, dogs_in_care, tiktok_url")
           .eq("verification_status", "approved")
           .order("shelter_name");
 
