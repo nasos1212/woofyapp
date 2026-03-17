@@ -1858,6 +1858,7 @@ export type Database = {
           full_name: string | null
           id: string
           login_count: number | null
+          onboarding_tour_seen_at: string | null
           phone: string | null
           preferred_city: string | null
           preferred_language: string | null
@@ -1872,6 +1873,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           login_count?: number | null
+          onboarding_tour_seen_at?: string | null
           phone?: string | null
           preferred_city?: string | null
           preferred_language?: string | null
@@ -1886,6 +1888,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           login_count?: number | null
+          onboarding_tour_seen_at?: string | null
           phone?: string | null
           preferred_city?: string | null
           preferred_language?: string | null
