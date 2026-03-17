@@ -50,6 +50,7 @@ const Auth = () => {
   
   const [rejectedDialog, setRejectedDialog] = useState<{ open: boolean; type: "business" | "shelter" | null }>({ open: false, type: null });
   const [isLoginInProgress, setIsLoginInProgress] = useState(false);
+  const [isSignUpInProgress, setIsSignUpInProgress] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -69,8 +70,8 @@ const Auth = () => {
     const checkAndRedirect = async () => {
       if (!user) return;
       
-      // Skip redirect during login-in-progress (prevents welcome toast for unverified users)
-      if (isLoginInProgress) return;
+      // Skip redirect during login or signup in progress
+      if (isLoginInProgress || isSignUpInProgress) return;
       
       // Small delay to ensure session is fully established for RLS
       await new Promise(resolve => setTimeout(resolve, 300));
@@ -234,7 +235,7 @@ const Auth = () => {
     };
     
     checkAndRedirect();
-  }, [user, navigate, accountType, toast, isLogin, isLoginInProgress]);
+  }, [user, navigate, accountType, toast, isLogin, isLoginInProgress, isSignUpInProgress]);
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,6 +384,7 @@ const Auth = () => {
           return;
         }
 
+        setIsSignUpInProgress(true);
         const { error, data } = await signUp(email, password, fullName);
         if (error) {
           if (error.message.includes("already registered")) {
@@ -489,6 +491,7 @@ const Auth = () => {
         variant: "destructive",
       });
     } finally {
+      setIsSignUpInProgress(false);
       setIsLoading(false);
     }
   };
