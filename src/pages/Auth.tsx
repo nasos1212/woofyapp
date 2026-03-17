@@ -481,7 +481,6 @@ const Auth = () => {
           // Navigate to verify-email page which shows "Check Your Email" instructions
           navigate("/verify-email");
         }
-        }
       }
     } catch (error) {
       toast({
