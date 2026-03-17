@@ -88,31 +88,38 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Failed to update profile verification status");
     }
 
-    // Send welcome email now that they're verified
+    // Send welcome email only for pet owner (member) accounts
+    // Business and shelter accounts receive their welcome email upon admin approval
     try {
-      const [profileResult, petsResult] = await Promise.all([
+      const [profileResult, roleResult, petsResult] = await Promise.all([
         supabase.from('profiles').select('full_name').eq('user_id', tokenData.user_id).single(),
+        supabase.from('user_roles').select('role').eq('user_id', tokenData.user_id).single(),
         supabase.from('pets').select('pet_name').eq('owner_user_id', tokenData.user_id).limit(5),
       ]);
       
-      const petNames = (petsResult.data || []).map(p => p.pet_name).filter(Boolean);
+      const userRole = roleResult.data?.role || 'member';
       
-      // Call welcome email function via direct HTTP since we're in edge function
-      const response = await fetch(`${supabaseUrl}/functions/v1/send-welcome-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${supabaseServiceKey}`,
-        },
-        body: JSON.stringify({
-          email: tokenData.email,
-          fullName: profileResult.data?.full_name || '',
-          petNames,
-        })
-      });
-      
-      if (!response.ok) {
-        console.error("Welcome email failed:", await response.text());
+      if (userRole === 'member') {
+        const petNames = (petsResult.data || []).map(p => p.pet_name).filter(Boolean);
+        
+        const response = await fetch(`${supabaseUrl}/functions/v1/send-welcome-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseServiceKey}`,
+          },
+          body: JSON.stringify({
+            email: tokenData.email,
+            fullName: profileResult.data?.full_name || '',
+            petNames,
+          })
+        });
+        
+        if (!response.ok) {
+          console.error("Welcome email failed:", await response.text());
+        }
+      } else {
+        console.log(`Skipping welcome email for ${userRole} account — sent upon admin approval`);
       }
     } catch (welcomeErr) {
       console.error("Error sending welcome email:", welcomeErr);

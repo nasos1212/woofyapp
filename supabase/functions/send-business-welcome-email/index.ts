@@ -42,28 +42,33 @@ const handler = async (req: Request): Promise<Response> => {
 </style>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
-<div class="preview-text">Great news! ${businessName} has been approved on Wooffy.</div>
+<div class="preview-text">Great news! ${businessName} has been approved as a Wooffy partner. Start creating offers today!</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
-<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome to Wooffy! 🎉</h1>
-<p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">Your business has been approved</p>
+<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome, Partner! 🎉</h1>
+<p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">${businessName} is now live on Wooffy</p>
 </div>
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Great news! <strong>${businessName}</strong> has been approved as a Wooffy partner. You're now part of Cyprus's growing dog-friendly business network!
+Great news! <strong>${businessName}</strong> has been approved as a Wooffy partner. You're now part of Cyprus's growing pet-friendly business network, connecting you directly with hundreds of local pet owners!
 </p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Here's what you can do next:
+Here's how to get started:
 </p>
 <ul style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 30px; padding-left: 20px;">
-<li>🎁 Create exclusive offers for Wooffy members</li>
-<li>📊 Track redemptions and analytics</li>
-<li>🎂 Send birthday offers to pet owners</li>
-<li>⭐ Build your reputation with reviews</li>
+<li>🎁 <strong>Create offers</strong> — Set up exclusive discounts for Wooffy members</li>
+<li>📊 <strong>Track performance</strong> — Monitor redemptions and engagement analytics</li>
+<li>🎂 <strong>Birthday offers</strong> — Delight customers with pet birthday surprises</li>
+<li>⭐ <strong>Build reputation</strong> — Collect reviews from happy pet parents</li>
+<li>📸 <strong>Showcase your business</strong> — Add photos, hours & multiple locations</li>
 </ul>
 <div style="text-align: center; margin: 30px 0;">
 <a href="https://www.wooffy.app/business" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Go to Your Dashboard</a>
+</div>
+<div style="background-color: #eff6ff; border-radius: 8px; padding: 16px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+<p style="font-size: 14px; color: #1e40af; margin: 0; font-weight: 600;">💡 Quick win</p>
+<p style="font-size: 14px; color: #1e40af; margin: 8px 0 0;">Create your first offer now — members start seeing it immediately and can redeem at your location!</p>
 </div>
 <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
 Questions? Reply to this email — we're always here to help!
