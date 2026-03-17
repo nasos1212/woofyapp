@@ -296,10 +296,12 @@ const Header = () => {
                     <User className="mr-2 h-4 w-4" />
                     My Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/member/offers")}>
-                    <Tag className="mr-2 h-4 w-4" />
-                    Browse Offers
-                  </DropdownMenuItem>
+                  {!isShelter && (
+                    <DropdownMenuItem onClick={() => navigate("/member/offers")}>
+                      <Tag className="mr-2 h-4 w-4" />
+                      Browse Offers
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
