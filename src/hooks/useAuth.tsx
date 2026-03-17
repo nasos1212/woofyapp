@@ -26,6 +26,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Increment login_count on sign in
+        if (event === 'SIGNED_IN' && session?.user) {
+          supabase
+            .from('profiles')
+            .select('login_count')
+            .eq('user_id', session.user.id)
+            .single()
+            .then(({ data }) => {
+              const currentCount = data?.login_count ?? 0;
+              supabase
+                .from('profiles')
+                .update({ login_count: currentCount + 1 })
+                .eq('user_id', session.user.id)
+                .then(() => {});
+            });
+        }
       }
     );
 

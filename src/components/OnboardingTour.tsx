@@ -30,25 +30,27 @@ const OnboardingTour = ({
     const seen = localStorage.getItem(storageKey);
     if (seen) return;
 
-    // Only show tour for genuinely new users (account created within last 10 minutes)
-    const checkIfNewUser = async () => {
+    // Only show tour on first login after email verification (login_count <= 1)
+    const checkIfFirstLogin = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const createdAt = new Date(user.created_at);
-      const now = new Date();
-      const minutesSinceCreation = (now.getTime() - createdAt.getTime()) / (1000 * 60);
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("login_count")
+        .eq("user_id", user.id)
+        .single();
 
-      if (minutesSinceCreation <= 10) {
+      if (profile && (profile.login_count === null || profile.login_count <= 1)) {
         const timer = setTimeout(() => setIsOpen(true), 800);
         return () => clearTimeout(timer);
       } else {
-        // Mark as seen for existing users so we never check again
+        // Not first login — mark as seen so we never check again
         localStorage.setItem(storageKey, "true");
       }
     };
 
-    checkIfNewUser();
+    checkIfFirstLogin();
   }, [storageKey]);
 
   const handleClose = () => {
