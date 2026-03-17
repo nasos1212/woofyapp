@@ -27,30 +27,62 @@ const OnboardingTour = ({
   const [animating, setAnimating] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem(storageKey);
-    if (seen) return;
+    let isMounted = true;
+    let openTimer: number | null = null;
 
-    // Only show tour on first login after email verification (login_count <= 1)
-    const checkIfFirstLogin = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    const markTourSeen = async (userId: string) => {
+      localStorage.setItem(storageKey, "true");
+
+      await supabase
+        .from("profiles")
+        .update({ onboarding_tour_seen_at: new Date().toISOString() })
+        .eq("user_id", userId)
+        .is("onboarding_tour_seen_at", null);
+    };
+
+    const checkTourEligibility = async () => {
+      const seen = localStorage.getItem(storageKey);
+      if (seen) return;
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || !isMounted) return;
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("login_count")
+        .select("login_count, onboarding_tour_seen_at")
         .eq("user_id", user.id)
         .single();
 
-      if (profile && (profile.login_count === null || profile.login_count <= 1)) {
-        const timer = setTimeout(() => setIsOpen(true), 800);
-        return () => clearTimeout(timer);
-      } else {
-        // Not first login — mark as seen so we never check again
+      if (!profile || !isMounted) return;
+
+      if (profile.onboarding_tour_seen_at) {
         localStorage.setItem(storageKey, "true");
+        return;
       }
+
+      const isFirstVerifiedSignIn = profile.login_count === null || profile.login_count <= 1;
+
+      if (!isFirstVerifiedSignIn) {
+        await markTourSeen(user.id);
+        return;
+      }
+
+      void markTourSeen(user.id);
+      openTimer = window.setTimeout(() => {
+        if (isMounted) setIsOpen(true);
+      }, 800);
     };
 
-    checkIfFirstLogin();
+    void checkTourEligibility();
+
+    return () => {
+      isMounted = false;
+      if (openTimer !== null) {
+        window.clearTimeout(openTimer);
+      }
+    };
   }, [storageKey]);
 
   const handleClose = () => {
