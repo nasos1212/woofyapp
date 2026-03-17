@@ -550,6 +550,26 @@ const UserManagement = () => {
       if (status === "approved") updateData.verified_at = new Date().toISOString();
       const { error } = await supabase.from("shelters").update(updateData).eq("id", shelterId);
       if (error) throw error;
+
+      // Send welcome email on approval
+      if (status === "approved") {
+        const { data: shelter } = await supabase
+          .from("shelters")
+          .select("email, shelter_name, contact_name")
+          .eq("id", shelterId)
+          .maybeSingle();
+
+        if (shelter?.email) {
+          supabase.functions.invoke("send-shelter-welcome-email", {
+            body: {
+              email: shelter.email,
+              shelterName: shelter.shelter_name,
+              contactName: shelter.contact_name,
+            },
+          }).catch((err) => console.error("Failed to send shelter welcome email:", err));
+        }
+      }
+
       toast.success(`Shelter ${status}!`);
       fetchAllUsers();
     } catch (error: any) {
