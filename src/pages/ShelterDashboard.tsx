@@ -211,6 +211,7 @@ const ShelterDashboard = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
+        <ShelterOnboardingTour />
         {/* Header */}
         <header className="border-b bg-card pt-[env(safe-area-inset-top)]">
           <div className="w-full max-w-4xl mx-auto px-4 py-4 box-border">

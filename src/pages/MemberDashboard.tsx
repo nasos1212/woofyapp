@@ -359,6 +359,7 @@ const MemberDashboard = () => {
 
         <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-screen max-w-[100vw] overflow-x-hidden">
         <Header />
+        <PaidMemberOnboardingTour />
         {/* Rating Prompt Dialog */}
         {currentPrompt && (
           <RatingPromptDialog
