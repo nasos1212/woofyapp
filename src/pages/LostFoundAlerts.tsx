@@ -302,16 +302,10 @@ const LostFoundAlerts = () => {
     }
     const lastSeenLocation = locationParts.join(" - ");
 
-    let lastSeenDateTime: Date;
-    if (lastSeenTime) {
-      lastSeenDateTime = new Date(`${lastSeenDate}T${lastSeenTime}`);
-    } else {
-      // Default to current time if no time specified
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      lastSeenDateTime = new Date(`${lastSeenDate}T${hours}:${minutes}:00`);
-    }
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const lastSeenDateTime = new Date(`${lastSeenDate}T${hours}:${minutes}:00`);
 
     setIsCreating(true);
     try {
@@ -843,28 +837,6 @@ const LostFoundAlerts = () => {
                           }}
                           max={new Date().toISOString().split('T')[0]}
                           required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Time (optional)</Label>
-                        <Input
-                          type="text"
-                          placeholder="HH:MM"
-                          value={lastSeenTime}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (value === "" || /^([0-1]?[0-9]|2[0-3])?:?[0-5]?[0-9]?$/.test(value)) {
-                              setLastSeenTime(value);
-                            }
-                          }}
-                          onBlur={(e) => {
-                            const value = e.target.value;
-                            if (value && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value)) {
-                              const [hours, mins] = value.split(":");
-                              setLastSeenTime(`${hours.padStart(2, "0")}:${mins}`);
-                            }
-                          }}
-                          maxLength={5}
                         />
                       </div>
                     </div>
