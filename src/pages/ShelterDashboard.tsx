@@ -77,6 +77,22 @@ const ShelterDashboard = () => {
     enabled: !!user?.id,
   });
 
+  // Fetch pending inquiry count for badge
+  const { data: pendingInquiryCount = 0 } = useQuery({
+    queryKey: ['pending-inquiry-count', shelter?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('adoption_inquiries')
+        .select('*', { count: 'exact', head: true })
+        .eq('shelter_id', shelter!.id)
+        .eq('status', 'pending');
+      
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!shelter?.id,
+  });
+
   // Update form when shelter data loads
   useEffect(() => {
     if (shelter) {
