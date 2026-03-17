@@ -187,6 +187,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="users" className="gap-1">
               <Users className="w-4 h-4" />
               Users
+              <TabBadge count={pendingCounts.businesses + pendingCounts.shelters} />
             </TabsTrigger>
             <TabsTrigger value="engagement" className="gap-1">
               <TrendingUp className="w-4 h-4" />
