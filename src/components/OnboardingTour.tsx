@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 export interface TourStep {
   icon: React.ElementType;
