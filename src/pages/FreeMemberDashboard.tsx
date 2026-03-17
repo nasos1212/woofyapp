@@ -265,7 +265,7 @@ const FreeMemberDashboard = () => {
                   <Button 
                     variant="outline"
                     onClick={() => navigate("/member/pet-friendly-places")}
-                    className="border-teal-300 text-teal-700 hover:bg-teal-50 gap-2 w-full"
+                    className="border-teal-300 text-teal-700 hover:bg-teal-200 hover:text-teal-900 gap-2 w-full"
                   >
                     Explore Places
                     <ArrowRight className="w-4 h-4" />
