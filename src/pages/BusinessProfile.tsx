@@ -406,7 +406,7 @@ export default function BusinessProfile() {
                         : [business.category]
                       ).map((cat: string) => (
                         <Badge key={cat} variant="secondary">
-                          {categoryLabels[cat] || cat}
+                          {getCategoryLabel(cat)}
                         </Badge>
                       ))}
                     </div>
