@@ -285,13 +285,51 @@ const ShelterDashboard = () => {
               <div className="flex items-center gap-2 shrink-0">
                 {getStatusBadge()}
                 <NotificationBell />
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="hidden sm:flex">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-                <Button variant="ghost" size="icon" onClick={handleLogout} className="sm:hidden">
-                  <LogOut className="h-4 w-4" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || "User"} />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
+                          {profile?.full_name ? getInitials(profile.full_name) : user?.email?.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate("/shelter-dashboard")}>
+                      <User className="mr-2 h-4 w-4" />
+                      My Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/community")}>
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      Community Hub
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
+                      <Bell className="mr-2 h-4 w-4" />
+                      Notifications
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
+                          <Shield className="mr-2 h-4 w-4" />
+                          Admin Dashboard
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
