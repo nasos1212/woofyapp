@@ -23,7 +23,7 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const { email, fullName, petNames }: WelcomeEmailRequest = await req.json();
-    console.log("Sending welcome email to:", email);
+    console.log("Sending pet owner welcome email to:", email);
 
     if (!email) {
       throw new Error("Email is required");
@@ -37,8 +37,8 @@ const handler = async (req: Request): Promise<Response> => {
       : "Hi there,";
     
     const welcomeMessage = hasPets
-      ? `Welcome to the Wooffy family! We're thrilled to have you and ${petList} join our community of pet lovers in Cyprus.`
-      : `Welcome to the Wooffy family! We're thrilled to have you and your furry friend join our community of pet lovers in Cyprus.`;
+      ? `Welcome to the Wooffy family! We're thrilled to have you and ${petList} join our community of pet lovers in Cyprus. 🐾`
+      : `Welcome to the Wooffy family! We're thrilled to have you and your furry friend join our community of pet lovers in Cyprus. 🐾`;
 
     const htmlContent = `<!DOCTYPE html>
 <html>
@@ -50,10 +50,11 @@ const handler = async (req: Request): Promise<Response> => {
 </style>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
-<div class="preview-text">Welcome to the Wooffy family${hasPets ? `, ${petList}` : ''}! Start exploring exclusive pet benefits in Cyprus.</div>
+<div class="preview-text">Welcome to the Wooffy family${hasPets ? `, ${petList}` : ''}! Your pet parenting just got an upgrade.</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
-<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome to Wooffy! 🐾</h1>
+<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome, Pet Parent! 🐾</h1>
+<p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">Your Wooffy journey starts now</p>
 </div>
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
@@ -61,19 +62,24 @@ const handler = async (req: Request): Promise<Response> => {
 ${welcomeMessage}
 </p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-With Wooffy, you can:
+As a Wooffy member, here's what's waiting for you:
 </p>
 <ul style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 30px; padding-left: 20px;">
-<li>🎁 Access exclusive discounts at pet-friendly businesses</li>
-<li>🏥 Track your pet's health records</li>
-<li>🐕 Connect with the pet community</li>
-<li>🔔 Get personalized alerts and notifications</li>
+<li>🎁 Exclusive discounts at 100+ pet shops, vets, groomers & more</li>
+<li>🏥 Track vaccinations, vet visits & health records in one place</li>
+<li>🗺️ Discover dog-friendly cafés, parks & beaches across Cyprus</li>
+<li>🐕 Join the community — ask questions, share tips, help others</li>
+<li>🔔 Get birthday treats and personalized alerts for your pets</li>
 </ul>
 <div style="text-align: center; margin: 30px 0;">
-<a href="https://www.wooffy.app/member" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Get Started</a>
+<a href="https://www.wooffy.app/member" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Explore Your Dashboard</a>
+</div>
+<div style="background-color: #f0fdf4; border-radius: 8px; padding: 16px; margin: 20px 0; border-left: 4px solid #22c55e;">
+<p style="font-size: 14px; color: #166534; margin: 0; font-weight: 600;">💡 Pro tip</p>
+<p style="font-size: 14px; color: #166534; margin: 8px 0 0;">Add your pet's profile and birthday to unlock personalized offers from local businesses!</p>
 </div>
 <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
-Questions? Reply to this email - we're always here to help!
+Questions? Reply to this email — we're always here to help!
 </p>
 </div>
 <div style="background-color: #f9fafb; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
@@ -86,11 +92,11 @@ Questions? Reply to this email - we're always here to help!
     const emailResponse = await resend.emails.send({
       from: "Wooffy <hello@wooffy.app>",
       to: [email],
-      subject: "Welcome to Wooffy! 🐾",
+      subject: hasPets ? `Welcome to Wooffy, ${fullName} & ${petList}! 🐾` : "Welcome to Wooffy, Pet Parent! 🐾",
       html: htmlContent,
     });
 
-    console.log("Welcome email sent successfully:", emailResponse);
+    console.log("Pet owner welcome email sent successfully:", emailResponse);
 
     return new Response(JSON.stringify({ success: true, data: emailResponse }), {
       status: 200,

@@ -42,28 +42,32 @@ const handler = async (req: Request): Promise<Response> => {
 </style>
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
-<div class="preview-text">Great news! ${shelterName} has been approved on Wooffy.</div>
+<div class="preview-text">Great news! ${shelterName} is now part of the Wooffy family. Start listing pets for adoption!</div>
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
-<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome to Wooffy! 🐾</h1>
-<p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">Your shelter has been approved</p>
+<h1 style="color: #7DD3FC; margin: 0; font-size: 28px;">Welcome, Heroes! 💛</h1>
+<p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">${shelterName} is now on Wooffy</p>
 </div>
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">${greeting}</p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Great news! <strong>${shelterName}</strong> has been approved on Wooffy. Thank you for the incredible work you do for animals in Cyprus — we're honoured to support your mission!
+Great news! <strong>${shelterName}</strong> has been approved on Wooffy. Thank you for the incredible work you do for animals in Cyprus — we're honoured to support your mission! Remember, 10% of every Wooffy membership goes directly to supporting shelters like yours. 💛
 </p>
 <p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Here's what you can do next:
+Here's what you can do on your dashboard:
 </p>
 <ul style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 30px; padding-left: 20px;">
-<li>🐶 List pets available for adoption</li>
-<li>📸 Upload photos and tell your shelter's story</li>
-<li>📩 Receive and manage adoption inquiries</li>
-<li>💛 Connect with the Wooffy community</li>
+<li>🐶 <strong>List adoptable pets</strong> — Showcase animals looking for forever homes</li>
+<li>📸 <strong>Tell your story</strong> — Upload photos and share your shelter's mission</li>
+<li>📩 <strong>Manage inquiries</strong> — Receive and respond to adoption applications</li>
+<li>💛 <strong>Community support</strong> — Connect with the Wooffy pet-loving community</li>
 </ul>
 <div style="text-align: center; margin: 30px 0;">
-<a href="https://www.wooffy.app/shelter" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Go to Your Dashboard</a>
+<a href="https://www.wooffy.app/shelter-dashboard" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Go to Your Dashboard</a>
+</div>
+<div style="background-color: #fefce8; border-radius: 8px; padding: 16px; margin: 20px 0; border-left: 4px solid #eab308;">
+<p style="font-size: 14px; color: #854d0e; margin: 0; font-weight: 600;">💡 Get started</p>
+<p style="font-size: 14px; color: #854d0e; margin: 8px 0 0;">Add your first adoptable pet with photos — our members love browsing and sharing shelter pets with their friends!</p>
 </div>
 <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
 Questions? Reply to this email — we're always here to help!
@@ -79,7 +83,7 @@ Questions? Reply to this email — we're always here to help!
     const emailResponse = await resend.emails.send({
       from: "Wooffy <hello@wooffy.app>",
       to: [email],
-      subject: `Welcome to Wooffy, ${shelterName}! 🐾`,
+      subject: `Welcome to Wooffy, ${shelterName}! 💛`,
       html: htmlContent,
     });
 
