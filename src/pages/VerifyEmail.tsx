@@ -71,13 +71,16 @@ const VerifyEmail = () => {
   if (status === "no-token") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-wooffy-dark via-wooffy-dark to-wooffy-purple flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Mail className="w-8 h-8 text-amber-600" />
+        <div className="bg-card rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full text-center mx-4">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Mail className="w-7 h-7 sm:w-8 sm:h-8 text-amber-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Check Your Email</h1>
-          <p className="text-gray-600 mb-6">
-            We've sent you a verification link. Please check your inbox and click the link to verify your email.
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Check Your Email ✉️</h1>
+          <p className="text-muted-foreground text-sm sm:text-base mb-6">
+            We've sent you a verification link. Please check your inbox and click the link to verify your email before signing in.
+          </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Don't see it? Check your spam folder.
           </p>
           <Button onClick={() => navigate("/auth")} className="w-full">
             Back to Login
