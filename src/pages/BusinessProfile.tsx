@@ -139,7 +139,7 @@ export default function BusinessProfile() {
         // Check if owner
         const { data: ownerCheck } = await supabase
           .from("businesses")
-          .select("id, user_id, business_name, description, category, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
+          .select("id, user_id, business_name, description, category, categories, phone, email, address, city, website, logo_url, google_maps_url, instagram_url, facebook_url, tiktok_url")
           .eq("id", id)
           .eq("user_id", user.id)
           .maybeSingle();
