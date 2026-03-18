@@ -129,7 +129,7 @@ const MemberPartners = () => {
                   Our Partners
                 </h1>
                 <p className="text-muted-foreground">
-                  {partners.length} businesses accept your Wooffy card
+                  {partners.length} {partners.length === 1 ? 'business is' : 'businesses are'} part of our community
                 </p>
               </div>
             </div>
