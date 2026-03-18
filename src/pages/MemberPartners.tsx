@@ -129,7 +129,7 @@ const MemberPartners = () => {
                   Our Partners
                 </h1>
                 <p className="text-muted-foreground">
-                  {partners.length} {partners.length === 1 ? 'business is' : 'businesses are'} part of our community
+                  {partners.length} trusted {partners.length === 1 ? 'partner' : 'partners'} offering services for you and your pet
                 </p>
               </div>
             </div>
