@@ -221,7 +221,7 @@ const AddPet = () => {
       }
 
       toast.success(`${petName} has been added! 🐾`);
-      navigate("/member");
+      navigate(-1);
     } catch (error: any) {
       console.error("Error adding pet:", error);
       toast.error(error.message || "Failed to add pet");
