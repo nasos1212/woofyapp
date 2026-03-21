@@ -439,7 +439,7 @@ const UserManagement = () => {
   }, [users]);
 
   const getPlanLabel = (planType: string) => {
-    const labels: Record<string, string> = { single: "Solo Paw", duo: "Dynamic Duo", family: "Pack Leader", free: "Freemium" };
+    const labels: Record<string, string> = { single: "Solo Paw", duo: "Dynamic Duo", family: "Pack Leader", free: "Free" };
     return labels[planType] || planType;
   };
 
@@ -698,7 +698,7 @@ const UserManagement = () => {
 
   const getTargetLabel = (target: UserCategory) => {
     const labels: Record<UserCategory, string> = {
-      all: "All Users", members: "All Members", freemium: "Freemium Members",
+      all: "All Users", members: "All Members", freemium: "Free Members",
       paid: "Paid Members", businesses: "All Businesses", shelters: "All Shelters",
     };
     return labels[target];
@@ -747,7 +747,7 @@ const UserManagement = () => {
           <CardContent className="p-4 text-center">
             <CreditCard className="w-6 h-6 mx-auto mb-2 text-orange-500" />
             <p className="text-2xl font-bold">{counts.freemium}</p>
-            <p className="text-xs text-muted-foreground">Freemium</p>
+            <p className="text-xs text-muted-foreground">Free Members</p>
           </CardContent>
         </Card>
         <Card className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-colors ${activeTab === "paid" ? "ring-2 ring-green-500" : ""}`} onClick={() => setActiveTab("paid")}>
@@ -889,7 +889,7 @@ const UserManagement = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Members</SelectItem>
-                  <SelectItem value="freemium">Freemium Only</SelectItem>
+                  <SelectItem value="freemium">Free Members Only</SelectItem>
                   <SelectItem value="paid">Paid Only</SelectItem>
                   <SelectItem value="expiring">Expiring Soon</SelectItem>
                 </SelectContent>
@@ -930,7 +930,7 @@ const UserManagement = () => {
             <TabsList className="flex flex-wrap gap-1 h-auto p-1 mb-4 w-full justify-start">
               <TabsTrigger value="all" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">All ({counts.all})</TabsTrigger>
               <TabsTrigger value="members" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-yellow-500 data-[state=active]:text-white">Members ({counts.members})</TabsTrigger>
-              <TabsTrigger value="freemium" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-orange-500 data-[state=active]:text-white">Freemium ({counts.freemium})</TabsTrigger>
+              <TabsTrigger value="freemium" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-orange-500 data-[state=active]:text-white">Free ({counts.freemium})</TabsTrigger>
               <TabsTrigger value="paid" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-green-500 data-[state=active]:text-white">Paid ({counts.paid})</TabsTrigger>
               <TabsTrigger value="businesses" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-blue-500 data-[state=active]:text-white">Business ({counts.businesses})</TabsTrigger>
               <TabsTrigger value="shelters" className="text-xs sm:text-sm px-3 py-1.5 data-[state=active]:bg-rose-500 data-[state=active]:text-white">Shelters ({counts.shelters})</TabsTrigger>
