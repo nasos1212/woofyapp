@@ -16,7 +16,11 @@ import {
   Bookmark,
   MapPin,
   Sparkles,
-  Building2
+  Building2,
+  Dog,
+  Cat,
+  PlusCircle,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
