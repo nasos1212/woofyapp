@@ -316,7 +316,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
                   </DropdownMenuItem>
-                  {!hasMembership && !isBusiness && !isShelter && (
+                  {!isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
