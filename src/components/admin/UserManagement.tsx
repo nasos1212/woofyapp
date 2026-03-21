@@ -439,7 +439,7 @@ const UserManagement = () => {
   }, [users]);
 
   const getPlanLabel = (planType: string) => {
-    const labels: Record<string, string> = { single: "Solo Paw", duo: "Dynamic Duo", family: "Pack Leader", free: "Freemium" };
+    const labels: Record<string, string> = { single: "Solo Paw", duo: "Dynamic Duo", family: "Pack Leader", free: "Free" };
     return labels[planType] || planType;
   };
 
