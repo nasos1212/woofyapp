@@ -253,7 +253,89 @@ const FreeMemberDashboard = () => {
             </Card>
           </div>
 
-          {/* Feature Cards Row */}
+          {/* My Pets Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+                🐾 My Pets
+              </h2>
+              <Button 
+                size="sm" 
+                onClick={() => navigate("/member/add-pet")}
+                className="gap-1"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Add Pet
+              </Button>
+            </div>
+            
+            {pets.length === 0 ? (
+              <Card className="border-dashed border-2 border-muted-foreground/20">
+                <CardContent className="p-6 text-center">
+                  <Dog className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                  <h3 className="font-medium text-foreground mb-1">No pets yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Add your first pet to start tracking their health and more
+                  </p>
+                  <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
+                    <PlusCircle className="w-4 h-4" />
+                    Add Your First Pet
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {pets.map((pet) => (
+                  <Card 
+                    key={pet.id} 
+                    className="hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => navigate(`/member/pet/${pet.id}`)}
+                  >
+                    <CardContent className="p-4 flex items-center gap-4">
+                      {pet.photo_url ? (
+                        <img 
+                          src={pet.photo_url} 
+                          alt={pet.pet_name}
+                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                          {pet.pet_type === 'cat' ? (
+                            <Cat className="w-6 h-6 text-primary" />
+                          ) : (
+                            <Dog className="w-6 h-6 text-primary" />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? 'Cat' : 'Dog')}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {/* Quick actions for pet owners */}
+            {pets.length > 0 && (
+              <div className="mt-3 flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate("/member/health-records")}
+                  className="gap-1"
+                >
+                  <Syringe className="w-4 h-4" />
+                  Health Records
+                </Button>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
