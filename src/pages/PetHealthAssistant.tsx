@@ -67,7 +67,7 @@ const suggestedQuestions = [
 
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const { trackAIChat, trackFeatureUse } = useActivityTracking();
