@@ -31,6 +31,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
+import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
+
+interface Pet {
+  id: string;
+  pet_name: string;
+  pet_type: PetType;
+  pet_breed: string | null;
+  photo_url: string | null;
+}
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
