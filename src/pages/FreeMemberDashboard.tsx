@@ -520,7 +520,7 @@ const FreeMemberDashboard = () => {
                 <Crown className="w-5 h-5 text-primary hidden sm:block" />
                 <p className="text-sm text-foreground">
                   <span className="font-medium">Upgrade to unlock</span>
-                  <span className="text-muted-foreground"> exclusive discounts, pet profiles & more</span>
+                  <span className="text-muted-foreground"> exclusive discounts & AI health assistant</span>
                 </p>
               </div>
               <Button 
