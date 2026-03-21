@@ -121,6 +121,27 @@ const FreeMemberDashboard = () => {
     fetchProfile();
   }, [user]);
 
+  // Fetch pets
+  useEffect(() => {
+    const fetchPets = async () => {
+      if (!user) return;
+      const { data: membershipData } = await supabase
+        .from("memberships")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!membershipData) return;
+      const { data: petsData } = await supabase
+        .from("pets")
+        .select("id, pet_name, pet_type, pet_breed, photo_url")
+        .eq("membership_id", membershipData.id);
+      if (petsData) {
+        setPets(petsData.map(p => ({ ...p, pet_type: (p.pet_type === 'cat' ? 'cat' : 'dog') as PetType })));
+      }
+    };
+    fetchPets();
+  }, [user]);
+
 
   if (authLoading || membershipLoading || checkingRoles) {
     return (
