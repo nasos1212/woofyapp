@@ -380,7 +380,7 @@ const MemberOffers = () => {
           </Button>
 
           {/* Free Member Banner */}
-          {!membershipLoading && !hasMembership && (
+          {!membershipLoading && !isPaidMember && (
             <div className="bg-gradient-to-r from-primary/10 to-amber-100 rounded-2xl p-4 mb-6 border border-primary/20">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
