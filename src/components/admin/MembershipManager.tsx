@@ -26,7 +26,7 @@ const MembershipManager = () => {
   const [memberships, setMemberships] = useState<MembershipWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | "paid" | "free" | "inactive">("all");
 
   useEffect(() => {
     fetchMemberships();
