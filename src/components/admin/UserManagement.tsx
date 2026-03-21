@@ -1083,9 +1083,9 @@ const UserManagement = () => {
                                 <div className="flex items-center gap-2">
                                   <UserX className="w-4 h-4 text-muted-foreground" />
                                   <Switch checked={user.membership.is_active} onCheckedChange={() => toggleMembershipStatus(user.membership!)} />
-                                  <Crown className={`w-4 h-4 ${user.membership.is_active ? "text-amber-400" : "text-muted-foreground"}`} />
-                                  <Badge variant={user.membership.is_active ? "default" : "outline"} className={user.membership.is_active ? "bg-green-600" : "text-orange-400 border-orange-400"}>
-                                    {user.membership.is_active ? "Paid" : "Freemium"}
+                                  <Crown className={`w-4 h-4 ${user.membership.is_active && user.membership.plan_type !== 'free' ? "text-amber-400" : "text-muted-foreground"}`} />
+                                  <Badge variant={user.membership.is_active && user.membership.plan_type !== 'free' ? "default" : "outline"} className={user.membership.plan_type === 'free' ? "text-orange-400 border-orange-400" : "bg-green-600"}>
+                                    {user.membership.plan_type === 'free' ? "Free member" : "Paid member"}
                                   </Badge>
                                 </div>
                               </div>
