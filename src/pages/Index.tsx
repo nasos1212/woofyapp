@@ -36,7 +36,7 @@ const Index = () => {
       const [shelterResult, businessResult, membershipResult] = await Promise.all([
         supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
         supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
-        supabase.from("memberships").select("id, is_active").eq("user_id", user.id).maybeSingle(),
+        supabase.from("memberships").select("id, is_active, plan_type").eq("user_id", user.id).maybeSingle(),
       ]);
       
       const hasShelter = !!shelterResult.data;
