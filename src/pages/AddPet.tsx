@@ -282,7 +282,7 @@ const AddPet = () => {
               Add a New Pet
             </h1>
             <p className="text-muted-foreground">
-              {membership && `You can add ${membership.max_pets - currentPetCount} more pet${membership.max_pets - currentPetCount !== 1 ? 's' : ''}`}
+              You can add up to 5 pets
             </p>
           </div>
 
