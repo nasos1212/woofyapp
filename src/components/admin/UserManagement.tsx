@@ -366,8 +366,8 @@ const UserManagement = () => {
   const counts = useMemo(() => {
     // CRITICAL: Members must exclude shelters (by role OR record) and businesses
     const members = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
-    const freemium = members.filter(u => !u.membership || !u.membership.is_active);
-    const paid = members.filter(u => u.membership?.is_active);
+    const freemium = members.filter(u => u.membership?.plan_type === "free");
+    const paid = members.filter(u => u.membership?.is_active && u.membership.plan_type !== "free");
     // IMPORTANT: Exclude users with shelter records OR shelter role from business count
     const businesses = users.filter(u => (u.roles.includes("business") || u.business) && !u.shelter && !u.roles.includes("shelter"));
     const pendingBusinesses = businesses.filter(u => u.business?.verification_status === "pending");
@@ -419,7 +419,7 @@ const UserManagement = () => {
   // Plan distribution for paid members
   const planDistribution = useMemo(() => {
     const planCounts: Record<string, number> = {};
-    const paidMembers = users.filter(u => u.roles.includes("member") && u.membership?.is_active);
+    const paidMembers = users.filter(u => u.roles.includes("member") && u.membership?.is_active && u.membership.plan_type !== "free");
     
     paidMembers.forEach((u) => {
       const plan = u.membership?.plan_type || "single";
