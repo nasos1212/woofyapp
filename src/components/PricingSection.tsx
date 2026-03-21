@@ -32,7 +32,7 @@ const plans = [
   {
     id: "pack",
     name: "Pack Leader",
-    pets: 5,
+    pets: "3-5",
     petLabel: "You run the zoo — we've got you 🦁",
     price: 69,
     popular: false,
