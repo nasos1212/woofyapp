@@ -277,20 +277,10 @@ const FreeMemberDashboard = () => {
                   <p className="text-sm text-muted-foreground mb-4">
                     Add your first pet to start tracking their health and more
                   </p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
-                      <PlusCircle className="w-4 h-4" />
-                      Add Your First Pet
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => navigate("/member/health-records")}
-                      className="gap-2"
-                    >
-                      <Syringe className="w-4 h-4" />
-                      Health Records
-                    </Button>
-                  </div>
+                  <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
+                    <PlusCircle className="w-4 h-4" />
+                    Add Your First Pet
+                  </Button>
                 </CardContent>
               </Card>
             ) : (
