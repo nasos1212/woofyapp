@@ -977,10 +977,10 @@ const UserManagement = () => {
                             
                             {/* Membership Status - ONLY for actual members, NEVER for shelters or businesses */}
                             {user.roles.includes("member") && !user.shelter && !user.business && (
-                              user.membership?.is_active && user.membership.plan_type !== 'free' ? (
-                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">{getPlanLabel(user.membership.plan_type)}</Badge>
+                              user.membership?.plan_type === 'free' ? (
+                                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs">Free member</Badge>
                               ) : (
-                                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-xs">Freemium</Badge>
+                                <Badge className="bg-green-500/20 text-green-400 border-green-500/30 text-xs">Paid member</Badge>
                               )
                             )}
                             
