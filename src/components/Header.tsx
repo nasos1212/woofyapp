@@ -306,7 +306,7 @@ const Header = () => {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  {hasMembership && (
+                  {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
                       Redemption History
