@@ -68,7 +68,7 @@ const MemberUpgrade = () => {
               </h1>
               <p className="text-muted-foreground text-base leading-relaxed max-w-md mx-auto">
                 Premium plans are on their way! We're working hard to bring you exclusive discounts, 
-                AI health assistant, pet health records and much more.
+                AI health assistant, pet birthday offers and much more.
               </p>
             </div>
 
