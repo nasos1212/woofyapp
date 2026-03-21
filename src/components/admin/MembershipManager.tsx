@@ -268,14 +268,16 @@ const MembershipManager = () => {
                       />
                     </div>
                     <Badge
-                      variant={membership.is_active ? "default" : "outline"}
+                      variant={membership.is_active && membership.plan_type !== 'free' ? "default" : "outline"}
                       className={
-                        membership.is_active
+                        membership.is_active && membership.plan_type !== 'free'
                           ? "bg-green-600"
+                          : membership.plan_type === 'free'
+                          ? "text-blue-400 border-blue-400"
                           : "text-orange-400 border-orange-400"
                       }
                     >
-                      {membership.is_active ? "Paid" : "Freemium"}
+                      {membership.is_active && membership.plan_type !== 'free' ? "Paid" : membership.plan_type === 'free' ? "Free" : "Inactive"}
                     </Badge>
                   </div>
                 </div>
