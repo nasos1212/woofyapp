@@ -206,7 +206,7 @@ const MembershipManager = () => {
             />
           </div>
           <div className="flex gap-1">
-            {(["all", "active", "inactive"] as const).map((status) => (
+            {(["all", "paid", "free", "inactive"] as const).map((status) => (
               <Button
                 key={status}
                 size="sm"
@@ -214,7 +214,7 @@ const MembershipManager = () => {
                 onClick={() => setFilterStatus(status)}
                 className="capitalize"
               >
-                {status === "inactive" ? "Freemium" : status}
+                {status}
               </Button>
             ))}
           </div>
