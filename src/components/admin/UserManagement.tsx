@@ -889,7 +889,7 @@ const UserManagement = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Members</SelectItem>
-                  <SelectItem value="freemium">Freemium Only</SelectItem>
+                  <SelectItem value="freemium">Free Members Only</SelectItem>
                   <SelectItem value="paid">Paid Only</SelectItem>
                   <SelectItem value="expiring">Expiring Soon</SelectItem>
                 </SelectContent>
