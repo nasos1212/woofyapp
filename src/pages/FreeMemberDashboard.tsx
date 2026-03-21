@@ -277,10 +277,20 @@ const FreeMemberDashboard = () => {
                   <p className="text-sm text-muted-foreground mb-4">
                     Add your first pet to start tracking their health and more
                   </p>
-                  <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
-                    <PlusCircle className="w-4 h-4" />
-                    Add Your First Pet
-                  </Button>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
+                      <PlusCircle className="w-4 h-4" />
+                      Add Your First Pet
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => navigate("/member/health-records")}
+                      className="gap-2"
+                    >
+                      <Syringe className="w-4 h-4" />
+                      Health Records
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
@@ -320,20 +330,18 @@ const FreeMemberDashboard = () => {
               </div>
             )}
 
-            {/* Quick actions for pet owners */}
-            {pets.length > 0 && (
-              <div className="mt-3 flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => navigate("/member/health-records")}
-                  className="gap-1"
-                >
-                  <Syringe className="w-4 h-4" />
-                  Health Records
-                </Button>
-              </div>
-            )}
+            {/* Quick actions */}
+            <div className="mt-3 flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate("/member/health-records")}
+                className="gap-1"
+              >
+                <Syringe className="w-4 h-4" />
+                Health Records
+              </Button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
