@@ -90,23 +90,29 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
           normalized_plan_type: normalizePlanType(membership.plan_type),
         }));
 
-        const allPaidUserIds = new Set(normalizedMemberships.map((membership) => membership.user_id));
+        // Separate paid vs free memberships
+        const paidMemberships = normalizedMemberships.filter((m) => m.plan_type !== "free");
+        const freeMemberships = normalizedMemberships.filter((m) => m.plan_type === "free");
+
+        const allPaidUserIds = new Set(paidMemberships.map((m) => m.user_id));
         const activePaidUserIds = new Set(
-          normalizedMemberships
-            .filter((membership) => membership.is_active)
-            .map((membership) => membership.user_id)
+          paidMemberships
+            .filter((m) => m.is_active)
+            .map((m) => m.user_id)
         );
 
-        const membershipsInPeriod = normalizedMemberships.filter(
-          (membership) => new Date(membership.created_at) >= periodStart
+        const paidMembershipsInPeriod = paidMemberships.filter(
+          (m) => new Date(m.created_at) >= periodStart
         );
-        const paidUserIdsInPeriod = new Set(membershipsInPeriod.map((membership) => membership.user_id));
+        const paidUserIdsInPeriod = new Set(paidMembershipsInPeriod.map((m) => m.user_id));
 
-        const profilesInPeriod = profiles.filter((profile) => new Date(profile.created_at) >= periodStart);
-        const freeProfilesInPeriod = profilesInPeriod.filter((profile) => !allPaidUserIds.has(profile.user_id));
+        const freeMembershipsInPeriod = freeMemberships.filter(
+          (m) => new Date(m.created_at) >= periodStart
+        );
+        const freeUserIdsInPeriod = new Set(freeMembershipsInPeriod.map((m) => m.user_id));
 
         setPaidMembersInPeriod(paidUserIdsInPeriod.size);
-        setFreeMembersInPeriod(freeProfilesInPeriod.length);
+        setFreeMembersInPeriod(freeUserIdsInPeriod.size);
         setActiveMembers(activePaidUserIds.size);
         setTotalPaidMembers(allPaidUserIds.size);
         setTotalPets(petsRes.count || 0);
