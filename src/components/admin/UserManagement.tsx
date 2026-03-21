@@ -747,7 +747,7 @@ const UserManagement = () => {
           <CardContent className="p-4 text-center">
             <CreditCard className="w-6 h-6 mx-auto mb-2 text-orange-500" />
             <p className="text-2xl font-bold">{counts.freemium}</p>
-            <p className="text-xs text-muted-foreground">Freemium</p>
+            <p className="text-xs text-muted-foreground">Free Members</p>
           </CardContent>
         </Card>
         <Card className={`border-border/50 cursor-pointer hover:bg-muted/30 transition-colors ${activeTab === "paid" ? "ring-2 ring-green-500" : ""}`} onClick={() => setActiveTab("paid")}>
