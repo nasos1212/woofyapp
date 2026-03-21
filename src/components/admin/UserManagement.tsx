@@ -473,7 +473,7 @@ const UserManagement = () => {
       const newStatus = !membership.is_active;
       const { error } = await supabase.from("memberships").update({ is_active: newStatus }).eq("id", membership.id);
       if (error) throw error;
-      toast.success(newStatus ? "Membership activated" : "Membership set to freemium");
+      toast.success(newStatus ? "Membership activated" : "Membership set to free member");
       fetchAllUsers();
     } catch (error: any) {
       toast.error(error.message || "Failed to update membership");
