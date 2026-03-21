@@ -25,7 +25,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { hasMembership } = useMembership();
+  const { hasMembership, isPaidMember } = useMembership();
   const isHomePage = location.pathname === "/";
   const isAdminPage = location.pathname.startsWith("/admin");
   
