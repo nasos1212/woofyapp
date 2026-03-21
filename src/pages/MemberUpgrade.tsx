@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Sparkles, MapPin, Search, Users, Heart } from "lucide-react";
+import { ArrowLeft, Crown, Sparkles, MapPin, Search, Users, Heart, PawPrint, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
@@ -79,6 +79,24 @@ const MemberUpgrade = () => {
                 In the meantime, enjoy your free features:
               </h3>
               <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                    <PawPrint className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm text-foreground">Pet Profiles (up to 5)</p>
+                    <p className="text-xs text-muted-foreground">Create and manage profiles for your pets</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                    <ClipboardList className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm text-foreground">Pet Health Records</p>
+                    <p className="text-xs text-muted-foreground">Track vaccinations, vet visits & reminders</p>
+                  </div>
+                </div>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
                     <Search className="w-4 h-4 text-primary" />
