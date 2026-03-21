@@ -85,7 +85,7 @@ const MembershipManager = () => {
       toast.success(
         newStatus
           ? `${membership.user_name || membership.user_email} is now a paid member`
-          : `${membership.user_name || membership.user_email} is now freemium`
+          : `${membership.user_name || membership.user_email} is now a free member`
       );
     } catch (error: any) {
       console.error("Error toggling membership:", error);
