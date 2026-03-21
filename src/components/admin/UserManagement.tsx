@@ -286,14 +286,14 @@ const UserManagement = () => {
         // CRITICAL: Only show users with "member" role AND no shelter/business records
         result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
         if (membershipFilter === "freemium") {
-          result = result.filter(u => !u.membership || !u.membership.is_active);
+          result = result.filter(u => u.membership?.plan_type === "free");
         } else if (membershipFilter === "paid") {
-          result = result.filter(u => u.membership?.is_active);
+          result = result.filter(u => u.membership?.is_active && u.membership.plan_type !== "free");
         } else if (membershipFilter === "expiring") {
           const thirtyDaysFromNow = new Date();
           thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
           result = result.filter(u => {
-            if (!u.membership?.is_active) return false;
+            if (!u.membership?.is_active || u.membership.plan_type === "free") return false;
             const expiresAt = new Date(u.membership.expires_at);
             return expiresAt <= thirtyDaysFromNow && expiresAt > new Date();
           });
@@ -301,11 +301,11 @@ const UserManagement = () => {
         break;
       case "freemium":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER freemium
-        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.plan_type === "free");
         break;
       case "paid":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER paid members
-        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active);
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active && u.membership.plan_type !== "free");
         break;
       case "businesses":
         // IMPORTANT: Exclude users who have a shelter record - shelters should NEVER appear as businesses
