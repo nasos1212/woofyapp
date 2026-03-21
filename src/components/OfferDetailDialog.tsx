@@ -322,7 +322,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
             onClick={onClose}
             className="block"
           >
-            <Button className="w-full" variant={hasMembership ? "default" : "outline"} size="sm">
+            <Button className="w-full" variant={isPaidMember ? "default" : "outline"} size="sm">
               <Building2 className="w-4 h-4 mr-2" />
               View Business Profile
             </Button>
