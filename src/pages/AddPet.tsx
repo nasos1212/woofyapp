@@ -221,7 +221,7 @@ const AddPet = () => {
       }
 
       toast.success(`${petName} has been added! 🐾`);
-      navigate("/member");
+      navigate(-1);
     } catch (error: any) {
       console.error("Error adding pet:", error);
       toast.error(error.message || "Failed to add pet");
@@ -265,9 +265,9 @@ const AddPet = () => {
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
         <Header />
         <div className="container max-w-xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
-          <Button variant="ghost" onClick={() => navigate("/member")} className="mb-6">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            Back
           </Button>
 
           <div className="text-center mb-8">
