@@ -174,18 +174,22 @@ const MembershipManager = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div className="p-3 rounded-lg bg-muted/30 text-center">
             <p className="text-2xl font-bold">{memberships.length}</p>
             <p className="text-xs text-muted-foreground">Total</p>
           </div>
           <div className="p-3 rounded-lg bg-green-500/10 text-center">
-            <p className="text-2xl font-bold text-green-400">{activeCount}</p>
+            <p className="text-2xl font-bold text-green-400">{paidCount}</p>
             <p className="text-xs text-muted-foreground">Paid</p>
           </div>
+          <div className="p-3 rounded-lg bg-blue-500/10 text-center">
+            <p className="text-2xl font-bold text-blue-400">{freeCount}</p>
+            <p className="text-xs text-muted-foreground">Free</p>
+          </div>
           <div className="p-3 rounded-lg bg-orange-500/10 text-center">
-            <p className="text-2xl font-bold text-orange-400">{freemiumCount}</p>
-            <p className="text-xs text-muted-foreground">Freemium</p>
+            <p className="text-2xl font-bold text-orange-400">{inactiveCount}</p>
+            <p className="text-xs text-muted-foreground">Inactive</p>
           </div>
         </div>
 
