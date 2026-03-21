@@ -38,6 +38,7 @@ const ExpiringMembershipsPanel = () => {
         .from("memberships")
         .select("id, user_id, expires_at, plan_type, member_number")
         .eq("is_active", true)
+        .neq("plan_type", "free")
         .lte("expires_at", thirtyDaysFromNow.toISOString())
         .gt("expires_at", now.toISOString())
         .order("expires_at", { ascending: true });
