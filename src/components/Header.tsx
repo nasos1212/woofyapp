@@ -35,7 +35,7 @@ const Header = () => {
     ? (hasShelterRecord ? "/shelter-dashboard" : "/shelter-onboarding")
     : isBusiness 
       ? "/business" 
-      : (hasMembership ? "/member" : "/member/free");
+      : (isPaidMember ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
     await signOut();
