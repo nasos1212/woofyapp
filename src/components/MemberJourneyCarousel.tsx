@@ -26,7 +26,7 @@ const journeySteps = [
     description: "Enjoy free features forever",
     color: "from-emerald-500 to-teal-500",
     bgColor: "bg-emerald-50",
-    features: ["Lost & Found alerts", "Community Q&A", "Dog-friendly places"],
+    features: ["Pet profiles & health records", "Lost & Found alerts", "Community Q&A", "Dog-friendly places"],
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const journeySteps = [
     description: "Full membership benefits",
     color: "from-primary to-purple-500",
     bgColor: "bg-primary/5",
-    features: ["Exclusive discounts", "AI health assistant", "Pet health records"],
+    features: ["Exclusive discounts", "AI health assistant", "Pet birthday offers"],
   },
 ];
 
