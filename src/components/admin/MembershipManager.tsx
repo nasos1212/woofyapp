@@ -156,8 +156,9 @@ const MembershipManager = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const activeCount = memberships.filter((m) => m.is_active).length;
-  const freemiumCount = memberships.filter((m) => !m.is_active).length;
+  const paidCount = memberships.filter((m) => m.is_active && m.plan_type !== 'free').length;
+  const freeCount = memberships.filter((m) => m.plan_type === 'free').length;
+  const inactiveCount = memberships.filter((m) => !m.is_active).length;
 
   if (loading) {
     return <p className="text-muted-foreground">Loading memberships...</p>;
