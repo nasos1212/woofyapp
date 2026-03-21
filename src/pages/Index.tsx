@@ -56,7 +56,7 @@ const Index = () => {
       }
       
       // Regular members
-      if (hasMembership && membershipResult.data?.is_active) {
+      if (hasMembership && membershipResult.data?.is_active && membershipResult.data?.plan_type !== 'free') {
         navigate("/member");
       } else {
         navigate("/member/free");
