@@ -758,7 +758,7 @@ const MemberOffers = () => {
                         </span>
                       </div>
 
-                      {!hasMembership ? (
+                      {!isPaidMember ? (
                         <Badge className="bg-amber-100 text-amber-700 border-amber-200">
                           <Lock className="w-3 h-3 mr-1" />
                           Upgrade to Redeem
