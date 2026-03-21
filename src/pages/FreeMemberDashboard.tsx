@@ -30,7 +30,7 @@ import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState<string | null>(null);
   const [checkingRoles, setCheckingRoles] = useState(true);
