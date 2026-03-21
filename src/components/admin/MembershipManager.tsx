@@ -26,7 +26,7 @@ const MembershipManager = () => {
   const [memberships, setMemberships] = useState<MembershipWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all");
+  const [filterStatus, setFilterStatus] = useState<"all" | "paid" | "free" | "inactive">("all");
 
   useEffect(() => {
     fetchMemberships();
@@ -150,14 +150,16 @@ const MembershipManager = () => {
 
     const matchesFilter =
       filterStatus === "all" ||
-      (filterStatus === "active" && m.is_active) ||
+      (filterStatus === "paid" && m.is_active && m.plan_type !== 'free') ||
+      (filterStatus === "free" && m.plan_type === 'free') ||
       (filterStatus === "inactive" && !m.is_active);
 
     return matchesSearch && matchesFilter;
   });
 
-  const activeCount = memberships.filter((m) => m.is_active).length;
-  const freemiumCount = memberships.filter((m) => !m.is_active).length;
+  const paidCount = memberships.filter((m) => m.is_active && m.plan_type !== 'free').length;
+  const freeCount = memberships.filter((m) => m.plan_type === 'free').length;
+  const inactiveCount = memberships.filter((m) => !m.is_active).length;
 
   if (loading) {
     return <p className="text-muted-foreground">Loading memberships...</p>;
@@ -173,18 +175,22 @@ const MembershipManager = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <div className="p-3 rounded-lg bg-muted/30 text-center">
             <p className="text-2xl font-bold">{memberships.length}</p>
             <p className="text-xs text-muted-foreground">Total</p>
           </div>
           <div className="p-3 rounded-lg bg-green-500/10 text-center">
-            <p className="text-2xl font-bold text-green-400">{activeCount}</p>
+            <p className="text-2xl font-bold text-green-400">{paidCount}</p>
             <p className="text-xs text-muted-foreground">Paid</p>
           </div>
+          <div className="p-3 rounded-lg bg-blue-500/10 text-center">
+            <p className="text-2xl font-bold text-blue-400">{freeCount}</p>
+            <p className="text-xs text-muted-foreground">Free</p>
+          </div>
           <div className="p-3 rounded-lg bg-orange-500/10 text-center">
-            <p className="text-2xl font-bold text-orange-400">{freemiumCount}</p>
-            <p className="text-xs text-muted-foreground">Freemium</p>
+            <p className="text-2xl font-bold text-orange-400">{inactiveCount}</p>
+            <p className="text-xs text-muted-foreground">Inactive</p>
           </div>
         </div>
 
@@ -200,7 +206,7 @@ const MembershipManager = () => {
             />
           </div>
           <div className="flex gap-1">
-            {(["all", "active", "inactive"] as const).map((status) => (
+            {(["all", "paid", "free", "inactive"] as const).map((status) => (
               <Button
                 key={status}
                 size="sm"
@@ -208,7 +214,7 @@ const MembershipManager = () => {
                 onClick={() => setFilterStatus(status)}
                 className="capitalize"
               >
-                {status === "inactive" ? "Freemium" : status}
+                {status}
               </Button>
             ))}
           </div>
@@ -262,14 +268,16 @@ const MembershipManager = () => {
                       />
                     </div>
                     <Badge
-                      variant={membership.is_active ? "default" : "outline"}
+                      variant={membership.is_active && membership.plan_type !== 'free' ? "default" : "outline"}
                       className={
-                        membership.is_active
+                        membership.is_active && membership.plan_type !== 'free'
                           ? "bg-green-600"
+                          : membership.plan_type === 'free'
+                          ? "text-blue-400 border-blue-400"
                           : "text-orange-400 border-orange-400"
                       }
                     >
-                      {membership.is_active ? "Paid" : "Freemium"}
+                      {membership.is_active && membership.plan_type !== 'free' ? "Paid" : membership.plan_type === 'free' ? "Free" : "Inactive"}
                     </Badge>
                   </div>
                 </div>
