@@ -330,21 +330,36 @@ const FreeMemberDashboard = () => {
               </div>
             )}
 
-            {/* Quick actions */}
-            <div className="mt-3 flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => navigate("/member/health-records")}
-                className="gap-1"
-              >
-                <Syringe className="w-4 h-4" />
-                Health Records
-              </Button>
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+            {/* Health Records */}
+            <Card className="bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-start gap-3 mb-2">
+                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
+                    <Syringe className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">Health Records</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Track vaccinations & vet visits
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
+                  <Button 
+                    variant="outline"
+                    onClick={() => navigate("/member/health-records")}
+                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-900 gap-2 w-full"
+                  >
+                    View Records
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
