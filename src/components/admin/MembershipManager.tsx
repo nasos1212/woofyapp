@@ -150,7 +150,8 @@ const MembershipManager = () => {
 
     const matchesFilter =
       filterStatus === "all" ||
-      (filterStatus === "active" && m.is_active) ||
+      (filterStatus === "paid" && m.is_active && m.plan_type !== 'free') ||
+      (filterStatus === "free" && m.plan_type === 'free') ||
       (filterStatus === "inactive" && !m.is_active);
 
     return matchesSearch && matchesFilter;
