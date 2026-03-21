@@ -161,11 +161,9 @@ const PetHealthRecords = () => {
         navigate("/business");
       } else if (isShelter) {
         navigate("/shelter-dashboard");
-      } else if (!membershipLoading && !hasMembership) {
-        navigate("/member/free");
       }
     }
-  }, [user, loading, hasMembership, membershipLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
+  }, [user, loading, isBusiness, isShelter, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (user) {

@@ -126,7 +126,7 @@ const FreeMemberDashboard = () => {
   }
 
   // Redirect paid members to member dashboard
-  if (hasMembership) {
+  if (isPaidMember) {
     return <Navigate to="/member" replace />;
   }
 

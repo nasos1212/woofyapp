@@ -103,11 +103,9 @@ const PetProfile = () => {
         navigate("/business");
       } else if (isShelter) {
         navigate("/shelter-dashboard");
-      } else if (!membershipLoading && !hasMembership) {
-        navigate("/member/free");
       }
     }
-  }, [user, authLoading, hasMembership, membershipLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
+  }, [user, authLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
 
   useEffect(() => {
     const fetchPet = async () => {

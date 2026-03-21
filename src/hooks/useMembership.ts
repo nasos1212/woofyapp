@@ -50,11 +50,15 @@ export const useMembership = () => {
   }, [user, authLoading]);
 
   const hasMembership = !!membership && membership.is_active === true;
+  const isPaidMember = hasMembership && membership!.plan_type !== 'free';
+  const isFreeMember = hasMembership && membership!.plan_type === 'free';
   const isExpired = membership ? new Date(membership.expires_at) < new Date() : false;
 
   return {
     membership,
     hasMembership,
+    isPaidMember,
+    isFreeMember,
     isExpired,
     loading: authLoading || loading,
   };
