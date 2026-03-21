@@ -143,8 +143,8 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
         const countInRange = (items: { created_at: string }[], start: Date, end: Date) =>
           items.filter(i => { const d = new Date(i.created_at); return isAfter(d, start) && !isAfter(d, end); }).length;
 
-        const paidItems = normalizedMemberships.map(m => ({ created_at: m.created_at }));
-        const freeItems = profiles.filter(p => !allPaidUserIds.has(p.user_id)).map(p => ({ created_at: p.created_at }));
+        const paidItems = paidMemberships.map(m => ({ created_at: m.created_at }));
+        const freeItems = freeMemberships.map(m => ({ created_at: m.created_at }));
 
         setMemberGrowth({
           paidWoW: [countInRange(paidItems, oneWeekAgo, now), countInRange(paidItems, twoWeeksAgo, oneWeekAgo)],
