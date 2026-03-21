@@ -107,7 +107,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 
 const PetHealthRecords = () => {
   const { user, loading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, membership, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
