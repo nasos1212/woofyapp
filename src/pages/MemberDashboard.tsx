@@ -124,8 +124,8 @@ const MemberDashboard = () => {
           .eq("user_id", user.id)
           .maybeSingle();
 
-        // Check if user has a valid active membership
-        if (!membershipData || !membershipData.is_active) {
+        // Check if user has a valid active PAID membership
+        if (!membershipData || !membershipData.is_active || membershipData.plan_type === 'free') {
           setHasMembership(false);
           setIsLoading(false);
           return;

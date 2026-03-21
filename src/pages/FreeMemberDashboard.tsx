@@ -16,7 +16,11 @@ import {
   Bookmark,
   MapPin,
   Sparkles,
-  Building2
+  Building2,
+  Dog,
+  Cat,
+  PlusCircle,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,15 +31,25 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
+import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
+
+interface Pet {
+  id: string;
+  pet_name: string;
+  pet_type: PetType;
+  pet_breed: string | null;
+  photo_url: string | null;
+}
 
 const FreeMemberDashboard = () => {
   const { user, loading: authLoading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState<string | null>(null);
   const [checkingRoles, setCheckingRoles] = useState(true);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
+  const [pets, setPets] = useState<Pet[]>([]);
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
@@ -107,6 +121,27 @@ const FreeMemberDashboard = () => {
     fetchProfile();
   }, [user]);
 
+  // Fetch pets
+  useEffect(() => {
+    const fetchPets = async () => {
+      if (!user) return;
+      const { data: membershipData } = await supabase
+        .from("memberships")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!membershipData) return;
+      const { data: petsData } = await supabase
+        .from("pets")
+        .select("id, pet_name, pet_type, pet_breed, photo_url")
+        .eq("membership_id", membershipData.id);
+      if (petsData) {
+        setPets(petsData.map(p => ({ ...p, pet_type: (p.pet_type === 'cat' ? 'cat' : 'dog') as PetType })));
+      }
+    };
+    fetchPets();
+  }, [user]);
+
 
   if (authLoading || membershipLoading || checkingRoles) {
     return (
@@ -126,7 +161,7 @@ const FreeMemberDashboard = () => {
   }
 
   // Redirect paid members to member dashboard
-  if (hasMembership) {
+  if (isPaidMember) {
     return <Navigate to="/member" replace />;
   }
 
@@ -218,7 +253,89 @@ const FreeMemberDashboard = () => {
             </Card>
           </div>
 
-          {/* Feature Cards Row */}
+          {/* My Pets Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+                🐾 My Pets
+              </h2>
+              <Button 
+                size="sm" 
+                onClick={() => navigate("/member/add-pet")}
+                className="gap-1"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Add Pet
+              </Button>
+            </div>
+            
+            {pets.length === 0 ? (
+              <Card className="border-dashed border-2 border-muted-foreground/20">
+                <CardContent className="p-6 text-center">
+                  <Dog className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                  <h3 className="font-medium text-foreground mb-1">No pets yet</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Add your first pet to start tracking their health and more
+                  </p>
+                  <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
+                    <PlusCircle className="w-4 h-4" />
+                    Add Your First Pet
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {pets.map((pet) => (
+                  <Card 
+                    key={pet.id} 
+                    className="hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => navigate(`/member/pet/${pet.id}`)}
+                  >
+                    <CardContent className="p-4 flex items-center gap-4">
+                      {pet.photo_url ? (
+                        <img 
+                          src={pet.photo_url} 
+                          alt={pet.pet_name}
+                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                          {pet.pet_type === 'cat' ? (
+                            <Cat className="w-6 h-6 text-primary" />
+                          ) : (
+                            <Dog className="w-6 h-6 text-primary" />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? 'Cat' : 'Dog')}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {/* Quick actions for pet owners */}
+            {pets.length > 0 && (
+              <div className="mt-3 flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate("/member/health-records")}
+                  className="gap-1"
+                >
+                  <Syringe className="w-4 h-4" />
+                  Health Records
+                </Button>
+              </div>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             {/* Lost Pet Alerts */}
             <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
@@ -373,12 +490,10 @@ const FreeMemberDashboard = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {[
                 { icon: Gift, label: "Partner Discounts", color: "text-primary" },
-                { icon: Heart, label: "Pet Profiles", color: "text-rose-500" },
                 { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
-                { icon: Syringe, label: "Health Records", color: "text-blue-500" },
               ].map(({ icon: Icon, label, color }) => (
                 <div
                   key={label}
@@ -405,7 +520,7 @@ const FreeMemberDashboard = () => {
                 <Crown className="w-5 h-5 text-primary hidden sm:block" />
                 <p className="text-sm text-foreground">
                   <span className="font-medium">Upgrade to unlock</span>
-                  <span className="text-muted-foreground"> exclusive discounts, pet profiles & more</span>
+                  <span className="text-muted-foreground"> exclusive discounts & AI health assistant</span>
                 </p>
               </div>
               <Button 
@@ -443,6 +558,8 @@ const FreeMemberDashboard = () => {
                       { icon: AlertTriangle, label: "Lost & Found Alerts", desc: "Report and search for lost or found pets", color: "text-amber-600 bg-amber-100" },
                       { icon: Users, label: "Community Q&A", desc: "Ask questions and help fellow pet parents", color: "text-indigo-600 bg-indigo-100" },
                       { icon: Gift, label: "Browse Offers", desc: "Preview exclusive partner deals", color: "text-purple-600 bg-purple-100" },
+                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
+                      { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
@@ -466,9 +583,7 @@ const FreeMemberDashboard = () => {
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
                       { icon: Gift, label: "Exclusive Discounts", desc: "Save at pet shops, trainers, groomers, hotels & more", color: "text-primary bg-primary/10" },
-                      { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
                       { icon: Bot, label: "AI Health Assistant", desc: "24/7 AI-powered pet health guidance", color: "text-violet-600 bg-violet-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">

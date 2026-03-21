@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
+// AI Health Assistant is premium-only
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -66,7 +67,7 @@ const suggestedQuestions = [
 
 const PetHealthAssistant = () => {
   const { user, loading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const { trackAIChat, trackFeatureUse } = useActivityTracking();
@@ -90,7 +91,7 @@ const PetHealthAssistant = () => {
         navigate("/business");
       } else if (isShelter) {
         navigate("/shelter-dashboard");
-      } else if (!membershipLoading && !hasMembership) {
+      } else if (!membershipLoading && !isPaidMember) {
         navigate("/member/free");
       }
     }

@@ -107,7 +107,7 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 
 const PetHealthRecords = () => {
   const { user, loading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, membership, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -161,11 +161,9 @@ const PetHealthRecords = () => {
         navigate("/business");
       } else if (isShelter) {
         navigate("/shelter-dashboard");
-      } else if (!membershipLoading && !hasMembership) {
-        navigate("/member/free");
       }
     }
-  }, [user, loading, hasMembership, membershipLoading, isBusiness, isShelter, accountTypeLoading, navigate]);
+  }, [user, loading, isBusiness, isShelter, accountTypeLoading, navigate]);
 
   useEffect(() => {
     if (user) {

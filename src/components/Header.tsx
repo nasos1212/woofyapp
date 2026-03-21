@@ -25,7 +25,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { hasMembership } = useMembership();
+  const { hasMembership, isPaidMember } = useMembership();
   const isHomePage = location.pathname === "/";
   const isAdminPage = location.pathname.startsWith("/admin");
   
@@ -35,7 +35,7 @@ const Header = () => {
     ? (hasShelterRecord ? "/shelter-dashboard" : "/shelter-onboarding")
     : isBusiness 
       ? "/business" 
-      : (hasMembership ? "/member" : "/member/free");
+      : (isPaidMember ? "/member" : "/member/free");
 
   const handleSignOut = async () => {
     await signOut();
@@ -229,7 +229,7 @@ const Header = () => {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  {hasMembership && (
+                  {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
                       Redemption History
@@ -239,7 +239,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
                   </DropdownMenuItem>
-                  {!hasMembership && !isBusiness && !isShelter && (
+                  {!isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
@@ -306,7 +306,7 @@ const Header = () => {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Community Hub
                   </DropdownMenuItem>
-                  {hasMembership && (
+                  {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
                       Redemption History
@@ -316,7 +316,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     Notifications
                   </DropdownMenuItem>
-                  {!hasMembership && !isBusiness && !isShelter && (
+                  {!isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">

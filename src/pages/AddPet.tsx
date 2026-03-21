@@ -253,7 +253,7 @@ const AddPet = () => {
   }
 
   if (!hasMembership) {
-    return <Navigate to="/member/free" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return (

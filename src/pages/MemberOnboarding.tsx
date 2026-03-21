@@ -122,9 +122,12 @@ const MemberOnboarding = () => {
         .maybeSingle();
 
       if (membership) {
-        if (membership.is_active) {
-          // User has an active membership - redirect to dashboard
+        if (membership.is_active && membership.plan_type !== 'free') {
+          // User has an active paid membership - redirect to dashboard
           navigate("/member");
+        } else if (membership.plan_type === 'free') {
+          // Free membership exists - will be upgraded during onboarding
+          setMembershipId(membership.id);
         } else {
           // User has an inactive/expired membership - show reactivation option
           setExistingMembership(membership);

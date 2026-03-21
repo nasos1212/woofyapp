@@ -71,7 +71,7 @@ const categories = [
 
 const MemberOffers = () => {
   const { user, loading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -372,7 +372,7 @@ const MemberOffers = () => {
           {/* Back Button */}
           <Button
             variant="ghost"
-            onClick={() => navigate(hasMembership ? "/member" : "/member/free")}
+            onClick={() => navigate(isPaidMember ? "/member" : "/member/free")}
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -380,7 +380,7 @@ const MemberOffers = () => {
           </Button>
 
           {/* Free Member Banner */}
-          {!membershipLoading && !hasMembership && (
+          {!membershipLoading && !isPaidMember && (
             <div className="bg-gradient-to-r from-primary/10 to-amber-100 rounded-2xl p-4 mb-6 border border-primary/20">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -758,7 +758,7 @@ const MemberOffers = () => {
                         </span>
                       </div>
 
-                      {!hasMembership ? (
+                      {!isPaidMember ? (
                         <Badge className="bg-amber-100 text-amber-700 border-amber-200">
                           <Lock className="w-3 h-3 mr-1" />
                           Upgrade to Redeem
