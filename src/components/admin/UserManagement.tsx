@@ -286,14 +286,14 @@ const UserManagement = () => {
         // CRITICAL: Only show users with "member" role AND no shelter/business records
         result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
         if (membershipFilter === "freemium") {
-          result = result.filter(u => !u.membership || !u.membership.is_active);
+          result = result.filter(u => u.membership?.plan_type === "free");
         } else if (membershipFilter === "paid") {
-          result = result.filter(u => u.membership?.is_active);
+          result = result.filter(u => u.membership?.is_active && u.membership.plan_type !== "free");
         } else if (membershipFilter === "expiring") {
           const thirtyDaysFromNow = new Date();
           thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
           result = result.filter(u => {
-            if (!u.membership?.is_active) return false;
+            if (!u.membership?.is_active || u.membership.plan_type === "free") return false;
             const expiresAt = new Date(u.membership.expires_at);
             return expiresAt <= thirtyDaysFromNow && expiresAt > new Date();
           });
@@ -301,11 +301,11 @@ const UserManagement = () => {
         break;
       case "freemium":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER freemium
-        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && (!u.membership || !u.membership.is_active));
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.plan_type === "free");
         break;
       case "paid":
         // CRITICAL: Exclude shelters (by record OR role) and businesses - they are NEVER paid members
-        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active);
+        result = result.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active && u.membership.plan_type !== "free");
         break;
       case "businesses":
         // IMPORTANT: Exclude users who have a shelter record - shelters should NEVER appear as businesses
@@ -366,8 +366,8 @@ const UserManagement = () => {
   const counts = useMemo(() => {
     // CRITICAL: Members must exclude shelters (by role OR record) and businesses
     const members = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business);
-    const freemium = members.filter(u => !u.membership || !u.membership.is_active);
-    const paid = members.filter(u => u.membership?.is_active);
+    const freemium = members.filter(u => u.membership?.plan_type === "free");
+    const paid = members.filter(u => u.membership?.is_active && u.membership.plan_type !== "free");
     // IMPORTANT: Exclude users with shelter records OR shelter role from business count
     const businesses = users.filter(u => (u.roles.includes("business") || u.business) && !u.shelter && !u.roles.includes("shelter"));
     const pendingBusinesses = businesses.filter(u => u.business?.verification_status === "pending");
@@ -419,7 +419,7 @@ const UserManagement = () => {
   // Plan distribution for paid members
   const planDistribution = useMemo(() => {
     const planCounts: Record<string, number> = {};
-    const paidMembers = users.filter(u => u.roles.includes("member") && u.membership?.is_active);
+    const paidMembers = users.filter(u => u.roles.includes("member") && u.membership?.is_active && u.membership.plan_type !== "free");
     
     paidMembers.forEach((u) => {
       const plan = u.membership?.plan_type || "single";
@@ -640,8 +640,8 @@ const UserManagement = () => {
     let targetUsers = users;
     switch (notifyTarget) {
       case "members": targetUsers = users.filter(u => u.roles.includes("member")); break;
-      case "freemium": targetUsers = users.filter(u => u.roles.includes("member") && (!u.membership || !u.membership.is_active)); break;
-      case "paid": targetUsers = users.filter(u => u.roles.includes("member") && u.membership?.is_active); break;
+      case "freemium": targetUsers = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.plan_type === "free"); break;
+      case "paid": targetUsers = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active && u.membership.plan_type !== "free"); break;
       case "businesses": 
         // Exclude rejected businesses from notifications
         targetUsers = users.filter(u => 
