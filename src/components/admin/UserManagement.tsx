@@ -640,8 +640,8 @@ const UserManagement = () => {
     let targetUsers = users;
     switch (notifyTarget) {
       case "members": targetUsers = users.filter(u => u.roles.includes("member")); break;
-      case "freemium": targetUsers = users.filter(u => u.roles.includes("member") && (!u.membership || !u.membership.is_active)); break;
-      case "paid": targetUsers = users.filter(u => u.roles.includes("member") && u.membership?.is_active); break;
+      case "freemium": targetUsers = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.plan_type === "free"); break;
+      case "paid": targetUsers = users.filter(u => u.roles.includes("member") && !u.shelter && !u.business && u.membership?.is_active && u.membership.plan_type !== "free"); break;
       case "businesses": 
         // Exclude rejected businesses from notifications
         targetUsers = users.filter(u => 
