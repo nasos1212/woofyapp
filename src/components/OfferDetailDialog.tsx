@@ -60,7 +60,7 @@ const categories: Record<string, string> = {
 };
 
 const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: OfferDetailDialogProps) => {
-  const { hasMembership } = useMembership();
+  const { hasMembership, isPaidMember } = useMembership();
   const navigate = useNavigate();
   const { trackOfferClick } = useAnalyticsTracking();
   
