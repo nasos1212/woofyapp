@@ -372,7 +372,7 @@ const MemberOffers = () => {
           {/* Back Button */}
           <Button
             variant="ghost"
-            onClick={() => navigate(hasMembership ? "/member" : "/member/free")}
+            onClick={() => navigate(isPaidMember ? "/member" : "/member/free")}
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
