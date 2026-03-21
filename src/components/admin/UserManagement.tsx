@@ -698,7 +698,7 @@ const UserManagement = () => {
 
   const getTargetLabel = (target: UserCategory) => {
     const labels: Record<UserCategory, string> = {
-      all: "All Users", members: "All Members", freemium: "Freemium Members",
+      all: "All Users", members: "All Members", freemium: "Free Members",
       paid: "Paid Members", businesses: "All Businesses", shelters: "All Shelters",
     };
     return labels[target];
