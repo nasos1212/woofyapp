@@ -104,6 +104,8 @@ const Terms = () => {
             <h2>5. Free Services</h2>
             <p>Users may access the following free of charge without purchasing a membership:</p>
             <ul>
+              <li>Pet Profiles (up to 5 pets)</li>
+              <li>Pet Health Records</li>
               <li>Pet Community Hub</li>
               <li>Lost &amp; Found Pets Service</li>
               <li>Dog-Friendly Places</li>
