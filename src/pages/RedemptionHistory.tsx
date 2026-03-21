@@ -59,7 +59,7 @@ const RedemptionHistory = () => {
         navigate("/business");
       } else if (isShelter) {
         navigate("/shelter-dashboard");
-      } else if (!membershipLoading && !hasMembership) {
+      } else if (!membershipLoading && !isPaidMember) {
         navigate("/member/free");
       }
     }
