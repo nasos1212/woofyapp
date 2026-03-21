@@ -118,7 +118,7 @@ const GrowthMetrics = ({ dateRange }: GrowthMetricsProps) => {
         setTotalPets(petsRes.count || 0);
 
         const planCounts: Record<string, number> = {};
-        membershipsInPeriod.forEach((membership) => {
+        paidMembershipsInPeriod.forEach((membership) => {
           const plan = membership.normalized_plan_type;
           planCounts[plan] = (planCounts[plan] || 0) + 1;
         });
