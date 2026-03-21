@@ -497,7 +497,7 @@ const Community = () => {
                     <MessageSquarePlus className="w-4 h-4 mr-2" />
                     Ask a Question
                   </Button>
-                  {hasMembership ? (
+                  {isPaidMember ? (
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
