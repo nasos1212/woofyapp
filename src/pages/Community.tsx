@@ -57,7 +57,7 @@ const Community = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
-  const { hasMembership, loading: membershipLoading } = useMembership();
+  const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
 
   const [categories, setCategories] = useState<Category[]>([]);
