@@ -490,12 +490,10 @@ const FreeMemberDashboard = () => {
               </Button>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 gap-3">
               {[
                 { icon: Gift, label: "Partner Discounts", color: "text-primary" },
-                { icon: Heart, label: "Pet Profiles", color: "text-rose-500" },
                 { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
-                { icon: Syringe, label: "Health Records", color: "text-blue-500" },
               ].map(({ icon: Icon, label, color }) => (
                 <div
                   key={label}
