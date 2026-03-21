@@ -288,7 +288,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           )}
 
           {/* Upgrade CTA for Free Members */}
-          {!hasMembership && (
+          {!isPaidMember && (
             <div className="bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl p-3 sm:p-4 border border-primary/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/20 rounded-xl flex items-center justify-center shrink-0">
