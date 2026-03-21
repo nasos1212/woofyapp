@@ -3,6 +3,8 @@ import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 
 const freeFeatures = [
+  "Pet Profiles (up to 5 pets)",
+  "Pet Health Records & Reminders",
   "Lost & Found Pet Alerts",
   "Dog-Friendly Places Directory",
   "Community Q&A Access",
@@ -11,7 +13,6 @@ const freeFeatures = [
 const premiumFeatures = [
   "Exclusive Partner Discounts",
   "AI Pet Health Assistant",
-  "Vaccination & Health Reminders",
   "Pet Birthday Offers",
 ];
 

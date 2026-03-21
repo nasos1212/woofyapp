@@ -31,9 +31,6 @@ const freeFeatures = [
     description: "Connect with fellow pet parents. Share tips, ask questions, and help each other.",
     emoji: "💬",
   },
-];
-
-const premiumFeatures = [
   {
     icon: Dog,
     title: "Pet Profiles",
@@ -41,16 +38,19 @@ const premiumFeatures = [
     emoji: "🐾",
   },
   {
+    icon: Stethoscope,
+    title: "Pet Health Records",
+    description: "Track vaccinations, appointments and vet visits with smart reminders.",
+    emoji: "🏥",
+  },
+];
+
+const premiumFeatures = [
+  {
     icon: Percent,
     title: "Exclusive Discounts",
     description: "Save at pet shops, trainers, groomers, hotels and more with your membership card.",
     emoji: "💰",
-  },
-  {
-    icon: Stethoscope,
-    title: "Pet Health Records",
-    description: "Track vaccinations, appointments and vet visits. Plus discounts on vet care.",
-    emoji: "🏥",
   },
   {
     icon: Bot,
