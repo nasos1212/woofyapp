@@ -155,7 +155,7 @@ const MemberPartners = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="p-0 bg-card">
-                <ScrollArea className="h-[min(50vh,320px)] [&_[data-radix-scroll-area-thumb]]:!bg-primary">
+                <ScrollArea className="h-[min(50vh,320px)]">
                   <div className="p-1">
                     <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                       All Categories
@@ -167,6 +167,11 @@ const MemberPartners = () => {
                     ))}
                   </div>
                 </ScrollArea>
+                <style>{`
+                  [data-radix-scroll-area-viewport] + div [data-radix-scroll-area-thumb] {
+                    background: hsl(var(--primary)) !important;
+                  }
+                `}</style>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
