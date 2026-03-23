@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, MapPin, Globe, Search, Filter } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -153,15 +154,19 @@ const MemberPartners = () => {
                   {categoryFilter ? getCategoryLabel(categoryFilter) : "All Categories"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="max-h-[50vh] overflow-y-auto bg-card [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-muted [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-primary/80 [&::-webkit-scrollbar-thumb]:min-h-[40px]" style={{ scrollbarWidth: 'auto', scrollbarColor: 'hsl(var(--primary)) hsl(var(--muted))' }}>
-                <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
-                  All Categories
-                </DropdownMenuItem>
-                {businessCategories.map((cat) => (
-                  <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                    {cat.label}
-                  </DropdownMenuItem>
-                ))}
+              <DropdownMenuContent className="p-0 bg-card">
+                <ScrollArea className="h-[min(50vh,320px)]">
+                  <div className="p-1">
+                    <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
+                      All Categories
+                    </DropdownMenuItem>
+                    {businessCategories.map((cat) => (
+                      <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
+                        {cat.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </div>
+                </ScrollArea>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
