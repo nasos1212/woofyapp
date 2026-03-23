@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowLeft, Building2, MapPin, Globe, Search, Filter } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
