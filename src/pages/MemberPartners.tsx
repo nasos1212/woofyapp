@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, MapPin, Globe, Search, Filter } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ArrowLeft, Building2, MapPin, Globe, Search, Filter, ChevronUp, ChevronDown } from "lucide-react";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,7 +66,6 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
-  // Track directory impressions for visible partners (once per session)
   const filtered = partners.filter((p) => {
     const matchesSearch =
       !search ||
@@ -119,7 +117,6 @@ const MemberPartners = () => {
             Back to Dashboard
           </Link>
 
-          {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -130,13 +127,12 @@ const MemberPartners = () => {
                   Our Partners
                 </h1>
                 <p className="text-muted-foreground">
-                  {partners.length} trusted {partners.length === 1 ? 'partner' : 'partners'} offering services for you and your pet
+                  {partners.length} trusted {partners.length === 1 ? "partner" : "partners"} offering services for you and your pet
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Search & Filter */}
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -154,29 +150,33 @@ const MemberPartners = () => {
                   {categoryFilter ? getCategoryLabel(categoryFilter) : "All Categories"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="p-0 bg-card">
-                <ScrollArea className="h-[min(50vh,320px)]">
-                  <div className="p-1">
-                    <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
-                      All Categories
-                    </DropdownMenuItem>
-                    {businessCategories.map((cat) => (
-                      <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                        {cat.label}
+              <DropdownMenuContent className="w-64 p-0 bg-card">
+                <div className="relative">
+                  <div className="max-h-[320px] overflow-y-auto pr-6">
+                    <div className="p-1">
+                      <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
+                        All Categories
                       </DropdownMenuItem>
-                    ))}
+                      {businessCategories.map((cat) => (
+                        <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
+                          {cat.label}
+                        </DropdownMenuItem>
+                      ))}
+                    </div>
                   </div>
-                </ScrollArea>
-                <style>{`
-                  [data-radix-scroll-area-viewport] + div [data-radix-scroll-area-thumb] {
-                    background: hsl(var(--primary)) !important;
-                  }
-                `}</style>
+
+                  <div className="pointer-events-none absolute inset-y-2 right-2 flex w-4 flex-col items-center justify-between">
+                    <ChevronUp className="h-3.5 w-3.5 text-primary/60" />
+                    <div className="my-1 flex h-full w-2 items-start justify-center rounded-full bg-primary/15 py-2">
+                      <div className="h-3 w-3 rounded-full bg-primary shadow-sm shadow-primary/30" />
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          {/* Partners Grid */}
           {isLoading ? (
             <div className="flex justify-center py-12">
               <DogLoader size="md" />
@@ -191,7 +191,10 @@ const MemberPartners = () => {
                 {(search || categoryFilter) && (
                   <Button
                     variant="link"
-                    onClick={() => { setSearch(""); setCategoryFilter(null); }}
+                    onClick={() => {
+                      setSearch("");
+                      setCategoryFilter(null);
+                    }}
                     className="mt-2"
                   >
                     Clear filters
@@ -209,7 +212,6 @@ const MemberPartners = () => {
                 >
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4 mb-3">
-                      {/* Logo */}
                       <div className="w-14 h-14 bg-muted rounded-xl flex items-center justify-center overflow-hidden shrink-0">
                         {partner.logo_url ? (
                           <img
@@ -234,7 +236,6 @@ const MemberPartners = () => {
                       </div>
                     </div>
 
-                    {/* Categories */}
                     <div className="flex flex-wrap gap-1.5 mb-3">
                       {(partner.categories && partner.categories.length > 0
                         ? partner.categories
@@ -252,7 +253,6 @@ const MemberPartners = () => {
                       </p>
                     )}
 
-                    {/* Social & Website */}
                     <div className="flex items-center gap-2 pt-3 border-t">
                       {partner.instagram_url && (
                         <button
