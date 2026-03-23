@@ -153,7 +153,7 @@ const MemberPartners = () => {
                   {categoryFilter ? getCategoryLabel(categoryFilter) : "All Categories"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-card">
+              <DropdownMenuContent className="max-h-[50vh] overflow-y-auto bg-card border-b-4 border-primary/20" style={{ scrollbarWidth: 'thin' }}>
                 <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                   All Categories
                 </DropdownMenuItem>
@@ -162,6 +162,7 @@ const MemberPartners = () => {
                     {cat.label}
                   </DropdownMenuItem>
                 ))}
+                <div className="sticky bottom-0 h-6 bg-gradient-to-t from-card to-transparent pointer-events-none -mt-6" />
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
