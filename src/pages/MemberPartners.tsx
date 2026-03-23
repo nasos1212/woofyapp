@@ -153,7 +153,7 @@ const MemberPartners = () => {
                   {categoryFilter ? getCategoryLabel(categoryFilter) : "All Categories"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="max-h-[50vh] overflow-y-auto bg-card [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary/40 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-primary/60" style={{ scrollbarWidth: 'thin', scrollbarColor: 'hsl(var(--primary) / 0.4) hsl(var(--muted) / 0.3)' }}>
+              <DropdownMenuContent className="max-h-[50vh] overflow-y-auto bg-card [&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-muted [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-primary/80 [&::-webkit-scrollbar-thumb]:min-h-[40px]" style={{ scrollbarWidth: 'auto', scrollbarColor: 'hsl(var(--primary)) hsl(var(--muted))' }}>
                 <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                   All Categories
                 </DropdownMenuItem>
