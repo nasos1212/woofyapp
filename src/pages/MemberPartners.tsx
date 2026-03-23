@@ -155,7 +155,7 @@ const MemberPartners = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="p-0 bg-card">
-                <ScrollArea className="h-[min(50vh,320px)]">
+                <ScrollArea className="h-[min(50vh,320px)] [&_[data-radix-scroll-area-thumb]]:bg-primary/60">
                   <div className="p-1">
                     <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                       All Categories
