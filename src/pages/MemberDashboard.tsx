@@ -22,6 +22,8 @@ import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
+import MembersNearYou from "@/components/MembersNearYou";
+import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
@@ -90,6 +92,9 @@ const MemberDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
   const [isSavingCity, setIsSavingCity] = useState(false);
+  const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
+    return localStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
+  });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
@@ -378,6 +383,32 @@ const MemberDashboard = () => {
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
 
+          {/* One-time city prompt for existing users */}
+          {user && profile && !profile.preferred_city && !cityPromptDismissed && (
+            <CityPromptBanner
+              userId={user.id}
+              onCitySet={(city) => {
+                setProfile(prev => prev ? { ...prev, preferred_city: city } : null);
+                setCityPromptDismissed(true);
+              }}
+              onDismiss={() => {
+                setCityPromptDismissed(true);
+                localStorage.setItem('wooffy_city_prompt_dismissed', 'true');
+              }}
+            />
+          )}
+
+          {/* Members Near You */}
+          <div className="mb-6">
+            <MembersNearYou 
+              city={profile?.preferred_city || null}
+              onSetCity={() => {
+                const el = document.querySelector('[data-city-selector]');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          </div>
+
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
@@ -531,7 +562,7 @@ const MemberDashboard = () => {
                 </div>
                 
                 {/* City Selector */}
-                <div className="mb-4">
+                <div className="mb-4" data-city-selector>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button 

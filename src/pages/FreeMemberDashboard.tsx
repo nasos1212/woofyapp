@@ -31,6 +31,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
+import MembersNearYou from "@/components/MembersNearYou";
+import CityPromptBanner from "@/components/CityPromptBanner";
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
 
 interface Pet {
@@ -46,10 +48,14 @@ const FreeMemberDashboard = () => {
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [preferredCity, setPreferredCity] = useState<string | null>(null);
   const [checkingRoles, setCheckingRoles] = useState(true);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
+    return localStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
+  });
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
@@ -111,12 +117,13 @@ const FreeMemberDashboard = () => {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, preferred_city")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data?.full_name) {
         setProfileName(data.full_name.split(" ")[0]);
       }
+      setPreferredCity(data?.preferred_city || null);
     };
     fetchProfile();
   }, [user]);
@@ -177,6 +184,26 @@ const FreeMemberDashboard = () => {
         <FreemiumOnboardingTour />
 
         <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+          {/* One-time city prompt for existing users */}
+          {user && !preferredCity && !cityPromptDismissed && (
+            <CityPromptBanner
+              userId={user.id}
+              onCitySet={(city) => {
+                setPreferredCity(city);
+                setCityPromptDismissed(true);
+              }}
+              onDismiss={() => {
+                setCityPromptDismissed(true);
+                localStorage.setItem('wooffy_city_prompt_dismissed_free', 'true');
+              }}
+            />
+          )}
+
+          {/* Members Near You */}
+          <div className="mb-6">
+            <MembersNearYou city={preferredCity} />
+          </div>
+
           {/* Welcome Header - Simple & Clean */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
