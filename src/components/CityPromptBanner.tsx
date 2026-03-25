@@ -58,7 +58,7 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
             Help us build your local pet community! 🐾
           </p>
           <p className="text-xs text-muted-foreground">
-            Select your city to discover pet owners near you and get location-based offers.
+            Select your city to get location-based offers and recommendations.
           </p>
         </div>
         <DropdownMenu>
