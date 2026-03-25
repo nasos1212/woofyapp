@@ -564,16 +564,30 @@ const LostFoundAlerts = () => {
                   </a>
                 )}
               </div>
-              {alert.owner_user_id === user?.id && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-2 text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => markAsResolved(alert.id, alert.alert_type)}
-                >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  {isLost ? "Mark as Found" : "Mark as Reunited"}
-                </Button>
+              {alert.owner_user_id === user?.id && alert.status === "active" && (
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-2"
+                    onClick={() => {
+                      setEditingAlert(alert);
+                      setShowEditDialog(true);
+                    }}
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-green-600 border-green-200 hover:bg-green-50 gap-2"
+                    onClick={() => markAsResolved(alert.id, alert.alert_type)}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {isLost ? "Mark as Found" : "Mark as Reunited"}
+                  </Button>
+                </div>
               )}
             </div>
           ) : (
