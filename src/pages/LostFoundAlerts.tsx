@@ -73,7 +73,6 @@ const LostFoundAlerts = () => {
   const [alerts, setAlerts] = useState<LostFoundAlert[]>([]);
   const [myPets, setMyPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [filterCity, setFilterCity] = useState<string>("all");
   const [filterBreed, setFilterBreed] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
