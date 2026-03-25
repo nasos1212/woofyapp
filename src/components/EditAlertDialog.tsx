@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import LocationSelector from "@/components/LocationSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { formatLocation, parseLocation } from "@/data/cyprusLocations";
+import { formatLocation, cyprusCityNames } from "@/data/cyprusLocations";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
