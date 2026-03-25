@@ -212,7 +212,7 @@ const PetDemographics = () => {
               <ResponsiveContainer width="100%" height={Math.max(200, breedStats.length * 28)}>
                 <BarChart data={breedStats} layout="vertical" margin={{ left: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                  <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" allowDecimals={false} />
                   <YAxis type="category" dataKey="breed" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" width={110} />
                   <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
                   <Bar dataKey="count" fill="hsl(var(--primary))" name="Pets" radius={[0, 6, 6, 0]} />
