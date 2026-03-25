@@ -187,7 +187,7 @@ const BreedInsights = ({ dateRange }: BreedInsightsProps) => {
                   <ResponsiveContainer width="100%" height={Math.max(200, topBreedsByOfferClick.length * 36)}>
                     <BarChart data={topBreedsByOfferClick} layout="vertical" margin={{ left: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" allowDecimals={false} />
                       <YAxis
                         type="category"
                         dataKey="breed"
