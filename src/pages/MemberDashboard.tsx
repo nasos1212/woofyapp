@@ -91,7 +91,9 @@ const MemberDashboard = () => {
   const [stats, setStats] = useState({ dealsUsed: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
-  const [isSavingCity, setIsSavingCity] = useState(false);
+  const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
+    return localStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
+  });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
@@ -379,6 +381,32 @@ const MemberDashboard = () => {
           <div className="max-w-7xl mx-auto w-full">
           {/* Proactive AI Alerts */}
           <AIProactiveAlerts />
+
+          {/* One-time city prompt for existing users */}
+          {user && profile && !profile.preferred_city && !cityPromptDismissed && (
+            <CityPromptBanner
+              userId={user.id}
+              onCitySet={(city) => {
+                setProfile(prev => prev ? { ...prev, preferred_city: city } : null);
+                setCityPromptDismissed(true);
+              }}
+              onDismiss={() => {
+                setCityPromptDismissed(true);
+                localStorage.setItem('wooffy_city_prompt_dismissed', 'true');
+              }}
+            />
+          )}
+
+          {/* Members Near You */}
+          <div className="mb-6">
+            <MembersNearYou 
+              city={profile?.preferred_city || null}
+              onSetCity={() => {
+                const el = document.querySelector('[data-city-selector]');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            />
+          </div>
 
           {/* Welcome */}
           <div className="mb-8">
