@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ import CityMultiSelector from "@/components/CityMultiSelector";
 import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
 import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
+import EditAlertDialog from "@/components/EditAlertDialog";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
