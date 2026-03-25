@@ -157,28 +157,16 @@ const MemberPartners = () => {
                   {categoryFilter ? getCategoryLabel(categoryFilter) : "All Categories"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 p-0 bg-card">
-                <div className="relative">
-                  <div className="max-h-[320px] overflow-y-auto pr-6">
-                    <div className="p-1">
-                      <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
-                        All Categories
-                      </DropdownMenuItem>
-                      {businessCategories.map((cat) => (
-                        <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                          {cat.label}
-                        </DropdownMenuItem>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pointer-events-none absolute inset-y-2 right-2 flex w-4 flex-col items-center justify-between">
-                    <ChevronUp className="h-3.5 w-3.5 text-primary/60" />
-                    <div className="my-1 flex h-full w-2 items-start justify-center rounded-full bg-primary/15 py-2">
-                      <div className="h-3 w-3 rounded-full bg-primary shadow-sm shadow-primary/30" />
-                    </div>
-                    <ChevronDown className="h-3.5 w-3.5 text-primary" />
-                  </div>
+              <DropdownMenuContent className="w-64 p-0 bg-card max-h-[320px] overflow-y-auto">
+                <div className="p-1">
+                  <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
+                    All Categories
+                  </DropdownMenuItem>
+                  {businessCategories.map((cat) => (
+                    <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
+                      {cat.label}
+                    </DropdownMenuItem>
+                  ))}
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -190,28 +178,16 @@ const MemberPartners = () => {
                   {cityFilter || "All Cities"}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56 p-0 bg-card">
-                <div className="relative">
-                  <div className="max-h-[320px] overflow-y-auto pr-6">
-                    <div className="p-1">
-                      <DropdownMenuItem onClick={() => setCityFilter(null)}>
-                        All Cities
-                      </DropdownMenuItem>
-                      {uniqueCities.map((city) => (
-                        <DropdownMenuItem key={city} onClick={() => setCityFilter(city)}>
-                          {city}
-                        </DropdownMenuItem>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pointer-events-none absolute inset-y-2 right-2 flex w-4 flex-col items-center justify-between">
-                    <ChevronUp className="h-3.5 w-3.5 text-primary/60" />
-                    <div className="my-1 flex h-full w-2 items-start justify-center rounded-full bg-primary/15 py-2">
-                      <div className="h-3 w-3 rounded-full bg-primary shadow-sm shadow-primary/30" />
-                    </div>
-                    <ChevronDown className="h-3.5 w-3.5 text-primary" />
-                  </div>
+              <DropdownMenuContent className="w-56 p-0 bg-card max-h-[320px] overflow-y-auto">
+                <div className="p-1">
+                  <DropdownMenuItem onClick={() => setCityFilter(null)}>
+                    All Cities
+                  </DropdownMenuItem>
+                  {uniqueCities.map((city) => (
+                    <DropdownMenuItem key={city} onClick={() => setCityFilter(city)}>
+                      {city}
+                    </DropdownMenuItem>
+                  ))}
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
