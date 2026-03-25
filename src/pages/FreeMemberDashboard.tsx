@@ -48,10 +48,14 @@ const FreeMemberDashboard = () => {
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
   const [profileName, setProfileName] = useState<string | null>(null);
+  const [preferredCity, setPreferredCity] = useState<string | null>(null);
   const [checkingRoles, setCheckingRoles] = useState(true);
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
+    return localStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
+  });
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
@@ -113,12 +117,13 @@ const FreeMemberDashboard = () => {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name")
+        .select("full_name, preferred_city")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data?.full_name) {
         setProfileName(data.full_name.split(" ")[0]);
       }
+      setPreferredCity(data?.preferred_city || null);
     };
     fetchProfile();
   }, [user]);
