@@ -22,6 +22,8 @@ import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
+import MembersNearYou from "@/components/MembersNearYou";
+import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
