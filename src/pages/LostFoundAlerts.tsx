@@ -435,11 +435,6 @@ const LostFoundAlerts = () => {
   const cityNames = cyprusCitiesWithCoords.map(c => c.name);
 
   const filteredAlerts = alerts.filter((alert) => {
-    const matchesSearch =
-      alert.pet_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      alert.last_seen_location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (alert.pet_breed?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-
     const matchesCity =
       filterCity === "all" ||
       alert.last_seen_location.toLowerCase().includes(filterCity.toLowerCase());
@@ -448,7 +443,7 @@ const LostFoundAlerts = () => {
       filterBreed === "all" ||
       alert.pet_breed?.toLowerCase() === filterBreed.toLowerCase();
 
-    return matchesSearch && matchesCity && matchesBreed;
+    return matchesCity && matchesBreed;
   });
 
   const lostAlerts = filteredAlerts.filter((a) => a.alert_type === "lost" && a.status === "active");
