@@ -78,6 +78,8 @@ const LostFoundAlerts = () => {
   const [filterBreed, setFilterBreed] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [editingAlert, setEditingAlert] = useState<LostFoundAlert | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
