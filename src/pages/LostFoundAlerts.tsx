@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,7 @@ import CityMultiSelector from "@/components/CityMultiSelector";
 import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
 import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
+import EditAlertDialog from "@/components/EditAlertDialog";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
@@ -77,6 +78,8 @@ const LostFoundAlerts = () => {
   const [filterBreed, setFilterBreed] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [editingAlert, setEditingAlert] = useState<LostFoundAlert | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -561,16 +564,30 @@ const LostFoundAlerts = () => {
                   </a>
                 )}
               </div>
-              {alert.owner_user_id === user?.id && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full mt-2 text-green-600 border-green-200 hover:bg-green-50"
-                  onClick={() => markAsResolved(alert.id, alert.alert_type)}
-                >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  {isLost ? "Mark as Found" : "Mark as Reunited"}
-                </Button>
+              {alert.owner_user_id === user?.id && alert.status === "active" && (
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 gap-2"
+                    onClick={() => {
+                      setEditingAlert(alert);
+                      setShowEditDialog(true);
+                    }}
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1 text-green-600 border-green-200 hover:bg-green-50 gap-2"
+                    onClick={() => markAsResolved(alert.id, alert.alert_type)}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {isLost ? "Mark as Found" : "Mark as Reunited"}
+                  </Button>
+                </div>
               )}
             </div>
           ) : (
@@ -1228,6 +1245,13 @@ const LostFoundAlerts = () => {
           </Tabs>
         </main>
       </div>
+
+      <EditAlertDialog
+        alert={editingAlert}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSaved={fetchAlerts}
+      />
     </>
   );
 };
