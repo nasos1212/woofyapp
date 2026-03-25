@@ -113,13 +113,12 @@ const FreeMemberDashboard = () => {
       if (!user) return;
       const { data } = await supabase
         .from("profiles")
-        .select("full_name, preferred_city")
+        .select("full_name")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data?.full_name) {
         setProfileName(data.full_name.split(" ")[0]);
       }
-      setPreferredCity(data?.preferred_city || null);
     };
     fetchProfile();
   }, [user]);
