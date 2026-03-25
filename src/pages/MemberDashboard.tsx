@@ -393,7 +393,7 @@ const MemberDashboard = () => {
               }}
               onDismiss={() => {
                 setCityPromptDismissed(true);
-                localStorage.setItem('wooffy_city_prompt_dismissed', 'true');
+                sessionStorage.setItem('wooffy_city_prompt_dismissed', 'true');
               }}
             />
           )}
