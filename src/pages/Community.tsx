@@ -68,7 +68,7 @@ const Community = () => {
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
   const [selectedAnimalType, setSelectedAnimalType] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'unanswered'>('recent');
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
 
   useEffect(() => {
     if (!authLoading && !user) {
