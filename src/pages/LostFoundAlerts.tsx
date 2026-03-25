@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter, Pencil } from "lucide-react";
@@ -23,6 +23,7 @@ import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
 import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
 import EditAlertDialog from "@/components/EditAlertDialog";
+import { getBreedsByPetType } from "@/data/petBreeds";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
@@ -808,11 +809,17 @@ const LostFoundAlerts = () => {
 
                     <div className="space-y-2">
                       <Label>Breed (if known)</Label>
-                      <Input
-                        value={petBreed}
-                        onChange={(e) => setPetBreed(e.target.value)}
-                        placeholder="e.g., Golden Retriever, Mixed"
-                      />
+                      <Select value={petBreed || "_none"} onValueChange={(v) => setPetBreed(v === "_none" ? "" : v)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select breed" />
+                        </SelectTrigger>
+                        <SelectContent position="popper" className="max-h-[40vh]">
+                          <SelectItem value="_none">Unknown / Not sure</SelectItem>
+                          {getBreedsByPetType(petType === "other" ? "dog" : petType).map((breed) => (
+                            <SelectItem key={breed} value={breed}>{breed}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
 
                     <div className="space-y-2">
