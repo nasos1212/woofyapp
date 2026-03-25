@@ -184,6 +184,26 @@ const FreeMemberDashboard = () => {
         <FreemiumOnboardingTour />
 
         <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+          {/* One-time city prompt for existing users */}
+          {user && !preferredCity && !cityPromptDismissed && (
+            <CityPromptBanner
+              userId={user.id}
+              onCitySet={(city) => {
+                setPreferredCity(city);
+                setCityPromptDismissed(true);
+              }}
+              onDismiss={() => {
+                setCityPromptDismissed(true);
+                localStorage.setItem('wooffy_city_prompt_dismissed_free', 'true');
+              }}
+            />
+          )}
+
+          {/* Members Near You */}
+          <div className="mb-6">
+            <MembersNearYou city={preferredCity} />
+          </div>
+
           {/* Welcome Header - Simple & Clean */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
