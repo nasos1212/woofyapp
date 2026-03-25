@@ -29,6 +29,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Increment login_count on sign in, but only for verified users
         if (event === 'SIGNED_IN' && session?.user) {
+          // Clear city prompt dismissals so they show again on new sign-in
+          sessionStorage.removeItem('wooffy_city_prompt_dismissed_free');
+          sessionStorage.removeItem('wooffy_city_prompt_dismissed');
           supabase
             .from('profiles')
             .select('login_count, email_verified')
