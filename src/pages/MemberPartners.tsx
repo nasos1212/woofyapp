@@ -43,6 +43,7 @@ const MemberPartners = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+  const [cityFilter, setCityFilter] = useState<string | null>(null);
   const trackedImpressions = useRef(new Set<string>());
 
   useEffect(() => {
@@ -66,6 +67,10 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
+  const uniqueCities = Array.from(
+    new Set(partners.map((p) => p.city).filter(Boolean) as string[])
+  ).sort();
+
   const filtered = partners.filter((p) => {
     const matchesSearch =
       !search ||
@@ -75,7 +80,9 @@ const MemberPartners = () => {
       !categoryFilter ||
       p.category === categoryFilter ||
       p.categories?.includes(categoryFilter);
-    return matchesSearch && matchesCategory;
+    const matchesCity =
+      !cityFilter || p.city === cityFilter;
+    return matchesSearch && matchesCategory && matchesCity;
   });
 
   useEffect(() => {
@@ -175,6 +182,39 @@ const MemberPartners = () => {
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2 shrink-0">
+                  <MapPin className="w-4 h-4" />
+                  {cityFilter || "All Cities"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 p-0 bg-card">
+                <div className="relative">
+                  <div className="max-h-[320px] overflow-y-auto pr-6">
+                    <div className="p-1">
+                      <DropdownMenuItem onClick={() => setCityFilter(null)}>
+                        All Cities
+                      </DropdownMenuItem>
+                      {uniqueCities.map((city) => (
+                        <DropdownMenuItem key={city} onClick={() => setCityFilter(city)}>
+                          {city}
+                        </DropdownMenuItem>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pointer-events-none absolute inset-y-2 right-2 flex w-4 flex-col items-center justify-between">
+                    <ChevronUp className="h-3.5 w-3.5 text-primary/60" />
+                    <div className="my-1 flex h-full w-2 items-start justify-center rounded-full bg-primary/15 py-2">
+                      <div className="h-3 w-3 rounded-full bg-primary shadow-sm shadow-primary/30" />
+                    </div>
+                    <ChevronDown className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {isLoading ? (
@@ -186,14 +226,15 @@ const MemberPartners = () => {
               <CardContent>
                 <Building2 className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
                 <p className="text-muted-foreground">
-                  {search || categoryFilter ? "No partners match your search" : "No partners available yet"}
+                {search || categoryFilter || cityFilter ? "No partners match your filters" : "No partners available yet"}
                 </p>
-                {(search || categoryFilter) && (
+                {(search || categoryFilter || cityFilter) && (
                   <Button
                     variant="link"
                     onClick={() => {
                       setSearch("");
                       setCategoryFilter(null);
+                      setCityFilter(null);
                     }}
                     className="mt-2"
                   >
