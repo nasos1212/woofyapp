@@ -862,15 +862,9 @@ const MemberOnboarding = () => {
                       You'll be redirected to complete payment
                     </p>
                     {!selectedCity && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="w-full mt-2 text-muted-foreground"
-                        onClick={handleFinalSubmit}
-                        disabled={isSubmitting}
-                      >
-                        Skip for now
-                      </Button>
+                      <p className="text-center text-xs text-amber-600 mt-2">
+                        Selecting your city helps us show you nearby offers and connect you with local pet owners
+                      </p>
                     )}
                   </div>
                 </CardContent>
