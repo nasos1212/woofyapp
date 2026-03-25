@@ -31,6 +31,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
+import MembersNearYou from "@/components/MembersNearYou";
+import CityPromptBanner from "@/components/CityPromptBanner";
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
 
 interface Pet {
