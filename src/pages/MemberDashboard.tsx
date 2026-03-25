@@ -562,7 +562,7 @@ const MemberDashboard = () => {
                 </div>
                 
                 {/* City Selector */}
-                <div className="mb-4">
+                <div className="mb-4" data-city-selector>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button 
