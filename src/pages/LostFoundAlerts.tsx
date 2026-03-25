@@ -1245,6 +1245,13 @@ const LostFoundAlerts = () => {
           </Tabs>
         </main>
       </div>
+
+      <EditAlertDialog
+        alert={editingAlert}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSaved={fetchAlerts}
+      />
     </>
   );
 };
