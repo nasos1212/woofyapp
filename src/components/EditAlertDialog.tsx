@@ -75,16 +75,23 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
       setContactEmail(alert.contact_email || "");
       setRewardOffered(alert.reward_offered || "");
 
-      // Parse location
+      // Parse location - format is "Area, City - details" or "City - details"
       const locationParts = alert.last_seen_location.split(" - ");
       const mainLocation = locationParts[0] || "";
       const details = locationParts.slice(1).join(" - ");
       setLastSeenDetails(details);
 
-      // Try to parse city/area from the main location
-      const parsed = parseLocation(mainLocation);
-      setLastSeenCity(parsed.city);
-      setLastSeenArea(parsed.area || "");
+      // Try to match city from known cities
+      const matchedCity = cyprusCityNames.find(c => mainLocation.includes(c));
+      if (matchedCity) {
+        setLastSeenCity(matchedCity);
+        // Area is the part before ", City"
+        const areaMatch = mainLocation.split(`, ${matchedCity}`)[0];
+        setLastSeenArea(areaMatch !== matchedCity && areaMatch !== mainLocation ? areaMatch : "");
+      } else {
+        setLastSeenCity(mainLocation);
+        setLastSeenArea("");
+      }
 
       // Parse date
       const date = new Date(alert.last_seen_date);
