@@ -261,15 +261,7 @@ const FreeMemberDashboard = () => {
                 {/* Quick Actions Row */}
                 <div className="bg-white/10 backdrop-blur px-6 py-4 flex flex-wrap gap-4 md:gap-8">
                   <button 
-                    onClick={() => navigate("/community")}
-                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
-                  >
-                    <MessageSquarePlus className="w-4 h-4" />
-                    <span className="text-sm font-medium">Latest Questions</span>
-                  </button>
-                  {/* Top Contributors temporarily hidden - may be re-enabled in future */}
-                  <button 
-                    onClick={() => navigate("/community")}
+                    onClick={() => navigate("/community?tab=saved")}
                     className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
                   >
                     <Bookmark className="w-4 h-4" />
