@@ -91,6 +91,7 @@ const MemberDashboard = () => {
   const [stats, setStats] = useState({ dealsUsed: 0 });
   const [isLoading, setIsLoading] = useState(true);
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
+  const [isSavingCity, setIsSavingCity] = useState(false);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return localStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
   });
