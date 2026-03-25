@@ -15,7 +15,7 @@ const PetDemographics = () => {
   const [petTypeStats, setPetTypeStats] = useState<{ name: string; value: number; color: string }[]>([]);
   const [ageDistribution, setAgeDistribution] = useState<{ range: string; count: number; color: string }[]>([]);
   const [genderStats, setGenderStats] = useState<{ name: string; value: number; color: string }[]>([]);
-  const [breedByCity, setBreedByCity] = useState<{ city: string; topBreed: string; count: number }[]>([]);
+  const [breedByCity, setBreedByCity] = useState<{ city: string; breeds: { breed: string; count: number }[] }[]>([]);
   const [totalPets, setTotalPets] = useState(0);
 
   useEffect(() => {
@@ -95,8 +95,12 @@ const PetDemographics = () => {
       });
       setBreedByCity(
         Object.entries(cityBreeds)
-          .map(([city, breeds]) => { const sorted = Object.entries(breeds).sort((a, b) => b[1] - a[1]); return { city, topBreed: sorted[0]?.[0] || "Unknown", count: sorted[0]?.[1] || 0 }; })
-          .sort((a, b) => b.count - a.count).slice(0, 6)
+          .map(([city, breeds]) => {
+            const sorted = Object.entries(breeds).sort((a, b) => b[1] - a[1]).map(([breed, count]) => ({ breed, count }));
+            return { city, breeds: sorted, totalPets: sorted.reduce((sum, b) => sum + b.count, 0) };
+          })
+          .sort((a, b) => b.totalPets - a.totalPets).slice(0, 6)
+          .map(({ city, breeds }) => ({ city, breeds }))
       );
     } catch (error) {
       console.error("Error fetching pet demographics:", error);
@@ -225,22 +229,26 @@ const PetDemographics = () => {
         <Card className="border-border/50">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-base">Top Breed by City</CardTitle>
-              <MetricTooltip text="The most popular breed in each city, based on pet owners' preferred city. Useful for regional product distribution and targeted marketing." />
+              <CardTitle className="text-base">Breeds by City</CardTitle>
+              <MetricTooltip text="All registered breeds per city, based on pet owners' preferred city. Useful for regional product distribution and targeted marketing." />
             </div>
           </CardHeader>
           <CardContent>
             {breedByCity.length === 0 ? (
               <p className="text-muted-foreground text-sm py-4 text-center">No data — members need to set preferred city</p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {breedByCity.map((item) => (
-                  <div key={item.city} className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium">{item.city}</p>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1"><PawPrint className="w-3 h-3" /> {item.topBreed}</p>
+                  <div key={item.city}>
+                    <p className="text-sm font-semibold mb-1">{item.city}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {item.breeds.map((b) => (
+                        <Badge key={b.breed} variant="secondary" className="text-xs gap-1">
+                          <PawPrint className="w-3 h-3" />
+                          {b.breed} <span className="font-semibold">({b.count})</span>
+                        </Badge>
+                      ))}
                     </div>
-                    <Badge variant="secondary" className="text-xs tabular-nums">{item.count} pets</Badge>
                   </div>
                 ))}
               </div>
