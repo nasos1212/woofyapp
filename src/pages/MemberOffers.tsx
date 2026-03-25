@@ -24,6 +24,7 @@ import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
+import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
 
 interface Offer {
   id: string;
@@ -57,16 +58,7 @@ type SortOption = "newest" | "discount_high" | "discount_low" | "expiry" | "busi
 
 const categories = [
   { id: "all", label: "All" },
-  { id: "vet", label: "Veterinary" },
-  { id: "grooming", label: "Grooming" },
-  { id: "pet_shop", label: "Pet Shop" },
-  { id: "trainer", label: "Dog Trainer" },
-  { id: "hotel", label: "Pet Hotel" },
-  { id: "daycare", label: "Daycare" },
-  { id: "food", label: "Food & Treats" },
-  { id: "accessories", label: "Accessories" },
-  { id: "physio", label: "Physiotherapy" },
-  { id: "other", label: "Other" },
+  ...businessCategories.map((cat) => ({ id: cat.value, label: cat.label })),
 ];
 
 const MemberOffers = () => {
@@ -320,9 +312,6 @@ const MemberOffers = () => {
       : `€${offer.discount_value} off`;
   };
 
-  const getCategoryLabel = (category: string) => {
-    return categories.find((c) => c.id === category)?.label || category;
-  };
 
   const getTimeIndicator = (offer: Offer) => {
     if (offer.is_limited_time) {
