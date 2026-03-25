@@ -54,7 +54,7 @@ const FreeMemberDashboard = () => {
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
-    return localStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
+    return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
 
   // Check user roles to ensure only freemium members can access this page
@@ -195,7 +195,7 @@ const FreeMemberDashboard = () => {
               }}
               onDismiss={() => {
                 setCityPromptDismissed(true);
-                localStorage.setItem('wooffy_city_prompt_dismissed_free', 'true');
+                sessionStorage.setItem('wooffy_city_prompt_dismissed_free', 'true');
               }}
             />
           )}

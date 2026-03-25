@@ -93,7 +93,7 @@ const MemberDashboard = () => {
   const [ratingPromptOpen, setRatingPromptOpen] = useState(false);
   const [isSavingCity, setIsSavingCity] = useState(false);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
-    return localStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
+    return sessionStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
   });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   
