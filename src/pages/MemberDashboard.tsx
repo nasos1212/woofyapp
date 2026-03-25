@@ -22,7 +22,7 @@ import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
-import MembersNearYou from "@/components/MembersNearYou";
+
 import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 
@@ -398,16 +398,6 @@ const MemberDashboard = () => {
             />
           )}
 
-          {/* Members Near You */}
-          <div className="mb-6">
-            <MembersNearYou 
-              city={profile?.preferred_city || null}
-              onSetCity={() => {
-                const el = document.querySelector('[data-city-selector]');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-            />
-          </div>
 
           {/* Welcome */}
           <div className="mb-8">
