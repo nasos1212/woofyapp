@@ -1,0 +1,1 @@
+UPDATE lost_pet_alerts SET pet_breed = 'Mixed Breed' WHERE id = '4ac1c690-cc03-4471-af5a-33edbe2e010d';
