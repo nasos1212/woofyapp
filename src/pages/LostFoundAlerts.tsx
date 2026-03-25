@@ -1088,17 +1088,8 @@ const LostFoundAlerts = () => {
             </div>
           )}
 
-          {/* Search & Filters */}
-          <div className="space-y-3 mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by pet name, breed, or location..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          {/* Filters */}
+          <div className="mb-6">
             <div className="flex flex-wrap gap-3">
               <Select value={filterCity} onValueChange={setFilterCity}>
                 <SelectTrigger className="w-[180px]">
