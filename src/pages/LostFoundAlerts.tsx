@@ -541,9 +541,9 @@ const LostFoundAlerts = () => {
                 </div>
               )}
               {alert.contact_email && (
-                <div className="flex items-center gap-2 text-sm">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  <a href={`mailto:${alert.contact_email}`} className="text-foreground hover:underline">
+                <div className="flex items-center gap-2 text-sm min-w-0">
+                  <Mail className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                  <a href={`mailto:${alert.contact_email}`} className="text-primary hover:underline font-medium truncate">
                     {alert.contact_email}
                   </a>
                 </div>
