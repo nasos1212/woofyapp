@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -19,7 +20,7 @@ import DogLoader from "@/components/DogLoader";
 import LocationSelector from "@/components/LocationSelector";
 import CityMultiSelector from "@/components/CityMultiSelector";
 import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
-import { formatLocation } from "@/data/cyprusLocations";
+import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
 
 type AlertType = "lost" | "found";
@@ -73,6 +74,8 @@ const LostFoundAlerts = () => {
   const [myPets, setMyPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterCity, setFilterCity] = useState<string>("all");
+  const [filterBreed, setFilterBreed] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -426,12 +429,28 @@ const LostFoundAlerts = () => {
 
   const canSeeContactInfo = user && notificationPrefs?.enabled && (notificationPrefs?.cities?.length || 0) > 0;
 
-  const filteredAlerts = alerts.filter(
-    (alert) =>
+  // Extract unique breeds from alerts for filter
+  const uniqueBreeds = [...new Set(alerts.map(a => a.pet_breed).filter(Boolean) as string[])].sort();
+
+  // Known city names for filter
+  const cityNames = cyprusCitiesWithCoords.map(c => c.name);
+
+  const filteredAlerts = alerts.filter((alert) => {
+    const matchesSearch =
       alert.pet_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.last_seen_location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (alert.pet_breed?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
-  );
+      (alert.pet_breed?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+
+    const matchesCity =
+      filterCity === "all" ||
+      alert.last_seen_location.toLowerCase().includes(filterCity.toLowerCase());
+
+    const matchesBreed =
+      filterBreed === "all" ||
+      alert.pet_breed?.toLowerCase() === filterBreed.toLowerCase();
+
+    return matchesSearch && matchesCity && matchesBreed;
+  });
 
   const lostAlerts = filteredAlerts.filter((a) => a.alert_type === "lost" && a.status === "active");
   const foundAlerts = filteredAlerts.filter((a) => a.alert_type === "found" && a.status === "active");
@@ -1075,15 +1094,60 @@ const LostFoundAlerts = () => {
             </div>
           )}
 
-          {/* Search */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by pet name, breed, or location..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
+          {/* Search & Filters */}
+          <div className="space-y-3 mb-6">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by pet name, breed, or location..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Select value={filterCity} onValueChange={setFilterCity}>
+                <SelectTrigger className="w-[180px]">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <SelectValue placeholder="All Cities" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-[40vh]">
+                  <SelectItem value="all">All Cities</SelectItem>
+                  {cityNames.map((city) => (
+                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={filterBreed} onValueChange={setFilterBreed}>
+                <SelectTrigger className="w-[180px]">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-muted-foreground" />
+                    <SelectValue placeholder="All Breeds" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-[40vh]">
+                  <SelectItem value="all">All Breeds</SelectItem>
+                  {uniqueBreeds.map((breed) => (
+                    <SelectItem key={breed} value={breed}>{breed}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {(filterCity !== "all" || filterBreed !== "all") && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setFilterCity("all"); setFilterBreed("all"); }}
+                  className="text-muted-foreground"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Clear filters
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Tabs for Lost / Found / Reunited */}
