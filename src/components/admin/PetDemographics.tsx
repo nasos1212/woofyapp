@@ -97,9 +97,11 @@ const PetDemographics = () => {
         Object.entries(cityBreeds)
           .map(([city, breeds]) => {
             const sorted = Object.entries(breeds).sort((a, b) => b[1] - a[1]).map(([breed, count]) => ({ breed, count }));
-            return { city, breeds: sorted, totalPets: sorted.reduce((sum, b) => sum + b.count, 0) };
+            const topCount = sorted[0]?.count || 0;
+            const topBreeds = sorted.filter(b => b.count === topCount);
+            return { city, breeds: topBreeds, topCount };
           })
-          .sort((a, b) => b.totalPets - a.totalPets).slice(0, 6)
+          .sort((a, b) => b.topCount - a.topCount).slice(0, 6)
           .map(({ city, breeds }) => ({ city, breeds }))
       );
     } catch (error) {
