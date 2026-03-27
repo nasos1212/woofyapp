@@ -411,6 +411,78 @@ const PetDocuments = () => {
             </div>
           )}
         </main>
+
+        {/* Document Preview Modal */}
+        <Dialog open={!!previewDocument} onOpenChange={(open) => !open && setPreviewDocument(null)}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+              <div className="flex items-center justify-between pr-8">
+                <DialogTitle className="text-lg font-semibold truncate">
+                  {previewDocument?.title} - Document
+                </DialogTitle>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => previewDocument && window.open(previewDocument.url, '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Open in New Tab
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    asChild
+                  >
+                    <a href={previewDocument?.url} download>
+                      <Download className="w-4 h-4" />
+                      Download
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden bg-muted/30">
+              {isLoadingPreview ? (
+                <div className="h-full flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : previewDocument?.type === 'pdf' ? (
+                <iframe
+                  src={previewDocument.url}
+                  className="w-full h-full border-0"
+                  title="Document Preview"
+                />
+              ) : previewDocument?.type === 'image' ? (
+                <div className="h-full flex items-center justify-center p-4 overflow-auto">
+                  <img
+                    src={previewDocument.url}
+                    alt="Document"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
+                  <File className="w-16 h-16 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium text-foreground mb-1">Preview not available</p>
+                    <p className="text-sm text-muted-foreground">
+                      This file type cannot be previewed. Download the file to view it.
+                    </p>
+                  </div>
+                  <Button asChild>
+                    <a href={previewDocument?.url} download className="gap-2">
+                      <Download className="w-4 h-4" />
+                      Download File
+                    </a>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
