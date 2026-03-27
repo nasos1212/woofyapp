@@ -41,6 +41,7 @@ interface LostFoundAlert {
   contact_phone: string | null;
   contact_email: string | null;
   reward_offered: string | null;
+  microchip_status: string | null;
   status: "active" | "found" | "resolved";
   created_at: string;
   owner_user_id: string;
@@ -112,6 +113,7 @@ const LostFoundAlerts = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [rewardOffered, setRewardOffered] = useState("");
+  const [microchipStatus, setMicrochipStatus] = useState<string>("unknown");
   const [petPhotos, setPetPhotos] = useState<File[]>([]);
   const [petPhotoPreviews, setPetPhotoPreviews] = useState<string[]>([]);
   const [photoPositions, setPhotoPositions] = useState<number[]>([]);
@@ -358,6 +360,7 @@ const LostFoundAlerts = () => {
         contact_phone: contactPhone,
         contact_email: contactEmail || null,
         reward_offered: alertType === "lost" ? rewardOffered || null : null,
+        microchip_status: microchipStatus,
         status: "active",
       }).select("id").single();
 
@@ -406,6 +409,7 @@ const LostFoundAlerts = () => {
     setContactPhone("");
     setContactEmail("");
     setRewardOffered("");
+    setMicrochipStatus("unknown");
     setEditingPhotoIndex(null);
     clearAllPhotos();
   };
