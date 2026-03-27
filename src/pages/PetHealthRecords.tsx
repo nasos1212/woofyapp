@@ -713,11 +713,11 @@ const PetHealthRecords = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate("/member")}
+            onClick={() => navigate(-1)}
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            Back
           </Button>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
