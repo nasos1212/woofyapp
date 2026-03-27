@@ -399,17 +399,12 @@ const PetHealthRecords = () => {
     }
   };
 
-  const handleViewDocument = async (record: HealthRecord) => {
-    if (!record.document_url) return;
-    
+  const handleViewSingleDocument = async (docPath: string, title: string) => {
     setIsLoadingPreview(true);
     
     try {
-      // document_url can be a full URL (legacy) or just a path (new)
-      let filePath = record.document_url;
-      
-      // If it's a full URL, extract the path
-      const pathMatch = record.document_url.match(/health-documents\/(.+)$/);
+      let filePath = docPath;
+      const pathMatch = docPath.match(/health-documents\/(.+)$/);
       if (pathMatch) {
         filePath = pathMatch[1];
       }
@@ -420,7 +415,6 @@ const PetHealthRecords = () => {
       
       if (error) throw error;
       
-      // Determine file type from path
       const extension = filePath.split('.').pop()?.toLowerCase() || '';
       const fileType = ['pdf'].includes(extension) ? 'pdf' 
         : ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension) ? 'image' 
@@ -428,7 +422,7 @@ const PetHealthRecords = () => {
       
       setPreviewDocument({
         url: data.signedUrl,
-        title: record.title,
+        title,
         type: fileType
       });
     } catch (err) {
@@ -436,6 +430,14 @@ const PetHealthRecords = () => {
       toast.error("Failed to access document");
     } finally {
       setIsLoadingPreview(false);
+    }
+  };
+
+  const handleViewDocument = async (record: HealthRecord) => {
+    if (!record.document_url) return;
+    const paths = parseDocumentUrls(record.document_url);
+    if (paths.length > 0) {
+      handleViewSingleDocument(paths[0], record.title);
     }
   };
 
