@@ -44,7 +44,6 @@ const LostFoundManager = () => {
   const [filterType, setFilterType] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [selectedAlert, setSelectedAlert] = useState<LostFoundAlert | null>(null);
-  const [alertPhotos, setAlertPhotos] = useState<AlertPhoto[]>([]);
   const [ownerInfo, setOwnerInfo] = useState<{ full_name: string | null; email: string } | null>(null);
 
   useEffect(() => {
