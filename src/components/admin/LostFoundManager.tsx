@@ -211,14 +211,11 @@ const LostFoundManager = () => {
                 {/* Photos */}
                 {(selectedAlert.pet_photo_url || alertPhotos.length > 0) && (
                   <div className="rounded-lg overflow-hidden">
-                    {alertPhotos.length > 0 ? (
-                      <AlertPhotoCarousel
-                        photos={alertPhotos.map((p) => ({ url: p.photo_url, position: p.photo_position ?? 50 }))}
-                        petName={selectedAlert.pet_name}
-                      />
-                    ) : selectedAlert.pet_photo_url ? (
-                      <img src={selectedAlert.pet_photo_url} alt={selectedAlert.pet_name} className="w-full h-48 object-cover rounded-lg" />
-                    ) : null}
+                    <AlertPhotoCarousel
+                      alertId={selectedAlert.id}
+                      mainPhotoUrl={selectedAlert.pet_photo_url}
+                      petName={selectedAlert.pet_name}
+                    />
                   </div>
                 )}
 
