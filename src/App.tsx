@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
 import LostFoundAlerts from "./pages/LostFoundAlerts";
 import PetHealthRecords from "./pages/PetHealthRecords";
+import PetDocuments from "./pages/PetDocuments";
 
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
 import BusinessRedemptionHistory from "./pages/BusinessRedemptionHistory";
@@ -73,6 +74,7 @@ const App = () => (
               <Route path="/member/lost-found" element={<LostFoundAlerts />} />
               <Route path="/member/lost-pets" element={<Navigate to="/member/lost-found" replace />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
+              <Route path="/member/pet-documents" element={<PetDocuments />} />
               <Route path="/member/vaccinations" element={<PetHealthRecords />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/member/notifications" element={<Notifications />} />
