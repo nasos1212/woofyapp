@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, MousePointer, TrendingUp, TrendingDown, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Eye, MousePointer, TrendingUp, TrendingDown, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle, ArrowUpRight, ArrowDownRight, Minus, Cpu } from "lucide-react";
 import MetricTooltip from "./MetricTooltip";
 import GrowthMetrics from "./GrowthMetrics";
 import PetDemographics from "./PetDemographics";
