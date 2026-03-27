@@ -275,16 +275,30 @@ const PetHealthRecords = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validation = validateDocumentFile(file);
-    if (!validation.valid) {
-      toast.error(validation.error);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+    const files = e.target.files;
+    if (!files) return;
+
+    const existingCount = editingRecord ? parseDocumentUrls(editingRecord.document_url).filter((_, i) => !removeExistingDocument).length : 0;
+    const currentTotal = existingCount + documentFiles.length;
+
+    const newFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      if (currentTotal + newFiles.length >= MAX_DOCUMENTS) {
+        toast.error(`Maximum ${MAX_DOCUMENTS} documents allowed`);
+        break;
       }
-      return;
+      const validation = validateDocumentFile(files[i]);
+      if (!validation.valid) {
+        toast.error(validation.error);
+        continue;
+      }
+      newFiles.push(files[i]);
     }
 
-    setDocumentFile(file);
+    if (newFiles.length > 0) {
+      setDocumentFiles(prev => [...prev, ...newFiles]);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const uploadDocument = async (file: File, recordId: string): Promise<string | null> => {
