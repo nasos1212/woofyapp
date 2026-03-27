@@ -232,6 +232,7 @@ const PetHealthRecords = () => {
       .from("pet_health_records")
       .select("*")
       .eq("pet_id", selectedPet.id)
+      .order("date_administered", { ascending: false, nullsFirst: false })
       .order("created_at", { ascending: false });
 
     if (error) {
