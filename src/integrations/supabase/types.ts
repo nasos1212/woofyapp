@@ -1078,6 +1078,7 @@ export type Database = {
           last_seen_latitude: number | null
           last_seen_location: string
           last_seen_longitude: number | null
+          microchip_status: string
           owner_user_id: string
           pet_breed: string | null
           pet_description: string
@@ -1101,6 +1102,7 @@ export type Database = {
           last_seen_latitude?: number | null
           last_seen_location: string
           last_seen_longitude?: number | null
+          microchip_status?: string
           owner_user_id: string
           pet_breed?: string | null
           pet_description: string
@@ -1124,6 +1126,7 @@ export type Database = {
           last_seen_latitude?: number | null
           last_seen_location?: string
           last_seen_longitude?: number | null
+          microchip_status?: string
           owner_user_id?: string
           pet_breed?: string | null
           pet_description?: string

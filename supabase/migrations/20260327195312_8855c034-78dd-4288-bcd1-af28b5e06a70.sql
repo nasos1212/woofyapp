@@ -1,0 +1,1 @@
+ALTER TABLE public.lost_pet_alerts ADD COLUMN microchip_status text NOT NULL DEFAULT 'unknown';
