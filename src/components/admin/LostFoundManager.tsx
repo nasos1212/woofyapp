@@ -35,7 +35,6 @@ interface AlertPhoto {
   id: string;
   photo_url: string;
   display_order: number | null;
-  photo_position: number | null;
 }
 
 const LostFoundManager = () => {
