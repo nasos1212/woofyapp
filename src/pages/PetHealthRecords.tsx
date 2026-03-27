@@ -1387,16 +1387,21 @@ const PetHealthRecords = () => {
                               {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
                             </div>
                             {record.document_url && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="mt-2 gap-2"
-                                onClick={() => handleViewDocument(record)}
-                              >
-                                <File className="w-4 h-4" />
-                                View Document
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {parseDocumentUrls(record.document_url).map((docPath, docIdx) => (
+                                  <Button
+                                    key={docIdx}
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                    onClick={() => handleViewSingleDocument(docPath, record.title)}
+                                  >
+                                    <File className="w-4 h-4" />
+                                    {parseDocumentUrls(record.document_url!).length > 1 ? `Document ${docIdx + 1}` : 'View Document'}
+                                    <ExternalLink className="w-3 h-3" />
+                                  </Button>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </div>
