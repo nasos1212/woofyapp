@@ -1546,6 +1546,50 @@ export type Database = {
           },
         ]
       }
+      pet_documents: {
+        Row: {
+          created_at: string
+          document_url: string
+          file_name: string
+          file_type: string | null
+          id: string
+          owner_user_id: string
+          pet_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document_url: string
+          file_name: string
+          file_type?: string | null
+          id?: string
+          owner_user_id: string
+          pet_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document_url?: string
+          file_name?: string
+          file_type?: string | null
+          id?: string
+          owner_user_id?: string
+          pet_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_documents_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pet_friendly_place_ratings: {
         Row: {
           created_at: string
