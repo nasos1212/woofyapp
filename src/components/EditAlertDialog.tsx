@@ -323,6 +323,25 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
             <Textarea value={petDescription} onChange={(e) => setPetDescription(e.target.value)} required />
           </div>
 
+          {/* Microchip Status */}
+          <div className="space-y-2">
+            <Label>Microchip Status</Label>
+            <RadioGroup value={microchipStatus} onValueChange={setMicrochipStatus} className="flex gap-4">
+              <div className="flex items-center gap-1.5">
+                <RadioGroupItem value="unknown" id="edit-chip-unknown" />
+                <Label htmlFor="edit-chip-unknown" className="font-normal cursor-pointer">Unknown</Label>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <RadioGroupItem value="yes" id="edit-chip-yes" />
+                <Label htmlFor="edit-chip-yes" className="font-normal cursor-pointer">Yes</Label>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <RadioGroupItem value="no" id="edit-chip-no" />
+                <Label htmlFor="edit-chip-no" className="font-normal cursor-pointer">No</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
           <LocationSelector
             selectedCity={lastSeenCity}
             selectedArea={lastSeenArea}
