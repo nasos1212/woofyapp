@@ -148,15 +148,23 @@ const PetDocuments = () => {
   };
 
   const handleView = async (doc: PetDocument) => {
+    // Open window immediately to avoid popup blocker (must be in user gesture context)
+    const newWindow = window.open("", "_blank");
     try {
       const { data, error } = await supabase.storage
         .from("pet-documents")
         .createSignedUrl(doc.document_url, 300);
 
       if (error) throw error;
-      window.open(data.signedUrl, "_blank");
+      if (newWindow) {
+        newWindow.location.href = data.signedUrl;
+      } else {
+        // Fallback: use current window
+        window.location.href = data.signedUrl;
+      }
     } catch (error) {
       console.error("Error viewing document:", error);
+      if (newWindow) newWindow.close();
       toast.error("Failed to open document");
     }
   };
