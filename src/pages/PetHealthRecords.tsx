@@ -1289,15 +1289,20 @@ const PetHealthRecords = () => {
                                 </p>
                               )}
                               {reminder.document_url && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="mt-1 gap-1 h-7 text-xs px-2"
-                                  onClick={() => handleViewDocument(reminder)}
-                                >
-                                  <File className="w-3 h-3" />
-                                  Document
-                                </Button>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {parseDocumentUrls(reminder.document_url).map((docPath, docIdx) => (
+                                    <Button
+                                      key={docIdx}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="gap-1 h-7 text-xs px-2"
+                                      onClick={() => handleViewSingleDocument(docPath, reminder.title)}
+                                    >
+                                      <File className="w-3 h-3" />
+                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? `Doc ${docIdx + 1}` : 'Document'}
+                                    </Button>
+                                  ))}
+                                </div>
                               )}
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
