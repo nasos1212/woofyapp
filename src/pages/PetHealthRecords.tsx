@@ -505,7 +505,7 @@ const PetHealthRecords = () => {
     setIntervalType("yearly");
     setCustomDays("365");
     setSelectedPreset("");
-    setDocumentFile(null);
+    setDocumentFiles([]);
     setEditingRecord(null);
     setRemoveExistingDocument(false);
     setPreferredTime("");
@@ -530,7 +530,7 @@ const PetHealthRecords = () => {
     setSelectedPreset("");
     setPreferredTime(record.preferred_time || "");
     setReminderDaysBefore(record.reminder_days_before || []);
-    setDocumentFile(null);
+    setDocumentFiles([]);
     setRemoveExistingDocument(false);
     setShowAddDialog(true);
   };
