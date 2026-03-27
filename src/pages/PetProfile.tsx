@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet-async";
 import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock, Gift, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
