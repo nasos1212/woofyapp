@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,6 +56,8 @@ const PetDocuments = () => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<{ url: string; title: string; type: string } | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -148,24 +151,29 @@ const PetDocuments = () => {
   };
 
   const handleView = async (doc: PetDocument) => {
-    // Open window immediately to avoid popup blocker (must be in user gesture context)
-    const newWindow = window.open("", "_blank");
+    setIsLoadingPreview(true);
     try {
       const { data, error } = await supabase.storage
         .from("pet-documents")
-        .createSignedUrl(doc.document_url, 300);
+        .createSignedUrl(doc.document_url, 3600);
 
       if (error) throw error;
-      if (newWindow) {
-        newWindow.location.href = data.signedUrl;
-      } else {
-        // Fallback: use current window
-        window.location.href = data.signedUrl;
-      }
+
+      const extension = doc.file_name.split('.').pop()?.toLowerCase() || '';
+      const fileType = ['pdf'].includes(extension) ? 'pdf'
+        : ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension) ? 'image'
+        : 'other';
+
+      setPreviewDocument({
+        url: data.signedUrl,
+        title: doc.title,
+        type: fileType
+      });
     } catch (error) {
       console.error("Error viewing document:", error);
-      if (newWindow) newWindow.close();
       toast.error("Failed to open document");
+    } finally {
+      setIsLoadingPreview(false);
     }
   };
 
@@ -366,8 +374,10 @@ const PetDocuments = () => {
                         </p>
                       </div>
                       <div className="flex gap-1 shrink-0">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleView(doc)}>
-                          <Eye className="w-4 h-4" />
+                        <Button variant="outline" size="sm" className="h-8 gap-2" onClick={() => handleView(doc)}>
+                          <File className="w-4 h-4" />
+                          View Document
+                          <ExternalLink className="w-3 h-3" />
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
