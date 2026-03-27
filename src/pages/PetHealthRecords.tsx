@@ -135,11 +135,24 @@ const PetHealthRecords = () => {
   const [intervalType, setIntervalType] = useState("yearly");
   const [customDays, setCustomDays] = useState("365");
   const [selectedPreset, setSelectedPreset] = useState("");
-  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [documentFiles, setDocumentFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [preferredTime, setPreferredTime] = useState("");
   const [reminderDaysBefore, setReminderDaysBefore] = useState<number[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_DOCUMENTS = 5;
+
+  // Parse document_url which can be a single path (legacy) or JSON array
+  const parseDocumentUrls = (documentUrl: string | null): string[] => {
+    if (!documentUrl) return [];
+    try {
+      const parsed = JSON.parse(documentUrl);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // Legacy single path format
+    }
+    return [documentUrl];
+  };
 
   const REMINDER_OPTIONS = [
     { value: 3, label: "3 days before" },
@@ -262,16 +275,30 @@ const PetHealthRecords = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const validation = validateDocumentFile(file);
-    if (!validation.valid) {
-      toast.error(validation.error);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+    const files = e.target.files;
+    if (!files) return;
+
+    const existingCount = editingRecord ? parseDocumentUrls(editingRecord.document_url).filter((_, i) => !removeExistingDocument).length : 0;
+    const currentTotal = existingCount + documentFiles.length;
+
+    const newFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      if (currentTotal + newFiles.length >= MAX_DOCUMENTS) {
+        toast.error(`Maximum ${MAX_DOCUMENTS} documents allowed`);
+        break;
       }
-      return;
+      const validation = validateDocumentFile(files[i]);
+      if (!validation.valid) {
+        toast.error(validation.error);
+        continue;
+      }
+      newFiles.push(files[i]);
     }
 
-    setDocumentFile(file);
+    if (newFiles.length > 0) {
+      setDocumentFiles(prev => [...prev, ...newFiles]);
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const uploadDocument = async (file: File, recordId: string): Promise<string | null> => {
@@ -338,14 +365,18 @@ const PetHealthRecords = () => {
 
       if (error) throw error;
 
-      // If there's a document to upload, upload it and update the record
-      if (documentFile && newRecord) {
+      // Upload documents if any
+      if (documentFiles.length > 0 && newRecord) {
         setIsUploading(true);
         try {
-          const documentUrl = await uploadDocument(documentFile, newRecord.id);
-          if (documentUrl) {
+          const uploadedPaths: string[] = [];
+          for (const file of documentFiles) {
+            const path = await uploadDocument(file, newRecord.id);
+            if (path) uploadedPaths.push(path);
+          }
+          if (uploadedPaths.length > 0) {
             await supabase.from("pet_health_records")
-              .update({ document_url: documentUrl })
+              .update({ document_url: JSON.stringify(uploadedPaths) })
               .eq("id", newRecord.id);
           }
         } catch (uploadErr) {
@@ -368,17 +399,12 @@ const PetHealthRecords = () => {
     }
   };
 
-  const handleViewDocument = async (record: HealthRecord) => {
-    if (!record.document_url) return;
-    
+  const handleViewSingleDocument = async (docPath: string, title: string) => {
     setIsLoadingPreview(true);
     
     try {
-      // document_url can be a full URL (legacy) or just a path (new)
-      let filePath = record.document_url;
-      
-      // If it's a full URL, extract the path
-      const pathMatch = record.document_url.match(/health-documents\/(.+)$/);
+      let filePath = docPath;
+      const pathMatch = docPath.match(/health-documents\/(.+)$/);
       if (pathMatch) {
         filePath = pathMatch[1];
       }
@@ -389,7 +415,6 @@ const PetHealthRecords = () => {
       
       if (error) throw error;
       
-      // Determine file type from path
       const extension = filePath.split('.').pop()?.toLowerCase() || '';
       const fileType = ['pdf'].includes(extension) ? 'pdf' 
         : ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension) ? 'image' 
@@ -397,7 +422,7 @@ const PetHealthRecords = () => {
       
       setPreviewDocument({
         url: data.signedUrl,
-        title: record.title,
+        title,
         type: fileType
       });
     } catch (err) {
@@ -405,6 +430,14 @@ const PetHealthRecords = () => {
       toast.error("Failed to access document");
     } finally {
       setIsLoadingPreview(false);
+    }
+  };
+
+  const handleViewDocument = async (record: HealthRecord) => {
+    if (!record.document_url) return;
+    const paths = parseDocumentUrls(record.document_url);
+    if (paths.length > 0) {
+      handleViewSingleDocument(paths[0], record.title);
     }
   };
 
@@ -474,7 +507,7 @@ const PetHealthRecords = () => {
     setIntervalType("yearly");
     setCustomDays("365");
     setSelectedPreset("");
-    setDocumentFile(null);
+    setDocumentFiles([]);
     setEditingRecord(null);
     setRemoveExistingDocument(false);
     setPreferredTime("");
@@ -499,7 +532,7 @@ const PetHealthRecords = () => {
     setSelectedPreset("");
     setPreferredTime(record.preferred_time || "");
     setReminderDaysBefore(record.reminder_days_before || []);
-    setDocumentFile(null);
+    setDocumentFiles([]);
     setRemoveExistingDocument(false);
     setShowAddDialog(true);
   };
@@ -526,30 +559,28 @@ const PetHealthRecords = () => {
 
     setIsAdding(true);
     try {
-      let documentUrl = editingRecord.document_url;
+      // Parse existing document paths
+      let existingPaths = parseDocumentUrls(editingRecord.document_url);
 
-      // Handle document changes
-      if (removeExistingDocument && editingRecord.document_url) {
-        // Delete the old document from storage
-        const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
-        if (pathMatch) {
-          await supabase.storage.from('health-documents').remove([pathMatch[1]]);
+      // Handle document removal
+      if (removeExistingDocument && existingPaths.length > 0) {
+        for (const path of existingPaths) {
+          const filePath = path.match(/health-documents\/(.+)$/)?.[1] || path;
+          await supabase.storage.from('health-documents').remove([filePath]);
         }
-        documentUrl = null;
+        existingPaths = [];
       }
 
-      // Upload new document if provided
-      if (documentFile) {
+      // Upload new documents
+      if (documentFiles.length > 0) {
         setIsUploading(true);
         try {
-          // Delete old document first if exists
-          if (editingRecord.document_url) {
-            const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
-            if (pathMatch) {
-              await supabase.storage.from('health-documents').remove([pathMatch[1]]);
-            }
+          const uploadedPaths: string[] = [];
+          for (const file of documentFiles) {
+            const path = await uploadDocument(file, editingRecord.id);
+            if (path) uploadedPaths.push(path);
           }
-          documentUrl = await uploadDocument(documentFile, editingRecord.id);
+          existingPaths = [...existingPaths, ...uploadedPaths];
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
           toast.error("Failed to upload new document");
@@ -557,6 +588,8 @@ const PetHealthRecords = () => {
           setIsUploading(false);
         }
       }
+
+      const documentUrl = existingPaths.length > 0 ? JSON.stringify(existingPaths) : null;
 
       const { error } = await supabase.from("pet_health_records")
         .update({
@@ -1021,22 +1054,29 @@ const PetHealthRecords = () => {
 
                   {/* Document Upload */}
                   <div className="space-y-2">
-                    <Label>Attach Document (Optional)</Label>
+                    <Label>Attach Documents (Optional, up to {MAX_DOCUMENTS})</Label>
                     
-                    {/* Show existing document when editing */}
-                    {editingRecord?.document_url && !removeExistingDocument && !documentFile && (
-                      <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
-                        <File className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm flex-1">Current document attached</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="text-xs"
-                          onClick={() => handleViewDocument(editingRecord)}
-                        >
-                          View
-                        </Button>
+                    {/* Show existing documents when editing */}
+                    {editingRecord?.document_url && !removeExistingDocument && (
+                      <div className="space-y-1">
+                        {parseDocumentUrls(editingRecord.document_url).map((docPath, idx) => {
+                          const fileName = docPath.split('/').pop() || `Document ${idx + 1}`;
+                          return (
+                            <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                              <File className="w-4 h-4 text-muted-foreground shrink-0" />
+                              <span className="text-sm flex-1 truncate">{fileName}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs shrink-0"
+                                onClick={() => handleViewDocument({ ...editingRecord, document_url: docPath })}
+                              >
+                                View
+                              </Button>
+                            </div>
+                          );
+                        })}
                         <Button
                           type="button"
                           variant="ghost"
@@ -1044,14 +1084,14 @@ const PetHealthRecords = () => {
                           className="text-xs text-destructive hover:text-destructive"
                           onClick={() => setRemoveExistingDocument(true)}
                         >
-                          Remove
+                          Remove all existing documents
                         </Button>
                       </div>
                     )}
                     
-                    {removeExistingDocument && !documentFile && (
+                    {removeExistingDocument && documentFiles.length === 0 && (
                       <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
-                        <span className="text-sm text-destructive flex-1">Document will be removed</span>
+                        <span className="text-sm text-destructive flex-1">Documents will be removed</span>
                         <Button
                           type="button"
                           variant="ghost"
@@ -1063,45 +1103,58 @@ const PetHealthRecords = () => {
                         </Button>
                       </div>
                     )}
+
+                    {/* New files list */}
+                    {documentFiles.length > 0 && (
+                      <div className="space-y-1">
+                        {documentFiles.map((file, idx) => (
+                          <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                            <File className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="text-sm flex-1 truncate">{file.name}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 shrink-0"
+                              onClick={() => setDocumentFiles(prev => prev.filter((_, i) => i !== idx))}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     
-                    <div className="flex items-center gap-2">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                        id="document-upload"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="gap-2"
-                      >
-                        <Upload className="w-4 h-4" />
-                        {documentFile ? "Change File" : editingRecord?.document_url ? "Replace File" : "Upload File"}
-                      </Button>
-                      {documentFile && (
-                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="text-sm text-muted-foreground truncate">{documentFile.name}</span>
+                    {(() => {
+                      const existingCount = editingRecord?.document_url && !removeExistingDocument 
+                        ? parseDocumentUrls(editingRecord.document_url).length : 0;
+                      const canAddMore = existingCount + documentFiles.length < MAX_DOCUMENTS;
+                      return canAddMore ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                            multiple
+                            onChange={handleFileSelect}
+                            className="hidden"
+                            id="document-upload"
+                          />
                           <Button
                             type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 shrink-0"
-                            onClick={() => {
-                              setDocumentFile(null);
-                              if (fileInputRef.current) fileInputRef.current.value = '';
-                            }}
+                            variant="outline"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="gap-2"
                           >
-                            <X className="w-4 h-4" />
+                            <Upload className="w-4 h-4" />
+                            {documentFiles.length > 0 || (editingRecord?.document_url && !removeExistingDocument) 
+                              ? "Add More Files" : "Upload Files"}
                           </Button>
                         </div>
-                      )}
-                    </div>
+                      ) : null;
+                    })()}
                     <p className="text-xs text-muted-foreground">
-                      PDF, images, or Word docs up to 10MB. Great for vet receipts & certificates.
+                      PDF, images, or Word docs up to 10MB each. Great for vet receipts & certificates.
                     </p>
                   </div>
 
@@ -1236,15 +1289,20 @@ const PetHealthRecords = () => {
                                 </p>
                               )}
                               {reminder.document_url && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="mt-1 gap-1 h-7 text-xs px-2"
-                                  onClick={() => handleViewDocument(reminder)}
-                                >
-                                  <File className="w-3 h-3" />
-                                  Document
-                                </Button>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {parseDocumentUrls(reminder.document_url).map((docPath, docIdx) => (
+                                    <Button
+                                      key={docIdx}
+                                      variant="ghost"
+                                      size="sm"
+                                      className="gap-1 h-7 text-xs px-2"
+                                      onClick={() => handleViewSingleDocument(docPath, reminder.title)}
+                                    >
+                                      <File className="w-3 h-3" />
+                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? `Doc ${docIdx + 1}` : 'Document'}
+                                    </Button>
+                                  ))}
+                                </div>
                               )}
                             </div>
                             <div className="flex items-center gap-1 shrink-0">
@@ -1329,16 +1387,21 @@ const PetHealthRecords = () => {
                               {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
                             </div>
                             {record.document_url && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="mt-2 gap-2"
-                                onClick={() => handleViewDocument(record)}
-                              >
-                                <File className="w-4 h-4" />
-                                View Document
-                                <ExternalLink className="w-3 h-3" />
-                              </Button>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                {parseDocumentUrls(record.document_url).map((docPath, docIdx) => (
+                                  <Button
+                                    key={docIdx}
+                                    variant="outline"
+                                    size="sm"
+                                    className="gap-2"
+                                    onClick={() => handleViewSingleDocument(docPath, record.title)}
+                                  >
+                                    <File className="w-4 h-4" />
+                                    {parseDocumentUrls(record.document_url!).length > 1 ? `Document ${docIdx + 1}` : 'View Document'}
+                                    <ExternalLink className="w-3 h-3" />
+                                  </Button>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </div>
