@@ -14,9 +14,9 @@ const ConversionFunnel = ({ businessViews, offerClicks, redemptions }: Conversio
   const overallRate = businessViews > 0 ? ((redemptions / businessViews) * 100).toFixed(1) : "0";
 
   const steps = [
-    { icon: Eye, label: "Business Views", value: businessViews, color: "hsl(var(--primary))", bgClass: "bg-primary/10", textClass: "text-primary", width: "100%" },
-    { icon: MousePointer, label: "Offer Clicks", value: offerClicks, color: "hsl(25, 95%, 53%)", bgClass: "bg-orange-500/10", textClass: "text-orange-500", width: businessViews > 0 ? `${Math.max(20, (offerClicks / businessViews) * 100)}%` : "20%" },
-    { icon: Gift, label: "Redemptions", value: redemptions, color: "hsl(142, 71%, 45%)", bgClass: "bg-green-500/10", textClass: "text-green-500", width: businessViews > 0 ? `${Math.max(10, (redemptions / businessViews) * 100)}%` : "10%" },
+    { icon: Eye, label: "Business Views", value: businessViews, color: "hsl(var(--primary))", bgClass: "bg-primary/10", textClass: "text-primary", width: businessViews > 0 ? "100%" : "0%" },
+    { icon: MousePointer, label: "Offer Clicks", value: offerClicks, color: "hsl(25, 95%, 53%)", bgClass: "bg-orange-500/10", textClass: "text-orange-500", width: offerClicks > 0 ? (businessViews > 0 ? `${Math.max(20, (offerClicks / businessViews) * 100)}%` : "20%") : "0%" },
+    { icon: Gift, label: "Redemptions", value: redemptions, color: "hsl(142, 71%, 45%)", bgClass: "bg-green-500/10", textClass: "text-green-500", width: redemptions > 0 ? (businessViews > 0 ? `${Math.max(10, (redemptions / businessViews) * 100)}%` : "10%") : "0%" },
   ];
 
   return (
