@@ -895,7 +895,7 @@ const PetProfile = () => {
 
           {/* Pet Records */}
           <h2 className="text-lg font-display font-semibold text-foreground mb-3">Pet Records</h2>
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             <Button
               variant="default"
               size="lg"
