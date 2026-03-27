@@ -364,45 +364,54 @@ const PetDocuments = () => {
               {documents.map((doc) => (
                 <Card key={doc.id}>
                   <CardContent className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl shrink-0">{getFileIcon(doc.file_type)}</div>
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl shrink-0 mt-0.5">{getFileIcon(doc.file_type)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-foreground truncate">{doc.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">{doc.file_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(doc.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button variant="outline" size="sm" className="h-8 gap-2" onClick={() => handleView(doc)}>
-                          <File className="w-4 h-4" />
-                          View Document
-                          <ExternalLink className="w-3 h-3" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Document?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will permanently delete "{doc.title}". This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(doc)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm text-foreground truncate">{doc.title}</p>
+                            <p className="text-xs text-muted-foreground truncate">{doc.file_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(doc.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Document?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete "{doc.title}". This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(doc)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => handleView(doc)}
+                          >
+                            <File className="w-4 h-4" />
+                            View Document
+                            <ExternalLink className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
