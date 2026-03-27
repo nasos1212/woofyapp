@@ -74,6 +74,7 @@ const App = () => (
               <Route path="/member/lost-found" element={<LostFoundAlerts />} />
               <Route path="/member/lost-pets" element={<Navigate to="/member/lost-found" replace />} />
               <Route path="/member/health-records" element={<PetHealthRecords />} />
+              <Route path="/member/pet-documents" element={<PetDocuments />} />
               <Route path="/member/vaccinations" element={<PetHealthRecords />} />
               <Route path="/member/pet/:id" element={<PetProfile />} />
               <Route path="/member/notifications" element={<Notifications />} />
