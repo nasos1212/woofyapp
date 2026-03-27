@@ -135,11 +135,24 @@ const PetHealthRecords = () => {
   const [intervalType, setIntervalType] = useState("yearly");
   const [customDays, setCustomDays] = useState("365");
   const [selectedPreset, setSelectedPreset] = useState("");
-  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [documentFiles, setDocumentFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [preferredTime, setPreferredTime] = useState("");
   const [reminderDaysBefore, setReminderDaysBefore] = useState<number[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_DOCUMENTS = 5;
+
+  // Parse document_url which can be a single path (legacy) or JSON array
+  const parseDocumentUrls = (documentUrl: string | null): string[] => {
+    if (!documentUrl) return [];
+    try {
+      const parsed = JSON.parse(documentUrl);
+      if (Array.isArray(parsed)) return parsed;
+    } catch {
+      // Legacy single path format
+    }
+    return [documentUrl];
+  };
 
   const REMINDER_OPTIONS = [
     { value: 3, label: "3 days before" },
