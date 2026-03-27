@@ -909,7 +909,7 @@ const PetProfile = () => {
               variant="default"
               size="lg"
               onClick={() => navigate(`/member/pet-documents?pet=${pet.id}`)}
-              className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+              className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
               <span className="font-semibold text-sm sm:text-base">General Documents</span>
