@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import SupportManager from "@/components/admin/SupportManager";
 import PlacesManager from "@/components/admin/PlacesManager";
 import AffiliateManager from "@/components/admin/AffiliateManager";
 import CommunityReportsManager from "@/components/admin/CommunityReportsManager";
+import LostFoundManager from "@/components/admin/LostFoundManager";
 
 interface PendingCounts {
   support: number;
@@ -206,6 +207,10 @@ const AdminDashboard = () => {
               Places
               <TabBadge count={pendingCounts.places} />
             </TabsTrigger>
+            <TabsTrigger value="lostfound" className="gap-1">
+              <AlertTriangle className="w-4 h-4" />
+              Lost & Found
+            </TabsTrigger>
             <TabsTrigger value="reports" className="gap-1">
               <Flag className="w-4 h-4" />
               Reports
@@ -239,6 +244,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="places">
             <PlacesManager />
+          </TabsContent>
+
+          <TabsContent value="lostfound">
+            <LostFoundManager />
           </TabsContent>
 
           <TabsContent value="reports">
