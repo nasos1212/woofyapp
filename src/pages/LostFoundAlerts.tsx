@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -838,6 +839,25 @@ const LostFoundAlerts = () => {
                         }
                         required
                       />
+                    </div>
+
+                    {/* Microchip Status */}
+                    <div className="space-y-2">
+                      <Label>Microchip Status</Label>
+                      <RadioGroup value={microchipStatus} onValueChange={setMicrochipStatus} className="flex gap-4">
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="unknown" id="chip-unknown" />
+                          <Label htmlFor="chip-unknown" className="font-normal cursor-pointer">Unknown</Label>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="yes" id="chip-yes" />
+                          <Label htmlFor="chip-yes" className="font-normal cursor-pointer">Yes</Label>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="no" id="chip-no" />
+                          <Label htmlFor="chip-no" className="font-normal cursor-pointer">No</Label>
+                        </div>
+                      </RadioGroup>
                     </div>
 
                     <LocationSelector
