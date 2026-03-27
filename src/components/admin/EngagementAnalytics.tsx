@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Eye, MousePointer, TrendingUp, TrendingDown, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle, ArrowUpRight, ArrowDownRight, Minus } from "lucide-react";
+import { Eye, MousePointer, TrendingUp, TrendingDown, Store, Gift, Home, Cake, Check, Dog, MapPin, Activity, MessageCircle, ArrowUpRight, ArrowDownRight, Minus, Cpu } from "lucide-react";
 import MetricTooltip from "./MetricTooltip";
 import GrowthMetrics from "./GrowthMetrics";
 import PetDemographics from "./PetDemographics";
@@ -13,6 +13,7 @@ import BreedInsights from "./BreedInsights";
 import CommunityAnalytics from "./CommunityAnalytics";
 import PlacesAnalytics from "./PlacesAnalytics";
 import ConversionFunnel from "./ConversionFunnel";
+import MicrochipInsights from "./MicrochipInsights";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subDays, isAfter } from "date-fns";
 
@@ -453,7 +454,13 @@ const EngagementAnalytics = () => {
         <CommunityAnalytics dateRange={dateRange} />
       </section>
 
-      {/* ═══════ 8. PET-FRIENDLY PLACES ═══════ */}
+      {/* ═══════ 8. LOST & FOUND MICROCHIP INSIGHTS ═══════ */}
+      <section className="border-t border-border/30 pt-8">
+        <SectionHeader icon={Cpu} title="Lost & Found — Microchip Insights" subtitle="Microchip adoption rates across lost and found pet alerts" />
+        <MicrochipInsights />
+      </section>
+
+      {/* ═══════ 9. PET-FRIENDLY PLACES ═══════ */}
       <section className="border-t border-border/30 pt-8">
         <SectionHeader icon={MapPin} title="Pet-Friendly Places" subtitle="Directory coverage, reviews, and listing requests" />
         <PlacesAnalytics />
