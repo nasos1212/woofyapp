@@ -900,19 +900,19 @@ const PetProfile = () => {
               variant="default"
               size="lg"
               onClick={() => navigate(`/member/health-records?pet=${pet.id}`)}
-              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-xs sm:text-sm text-center leading-tight">Health Records & Reminders</span>
+              <span className="font-semibold text-sm sm:text-base">Health Records & Reminders</span>
             </Button>
             <Button
               variant="default"
               size="lg"
               onClick={() => navigate(`/member/pet-documents?pet=${pet.id}`)}
-              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+              className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-xs sm:text-sm text-center leading-tight">General Documents</span>
+              <span className="font-semibold text-sm sm:text-base">General Documents</span>
             </Button>
           </div>
 
