@@ -31,12 +31,6 @@ interface LostFoundAlert {
   additional_info: string | null;
 }
 
-interface AlertPhoto {
-  id: string;
-  photo_url: string;
-  display_order: number | null;
-}
-
 const LostFoundManager = () => {
   const [alerts, setAlerts] = useState<LostFoundAlert[]>([]);
   const [loading, setLoading] = useState(true);
