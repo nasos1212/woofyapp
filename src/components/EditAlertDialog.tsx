@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Dog, Cat, HelpCircle, Upload, X, ChevronUp, ChevronDown } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +26,7 @@ interface AlertData {
   contact_phone: string | null;
   contact_email: string | null;
   reward_offered: string | null;
+  microchip_status: string | null;
 }
 
 interface ExistingPhoto {
@@ -53,6 +55,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [rewardOffered, setRewardOffered] = useState("");
+  const [microchipStatus, setMicrochipStatus] = useState("unknown");
   const [isSaving, setIsSaving] = useState(false);
 
   // Existing photos from DB
@@ -74,6 +77,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
       setContactPhone(alert.contact_phone || "");
       setContactEmail(alert.contact_email || "");
       setRewardOffered(alert.reward_offered || "");
+      setMicrochipStatus(alert.microchip_status || "unknown");
 
       // Parse location - format is "Area, City - details" or "City - details"
       const locationParts = alert.last_seen_location.split(" - ");
@@ -200,6 +204,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
           contact_phone: contactPhone,
           contact_email: contactEmail || null,
           reward_offered: alert.alert_type === "lost" ? rewardOffered || null : null,
+          microchip_status: microchipStatus,
         })
         .eq("id", alert.id);
 
