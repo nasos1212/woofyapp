@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File } from "lucide-react";
+import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
