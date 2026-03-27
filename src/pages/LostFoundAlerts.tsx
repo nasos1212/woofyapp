@@ -510,6 +510,11 @@ const LostFoundAlerts = () => {
               {alert.pet_breed && (
                 <p className="text-sm text-muted-foreground">{alert.pet_breed}</p>
               )}
+              {alert.microchip_status && alert.microchip_status !== "unknown" && (
+                <Badge variant="outline" className={alert.microchip_status === "yes" ? "text-green-700 border-green-200 bg-green-50" : "text-muted-foreground"}>
+                  Microchip: {alert.microchip_status === "yes" ? "Yes" : "No"}
+                </Badge>
+              )}
             </div>
             {isLost && alert.reward_offered && (
               <Badge className="bg-green-100 text-green-700 border-green-200">
