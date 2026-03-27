@@ -1052,22 +1052,29 @@ const PetHealthRecords = () => {
 
                   {/* Document Upload */}
                   <div className="space-y-2">
-                    <Label>Attach Document (Optional)</Label>
+                    <Label>Attach Documents (Optional, up to {MAX_DOCUMENTS})</Label>
                     
-                    {/* Show existing document when editing */}
-                    {editingRecord?.document_url && !removeExistingDocument && !documentFile && (
-                      <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
-                        <File className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm flex-1">Current document attached</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="text-xs"
-                          onClick={() => handleViewDocument(editingRecord)}
-                        >
-                          View
-                        </Button>
+                    {/* Show existing documents when editing */}
+                    {editingRecord?.document_url && !removeExistingDocument && (
+                      <div className="space-y-1">
+                        {parseDocumentUrls(editingRecord.document_url).map((docPath, idx) => {
+                          const fileName = docPath.split('/').pop() || `Document ${idx + 1}`;
+                          return (
+                            <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                              <File className="w-4 h-4 text-muted-foreground shrink-0" />
+                              <span className="text-sm flex-1 truncate">{fileName}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-xs shrink-0"
+                                onClick={() => handleViewDocument({ ...editingRecord, document_url: docPath })}
+                              >
+                                View
+                              </Button>
+                            </div>
+                          );
+                        })}
                         <Button
                           type="button"
                           variant="ghost"
@@ -1075,14 +1082,14 @@ const PetHealthRecords = () => {
                           className="text-xs text-destructive hover:text-destructive"
                           onClick={() => setRemoveExistingDocument(true)}
                         >
-                          Remove
+                          Remove all existing documents
                         </Button>
                       </div>
                     )}
                     
-                    {removeExistingDocument && !documentFile && (
+                    {removeExistingDocument && documentFiles.length === 0 && (
                       <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
-                        <span className="text-sm text-destructive flex-1">Document will be removed</span>
+                        <span className="text-sm text-destructive flex-1">Documents will be removed</span>
                         <Button
                           type="button"
                           variant="ghost"
@@ -1094,45 +1101,58 @@ const PetHealthRecords = () => {
                         </Button>
                       </div>
                     )}
+
+                    {/* New files list */}
+                    {documentFiles.length > 0 && (
+                      <div className="space-y-1">
+                        {documentFiles.map((file, idx) => (
+                          <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                            <File className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="text-sm flex-1 truncate">{file.name}</span>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 shrink-0"
+                              onClick={() => setDocumentFiles(prev => prev.filter((_, i) => i !== idx))}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     
-                    <div className="flex items-center gap-2">
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                        id="document-upload"
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="gap-2"
-                      >
-                        <Upload className="w-4 h-4" />
-                        {documentFile ? "Change File" : editingRecord?.document_url ? "Replace File" : "Upload File"}
-                      </Button>
-                      {documentFile && (
-                        <div className="flex items-center gap-2 flex-1 min-w-0">
-                          <span className="text-sm text-muted-foreground truncate">{documentFile.name}</span>
+                    {(() => {
+                      const existingCount = editingRecord?.document_url && !removeExistingDocument 
+                        ? parseDocumentUrls(editingRecord.document_url).length : 0;
+                      const canAddMore = existingCount + documentFiles.length < MAX_DOCUMENTS;
+                      return canAddMore ? (
+                        <div className="flex items-center gap-2">
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+                            multiple
+                            onChange={handleFileSelect}
+                            className="hidden"
+                            id="document-upload"
+                          />
                           <Button
                             type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 shrink-0"
-                            onClick={() => {
-                              setDocumentFile(null);
-                              if (fileInputRef.current) fileInputRef.current.value = '';
-                            }}
+                            variant="outline"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="gap-2"
                           >
-                            <X className="w-4 h-4" />
+                            <Upload className="w-4 h-4" />
+                            {documentFiles.length > 0 || (editingRecord?.document_url && !removeExistingDocument) 
+                              ? "Add More Files" : "Upload Files"}
                           </Button>
                         </div>
-                      )}
-                    </div>
+                      ) : null;
+                    })()}
                     <p className="text-xs text-muted-foreground">
-                      PDF, images, or Word docs up to 10MB. Great for vet receipts & certificates.
+                      PDF, images, or Word docs up to 10MB each. Great for vet receipts & certificates.
                     </p>
                   </div>
 
