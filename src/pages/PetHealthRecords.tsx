@@ -557,30 +557,28 @@ const PetHealthRecords = () => {
 
     setIsAdding(true);
     try {
-      let documentUrl = editingRecord.document_url;
+      // Parse existing document paths
+      let existingPaths = parseDocumentUrls(editingRecord.document_url);
 
-      // Handle document changes
-      if (removeExistingDocument && editingRecord.document_url) {
-        // Delete the old document from storage
-        const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
-        if (pathMatch) {
-          await supabase.storage.from('health-documents').remove([pathMatch[1]]);
+      // Handle document removal
+      if (removeExistingDocument && existingPaths.length > 0) {
+        for (const path of existingPaths) {
+          const filePath = path.match(/health-documents\/(.+)$/)?.[1] || path;
+          await supabase.storage.from('health-documents').remove([filePath]);
         }
-        documentUrl = null;
+        existingPaths = [];
       }
 
-      // Upload new document if provided
-      if (documentFile) {
+      // Upload new documents
+      if (documentFiles.length > 0) {
         setIsUploading(true);
         try {
-          // Delete old document first if exists
-          if (editingRecord.document_url) {
-            const pathMatch = editingRecord.document_url.match(/health-documents\/(.+)$/);
-            if (pathMatch) {
-              await supabase.storage.from('health-documents').remove([pathMatch[1]]);
-            }
+          const uploadedPaths: string[] = [];
+          for (const file of documentFiles) {
+            const path = await uploadDocument(file, editingRecord.id);
+            if (path) uploadedPaths.push(path);
           }
-          documentUrl = await uploadDocument(documentFile, editingRecord.id);
+          existingPaths = [...existingPaths, ...uploadedPaths];
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
           toast.error("Failed to upload new document");
@@ -588,6 +586,8 @@ const PetHealthRecords = () => {
           setIsUploading(false);
         }
       }
+
+      const documentUrl = existingPaths.length > 0 ? JSON.stringify(existingPaths) : null;
 
       const { error } = await supabase.from("pet_health_records")
         .update({
