@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File } from "lucide-react";
+import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,6 +56,8 @@ const PetDocuments = () => {
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<{ url: string; title: string; type: string } | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -148,24 +151,29 @@ const PetDocuments = () => {
   };
 
   const handleView = async (doc: PetDocument) => {
-    // Open window immediately to avoid popup blocker (must be in user gesture context)
-    const newWindow = window.open("", "_blank");
+    setIsLoadingPreview(true);
     try {
       const { data, error } = await supabase.storage
         .from("pet-documents")
-        .createSignedUrl(doc.document_url, 300);
+        .createSignedUrl(doc.document_url, 3600);
 
       if (error) throw error;
-      if (newWindow) {
-        newWindow.location.href = data.signedUrl;
-      } else {
-        // Fallback: use current window
-        window.location.href = data.signedUrl;
-      }
+
+      const extension = doc.file_name.split('.').pop()?.toLowerCase() || '';
+      const fileType = ['pdf'].includes(extension) ? 'pdf'
+        : ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension) ? 'image'
+        : 'other';
+
+      setPreviewDocument({
+        url: data.signedUrl,
+        title: doc.title,
+        type: fileType
+      });
     } catch (error) {
       console.error("Error viewing document:", error);
-      if (newWindow) newWindow.close();
       toast.error("Failed to open document");
+    } finally {
+      setIsLoadingPreview(false);
     }
   };
 
@@ -356,43 +364,54 @@ const PetDocuments = () => {
               {documents.map((doc) => (
                 <Card key={doc.id}>
                   <CardContent className="py-3 px-4">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl shrink-0">{getFileIcon(doc.file_type)}</div>
+                    <div className="flex items-start gap-3">
+                      <div className="text-2xl shrink-0 mt-0.5">{getFileIcon(doc.file_type)}</div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-foreground truncate">{doc.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">{doc.file_name}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(doc.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <div className="flex gap-1 shrink-0">
-                        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleView(doc)}>
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Document?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This will permanently delete "{doc.title}". This action cannot be undone.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(doc)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Delete
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <p className="font-medium text-sm text-foreground truncate">{doc.title}</p>
+                            <p className="text-xs text-muted-foreground truncate">{doc.file_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(doc.created_at).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0">
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Document?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently delete "{doc.title}". This action cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(doc)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => handleView(doc)}
+                          >
+                            <File className="w-4 h-4" />
+                            View Document
+                            <ExternalLink className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -401,6 +420,78 @@ const PetDocuments = () => {
             </div>
           )}
         </main>
+
+        {/* Document Preview Modal */}
+        <Dialog open={!!previewDocument} onOpenChange={(open) => !open && setPreviewDocument(null)}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[85vh] flex flex-col p-0">
+            <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+              <div className="flex items-center justify-between pr-8">
+                <DialogTitle className="text-lg font-semibold truncate">
+                  {previewDocument?.title} - Document
+                </DialogTitle>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => previewDocument && window.open(previewDocument.url, '_blank')}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Open in New Tab
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    asChild
+                  >
+                    <a href={previewDocument?.url} download>
+                      <Download className="w-4 h-4" />
+                      Download
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden bg-muted/30">
+              {isLoadingPreview ? (
+                <div className="h-full flex items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+                </div>
+              ) : previewDocument?.type === 'pdf' ? (
+                <iframe
+                  src={previewDocument.url}
+                  className="w-full h-full border-0"
+                  title="Document Preview"
+                />
+              ) : previewDocument?.type === 'image' ? (
+                <div className="h-full flex items-center justify-center p-4 overflow-auto">
+                  <img
+                    src={previewDocument.url}
+                    alt="Document"
+                    className="max-w-full max-h-full object-contain rounded-lg shadow-lg"
+                  />
+                </div>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
+                  <File className="w-16 h-16 text-muted-foreground" />
+                  <div>
+                    <p className="font-medium text-foreground mb-1">Preview not available</p>
+                    <p className="text-sm text-muted-foreground">
+                      This file type cannot be previewed. Download the file to view it.
+                    </p>
+                  </div>
+                  <Button asChild>
+                    <a href={previewDocument?.url} download className="gap-2">
+                      <Download className="w-4 h-4" />
+                      Download File
+                    </a>
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
