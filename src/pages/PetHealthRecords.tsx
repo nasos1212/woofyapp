@@ -365,14 +365,18 @@ const PetHealthRecords = () => {
 
       if (error) throw error;
 
-      // If there's a document to upload, upload it and update the record
-      if (documentFile && newRecord) {
+      // Upload documents if any
+      if (documentFiles.length > 0 && newRecord) {
         setIsUploading(true);
         try {
-          const documentUrl = await uploadDocument(documentFile, newRecord.id);
-          if (documentUrl) {
+          const uploadedPaths: string[] = [];
+          for (const file of documentFiles) {
+            const path = await uploadDocument(file, newRecord.id);
+            if (path) uploadedPaths.push(path);
+          }
+          if (uploadedPaths.length > 0) {
             await supabase.from("pet_health_records")
-              .update({ document_url: documentUrl })
+              .update({ document_url: JSON.stringify(uploadedPaths) })
               .eq("id", newRecord.id);
           }
         } catch (uploadErr) {
