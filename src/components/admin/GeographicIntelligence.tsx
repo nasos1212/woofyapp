@@ -67,7 +67,7 @@ const GeographicIntelligence = () => {
               <ResponsiveContainer width="100%" height={Math.max(200, cityData.length * 36)}>
                 <BarChart data={cityData} layout="vertical" margin={{ left: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" />
+                  <XAxis type="number" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" allowDecimals={false} />
                   <YAxis type="category" dataKey="city" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" width={90} />
                   <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }} />
                   <Bar dataKey="members" fill="hsl(var(--primary))" name="Members" radius={[0, 4, 4, 0]} />
