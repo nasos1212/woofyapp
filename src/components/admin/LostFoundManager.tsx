@@ -69,24 +69,15 @@ const LostFoundManager = () => {
 
   const openDetail = async (alert: LostFoundAlert) => {
     setSelectedAlert(alert);
-    setAlertPhotos([]);
     setOwnerInfo(null);
 
-    const [photosRes, profileRes] = await Promise.all([
-      supabase
-        .from("lost_pet_alert_photos")
-        .select("*")
-        .eq("alert_id", alert.id)
-        .order("display_order"),
-      supabase
-        .from("profiles")
-        .select("full_name, email")
-        .eq("user_id", alert.owner_user_id)
-        .single(),
-    ]);
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name, email")
+      .eq("user_id", alert.owner_user_id)
+      .single();
 
-    setAlertPhotos(photosRes.data || []);
-    if (profileRes.data) setOwnerInfo(profileRes.data);
+    if (data) setOwnerInfo(data);
   };
 
   const petIcon = (type: string | null) => {
@@ -208,7 +199,7 @@ const LostFoundManager = () => {
 
               <div className="space-y-4">
                 {/* Photos */}
-                {(selectedAlert.pet_photo_url || alertPhotos.length > 0) && (
+                {selectedAlert.pet_photo_url && (
                   <div className="rounded-lg overflow-hidden">
                     <AlertPhotoCarousel
                       alertId={selectedAlert.id}
