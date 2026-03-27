@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,6 +42,7 @@ interface LostFoundAlert {
   contact_phone: string | null;
   contact_email: string | null;
   reward_offered: string | null;
+  microchip_status: string | null;
   status: "active" | "found" | "resolved";
   created_at: string;
   owner_user_id: string;
@@ -112,6 +114,7 @@ const LostFoundAlerts = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [rewardOffered, setRewardOffered] = useState("");
+  const [microchipStatus, setMicrochipStatus] = useState<string>("unknown");
   const [petPhotos, setPetPhotos] = useState<File[]>([]);
   const [petPhotoPreviews, setPetPhotoPreviews] = useState<string[]>([]);
   const [photoPositions, setPhotoPositions] = useState<number[]>([]);
@@ -358,6 +361,7 @@ const LostFoundAlerts = () => {
         contact_phone: contactPhone,
         contact_email: contactEmail || null,
         reward_offered: alertType === "lost" ? rewardOffered || null : null,
+        microchip_status: microchipStatus,
         status: "active",
       }).select("id").single();
 
@@ -406,6 +410,7 @@ const LostFoundAlerts = () => {
     setContactPhone("");
     setContactEmail("");
     setRewardOffered("");
+    setMicrochipStatus("unknown");
     setEditingPhotoIndex(null);
     clearAllPhotos();
   };
@@ -504,6 +509,11 @@ const LostFoundAlerts = () => {
               </div>
               {alert.pet_breed && (
                 <p className="text-sm text-muted-foreground">{alert.pet_breed}</p>
+              )}
+              {alert.microchip_status && alert.microchip_status !== "unknown" && (
+                <Badge variant="outline" className={alert.microchip_status === "yes" ? "text-green-700 border-green-200 bg-green-50" : "text-muted-foreground"}>
+                  Microchip: {alert.microchip_status === "yes" ? "Yes" : "No"}
+                </Badge>
               )}
             </div>
             {isLost && alert.reward_offered && (
@@ -834,6 +844,25 @@ const LostFoundAlerts = () => {
                         }
                         required
                       />
+                    </div>
+
+                    {/* Microchip Status */}
+                    <div className="space-y-2">
+                      <Label>Microchip Status</Label>
+                      <RadioGroup value={microchipStatus} onValueChange={setMicrochipStatus} className="flex gap-4">
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="unknown" id="chip-unknown" />
+                          <Label htmlFor="chip-unknown" className="font-normal cursor-pointer">Unknown</Label>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="yes" id="chip-yes" />
+                          <Label htmlFor="chip-yes" className="font-normal cursor-pointer">Yes</Label>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <RadioGroupItem value="no" id="chip-no" />
+                          <Label htmlFor="chip-no" className="font-normal cursor-pointer">No</Label>
+                        </div>
+                      </RadioGroup>
                     </div>
 
                     <LocationSelector
