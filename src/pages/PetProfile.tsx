@@ -894,107 +894,28 @@ const PetProfile = () => {
             </Card>
           )}
 
-          {/* Quick Actions - Health Records */}
-          <div className="mb-6">
+          {/* Pet Records */}
+          <h2 className="text-lg font-display font-semibold text-foreground mb-3">Pet Records</h2>
+          <div className="grid grid-cols-2 gap-3 mb-6">
             <Button
               variant="default"
               size="lg"
               onClick={() => navigate(`/member/health-records?pet=${pet.id}`)}
-              className="w-full h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-sm sm:text-base">Health Records & Reminders</span>
+              <span className="font-semibold text-xs sm:text-sm text-center leading-tight">Health Records & Reminders</span>
+            </Button>
+            <Button
+              variant="default"
+              size="lg"
+              onClick={() => navigate(`/member/pet-documents?pet=${pet.id}`)}
+              className="h-auto py-3 sm:py-4 flex flex-col items-center gap-2 bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700"
+            >
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="font-semibold text-xs sm:text-sm text-center leading-tight">General Documents</span>
             </Button>
           </div>
-
-          {/* Notes Section */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <Edit2 className="w-5 h-5 text-primary" />
-                  Notes
-                </span>
-                {!isEditing && !isEditingNotes && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsEditingNotes(true)}
-                    className="gap-1 text-primary hover:text-primary/80"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                    Edit
-                  </Button>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isEditing || isEditingNotes ? (
-                <div className="space-y-4">
-                  <Textarea
-                    value={editedNotes}
-                    onChange={(e) => setEditedNotes(e.target.value)}
-                    placeholder="Add notes about your pet... (medical info, preferences, quirks, etc.)"
-                    className="min-h-[150px]"
-                    autoFocus={isEditingNotes}
-                  />
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={async () => {
-                        if (!pet) return;
-                        setIsSaving(true);
-                        try {
-                          const { error } = await supabase
-                            .from("pets")
-                            .update({ notes: editedNotes.trim() || null })
-                            .eq("id", pet.id);
-                          if (error) throw error;
-                          setPet({ ...pet, notes: editedNotes.trim() || null });
-                          setIsEditingNotes(false);
-                          setIsEditing(false);
-                          toast.success("Notes saved!");
-                        } catch (error) {
-                          console.error("Error saving notes:", error);
-                          toast.error("Failed to save notes");
-                        } finally {
-                          setIsSaving(false);
-                        }
-                      }} 
-                      disabled={isSaving} 
-                      className="gap-2"
-                    >
-                      {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
-                      Save Notes
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        setEditedNotes(pet?.notes || "");
-                        setIsEditingNotes(false);
-                      }} 
-                      className="gap-2"
-                    >
-                      <X className="w-4 h-4" />
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  {pet.notes ? (
-                    <p className="whitespace-pre-wrap text-foreground">{pet.notes}</p>
-                  ) : (
-                    <button
-                      onClick={() => setIsEditingNotes(true)}
-                      className="text-muted-foreground italic hover:text-primary cursor-pointer transition-colors"
-                    >
-                      No notes yet. Click here to add notes about {pet.pet_name}.
-                    </button>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
           {/* Delete Pet Section */}
           <div className="mt-8 pt-6 border-t border-destructive/20">

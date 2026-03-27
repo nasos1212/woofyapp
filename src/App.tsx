@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
 import LostFoundAlerts from "./pages/LostFoundAlerts";
 import PetHealthRecords from "./pages/PetHealthRecords";
+import PetDocuments from "./pages/PetDocuments";
 
 import BusinessCustomerBirthdays from "./pages/BusinessCustomerBirthdays";
 import BusinessRedemptionHistory from "./pages/BusinessRedemptionHistory";
