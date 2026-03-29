@@ -17,6 +17,7 @@ import { ensureHttps, formatDate } from "@/lib/utils";
 import { getCategoryLabel, getCategoriesLabel } from "@/data/businessCategories";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 
 const CHART_COLORS = ["#60a5fa", "#34d399", "#f472b6", "#fbbf24"];
 // Full membership info
@@ -130,6 +131,9 @@ const UserManagement = () => {
   const [editPetBirthday, setEditPetBirthday] = useState<string>("");
   const [editPetAge, setEditPetAge] = useState<string>("");
   const [savingPet, setSavingPet] = useState(false);
+
+  // Business edit dialog state
+  const [editingBusiness, setEditingBusiness] = useState<BusinessInfo | null>(null);
 
   // Notification dialog state
   const [notifyDialogOpen, setNotifyDialogOpen] = useState(false);
