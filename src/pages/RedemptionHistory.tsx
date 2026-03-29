@@ -8,6 +8,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/utils";
+import { getCategoryLabel } from "@/data/businessCategories";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import {
@@ -392,8 +393,8 @@ const RedemptionHistory = () => {
                       </div>
                       <div>
                         <p className="font-semibold">{selectedRedemption.business?.business_name || "Business"}</p>
-                        <p className="text-sm text-muted-foreground capitalize">
-                          {selectedRedemption.business?.category?.replace(/_/g, " ") || "Partner"}
+                        <p className="text-sm text-muted-foreground">
+                          {getCategoryLabel(selectedRedemption.business?.category || "other")}
                         </p>
                       </div>
                     </div>

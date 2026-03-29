@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow, isPast } from "date-fns";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
+import { getCategoryLabel } from "@/data/businessCategories";
 
 interface Offer {
   id: string;
@@ -100,21 +101,6 @@ const OffersSection = () => {
     }
   };
 
-  const getCategoryLabel = (category: string) => {
-    const labels: Record<string, string> = {
-      trainer: "Dog Trainer",
-      pet_shop: "Pet Shop",
-      hotel: "Pet Hotel",
-      grooming: "Grooming",
-      vet: "Veterinary",
-      daycare: "Daycare",
-      food: "Food & Treats",
-      accessories: "Accessories",
-      physio: "Physiotherapy",
-      other: "Other",
-    };
-    return labels[category] || category;
-  };
 
   const getDiscountDisplay = (type: string, value: number | null) => {
     if (type === "percentage" && value) {
