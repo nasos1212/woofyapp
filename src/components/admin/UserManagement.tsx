@@ -1504,6 +1504,15 @@ const UserManagement = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {editingBusiness && (
+        <BusinessEditDialog
+          business={editingBusiness}
+          open={!!editingBusiness}
+          onOpenChange={(open) => { if (!open) setEditingBusiness(null); }}
+          onSave={() => { setEditingBusiness(null); fetchAllUsers(); }}
+        />
+      )}
     </div>
   );
 };
