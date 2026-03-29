@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow, isPast } from "date-fns";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
+import { getCategoryLabel } from "@/data/businessCategories";
 
 interface Offer {
   id: string;

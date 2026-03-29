@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { getCategoryLabel } from "@/data/businessCategories";
 import { Link, useNavigate } from "react-router-dom";
 import { formatDistanceToNow, isPast, isFuture } from "date-fns";
 import { formatDate } from "@/lib/utils";
