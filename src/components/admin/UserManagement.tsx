@@ -51,6 +51,7 @@ interface BusinessInfo {
   website: string | null;
   description: string | null;
   logo_url: string | null;
+  google_maps_url: string | null;
   created_at: string;
   verified_at: string | null;
   instagram_url: string | null;
