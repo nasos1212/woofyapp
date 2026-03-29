@@ -1247,6 +1247,9 @@ const UserManagement = () => {
                                     </a>
                                   </Button>
                                 )}
+                                <Button size="sm" variant="outline" onClick={() => setEditingBusiness(user.business)}>
+                                  <Pencil className="w-4 h-4 mr-1" /> Edit Profile
+                                </Button>
                                 {user.business.verification_status !== "approved" && (
                                   <Button size="sm" onClick={() => updateBusinessStatus(user.business!.id, "approved")} className="bg-green-600 hover:bg-green-700">
                                     <Check className="w-4 h-4 mr-1" /> Approve
