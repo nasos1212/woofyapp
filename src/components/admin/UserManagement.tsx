@@ -207,6 +207,7 @@ const UserManagement = () => {
         website: b.website,
         description: b.description,
         logo_url: b.logo_url,
+        google_maps_url: (b as any).google_maps_url || null,
         created_at: b.created_at,
         verified_at: b.verified_at,
         instagram_url: (b as any).instagram_url || null,
