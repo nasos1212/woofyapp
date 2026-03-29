@@ -1,0 +1,1 @@
+ALTER TYPE business_category ADD VALUE IF NOT EXISTS 'pet_cemetery';

@@ -17,6 +17,7 @@ import { ensureHttps, formatDate } from "@/lib/utils";
 import { getCategoryLabel, getCategoriesLabel } from "@/data/businessCategories";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BusinessEditDialog } from "@/components/BusinessEditDialog";
 
 const CHART_COLORS = ["#60a5fa", "#34d399", "#f472b6", "#fbbf24"];
 // Full membership info
@@ -51,6 +52,7 @@ interface BusinessInfo {
   website: string | null;
   description: string | null;
   logo_url: string | null;
+  google_maps_url: string | null;
   created_at: string;
   verified_at: string | null;
   instagram_url: string | null;
@@ -130,6 +132,9 @@ const UserManagement = () => {
   const [editPetAge, setEditPetAge] = useState<string>("");
   const [savingPet, setSavingPet] = useState(false);
 
+  // Business edit dialog state
+  const [editingBusiness, setEditingBusiness] = useState<BusinessInfo | null>(null);
+
   // Notification dialog state
   const [notifyDialogOpen, setNotifyDialogOpen] = useState(false);
   const [notifyTarget, setNotifyTarget] = useState<UserCategory>("all");
@@ -206,6 +211,7 @@ const UserManagement = () => {
         website: b.website,
         description: b.description,
         logo_url: b.logo_url,
+        google_maps_url: (b as any).google_maps_url || null,
         created_at: b.created_at,
         verified_at: b.verified_at,
         instagram_url: (b as any).instagram_url || null,
@@ -1241,6 +1247,9 @@ const UserManagement = () => {
                                     </a>
                                   </Button>
                                 )}
+                                <Button size="sm" variant="outline" onClick={() => setEditingBusiness(user.business)}>
+                                  <Pencil className="w-4 h-4 mr-1" /> Edit Profile
+                                </Button>
                                 {user.business.verification_status !== "approved" && (
                                   <Button size="sm" onClick={() => updateBusinessStatus(user.business!.id, "approved")} className="bg-green-600 hover:bg-green-700">
                                     <Check className="w-4 h-4 mr-1" /> Approve
@@ -1495,6 +1504,15 @@ const UserManagement = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {editingBusiness && (
+        <BusinessEditDialog
+          business={editingBusiness}
+          open={!!editingBusiness}
+          onOpenChange={(open) => { if (!open) setEditingBusiness(null); }}
+          onSave={() => { setEditingBusiness(null); fetchAllUsers(); }}
+        />
+      )}
     </div>
   );
 };
