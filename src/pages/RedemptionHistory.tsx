@@ -392,8 +392,8 @@ const RedemptionHistory = () => {
                       </div>
                       <div>
                         <p className="font-semibold">{selectedRedemption.business?.business_name || "Business"}</p>
-                        <p className="text-sm text-muted-foreground capitalize">
-                          {selectedRedemption.business?.category?.replace(/_/g, " ") || "Partner"}
+                        <p className="text-sm text-muted-foreground">
+                          {getCategoryLabel(selectedRedemption.business?.category || "other")}
                         </p>
                       </div>
                     </div>

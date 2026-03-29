@@ -46,18 +46,6 @@ interface OfferDetailDialogProps {
   showRedemptionStatus?: boolean;
 }
 
-const categories: Record<string, string> = {
-  trainer: "Dog Trainer",
-  pet_shop: "Pet Shop",
-  hotel: "Pet Hotel",
-  grooming: "Grooming",
-  vet: "Veterinary",
-  daycare: "Daycare",
-  food: "Food & Treats",
-  accessories: "Accessories",
-  physio: "Physiotherapy",
-  other: "Other",
-};
 
 const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: OfferDetailDialogProps) => {
   const { hasMembership, isPaidMember } = useMembership();
@@ -90,9 +78,6 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
     return `€${offer.discount_value} off`;
   };
 
-  const getCategoryLabel = (category: string) => {
-    return categories[category] || category;
-  };
 
   const getTimeStatus = () => {
     if (!offer.valid_until) return null;
