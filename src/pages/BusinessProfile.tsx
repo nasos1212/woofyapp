@@ -191,7 +191,7 @@ export default function BusinessProfile() {
         // Get user profiles for reviews
         const userIds = reviewsData.map(r => r.user_id);
         const { data: profiles } = await supabase
-          .from("profiles")
+          .from("profiles_limited")
           .select("user_id, full_name")
           .in("user_id", userIds);
 
