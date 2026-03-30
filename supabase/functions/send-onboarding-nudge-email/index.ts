@@ -118,7 +118,7 @@ const handler = async (req: Request): Promise<Response> => {
           : `<li>🎁 Create exclusive offers for Wooffy members</li>
 <li>📊 Track redemptions and customer engagement</li>
 <li>🎂 Send birthday offers to your customers' pets</li>
-<li>🗺️ Get listed on the pet-friendly places map</li>`;
+<li>🗺️ Boost your visibility among local pet owners</li>`;
 
         const ctaText = is24h ? "Log In & Complete Setup" : "Finish Setup Now";
 
