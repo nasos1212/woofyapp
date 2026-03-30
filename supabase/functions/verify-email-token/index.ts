@@ -132,7 +132,8 @@ const handler = async (req: Request): Promise<Response> => {
       JSON.stringify({ 
         success: true, 
         message: "Email verified successfully!",
-        email: tokenData.email 
+        email: tokenData.email,
+        role: userRole || 'member'
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
