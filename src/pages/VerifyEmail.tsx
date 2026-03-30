@@ -12,6 +12,7 @@ const VerifyEmail = () => {
   const [status, setStatus] = useState<"loading" | "success" | "error" | "no-token">("loading");
   const [errorMessage, setErrorMessage] = useState("");
   const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [userRole, setUserRole] = useState<string>("member");
 
   const verifyingRef = useRef(false);
 
@@ -43,6 +44,7 @@ const VerifyEmail = () => {
         if (data?.success) {
           setStatus("success");
           setVerifiedEmail(data.email || "");
+          setUserRole(data.role || "member");
         } else {
           setStatus("error");
           setErrorMessage(data?.error || "Verification failed. The link may be expired or invalid.");
@@ -56,6 +58,28 @@ const VerifyEmail = () => {
 
     verifyToken();
   }, [searchParams]);
+
+  const getRoleMessage = () => {
+    switch (userRole) {
+      case "business":
+        return "Log in now to set up your business profile and start reaching pet owners across Cyprus!";
+      case "shelter":
+        return "Log in now to set up your shelter profile and connect with potential adopters!";
+      default:
+        return "You can now log in to explore your dashboard and start enjoying exclusive pet-parent perks.";
+    }
+  };
+
+  const getCtaLabel = () => {
+    switch (userRole) {
+      case "business":
+        return "Log In & Set Up Your Business";
+      case "shelter":
+        return "Log In & Set Up Your Shelter";
+      default:
+        return "Continue to Login";
+    }
+  };
 
   if (status === "loading") {
     return (
@@ -125,20 +149,29 @@ const VerifyEmail = () => {
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified! 🎉</h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 mb-2">
           {verifiedEmail ? (
             <>Your email <span className="font-medium">{verifiedEmail}</span> has been verified successfully.</>
           ) : (
             "Your email has been verified successfully."
           )}
         </p>
+        <p className="text-gray-500 text-sm mb-6">
+          {getRoleMessage()}
+        </p>
         <Button 
           onClick={() => navigate("/auth")} 
-          className="w-full bg-gradient-to-r from-wooffy-dark to-wooffy-purple hover:opacity-90"
+          className="w-full bg-gradient-to-r from-wooffy-dark to-wooffy-purple hover:opacity-90 text-base py-5"
+          size="lg"
         >
-          Continue to Login
+          {getCtaLabel()}
           <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
+        {(userRole === "business" || userRole === "shelter") && (
+          <p className="text-xs text-gray-400 mt-3">
+            Your account is saved — you can always come back and log in later to finish setup.
+          </p>
+        )}
       </div>
     </div>
   );
