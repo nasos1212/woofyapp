@@ -81,6 +81,7 @@ const handler = async (req: Request): Promise<Response> => {
 <div style="text-align: center; margin: 30px 0;">
 <a href="${verifyUrl}" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Verify Email Address</a>
 </div>
+<p style="font-size: 13px; color: #9ca3af; line-height: 1.6; margin-bottom: 20px; text-align: center;">Button not working? <a href="${verifyUrl}" style="color: #7DD3FC; text-decoration: underline;">Click here to verify your email</a></p>
 <p style="font-size: 14px; color: #6b7280; line-height: 1.6; margin-bottom: 20px;">This link will expire in 24 hours for security reasons.</p>
 <p style="font-size: 14px; color: #6b7280; line-height: 1.6;">If you didn't create an account on Wooffy, you can safely ignore this email.</p>
 </div>
