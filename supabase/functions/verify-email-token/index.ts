@@ -90,6 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send welcome email only for pet owner (member) accounts
     // Business and shelter accounts receive their welcome email upon admin approval
+    let userRole = 'member';
     try {
       const [profileResult, roleResult, petsResult] = await Promise.all([
         supabase.from('profiles').select('full_name').eq('user_id', tokenData.user_id).single(),
