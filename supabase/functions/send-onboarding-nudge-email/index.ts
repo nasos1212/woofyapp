@@ -21,12 +21,15 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Find verified business/shelter users who signed up >24h ago
-    // but have NOT created their business/shelter record yet
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+    const now = Date.now();
 
-    // Get business role users verified 24-48h ago
+    // Windows: 24h nudge = verified 24-36h ago, 72h nudge = verified 72-84h ago
+    const windows = [
+      { label: "24h", notifType: "onboarding_nudge_24h", minMs: 24 * 3600_000, maxMs: 36 * 3600_000 },
+      { label: "72h", notifType: "onboarding_nudge_72h", minMs: 72 * 3600_000, maxMs: 84 * 3600_000 },
+    ];
+
+    // Get all business & shelter user IDs
     const { data: businessUsers } = await supabase
       .from('user_roles')
       .select('user_id')
@@ -37,81 +40,89 @@ const handler = async (req: Request): Promise<Response> => {
       .select('user_id')
       .eq('role', 'shelter');
 
-    const allTargetUserIds = [
-      ...(businessUsers || []).map(u => u.user_id),
-      ...(shelterUsers || []).map(u => u.user_id),
-    ];
+    const businessIds = new Set((businessUsers || []).map(u => u.user_id));
+    const shelterIds = new Set((shelterUsers || []).map(u => u.user_id));
+    const allTargetIds = [...new Set([...businessIds, ...shelterIds])];
 
-    if (allTargetUserIds.length === 0) {
-      console.log("No business/shelter users found");
+    if (allTargetIds.length === 0) {
       return new Response(JSON.stringify({ success: true, sent: 0 }), {
         status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
-    // Get profiles for these users — verified, created 24-48h ago
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('user_id, email, full_name')
-      .eq('email_verified', true)
-      .lt('created_at', twentyFourHoursAgo)
-      .gt('created_at', fortyEightHoursAgo)
-      .in('user_id', allTargetUserIds);
+    let totalSent = 0;
 
-    if (!profiles || profiles.length === 0) {
-      console.log("No eligible users for nudge email");
-      return new Response(JSON.stringify({ success: true, sent: 0 }), {
-        status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
-      });
-    }
+    for (const window of windows) {
+      const windowStart = new Date(now - window.maxMs).toISOString();
+      const windowEnd = new Date(now - window.minMs).toISOString();
 
-    let sentCount = 0;
+      // Get verified profiles in this window
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('user_id, email, full_name')
+        .eq('email_verified', true)
+        .gt('created_at', windowStart)
+        .lt('created_at', windowEnd)
+        .in('user_id', allTargetIds);
 
-    for (const profile of profiles) {
-      // Determine role
-      const isBusiness = (businessUsers || []).some(u => u.user_id === profile.user_id);
-      const isShelter = (shelterUsers || []).some(u => u.user_id === profile.user_id);
+      if (!profiles || profiles.length === 0) continue;
 
-      // Check if they already created their record
-      if (isBusiness) {
-        const { data: biz } = await supabase
-          .from('businesses')
+      for (const profile of profiles) {
+        const isBusiness = businessIds.has(profile.user_id);
+        const isShelter = shelterIds.has(profile.user_id);
+
+        // Check if already onboarded
+        if (isBusiness) {
+          const { data: biz } = await supabase
+            .from('businesses').select('id').eq('user_id', profile.user_id).maybeSingle();
+          if (biz) continue;
+        }
+        if (isShelter) {
+          const { data: shelter } = await supabase
+            .from('shelters').select('id').eq('user_id', profile.user_id).maybeSingle();
+          if (shelter) continue;
+        }
+
+        // Check if this specific nudge was already sent
+        const { data: existing } = await supabase
+          .from('notifications')
           .select('id')
           .eq('user_id', profile.user_id)
+          .eq('type', window.notifType)
           .maybeSingle();
-        if (biz) continue; // Already onboarded
-      }
-      if (isShelter) {
-        const { data: shelter } = await supabase
-          .from('shelters')
-          .select('id')
-          .eq('user_id', profile.user_id)
-          .maybeSingle();
-        if (shelter) continue; // Already onboarded
-      }
 
-      // Check we haven't already sent a nudge (prevent duplicates)
-      const { data: existingNotif } = await supabase
-        .from('notifications')
-        .select('id')
-        .eq('user_id', profile.user_id)
-        .eq('type', 'onboarding_nudge')
-        .maybeSingle();
+        if (existing) continue;
 
-      if (existingNotif) continue;
+        const role = isShelter ? 'shelter' : 'business';
+        const firstName = profile.full_name?.split(' ')[0] || 'there';
 
-      const role = isShelter ? 'shelter' : 'business';
-      const roleName = isShelter ? 'shelter' : 'business';
-      const firstName = profile.full_name?.split(' ')[0] || 'there';
-      const dashboardUrl = isShelter
-        ? 'https://www.wooffy.app/auth'
-        : 'https://www.wooffy.app/auth';
+        const is24h = window.label === "24h";
 
-      const subject = isShelter
-        ? `${firstName}, your shelter profile is waiting! 🐾`
-        : `${firstName}, your business profile is waiting! 🐾`;
+        const subject = is24h
+          ? `${firstName}, your ${role} profile is waiting! 🐾`
+          : `${firstName}, don't miss out — complete your ${role} setup 🐾`;
 
-      const htmlContent = `<!DOCTYPE html>
+        const heading = is24h
+          ? "You're Almost There! 🐾"
+          : "We're Still Waiting for You! 🐾";
+
+        const intro = is24h
+          ? `We noticed you verified your email but haven't finished setting up your ${role} profile yet. No worries — it only takes a couple of minutes!`
+          : `It's been a few days since you signed up, and your ${role} profile is still incomplete. We'd love to have you on board — and it only takes 2 minutes to get started!`;
+
+        const benefitsList = isShelter
+          ? `<li>🐕 List adoptable pets and reach hundreds of pet lovers</li>
+<li>📋 Manage adoption inquiries directly from your dashboard</li>
+<li>📸 Showcase your shelter with photos and updates</li>
+<li>🤝 Connect with the Wooffy community across Cyprus</li>`
+          : `<li>🎁 Create exclusive offers for Wooffy members</li>
+<li>📊 Track redemptions and customer engagement</li>
+<li>🎂 Send birthday offers to your customers' pets</li>
+<li>🗺️ Get listed on the pet-friendly places map</li>`;
+
+        const ctaText = is24h ? "Log In & Complete Setup" : "Finish Setup Now";
+
+        const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -120,36 +131,22 @@ const handler = async (req: Request): Promise<Response> => {
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f9fafb; margin: 0; padding: 40px 20px;">
 <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 <div style="background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); padding: 40px; text-align: center;">
-<h1 style="color: #7DD3FC; margin: 0; font-size: 24px;">You're Almost There! 🐾</h1>
+<h1 style="color: #7DD3FC; margin: 0; font-size: 24px;">${heading}</h1>
 <p style="color: #94a3b8; margin: 10px 0 0; font-size: 16px;">Just one more step to get started</p>
 </div>
 <div style="padding: 40px;">
 <p style="font-size: 18px; color: #1f2937; margin-bottom: 20px;">Hi ${firstName},</p>
-<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-We noticed you verified your email but haven't finished setting up your ${roleName} profile yet. No worries — it only takes a couple of minutes!
-</p>
-${isShelter ? `
-<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Once set up, you'll be able to:
-</p>
+<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">${intro}</p>
+<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">Once set up, you'll be able to:</p>
 <ul style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 30px; padding-left: 20px;">
-<li>🐕 List adoptable pets and reach hundreds of pet lovers</li>
-<li>📋 Manage adoption inquiries directly from your dashboard</li>
-<li>📸 Showcase your shelter with photos and updates</li>
-<li>🤝 Connect with the Wooffy community across Cyprus</li>
-</ul>` : `
-<p style="font-size: 16px; color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-Once set up, you'll be able to:
-</p>
-<ul style="font-size: 16px; color: #4b5563; line-height: 1.8; margin-bottom: 30px; padding-left: 20px;">
-<li>🎁 Create exclusive offers for Wooffy members</li>
-<li>📊 Track redemptions and customer engagement</li>
-<li>🎂 Send birthday offers to your customers' pets</li>
-<li>🗺️ Get listed on the pet-friendly places map</li>
-</ul>`}
+${benefitsList}
+</ul>
 <div style="text-align: center; margin: 30px 0;">
-<a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">Log In & Complete Setup</a>
+<a href="https://www.wooffy.app/auth" style="display: inline-block; background: linear-gradient(135deg, #1A1A2E 0%, #2D2D44 100%); color: #7DD3FC; text-decoration: none; padding: 14px 30px; border-radius: 8px; font-weight: 600; font-size: 16px;">${ctaText}</a>
 </div>
+${!is24h ? `<div style="background-color: #fef3c7; border-radius: 8px; padding: 16px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+<p style="font-size: 14px; color: #92400e; margin: 0;">💡 Your account is already created and verified — just log in to pick up where you left off!</p>
+</div>` : ''}
 <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
 Need help? Just reply to this email — we're happy to assist!
 </p>
@@ -161,32 +158,32 @@ Need help? Just reply to this email — we're happy to assist!
 </body>
 </html>`;
 
-      try {
-        await resend.emails.send({
-          from: "Wooffy <hello@wooffy.app>",
-          to: [profile.email],
-          subject,
-          html: htmlContent,
-        });
+        try {
+          await resend.emails.send({
+            from: "Wooffy <hello@wooffy.app>",
+            to: [profile.email],
+            subject,
+            html: htmlContent,
+          });
 
-        // Record that we sent the nudge to prevent duplicates
-        await supabase.from('notifications').insert({
-          user_id: profile.user_id,
-          type: 'onboarding_nudge',
-          title: 'Complete Your Profile',
-          message: `Reminder to complete your ${roleName} profile setup.`,
-          data: { role: roleName },
-        });
+          await supabase.from('notifications').insert({
+            user_id: profile.user_id,
+            type: window.notifType,
+            title: is24h ? 'Complete Your Profile' : 'Profile Setup Reminder',
+            message: `Reminder to complete your ${role} profile setup.`,
+            data: { role, nudge: window.label },
+          });
 
-        sentCount++;
-        console.log(`Nudge email sent to ${profile.email} (${roleName})`);
-      } catch (emailErr) {
-        console.error(`Failed to send nudge to ${profile.email}:`, emailErr);
+          totalSent++;
+          console.log(`${window.label} nudge sent to ${profile.email} (${role})`);
+        } catch (emailErr) {
+          console.error(`Failed to send ${window.label} nudge to ${profile.email}:`, emailErr);
+        }
       }
     }
 
-    console.log(`Nudge emails sent: ${sentCount}`);
-    return new Response(JSON.stringify({ success: true, sent: sentCount }), {
+    console.log(`Total nudge emails sent: ${totalSent}`);
+    return new Response(JSON.stringify({ success: true, sent: totalSent }), {
       status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
