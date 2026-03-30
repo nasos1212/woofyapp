@@ -97,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
         supabase.from('pets').select('pet_name').eq('owner_user_id', tokenData.user_id).limit(5),
       ]);
       
-      const userRole = roleResult.data?.role || 'member';
+      const userRole: string = roleResult.data?.role || 'member';
       
       if (userRole === 'member') {
         const petNames = (petsResult.data || []).map(p => p.pet_name).filter(Boolean);
@@ -132,7 +132,8 @@ const handler = async (req: Request): Promise<Response> => {
       JSON.stringify({ 
         success: true, 
         message: "Email verified successfully!",
-        email: tokenData.email 
+        email: tokenData.email,
+        role: userRole || 'member'
       }),
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
