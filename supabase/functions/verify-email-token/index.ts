@@ -98,7 +98,7 @@ const handler = async (req: Request): Promise<Response> => {
         supabase.from('pets').select('pet_name').eq('owner_user_id', tokenData.user_id).limit(5),
       ]);
       
-      const userRole: string = roleResult.data?.role || 'member';
+      userRole = roleResult.data?.role || 'member';
       
       if (userRole === 'member') {
         const petNames = (petsResult.data || []).map(p => p.pet_name).filter(Boolean);
