@@ -23,11 +23,11 @@ const MembersNearYou = ({ city, onSetCity }: MembersNearYouProps) => {
       try {
         const [membersRes, petsRes] = await Promise.all([
           supabase
-            .from("profiles")
+            .from("profiles_limited")
             .select("user_id", { count: "exact", head: true })
             .eq("preferred_city", city),
           supabase
-            .from("profiles")
+            .from("profiles_limited")
             .select("user_id")
             .eq("preferred_city", city),
         ]);
