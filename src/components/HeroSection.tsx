@@ -48,7 +48,7 @@ const HeroSection = () => {
               <span className="text-sm font-medium text-muted-foreground">Join Free · No Credit Card Needed</span>
             </div>
 
-            <h1 className="text-[1.65rem] leading-snug sm:text-5xl lg:text-6xl font-display font-bold text-foreground sm:leading-tight">
+            <h1 className="text-[2rem] leading-snug sm:text-5xl lg:text-6xl font-display font-bold text-foreground sm:leading-tight">
               Unlock a World<br className="sm:hidden" />{" "}
               of <span className="text-gradient">Pet Benefits</span>
             </h1>
