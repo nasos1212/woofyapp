@@ -53,7 +53,7 @@ const HeroSection = () => {
               <span className="text-gradient">Pet Benefits</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            <p className="hidden sm:block text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
               Start for free — create pet profiles, track health records, discover dog-friendly places, report lost/found pets & join our community. 
               Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
             </p>
@@ -67,6 +67,10 @@ const HeroSection = () => {
                 Dog-Friendly Places
               </Button>
             </div>
+            <p className="block sm:hidden text-base text-muted-foreground max-w-xl mx-auto">
+              Start for free — create pet profiles, track health records, discover dog-friendly places, report lost/found pets & join our community. 
+              Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.
+            </p>
 
             {/* Our Aim */}
             <div className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-card to-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-card border border-primary/20">
