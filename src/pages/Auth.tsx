@@ -302,6 +302,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      const authSchema = createAuthSchema(accountType);
       const validationResult = authSchema.safeParse({
         email,
         password,
