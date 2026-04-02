@@ -22,7 +22,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 
-const authSchema = z.object({
+const createAuthSchema = (accountType?: string | null) => z.object({
   email: z.string().trim().email("Please enter a valid email address").max(255, "Email too long"),
   password: z.string()
     .min(8, "Password must be at least 8 characters")
@@ -31,7 +31,14 @@ const authSchema = z.object({
     .trim()
     .min(1, "Name is required")
     .max(100, "Name must be less than 100 characters")
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes")
+    .regex(
+      accountType === "business"
+        ? /^[a-zA-ZÀ-ÿ0-9\s'&.,#@!+()-]+$/
+        : /^[a-zA-ZÀ-ÿ\s'-]+$/,
+      accountType === "business"
+        ? "Business name can only contain letters, numbers, spaces, and common symbols"
+        : "Name can only contain letters, spaces, hyphens, and apostrophes"
+    )
     .optional(),
 });
 
