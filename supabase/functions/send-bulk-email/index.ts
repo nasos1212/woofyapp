@@ -10,10 +10,12 @@ const corsHeaders = {
 };
 
 interface BulkEmailRequest {
-  audience: "all_users" | "all_members" | "active_members" | "expiring_soon";
+  audience?: "all_users" | "all_members" | "active_members" | "expiring_soon";
+  specificEmails?: string[];
   subject: string;
   title: string;
   message: string;
+  htmlBody?: string;
   ctaText?: string;
   ctaUrl?: string;
 }
