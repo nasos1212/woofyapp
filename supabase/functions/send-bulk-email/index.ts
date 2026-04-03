@@ -10,10 +10,12 @@ const corsHeaders = {
 };
 
 interface BulkEmailRequest {
-  audience: "all_users" | "all_members" | "active_members" | "expiring_soon";
+  audience?: "all_users" | "all_members" | "active_members" | "expiring_soon";
+  specificEmails?: string[];
   subject: string;
   title: string;
   message: string;
+  htmlBody?: string;
   ctaText?: string;
   ctaUrl?: string;
 }
@@ -45,17 +47,21 @@ const handler = async (req: Request): Promise<Response> => {
       return allData;
     }
 
-    const { audience, subject, title, message, ctaText, ctaUrl }: BulkEmailRequest = await req.json();
-    console.log("Sending bulk email to audience:", audience);
+    const { audience, specificEmails, subject, title, message, htmlBody, ctaText, ctaUrl }: BulkEmailRequest = await req.json();
+    console.log("Sending bulk email to audience:", audience, "specificEmails:", specificEmails);
 
-    if (!audience || !subject || !title || !message) {
-      throw new Error("Audience, subject, title, and message are required");
+    if (!subject || !title || (!message && !htmlBody)) {
+      throw new Error("Subject, title, and message (or htmlBody) are required");
     }
 
-    // Get users based on audience (paginated)
+    // Get emails based on audience or specific list
     let emails: string[] = [];
 
-    if (audience === "all_users") {
+    if (specificEmails && specificEmails.length > 0) {
+      emails = specificEmails;
+    } else if (!audience) {
+      throw new Error("Either audience or specificEmails is required");
+    } else if (audience === "all_users") {
       const data = await fetchAll(supabase.from("profiles").select("email"));
       emails = data.map((p: { email: string }) => p.email).filter(Boolean);
     } else if (audience === "all_members") {
@@ -107,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
             from: "Wooffy <hello@wooffy.app>",
             to: [email],
             subject: subject,
-            html: `<!DOCTYPE html>
+            html: htmlBody || `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
