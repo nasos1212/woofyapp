@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
             from: "Wooffy <hello@wooffy.app>",
             to: [email],
             subject: subject,
-            html: `<!DOCTYPE html>
+            html: htmlBody || `<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
