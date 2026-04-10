@@ -18,6 +18,7 @@ interface BulkEmailRequest {
   htmlBody?: string;
   ctaText?: string;
   ctaUrl?: string;
+  fromAddress?: "hello" | "partners";
 }
 
 const handler = async (req: Request): Promise<Response> => {
