@@ -112,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
       for (const email of batch) {
         try {
           await resend.emails.send({
-            from: "Wooffy <hello@wooffy.app>",
+            from: senderEmail,
             to: [email],
             subject: subject,
             html: htmlBody || `<!DOCTYPE html>
