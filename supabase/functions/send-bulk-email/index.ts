@@ -18,6 +18,7 @@ interface BulkEmailRequest {
   htmlBody?: string;
   ctaText?: string;
   ctaUrl?: string;
+  fromAddress?: "hello" | "partners";
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -47,7 +48,8 @@ const handler = async (req: Request): Promise<Response> => {
       return allData;
     }
 
-    const { audience, specificEmails, subject, title, message, htmlBody, ctaText, ctaUrl }: BulkEmailRequest = await req.json();
+    const { audience, specificEmails, subject, title, message, htmlBody, ctaText, ctaUrl, fromAddress }: BulkEmailRequest = await req.json();
+    const senderEmail = fromAddress === "partners" ? "Wooffy Partners <partners@wooffy.app>" : "Wooffy <hello@wooffy.app>";
     console.log("Sending bulk email to audience:", audience, "specificEmails:", specificEmails);
 
     if (!subject || !title || (!message && !htmlBody)) {
@@ -110,7 +112,7 @@ const handler = async (req: Request): Promise<Response> => {
       for (const email of batch) {
         try {
           await resend.emails.send({
-            from: "Wooffy <hello@wooffy.app>",
+            from: senderEmail,
             to: [email],
             subject: subject,
             html: htmlBody || `<!DOCTYPE html>
