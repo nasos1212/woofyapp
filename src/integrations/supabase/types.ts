@@ -2663,13 +2663,17 @@ export type Database = {
         Row: {
           address: string | null
           business_name: string | null
+          categories: string[] | null
           category: Database["public"]["Enums"]["business_category"] | null
           city: string | null
           created_at: string | null
           description: string | null
+          facebook_url: string | null
           google_maps_url: string | null
           id: string | null
+          instagram_url: string | null
           logo_url: string | null
+          tiktok_url: string | null
           updated_at: string | null
           verification_status:
             | Database["public"]["Enums"]["verification_status"]
@@ -2680,13 +2684,17 @@ export type Database = {
         Insert: {
           address?: string | null
           business_name?: string | null
+          categories?: string[] | null
           category?: Database["public"]["Enums"]["business_category"] | null
           city?: string | null
           created_at?: string | null
           description?: string | null
+          facebook_url?: string | null
           google_maps_url?: string | null
           id?: string | null
+          instagram_url?: string | null
           logo_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
@@ -2697,13 +2705,17 @@ export type Database = {
         Update: {
           address?: string | null
           business_name?: string | null
+          categories?: string[] | null
           category?: Database["public"]["Enums"]["business_category"] | null
           city?: string | null
           created_at?: string | null
           description?: string | null
+          facebook_url?: string | null
           google_maps_url?: string | null
           id?: string | null
+          instagram_url?: string | null
           logo_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string | null
           verification_status?:
             | Database["public"]["Enums"]["verification_status"]
