@@ -18,6 +18,7 @@ export const businessCategories: BusinessCategoryOption[] = [
   { value: "pet_insurance", label: "Pet Insurance" },
   { value: "pet_events", label: "Pet Events" },
   { value: "pet_cemetery", label: "Pet Cemetery" },
+  { value: "pet_food_supplier", label: "Pet Food Supplier" },
   { value: "other", label: "Other" },
 ];
 
