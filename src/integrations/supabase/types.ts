@@ -2911,6 +2911,7 @@ export type Database = {
         | "dog_walking"
         | "pet_insurance"
         | "pet_cemetery"
+        | "pet_food_supplier"
       verification_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
@@ -3056,6 +3057,7 @@ export const Constants = {
         "dog_walking",
         "pet_insurance",
         "pet_cemetery",
+        "pet_food_supplier",
       ],
       verification_status: ["pending", "approved", "rejected"],
     },
