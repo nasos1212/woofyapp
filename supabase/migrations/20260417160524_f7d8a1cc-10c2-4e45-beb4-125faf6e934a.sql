@@ -1,0 +1,1 @@
+UPDATE public.businesses SET instagram_url = 'https://www.instagram.com/forsos_k9_dogtraining_center?igsh=MTh0cWw5NWxpMjQ0OQ==' WHERE id = '89b89fc6-8c19-4cc3-8e1c-0e22f81a3022';
