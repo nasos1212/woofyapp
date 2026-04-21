@@ -299,34 +299,34 @@ const Header = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate(dashboardPath)}>
                     <User className="mr-2 h-4 w-4" />
-                    My Dashboard
+                    {t("header.myDashboard")}
                   </DropdownMenuItem>
                   {!isShelter && (
                     <DropdownMenuItem onClick={() => navigate("/member/offers")}>
                       <Tag className="mr-2 h-4 w-4" />
-                      Browse Offers
+                      {t("header.browseOffers")}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Community Hub
+                    {t("header.communityHub")}
                   </DropdownMenuItem>
                   {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
-                      Redemption History
+                      {t("header.redemptionHistory")}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
-                    Notifications
+                    {t("header.notifications")}
                   </DropdownMenuItem>
                   {!isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
                         <Crown className="mr-2 h-4 w-4" />
-                        Upgrade to Premium
+                        {t("header.upgradeToPremium")}
                       </DropdownMenuItem>
                     </>
                   )}
@@ -335,14 +335,14 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
                         <Shield className="mr-2 h-4 w-4" />
-                        Admin Dashboard
+                        {t("header.adminDashboard")}
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    {t("common.signOut")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
