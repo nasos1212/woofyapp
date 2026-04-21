@@ -1,61 +1,58 @@
 import { Check, Sparkles, Lock, Gift } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
-
-const freeFeatures = [
-  "Pet Profiles (up to 5 pets)",
-  "Pet Health Records & Reminders",
-  "Lost & Found Pet Alerts",
-  "Dog-Friendly Places Directory",
-  "Community Q&A Access",
-];
-
-const premiumFeatures = [
-  "Exclusive Partner Discounts",
-  "AI Pet Health Assistant",
-  "Pet Birthday Offers",
-];
+import { useTranslation } from "react-i18next";
 
 const FreemiumSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const freeFeatures = [
+    t("benefits.free.profiles.title"),
+    t("benefits.free.health.title"),
+    t("benefits.free.lostFound.title"),
+    t("benefits.free.directory.title"),
+    t("benefits.free.community.title"),
+  ];
+
+  const premiumFeatures = [
+    t("benefits.premium.discounts.title"),
+    t("benefits.premium.ai.title"),
+  ];
 
   return (
     <section id="freemium" className="py-20 lg:py-28 bg-gradient-warm">
       <div className="container mx-auto px-4">
-        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
             <Gift className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">Free to Start</span>
+            <span className="text-sm font-medium text-muted-foreground">{t("freemium.badge")}</span>
           </span>
-          
+
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
-            Join Free, Upgrade Anytime
+            {t("freemium.title")}
           </h2>
-          
+
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Create your account for free and enjoy essential pet community features. 
-            When you're ready for exclusive discounts and premium benefits, upgrade to a paid plan!
+            {t("freemium.subtitle")}
           </p>
         </div>
 
-        {/* Comparison cards */}
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Free tier */}
           <div className="bg-card rounded-3xl p-6 lg:p-8 shadow-card border border-border">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-muted-foreground" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl text-foreground">Free Member</h3>
-                <p className="text-sm text-muted-foreground">No credit card required</p>
+                <h3 className="font-display font-bold text-xl text-foreground">{t("freemium.freeMember")}</h3>
+                <p className="text-sm text-muted-foreground">{t("freemium.noCard")}</p>
               </div>
             </div>
 
             <div className="text-center mb-6 py-4 bg-muted/50 rounded-xl">
               <span className="font-display font-bold text-3xl text-foreground">€0</span>
-              <span className="text-muted-foreground ml-1">forever</span>
+              <span className="text-muted-foreground ml-1">{t("freemium.forever")}</span>
             </div>
 
             <ul className="space-y-3 mb-6">
@@ -69,20 +66,19 @@ const FreemiumSection = () => {
               ))}
             </ul>
 
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full"
               onClick={() => navigate("/auth")}
             >
-              Sign Up Free
+              {t("freemium.signUpFree")}
             </Button>
           </div>
 
-          {/* Premium tier */}
           <div className="bg-card rounded-3xl p-6 lg:p-8 shadow-card border-2 border-primary/30 ring-2 ring-primary/10 relative">
             <div className="absolute -top-3 right-6">
               <div className="bg-gradient-hero text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-glow">
-                Best Value
+                {t("freemium.bestValue")}
               </div>
             </div>
 
@@ -91,20 +87,20 @@ const FreemiumSection = () => {
                 <Lock className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl text-foreground">Paid Member</h3>
-                <p className="text-sm text-muted-foreground">Unlock all premium benefits</p>
+                <h3 className="font-display font-bold text-xl text-foreground">{t("freemium.paidMember")}</h3>
+                <p className="text-sm text-muted-foreground">{t("freemium.unlock")}</p>
               </div>
             </div>
 
             <div className="text-center mb-6 py-4 bg-primary/5 rounded-xl">
-              <span className="text-muted-foreground mr-1">From</span>
+              <span className="text-muted-foreground mr-1">{t("freemium.from")}</span>
               <span className="font-display font-bold text-3xl text-gradient">€29</span>
-              <span className="text-muted-foreground ml-1">/year</span>
+              <span className="text-muted-foreground ml-1">{t("freemium.perYear")}</span>
             </div>
 
             <ul className="space-y-3 mb-2">
               <li className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">
-                Everything in Free, plus:
+                {t("freemium.everythingPlus")}
               </li>
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-center gap-3">
@@ -117,20 +113,19 @@ const FreemiumSection = () => {
             </ul>
 
             <div className="mt-6">
-              <Button 
-                variant="hero" 
+              <Button
+                variant="hero"
                 className="w-full"
                 onClick={() => navigate("/auth")}
               >
-                Get Started
+                {t("freemium.getStarted")}
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Bottom note */}
         <p className="text-center text-sm text-muted-foreground mt-8 max-w-lg mx-auto">
-          💡 Start exploring for free. Upgrade only when you want access to exclusive partner discounts and premium features!
+          {t("freemium.bottomNote")}
         </p>
       </div>
     </section>
