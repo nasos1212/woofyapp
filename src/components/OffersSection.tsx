@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow, isPast } from "date-fns";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
 import { getCategoryLabel } from "@/data/businessCategories";
+import { useTranslation } from "react-i18next";
 
 interface Offer {
   id: string;
@@ -33,6 +34,7 @@ interface Offer {
 
 const OffersSection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
@@ -154,8 +156,8 @@ const OffersSection = () => {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Offers</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">Loading offers...</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("offers.title")}</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">{t("offers.loading")}</p>
           </div>
         </div>
       </section>
@@ -171,9 +173,9 @@ const OffersSection = () => {
       <div className="container mx-auto">
         <div className="text-center mb-12">
           <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Offers</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("offers.title")}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Exclusive discounts from our partner businesses. Join Wooffy to unlock all offers!
+            {t("offers.subtitle")}
           </p>
         </div>
 
@@ -251,7 +253,7 @@ const OffersSection = () => {
             onClick={() => navigate("/member/offers")}
             className="gap-2"
           >
-            View All Offers
+            {t("offers.viewAll")}
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

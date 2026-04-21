@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { Dog, Mail, MapPin, Instagram, Copy } from "lucide-react";
 import { toast } from "sonner";
 import AffiliateInquiryDialog from "./AffiliateInquiryDialog";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const [showAffiliateDialog, setShowAffiliateDialog] = useState(false);
+  const { t } = useTranslation();
 
   const scrollToSection = (sectionId: string) => {
     if (isHomePage) {
@@ -18,10 +20,9 @@ const Footer = () => {
   };
 
   const handleEmailClick = async (e: React.MouseEvent) => {
-    // Try mailto: first, but also copy to clipboard as fallback
     try {
       await navigator.clipboard.writeText("hello@wooffy.app");
-      toast.success("Email copied to clipboard!");
+      toast.success(t("footer.emailCopied"));
     } catch {
       // Clipboard failed, mailto: should still work
     }
@@ -40,8 +41,7 @@ const Footer = () => {
               <span className="font-display font-bold text-xl text-wooffy-sky">Wooffy</span>
             </Link>
             <p className="text-white/70 text-sm">
-              The ultimate membership for pet lovers. Unlock discounts, connect with community, 
-              and make every moment with your pet special.
+              {t("footer.tagline")}
             </p>
             <div className="flex gap-3">
               <a href="https://www.instagram.com/wooffyapp" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center hover:bg-wooffy-sky hover:text-wooffy-dark transition-colors">
@@ -55,28 +55,28 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="font-display font-semibold mb-4 text-wooffy-light">Quick Links</h4>
+            <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.quickLinks")}</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">Benefits</button></li>
-              <li><button onClick={() => scrollToSection("get-listed")} className="hover:text-wooffy-sky transition-colors">Dog-Friendly Places</button></li>
-              <li><button onClick={() => scrollToSection("shelters")} className="hover:text-wooffy-sky transition-colors">Shelters</button></li>
-              <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">Pricing</button></li>
+              <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">{t("header.benefits")}</button></li>
+              <li><button onClick={() => scrollToSection("get-listed")} className="hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
+              <li><button onClick={() => scrollToSection("shelters")} className="hover:text-wooffy-sky transition-colors">{t("header.shelters")}</button></li>
+              <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="font-display font-semibold mb-4 text-wooffy-light">Support</h4>
+            <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.support")}</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => setShowAffiliateDialog(true)} className="hover:text-wooffy-sky transition-colors">Affiliate Program</button></li>
-              <li><Link to="/terms#privacy-policy" className="hover:text-wooffy-sky transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-wooffy-sky transition-colors">Terms of Service</Link></li>
+              <li><button onClick={() => setShowAffiliateDialog(true)} className="hover:text-wooffy-sky transition-colors">{t("footer.affiliate")}</button></li>
+              <li><Link to="/terms#privacy-policy" className="hover:text-wooffy-sky transition-colors">{t("footer.privacy")}</Link></li>
+              <li><Link to="/terms" className="hover:text-wooffy-sky transition-colors">{t("footer.terms")}</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-semibold mb-4 text-wooffy-light">Contact</h4>
+            <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.contact")}</h4>
             <ul className="space-y-1 text-sm text-wooffy-light/70">
               <li>
                 <a 
@@ -99,7 +99,7 @@ const Footer = () => {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-wooffy-blue/30 text-center text-sm text-wooffy-light/50">
-          <p>© 2026 Wooffy. An effort to unite pet lovers all over Cyprus. 💫</p>
+          <p>{t("footer.copyright")}</p>
         </div>
       </div>
 
