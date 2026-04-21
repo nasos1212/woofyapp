@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { ensureHttps } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Shelter {
   id: string;
@@ -21,6 +22,7 @@ interface Shelter {
 const SheltersSection = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [existingShelter, setExistingShelter] = useState<{ id: string; verification_status: string } | null>(null);
@@ -164,14 +166,13 @@ const SheltersSection = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 bg-rose-100 text-rose-600 px-4 py-2 rounded-full mb-6">
             <Heart className="w-4 h-4 fill-current" />
-            <span className="text-sm font-medium">Giving Back</span>
+            <span className="text-sm font-medium">{t("shelters.badge")}</span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            10% goes to <span className="text-rose-500">Animal Shelters</span>
+            {t("shelters.titlePart")} <span className="text-rose-500">{t("shelters.titleHighlight")}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Every Wooffy membership directly supports whitelisted animal shelters. 
-            Together, we're making a difference for animals in need.
+            {t("shelters.subtitle")}
           </p>
         </div>
 
@@ -181,18 +182,18 @@ const SheltersSection = () => {
             <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">
               {shelters.length > 0 ? shelters.length : "—"}
             </div>
-            <p className="text-muted-foreground text-sm">Partner Shelters</p>
+            <p className="text-muted-foreground text-sm">{t("shelters.partnerShelters")}</p>
           </div>
           <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
             <div className="text-3xl md:text-4xl font-display font-bold text-green-500 mb-2">100%</div>
-            <p className="text-muted-foreground text-sm">Transparent Giving</p>
+            <p className="text-muted-foreground text-sm">{t("shelters.transparent")}</p>
           </div>
         </div>
 
         {/* Whitelisted Shelters */}
         <div className="mb-12">
           <h3 className="font-display text-xl font-semibold text-foreground mb-6 text-center">
-            Our Whitelisted Shelter Partners
+            {t("shelters.ourPartners")}
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {shelters.length > 0 ? (
@@ -219,11 +220,11 @@ const SheltersSection = () => {
                   <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Home className="w-8 h-8 text-rose-500" />
                   </div>
-                  <h4 className="font-display font-semibold text-foreground mb-1">Coming Soon</h4>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
                   <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
                   <div className="flex items-center gap-2 text-sm">
                     <Heart className="w-4 h-4 text-primary" />
-                    <span className="text-foreground font-medium">Join us!</span>
+                    <span className="text-foreground font-medium">{t("shelters.joinUs")}</span>
                   </div>
                 </div>
               ))
@@ -234,7 +235,7 @@ const SheltersSection = () => {
         {/* CTA */}
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            Are you an animal shelter? Apply to join our whitelist.
+            {t("shelters.areYou")}
           </p>
           {existingShelter ? (
             <Button 
@@ -243,14 +244,14 @@ const SheltersSection = () => {
               className="gap-2"
             >
               <Home className="w-4 h-4" />
-              Go to Shelter Dashboard
+              {t("shelters.goDashboard")}
             </Button>
           ) : (
             <button 
               onClick={handleApplyClick}
               className="text-rose-500 font-medium hover:underline inline-flex items-center gap-2"
             >
-              {user ? "Apply as a Shelter Partner" : "Login to Apply as Shelter Partner"}
+              {user ? t("shelters.applyAuth") : t("shelters.loginApply")}
               {user ? <span>→</span> : <LogIn className="w-4 h-4" />}
             </button>
           )}
