@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import NotificationBell from "./NotificationBell";
+import LanguageToggle from "./LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -26,6 +28,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { hasMembership, isPaidMember } = useMembership();
+  const { t } = useTranslation();
   const isHomePage = location.pathname === "/";
   const isAdminPage = location.pathname.startsWith("/admin");
   
@@ -129,16 +132,16 @@ const Header = () => {
 
   // Hide all links except Dashboard on admin pages
   const navLinks = isAdminPage ? [
-    { name: "Dashboard", href: dashboardPath, isRoute: true },
+    { name: t("header.dashboard"), href: dashboardPath, isRoute: true },
   ] : user ? [
-    { name: "Dashboard", href: dashboardPath, isRoute: true },
-    ...(!isShelter ? [{ name: "Offers", href: "/member/offers", isRoute: true }] : []),
-    { name: "Community", href: "/community", isRoute: true },
+    { name: t("header.dashboard"), href: dashboardPath, isRoute: true },
+    ...(!isShelter ? [{ name: t("header.offers"), href: "/member/offers", isRoute: true }] : []),
+    { name: t("header.community"), href: "/community", isRoute: true },
 ] : [
-    { name: "Benefits", href: "#benefits" },
-    { name: "Dog-Friendly Places", href: "#get-listed" },
-    { name: "Shelters", href: "#shelters" },
-    { name: "Pricing", href: "#freemium" },
+    { name: t("header.benefits"), href: "#benefits" },
+    { name: t("header.dogFriendlyPlaces"), href: "#get-listed" },
+    { name: t("header.shelters"), href: "#shelters" },
+    { name: t("header.pricing"), href: "#freemium" },
   ];
 
   // Logo links to dashboard when logged in, home when not
@@ -165,9 +168,9 @@ const Header = () => {
                   to={link.href}
                   className="font-medium text-muted-foreground hover:text-primary transition-colors duration-300 flex items-center gap-1"
                 >
-                  {link.name === "Dashboard" && <User className="w-4 h-4" />}
-                  {link.name === "Offers" && <Tag className="w-4 h-4" />}
-                  {link.name === "Community" && <MessageCircle className="w-4 h-4" />}
+                  {link.name === t("header.dashboard") && <User className="w-4 h-4" />}
+                  {link.name === t("header.offers") && <Tag className="w-4 h-4" />}
+                  {link.name === t("header.community") && <MessageCircle className="w-4 h-4" />}
                   {link.name}
                 </Link>
               ) : (
@@ -195,6 +198,7 @@ const Header = () => {
           {/* CTA */}
           <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             {user && <NotificationBell />}
+            <LanguageToggle />
 
 
             {user ? (
@@ -217,34 +221,34 @@ const Header = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate(dashboardPath)}>
                     <User className="mr-2 h-4 w-4" />
-                    My Dashboard
+                    {t("header.myDashboard")}
                   </DropdownMenuItem>
                   {!isShelter && (
                     <DropdownMenuItem onClick={() => navigate("/member/offers")}>
                       <Tag className="mr-2 h-4 w-4" />
-                      Browse Offers
+                      {t("header.browseOffers")}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Community Hub
+                    {t("header.communityHub")}
                   </DropdownMenuItem>
                   {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
-                      Redemption History
+                      {t("header.redemptionHistory")}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
                     <Bell className="mr-2 h-4 w-4" />
-                    Notifications
+                    {t("header.notifications")}
                   </DropdownMenuItem>
                   {!isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
                         <Crown className="mr-2 h-4 w-4" />
-                        Upgrade to Premium
+                        {t("header.upgradeToPremium")}
                       </DropdownMenuItem>
                     </>
                   )}
@@ -253,20 +257,20 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
                         <Shield className="mr-2 h-4 w-4" />
-                        Admin Dashboard
+                        {t("header.adminDashboard")}
                       </DropdownMenuItem>
                     </>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    {t("common.signOut")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <Link to="/auth">
-                <Button variant="hero" size="default">Join Now</Button>
+                <Button variant="hero" size="default">{t("common.joinNow")}</Button>
               </Link>
             )}
           </div>
@@ -274,6 +278,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <div className="lg:hidden flex items-center gap-1">
             {user && <NotificationBell />}
+            <LanguageToggle />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -397,7 +402,7 @@ const Header = () => {
 
               <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="hero" size="default" className="w-full">
-                  Join Now
+                  {t("common.joinNow")}
                 </Button>
               </Link>
             </div>
