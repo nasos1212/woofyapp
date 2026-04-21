@@ -13,6 +13,7 @@ import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
 import ContactPopover from "@/components/ContactPopover";
 import PetFriendlyPlaceRequestDialog from "@/components/PetFriendlyPlaceRequestDialog";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -62,6 +63,7 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, signIn, signUp } = useAuth();
+  const { t } = useTranslation();
 
   // Check URL params for account type (for direct links)
   useEffect(() => {
@@ -450,17 +452,17 @@ const Auth = () => {
               <AlertTriangle className="w-6 h-6 text-red-600" />
             </div>
             <div>
-              <DialogTitle className="text-red-800">Application Not Approved</DialogTitle>
+              <DialogTitle className="text-red-800">{t("auth.rejectedTitle")}</DialogTitle>
             </div>
           </div>
         </DialogHeader>
         <DialogDescription className="text-base py-4">
-          Unfortunately, your {rejectedDialog.type === "business" ? "business" : "shelter"} application was not approved at this time.
+          {rejectedDialog.type === "business" ? t("auth.rejectedDescBusiness") : t("auth.rejectedDescShelter")}
           <br /><br />
-          If you believe this was a mistake or would like more information, please reach out:
+          {t("auth.rejectedReach")}
           <div className="mt-3">
             <ContactPopover 
-              triggerText="Contact us" 
+              triggerText={t("auth.contactUs")} 
               triggerVariant="default"
               showIcon={true}
             />
@@ -471,7 +473,7 @@ const Auth = () => {
             onClick={() => setRejectedDialog({ open: false, type: null })}
             className="w-full"
           >
-            I Understand
+            {t("auth.iUnderstand")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -494,7 +496,7 @@ const Auth = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Sign In
+            {t("auth.backSignIn")}
           </Button>
 
           <div className="bg-card rounded-2xl shadow-card p-8">
@@ -503,10 +505,10 @@ const Auth = () => {
                 <Dog className="w-8 h-8 text-primary-foreground" />
               </div>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                Create an Account
+                {t("auth.createAccount")}
               </h1>
               <p className="text-muted-foreground mt-2">
-                What type of account would you like?
+                {t("auth.whatType")}
               </p>
             </div>
 
@@ -521,10 +523,10 @@ const Auth = () => {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold text-lg text-foreground">
-                      I'm a Pet Owner
+                      {t("auth.petOwner")}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Get exclusive discounts and benefits for your furry friend
+                      {t("auth.petOwnerDesc")}
                     </p>
                   </div>
                 </div>
@@ -540,10 +542,10 @@ const Auth = () => {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold text-lg text-foreground">
-                      I'm a Business Partner
+                      {t("auth.businessPartner")}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Partner with us to reach thousands of pet owners
+                      {t("auth.businessPartnerDesc")}
                     </p>
                   </div>
                 </div>
@@ -559,10 +561,10 @@ const Auth = () => {
                   </div>
                   <div>
                     <h3 className="font-display font-semibold text-lg text-foreground">
-                      I'm a Shelter
+                      {t("auth.shelter")}
                     </h3>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Join Wooffy and share in 10% of membership proceeds
+                      {t("auth.shelterDesc")}
                     </p>
                   </div>
                 </div>
@@ -578,7 +580,7 @@ const Auth = () => {
                 }}
                 className="text-sm text-muted-foreground hover:text-primary transition-colors"
               >
-                Already have an account? <span className="font-semibold text-primary">Sign in</span>
+                {t("auth.alreadyAccount")} <span className="font-semibold text-primary">{t("common.signIn")}</span>
               </button>
             </div>
 
@@ -604,7 +606,7 @@ const Auth = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Login
+            {t("auth.backLogin")}
           </Button>
 
           <div className="bg-card rounded-2xl shadow-card p-8">
@@ -613,12 +615,12 @@ const Auth = () => {
                 <Dog className="w-8 h-8 text-primary-foreground" />
               </div>
               <h1 className="font-display text-2xl font-bold text-foreground">
-                {resetEmailSent ? "Check Your Email" : "Forgot Password?"}
+                {resetEmailSent ? t("auth.checkEmail") : t("auth.forgotTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">
-                {resetEmailSent 
-                  ? "We've sent a password reset link to your email address."
-                  : "Enter your email and we'll send you a reset link"
+                {resetEmailSent
+                  ? t("auth.checkEmailSub")
+                  : t("auth.forgotSubtitle")
                 }
               </p>
             </div>
@@ -628,7 +630,7 @@ const Auth = () => {
                 <div className="p-4 bg-primary/10 rounded-xl">
                   <Mail className="w-8 h-8 text-primary mx-auto mb-2" />
                   <p className="text-sm text-foreground">
-                    Check your inbox for <strong>{email}</strong>
+                    {t("auth.checkInbox")} <strong>{email}</strong>
                   </p>
                 </div>
                 <Button
@@ -639,13 +641,13 @@ const Auth = () => {
                   }}
                   className="w-full"
                 >
-                  Try a different email
+                  {t("auth.tryDifferent")}
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">Email</Label>
+                  <Label htmlFor="reset-email">{t("auth.email")}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -666,7 +668,7 @@ const Auth = () => {
                   className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? <DogLoader size="sm" /> : "Send Reset Link"}
+                  {isLoading ? <DogLoader size="sm" /> : t("auth.sendReset")}
                 </Button>
               </form>
             )}
@@ -686,15 +688,15 @@ const Auth = () => {
   };
 
   const getAccountLabel = () => {
-    if (isBusiness) return "Business Account";
-    if (isShelter) return "Shelter Account";
-    return "Pet Owner Account";
+    if (isBusiness) return t("auth.businessAccount");
+    if (isShelter) return t("auth.shelterAccount");
+    return t("auth.petOwnerAccount");
   };
 
   const getAccountDescription = () => {
-    if (isBusiness) return "Partner with us to reach pet owners";
-    if (isShelter) return "Join Wooffy and share in 10% of membership proceeds";
-    return "Your premium pet membership awaits";
+    if (isBusiness) return t("auth.businessAccountDesc");
+    if (isShelter) return t("auth.shelterAccountDesc");
+    return t("auth.petOwnerAccountDesc");
   };
 
   const getHeaderBgClass = () => {
@@ -717,7 +719,7 @@ const Auth = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            {t("auth.backHome")}
           </Button>
         ) : (
           <Button
@@ -729,7 +731,7 @@ const Auth = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Change Account Type
+            {t("auth.changeAccountType")}
           </Button>
         )}
 
@@ -740,10 +742,10 @@ const Auth = () => {
               {isLogin ? <Dog className="w-8 h-8 text-primary-foreground" /> : getAccountIcon()}
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              {isLogin ? "Welcome Back" : "Join Wooffy"}
+              {isLogin ? t("auth.welcomeBack") : t("auth.joinWooffy")}
             </h1>
             <p className="text-muted-foreground mt-2">
-              {isLogin ? "Sign in to your account" : getAccountDescription()}
+              {isLogin ? t("auth.signInAccount") : getAccountDescription()}
             </p>
             {!isLogin && (
               <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
@@ -771,7 +773,7 @@ const Auth = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">{t("auth.fullName")}</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -788,7 +790,7 @@ const Auth = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("auth.email")}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -805,14 +807,14 @@ const Auth = () => {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("auth.password")}</Label>
                 {isLogin && (
                   <button
                     type="button"
                     onClick={() => setIsForgotPassword(true)}
                     className="text-xs text-primary hover:text-primary/80 transition-colors"
                   >
-                    Forgot password?
+                    {t("auth.forgotPassword")}
                   </button>
                 )}
               </div>
@@ -831,7 +833,7 @@ const Auth = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -847,13 +849,13 @@ const Auth = () => {
                   className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary"
                 />
                 <label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed">
-                  I agree to the{" "}
+                  {t("auth.agreeTerms")}{" "}
                   <a href="https://www.wooffy.app/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
-                    Terms &amp; Conditions
+                    {t("auth.termsCond")}
                   </a>{" "}
-                  and{" "}
+                  {t("auth.and")}{" "}
                   <a href="https://www.wooffy.app/terms#privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
-                    Privacy Policy
+                    {t("auth.privacyPolicy")}
                   </a>
                 </label>
               </div>
@@ -865,7 +867,7 @@ const Auth = () => {
               className="w-full"
               disabled={isLoading || (!isLogin && !acceptedTerms)}
             >
-              {isLoading ? <DogLoader size="sm" /> : isLogin ? "Sign In" : "Create Account"}
+              {isLoading ? <DogLoader size="sm" /> : isLogin ? t("auth.signInBtn") : t("auth.createAccountBtn")}
             </Button>
           </form>
 
@@ -888,9 +890,9 @@ const Auth = () => {
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               {isLogin ? (
-                <>Don't have an account? <span className="font-semibold text-primary">Sign up</span></>
+                <>{t("auth.noAccount")} <span className="font-semibold text-primary">{t("common.signUp")}</span></>
               ) : (
-                <>Already have an account? <span className="font-semibold text-primary">Sign in</span></>
+                <>{t("auth.alreadyAccount")} <span className="font-semibold text-primary">{t("common.signIn")}</span></>
               )}
             </button>
           </div>
