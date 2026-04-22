@@ -240,5 +240,83 @@
     "step3Feat1": "Exclusive discounts",
     "step3Feat2": "AI health assistant",
     "step3Feat3": "Pet birthday offers"
+  },
+  "freeMember": {
+    "pageTitle": "Community Hub | Wooffy",
+    "pageDescription": "Join the Wooffy pet community - ask questions, share experiences, and connect with pet parents.",
+    "hello": "Hello, {{name}}! 🐾",
+    "friend": "Friend",
+    "subtitle": "Connect with the Wooffy pet community",
+    "hub": {
+      "title": "Community Hub",
+      "tagline": "Your pet parenting questions, answered",
+      "description": "Get advice from experienced pet owners, share your knowledge, and be part of Cyprus's most helpful pet community.",
+      "browse": "Browse Questions",
+      "ask": "Ask a Question",
+      "saved": "Saved Questions"
+    },
+    "pets": {
+      "title": "🐾 My Pets",
+      "addPet": "Add Pet",
+      "empty": "No pets yet",
+      "emptyDesc": "Add your first pet to start tracking their health and more",
+      "addFirst": "Add Your First Pet",
+      "cat": "Cat",
+      "dog": "Dog"
+    },
+    "cards": {
+      "health": "Health Records",
+      "healthDesc": "Track vaccinations & vet visits",
+      "viewRecords": "View Records",
+      "lostFound": "Lost&Found Alerts",
+      "lostFoundDesc": "Help reunite pets with families",
+      "viewAlerts": "View Alerts",
+      "places": "Dog-Friendly Places",
+      "placesDesc": "Discover where pets are welcome",
+      "explorePlaces": "Explore Places",
+      "shelters": "Pet Shelters",
+      "sheltersDesc": "Support local pet shelters",
+      "viewShelters": "View Shelters",
+      "browseOffers": "Browse Offers",
+      "browseOffersDesc": "Preview exclusive member deals",
+      "viewOffers": "View Offers",
+      "partners": "Our Partners",
+      "partnersDesc": "Browse partner businesses",
+      "viewPartners": "View Partners"
+    },
+    "upgrade": {
+      "want": "Want more features?",
+      "seeBenefits": "See membership benefits",
+      "partnerDiscounts": "Partner Discounts",
+      "aiAssistant": "AI Assistant",
+      "unlock": "Upgrade to unlock",
+      "unlockDesc": " exclusive discounts & AI health assistant",
+      "cta": "Upgrade · €29/year"
+    },
+    "benefitsDialog": {
+      "title": "Your Wooffy Membership",
+      "freeBadge": "✨ Free — Yours Now",
+      "premiumBadge": "👑 Premium — Coming Soon",
+      "directory": "Dog-Friendly Directory",
+      "directoryDesc": "Find dog-friendly cafés, parks and more",
+      "lostFound": "Lost & Found Alerts",
+      "lostFoundDesc": "Report and search for lost or found pets",
+      "qa": "Community Q&A",
+      "qaDesc": "Ask questions and help fellow pet parents",
+      "browseOffers": "Browse Offers",
+      "browseOffersDesc": "Preview exclusive partner deals",
+      "petProfiles": "Pet Profiles",
+      "petProfilesDesc": "Create profiles with photos and breed info",
+      "petHealth": "Pet Health Records",
+      "petHealthDesc": "Track vaccinations, appointments and vet visits",
+      "exclusive": "Exclusive Discounts",
+      "exclusiveDesc": "Save at pet shops, trainers, groomers, hotels & more",
+      "ai": "AI Health Assistant",
+      "aiDesc": "24/7 AI-powered pet health guidance",
+      "premiumNote": "Premium plans starting at ",
+      "premiumNoteEnd": " — we'll notify you when they launch! 🐾",
+      "perYear": "€29/year",
+      "gotIt": "Got it!"
+    }
   }
 }
