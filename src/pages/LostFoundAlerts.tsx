@@ -288,23 +288,23 @@ const LostFoundAlerts = () => {
   const handleCreateAlert = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      toast.error("Please log in to create an alert");
+      toast.error(t("lostFound.toasts.loginToCreate"));
       return;
     }
 
     // For lost pets, name is required. For found pets, description is the key field
     if (alertType === "lost" && !petName) {
-      toast.error("Please enter the pet's name");
+      toast.error(t("lostFound.toasts.needsName"));
       return;
     }
 
     if (!petDescription || !lastSeenCity || !lastSeenDate || !contactPhone) {
-      toast.error("Please fill in all required fields including contact phone");
+      toast.error(t("lostFound.toasts.needsFields"));
       return;
     }
 
     if (petPhotos.length === 0) {
-      toast.error("Please upload at least one photo");
+      toast.error(t("lostFound.toasts.needsPhoto"));
       return;
     }
 
