@@ -1059,23 +1059,23 @@ const PetHealthRecords = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Notes</Label>
+                    <Label>{t("petHealth.dialog.notes")}</Label>
                     <Textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Any additional notes..."
+                      placeholder={t("petHealth.dialog.notesPlaceholder")}
                     />
                   </div>
 
                   {/* Document Upload */}
                   <div className="space-y-2">
-                    <Label>Attach Documents (Optional, up to {MAX_DOCUMENTS})</Label>
+                    <Label>{t("petHealth.dialog.attachDocs", { max: MAX_DOCUMENTS })}</Label>
                     
                     {/* Show existing documents when editing */}
                     {editingRecord?.document_url && !removeExistingDocument && (
                       <div className="space-y-1">
                         {parseDocumentUrls(editingRecord.document_url).map((docPath, idx) => {
-                          const fileName = docPath.split('/').pop() || `Document ${idx + 1}`;
+                          const fileName = docPath.split('/').pop() || t("petHealth.dialog.documentLabel", { n: idx + 1 });
                           return (
                             <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
                               <File className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -1087,7 +1087,7 @@ const PetHealthRecords = () => {
                                 className="text-xs shrink-0"
                                 onClick={() => handleViewDocument({ ...editingRecord, document_url: docPath })}
                               >
-                                View
+                                {t("petHealth.actions.view")}
                               </Button>
                             </div>
                           );
@@ -1099,14 +1099,14 @@ const PetHealthRecords = () => {
                           className="text-xs text-destructive hover:text-destructive"
                           onClick={() => setRemoveExistingDocument(true)}
                         >
-                          Remove all existing documents
+                          {t("petHealth.dialog.removeAllDocs")}
                         </Button>
                       </div>
                     )}
                     
                     {removeExistingDocument && documentFiles.length === 0 && (
                       <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
-                        <span className="text-sm text-destructive flex-1">Documents will be removed</span>
+                        <span className="text-sm text-destructive flex-1">{t("petHealth.dialog.docsWillBeRemoved")}</span>
                         <Button
                           type="button"
                           variant="ghost"
@@ -1114,7 +1114,7 @@ const PetHealthRecords = () => {
                           className="text-xs"
                           onClick={() => setRemoveExistingDocument(false)}
                         >
-                          Undo
+                          {t("petHealth.dialog.undo")}
                         </Button>
                       </div>
                     )}
@@ -1163,20 +1163,20 @@ const PetHealthRecords = () => {
                           >
                             <Upload className="w-4 h-4" />
                             {documentFiles.length > 0 || (editingRecord?.document_url && !removeExistingDocument) 
-                              ? "Add More Files" : "Upload Files"}
+                              ? t("petHealth.dialog.addMoreFiles") : t("petHealth.dialog.uploadFiles")}
                           </Button>
                         </div>
                       ) : null;
                     })()}
                     <p className="text-xs text-muted-foreground">
-                      PDF, images, or Word docs up to 10MB each. Great for vet receipts & certificates.
+                      {t("petHealth.dialog.uploadHint")}
                     </p>
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isAdding || isUploading}>
                     {isAdding || isUploading 
-                      ? (isUploading ? "Uploading..." : "Saving...") 
-                      : (editingRecord ? "Update Record" : "Add Record")}
+                      ? (isUploading ? t("petHealth.dialog.uploading") : t("petHealth.dialog.saving")) 
+                      : (editingRecord ? t("petHealth.dialog.updateRecord") : t("petHealth.dialog.addRecordBtn"))}
                   </Button>
                 </form>
               </DialogContent>
@@ -1205,9 +1205,9 @@ const PetHealthRecords = () => {
           {pets.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-2xl">
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">No pets found</h3>
-              <p className="text-muted-foreground mb-4">Add a pet to your membership first</p>
-              <Button onClick={() => navigate("/member/add-pet")}>Add Pet</Button>
+              <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noPets")}</h3>
+              <p className="text-muted-foreground mb-4">{t("petHealth.noPetsHint")}</p>
+              <Button onClick={() => navigate("/member/add-pet")}>{t("petHealth.addPet")}</Button>
             </div>
           ) : (
             <>
@@ -1218,7 +1218,7 @@ const PetHealthRecords = () => {
                     <AlertCircle className={`h-6 w-6 ${overdueCount > 0 ? "text-destructive" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-xl font-bold">{overdueCount}</p>
-                      <p className="text-xs text-muted-foreground">Overdue</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.overdue")}</p>
                     </div>
                   </div>
                 </div>
@@ -1227,7 +1227,7 @@ const PetHealthRecords = () => {
                     <Bell className={`h-6 w-6 ${dueSoonCount > 0 ? "text-amber-500" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-xl font-bold">{dueSoonCount}</p>
-                      <p className="text-xs text-muted-foreground">Due Soon</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.dueSoon")}</p>
                     </div>
                   </div>
                 </div>
