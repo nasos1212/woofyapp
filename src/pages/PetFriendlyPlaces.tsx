@@ -320,7 +320,7 @@ const PetFriendlyPlaces = () => {
                         >
                           <MapPin className="w-3 h-3 flex-shrink-0 mt-0.5" />
                           <span className="line-clamp-1 group-hover:underline">
-                            {[place.area, place.city].filter(Boolean).join(", ")}
+                            {[place.area, place.city ? getCityDisplayName(place.city, i18n.language) : null].filter(Boolean).join(", ")}
                           </span>
                         </a>
                       )}
