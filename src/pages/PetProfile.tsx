@@ -168,23 +168,23 @@ const PetProfile = () => {
           
           if (isLocked) {
             setCanEditBirthday(false);
-            setBirthdayLockReason("Birthday has been locked");
+            setBirthdayLockReason(t("petProfile.birthdayLocked"));
           } else if (hasReceivedOffer) {
             setCanEditBirthday(false);
-            setBirthdayLockReason("Birthday cannot be changed after receiving a birthday offer");
+            setBirthdayLockReason(t("petProfile.birthdayLockedAfterOffer"));
           } else if (daysSinceCreation > 14) {
             setCanEditBirthday(false);
             const daysAgo = daysSinceCreation - 14;
-            setBirthdayLockReason(`The 14-day edit window has passed (${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago)`);
+            setBirthdayLockReason(t("petProfile.editWindowPassed", { count: daysAgo, days: daysAgo }));
           } else {
             setCanEditBirthday(true);
             const daysRemaining = 14 - daysSinceCreation;
-            setBirthdayLockReason(`${daysRemaining} day${daysRemaining !== 1 ? 's' : ''} left to edit birthday`);
+            setBirthdayLockReason(t("petProfile.daysLeftToEdit", { count: daysRemaining }));
           }
         }
       } catch (error) {
         console.error("Error fetching pet:", error);
-        toast.error("Failed to load pet profile");
+        toast.error(t("petProfile.loadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -236,10 +236,10 @@ const PetProfile = () => {
         notes: editedNotes.trim() || null,
       });
       setIsEditing(false);
-      toast.success("Pet profile updated!");
+      toast.success(t("petProfile.profileUpdated"));
     } catch (error: any) {
       console.error("Error updating pet:", error);
-      toast.error(error.message || "Failed to update pet profile");
+      toast.error(error.message || t("petProfile.updateFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -263,32 +263,31 @@ const PetProfile = () => {
       const birthDate = new Date(birthday);
       const now = new Date();
       
-      // If birthday is in the future, show countdown instead
       if (birthDate > now) {
         const daysUntil = differenceInDays(birthDate, now);
-        return `Birthday in ${daysUntil} day${daysUntil !== 1 ? "s" : ""}`;
+        return t("petProfile.birthdayInDays", { count: daysUntil });
       }
       
       const years = differenceInYears(now, birthDate);
       const months = differenceInMonths(now, birthDate) % 12;
       
       if (years === 0) {
-        return `${months} month${months !== 1 ? "s" : ""} old`;
+        return t("petProfile.monthsOld", { count: months });
       } else if (months === 0) {
-        return `${years} year${years !== 1 ? "s" : ""} old`;
+        return t("petProfile.yearsOldFull", { count: years });
       }
-      return `${years} year${years !== 1 ? "s" : ""}, ${months} month${months !== 1 ? "s" : ""} old`;
+      return t("petProfile.yearsAndMonths", { years, months });
     } else if (ageYears !== null) {
-      return `~${ageYears} year${ageYears !== 1 ? "s" : ""} old`;
+      return t("petProfile.approxYearsOld", { years: ageYears });
     }
-    return "Unknown";
+    return t("petProfile.unknown");
   };
 
   const getGenderDisplay = (gender: string | null) => {
     switch (gender) {
-      case "male": return { label: "♂ Male", color: "bg-blue-100 text-blue-700" };
-      case "female": return { label: "♀ Female", color: "bg-pink-100 text-pink-700" };
-      default: return { label: "Unknown", color: "bg-gray-100 text-gray-700" };
+      case "male": return { label: t("petProfile.male"), color: "bg-blue-100 text-blue-700" };
+      case "female": return { label: t("petProfile.female"), color: "bg-pink-100 text-pink-700" };
+      default: return { label: t("petProfile.unknown"), color: "bg-gray-100 text-gray-700" };
     }
   };
 
@@ -344,10 +343,10 @@ const PetProfile = () => {
       if (updateError) throw updateError;
 
       setPet({ ...pet, photo_url: publicUrl });
-      toast.success('Photo updated!');
+      toast.success(t("petProfile.photoUpdated"));
     } catch (error) {
       console.error('Error uploading photo:', error);
-      toast.error('Failed to upload photo');
+      toast.error(t("petProfile.photoUploadFailed"));
     } finally {
       setIsUploadingPhoto(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -374,10 +373,10 @@ const PetProfile = () => {
       if (updateError) throw updateError;
 
       setPet({ ...pet, photo_url: null });
-      toast.success('Photo removed!');
+      toast.success(t("petProfile.photoRemoved"));
     } catch (error) {
       console.error('Error removing photo:', error);
-      toast.error('Failed to remove photo');
+      toast.error(t("petProfile.photoRemoveFailed"));
     } finally {
       setIsUploadingPhoto(false);
     }
@@ -402,11 +401,11 @@ const PetProfile = () => {
 
       if (error) throw error;
 
-      toast.success(`${pet.pet_name} has been removed`);
+      toast.success(t("petProfile.removed", { name: pet.pet_name }));
       navigate("/member");
     } catch (error) {
       console.error("Error deleting pet:", error);
-      toast.error("Failed to delete pet");
+      toast.error(t("petProfile.deleteFailed"));
     } finally {
       setIsDeleting(false);
     }
@@ -426,10 +425,10 @@ const PetProfile = () => {
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <Dog className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Pet Not Found</h2>
-            <p className="text-muted-foreground mb-4">This pet profile doesn't exist or you don't have access to it.</p>
+            <h2 className="text-xl font-semibold mb-2">{t("petProfile.notFoundTitle")}</h2>
+            <p className="text-muted-foreground mb-4">{t("petProfile.notFoundDesc")}</p>
             <Button onClick={() => navigate("/member")}>
-              Back to Dashboard
+              {t("petProfile.backToDashboard")}
             </Button>
           </CardContent>
         </Card>
@@ -440,8 +439,8 @@ const PetProfile = () => {
   return (
     <>
       <Helmet>
-        <title>{pet.pet_name}'s Profile | Wooffy</title>
-        <meta name="description" content={`View and manage ${pet.pet_name}'s profile and notes.`} />
+        <title>{t("petProfile.pageTitle", { name: pet.pet_name })}</title>
+        <meta name="description" content={t("petProfile.metaDescription", { name: pet.pet_name })} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
@@ -452,7 +451,7 @@ const PetProfile = () => {
           <div className="mb-4">
             <Breadcrumbs
               items={[
-                { label: "Dashboard", href: "/member" },
+                { label: t("petProfile.dashboard"), href: "/member" },
                 { label: pet.pet_name },
               ]}
             />
@@ -463,7 +462,7 @@ const PetProfile = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("petProfile.back")}
           </Button>
 
           {/* Pet Header Card */}
@@ -499,7 +498,7 @@ const PetProfile = () => {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingPhoto}
                     className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors disabled:opacity-50"
-                    title="Change photo"
+                    title={t("petProfile.changePhoto")}
                   >
                     <Camera className="w-4 h-4 text-gray-700" />
                   </button>
@@ -509,20 +508,20 @@ const PetProfile = () => {
                         <button
                           disabled={isUploadingPhoto}
                           className="absolute -top-1 -right-1 w-6 h-6 bg-destructive rounded-full flex items-center justify-center shadow-md hover:bg-destructive/90 transition-colors disabled:opacity-50"
-                          title="Remove photo"
+                          title={t("petProfile.removePhoto")}
                         >
                           <X className="w-3 h-3 text-white" />
                         </button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Remove Photo?</AlertDialogTitle>
+                          <AlertDialogTitle>{t("petProfile.removePhotoTitle")}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Are you sure you want to remove {pet.pet_name}'s photo? You can always upload a new one later.
+                            {t("petProfile.removePhotoDesc", { name: pet.pet_name })}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t("petProfile.cancel")}</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => {
                               setShowPhotoRemoveDialog(false);
@@ -530,7 +529,7 @@ const PetProfile = () => {
                             }}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           >
-                            Remove Photo
+                            {t("petProfile.removePhotoConfirm")}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -551,11 +550,11 @@ const PetProfile = () => {
                     <Input
                       value={editedBreed}
                       onChange={(e) => setEditedBreed(e.target.value)}
-                      placeholder="Breed"
+                      placeholder={t("petProfile.breed")}
                       className="bg-white/20 border-white/30 text-white placeholder:text-white/50"
                     />
                   ) : (
-                    <p className="text-white/80">{pet.pet_breed || "Breed not specified"}</p>
+                    <p className="text-white/80">{pet.pet_breed || t("petProfile.breedNotSpecified")}</p>
                   )}
                 </div>
                 {isEditing ? (
@@ -567,7 +566,7 @@ const PetProfile = () => {
                       className="bg-white/20 hover:bg-white/30 text-white gap-1"
                     >
                       {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
-                      Save
+                      {t("petProfile.save")}
                     </Button>
                     <Button
                       size="sm"
@@ -576,7 +575,7 @@ const PetProfile = () => {
                       className="bg-white/20 hover:bg-white/30 text-white gap-1"
                     >
                       <X className="w-4 h-4" />
-                      Cancel
+                      {t("petProfile.cancel")}
                     </Button>
                   </div>
                 ) : (
@@ -605,7 +604,7 @@ const PetProfile = () => {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1">
-                        <p className="text-xs sm:text-sm text-muted-foreground">Birthday</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.birthday")}</p>
                         {!canEditBirthday && (
                           <Lock className="w-3 h-3 text-muted-foreground" />
                         )}
@@ -622,7 +621,7 @@ const PetProfile = () => {
                                   knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
                                 )}
                               >
-                                Date
+                                {t("petProfile.date")}
                               </button>
                               <button
                                 type="button"
@@ -632,7 +631,7 @@ const PetProfile = () => {
                                   !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
                                 )}
                               >
-                                Age
+                                {t("petProfile.age")}
                               </button>
                             </div>
                             {knowsBirthday ? (
@@ -653,9 +652,9 @@ const PetProfile = () => {
                                   value={editedAgeYears}
                                   onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
                                   className="text-sm h-8 w-16"
-                                  placeholder="Age"
+                                  placeholder={t("petProfile.ageInput")}
                                 />
-                                <span className="text-xs text-muted-foreground">yrs</span>
+                                <span className="text-xs text-muted-foreground">{t("petProfile.ageYrs")}</span>
                               </div>
                             )}
                             {canEditBirthday && birthdayLockReason && (
@@ -670,7 +669,7 @@ const PetProfile = () => {
                             <p className="font-medium text-sm sm:text-base truncate">
                               {pet.birthday 
                                 ? formatDate(new Date(pet.birthday)) 
-                                : "Not set"}
+                                : t("petProfile.notSet")}
                             </p>
                             <p className="text-xs text-amber-600 flex items-center gap-1 mt-1">
                               <Lock className="w-3 h-3" />
@@ -682,7 +681,7 @@ const PetProfile = () => {
                         <p className="font-medium text-sm sm:text-base truncate">
                           {pet.birthday 
                             ? formatDate(new Date(pet.birthday)) 
-                            : "Not set"}
+                            : t("petProfile.notSet")}
                         </p>
                       )}
                     </div>
@@ -699,7 +698,7 @@ const PetProfile = () => {
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm text-muted-foreground">Age</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.age")}</p>
                     {/* Show age input when editing and user chose age instead of birthday */}
                     {isEditing && !knowsBirthday && !pet.birthday ? (
                       <div className="mt-1 space-y-2">
@@ -712,7 +711,7 @@ const PetProfile = () => {
                               knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
                             )}
                           >
-                            Date
+                            {t("petProfile.date")}
                           </button>
                           <button
                             type="button"
@@ -722,7 +721,7 @@ const PetProfile = () => {
                               !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
                             )}
                           >
-                            Age
+                            {t("petProfile.age")}
                           </button>
                         </div>
                         <div className="flex items-center gap-1">
@@ -733,17 +732,17 @@ const PetProfile = () => {
                             value={editedAgeYears}
                             onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
                             className="text-sm h-8 w-16"
-                            placeholder="Age"
+                            placeholder={t("petProfile.ageInput")}
                           />
-                          <span className="text-xs text-muted-foreground">yrs</span>
+                          <span className="text-xs text-muted-foreground">{t("petProfile.ageYrs")}</span>
                         </div>
                       </div>
                     ) : (
                       <p className="font-medium text-sm sm:text-base truncate">
                         {isEditing 
                           ? (knowsBirthday 
-                              ? (editedBirthday ? calculateAge(editedBirthday, null) : "Set birthday") 
-                              : (editedAgeYears !== "" ? `~${editedAgeYears} years old` : "Set age"))
+                              ? (editedBirthday ? calculateAge(editedBirthday, null) : t("petProfile.setBirthday")) 
+                              : (editedAgeYears !== "" ? t("petProfile.approxYearsOld", { years: editedAgeYears }) : t("petProfile.setAge")))
                           : calculateAge(pet.birthday, pet.age_years)
                         }
                       </p>
@@ -767,12 +766,12 @@ const PetProfile = () => {
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm text-muted-foreground">Gender</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.gender")}</p>
                   {isEditing ? (
                     <div className="flex gap-1 mt-1">
                     {[
-                      { value: "male" as const, label: "♂ Male" },
-                      { value: "female" as const, label: "♀ Female" },
+                      { value: "male" as const, label: t("petProfile.male") },
+                      { value: "female" as const, label: t("petProfile.female") },
                     ].map((option) => (
                         <button
                           key={option.value}
@@ -806,7 +805,7 @@ const PetProfile = () => {
                   <Calendar className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Member Since</p>
+                  <p className="text-sm text-muted-foreground">{t("petProfile.memberSince")}</p>
                   <p className="font-medium">
                     {formatDate(new Date(pet.created_at))}
                   </p>
@@ -822,7 +821,7 @@ const PetProfile = () => {
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Gift className="w-5 h-5 text-pink-500" />
-                  Birthday Offers for {pet.pet_name}
+                  {t("petProfile.birthdayOffersTitle", { name: pet.pet_name })}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -852,12 +851,12 @@ const PetProfile = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-medium text-sm">
-                              {offer.business?.business_name || "Partner Business"}
+                              {offer.business?.business_name || t("petProfile.partnerBusiness")}
                             </p>
                             {isRedeemed ? (
-                              <Badge className="bg-green-500 text-white text-xs">Redeemed</Badge>
+                              <Badge className="bg-green-500 text-white text-xs">{t("petProfile.redeemed")}</Badge>
                             ) : (
-                              <Badge className="bg-pink-500 text-white text-xs">Active</Badge>
+                              <Badge className="bg-pink-500 text-white text-xs">{t("petProfile.active")}</Badge>
                             )}
                           </div>
                           {offer.message && (
@@ -868,12 +867,12 @@ const PetProfile = () => {
                           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                             <span className="font-medium text-pink-600">
                               {offer.discount_type === 'percentage' 
-                                ? `${offer.discount_value}% off` 
-                                : `€${offer.discount_value} off`}
+                                ? t("petProfile.percentOff", { value: offer.discount_value })
+                                : t("petProfile.amountOff", { value: offer.discount_value })}
                             </span>
                             <span>•</span>
                             <span>
-                              Sent {formatDate(new Date(offer.sent_at))}
+                              {t("petProfile.sentOn", { date: formatDate(new Date(offer.sent_at)) })}
                             </span>
                           </div>
                         </div>
@@ -885,7 +884,7 @@ const PetProfile = () => {
                           className="w-full mt-3 border-pink-300 text-pink-600 hover:bg-pink-50"
                           onClick={() => navigate(`/business/${offer.business_id}`)}
                         >
-                          Visit Business to Redeem
+                          {t("petProfile.visitToRedeem")}
                         </Button>
                       )}
                     </div>
@@ -896,7 +895,7 @@ const PetProfile = () => {
           )}
 
           {/* Pet Records */}
-          <h2 className="text-lg font-display font-semibold text-foreground mb-3">Pet Records</h2>
+          <h2 className="text-lg font-display font-semibold text-foreground mb-3">{t("petProfile.petRecords")}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             <Button
               variant="default"
@@ -905,7 +904,7 @@ const PetProfile = () => {
               className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-sm sm:text-base">Health Records & Reminders</span>
+              <span className="font-semibold text-sm sm:text-base">{t("petProfile.healthRecords")}</span>
             </Button>
             <Button
               variant="default"
@@ -914,7 +913,7 @@ const PetProfile = () => {
               className="h-auto py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-br from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600"
             >
               <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span className="font-semibold text-sm sm:text-base">General Documents</span>
+              <span className="font-semibold text-sm sm:text-base">{t("petProfile.generalDocuments")}</span>
             </Button>
           </div>
 
@@ -928,23 +927,23 @@ const PetProfile = () => {
                   disabled={isDeleting}
                 >
                   {isDeleting ? <DogLoader size="sm" /> : <Trash2 className="w-4 h-4" />}
-                  Remove {pet.pet_name} from your account
+                  {t("petProfile.removeFromAccount", { name: pet.pet_name })}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Remove {pet.pet_name}?</AlertDialogTitle>
+                  <AlertDialogTitle>{t("petProfile.removeTitle", { name: pet.pet_name })}</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will permanently delete {pet.pet_name}'s profile and all associated health records. This action cannot be undone.
+                    {t("petProfile.removeDesc", { name: pet.pet_name })}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel>{t("petProfile.cancel")}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDelete}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
-                    Yes, remove {pet.pet_name}
+                    {t("petProfile.removeConfirm", { name: pet.pet_name })}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
