@@ -214,11 +214,11 @@ const LostFoundAlerts = () => {
         setNotificationPrefs(data as NotificationPreferences);
       }
 
-      toast.success("Notification preferences saved!");
+      toast.success(t("lostFound.toasts.prefsSaved"));
       setShowSettingsDialog(false);
     } catch (error) {
       console.error("Error saving preferences:", error);
-      toast.error("Failed to save preferences");
+      toast.error(t("lostFound.toasts.prefsError"));
     } finally {
       setIsSavingPrefs(false);
     }
