@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Upload, FileText, Trash2, Eye, Loader2, Plus, File, ExternalLink, Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { ArrowLeft, Upload, FileText, Trash2, Loader2, Plus, File, ExternalLink, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ interface Pet {
 }
 
 const PetDocuments = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership } = useMembership();
   const navigate = useNavigate();
@@ -88,7 +90,7 @@ const PetDocuments = () => {
       setDocuments(docsRes.data || []);
     } catch (error) {
       console.error("Error fetching documents:", error);
-      toast.error("Failed to load documents");
+      toast.error(t("petDocuments.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +138,7 @@ const PetDocuments = () => {
 
       if (dbError) throw dbError;
 
-      toast.success("Document uploaded!");
+      toast.success(t("petDocuments.uploaded"));
       setTitle("");
       setSelectedFile(null);
       setShowUploadForm(false);
@@ -144,7 +146,7 @@ const PetDocuments = () => {
       fetchPetAndDocuments();
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error(error.message || "Failed to upload document");
+      toast.error(error.message || t("petDocuments.uploadFailed"));
     } finally {
       setIsUploading(false);
     }
@@ -171,7 +173,7 @@ const PetDocuments = () => {
       });
     } catch (error) {
       console.error("Error viewing document:", error);
-      toast.error("Failed to open document");
+      toast.error(t("petDocuments.openFailed"));
     } finally {
       setIsLoadingPreview(false);
     }
@@ -184,10 +186,10 @@ const PetDocuments = () => {
       if (error) throw error;
 
       setDocuments((prev) => prev.filter((d) => d.id !== doc.id));
-      toast.success("Document deleted");
+      toast.success(t("petDocuments.deleted"));
     } catch (error) {
       console.error("Error deleting document:", error);
-      toast.error("Failed to delete document");
+      toast.error(t("petDocuments.deleteFailed"));
     }
   };
 
@@ -212,9 +214,9 @@ const PetDocuments = () => {
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
             <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Pet Not Found</h2>
-            <p className="text-muted-foreground mb-4">Select a pet to view their documents.</p>
-            <Button onClick={() => navigate("/member")}>Back to Dashboard</Button>
+            <h2 className="text-xl font-semibold mb-2">{t("petDocuments.notFoundTitle")}</h2>
+            <p className="text-muted-foreground mb-4">{t("petDocuments.notFoundDesc")}</p>
+            <Button onClick={() => navigate("/member")}>{t("petDocuments.backToDashboard")}</Button>
           </CardContent>
         </Card>
       </div>
@@ -224,8 +226,8 @@ const PetDocuments = () => {
   return (
     <>
       <Helmet>
-        <title>{pet.pet_name}'s Documents | Wooffy</title>
-        <meta name="description" content={`Manage ${pet.pet_name}'s general documents like certificates and registrations.`} />
+        <title>{t("petDocuments.pageTitle", { name: pet.pet_name })}</title>
+        <meta name="description" content={t("petDocuments.metaDescription", { name: pet.pet_name })} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
@@ -235,25 +237,25 @@ const PetDocuments = () => {
           <div className="mb-4">
             <Breadcrumbs
               items={[
-                { label: "Dashboard", href: "/member" },
+                { label: t("petDocuments.dashboard"), href: "/member" },
                 { label: pet.pet_name, href: `/member/pet/${pet.id}` },
-                { label: "Documents" },
+                { label: t("petDocuments.documents") },
               ]}
             />
           </div>
 
           <Button variant="ghost" onClick={() => navigate(`/member/pet/${pet.id}`)} className="mb-6 gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Back to {pet.pet_name}
+            {t("petDocuments.back", { name: pet.pet_name })}
           </Button>
 
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              {pet.pet_name}'s Documents
+              {t("petDocuments.title", { name: pet.pet_name })}
             </h1>
             <Button onClick={() => setShowUploadForm(!showUploadForm)} className="gap-2" size="sm">
               <Plus className="w-4 h-4" />
-              Add
+              {t("petDocuments.add")}
             </Button>
           </div>
 
@@ -261,19 +263,19 @@ const PetDocuments = () => {
           {showUploadForm && (
             <Card className="mb-6 border-primary/20">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base">Upload Document</CardTitle>
+                <CardTitle className="text-base">{t("petDocuments.uploadDocument")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">Document Title</label>
+                  <label className="text-sm font-medium mb-1.5 block">{t("petDocuments.documentTitle")}</label>
                   <Input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g. Birth Certificate, Registration, Passport..."
+                    placeholder={t("petDocuments.titlePlaceholder")}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">File</label>
+                  <label className="text-sm font-medium mb-1.5 block">{t("petDocuments.file")}</label>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -294,7 +296,7 @@ const PetDocuments = () => {
                         }}
                         className="h-6 px-2 text-xs"
                       >
-                        Remove
+                        {t("petDocuments.remove")}
                       </Button>
                     </div>
                   ) : (
@@ -303,8 +305,8 @@ const PetDocuments = () => {
                       className="border-2 border-dashed border-border/50 rounded-lg p-6 text-center cursor-pointer hover:border-primary/50 transition-colors"
                     >
                       <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">Click to select a file</p>
-                      <p className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG, WebP, DOC up to 10MB</p>
+                      <p className="text-sm text-muted-foreground">{t("petDocuments.clickToSelect")}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{t("petDocuments.fileTypesHint")}</p>
                     </div>
                   )}
                 </div>
@@ -318,7 +320,7 @@ const PetDocuments = () => {
                     }}
                     className="flex-1"
                   >
-                    Cancel
+                    {t("petDocuments.cancel")}
                   </Button>
                   <Button
                     onClick={handleUpload}
@@ -328,12 +330,12 @@ const PetDocuments = () => {
                     {isUploading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Uploading...
+                        {t("petDocuments.uploading")}
                       </>
                     ) : (
                       <>
                         <Upload className="w-4 h-4" />
-                        Upload
+                        {t("petDocuments.upload")}
                       </>
                     )}
                   </Button>
@@ -347,14 +349,14 @@ const PetDocuments = () => {
             <Card>
               <CardContent className="py-12 text-center">
                 <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                <h3 className="font-medium text-foreground mb-1">No documents yet</h3>
+                <h3 className="font-medium text-foreground mb-1">{t("petDocuments.noDocsTitle")}</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Upload certificates, registrations, or other important documents for {pet.pet_name}.
+                  {t("petDocuments.noDocsHint", { name: pet.pet_name })}
                 </p>
                 {!showUploadForm && (
                   <Button onClick={() => setShowUploadForm(true)} className="gap-2">
                     <Plus className="w-4 h-4" />
-                    Upload First Document
+                    {t("petDocuments.uploadFirst")}
                   </Button>
                 )}
               </CardContent>
@@ -383,18 +385,18 @@ const PetDocuments = () => {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Document?</AlertDialogTitle>
+                                <AlertDialogTitle>{t("petDocuments.deleteTitle")}</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  This will permanently delete "{doc.title}". This action cannot be undone.
+                                  {t("petDocuments.deleteDesc", { title: doc.title })}
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogCancel>{t("petDocuments.cancel")}</AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => handleDelete(doc)}
                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                 >
-                                  Delete
+                                  {t("petDocuments.delete")}
                                 </AlertDialogAction>
                               </AlertDialogFooter>
                             </AlertDialogContent>
@@ -408,7 +410,7 @@ const PetDocuments = () => {
                             onClick={() => handleView(doc)}
                           >
                             <File className="w-4 h-4" />
-                            View Document
+                            {t("petDocuments.viewDocument")}
                             <ExternalLink className="w-3 h-3" />
                           </Button>
                         </div>
@@ -427,7 +429,7 @@ const PetDocuments = () => {
             <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
               <div className="flex items-center justify-between pr-8">
                 <DialogTitle className="text-lg font-semibold truncate">
-                  {previewDocument?.title} - Document
+                  {previewDocument?.title} - {t("petDocuments.previewSuffix")}
                 </DialogTitle>
                 <div className="flex items-center gap-2">
                   <Button
@@ -437,7 +439,7 @@ const PetDocuments = () => {
                     onClick={() => previewDocument && window.open(previewDocument.url, '_blank')}
                   >
                     <ExternalLink className="w-4 h-4" />
-                    Open in New Tab
+                    {t("petDocuments.openInNewTab")}
                   </Button>
                   <Button
                     variant="outline"
@@ -447,7 +449,7 @@ const PetDocuments = () => {
                   >
                     <a href={previewDocument?.url} download>
                       <Download className="w-4 h-4" />
-                      Download
+                      {t("petDocuments.download")}
                     </a>
                   </Button>
                 </div>
@@ -476,15 +478,15 @@ const PetDocuments = () => {
                 <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
                   <File className="w-16 h-16 text-muted-foreground" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Preview not available</p>
+                    <p className="font-medium text-foreground mb-1">{t("petDocuments.previewNotAvailable")}</p>
                     <p className="text-sm text-muted-foreground">
-                      This file type cannot be previewed. Download the file to view it.
+                      {t("petDocuments.previewNotAvailableHint")}
                     </p>
                   </div>
                   <Button asChild>
                     <a href={previewDocument?.url} download className="gap-2">
                       <Download className="w-4 h-4" />
-                      Download File
+                      {t("petDocuments.downloadFile")}
                     </a>
                   </Button>
                 </div>
