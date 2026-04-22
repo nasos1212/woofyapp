@@ -685,6 +685,18 @@
     "dogs": "Σκύλοι",
     "cats": "Γάτες",
     "allCategories": "Όλες οι Κατηγορίες",
+    "categories": {
+      "health-symptoms": "Υγεία & Συμπτώματα",
+      "behavior-training": "Συμπεριφορά & Εκπαίδευση",
+      "nutrition-diet": "Διατροφή",
+      "grooming-care": "Περιποίηση & Φροντίδα",
+      "puppies-kittens": "Κουτάβια & Γατάκια",
+      "senior-pets": "Ηλικιωμένα Κατοικίδια",
+      "exercise-activities": "Άσκηση & Δραστηριότητες",
+      "products-gear": "Προϊόντα & Εξοπλισμός",
+      "emergency-urgent": "Επείγοντα",
+      "success-stories": "Ιστορίες Επιτυχίας"
+    },
     "searchPlaceholder": "Αναζήτηση ερωτήσεων...",
     "urgency": "Επείγον",
     "allUrgency": "Όλα τα Επίπεδα",
