@@ -348,9 +348,9 @@ const FreeMemberDashboard = () => {
                     <Syringe className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Health Records</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.health")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Track vaccinations & vet visits
+                      {t("freeMember.cards.healthDesc")}
                     </p>
                   </div>
                 </div>
@@ -360,7 +360,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/health-records")}
                     className="border-emerald-300 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-900 gap-2 w-full"
                   >
-                    View Records
+                    {t("freeMember.cards.viewRecords")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -375,9 +375,9 @@ const FreeMemberDashboard = () => {
                     <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.lostFound")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Help reunite pets with families
+                      {t("freeMember.cards.lostFoundDesc")}
                     </p>
                   </div>
                 </div>
@@ -387,7 +387,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/lost-found")}
                     className="border-amber-300 text-amber-700 hover:bg-amber-200 hover:text-amber-900 gap-2 w-full"
                   >
-                    View Alerts
+                    {t("freeMember.cards.viewAlerts")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -402,9 +402,9 @@ const FreeMemberDashboard = () => {
                     <MapPin className="w-5 h-5 text-teal-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.places")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Discover where pets are welcome
+                      {t("freeMember.cards.placesDesc")}
                     </p>
                   </div>
                 </div>
@@ -414,7 +414,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/pet-friendly-places")}
                     className="border-teal-300 text-teal-700 hover:bg-teal-200 hover:text-teal-900 gap-2 w-full"
                   >
-                    Explore Places
+                    {t("freeMember.cards.explorePlaces")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -429,9 +429,9 @@ const FreeMemberDashboard = () => {
                     <Heart className="w-5 h-5 text-rose-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Pet Shelters</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.shelters")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Support local pet shelters
+                      {t("freeMember.cards.sheltersDesc")}
                     </p>
                   </div>
                 </div>
@@ -441,7 +441,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/shelters")}
                     className="border-rose-300 text-rose-700 hover:bg-rose-200 hover:text-rose-900 gap-2 w-full"
                   >
-                    View Shelters
+                    {t("freeMember.cards.viewShelters")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -456,9 +456,9 @@ const FreeMemberDashboard = () => {
                     <Gift className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Browse Offers</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.browseOffers")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Preview exclusive member deals
+                      {t("freeMember.cards.browseOffersDesc")}
                     </p>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/offers")}
                     className="border-purple-300 text-purple-700 hover:bg-purple-200 hover:text-purple-900 gap-2 w-full"
                   >
-                    View Offers
+                    {t("freeMember.cards.viewOffers")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -483,9 +483,9 @@ const FreeMemberDashboard = () => {
                     <Building2 className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Our Partners</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.partners")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Browse partner businesses
+                      {t("freeMember.cards.partnersDesc")}
                     </p>
                   </div>
                 </div>
@@ -495,7 +495,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/partners")}
                     className="border-sky-300 text-sky-700 hover:bg-sky-200 hover:text-sky-900 gap-2 w-full"
                   >
-                    View Partners
+                    {t("freeMember.cards.viewPartners")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
