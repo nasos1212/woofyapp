@@ -477,7 +477,7 @@ const CommunityQuestion = () => {
                 )}
                 {question.category && (
                   <Badge variant="secondary">
-                    {question.category.icon} {question.category.name}
+                    {question.category.icon} {t(`community.categories.${question.category.slug}`, question.category.name)}
                   </Badge>
                 )}
                 {question.breed_tags?.map(tag => (

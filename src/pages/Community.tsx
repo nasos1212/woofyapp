@@ -338,7 +338,7 @@ const Community = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className="shrink-0"
               >
-                {cat.icon} {cat.name}
+                {cat.icon} {t(`community.categories.${cat.slug}`, cat.name)}
               </Button>
             ))}
           </div>
