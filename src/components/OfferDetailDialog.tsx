@@ -56,6 +56,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
   const navigate = useNavigate();
   const { trackOfferClick } = useAnalyticsTracking();
   const { t, i18n } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   
   // Track offer click when dialog opens
   useEffect(() => {
