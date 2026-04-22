@@ -52,6 +52,7 @@ import {
 import { dogBreeds } from '@/data/dogBreeds';
 import { catBreeds } from '@/data/catBreeds';
 import { cn } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface Pet {
   id: string;
@@ -63,6 +64,7 @@ const CommunityAsk = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { fetchCategories, createQuestion, loading: submitting } = useCommunity();
+  const { t } = useTranslation();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
@@ -135,13 +137,13 @@ const CommunityAsk = () => {
     for (const file of files) {
       const validation = validateImageFile(file);
       if (!validation.valid) {
-        toast.error(validation.error || 'Invalid file');
+        toast.error(validation.error || t('community.ask.invalidFile'));
         return;
       }
     }
     
     if (photos.length + files.length > 5) {
-      toast.error('Maximum 5 photos allowed');
+      toast.error(t('community.ask.maxPhotos'));
       return;
     }
 
@@ -218,8 +220,8 @@ const CommunityAsk = () => {
   return (
     <>
       <Helmet>
-        <title>Ask the Community | Wooffy</title>
-        <meta name="description" content="Ask a question to the Wooffy community of pet owners." />
+        <title>{t('community.ask.pageTitle')}</title>
+        <meta name="description" content={t('community.ask.metaDescription')} />
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
@@ -233,21 +235,21 @@ const CommunityAsk = () => {
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Community
+            {t('community.ask.backToCommunity')}
           </Button>
 
           <Card className="mt-2">
             <CardHeader>
-              <CardTitle className="text-2xl">Ask the Community</CardTitle>
+              <CardTitle className="text-2xl">{t('community.ask.title')}</CardTitle>
               <CardDescription>
-                Get help from fellow pet owners and verified professionals
+                {t('community.ask.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Animal Type Selection */}
                 <div className="space-y-2">
-                  <Label>Is this about a dog or a cat? *</Label>
+                  <Label>{t('community.ask.animalQuestion')}</Label>
                   <div className="grid grid-cols-2 gap-3">
                     <Button
                       type="button"
@@ -262,7 +264,7 @@ const CommunityAsk = () => {
                       }}
                     >
                       <Dog className="w-6 h-6" />
-                      <span className="font-medium">Dog</span>
+                      <span className="font-medium">{t('community.ask.dog')}</span>
                     </Button>
                     <Button
                       type="button"
@@ -277,17 +279,17 @@ const CommunityAsk = () => {
                       }}
                     >
                       <Cat className="w-6 h-6" />
-                      <span className="font-medium">Cat</span>
+                      <span className="font-medium">{t('community.ask.cat')}</span>
                     </Button>
                   </div>
                 </div>
 
                 {/* Category Selection */}
                 <div className="space-y-2">
-                  <Label htmlFor="category">Category *</Label>
+                  <Label htmlFor="category">{t('community.ask.category')}</Label>
                   <Select value={categoryId} onValueChange={setCategoryId}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('community.ask.selectCategory')} />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map(cat => (
@@ -301,25 +303,25 @@ const CommunityAsk = () => {
 
                 {/* Title */}
                 <div className="space-y-2">
-                  <Label htmlFor="title">Question Title *</Label>
+                  <Label htmlFor="title">{t('community.ask.questionTitle')}</Label>
                   <Input
                     id="title"
-                    placeholder="E.g., My dog has swollen paws - what could it be?"
+                    placeholder={t('community.ask.titlePlaceholder')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={150}
                   />
                   <p className="text-xs text-muted-foreground">
-                    {title.length}/150 characters
+                    {t('community.ask.characters', { count: title.length })}
                   </p>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-2">
-                  <Label htmlFor="content">Details *</Label>
+                  <Label htmlFor="content">{t('community.ask.details')}</Label>
                   <Textarea
                     id="content"
-                    placeholder="Describe your question in detail. Include when the issue started, any symptoms, what you've tried, etc."
+                    placeholder={t('community.ask.detailsPlaceholder')}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="min-h-[150px]"
@@ -328,7 +330,7 @@ const CommunityAsk = () => {
 
                 {/* Urgency */}
                 <div className="space-y-2">
-                  <Label>How urgent is this?</Label>
+                  <Label>{t('community.ask.urgencyLabel')}</Label>
                   <div className="grid grid-cols-3 gap-2 sm:gap-3">
                     <Button
                       type="button"
@@ -341,7 +343,7 @@ const CommunityAsk = () => {
                       onClick={() => setUrgency('general')}
                     >
                       <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-                      <span className="text-[10px] sm:text-xs font-medium">General</span>
+                      <span className="text-[10px] sm:text-xs font-medium">{t('community.ask.general')}</span>
                     </Button>
                     <Button
                       type="button"
@@ -354,7 +356,7 @@ const CommunityAsk = () => {
                       onClick={() => setUrgency('concerned')}
                     >
                       <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-                      <span className="text-[10px] sm:text-xs font-medium">Concerned</span>
+                      <span className="text-[10px] sm:text-xs font-medium">{t('community.ask.concerned')}</span>
                     </Button>
                     <Button
                       type="button"
@@ -370,7 +372,7 @@ const CommunityAsk = () => {
                       }}
                     >
                       <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-                      <span className="text-[10px] sm:text-xs font-medium">Urgent</span>
+                      <span className="text-[10px] sm:text-xs font-medium">{t('community.ask.urgent')}</span>
                     </Button>
                   </div>
                   {urgency === 'urgent' && (
@@ -378,8 +380,7 @@ const CommunityAsk = () => {
                       <p className="text-sm text-red-800 dark:text-red-200 flex items-start gap-2">
                         <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
                         <span>
-                          <strong>For emergencies:</strong> Please contact your veterinarian immediately. 
-                          Community advice cannot replace professional medical care.
+                          <strong>{t('community.ask.emergencyWarning')}</strong> {t('community.ask.emergencyText')}
                         </span>
                       </p>
                     </div>
@@ -389,7 +390,7 @@ const CommunityAsk = () => {
                 {/* Pet Selection */}
                 {pets.length > 0 && (
                   <div className="space-y-2">
-                    <Label>Link to your pet (optional)</Label>
+                    <Label>{t('community.ask.linkPet')}</Label>
                     <Select 
                       value={selectedPetId} 
                       onValueChange={(val) => {
@@ -406,10 +407,10 @@ const CommunityAsk = () => {
                       }}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a pet" />
+                        <SelectValue placeholder={t('community.ask.selectPet')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">No pet selected</SelectItem>
+                        <SelectItem value="none">{t('community.ask.noPet')}</SelectItem>
                         {pets.map(pet => (
                           <SelectItem key={pet.id} value={pet.id}>
                             <span className="flex items-center gap-2">
@@ -426,9 +427,9 @@ const CommunityAsk = () => {
 
                 {/* Photos */}
                 <div className="space-y-2">
-                  <Label>Photos (optional)</Label>
+                  <Label>{t('community.ask.photosLabel')}</Label>
                   <p className="text-xs text-muted-foreground">
-                    Add up to 5 photos to help the community understand your question better
+                    {t('community.ask.photosHint')}
                   </p>
                   
                   <div className="flex flex-wrap gap-3">
@@ -452,7 +453,7 @@ const CommunityAsk = () => {
                     {photos.length < 5 && (
                       <label className="w-24 h-24 border-2 border-dashed border-muted-foreground/25 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
                         <ImagePlus className="w-6 h-6 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground mt-1">Add Photo</span>
+                        <span className="text-xs text-muted-foreground mt-1">{t('community.ask.addPhoto')}</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -470,9 +471,9 @@ const CommunityAsk = () => {
                   <div className="flex items-center gap-3 mb-3">
                     <EyeOff className="w-5 h-5 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">Show your name on this post?</p>
+                      <p className="font-medium">{t('community.ask.anonymousQuestion')}</p>
                       <p className="text-sm text-muted-foreground">
-                        Choose whether others can see who posted this
+                        {t('community.ask.anonymousHint')}
                       </p>
                     </div>
                   </div>
@@ -484,7 +485,7 @@ const CommunityAsk = () => {
                       onClick={() => setIsAnonymous(false)}
                       className="flex-1"
                     >
-                      Yes, show my name
+                      {t('community.ask.showName')}
                     </Button>
                     <Button
                       type="button"
@@ -493,7 +494,7 @@ const CommunityAsk = () => {
                       onClick={() => setIsAnonymous(true)}
                       className="flex-1"
                     >
-                      No, post anonymously
+                      {t('community.ask.postAnon')}
                     </Button>
                   </div>
                 </div>
@@ -502,13 +503,13 @@ const CommunityAsk = () => {
                 <div className="p-4 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
                   <h4 className="font-medium flex items-center gap-2 mb-2 text-blue-800 dark:text-blue-200">
                     <Info className="w-4 h-4" />
-                    Tips for getting helpful answers
+                    {t('community.ask.tipsTitle')}
                   </h4>
                   <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
-                    <li>Be specific about when the issue started</li>
-                    <li>Include your pet's age, breed, and any relevant health history</li>
-                    <li>Describe what you've already tried</li>
-                    <li>Add photos if they help illustrate the problem</li>
+                    <li>{t('community.ask.tip1')}</li>
+                    <li>{t('community.ask.tip2')}</li>
+                    <li>{t('community.ask.tip3')}</li>
+                    <li>{t('community.ask.tip4')}</li>
                   </ul>
                 </div>
 
@@ -519,7 +520,7 @@ const CommunityAsk = () => {
                     variant="outline"
                     onClick={() => navigate('/community')}
                   >
-                    Cancel
+                    {t('community.ask.cancel')}
                   </Button>
                   <Button
                     type="submit"
@@ -527,11 +528,11 @@ const CommunityAsk = () => {
                     className="flex-1"
                   >
                     {submitting ? (
-                      <>Posting...</>
+                      <>{t('community.ask.posting')}</>
                     ) : (
                       <>
                         <Send className="w-4 h-4 mr-2" />
-                        Post Question
+                        {t('community.ask.post')}
                       </>
                     )}
                   </Button>
