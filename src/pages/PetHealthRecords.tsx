@@ -408,7 +408,7 @@ const PetHealthRecords = () => {
       fetchRecords();
     } catch (error) {
       console.error("Error adding record:", error);
-      toast.error("Failed to add record");
+      toast.error(t("petHealth.toasts.addFailed"));
     } finally {
       setIsAdding(false);
     }
@@ -442,7 +442,7 @@ const PetHealthRecords = () => {
       });
     } catch (err) {
       console.error("Error accessing document:", err);
-      toast.error("Failed to access document");
+      toast.error(t("petHealth.toasts.accessFailed"));
     } finally {
       setIsLoadingPreview(false);
     }
@@ -477,20 +477,20 @@ const PetHealthRecords = () => {
       if (error) throw error;
 
       if (isOneTime) {
-        toast.success(`${selectedPet.pet_name}'s one-time treatment completed!`);
+        toast.success(t("petHealth.toasts.oneTimeDone", { name: selectedPet.pet_name }));
       } else {
-        const intervalLabel = record.reminder_interval_type === 'monthly' ? '1 month' :
-          record.reminder_interval_type === 'quarterly' ? '3 months' :
-          record.reminder_interval_type === 'biannually' ? '6 months' :
-          record.reminder_interval_type === 'yearly' ? '1 year' :
-          `${intervalDays} days`;
-        toast.success(`Marked as done! Next due in ${intervalLabel}.`);
+        const intervalLabel = record.reminder_interval_type === 'monthly' ? t("petHealth.intervals.oneMonth") :
+          record.reminder_interval_type === 'quarterly' ? t("petHealth.intervals.threeMonths") :
+          record.reminder_interval_type === 'biannually' ? t("petHealth.intervals.sixMonths") :
+          record.reminder_interval_type === 'yearly' ? t("petHealth.intervals.oneYear") :
+          t("petHealth.intervals.daysSuffix", { days: intervalDays });
+        toast.success(t("petHealth.toasts.doneNext", { interval: intervalLabel }));
       }
 
       fetchRecords();
     } catch (error) {
       console.error("Error updating record:", error);
-      toast.error("Failed to update record");
+      toast.error(t("petHealth.toasts.updateFailed"));
     }
   };
 
@@ -502,11 +502,11 @@ const PetHealthRecords = () => {
         .eq("id", recordId);
 
       if (error) throw error;
-      toast.success("Record deleted");
+      toast.success(t("petHealth.toasts.deleted"));
       fetchRecords();
     } catch (error) {
       console.error("Error deleting record:", error);
-      toast.error("Failed to delete record");
+      toast.error(t("petHealth.toasts.deleteFailed"));
     }
   };
 
