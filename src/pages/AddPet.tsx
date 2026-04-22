@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 import { useNavigate, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -24,6 +25,7 @@ import Header from "@/components/Header";
 import { validateImageFile } from "@/lib/fileValidation";
 
 const AddPet = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { hasMembership, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
@@ -80,7 +82,7 @@ const AddPet = () => {
           .maybeSingle();
 
         if (!membershipData) {
-          toast.error("No membership found");
+          toast.error(t("addPet.errors.noMembership"));
           navigate("/member");
           return;
         }
@@ -98,16 +100,16 @@ const AddPet = () => {
         // Check if at max pets
         if ((count || 0) >= membershipData.max_pets) {
           if (membershipData.max_pets >= 5) {
-            toast.error("You've reached the maximum of 5 pets allowed.");
+            toast.error(t("addPet.errors.maxFivePets"));
           } else {
-            toast.error("You've reached your pet limit. Upgrade your plan to add more pets!");
+            toast.error(t("addPet.errors.petLimit"));
           }
           navigate("/member");
           return;
         }
       } catch (error) {
         console.error("Error checking membership:", error);
-        toast.error("Something went wrong");
+        toast.error(t("addPet.errors.generic"));
         navigate("/member");
       } finally {
         setIsLoading(false);
@@ -180,12 +182,12 @@ const AddPet = () => {
     if (!user || !membership) return;
 
     if (!petName.trim()) {
-      toast.error("Please enter a pet name");
+      toast.error(t("addPet.errors.noName"));
       return;
     }
 
     if (knowsBirthday && petBirthday && petBirthday > new Date().toISOString().split('T')[0]) {
-      toast.error("Birthday cannot be a future date");
+      toast.error(t("addPet.errors.futureDate"));
       return;
     }
 
@@ -220,11 +222,11 @@ const AddPet = () => {
         setIsUploadingPhoto(false);
       }
 
-      toast.success(`${petName} has been added! 🐾`);
+      toast.success(t("addPet.success", { name: petName }));
       navigate(-1);
     } catch (error: any) {
       console.error("Error adding pet:", error);
-      toast.error(error.message || "Failed to add pet");
+      toast.error(error.message || t("addPet.errors.addFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -259,7 +261,7 @@ const AddPet = () => {
   return (
     <>
       <Helmet>
-        <title>Add a Pet | Wooffy</title>
+        <title>{t("addPet.pageTitle")}</title>
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-paw-cream via-background to-paw-cream/50">
@@ -267,7 +269,7 @@ const AddPet = () => {
         <div className="container max-w-xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            {t("addPet.back")}
           </Button>
 
           <div className="text-center mb-8">
@@ -279,10 +281,10 @@ const AddPet = () => {
               )}
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-2">
-              Add a New Pet
+              {t("addPet.title")}
             </h1>
             <p className="text-muted-foreground">
-              You can add up to 5 pets
+              {t("addPet.subtitle")}
             </p>
           </div>
 
@@ -290,14 +292,14 @@ const AddPet = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <span className="text-2xl">{getPetTypeEmoji(petType)}</span>
-                Pet Details
+                {t("addPet.details")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Profile Photo */}
                 <div className="space-y-2">
-                  <Label>Profile Photo (optional)</Label>
+                  <Label>{t("addPet.photo")}</Label>
                   <div className="flex items-center gap-4">
                     <div className="relative">
                       <div 
@@ -312,7 +314,7 @@ const AddPet = () => {
                         ) : (
                           <div className="text-center">
                             <Camera className="w-8 h-8 text-muted-foreground mx-auto" />
-                            <span className="text-xs text-muted-foreground">Add photo</span>
+                            <span className="text-xs text-muted-foreground">{t("addPet.addPhoto")}</span>
                           </div>
                         )}
                       </div>
@@ -330,8 +332,8 @@ const AddPet = () => {
                       )}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      <p>Click to upload a photo of your pet</p>
-                      <p className="text-xs">JPG, PNG or WebP. Max 5MB.</p>
+                      <p>{t("addPet.photoHelp")}</p>
+                      <p className="text-xs">{t("addPet.photoSpecs")}</p>
                     </div>
                     <input
                       ref={fileInputRef}
@@ -345,11 +347,11 @@ const AddPet = () => {
 
                 {/* Pet Type Selection */}
                 <div className="space-y-2">
-                  <Label>Pet Type</Label>
+                  <Label>{t("addPet.petType")}</Label>
                   <div className="flex gap-2">
                     {[
-                      { value: "dog" as PetType, label: "🐕 Dog", icon: Dog },
-                      { value: "cat" as PetType, label: "🐱 Cat", icon: Cat },
+                      { value: "dog" as PetType, label: t("addPet.dog"), icon: Dog },
+                      { value: "cat" as PetType, label: t("addPet.cat"), icon: Cat },
                     ].map((option) => (
                       <button
                         key={option.value}
@@ -363,17 +365,17 @@ const AddPet = () => {
                         )}
                       >
                         <option.icon className="w-5 h-5" />
-                        {option.value === "dog" ? "Dog" : "Cat"}
+                        {option.label}
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pet-name">Pet Name *</Label>
+                  <Label htmlFor="pet-name">{t("addPet.petName")}</Label>
                   <Input
                     id="pet-name"
-                    placeholder="e.g., Max, Bella, Charlie..."
+                    placeholder={t("addPet.petNamePlaceholder")}
                     value={petName}
                     onChange={(e) => setPetName(e.target.value)}
                     autoFocus
@@ -381,7 +383,7 @@ const AddPet = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pet-breed">Breed (optional)</Label>
+                  <Label htmlFor="pet-breed">{t("addPet.breed")}</Label>
                   <Popover open={breedPopoverOpen} onOpenChange={setBreedPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
@@ -392,14 +394,14 @@ const AddPet = () => {
                           !petBreed && "text-muted-foreground"
                         )}
                       >
-                        {petBreed || "Select or type breed..."}
+                        {petBreed || t("addPet.selectBreed")}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-full p-0 bg-background z-50" align="start">
                       <Command>
                         <CommandInput
-                          placeholder="Search or type breed..."
+                          placeholder={t("addPet.searchBreed")}
                           onValueChange={(value) => {
                             if (value && !breeds.includes(value)) {
                               setPetBreed(value);
@@ -409,7 +411,7 @@ const AddPet = () => {
                         <CommandList>
                           <CommandEmpty>
                             <span className="text-sm text-muted-foreground">
-                              No breed found. Your input will be used.
+                              {t("addPet.noBreed")}
                             </span>
                           </CommandEmpty>
                           <CommandGroup className="max-h-[200px] overflow-auto">
@@ -440,11 +442,11 @@ const AddPet = () => {
 
                 {/* Gender Selection */}
                 <div className="space-y-2">
-                  <Label>Gender</Label>
+                  <Label>{t("addPet.gender")}</Label>
                   <div className="flex gap-2">
                     {[
-                      { value: "male" as const, label: "♂ Male", color: "bg-blue-100 border-blue-300 text-blue-700" },
-                      { value: "female" as const, label: "♀ Female", color: "bg-pink-100 border-pink-300 text-pink-700" },
+                      { value: "male" as const, label: t("addPet.male"), color: "bg-blue-100 border-blue-300 text-blue-700" },
+                      { value: "female" as const, label: t("addPet.female"), color: "bg-pink-100 border-pink-300 text-pink-700" },
                     ].map((option) => (
                       <button
                         key={option.value}
@@ -466,7 +468,7 @@ const AddPet = () => {
                 {/* Birthday / Age Section */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <Label>Birthday / Age</Label>
+                    <Label>{t("addPet.birthdayAge")}</Label>
                   </div>
                   
                   <div className="flex gap-2 mb-3">
@@ -480,7 +482,7 @@ const AddPet = () => {
                           : "bg-background border-border hover:border-primary/50"
                       )}
                     >
-                      I know the birthday
+                      {t("addPet.knowBirthday")}
                     </button>
                     <button
                       type="button"
@@ -492,7 +494,7 @@ const AddPet = () => {
                           : "bg-background border-border hover:border-primary/50"
                       )}
                     >
-                      I know approximate age
+                      {t("addPet.knowAge")}
                     </button>
                   </div>
 
@@ -508,7 +510,7 @@ const AddPet = () => {
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {petBirthday ? format(new Date(petBirthday + "T00:00:00"), "PPP") : <span>Pick a date</span>}
+                            {petBirthday ? format(new Date(petBirthday + "T00:00:00"), "PPP") : <span>{t("addPet.pickDate")}</span>}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -528,7 +530,7 @@ const AddPet = () => {
                           />
                         </PopoverContent>
                       </Popover>
-                      <p className="text-xs text-muted-foreground">Select your pet's date of birth (within last 25 years)</p>
+                      <p className="text-xs text-muted-foreground">{t("addPet.birthdayHelp")}</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
@@ -544,12 +546,12 @@ const AddPet = () => {
                               setPetAgeYears(value);
                             }
                           }}
-                          placeholder="e.g., 3"
+                          placeholder={t("addPet.ageExample")}
                           className="w-24"
                         />
-                        <span className="text-muted-foreground">years old</span>
+                        <span className="text-muted-foreground">{t("addPet.yearsOld")}</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Enter approximate age in years (max 25)</p>
+                      <p className="text-xs text-muted-foreground">{t("addPet.ageHelp")}</p>
                     </div>
                   )}
                 </div>
@@ -562,10 +564,10 @@ const AddPet = () => {
                   disabled={isSubmitting || isUploadingPhoto || !petName.trim()}
                 >
                   {isSubmitting || isUploadingPhoto ? (
-                    isUploadingPhoto ? "Uploading photo..." : "Adding..."
+                    isUploadingPhoto ? t("addPet.uploading") : t("addPet.adding")
                   ) : (
                     <>
-                      Add Pet
+                      {t("addPet.addPet")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}
