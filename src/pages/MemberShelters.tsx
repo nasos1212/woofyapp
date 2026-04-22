@@ -180,7 +180,7 @@ const MemberShelters = () => {
                       
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                         <MapPin className="w-3.5 h-3.5" />
-                        <span>{shelter.city || shelter.location}</span>
+                        <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                       </div>
 
                       {shelter.description && (
@@ -192,7 +192,7 @@ const MemberShelters = () => {
                       <div className="flex items-center justify-between pt-3 border-t">
                         {shelter.dogs_in_care && (
                           <div className="text-xs text-muted-foreground">
-                            <span className="font-medium text-primary">{shelter.dogs_in_care}</span> dogs in care
+                            <span className="font-medium text-primary">{shelter.dogs_in_care}</span> {t("shelters.dogsInCare")}
                           </div>
                         )}
                         {shelter.website && (
@@ -206,7 +206,7 @@ const MemberShelters = () => {
                             }}
                           >
                             <Globe className="w-3 h-3" />
-                            Website
+                            {t("shelters.website")}
                           </Button>
                         )}
                       </div>
@@ -221,9 +221,9 @@ const MemberShelters = () => {
           <Card className="mt-8 bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50">
             <CardContent className="p-6 text-center">
               <Heart className="w-10 h-10 mx-auto text-rose-500 mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Want to help even more?</h3>
+              <h3 className="font-semibold text-foreground mb-2">{t("shelters.ctaTitle")}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Visit any shelter's page to find their donation link and support them directly.
+                {t("shelters.ctaDesc")}
               </p>
             </CardContent>
           </Card>
