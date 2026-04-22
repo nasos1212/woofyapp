@@ -557,7 +557,7 @@ const PetHealthRecords = () => {
     if (!user || !editingRecord) return;
 
     if (!title) {
-      toast.error("Please enter a title");
+      toast.error(t("petHealth.toasts.enterTitle"));
       return;
     }
 
@@ -598,7 +598,7 @@ const PetHealthRecords = () => {
           existingPaths = [...existingPaths, ...uploadedPaths];
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
-          toast.error("Failed to upload new document");
+          toast.error(t("petHealth.toasts.newUploadFailed"));
         } finally {
           setIsUploading(false);
         }
@@ -626,13 +626,13 @@ const PetHealthRecords = () => {
 
       if (error) throw error;
 
-      toast.success("Health record updated!");
+      toast.success(t("petHealth.toasts.updated"));
       setShowAddDialog(false);
       resetForm();
       fetchRecords();
     } catch (error) {
       console.error("Error updating record:", error);
-      toast.error("Failed to update record");
+      toast.error(t("petHealth.toasts.updateFailed"));
     } finally {
       setIsAdding(false);
     }
@@ -684,24 +684,24 @@ const PetHealthRecords = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'overdue':
-        return <Badge variant="destructive" className="gap-1"><AlertCircle className="w-3 h-3" />Overdue</Badge>;
+        return <Badge variant="destructive" className="gap-1"><AlertCircle className="w-3 h-3" />{t("petHealth.status.overdue")}</Badge>;
       case 'due-today':
-        return <Badge className="gap-1 bg-amber-500"><BellRing className="w-3 h-3" />Due Today</Badge>;
+        return <Badge className="gap-1 bg-amber-500"><BellRing className="w-3 h-3" />{t("petHealth.status.dueToday")}</Badge>;
       case 'due-soon':
-        return <Badge className="gap-1 bg-orange-500"><Clock className="w-3 h-3" />Due Soon</Badge>;
+        return <Badge className="gap-1 bg-orange-500"><Clock className="w-3 h-3" />{t("petHealth.status.dueSoon")}</Badge>;
       default:
-        return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />Upcoming</Badge>;
+        return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />{t("petHealth.status.upcoming")}</Badge>;
     }
   };
 
   const getIntervalLabel = (type: string | null, days: number | null) => {
-    if (type === 'once') return 'One-time';
-    if (type === 'daily') return 'Daily';
-    if (type === 'monthly') return 'Monthly';
-    if (type === 'quarterly') return 'Every 3 mo';
-    if (type === 'biannually') return 'Every 6 mo';
-    if (type === 'yearly') return 'Yearly';
-    if (type === 'custom' && days) return `Every ${days} days`;
+    if (type === 'once') return t("petHealth.intervals.shortOnce");
+    if (type === 'daily') return t("petHealth.intervals.shortDaily");
+    if (type === 'monthly') return t("petHealth.intervals.shortMonthly");
+    if (type === 'quarterly') return t("petHealth.intervals.shortQuarterly");
+    if (type === 'biannually') return t("petHealth.intervals.shortBiannually");
+    if (type === 'yearly') return t("petHealth.intervals.shortYearly");
+    if (type === 'custom' && days) return t("petHealth.intervals.shortCustom", { days });
     return '';
   };
 
@@ -716,8 +716,8 @@ const PetHealthRecords = () => {
   return (
     <>
       <Helmet>
-        <title>Pet Health Records | Wooffy</title>
-        <meta name="description" content="Track vaccinations, medications, vet visits, and health reminders for your pets." />
+        <title>{t("petHealth.pageTitle")}</title>
+        <meta name="description" content={t("petHealth.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
