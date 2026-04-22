@@ -39,19 +39,7 @@ import {
   Cat
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-
-const urgencyConfig = {
-  general: { icon: HelpCircle, color: 'bg-green-500', label: 'General' },
-  concerned: { icon: AlertTriangle, color: 'bg-yellow-500', label: 'Concerned' },
-  urgent: { icon: AlertCircle, color: 'bg-red-500', label: 'Urgent' }
-};
-
-const statusConfig = {
-  open: { color: 'bg-blue-500', label: 'Open' },
-  answered: { color: 'bg-purple-500', label: 'Answered' },
-  resolved: { color: 'bg-green-500', label: 'Resolved' },
-  closed: { color: 'bg-gray-500', label: 'Closed' }
-};
+import { useTranslation } from 'react-i18next';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -59,6 +47,20 @@ const Community = () => {
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
+  const { t } = useTranslation();
+
+  const urgencyConfig = {
+    general: { icon: HelpCircle, color: 'bg-green-500', label: t('community.general') },
+    concerned: { icon: AlertTriangle, color: 'bg-yellow-500', label: t('community.concerned') },
+    urgent: { icon: AlertCircle, color: 'bg-red-500', label: t('community.urgent') }
+  };
+
+  const statusConfig = {
+    open: { color: 'bg-blue-500', label: t('community.open') },
+    answered: { color: 'bg-purple-500', label: t('community.answered') },
+    resolved: { color: 'bg-green-500', label: t('community.resolved') },
+    closed: { color: 'bg-gray-500', label: t('community.closed') }
+  };
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -223,7 +225,7 @@ const Community = () => {
                   </span>
                   <span className="flex items-center gap-1 hidden sm:flex">
                     <CheckCircle2 className="w-4 h-4" />
-                    {question.helped_count} helped
+                    {question.helped_count} {t('community.helped')}
                   </span>
                   <span className="hidden xs:inline">
                     {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
@@ -251,8 +253,8 @@ const Community = () => {
   return (
     <>
       <Helmet>
-        <title>Community Hub | Wooffy</title>
-        <meta name="description" content="Connect with fellow pet owners, ask questions, and share experiences in the Wooffy community." />
+        <title>{t('community.pageTitle')}</title>
+        <meta name="description" content={t('community.metaDescription')} />
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
@@ -265,7 +267,7 @@ const Community = () => {
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t('community.backToDashboard')}
           </Button>
 
           {/* Header */}
@@ -273,10 +275,10 @@ const Community = () => {
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
                 <Users className="w-8 h-8 text-primary" />
-                Community Hub
+                {t('community.title')}
               </h1>
             <p className="text-muted-foreground mt-1">
-              Ask questions, share experiences, and help fellow pet owners
+              {t('community.subtitle')}
             </p>
             </div>
             <Button 
@@ -284,7 +286,7 @@ const Community = () => {
               className="bg-primary hover:bg-primary/90"
             >
               <MessageSquarePlus className="w-4 h-4 mr-2" />
-              Ask a Question
+              {t('community.askQuestion')}
             </Button>
           </div>
 
@@ -296,7 +298,7 @@ const Community = () => {
               onClick={() => setSelectedAnimalType('all')}
               className="gap-2"
             >
-              🐾 All Pets
+              🐾 {t('community.allPets')}
             </Button>
             <Button
               variant={selectedAnimalType === 'dog' ? 'default' : 'outline'}
@@ -305,7 +307,7 @@ const Community = () => {
               className="gap-2"
             >
               <Dog className="w-4 h-4" />
-              Dogs
+              {t('community.dogs')}
             </Button>
             <Button
               variant={selectedAnimalType === 'cat' ? 'default' : 'outline'}
@@ -314,7 +316,7 @@ const Community = () => {
               className="gap-2"
             >
               <Cat className="w-4 h-4" />
-              Cats
+              {t('community.cats')}
             </Button>
           </div>
 
@@ -326,7 +328,7 @@ const Community = () => {
               onClick={() => setSelectedCategory('all')}
               className="shrink-0"
             >
-              All Categories
+              {t('community.allCategories')}
             </Button>
             {categories.map(cat => (
               <Button
@@ -346,7 +348,7 @@ const Community = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
-                placeholder="Search questions..."
+                placeholder={t('community.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -356,13 +358,13 @@ const Community = () => {
               <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
                 <SelectTrigger className="w-full sm:w-40">
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Urgency" />
+                  <SelectValue placeholder={t('community.urgency')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Urgency</SelectItem>
-                  <SelectItem value="general">🟢 General</SelectItem>
-                  <SelectItem value="concerned">🟡 Concerned</SelectItem>
-                  <SelectItem value="urgent">🔴 Urgent</SelectItem>
+                  <SelectItem value="all">{t('community.allUrgency')}</SelectItem>
+                  <SelectItem value="general">🟢 {t('community.general')}</SelectItem>
+                  <SelectItem value="concerned">🟡 {t('community.concerned')}</SelectItem>
+                  <SelectItem value="urgent">🔴 {t('community.urgent')}</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={sortBy} onValueChange={(v) => setSortBy(v as any)}>
@@ -372,17 +374,17 @@ const Community = () => {
                 <SelectContent>
                   <SelectItem value="recent">
                     <span className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" /> Most Recent
+                      <Clock className="w-4 h-4" /> {t('community.mostRecent')}
                     </span>
                   </SelectItem>
                   <SelectItem value="popular">
                     <span className="flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4" /> Most Popular
+                      <TrendingUp className="w-4 h-4" /> {t('community.mostPopular')}
                     </span>
                   </SelectItem>
                   <SelectItem value="unanswered">
                     <span className="flex items-center gap-2">
-                      <HelpCircle className="w-4 h-4" /> Unanswered
+                      <HelpCircle className="w-4 h-4" /> {t('community.unanswered')}
                     </span>
                   </SelectItem>
                 </SelectContent>
@@ -395,9 +397,9 @@ const Community = () => {
             <div className="lg:col-span-3 order-2 lg:order-1">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-4 w-full sm:w-auto flex">
-                  <TabsTrigger value="all" className="flex-1 sm:flex-none text-xs sm:text-sm">All</TabsTrigger>
-                  <TabsTrigger value="my" className="flex-1 sm:flex-none text-xs sm:text-sm">My Questions</TabsTrigger>
-                  <TabsTrigger value="saved" className="flex-1 sm:flex-none text-xs sm:text-sm">Saved</TabsTrigger>
+                  <TabsTrigger value="all" className="flex-1 sm:flex-none text-xs sm:text-sm">{t('community.tabs.all')}</TabsTrigger>
+                  <TabsTrigger value="my" className="flex-1 sm:flex-none text-xs sm:text-sm">{t('community.tabs.my')}</TabsTrigger>
+                  <TabsTrigger value="saved" className="flex-1 sm:flex-none text-xs sm:text-sm">{t('community.tabs.saved')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="all" className="space-y-4">
@@ -406,12 +408,12 @@ const Community = () => {
                   ) : (
                     <Card className="p-8 text-center">
                       <MessageCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="font-semibold mb-2">No questions found</h3>
+                      <h3 className="font-semibold mb-2">{t('community.noQuestions')}</h3>
                       <p className="text-muted-foreground mb-4">
-                        Be the first to ask a question in this category!
+                        {t('community.beFirst')}
                       </p>
                       <Button onClick={() => navigate('/community/ask')}>
-                        Ask a Question
+                        {t('community.askQuestion')}
                       </Button>
                     </Card>
                   )}
@@ -425,9 +427,9 @@ const Community = () => {
                   ) : (
                     <Card className="p-8 text-center">
                       <HelpCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="font-semibold mb-2">You haven't asked any questions yet</h3>
+                      <h3 className="font-semibold mb-2">{t('community.noOwnQuestions')}</h3>
                       <Button onClick={() => navigate('/community/ask')}>
-                        Ask Your First Question
+                        {t('community.askFirstQuestion')}
                       </Button>
                     </Card>
                   )}
@@ -441,9 +443,9 @@ const Community = () => {
                   ) : (
                     <Card className="p-8 text-center">
                       <Bookmark className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="font-semibold mb-2">No saved questions</h3>
+                      <h3 className="font-semibold mb-2">{t('community.noSaved')}</h3>
                       <p className="text-muted-foreground">
-                        Click the bookmark icon on any question to save it for later.
+                        {t('community.noSavedHint')}
                       </p>
                     </Card>
                   )}
@@ -458,23 +460,23 @@ const Community = () => {
                 <CardHeader className="pb-2">
                   <h3 className="font-semibold flex items-center gap-2">
                     <Trophy className="w-5 h-5 text-yellow-500" />
-                    Community Stats
+                    {t('community.stats')}
                   </h3>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Total Questions</span>
+                      <span className="text-muted-foreground">{t('community.totalQuestions')}</span>
                       <span className="font-medium">{questions.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Resolved</span>
+                      <span className="text-muted-foreground">{t('community.resolvedCount')}</span>
                       <span className="font-medium text-green-600">
                         {questions.filter(q => q.status === 'resolved').length}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Awaiting Help</span>
+                      <span className="text-muted-foreground">{t('community.awaitingHelp')}</span>
                       <span className="font-medium text-blue-600">
                         {questions.filter(q => q.status === 'open').length}
                       </span>
@@ -486,7 +488,7 @@ const Community = () => {
               {/* Quick Links */}
               <Card>
                 <CardHeader className="pb-2">
-                  <h3 className="font-semibold">Quick Actions</h3>
+                  <h3 className="font-semibold">{t('community.quickActions')}</h3>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button 
@@ -495,7 +497,7 @@ const Community = () => {
                     onClick={() => navigate('/community/ask')}
                   >
                     <MessageSquarePlus className="w-4 h-4 mr-2" />
-                    Ask a Question
+                    {t('community.askQuestion')}
                   </Button>
                   {isPaidMember ? (
                     <Button 
@@ -503,7 +505,7 @@ const Community = () => {
                       className="w-full justify-start"
                       onClick={() => navigate('/member/health-assistant')}
                     >
-                      🤖 Ask Wooffy AI
+                      🤖 {t('community.askWooffyAi')}
                     </Button>
                   ) : (
                     <Button 
@@ -511,8 +513,8 @@ const Community = () => {
                       className="w-full justify-start opacity-50 cursor-not-allowed"
                       disabled
                     >
-                      🔒 Ask Wooffy AI
-                      <Badge variant="secondary" className="ml-auto text-xs">Premium</Badge>
+                      🔒 {t('community.askWooffyAi')}
+                      <Badge variant="secondary" className="ml-auto text-xs">{t('community.premium')}</Badge>
                     </Button>
                   )}
                 </CardContent>
@@ -522,7 +524,7 @@ const Community = () => {
               <Card className="bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-900">
                 <CardContent className="p-4">
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    <strong>⚠️ Important:</strong> Community advice is not a substitute for professional veterinary care. For emergencies, contact your vet immediately.
+                    <strong>⚠️ {t('community.important')}</strong> {t('community.disclaimer')}
                   </p>
                 </CardContent>
               </Card>
