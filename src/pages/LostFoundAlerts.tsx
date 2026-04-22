@@ -67,6 +67,7 @@ interface NotificationPreferences {
 const LostFoundAlerts = () => {
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   // Redirect business users
