@@ -299,7 +299,7 @@ const PetHealthRecords = () => {
     const newFiles: File[] = [];
     for (let i = 0; i < files.length; i++) {
       if (currentTotal + newFiles.length >= MAX_DOCUMENTS) {
-        toast.error(`Maximum ${MAX_DOCUMENTS} documents allowed`);
+        toast.error(t("petHealth.toasts.maxDocs", { max: MAX_DOCUMENTS }));
         break;
       }
       const validation = validateDocumentFile(files[i]);
@@ -340,7 +340,7 @@ const PetHealthRecords = () => {
     if (!user || !selectedPet) return;
 
     if (!title) {
-      toast.error("Please enter a title");
+      toast.error(t("petHealth.toasts.enterTitle"));
       return;
     }
 
@@ -396,13 +396,13 @@ const PetHealthRecords = () => {
           }
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
-          toast.error("Record saved but document upload failed");
+          toast.error(t("petHealth.toasts.uploadFailedKept"));
         } finally {
           setIsUploading(false);
         }
       }
 
-      toast.success("Health record added!");
+      toast.success(t("petHealth.toasts.added"));
       setShowAddDialog(false);
       resetForm();
       fetchRecords();
