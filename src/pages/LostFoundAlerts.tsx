@@ -383,15 +383,15 @@ const LostFoundAlerts = () => {
 
       toast.success(
         alertType === "lost"
-          ? "Alert created! The community will help find your pet."
-          : "Thank you for reporting! Your alert is now live."
+          ? t("lostFound.toasts.createdLost")
+          : t("lostFound.toasts.createdFound")
       );
       setShowCreateDialog(false);
       resetForm();
       fetchAlerts();
     } catch (error) {
       console.error("Error creating alert:", error);
-      toast.error("Failed to create alert");
+      toast.error(t("lostFound.toasts.createFailed"));
     } finally {
       setIsCreating(false);
       setIsUploadingPhoto(false);
