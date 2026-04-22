@@ -25,7 +25,8 @@ import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
-import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
+import { businessCategories } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 
@@ -67,6 +68,7 @@ const categories = [
 const MemberOffers = () => {
   const { user, loading } = useAuth();
   const { t, i18n } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
