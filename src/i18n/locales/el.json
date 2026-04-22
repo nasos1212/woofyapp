@@ -818,5 +818,23 @@
         "newcomer": "Νεοεισερχόμενος"
       }
     }
+  },
+  "businessCategories": {
+    "trainer": "Εκπαιδευτής Σκύλων",
+    "pet_shop": "Pet Shop",
+    "hotel": "Ξενοδοχείο Κατοικιδίων",
+    "grooming": "Καλλωπισμός",
+    "vet": "Κτηνίατρος",
+    "daycare": "Φύλαξη Κατοικιδίων",
+    "physio": "Φυσικοθεραπεία",
+    "accessories": "Αξεσουάρ",
+    "pet_transport": "Μεταφορά Κατοικιδίων",
+    "pet_photography": "Φωτογράφιση Κατοικιδίων",
+    "dog_walking": "Βόλτα Σκύλων",
+    "pet_insurance": "Ασφάλιση Κατοικιδίων",
+    "pet_events": "Εκδηλώσεις Κατοικιδίων",
+    "pet_cemetery": "Κοιμητήριο Κατοικιδίων",
+    "pet_food_supplier": "Προμηθευτής Τροφών",
+    "other": "Άλλο"
   }
 }

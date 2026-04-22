@@ -818,5 +818,23 @@
         "newcomer": "Newcomer"
       }
     }
+  },
+  "businessCategories": {
+    "trainer": "Dog Trainer",
+    "pet_shop": "Pet Shop",
+    "hotel": "Pet Hotel",
+    "grooming": "Grooming",
+    "vet": "Veterinary",
+    "daycare": "Daycare / Pet Sitter",
+    "physio": "Physiotherapy",
+    "accessories": "Accessories",
+    "pet_transport": "Pet Transport",
+    "pet_photography": "Pet Photography",
+    "dog_walking": "Dog Walking",
+    "pet_insurance": "Pet Insurance",
+    "pet_events": "Pet Events",
+    "pet_cemetery": "Pet Cemetery",
+    "pet_food_supplier": "Pet Food Supplier",
+    "other": "Other"
   }
 }
