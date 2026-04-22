@@ -183,7 +183,7 @@ const Community = () => {
                 )}
                 {question.category && (
                   <Badge variant="secondary" className="text-xs">
-                    {question.category.icon} <span className="hidden sm:inline">{question.category.name}</span>
+                    {question.category.icon} <span className="hidden sm:inline">{t(`community.categories.${question.category.slug}`, question.category.name)}</span>
                   </Badge>
                 )}
                 {question.breed_tags?.slice(0, 2).map(tag => (
