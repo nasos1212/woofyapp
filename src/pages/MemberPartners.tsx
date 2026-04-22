@@ -250,7 +250,7 @@ const MemberPartners = () => {
                         {partner.city && (
                           <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <MapPin className="w-3.5 h-3.5 shrink-0" />
-                            <span className="truncate">{partner.city}</span>
+                            <span className="truncate">{getCityDisplayName(partner.city, i18n.language)}</span>
                           </div>
                         )}
                       </div>
