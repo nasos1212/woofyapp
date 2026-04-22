@@ -685,6 +685,18 @@
     "dogs": "Dogs",
     "cats": "Cats",
     "allCategories": "All Categories",
+    "categories": {
+      "health-symptoms": "Health & Symptoms",
+      "behavior-training": "Behavior & Training",
+      "nutrition-diet": "Nutrition & Diet",
+      "grooming-care": "Grooming & Care",
+      "puppies-kittens": "Puppies & Kittens",
+      "senior-pets": "Senior Pets",
+      "exercise-activities": "Exercise & Activities",
+      "products-gear": "Products & Gear",
+      "emergency-urgent": "Emergency & Urgent",
+      "success-stories": "Success Stories"
+    },
     "searchPlaceholder": "Search questions...",
     "urgency": "Urgency",
     "allUrgency": "All Urgency",

@@ -183,7 +183,7 @@ const Community = () => {
                 )}
                 {question.category && (
                   <Badge variant="secondary" className="text-xs">
-                    {question.category.icon} <span className="hidden sm:inline">{question.category.name}</span>
+                    {question.category.icon} <span className="hidden sm:inline">{t(`community.categories.${question.category.slug}`, question.category.name)}</span>
                   </Badge>
                 )}
                 {question.breed_tags?.slice(0, 2).map(tag => (
@@ -338,7 +338,7 @@ const Community = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className="shrink-0"
               >
-                {cat.icon} {cat.name}
+                {cat.icon} {t(`community.categories.${cat.slug}`, cat.name)}
               </Button>
             ))}
           </div>

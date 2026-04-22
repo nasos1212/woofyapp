@@ -294,7 +294,7 @@ const CommunityAsk = () => {
                     <SelectContent>
                       {categories.map(cat => (
                         <SelectItem key={cat.id} value={cat.id}>
-                          {cat.icon} {cat.name}
+                          {cat.icon} {t(`community.categories.${cat.slug}`, cat.name)}
                         </SelectItem>
                       ))}
                     </SelectContent>
