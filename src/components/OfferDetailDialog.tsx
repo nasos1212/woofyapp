@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getCategoryLabel } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { Link, useNavigate } from "react-router-dom";
 import { isPast, isFuture } from "date-fns";
 import { formatRelative } from "@/lib/relativeTime";
@@ -56,6 +56,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
   const navigate = useNavigate();
   const { trackOfferClick } = useAnalyticsTracking();
   const { t, i18n } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   
   // Track offer click when dialog opens
   useEffect(() => {

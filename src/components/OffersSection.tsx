@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isPast } from "date-fns";
 import { formatRelative } from "@/lib/relativeTime";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
-import { getCategoryLabel } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 
 interface Offer {
@@ -36,6 +36,7 @@ interface Offer {
 const OffersSection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);

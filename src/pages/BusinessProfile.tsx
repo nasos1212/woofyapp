@@ -77,8 +77,8 @@ interface BusinessHour {
   close_time: string | null;
 }
 
-// Use shared category labels
-import { getCategoryLabel } from "@/data/businessCategories";
+// Use translated category labels via hook
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
@@ -86,6 +86,7 @@ export default function BusinessProfile() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { trackBusinessView, trackSocialClick, trackContactClick } = useAnalyticsTracking();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
