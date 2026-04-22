@@ -25,6 +25,8 @@ import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
 import EditAlertDialog from "@/components/EditAlertDialog";
 import { getBreedsByPetType } from "@/data/petBreeds";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
