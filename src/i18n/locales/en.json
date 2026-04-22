@@ -370,5 +370,43 @@
       "addFailed": "Failed to add pet"
     },
     "success": "{{name}} has been added! 🐾"
+  },
+  "petFriendlyPlaces": {
+    "pageTitle": "Dog-Friendly Places | Wooffy",
+    "metaDescription": "Discover dog-friendly beaches, cafés, hotels, and more in Cyprus.",
+    "backToDashboard": "Back to Dashboard",
+    "title": "Dog-Friendly Places",
+    "subtitle": "Discover where your furry friend is welcome in Cyprus",
+    "disclaimer": "(Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)",
+    "searchPlaceholder": "Search places...",
+    "allTypes": "All Types",
+    "allCities": "All Cities",
+    "noPlacesYet": "No places yet",
+    "noPlacesFound": "No places found",
+    "noPlacesYetDesc": "Dog-friendly places will be added soon. Check back later!",
+    "noPlacesFoundDesc": "Try adjusting your filters or search query.",
+    "clearFilters": "Clear Filters",
+    "showing": "Showing {{count}} place",
+    "showing_plural": "Showing {{count}} places",
+    "verifiedNote": "(All places are verified & approved by the Wooffy team 🐾)",
+    "badge24h": "24h",
+    "badgeEmergency": "Emergency",
+    "actions": {
+      "go": "Go",
+      "call": "Call"
+    },
+    "types": {
+      "beach": "Beach",
+      "cafe": "Café",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "hotel": "Hotel",
+      "park": "Park",
+      "nature_trail": "Nature Trail",
+      "pharmacy": "Pharmacy",
+      "store": "Retail Store",
+      "office": "Office",
+      "other": "Other"
+    }
   }
 }
