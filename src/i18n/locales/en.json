@@ -137,7 +137,9 @@
     "visible": "Visible to All Users",
     "visibleSub": "Free & paid members see you",
     "quickReview": "Quick Review",
-    "quickReviewSub": "We verify & list you fast"
+    "quickReviewSub": "We verify & list you fast",
+    "ctaQuestion": "Are you a dog-friendly place?",
+    "ctaAction": "Get listed for free!"
   },
   "shelters": {
     "badge": "Giving Back",
