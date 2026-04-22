@@ -24,6 +24,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface LeaderboardEntry extends ExpertStats {
   profile?: {
@@ -43,6 +44,7 @@ const CommunityLeaderboard = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { fetchLeaderboard } = useCommunity();
+  const { t } = useTranslation();
 
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,18 +122,18 @@ const CommunityLeaderboard = () => {
   }
 
   const getReputationLevel = (score: number) => {
-    if (score >= 1000) return { level: 'Expert', color: 'bg-purple-500', progress: 100 };
-    if (score >= 500) return { level: 'Veteran', color: 'bg-blue-500', progress: ((score - 500) / 500) * 100 };
-    if (score >= 200) return { level: 'Contributor', color: 'bg-green-500', progress: ((score - 200) / 300) * 100 };
-    if (score >= 50) return { level: 'Helper', color: 'bg-yellow-500', progress: ((score - 50) / 150) * 100 };
-    return { level: 'Newcomer', color: 'bg-gray-500', progress: (score / 50) * 100 };
+    if (score >= 1000) return { level: t('community.leaderboard.level.expert'), color: 'bg-purple-500', progress: 100 };
+    if (score >= 500) return { level: t('community.leaderboard.level.veteran'), color: 'bg-blue-500', progress: ((score - 500) / 500) * 100 };
+    if (score >= 200) return { level: t('community.leaderboard.level.contributor'), color: 'bg-green-500', progress: ((score - 200) / 300) * 100 };
+    if (score >= 50) return { level: t('community.leaderboard.level.helper'), color: 'bg-yellow-500', progress: ((score - 50) / 150) * 100 };
+    return { level: t('community.leaderboard.level.newcomer'), color: 'bg-gray-500', progress: (score / 50) * 100 };
   };
 
   return (
     <>
       <Helmet>
-        <title>Community Leaderboard | Wooffy</title>
-        <meta name="description" content="See the top contributors in the Wooffy community." />
+        <title>{t('community.leaderboard.pageTitle')}</title>
+        <meta name="description" content={t('community.leaderboard.metaDescription')} />
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
@@ -145,17 +147,17 @@ const CommunityLeaderboard = () => {
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Community
+            {t('community.leaderboard.backToCommunity')}
           </Button>
 
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold flex items-center justify-center gap-2 mb-2">
               <Trophy className="w-8 h-8 text-yellow-500" />
-              Community Leaderboard
+              {t('community.leaderboard.title')}
             </h1>
             <p className="text-muted-foreground">
-              Celebrating our most helpful community members
+              {t('community.leaderboard.subtitle')}
             </p>
           </div>
 
@@ -171,26 +173,26 @@ const CommunityLeaderboard = () => {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 text-center md:text-left">
-                      <h2 className="text-xl font-bold mb-1">Your Stats</h2>
+                      <h2 className="text-xl font-bold mb-1">{t('community.leaderboard.yourStats')}</h2>
                       <p className="text-muted-foreground mb-3">
-                        Rank #{userRank || '—'} in the community
+                        {userRank ? t('community.leaderboard.rankIn', { rank: userRank }) : t('community.leaderboard.rankNone')}
                       </p>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center">
                           <p className="text-2xl font-bold text-primary">{userStats.reputation_score}</p>
-                          <p className="text-xs text-muted-foreground">Reputation</p>
+                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.reputation')}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-2xl font-bold">{userStats.total_answers}</p>
-                          <p className="text-xs text-muted-foreground">Answers</p>
+                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.answers')}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-2xl font-bold text-green-600">{userStats.accepted_answers}</p>
-                          <p className="text-xs text-muted-foreground">Accepted</p>
+                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.accepted')}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-2xl font-bold text-blue-600">{userStats.total_upvotes}</p>
-                          <p className="text-xs text-muted-foreground">Upvotes</p>
+                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.upvotes')}</p>
                         </div>
                       </div>
                     </div>
@@ -205,7 +207,7 @@ const CommunityLeaderboard = () => {
                           className="h-2"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
-                          Progress to next level
+                          {t('community.leaderboard.progressToNext')}
                         </p>
                       </div>
                     </div>
@@ -219,7 +221,7 @@ const CommunityLeaderboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Medal className="w-5 h-5" />
-                  Top Contributors
+                  {t('community.leaderboard.topContributors')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -234,8 +236,8 @@ const CommunityLeaderboard = () => {
                         </AvatarFallback>
                       </Avatar>
                       <Medal className="w-8 h-8 text-gray-400 mb-1" />
-                      <p className="font-semibold text-sm">{leaderboard[1].profile?.full_name || 'Anonymous'}</p>
-                      <p className="text-xs text-muted-foreground">{leaderboard[1].reputation_score} pts</p>
+                      <p className="font-semibold text-sm">{leaderboard[1].profile?.full_name || t('community.leaderboard.anonymous')}</p>
+                      <p className="text-xs text-muted-foreground">{leaderboard[1].reputation_score} {t('community.leaderboard.points')}</p>
                       <div className="w-24 h-20 bg-gray-200 dark:bg-gray-700 rounded-t-lg mt-2 flex items-center justify-center">
                         <span className="text-2xl font-bold text-gray-500">2</span>
                       </div>
@@ -252,12 +254,12 @@ const CommunityLeaderboard = () => {
                         </AvatarFallback>
                       </Avatar>
                       <Trophy className="w-10 h-10 text-yellow-500 mb-1" />
-                      <p className="font-bold">{leaderboard[0].profile?.full_name || 'Anonymous'}</p>
-                      <p className="text-sm text-muted-foreground">{leaderboard[0].reputation_score} pts</p>
+                      <p className="font-bold">{leaderboard[0].profile?.full_name || t('community.leaderboard.anonymous')}</p>
+                      <p className="text-sm text-muted-foreground">{leaderboard[0].reputation_score} {t('community.leaderboard.points')}</p>
                       {leaderboard[0].is_verified_professional && (
                         <Badge className="bg-blue-500 text-white text-xs mt-1">
                           <Shield className="w-3 h-3 mr-1" />
-                          Verified Pro
+                          {t('community.leaderboard.verifiedPro')}
                         </Badge>
                       )}
                       <div className="w-24 h-28 bg-yellow-100 dark:bg-yellow-900/30 rounded-t-lg mt-2 flex items-center justify-center">
@@ -276,8 +278,8 @@ const CommunityLeaderboard = () => {
                         </AvatarFallback>
                       </Avatar>
                       <Award className="w-7 h-7 text-amber-600 mb-1" />
-                      <p className="font-semibold text-sm">{leaderboard[2].profile?.full_name || 'Anonymous'}</p>
-                      <p className="text-xs text-muted-foreground">{leaderboard[2].reputation_score} pts</p>
+                      <p className="font-semibold text-sm">{leaderboard[2].profile?.full_name || t('community.leaderboard.anonymous')}</p>
+                      <p className="text-xs text-muted-foreground">{leaderboard[2].reputation_score} {t('community.leaderboard.points')}</p>
                       <div className="w-24 h-16 bg-amber-100 dark:bg-amber-900/30 rounded-t-lg mt-2 flex items-center justify-center">
                         <span className="text-2xl font-bold text-amber-600">3</span>
                       </div>
@@ -292,9 +294,9 @@ const CommunityLeaderboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="w-5 h-5" />
-                  Rankings
+                  {t('community.leaderboard.rankings')}
                 </CardTitle>
-                <CardDescription>Top 50 community members</CardDescription>
+                <CardDescription>{t('community.leaderboard.rankingsDescription')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -319,7 +321,7 @@ const CommunityLeaderboard = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-medium truncate">
-                              {entry.profile?.full_name || 'Anonymous'}
+                              {entry.profile?.full_name || t('community.leaderboard.anonymous')}
                             </p>
                             {entry.is_verified_professional && (
                               <Shield className="w-4 h-4 text-blue-500 shrink-0" />
@@ -331,7 +333,7 @@ const CommunityLeaderboard = () => {
                         </div>
                         <div className="text-right">
                           <p className="font-bold">{entry.reputation_score}</p>
-                          <p className="text-xs text-muted-foreground">points</p>
+                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.points')}</p>
                         </div>
                       </div>
                     );
@@ -345,7 +347,7 @@ const CommunityLeaderboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Star className="w-5 h-5" />
-                  How to Earn Points
+                  {t('community.leaderboard.howToEarn')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -354,8 +356,8 @@ const CommunityLeaderboard = () => {
                     <MessageSquare className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="font-medium">Answer Questions</p>
-                    <p className="text-sm text-muted-foreground">+5 points per answer</p>
+                    <p className="font-medium">{t('community.leaderboard.answerQuestions')}</p>
+                    <p className="text-sm text-muted-foreground">{t('community.leaderboard.answerPoints')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -363,8 +365,8 @@ const CommunityLeaderboard = () => {
                     <ThumbsUp className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="font-medium">Get Upvotes</p>
-                    <p className="text-sm text-muted-foreground">+2 points per upvote</p>
+                    <p className="font-medium">{t('community.leaderboard.getUpvotes')}</p>
+                    <p className="text-sm text-muted-foreground">{t('community.leaderboard.upvotePoints')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -372,8 +374,8 @@ const CommunityLeaderboard = () => {
                     <CheckCircle2 className="w-5 h-5 text-yellow-600" />
                   </div>
                   <div>
-                    <p className="font-medium">Answer Accepted</p>
-                    <p className="text-sm text-muted-foreground">+15 points when accepted</p>
+                    <p className="font-medium">{t('community.leaderboard.answerAccepted')}</p>
+                    <p className="text-sm text-muted-foreground">{t('community.leaderboard.acceptedPoints')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -381,8 +383,8 @@ const CommunityLeaderboard = () => {
                     <Shield className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <p className="font-medium">Verified Professional</p>
-                    <p className="text-sm text-muted-foreground">Partner businesses get the badge</p>
+                    <p className="font-medium">{t('community.leaderboard.verifiedProfessional')}</p>
+                    <p className="text-sm text-muted-foreground">{t('community.leaderboard.verifiedHint')}</p>
                   </div>
                 </div>
               </CardContent>
