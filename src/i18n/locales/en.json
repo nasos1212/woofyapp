@@ -220,5 +220,23 @@
     "rejectedReach": "If you believe this was a mistake or would like more information, please reach out:",
     "iUnderstand": "I Understand",
     "contactUs": "Contact us"
+  },
+  "journey": {
+    "heading": "Your Wooffy Journey",
+    "step1Title": "Sign Up Free",
+    "step1Desc": "Create your account in seconds",
+    "step1Feat1": "Quick registration",
+    "step1Feat2": "No credit card needed",
+    "step2Title": "Your Free Account",
+    "step2Desc": "Enjoy free features forever",
+    "step2Feat1": "Pet profiles & health records",
+    "step2Feat2": "Lost & Found alerts",
+    "step2Feat3": "Community Q&A",
+    "step2Feat4": "Dog-friendly places",
+    "step3Title": "Premium Member",
+    "step3Desc": "Full membership benefits",
+    "step3Feat1": "Exclusive discounts",
+    "step3Feat2": "AI health assistant",
+    "step3Feat3": "Pet birthday offers"
   }
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { UserPlus, Gift, Crown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -9,39 +10,40 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 
-const journeySteps = [
-  {
-    id: 1,
-    title: "Sign Up Free",
-    icon: UserPlus,
-    description: "Create your account in seconds",
-    color: "from-blue-500 to-cyan-500",
-    bgColor: "bg-blue-50",
-    features: ["Quick registration", "No credit card needed"],
-  },
-  {
-    id: 2,
-    title: "Your Free Account",
-    icon: Gift,
-    description: "Enjoy free features forever",
-    color: "from-emerald-500 to-teal-500",
-    bgColor: "bg-emerald-50",
-    features: ["Pet profiles & health records", "Lost & Found alerts", "Community Q&A", "Dog-friendly places"],
-  },
-  {
-    id: 3,
-    title: "Premium Member",
-    icon: Crown,
-    description: "Full membership benefits",
-    color: "from-primary to-purple-500",
-    bgColor: "bg-primary/5",
-    features: ["Exclusive discounts", "AI health assistant", "Pet birthday offers"],
-  },
-];
-
 const MemberJourneyCarousel = () => {
+  const { t } = useTranslation();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+
+  const journeySteps = [
+    {
+      id: 1,
+      title: t("journey.step1Title"),
+      icon: UserPlus,
+      description: t("journey.step1Desc"),
+      color: "from-blue-500 to-cyan-500",
+      bgColor: "bg-blue-50",
+      features: [t("journey.step1Feat1"), t("journey.step1Feat2")],
+    },
+    {
+      id: 2,
+      title: t("journey.step2Title"),
+      icon: Gift,
+      description: t("journey.step2Desc"),
+      color: "from-emerald-500 to-teal-500",
+      bgColor: "bg-emerald-50",
+      features: [t("journey.step2Feat1"), t("journey.step2Feat2"), t("journey.step2Feat3"), t("journey.step2Feat4")],
+    },
+    {
+      id: 3,
+      title: t("journey.step3Title"),
+      icon: Crown,
+      description: t("journey.step3Desc"),
+      color: "from-primary to-purple-500",
+      bgColor: "bg-primary/5",
+      features: [t("journey.step3Feat1"), t("journey.step3Feat2"), t("journey.step3Feat3")],
+    },
+  ];
 
   useEffect(() => {
     if (!api) return;
@@ -55,7 +57,7 @@ const MemberJourneyCarousel = () => {
   return (
     <div className="w-full mt-8">
       <p className="text-center text-sm font-semibold text-foreground mb-4 uppercase tracking-wide bg-card/80 backdrop-blur-sm rounded-full px-4 py-2 w-fit mx-auto shadow-soft border border-border">
-        Your Wooffy Journey
+        {t("journey.heading")}
       </p>
       
       <Carousel
