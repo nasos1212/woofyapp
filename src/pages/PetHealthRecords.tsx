@@ -731,16 +731,16 @@ const PetHealthRecords = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t("petHealth.back")}
           </Button>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Health Records 💊
+                {t("petHealth.title")} 💊
               </h1>
               <p className="text-muted-foreground">
-                Track vaccinations, medications, and vet visits
+                {t("petHealth.subtitle")}
               </p>
             </div>
 
@@ -751,21 +751,21 @@ const PetHealthRecords = () => {
               <DialogTrigger asChild>
                 <Button className="gap-2" disabled={!selectedPet} onClick={() => resetForm()}>
                   <Plus className="w-4 h-4" />
-                  Add Record
+                  {t("petHealth.addRecord")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>{editingRecord ? "Edit Health Record" : "Add Health Record"}</DialogTitle>
+                  <DialogTitle>{editingRecord ? t("petHealth.dialog.editTitle") : t("petHealth.dialog.addTitle")}</DialogTitle>
                   <DialogDescription>
                     {editingRecord 
-                      ? "Update this health record's details and attached document."
-                      : "Add a vaccination, medication, or other health record for your pet."}
+                      ? t("petHealth.dialog.editDescription")
+                      : t("petHealth.dialog.addDescription")}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label>Record Type</Label>
+                    <Label>{t("petHealth.dialog.recordType")}</Label>
                     <Select value={recordType} onValueChange={(v) => {
                       setRecordType(v);
                       setSelectedPreset("");
@@ -777,7 +777,7 @@ const PetHealthRecords = () => {
                         {Object.entries(recordTypeConfig).map(([key, config]) => (
                           <SelectItem key={key} value={key}>
                             <span className="flex items-center gap-2">
-                              {config.icon} {config.label}
+                              {config.icon} {recordTypeLabels[key]}
                             </span>
                           </SelectItem>
                         ))}
@@ -788,10 +788,10 @@ const PetHealthRecords = () => {
                   {/* Show presets for vaccinations and medications - filtered by record type AND pet type */}
                   {(recordType === 'vaccination' || recordType === 'medication') && selectedPet && (
                     <div className="space-y-2">
-                      <Label>Quick Select for {selectedPet.pet_name} ({selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'})</Label>
+                      <Label>{t("petHealth.dialog.quickSelect", { name: selectedPet.pet_name, type: selectedPet.pet_type === 'dog' ? t("petHealth.dialog.dog") : t("petHealth.dialog.cat") })}</Label>
                       <Select value={selectedPreset} onValueChange={handlePresetSelect}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose a common treatment..." />
+                          <SelectValue placeholder={t("petHealth.dialog.chooseTreatment")} />
                         </SelectTrigger>
                         <SelectContent>
                           {recordType === 'medication' && (
@@ -802,7 +802,7 @@ const PetHealthRecords = () => {
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
                               ).length > 0 && (
                                 <>
-                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupDaily")}</div>
                                   {TREATMENT_PRESETS.filter(p => 
                                     p.recordType === 'medication' && 
                                     p.intervalType === 'daily' && 
@@ -814,7 +814,7 @@ const PetHealthRecords = () => {
                                   ))}
                                 </>
                               )}
-                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupPrevention")}</div>
                               {TREATMENT_PRESETS.filter(p => 
                                 p.category === 'prevention' && 
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
@@ -830,7 +830,7 @@ const PetHealthRecords = () => {
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
                               ).length > 0 && (
                                 <>
-                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Other Medications</div>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupOther")}</div>
                                   {TREATMENT_PRESETS.filter(p => 
                                     p.recordType === 'medication' && 
                                     p.category === 'medication' && 
@@ -848,7 +848,7 @@ const PetHealthRecords = () => {
                           {recordType === 'vaccination' && (
                             <>
                               <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                                {selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'} Vaccines
+                                {selectedPet.pet_type === 'dog' ? t("petHealth.dialog.groupVaccinesDog") : t("petHealth.dialog.groupVaccinesCat")}
                               </div>
                               {TREATMENT_PRESETS.filter(p => 
                                 p.recordType === 'vaccination' && 
@@ -861,7 +861,7 @@ const PetHealthRecords = () => {
                             </>
                           )}
                           <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-1"></div>
-                          <SelectItem value="custom">✏️ Other / Custom</SelectItem>
+                          <SelectItem value="custom">{t("petHealth.dialog.customOther")}</SelectItem>
                         </SelectContent>
                       </Select>
                       {selectedPreset && selectedPreset !== 'custom' && (
