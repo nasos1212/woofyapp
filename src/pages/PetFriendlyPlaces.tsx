@@ -240,12 +240,12 @@ const PetFriendlyPlaces = () => {
                 <MapPin className="w-8 h-8 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                {places.length === 0 ? "No places yet" : "No places found"}
+                {places.length === 0 ? t("petFriendlyPlaces.noPlacesYet") : t("petFriendlyPlaces.noPlacesFound")}
               </h3>
               <p className="text-muted-foreground mb-4">
                 {places.length === 0 
-                  ? "Dog-friendly places will be added soon. Check back later!"
-                  : "Try adjusting your filters or search query."}
+                  ? t("petFriendlyPlaces.noPlacesYetDesc")
+                  : t("petFriendlyPlaces.noPlacesFoundDesc")}
               </p>
               {places.length > 0 && (
                 <Button 
@@ -256,15 +256,15 @@ const PetFriendlyPlaces = () => {
                     setSelectedCity("all");
                   }}
                 >
-                  Clear Filters
+                  {t("petFriendlyPlaces.clearFilters")}
                 </Button>
               )}
             </div>
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-4">
-                Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"}
-                <span className="ml-2 text-xs italic opacity-75">(All places are verified & approved by the Wooffy team 🐾)</span>
+                {t("petFriendlyPlaces.showing", { count: filteredPlaces.length })}
+                <span className="ml-2 text-xs italic opacity-75">{t("petFriendlyPlaces.verifiedNote")}</span>
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
