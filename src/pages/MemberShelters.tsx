@@ -32,6 +32,7 @@ interface Shelter {
 
 const MemberShelters = () => {
   const { user, loading: authLoading } = useAuth();
+  const { t, i18n } = useTranslation();
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedShelter, setSelectedShelter] = useState<Shelter | null>(null);
