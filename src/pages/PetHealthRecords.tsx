@@ -873,7 +873,7 @@ const PetHealthRecords = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label>Title *</Label>
+                    <Label>{t("petHealth.dialog.titleLabel")}</Label>
                     <Input
                       value={title}
                       onChange={(e) => {
@@ -882,37 +882,37 @@ const PetHealthRecords = () => {
                           setSelectedPreset('custom');
                         }
                       }}
-                      placeholder="e.g., Rabies Vaccine"
+                      placeholder={t("petHealth.dialog.titlePlaceholder")}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Description</Label>
+                    <Label>{t("petHealth.dialog.description")}</Label>
                     <Textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Additional details..."
+                      placeholder={t("petHealth.dialog.descriptionPlaceholder")}
                     />
                   </div>
 
                   {/* For vaccinations/medications: just show date administered, next due is auto-calculated */}
                   {(recordType === 'vaccination' || recordType === 'medication') ? (
                     <div className="space-y-2">
-                      <Label>Date Given</Label>
+                      <Label>{t("petHealth.dialog.dateGiven")}</Label>
                       <Input
                         type="date"
                         value={dateAdministered}
                         onChange={(e) => setDateAdministered(e.target.value)}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Next due date will be auto-calculated based on the interval below
+                        {t("petHealth.dialog.dateGivenHint")}
                       </p>
                     </div>
                   ) : (
                     <>
                       <div className="space-y-2">
-                        <Label>Date</Label>
+                        <Label>{t("petHealth.dialog.date")}</Label>
                         <Input
                           type="date"
                           value={dateAdministered}
@@ -925,7 +925,7 @@ const PetHealthRecords = () => {
                         <div className="space-y-2">
                           <Label className="flex items-center gap-2">
                             <Bell className="w-4 h-4" />
-                            Remind Me
+                            {t("petHealth.dialog.remindMe")}
                           </Label>
                           <div className="flex flex-wrap gap-2">
                             {REMINDER_OPTIONS.map((option) => (
@@ -944,7 +944,7 @@ const PetHealthRecords = () => {
                           </div>
                           {reminderDaysBefore.length > 0 && (
                             <p className="text-xs text-primary">
-                              ✓ You'll be reminded in your Wooffy Reminders
+                              {t("petHealth.dialog.remindHint")}
                             </p>
                           )}
                         </div>
@@ -956,7 +956,7 @@ const PetHealthRecords = () => {
                   {(recordType === 'vaccination' || recordType === 'medication') && (
                     <>
                       <div className="space-y-2">
-                        <Label>Reminder Interval</Label>
+                        <Label>{t("petHealth.dialog.reminderInterval")}</Label>
                         <Select value={intervalType} onValueChange={setIntervalType}>
                           <SelectTrigger>
                             <SelectValue />
@@ -971,27 +971,27 @@ const PetHealthRecords = () => {
                         </Select>
                         {intervalType !== 'once' && (
                           <p className="text-xs text-primary">
-                            ✓ This will appear in your Reminders tab
+                            {t("petHealth.dialog.reminderHint")}
                           </p>
                         )}
                       </div>
                       {intervalType === 'custom' && (
                         <div className="space-y-2">
-                          <Label>Custom Interval (days)</Label>
+                          <Label>{t("petHealth.dialog.customInterval")}</Label>
                           <Input
                             type="number"
                             min="1"
                             max="730"
                             value={customDays}
                             onChange={(e) => setCustomDays(e.target.value)}
-                            placeholder="Enter number of days"
+                            placeholder={t("petHealth.dialog.customIntervalPlaceholder")}
                           />
                         </div>
                       )}
                       {/* Preferred time for daily medications */}
                       {intervalType === 'daily' && (
                         <div className="space-y-2">
-                          <Label>Preferred Time (24h format, Cyprus/Athens timezone)</Label>
+                          <Label>{t("petHealth.dialog.preferredTime")}</Label>
                           <div className="flex gap-2 items-center">
                             <Select
                               value={preferredTime ? preferredTime.split(':')[0] : ''}
@@ -1032,7 +1032,7 @@ const PetHealthRecords = () => {
                             </Select>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Set a reminder time for this daily medication
+                            {t("petHealth.dialog.preferredTimeHint")}
                           </p>
                         </div>
                       )}
@@ -1041,19 +1041,19 @@ const PetHealthRecords = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Veterinarian</Label>
+                      <Label>{t("petHealth.dialog.veterinarian")}</Label>
                       <Input
                         value={vetName}
                         onChange={(e) => setVetName(e.target.value)}
-                        placeholder="Dr. Smith"
+                        placeholder={t("petHealth.dialog.vetPlaceholder")}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Clinic</Label>
+                      <Label>{t("petHealth.dialog.clinic")}</Label>
                       <Input
                         value={clinicName}
                         onChange={(e) => setClinicName(e.target.value)}
-                        placeholder="Wooffy Vet Clinic"
+                        placeholder={t("petHealth.dialog.clinicPlaceholder")}
                       />
                     </div>
                   </div>
