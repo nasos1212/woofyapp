@@ -84,7 +84,15 @@
     "bestValue": "Best Value",
     "everythingPlus": "Everything in Free, plus:",
     "getStarted": "Get Started",
-    "bottomNote": "💡 Start exploring for free. Upgrade only when you want access to exclusive partner discounts and premium features!"
+    "bottomNote": "💡 Start exploring for free. Upgrade only when you want access to exclusive partner discounts and premium features!",
+    "tour": {
+      "welcome": { "title": "Welcome to Wooffy! 🎉", "desc": "Your free membership gives you access to amazing pet community features. Let us show you around!" },
+      "community": { "title": "Community Q&A 💬", "desc": "Ask questions, share experiences, and get advice from fellow pet parents across Cyprus. Your voice matters!" },
+      "lostFound": { "title": "Lost & Found Alerts 🔍", "desc": "Report or find lost pets in your area. Together, we help reunite pets with their families — fast." },
+      "places": { "title": "Dog-Friendly Places 📍", "desc": "Discover cafés, parks, beaches and more that welcome your furry friends. Rate and review your favourites!" },
+      "shelters": { "title": "Support Shelters ❤️", "desc": "Browse local shelters, meet adoptable pets, and make a difference in an animal's life." },
+      "done": { "title": "You're All Set! 🥳", "desc": "Start exploring — all of these features are completely free. Enjoy being part of the Wooffy community!" }
+    }
   },
   "pricing": {
     "badge": "Simple Pricing",
