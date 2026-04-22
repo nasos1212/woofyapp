@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { 
   Users, 
   Gift, 
@@ -44,6 +45,7 @@ interface Pet {
 }
 
 const FreeMemberDashboard = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
@@ -175,8 +177,8 @@ const FreeMemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Community Hub | Wooffy</title>
-        <meta name="description" content="Join the Wooffy pet community - ask questions, share experiences, and connect with pet parents." />
+        <title>{t("freeMember.pageTitle")}</title>
+        <meta name="description" content={t("freeMember.pageDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background overflow-x-hidden">
@@ -203,10 +205,10 @@ const FreeMemberDashboard = () => {
           {/* Welcome Header - Simple & Clean */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
-              Hello, {profileName || "Friend"}! 🐾
+              {t("freeMember.hello", { name: profileName || t("freeMember.friend") })}
             </h1>
             <p className="text-muted-foreground">
-              Connect with the Wooffy pet community
+              {t("freeMember.subtitle")}
             </p>
           </div>
 
@@ -221,16 +223,16 @@ const FreeMemberDashboard = () => {
                     </div>
                     <div>
                       <h2 className="font-display text-xl md:text-2xl font-bold text-white">
-                        Community Hub
+                        {t("freeMember.hub.title")}
                       </h2>
                       <p className="text-white/80 text-sm">
-                        Your pet parenting questions, answered
+                        {t("freeMember.hub.tagline")}
                       </p>
                     </div>
                   </div>
 
                   <p className="text-white/90 mb-6 max-w-lg">
-                    Get advice from experienced pet owners, share your knowledge, and be part of Cyprus's most helpful pet community.
+                    {t("freeMember.hub.description")}
                   </p>
 
                   <div className="flex flex-wrap gap-3">
@@ -240,7 +242,7 @@ const FreeMemberDashboard = () => {
                       className="bg-white text-teal-700 hover:bg-white/90 gap-2"
                     >
                       <MessageSquarePlus className="w-5 h-5" />
-                      Browse Questions
+                      {t("freeMember.hub.browse")}
                     </Button>
                     <Button 
                       size="lg"
@@ -249,7 +251,7 @@ const FreeMemberDashboard = () => {
                       className="border-white bg-white text-teal-700 hover:bg-white/90 gap-2"
                     >
                       <HelpCircle className="w-5 h-5" />
-                      Ask a Question
+                      {t("freeMember.hub.ask")}
                     </Button>
                   </div>
                 </div>
@@ -261,7 +263,7 @@ const FreeMemberDashboard = () => {
                     className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
                   >
                     <Bookmark className="w-4 h-4" />
-                    <span className="text-sm font-medium">Saved Questions</span>
+                    <span className="text-sm font-medium">{t("freeMember.hub.saved")}</span>
                   </button>
                 </div>
               </CardContent>
@@ -272,7 +274,7 @@ const FreeMemberDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
-                🐾 My Pets
+                {t("freeMember.pets.title")}
               </h2>
               <Button 
                 size="sm" 
@@ -280,7 +282,7 @@ const FreeMemberDashboard = () => {
                 className="gap-1"
               >
                 <PlusCircle className="w-4 h-4" />
-                Add Pet
+                {t("freeMember.pets.addPet")}
               </Button>
             </div>
             
@@ -288,13 +290,13 @@ const FreeMemberDashboard = () => {
               <Card className="border-dashed border-2 border-muted-foreground/20">
                 <CardContent className="p-6 text-center">
                   <Dog className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-                  <h3 className="font-medium text-foreground mb-1">No pets yet</h3>
+                  <h3 className="font-medium text-foreground mb-1">{t("freeMember.pets.empty")}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Add your first pet to start tracking their health and more
+                    {t("freeMember.pets.emptyDesc")}
                   </p>
                   <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
                     <PlusCircle className="w-4 h-4" />
-                    Add Your First Pet
+                    {t("freeMember.pets.addFirst")}
                   </Button>
                 </CardContent>
               </Card>
@@ -325,7 +327,7 @@ const FreeMemberDashboard = () => {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
                         <p className="text-sm text-muted-foreground truncate">
-                          {pet.pet_breed || (pet.pet_type === 'cat' ? 'Cat' : 'Dog')}
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
                         </p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -346,9 +348,9 @@ const FreeMemberDashboard = () => {
                     <Syringe className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Health Records</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.health")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Track vaccinations & vet visits
+                      {t("freeMember.cards.healthDesc")}
                     </p>
                   </div>
                 </div>
@@ -358,7 +360,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/health-records")}
                     className="border-emerald-300 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-900 gap-2 w-full"
                   >
-                    View Records
+                    {t("freeMember.cards.viewRecords")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -373,9 +375,9 @@ const FreeMemberDashboard = () => {
                     <AlertTriangle className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Lost&Found Alerts</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.lostFound")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Help reunite pets with families
+                      {t("freeMember.cards.lostFoundDesc")}
                     </p>
                   </div>
                 </div>
@@ -385,7 +387,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/lost-found")}
                     className="border-amber-300 text-amber-700 hover:bg-amber-200 hover:text-amber-900 gap-2 w-full"
                   >
-                    View Alerts
+                    {t("freeMember.cards.viewAlerts")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -400,9 +402,9 @@ const FreeMemberDashboard = () => {
                     <MapPin className="w-5 h-5 text-teal-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Dog-Friendly Places</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.places")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Discover where pets are welcome
+                      {t("freeMember.cards.placesDesc")}
                     </p>
                   </div>
                 </div>
@@ -412,7 +414,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/pet-friendly-places")}
                     className="border-teal-300 text-teal-700 hover:bg-teal-200 hover:text-teal-900 gap-2 w-full"
                   >
-                    Explore Places
+                    {t("freeMember.cards.explorePlaces")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -427,9 +429,9 @@ const FreeMemberDashboard = () => {
                     <Heart className="w-5 h-5 text-rose-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Pet Shelters</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.shelters")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Support local pet shelters
+                      {t("freeMember.cards.sheltersDesc")}
                     </p>
                   </div>
                 </div>
@@ -439,7 +441,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/shelters")}
                     className="border-rose-300 text-rose-700 hover:bg-rose-200 hover:text-rose-900 gap-2 w-full"
                   >
-                    View Shelters
+                    {t("freeMember.cards.viewShelters")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -454,9 +456,9 @@ const FreeMemberDashboard = () => {
                     <Gift className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Browse Offers</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.browseOffers")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Preview exclusive member deals
+                      {t("freeMember.cards.browseOffersDesc")}
                     </p>
                   </div>
                 </div>
@@ -466,7 +468,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/offers")}
                     className="border-purple-300 text-purple-700 hover:bg-purple-200 hover:text-purple-900 gap-2 w-full"
                   >
-                    View Offers
+                    {t("freeMember.cards.viewOffers")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -481,9 +483,9 @@ const FreeMemberDashboard = () => {
                     <Building2 className="w-5 h-5 text-sky-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Our Partners</h3>
+                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.partners")}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Browse partner businesses
+                      {t("freeMember.cards.partnersDesc")}
                     </p>
                   </div>
                 </div>
@@ -493,7 +495,7 @@ const FreeMemberDashboard = () => {
                     onClick={() => navigate("/member/partners")}
                     className="border-sky-300 text-sky-700 hover:bg-sky-200 hover:text-sky-900 gap-2 w-full"
                   >
-                    View Partners
+                    {t("freeMember.cards.viewPartners")}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </div>
@@ -505,7 +507,7 @@ const FreeMemberDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-muted-foreground">
-                Want more features?
+                {t("freeMember.upgrade.want")}
               </p>
               <Button 
                 variant="link" 
@@ -513,15 +515,15 @@ const FreeMemberDashboard = () => {
                 className="text-primary gap-1 p-0 h-auto"
                 onClick={() => setShowComingSoon(true)}
               >
-                See membership benefits
+                {t("freeMember.upgrade.seeBenefits")}
                 <ArrowRight className="w-3 h-3" />
               </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: Gift, label: "Partner Discounts", color: "text-primary" },
-                { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
+                { icon: Gift, label: t("freeMember.upgrade.partnerDiscounts"), color: "text-primary" },
+                { icon: Bot, label: t("freeMember.upgrade.aiAssistant"), color: "text-violet-500" },
               ].map(({ icon: Icon, label, color }) => (
                 <div
                   key={label}
@@ -547,8 +549,8 @@ const FreeMemberDashboard = () => {
               <div className="flex items-center gap-3 text-center sm:text-left">
                 <Crown className="w-5 h-5 text-primary hidden sm:block" />
                 <p className="text-sm text-foreground">
-                  <span className="font-medium">Upgrade to unlock</span>
-                  <span className="text-muted-foreground"> exclusive discounts & AI health assistant</span>
+                  <span className="font-medium">{t("freeMember.upgrade.unlock")}</span>
+                  <span className="text-muted-foreground">{t("freeMember.upgrade.unlockDesc")}</span>
                 </p>
               </div>
               <Button 
@@ -557,7 +559,7 @@ const FreeMemberDashboard = () => {
                 className="gap-2 shrink-0"
               >
                 <Crown className="w-4 h-4" />
-                Upgrade · €29/year
+                {t("freeMember.upgrade.cta")}
               </Button>
             </CardContent>
           </Card>
@@ -569,7 +571,7 @@ const FreeMemberDashboard = () => {
                 <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
                   <Sparkles className="w-7 h-7 text-primary" />
                 </div>
-                <DialogTitle className="font-display text-xl">Your Wooffy Membership</DialogTitle>
+                <DialogTitle className="font-display text-xl">{t("freeMember.benefitsDialog.title")}</DialogTitle>
               </DialogHeader>
 
               {/* Free Features */}
@@ -577,17 +579,17 @@ const FreeMemberDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-700 rounded-full px-3 py-1 text-xs font-bold">
-                      ✨ Free — Yours Now
+                      {t("freeMember.benefitsDialog.freeBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: MapPin, label: "Dog-Friendly Directory", desc: "Find dog-friendly cafés, parks and more", color: "text-teal-600 bg-teal-100" },
-                      { icon: AlertTriangle, label: "Lost & Found Alerts", desc: "Report and search for lost or found pets", color: "text-amber-600 bg-amber-100" },
-                      { icon: Users, label: "Community Q&A", desc: "Ask questions and help fellow pet parents", color: "text-indigo-600 bg-indigo-100" },
-                      { icon: Gift, label: "Browse Offers", desc: "Preview exclusive partner deals", color: "text-purple-600 bg-purple-100" },
-                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
-                      { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
+                      { icon: MapPin, label: t("freeMember.benefitsDialog.directory"), desc: t("freeMember.benefitsDialog.directoryDesc"), color: "text-teal-600 bg-teal-100" },
+                      { icon: AlertTriangle, label: t("freeMember.benefitsDialog.lostFound"), desc: t("freeMember.benefitsDialog.lostFoundDesc"), color: "text-amber-600 bg-amber-100" },
+                      { icon: Users, label: t("freeMember.benefitsDialog.qa"), desc: t("freeMember.benefitsDialog.qaDesc"), color: "text-indigo-600 bg-indigo-100" },
+                      { icon: Gift, label: t("freeMember.benefitsDialog.browseOffers"), desc: t("freeMember.benefitsDialog.browseOffersDesc"), color: "text-purple-600 bg-purple-100" },
+                      { icon: Heart, label: t("freeMember.benefitsDialog.petProfiles"), desc: t("freeMember.benefitsDialog.petProfilesDesc"), color: "text-rose-600 bg-rose-100" },
+                      { icon: Syringe, label: t("freeMember.benefitsDialog.petHealth"), desc: t("freeMember.benefitsDialog.petHealthDesc"), color: "text-blue-600 bg-blue-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
@@ -606,13 +608,13 @@ const FreeMemberDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-bold">
-                      👑 Premium — Coming Soon
+                      {t("freeMember.benefitsDialog.premiumBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: Gift, label: "Exclusive Discounts", desc: "Save at pet shops, trainers, groomers, hotels & more", color: "text-primary bg-primary/10" },
-                      { icon: Bot, label: "AI Health Assistant", desc: "24/7 AI-powered pet health guidance", color: "text-violet-600 bg-violet-100" },
+                      { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc"), color: "text-primary bg-primary/10" },
+                      { icon: Bot, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc"), color: "text-violet-600 bg-violet-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
@@ -632,7 +634,7 @@ const FreeMemberDashboard = () => {
 
                 <div className="bg-primary/5 rounded-xl p-3 border border-primary/20 text-center">
                   <p className="text-xs text-muted-foreground">
-                    Premium plans starting at <span className="font-bold text-primary">€29/year</span> — we'll notify you when they launch! 🐾
+                    {t("freeMember.benefitsDialog.premiumNote")}<span className="font-bold text-primary">{t("freeMember.benefitsDialog.perYear")}</span>{t("freeMember.benefitsDialog.premiumNoteEnd")}
                   </p>
                 </div>
               </div>
@@ -641,7 +643,7 @@ const FreeMemberDashboard = () => {
                 className="w-full mt-1" 
                 onClick={() => setShowComingSoon(false)}
               >
-                Got it!
+                {t("freeMember.benefitsDialog.gotIt")}
               </Button>
             </DialogContent>
           </Dialog>
