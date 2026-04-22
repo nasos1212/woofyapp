@@ -25,6 +25,8 @@ import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
 import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Offer {
   id: string;
@@ -63,6 +65,7 @@ const categories = [
 
 const MemberOffers = () => {
   const { user, loading } = useAuth();
+  const { t, i18n } = useTranslation();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
@@ -306,29 +309,29 @@ const MemberOffers = () => {
   };
 
   const formatDiscount = (offer: Offer) => {
-    if (!offer.discount_value) return "Special Offer";
+    if (!offer.discount_value) return t("offers.specialOffer");
     return offer.discount_type === "percentage"
-      ? `${offer.discount_value}% off`
-      : `€${offer.discount_value} off`;
+      ? t("offers.percentOff", { value: offer.discount_value })
+      : t("offers.euroOff", { value: offer.discount_value });
   };
 
 
   const getTimeIndicator = (offer: Offer) => {
     if (offer.is_limited_time) {
-      return { type: "limited", label: offer.limited_time_label || "Limited Time" };
+      return { type: "limited", label: offer.limited_time_label || t("offers.limitedTime") };
     }
     
     if (offer.valid_until) {
       const validUntil = new Date(offer.valid_until);
       if (isPast(validUntil)) {
-        return { type: "expired", label: "Expired" };
+        return { type: "expired", label: t("offers.expired") };
       }
       
       const daysLeft = Math.ceil((validUntil.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
       if (daysLeft <= 7) {
         return { 
           type: "expiring", 
-          label: `Ends ${formatDistanceToNow(validUntil, { addSuffix: true })}` 
+          label: t("offers.endsIn", { when: formatDistanceToNow(validUntil, { addSuffix: true }) })
         };
       }
     }
@@ -347,10 +350,10 @@ const MemberOffers = () => {
   return (
     <>
       <Helmet>
-        <title>Available Offers | Wooffy</title>
+        <title>{t("offers.pageTitle")}</title>
         <meta
           name="description"
-          content="Browse all available discounts and offers from Wooffy partner businesses."
+          content={t("offers.metaDescription")}
         />
       </Helmet>
 
@@ -365,7 +368,7 @@ const MemberOffers = () => {
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("offers.backToDashboard")}
           </Button>
 
           {/* Free Member Banner */}
@@ -377,8 +380,8 @@ const MemberOffers = () => {
                     <Tag className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground">Preview Mode</h3>
-                    <p className="text-sm text-muted-foreground">Upgrade to redeem these exclusive offers</p>
+                    <h3 className="font-semibold text-foreground">{t("offers.previewMode")}</h3>
+                    <p className="text-sm text-muted-foreground">{t("offers.previewSub")}</p>
                   </div>
                 </div>
                 <Button 
@@ -386,7 +389,7 @@ const MemberOffers = () => {
                   size="sm"
                   onClick={() => navigate("/member/upgrade")}
                 >
-                  Upgrade Now
+                  {t("offers.upgradeNow")}
                 </Button>
               </div>
             </div>
@@ -395,17 +398,30 @@ const MemberOffers = () => {
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Available Offers
+              {t("offers.title")}
             </h1>
             <p className="text-muted-foreground">
-              {filteredOffers.length} offer{filteredOffers.length !== 1 ? 's' : ''} from our partner businesses
+              {t("offers.subtitle", { count: filteredOffers.length })}
               {filteredOffers.filter(o => !o.isRedeemed).length > 0 && (
                 <span className="ml-2 inline-flex items-center gap-1 text-primary font-medium">
-                  • {filteredOffers.filter(o => !o.isRedeemed).length} available to redeem
+                  {t("offers.availableToRedeem", { count: filteredOffers.filter(o => !o.isRedeemed).length })}
                 </span>
               )}
             </p>
           </div>
+
+          {/* Filters */}
+          <div className="bg-white rounded-2xl p-4 shadow-soft mb-6 space-y-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder={t("offers.searchPlaceholder")}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
 
           {/* Filters */}
           <div className="bg-white rounded-2xl p-4 shadow-soft mb-6 space-y-4">
@@ -466,7 +482,7 @@ const MemberOffers = () => {
                       className="justify-between gap-2 min-w-[140px] h-auto p-0 hover:bg-transparent"
                     >
                       <span className="truncate font-medium text-foreground">
-                        {selectedCity === "all" ? "All Cities" : selectedCity}
+                        {selectedCity === "all" ? t("offers.allCities") : getCityDisplayName(selectedCity, i18n.language)}
                       </span>
                       <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
                     </Button>
@@ -476,7 +492,7 @@ const MemberOffers = () => {
                       onClick={() => setSelectedCity("all")}
                       className="flex items-center justify-between cursor-pointer"
                     >
-                      All Cities
+                      {t("offers.allCities")}
                       {selectedCity === "all" && (
                         <Check className="w-4 h-4 text-primary" />
                       )}
@@ -487,7 +503,7 @@ const MemberOffers = () => {
                         onClick={() => setSelectedCity(city)}
                         className="flex items-center justify-between cursor-pointer"
                       >
-                        {city}
+                        {getCityDisplayName(city, i18n.language)}
                         {selectedCity === city && (
                           <Check className="w-4 h-4 text-primary" />
                         )}
@@ -503,9 +519,9 @@ const MemberOffers = () => {
               <span className="text-lg">🐾</span>
               <div className="flex gap-1">
                 {[
-                  { value: "all" as const, label: "All Pets" },
-                  { value: "dog" as const, label: "🐕 Dogs" },
-                  { value: "cat" as const, label: "🐱 Cats" },
+                  { value: "all" as const, label: t("offers.petFilter.all") },
+                  { value: "dog" as const, label: t("offers.petFilter.dogs") },
+                  { value: "cat" as const, label: t("offers.petFilter.cats") },
                 ].map((option) => (
                   <button
                     key={option.value}
@@ -537,7 +553,7 @@ const MemberOffers = () => {
                 ) : (
                   <X className="w-4 h-4" />
                 )}
-                {showRedeemed ? "Showing all" : "Hiding redeemed"}
+                {showRedeemed ? t("offers.showingAll") : t("offers.hidingRedeemed")}
               </button>
               
               <button
@@ -549,7 +565,7 @@ const MemberOffers = () => {
                 }`}
               >
                 <Heart className={`w-4 h-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
-                {showFavoritesOnly ? "Favorites only" : "Show favorites"}
+                {showFavoritesOnly ? t("offers.favoritesOnly") : t("offers.showFavorites")}
               </button>
               
               <div className="flex items-center gap-2 ml-auto">
@@ -557,14 +573,14 @@ const MemberOffers = () => {
                 <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                   <SelectTrigger className="w-[160px] h-9">
                     <ArrowUpDown className="w-3.5 h-3.5 mr-2" />
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder={t("offers.sort.placeholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Newest First</SelectItem>
-                    <SelectItem value="discount_high">Highest Discount</SelectItem>
-                    <SelectItem value="discount_low">Lowest Discount</SelectItem>
-                    <SelectItem value="expiry">Expiring Soon</SelectItem>
-                    <SelectItem value="business_name">Business Name</SelectItem>
+                    <SelectItem value="newest">{t("offers.sort.newest")}</SelectItem>
+                    <SelectItem value="discount_high">{t("offers.sort.discountHigh")}</SelectItem>
+                    <SelectItem value="discount_low">{t("offers.sort.discountLow")}</SelectItem>
+                    <SelectItem value="expiry">{t("offers.sort.expiry")}</SelectItem>
+                    <SelectItem value="business_name">{t("offers.sort.businessName")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -576,10 +592,10 @@ const MemberOffers = () => {
             <div className="text-center py-12">
               <Tag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="font-display font-semibold text-lg mb-2">
-                No offers found
+                {t("offers.noOffersFound")}
               </h3>
               <p className="text-muted-foreground">
-                Try adjusting your filters or search query
+                {t("offers.noOffersHint")}
               </p>
             </div>
           ) : (
@@ -623,7 +639,7 @@ const MemberOffers = () => {
                           </div>
                           <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
                             <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                            <span className="truncate">{offer.business.city || "Location TBD"}</span>
+                            <span className="truncate">{offer.business.city ? getCityDisplayName(offer.business.city, i18n.language) : t("offers.locationTBD")}</span>
                           </p>
                         </div>
                       </div>
@@ -654,7 +670,7 @@ const MemberOffers = () => {
                       {isNewOffer(offer.created_at) && (
                         <Badge className="gap-1 bg-emerald-100 text-emerald-700 border-emerald-200">
                           <Sparkles className="w-3 h-3" />
-                          New
+                          {t("offers.newBadge")}
                         </Badge>
                       )}
                       {timeIndicator && (
@@ -681,34 +697,34 @@ const MemberOffers = () => {
                             ? 'bg-amber-50 text-amber-700 border-amber-200' 
                             : 'bg-purple-50 text-purple-700 border-purple-200'
                         }`}>
-                          {offer.pet_type === 'dog' ? '🐕 Dogs Only' : '🐱 Cats Only'}
+                          {offer.pet_type === 'dog' ? t("offers.dogsOnly") : t("offers.catsOnly")}
                         </Badge>
                       )}
                       {(offer.redemption_scope !== 'per_member' || offer.redemption_frequency !== 'one_time') && (
                         <>
                           {offer.redemption_scope === 'per_pet' && (
                             <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200 text-[10px]">
-                              🐾 Per Pet
+                              {t("offers.perPet")}
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'monthly' && (
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
-                              🗓️ Monthly
+                              {t("offers.monthly")}
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'weekly' && (
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
-                              📆 Weekly
+                              {t("offers.weekly")}
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'daily' && (
                             <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-[10px]">
-                              📅 Daily
+                              {t("offers.daily")}
                             </Badge>
                           )}
                           {offer.redemption_frequency === 'unlimited' && (
                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 text-[10px]">
-                              ♾️ Anytime
+                              {t("offers.anytime")}
                             </Badge>
                           )}
                         </>
@@ -739,7 +755,7 @@ const MemberOffers = () => {
                       {!isPaidMember ? (
                         <Badge className="bg-amber-100 text-amber-700 border-amber-200">
                           <Lock className="w-3 h-3 mr-1" />
-                          Upgrade to Redeem
+                          {t("offers.upgradeToRedeem")}
                         </Badge>
                       ) : offer.isRedeemed && offer.redemption_frequency === 'one_time' ? (
                         <Badge
@@ -747,11 +763,11 @@ const MemberOffers = () => {
                           className="bg-green-50 text-green-700 border-green-200"
                         >
                           <Check className="w-3 h-3 mr-1" />
-                          Redeemed
+                          {t("offers.redeemed")}
                         </Badge>
                       ) : (
                         <Badge className="bg-primary/10 text-primary border-0">
-                          Available
+                          {t("offers.available")}
                         </Badge>
                       )}
                     </div>

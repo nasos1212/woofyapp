@@ -3,6 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { ensureHttps } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Shelter {
   id: string;
@@ -27,6 +29,7 @@ interface ShelterDetailDialogProps {
 }
 
 const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialogProps) => {
+  const { t, i18n } = useTranslation();
   if (!shelter) return null;
 
   return (
@@ -57,7 +60,7 @@ const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialo
           <DialogTitle className="text-xl">{shelter.shelter_name}</DialogTitle>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <MapPin className="w-3.5 h-3.5" />
-            <span>{shelter.city || shelter.location}</span>
+            <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
           </div>
         </DialogHeader>
 
@@ -65,20 +68,20 @@ const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialo
           {shelter.dogs_in_care && (
             <div className="flex items-center gap-2 text-sm">
               <Heart className="w-4 h-4 text-primary" />
-              <span><span className="font-semibold text-primary">{shelter.dogs_in_care}</span> dogs in care</span>
+              <span><span className="font-semibold text-primary">{shelter.dogs_in_care}</span> {t("shelterDialog.dogsInCare")}</span>
             </div>
           )}
 
           {shelter.description && (
             <div>
-              <h4 className="text-sm font-medium text-foreground mb-1">About</h4>
+              <h4 className="text-sm font-medium text-foreground mb-1">{t("shelterDialog.about")}</h4>
               <p className="text-sm text-muted-foreground whitespace-pre-line">{shelter.description}</p>
             </div>
           )}
 
           {shelter.mission_statement && (
             <div>
-              <h4 className="text-sm font-medium text-foreground mb-1">Mission</h4>
+              <h4 className="text-sm font-medium text-foreground mb-1">{t("shelterDialog.mission")}</h4>
               <p className="text-sm text-muted-foreground whitespace-pre-line">{shelter.mission_statement}</p>
             </div>
           )}
@@ -92,7 +95,7 @@ const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialo
                 onClick={() => window.open(ensureHttps(shelter.website!), "_blank")}
               >
                 <Globe className="w-3.5 h-3.5" />
-                Website
+                {t("shelterDialog.website")}
               </Button>
             )}
             {shelter.donation_link && (
@@ -103,13 +106,13 @@ const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialo
                 onClick={() => window.open(ensureHttps(shelter.donation_link!), "_blank")}
               >
                 <Euro className="w-3.5 h-3.5" />
-                Donate
+                {t("shelterDialog.donate")}
               </Button>
             )}
             <Link to={`/shelter/${shelter.id}`} onClick={() => onOpenChange(false)}>
               <Button variant="default" size="sm" className="gap-1.5">
                 <ExternalLink className="w-3.5 h-3.5" />
-                View Full Profile
+                {t("shelterDialog.viewFullProfile")}
               </Button>
             </Link>
           </div>
