@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { useMembership } from "@/hooks/useMembership";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 export interface OfferWithDetails {
   id: string;
@@ -52,6 +54,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
   const { hasMembership, isPaidMember } = useMembership();
   const navigate = useNavigate();
   const { trackOfferClick } = useAnalyticsTracking();
+  const { t, i18n } = useTranslation();
   
   // Track offer click when dialog opens
   useEffect(() => {
@@ -63,20 +66,20 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
   if (!offer) return null;
 
   const formatDiscount = () => {
-    if (!offer.discount_value) return "Special Offer";
+    if (!offer.discount_value) return t("offerDialog.specialOffer");
     if (offer.discount_type === "percentage") {
-      return `${offer.discount_value}% off`;
+      return t("offerDialog.percentOff", { value: offer.discount_value });
     }
     if (offer.discount_type === "fixed") {
-      return `€${offer.discount_value} off`;
+      return t("offerDialog.euroOff", { value: offer.discount_value });
     }
     if (offer.discount_type === "bogo") {
-      return "Buy 1 Get 1";
+      return t("offerDialog.buyOneGetOne");
     }
     if (offer.discount_type === "free_item" || offer.discount_type === "free_session") {
-      return "Free";
+      return t("offerDialog.free");
     }
-    return `€${offer.discount_value} off`;
+    return t("offerDialog.euroOff", { value: offer.discount_value });
   };
 
 
@@ -87,7 +90,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
     const now = new Date();
     
     if (isPast(validUntil)) {
-      return { type: "expired", label: "Expired" };
+      return { type: "expired", label: t("offerDialog.expired") };
     }
     
     // Less than 7 days left
@@ -95,17 +98,18 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
     if (daysLeft <= 7) {
       return { 
         type: "expiring", 
-        label: `Expires ${formatDistanceToNow(validUntil, { addSuffix: true })}` 
+        label: t("offerDialog.expiresIn", { when: formatDistanceToNow(validUntil, { addSuffix: true }) })
       };
     }
     
     return { 
       type: "valid", 
-      label: `Valid until ${formatDate(validUntil)}` 
+      label: t("offerDialog.validUntil", { date: formatDate(validUntil) })
     };
   };
 
   const timeStatus = getTimeStatus();
+  const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
 
   return (
     <Dialog open={!!offer} onOpenChange={onClose}>
@@ -123,7 +127,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
               {offer.is_limited_time && (
                 <Badge variant="destructive" className="gap-1 text-xs">
                   <Clock className="w-3 h-3" />
-                  Limited Time
+                  {t("offerDialog.limitedTime")}
                 </Badge>
               )}
               {offer.limited_time_label && (
@@ -164,7 +168,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
               </Link>
               <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1">
                 <MapPin className="w-3 h-3 shrink-0" />
-                <span className="truncate">{offer.business.city || "Location TBD"}</span>
+                <span className="truncate">{offer.business.city ? getCityDisplayName(offer.business.city, i18n.language) : t("offerDialog.locationTBD")}</span>
               </p>
             </div>
             <Badge variant="secondary" className="text-xs shrink-0 hidden sm:inline-flex">
@@ -180,7 +184,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
             {showRedemptionStatus && offer.isRedeemed && (
               <Badge className="mt-2 bg-green-100 text-green-700 border-0 text-xs">
                 <Check className="w-3 h-3 mr-1" />
-                Already Redeemed
+                {t("offerDialog.alreadyRedeemed")}
               </Badge>
             )}
           </div>
@@ -196,7 +200,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                       {formatDate(new Date(offer.valid_from))} - {formatDate(new Date(offer.valid_until))}
                     </>
                   ) : offer.valid_until ? (
-                    <>Valid until {formatDate(new Date(offer.valid_until))}</>
+                    <>{t("offerDialog.validUntil", { date: formatDate(new Date(offer.valid_until)) })}</>
                   ) : null}
                 </span>
               </div>
@@ -206,7 +210,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           {/* Redemption Rules */}
           {(offer.redemption_scope || offer.redemption_frequency || offer.valid_days?.length || offer.valid_hours_start) && (
             <div className="space-y-1.5">
-              <h4 className="font-medium text-foreground text-sm">Redemption Rules</h4>
+              <h4 className="font-medium text-foreground text-sm">{t("offerDialog.redemptionRules")}</h4>
               <div className="flex flex-wrap gap-1.5">
                 {offer.redemption_scope && offer.redemption_scope !== 'per_member' && (
                   <Badge variant="outline" className={`text-xs ${
@@ -215,8 +219,8 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                       : 'bg-purple-50 text-purple-700 border-purple-200'
                   }`}>
                     {offer.redemption_scope === 'per_pet' 
-                      ? (offer.pet_type === 'cat' ? '🐱 Per Cat' : offer.pet_type === 'dog' ? '🐕 Per Dog' : '🐾 Per Pet')
-                      : '♾️ Unlimited'}
+                      ? (offer.pet_type === 'cat' ? t("offerDialog.perCat") : offer.pet_type === 'dog' ? t("offerDialog.perDog") : t("offerDialog.perPet"))
+                      : t("offerDialog.unlimited")}
                   </Badge>
                 )}
                 {offer.redemption_frequency && offer.redemption_frequency !== 'one_time' && (
@@ -225,14 +229,14 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                       ? 'bg-green-50 text-green-700 border-green-200' 
                       : 'bg-blue-50 text-blue-700 border-blue-200'
                   }`}>
-                    {offer.redemption_frequency === 'daily' ? '📅 Daily' :
-                     offer.redemption_frequency === 'weekly' ? '📆 Weekly' :
-                     offer.redemption_frequency === 'monthly' ? '🗓️ Monthly' : '♾️ Anytime'}
+                    {offer.redemption_frequency === 'daily' ? t("offerDialog.daily") :
+                     offer.redemption_frequency === 'weekly' ? t("offerDialog.weekly") :
+                     offer.redemption_frequency === 'monthly' ? t("offerDialog.monthly") : t("offerDialog.anytime")}
                   </Badge>
                 )}
                 {offer.valid_days && offer.valid_days.length > 0 && (
                   <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 text-xs">
-                    {offer.valid_days.map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}
+                    {offer.valid_days.map(d => t(`offerDialog.days.${dayKeys[d]}`)).join(', ')}
                   </Badge>
                 )}
                 {offer.valid_hours_start && offer.valid_hours_end && (
@@ -243,11 +247,11 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
               </div>
               <p className="text-xs text-muted-foreground">
                 {offer.redemption_scope === 'per_pet' && offer.redemption_frequency === 'monthly'
-                  ? 'Each of your pets can use this offer once per month'
+                  ? t("offerDialog.ruleNotePerPetMonthly")
                   : offer.redemption_frequency === 'unlimited'
-                    ? 'Use this offer anytime with no limits!'
+                    ? t("offerDialog.ruleNoteUnlimited")
                     : offer.redemption_frequency === 'one_time'
-                      ? 'This is a one-time offer'
+                      ? t("offerDialog.ruleNoteOneTime")
                       : null}
               </p>
             </div>
@@ -256,7 +260,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           {/* Description */}
           {offer.description && (
             <div className="space-y-1.5">
-              <h4 className="font-medium text-foreground text-sm">Description</h4>
+              <h4 className="font-medium text-foreground text-sm">{t("offerDialog.description")}</h4>
               <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                 {offer.description}
               </p>
@@ -266,7 +270,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           {/* Terms */}
           {offer.terms && (
             <div className="space-y-1.5">
-              <h4 className="font-medium text-foreground text-sm">Terms & Conditions</h4>
+              <h4 className="font-medium text-foreground text-sm">{t("offerDialog.terms")}</h4>
               <p className="text-muted-foreground text-xs sm:text-sm italic leading-relaxed">
                 {offer.terms}
               </p>
@@ -281,8 +285,8 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                   <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="font-semibold text-foreground text-sm">Upgrade to Redeem</h4>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Become a member to use this offer</p>
+                  <h4 className="font-semibold text-foreground text-sm">{t("offerDialog.upgradeToRedeem")}</h4>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("offerDialog.becomeMember")}</p>
                 </div>
               </div>
               <Button 
@@ -295,7 +299,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
                 }}
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                Upgrade Now
+                {t("offerDialog.upgradeNow")}
               </Button>
             </div>
           )}
@@ -310,7 +314,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
           >
             <Button className="w-full" variant={isPaidMember ? "default" : "outline"} size="sm">
               <Building2 className="w-4 h-4 mr-2" />
-              View Business Profile
+              {t("offerDialog.viewBusinessProfile")}
             </Button>
           </Link>
         </div>
