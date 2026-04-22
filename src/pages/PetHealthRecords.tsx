@@ -1236,7 +1236,7 @@ const PetHealthRecords = () => {
                     <CheckCircle className="h-6 w-6 text-green-500" />
                     <div>
                       <p className="text-xl font-bold">{records.length}</p>
-                      <p className="text-xs text-muted-foreground">Total</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.total")}</p>
                     </div>
                   </div>
                 </div>
@@ -1246,14 +1246,14 @@ const PetHealthRecords = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-4 w-full flex h-auto gap-1 p-1">
                   <TabsTrigger value="reminders" className="flex-1 text-xs sm:text-sm gap-1">
-                    <Bell className="w-3 h-3" /> Reminders
+                    <Bell className="w-3 h-3" /> {t("petHealth.tabs.reminders")}
                     {reminders.length > 0 && (
                       <Badge variant="secondary" className="ml-1 text-xs">{reminders.length}</Badge>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">All Records</TabsTrigger>
-                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">Vaccines</TabsTrigger>
-                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">Meds</TabsTrigger>
+                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.all")}</TabsTrigger>
+                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.vaccines")}</TabsTrigger>
+                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.meds")}</TabsTrigger>
                 </TabsList>
 
                 {/* Reminders Tab */}
@@ -1261,9 +1261,9 @@ const PetHealthRecords = () => {
                   {reminders.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">All caught up!</h3>
-                      <p className="text-muted-foreground mb-4">No upcoming reminders for {selectedPet?.pet_name}</p>
-                      <Button onClick={() => setShowAddDialog(true)}>Add Treatment</Button>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.allCaughtUp")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noReminders", { name: selectedPet?.pet_name })}</p>
+                      <Button onClick={() => setShowAddDialog(true)}>{t("petHealth.addTreatment")}</Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -1286,7 +1286,7 @@ const PetHealthRecords = () => {
                                 {getStatusBadge(reminder.status)}
                               </div>
                               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                                <span>Due: {formatDate(new Date(reminder.next_due_date!))}</span>
+                                <span>{t("petHealth.fields.due")}: {formatDate(new Date(reminder.next_due_date!))}</span>
                                 {reminder.reminder_interval_type && (
                                   <span className="text-xs">
                                     ({getIntervalLabel(reminder.reminder_interval_type, reminder.reminder_interval_days)})
@@ -1300,7 +1300,7 @@ const PetHealthRecords = () => {
                               </div>
                               {reminder.status === 'overdue' && (
                                 <p className="text-destructive text-sm mt-1">
-                                  {Math.abs(reminder.daysUntil)} days overdue
+                                  {t("petHealth.status.daysOverdue", { count: Math.abs(reminder.daysUntil) })}
                                 </p>
                               )}
                               {reminder.document_url && (
@@ -1314,7 +1314,7 @@ const PetHealthRecords = () => {
                                       onClick={() => handleViewSingleDocument(docPath, reminder.title)}
                                     >
                                       <File className="w-3 h-3" />
-                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? `Doc ${docIdx + 1}` : 'Document'}
+                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? t("petHealth.fields.doc", { n: docIdx + 1 }) : t("petHealth.fields.document")}
                                     </Button>
                                   ))}
                                 </div>
@@ -1335,7 +1335,7 @@ const PetHealthRecords = () => {
                                 onClick={() => markAsCompleted(reminder)}
                               >
                                 <CheckCircle className="mr-1 h-4 w-4" />
-                                Done
+                                {t("petHealth.actions.done")}
                               </Button>
                             </div>
                           </div>
@@ -1350,9 +1350,9 @@ const PetHealthRecords = () => {
                   {records.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">No health records yet</h3>
-                      <p className="text-muted-foreground mb-4">Start tracking {selectedPet?.pet_name}'s health history</p>
-                      <Button onClick={() => setShowAddDialog(true)}>Add First Record</Button>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noRecords")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noRecordsHint", { name: selectedPet?.pet_name })}</p>
+                      <Button onClick={() => setShowAddDialog(true)}>{t("petHealth.addFirstRecord")}</Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -1393,13 +1393,13 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Date: {formatDate(new Date(record.date_administered))}</span>
+                                <span>{t("petHealth.fields.date")}: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
-                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
+                                <span>{t("petHealth.fields.next")}: {formatDate(new Date(record.next_due_date))}</span>
                               )}
-                              {record.veterinarian_name && <span>Vet: {record.veterinarian_name}</span>}
-                              {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
+                              {record.veterinarian_name && <span>{t("petHealth.fields.vet")}: {record.veterinarian_name}</span>}
+                              {record.clinic_name && <span>{t("petHealth.fields.clinic")}: {record.clinic_name}</span>}
                             </div>
                             {record.document_url && (
                               <div className="flex flex-wrap gap-2 mt-2">
@@ -1412,7 +1412,7 @@ const PetHealthRecords = () => {
                                     onClick={() => handleViewSingleDocument(docPath, record.title)}
                                   >
                                     <File className="w-4 h-4" />
-                                    {parseDocumentUrls(record.document_url!).length > 1 ? `Document ${docIdx + 1}` : 'View Document'}
+                                    {parseDocumentUrls(record.document_url!).length > 1 ? t("petHealth.fields.documentN", { n: docIdx + 1 }) : t("petHealth.fields.viewDocument")}
                                     <ExternalLink className="w-3 h-3" />
                                   </Button>
                                 ))}
