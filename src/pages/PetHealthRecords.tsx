@@ -48,24 +48,20 @@ interface Pet {
   pet_type: "dog" | "cat";
 }
 
-const recordTypeConfig: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
-  vaccination: { icon: <Syringe className="w-4 h-4" />, label: "Vaccination", color: "bg-blue-100 text-blue-700" },
-  vet_visit: { icon: <Stethoscope className="w-4 h-4" />, label: "Vet Visit", color: "bg-green-100 text-green-700" },
-  medication: { icon: <Pill className="w-4 h-4" />, label: "Medication", color: "bg-purple-100 text-purple-700" },
-  allergy: { icon: <AlertCircle className="w-4 h-4" />, label: "Allergy", color: "bg-red-100 text-red-700" },
-  surgery: { icon: <FileText className="w-4 h-4" />, label: "Surgery", color: "bg-orange-100 text-orange-700" },
-  other: { icon: <FileText className="w-4 h-4" />, label: "Other", color: "bg-gray-100 text-gray-700" },
+const recordTypeConfig: Record<string, { icon: React.ReactNode; color: string }> = {
+  vaccination: { icon: <Syringe className="w-4 h-4" />, color: "bg-blue-100 text-blue-700" },
+  vet_visit: { icon: <Stethoscope className="w-4 h-4" />, color: "bg-green-100 text-green-700" },
+  medication: { icon: <Pill className="w-4 h-4" />, color: "bg-purple-100 text-purple-700" },
+  allergy: { icon: <AlertCircle className="w-4 h-4" />, color: "bg-red-100 text-red-700" },
+  surgery: { icon: <FileText className="w-4 h-4" />, color: "bg-orange-100 text-orange-700" },
+  other: { icon: <FileText className="w-4 h-4" />, color: "bg-gray-100 text-gray-700" },
 };
 
-const INTERVAL_OPTIONS = [
-  { value: 'once', label: 'One-time only', days: 0 },
-  { value: 'daily', label: 'Daily (1 day)', days: 1 },
-  { value: 'monthly', label: 'Monthly (30 days)', days: 30 },
-  { value: 'quarterly', label: 'Every 3 months (90 days)', days: 90 },
-  { value: 'biannually', label: 'Every 6 months (180 days)', days: 180 },
-  { value: 'yearly', label: 'Yearly (365 days)', days: 365 },
-  { value: 'custom', label: 'Custom interval', days: 0 },
-] as const;
+const INTERVAL_VALUES = ['once', 'daily', 'monthly', 'quarterly', 'biannually', 'yearly', 'custom'] as const;
+const INTERVAL_DAYS_MAP: Record<string, number> = {
+  once: 0, daily: 1, monthly: 30, quarterly: 90, biannually: 180, yearly: 365, custom: 0,
+};
+
 
 interface TreatmentPreset {
   id: string;
