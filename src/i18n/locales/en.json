@@ -318,5 +318,13 @@
       "perYear": "€29/year",
       "gotIt": "Got it!"
     }
+  },
+  "cityPrompt": {
+    "title": "Help us build your local pet community! 🐾",
+    "description": "Select your city to get location-based offers and recommendations.",
+    "selectCity": "Select City",
+    "dismiss": "Dismiss",
+    "successToast": "City set to {{city}}! 🐾",
+    "errorToast": "Failed to save city"
   }
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin, X, Check, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,7 @@ interface CityPromptBannerProps {
 }
 
 const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProps) => {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
 
   const handleSelectCity = async (city: string) => {
@@ -31,10 +33,10 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
       if (error) throw error;
 
       onCitySet(city);
-      toast.success(`City set to ${city}! 🐾`);
+      toast.success(t("cityPrompt.successToast", { city }));
     } catch (error) {
       console.error("Error saving city:", error);
-      toast.error("Failed to save city");
+      toast.error(t("cityPrompt.errorToast"));
     } finally {
       setSaving(false);
     }
@@ -45,7 +47,7 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
       <button 
         onClick={onDismiss}
         className="absolute top-3 right-3 text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Dismiss"
+        aria-label={t("cityPrompt.dismiss")}
       >
         <X className="w-4 h-4" />
       </button>
@@ -55,17 +57,17 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
         </div>
         <div className="flex-1">
           <p className="font-semibold text-foreground text-sm mb-0.5">
-            Help us build your local pet community! 🐾
+            {t("cityPrompt.title")}
           </p>
           <p className="text-xs text-muted-foreground">
-            Select your city to get location-based offers and recommendations.
+            {t("cityPrompt.description")}
           </p>
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="sm" className="gap-1.5 shrink-0" disabled={saving}>
               <MapPin className="w-3.5 h-3.5" />
-              Select City
+              {t("cityPrompt.selectCity")}
               <ChevronDown className="w-3.5 h-3.5" />
             </Button>
           </DropdownMenuTrigger>
