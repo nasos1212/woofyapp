@@ -10,6 +10,8 @@ import ShelterDetailDialog from "@/components/ShelterDetailDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Shelter {
   id: string;
@@ -30,6 +32,7 @@ interface Shelter {
 
 const MemberShelters = () => {
   const { user, loading: authLoading } = useAuth();
+  const { t, i18n } = useTranslation();
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedShelter, setSelectedShelter] = useState<Shelter | null>(null);
@@ -70,8 +73,8 @@ const MemberShelters = () => {
   return (
     <>
       <Helmet>
-        <title>Pet Shelters | Wooffy</title>
-        <meta name="description" content="Support local pet shelters in Cyprus. 10% of every Wooffy membership goes to helping shelters care for dogs in need." />
+        <title>{t("shelters.pageTitle")}</title>
+        <meta name="description" content={t("shelters.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-rose-50/50 via-background to-background overflow-x-hidden">
@@ -81,7 +84,7 @@ const MemberShelters = () => {
           {/* Back Button */}
           <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            {t("shelters.backToDashboard")}
           </Link>
 
           {/* Page Header */}
@@ -92,10 +95,10 @@ const MemberShelters = () => {
               </div>
               <div>
                 <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                  Pet Shelters
+                  {t("shelters.title")}
                 </h1>
                 <p className="text-muted-foreground">
-                  10% of your membership supports these amazing shelters
+                  {t("shelters.subtitle")}
                 </p>
               </div>
             </div>
@@ -109,7 +112,7 @@ const MemberShelters = () => {
                   <Heart className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm">Partner Shelters</p>
+                  <p className="text-white/80 text-sm">{t("shelters.partnerShelters")}</p>
                   <p className="text-2xl md:text-3xl font-bold">{shelters.length}</p>
                 </div>
               </CardContent>
@@ -120,7 +123,7 @@ const MemberShelters = () => {
                   <Euro className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm">Target Donation for 2026</p>
+                  <p className="text-white/80 text-sm">{t("shelters.targetDonation")}</p>
                   <p className="text-2xl md:text-3xl font-bold">€1,000</p>
                 </div>
               </CardContent>
@@ -136,7 +139,7 @@ const MemberShelters = () => {
             <Card className="text-center py-12">
               <CardContent>
                 <Heart className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground">No shelters available yet</p>
+                <p className="text-muted-foreground">{t("shelters.noShelters")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -177,7 +180,7 @@ const MemberShelters = () => {
                       
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
                         <MapPin className="w-3.5 h-3.5" />
-                        <span>{shelter.city || shelter.location}</span>
+                        <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                       </div>
 
                       {shelter.description && (
@@ -189,7 +192,7 @@ const MemberShelters = () => {
                       <div className="flex items-center justify-between pt-3 border-t">
                         {shelter.dogs_in_care && (
                           <div className="text-xs text-muted-foreground">
-                            <span className="font-medium text-primary">{shelter.dogs_in_care}</span> dogs in care
+                            <span className="font-medium text-primary">{shelter.dogs_in_care}</span> {t("shelters.dogsInCare")}
                           </div>
                         )}
                         {shelter.website && (
@@ -203,7 +206,7 @@ const MemberShelters = () => {
                             }}
                           >
                             <Globe className="w-3 h-3" />
-                            Website
+                            {t("shelters.website")}
                           </Button>
                         )}
                       </div>
@@ -218,9 +221,9 @@ const MemberShelters = () => {
           <Card className="mt-8 bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50">
             <CardContent className="p-6 text-center">
               <Heart className="w-10 h-10 mx-auto text-rose-500 mb-3" />
-              <h3 className="font-semibold text-foreground mb-2">Want to help even more?</h3>
+              <h3 className="font-semibold text-foreground mb-2">{t("shelters.ctaTitle")}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Visit any shelter's page to find their donation link and support them directly.
+                {t("shelters.ctaDesc")}
               </p>
             </CardContent>
           </Card>

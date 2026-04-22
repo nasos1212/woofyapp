@@ -25,6 +25,8 @@ import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { formatDistanceToNow, format } from "date-fns";
 import EditAlertDialog from "@/components/EditAlertDialog";
 import { getBreedsByPetType } from "@/data/petBreeds";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
@@ -65,6 +67,7 @@ interface NotificationPreferences {
 const LostFoundAlerts = () => {
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   // Redirect business users
@@ -211,11 +214,11 @@ const LostFoundAlerts = () => {
         setNotificationPrefs(data as NotificationPreferences);
       }
 
-      toast.success("Notification preferences saved!");
+      toast.success(t("lostFound.toasts.prefsSaved"));
       setShowSettingsDialog(false);
     } catch (error) {
       console.error("Error saving preferences:", error);
-      toast.error("Failed to save preferences");
+      toast.error(t("lostFound.toasts.prefsError"));
     } finally {
       setIsSavingPrefs(false);
     }
@@ -240,18 +243,18 @@ const LostFoundAlerts = () => {
 
     for (let i = 0; i < files.length; i++) {
       if (petPhotos.length + newFiles.length >= MAX_PHOTOS) {
-        toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+        toast.error(t("lostFound.toasts.maxPhotos", { max: MAX_PHOTOS }));
         break;
       }
 
       const file = files[i];
 
       if (!file.type.startsWith("image/")) {
-        toast.error("Please select image files only");
+        toast.error(t("lostFound.toasts.imagesOnly"));
         continue;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
+        toast.error(t("lostFound.toasts.tooLarge", { name: file.name }));
         continue;
       }
 
@@ -285,23 +288,23 @@ const LostFoundAlerts = () => {
   const handleCreateAlert = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      toast.error("Please log in to create an alert");
+      toast.error(t("lostFound.toasts.loginToCreate"));
       return;
     }
 
     // For lost pets, name is required. For found pets, description is the key field
     if (alertType === "lost" && !petName) {
-      toast.error("Please enter the pet's name");
+      toast.error(t("lostFound.toasts.needsName"));
       return;
     }
 
     if (!petDescription || !lastSeenCity || !lastSeenDate || !contactPhone) {
-      toast.error("Please fill in all required fields including contact phone");
+      toast.error(t("lostFound.toasts.needsFields"));
       return;
     }
 
     if (petPhotos.length === 0) {
-      toast.error("Please upload at least one photo");
+      toast.error(t("lostFound.toasts.needsPhoto"));
       return;
     }
 
@@ -380,15 +383,15 @@ const LostFoundAlerts = () => {
 
       toast.success(
         alertType === "lost"
-          ? "Alert created! The community will help find your pet."
-          : "Thank you for reporting! Your alert is now live."
+          ? t("lostFound.toasts.createdLost")
+          : t("lostFound.toasts.createdFound")
       );
       setShowCreateDialog(false);
       resetForm();
       fetchAlerts();
     } catch (error) {
       console.error("Error creating alert:", error);
-      toast.error("Failed to create alert");
+      toast.error(t("lostFound.toasts.createFailed"));
     } finally {
       setIsCreating(false);
       setIsUploadingPhoto(false);
@@ -425,13 +428,13 @@ const LostFoundAlerts = () => {
       if (error) throw error;
       toast.success(
         alertType === "lost"
-          ? "Wonderful news! So glad your pet is found!"
-          : "Great! The pet has been reunited with its owner!"
+          ? t("lostFound.toasts.resolvedLost")
+          : t("lostFound.toasts.resolvedFound")
       );
       fetchAlerts();
     } catch (error) {
       console.error("Error updating alert:", error);
-      toast.error("Failed to update alert");
+      toast.error(t("lostFound.toasts.updateFailed"));
     }
   };
 
