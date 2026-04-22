@@ -73,8 +73,8 @@ const MemberShelters = () => {
   return (
     <>
       <Helmet>
-        <title>Pet Shelters | Wooffy</title>
-        <meta name="description" content="Support local pet shelters in Cyprus. 10% of every Wooffy membership goes to helping shelters care for dogs in need." />
+        <title>{t("shelters.pageTitle")}</title>
+        <meta name="description" content={t("shelters.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-rose-50/50 via-background to-background overflow-x-hidden">
@@ -84,7 +84,7 @@ const MemberShelters = () => {
           {/* Back Button */}
           <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            {t("shelters.backToDashboard")}
           </Link>
 
           {/* Page Header */}
@@ -95,10 +95,10 @@ const MemberShelters = () => {
               </div>
               <div>
                 <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                  Pet Shelters
+                  {t("shelters.title")}
                 </h1>
                 <p className="text-muted-foreground">
-                  10% of your membership supports these amazing shelters
+                  {t("shelters.subtitle")}
                 </p>
               </div>
             </div>
@@ -112,7 +112,7 @@ const MemberShelters = () => {
                   <Heart className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm">Partner Shelters</p>
+                  <p className="text-white/80 text-sm">{t("shelters.partnerShelters")}</p>
                   <p className="text-2xl md:text-3xl font-bold">{shelters.length}</p>
                 </div>
               </CardContent>
@@ -123,7 +123,7 @@ const MemberShelters = () => {
                   <Euro className="w-6 h-6" />
                 </div>
                 <div>
-                  <p className="text-white/80 text-sm">Target Donation for 2026</p>
+                  <p className="text-white/80 text-sm">{t("shelters.targetDonation")}</p>
                   <p className="text-2xl md:text-3xl font-bold">€1,000</p>
                 </div>
               </CardContent>
@@ -139,7 +139,7 @@ const MemberShelters = () => {
             <Card className="text-center py-12">
               <CardContent>
                 <Heart className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                <p className="text-muted-foreground">No shelters available yet</p>
+                <p className="text-muted-foreground">{t("shelters.noShelters")}</p>
               </CardContent>
             </Card>
           ) : (
