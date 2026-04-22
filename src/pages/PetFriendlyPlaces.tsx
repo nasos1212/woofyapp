@@ -288,16 +288,16 @@ const PetFriendlyPlaces = () => {
                           </h3>
                           <div className="flex items-center gap-1 flex-wrap">
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                              {config.label}
+                              {t(`petFriendlyPlaces.types.${place.place_type}`, { defaultValue: config.label })}
                             </Badge>
                             {place.is_24_hour && (
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-50 text-blue-600 border-blue-200">
-                                24h
+                                {t("petFriendlyPlaces.badge24h")}
                               </Badge>
                             )}
                             {place.is_emergency && (
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-red-50 text-red-600 border-red-200">
-                                Emergency
+                                {t("petFriendlyPlaces.badgeEmergency")}
                               </Badge>
                             )}
                           </div>
