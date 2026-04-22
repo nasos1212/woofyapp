@@ -40,6 +40,8 @@ import PlaceRating from "@/components/PlaceRating";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface PetFriendlyPlace {
   id: string;
@@ -76,6 +78,7 @@ const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; 
 
 const PetFriendlyPlaces = () => {
   const { user, loading } = useAuth();
+  const { t, i18n } = useTranslation();
   const [places, setPlaces] = useState<PetFriendlyPlace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -143,8 +146,8 @@ const PetFriendlyPlaces = () => {
   return (
     <>
       <Helmet>
-        <title>Dog-Friendly Places | Wooffy</title>
-        <meta name="description" content="Discover dog-friendly beaches, cafés, hotels, and more in Cyprus." />
+        <title>{t("petFriendlyPlaces.pageTitle")}</title>
+        <meta name="description" content={t("petFriendlyPlaces.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
@@ -155,7 +158,7 @@ const PetFriendlyPlaces = () => {
           <div className="mb-8">
             <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              {t("petFriendlyPlaces.backToDashboard")}
             </Link>
             <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
               <div className="flex items-center gap-3">
@@ -164,13 +167,13 @@ const PetFriendlyPlaces = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                    Dog-Friendly Places
+                    {t("petFriendlyPlaces.title")}
                   </h1>
                   <p className="text-muted-foreground">
-                    Discover where your furry friend is welcome in Cyprus
+                    {t("petFriendlyPlaces.subtitle")}
                   </p>
                   <p className="text-xs text-muted-foreground/70 italic mt-1">
-                    (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
+                    {t("petFriendlyPlaces.disclaimer")}
                   </p>
                 </div>
               </div>
@@ -185,7 +188,7 @@ const PetFriendlyPlaces = () => {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search places..."
+                  placeholder={t("petFriendlyPlaces.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -196,18 +199,15 @@ const PetFriendlyPlaces = () => {
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="All Types" />
+                  <SelectValue placeholder={t("petFriendlyPlaces.allTypes")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  {availableTypes.map((type) => {
-                    const config = getPlaceConfig(type);
-                    return (
-                      <SelectItem key={type} value={type}>
-                        {config.label}
-                      </SelectItem>
-                    );
-                  })}
+                  <SelectItem value="all">{t("petFriendlyPlaces.allTypes")}</SelectItem>
+                  {availableTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`petFriendlyPlaces.types.${type}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -215,13 +215,13 @@ const PetFriendlyPlaces = () => {
               <Select value={selectedCity} onValueChange={setSelectedCity}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <MapPin className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="All Cities" />
+                  <SelectValue placeholder={t("petFriendlyPlaces.allCities")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Cities</SelectItem>
+                  <SelectItem value="all">{t("petFriendlyPlaces.allCities")}</SelectItem>
                   {cyprusCityNames.map((city) => (
                     <SelectItem key={city} value={city}>
-                      {city}
+                      {getCityDisplayName(city, i18n.language)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -240,12 +240,12 @@ const PetFriendlyPlaces = () => {
                 <MapPin className="w-8 h-8 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                {places.length === 0 ? "No places yet" : "No places found"}
+                {places.length === 0 ? t("petFriendlyPlaces.noPlacesYet") : t("petFriendlyPlaces.noPlacesFound")}
               </h3>
               <p className="text-muted-foreground mb-4">
                 {places.length === 0 
-                  ? "Dog-friendly places will be added soon. Check back later!"
-                  : "Try adjusting your filters or search query."}
+                  ? t("petFriendlyPlaces.noPlacesYetDesc")
+                  : t("petFriendlyPlaces.noPlacesFoundDesc")}
               </p>
               {places.length > 0 && (
                 <Button 
@@ -256,15 +256,15 @@ const PetFriendlyPlaces = () => {
                     setSelectedCity("all");
                   }}
                 >
-                  Clear Filters
+                  {t("petFriendlyPlaces.clearFilters")}
                 </Button>
               )}
             </div>
           ) : (
             <>
               <p className="text-sm text-muted-foreground mb-4">
-                Showing {filteredPlaces.length} {filteredPlaces.length === 1 ? "place" : "places"}
-                <span className="ml-2 text-xs italic opacity-75">(All places are verified & approved by the Wooffy team 🐾)</span>
+                {t("petFriendlyPlaces.showing", { count: filteredPlaces.length })}
+                <span className="ml-2 text-xs italic opacity-75">{t("petFriendlyPlaces.verifiedNote")}</span>
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -288,16 +288,16 @@ const PetFriendlyPlaces = () => {
                           </h3>
                           <div className="flex items-center gap-1 flex-wrap">
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                              {config.label}
+                              {t(`petFriendlyPlaces.types.${place.place_type}`, { defaultValue: config.label })}
                             </Badge>
                             {place.is_24_hour && (
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-blue-50 text-blue-600 border-blue-200">
-                                24h
+                                {t("petFriendlyPlaces.badge24h")}
                               </Badge>
                             )}
                             {place.is_emergency && (
                               <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-red-50 text-red-600 border-red-200">
-                                Emergency
+                                {t("petFriendlyPlaces.badgeEmergency")}
                               </Badge>
                             )}
                           </div>
@@ -320,7 +320,7 @@ const PetFriendlyPlaces = () => {
                         >
                           <MapPin className="w-3 h-3 flex-shrink-0 mt-0.5" />
                           <span className="line-clamp-1 group-hover:underline">
-                            {[place.area, place.city].filter(Boolean).join(", ")}
+                            {[place.area, place.city ? getCityDisplayName(place.city, i18n.language) : null].filter(Boolean).join(", ")}
                           </span>
                         </a>
                       )}
@@ -348,7 +348,7 @@ const PetFriendlyPlaces = () => {
                           )}
                         >
                           <Navigation className="w-3 h-3 mr-1" />
-                          Go
+                          {t("petFriendlyPlaces.actions.go")}
                         </Button>
                         {place.phone && (
                           <a
@@ -356,7 +356,7 @@ const PetFriendlyPlaces = () => {
                             className="flex-1 inline-flex items-center justify-center gap-1 h-7 text-xs px-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground font-medium"
                           >
                             <Phone className="w-3 h-3" />
-                            Call
+                            {t("petFriendlyPlaces.actions.call")}
                           </a>
                         )}
                         {place.website && (
