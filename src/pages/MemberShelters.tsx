@@ -10,6 +10,8 @@ import ShelterDetailDialog from "@/components/ShelterDetailDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Shelter {
   id: string;
