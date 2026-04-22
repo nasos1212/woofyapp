@@ -177,8 +177,8 @@ const FreeMemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Community Hub | Wooffy</title>
-        <meta name="description" content="Join the Wooffy pet community - ask questions, share experiences, and connect with pet parents." />
+        <title>{t("freeMember.pageTitle")}</title>
+        <meta name="description" content={t("freeMember.pageDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background overflow-x-hidden">
@@ -205,10 +205,10 @@ const FreeMemberDashboard = () => {
           {/* Welcome Header - Simple & Clean */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
-              Hello, {profileName || "Friend"}! 🐾
+              {t("freeMember.hello", { name: profileName || t("freeMember.friend") })}
             </h1>
             <p className="text-muted-foreground">
-              Connect with the Wooffy pet community
+              {t("freeMember.subtitle")}
             </p>
           </div>
 
@@ -223,16 +223,16 @@ const FreeMemberDashboard = () => {
                     </div>
                     <div>
                       <h2 className="font-display text-xl md:text-2xl font-bold text-white">
-                        Community Hub
+                        {t("freeMember.hub.title")}
                       </h2>
                       <p className="text-white/80 text-sm">
-                        Your pet parenting questions, answered
+                        {t("freeMember.hub.tagline")}
                       </p>
                     </div>
                   </div>
 
                   <p className="text-white/90 mb-6 max-w-lg">
-                    Get advice from experienced pet owners, share your knowledge, and be part of Cyprus's most helpful pet community.
+                    {t("freeMember.hub.description")}
                   </p>
 
                   <div className="flex flex-wrap gap-3">
@@ -242,7 +242,7 @@ const FreeMemberDashboard = () => {
                       className="bg-white text-teal-700 hover:bg-white/90 gap-2"
                     >
                       <MessageSquarePlus className="w-5 h-5" />
-                      Browse Questions
+                      {t("freeMember.hub.browse")}
                     </Button>
                     <Button 
                       size="lg"
@@ -251,7 +251,7 @@ const FreeMemberDashboard = () => {
                       className="border-white bg-white text-teal-700 hover:bg-white/90 gap-2"
                     >
                       <HelpCircle className="w-5 h-5" />
-                      Ask a Question
+                      {t("freeMember.hub.ask")}
                     </Button>
                   </div>
                 </div>
@@ -263,7 +263,7 @@ const FreeMemberDashboard = () => {
                     className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
                   >
                     <Bookmark className="w-4 h-4" />
-                    <span className="text-sm font-medium">Saved Questions</span>
+                    <span className="text-sm font-medium">{t("freeMember.hub.saved")}</span>
                   </button>
                 </div>
               </CardContent>
@@ -274,7 +274,7 @@ const FreeMemberDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
-                🐾 My Pets
+                {t("freeMember.pets.title")}
               </h2>
               <Button 
                 size="sm" 
@@ -282,7 +282,7 @@ const FreeMemberDashboard = () => {
                 className="gap-1"
               >
                 <PlusCircle className="w-4 h-4" />
-                Add Pet
+                {t("freeMember.pets.addPet")}
               </Button>
             </div>
             
@@ -290,13 +290,13 @@ const FreeMemberDashboard = () => {
               <Card className="border-dashed border-2 border-muted-foreground/20">
                 <CardContent className="p-6 text-center">
                   <Dog className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-                  <h3 className="font-medium text-foreground mb-1">No pets yet</h3>
+                  <h3 className="font-medium text-foreground mb-1">{t("freeMember.pets.empty")}</h3>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Add your first pet to start tracking their health and more
+                    {t("freeMember.pets.emptyDesc")}
                   </p>
                   <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
                     <PlusCircle className="w-4 h-4" />
-                    Add Your First Pet
+                    {t("freeMember.pets.addFirst")}
                   </Button>
                 </CardContent>
               </Card>
@@ -327,7 +327,7 @@ const FreeMemberDashboard = () => {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
                         <p className="text-sm text-muted-foreground truncate">
-                          {pet.pet_breed || (pet.pet_type === 'cat' ? 'Cat' : 'Dog')}
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
                         </p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
