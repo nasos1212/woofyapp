@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -122,7 +123,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center flex-shrink-0">
             <MapPin className="w-5 h-5 text-primary" />
           </div>
-          <span className="text-sm text-left text-foreground">Are you a dog-friendly place? <strong className="text-primary">Get listed for free!</strong></span>
+          <span className="text-sm text-left text-foreground">{t("getListed.ctaQuestion")} <strong className="text-primary">{t("getListed.ctaAction")}</strong></span>
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
