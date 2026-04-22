@@ -146,8 +146,8 @@ const PetFriendlyPlaces = () => {
   return (
     <>
       <Helmet>
-        <title>Dog-Friendly Places | Wooffy</title>
-        <meta name="description" content="Discover dog-friendly beaches, cafés, hotels, and more in Cyprus." />
+        <title>{t("petFriendlyPlaces.pageTitle")}</title>
+        <meta name="description" content={t("petFriendlyPlaces.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
@@ -158,7 +158,7 @@ const PetFriendlyPlaces = () => {
           <div className="mb-8">
             <Link to="/member" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+              {t("petFriendlyPlaces.backToDashboard")}
             </Link>
             <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
               <div className="flex items-center gap-3">
@@ -167,13 +167,13 @@ const PetFriendlyPlaces = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                    Dog-Friendly Places
+                    {t("petFriendlyPlaces.title")}
                   </h1>
                   <p className="text-muted-foreground">
-                    Discover where your furry friend is welcome in Cyprus
+                    {t("petFriendlyPlaces.subtitle")}
                   </p>
                   <p className="text-xs text-muted-foreground/70 italic mt-1">
-                    (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
+                    {t("petFriendlyPlaces.disclaimer")}
                   </p>
                 </div>
               </div>
@@ -188,7 +188,7 @@ const PetFriendlyPlaces = () => {
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search places..."
+                  placeholder={t("petFriendlyPlaces.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -199,18 +199,15 @@ const PetFriendlyPlaces = () => {
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="All Types" />
+                  <SelectValue placeholder={t("petFriendlyPlaces.allTypes")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  {availableTypes.map((type) => {
-                    const config = getPlaceConfig(type);
-                    return (
-                      <SelectItem key={type} value={type}>
-                        {config.label}
-                      </SelectItem>
-                    );
-                  })}
+                  <SelectItem value="all">{t("petFriendlyPlaces.allTypes")}</SelectItem>
+                  {availableTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {t(`petFriendlyPlaces.types.${type}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -218,13 +215,13 @@ const PetFriendlyPlaces = () => {
               <Select value={selectedCity} onValueChange={setSelectedCity}>
                 <SelectTrigger className="w-full sm:w-[180px]">
                   <MapPin className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="All Cities" />
+                  <SelectValue placeholder={t("petFriendlyPlaces.allCities")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Cities</SelectItem>
+                  <SelectItem value="all">{t("petFriendlyPlaces.allCities")}</SelectItem>
                   {cyprusCityNames.map((city) => (
                     <SelectItem key={city} value={city}>
-                      {city}
+                      {getCityDisplayName(city, i18n.language)}
                     </SelectItem>
                   ))}
                 </SelectContent>
