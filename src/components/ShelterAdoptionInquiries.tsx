@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Mail, Phone, MessageSquare, Clock, CheckCircle, XCircle, Inbox } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 
 interface AdoptionInquiry {
   id: string;
@@ -149,7 +149,7 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                       </p>
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
+                      {formatRelative(inquiry.created_at)}
                     </span>
                   </div>
 

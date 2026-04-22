@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import Header from "@/components/Header";
 import { BirthdayOfferViewDialog } from "@/components/BirthdayOfferViewDialog";
 
@@ -251,9 +251,7 @@ const Notifications = () => {
                         )}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
-                        {formatDistanceToNow(new Date(notification.created_at), {
-                          addSuffix: true,
-                        })}
+                        {formatRelative(notification.created_at)}
                       </p>
                     </div>
                     {!notification.read && (

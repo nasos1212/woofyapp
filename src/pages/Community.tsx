@@ -38,7 +38,7 @@ import {
   Dog,
   Cat
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatRelative } from '@/lib/relativeTime';
 import { useTranslation } from 'react-i18next';
 
 const Community = () => {
@@ -228,7 +228,7 @@ const Community = () => {
                     {question.helped_count} {t('community.helped')}
                   </span>
                   <span className="hidden xs:inline">
-                    {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
+                    {formatRelative(question.created_at)}
                   </span>
                 </div>
                 <Button

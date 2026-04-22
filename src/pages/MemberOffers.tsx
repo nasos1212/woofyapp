@@ -19,7 +19,8 @@ import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import OfferDetailDialog, { OfferWithDetails } from "@/components/OfferDetailDialog";
-import { formatDistanceToNow, isPast, differenceInDays } from "date-fns";
+import { isPast, differenceInDays } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
@@ -331,7 +332,7 @@ const MemberOffers = () => {
       if (daysLeft <= 7) {
         return { 
           type: "expiring", 
-          label: t("offers.endsIn", { when: formatDistanceToNow(validUntil, { addSuffix: true }) })
+          label: t("offers.endsIn", { when: formatRelative(validUntil) })
         };
       }
     }
