@@ -11,6 +11,7 @@ import {
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface CityPromptBannerProps {
   userId: string;
@@ -19,7 +20,7 @@ interface CityPromptBannerProps {
 }
 
 const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [saving, setSaving] = useState(false);
 
   const handleSelectCity = async (city: string) => {
@@ -33,7 +34,7 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
       if (error) throw error;
 
       onCitySet(city);
-      toast.success(t("cityPrompt.successToast", { city }));
+      toast.success(t("cityPrompt.successToast", { city: getCityDisplayName(city, i18n.language) }));
     } catch (error) {
       console.error("Error saving city:", error);
       toast.error(t("cityPrompt.errorToast"));
@@ -78,7 +79,7 @@ const CityPromptBanner = ({ userId, onCitySet, onDismiss }: CityPromptBannerProp
                 onClick={() => handleSelectCity(city)}
                 className="cursor-pointer"
               >
-                {city}
+                {getCityDisplayName(city, i18n.language)}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
