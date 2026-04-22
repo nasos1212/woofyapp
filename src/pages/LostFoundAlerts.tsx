@@ -428,13 +428,13 @@ const LostFoundAlerts = () => {
       if (error) throw error;
       toast.success(
         alertType === "lost"
-          ? "Wonderful news! So glad your pet is found!"
-          : "Great! The pet has been reunited with its owner!"
+          ? t("lostFound.toasts.resolvedLost")
+          : t("lostFound.toasts.resolvedFound")
       );
       fetchAlerts();
     } catch (error) {
       console.error("Error updating alert:", error);
-      toast.error("Failed to update alert");
+      toast.error(t("lostFound.toasts.updateFailed"));
     }
   };
 
