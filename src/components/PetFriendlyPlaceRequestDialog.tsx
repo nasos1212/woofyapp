@@ -47,6 +47,7 @@ const formSchema = z.object({
 });
 
 const PetFriendlyPlaceRequestDialog = () => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [placeType, setPlaceType] = useState("");
