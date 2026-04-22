@@ -423,19 +423,6 @@ const MemberOffers = () => {
               />
             </div>
 
-          {/* Filters */}
-          <div className="bg-white rounded-2xl p-4 shadow-soft mb-6 space-y-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search offers or businesses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
             {/* Filter Dropdowns Row */}
             <div className="flex flex-wrap gap-3">
               {/* Category Dropdown */}
