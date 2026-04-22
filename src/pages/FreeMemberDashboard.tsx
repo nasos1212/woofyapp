@@ -507,7 +507,7 @@ const FreeMemberDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-muted-foreground">
-                Want more features?
+                {t("freeMember.upgrade.want")}
               </p>
               <Button 
                 variant="link" 
@@ -515,15 +515,15 @@ const FreeMemberDashboard = () => {
                 className="text-primary gap-1 p-0 h-auto"
                 onClick={() => setShowComingSoon(true)}
               >
-                See membership benefits
+                {t("freeMember.upgrade.seeBenefits")}
                 <ArrowRight className="w-3 h-3" />
               </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: Gift, label: "Partner Discounts", color: "text-primary" },
-                { icon: Bot, label: "AI Assistant", color: "text-violet-500" },
+                { icon: Gift, label: t("freeMember.upgrade.partnerDiscounts"), color: "text-primary" },
+                { icon: Bot, label: t("freeMember.upgrade.aiAssistant"), color: "text-violet-500" },
               ].map(({ icon: Icon, label, color }) => (
                 <div
                   key={label}
@@ -549,8 +549,8 @@ const FreeMemberDashboard = () => {
               <div className="flex items-center gap-3 text-center sm:text-left">
                 <Crown className="w-5 h-5 text-primary hidden sm:block" />
                 <p className="text-sm text-foreground">
-                  <span className="font-medium">Upgrade to unlock</span>
-                  <span className="text-muted-foreground"> exclusive discounts & AI health assistant</span>
+                  <span className="font-medium">{t("freeMember.upgrade.unlock")}</span>
+                  <span className="text-muted-foreground">{t("freeMember.upgrade.unlockDesc")}</span>
                 </p>
               </div>
               <Button 
@@ -559,7 +559,7 @@ const FreeMemberDashboard = () => {
                 className="gap-2 shrink-0"
               >
                 <Crown className="w-4 h-4" />
-                Upgrade · €29/year
+                {t("freeMember.upgrade.cta")}
               </Button>
             </CardContent>
           </Card>
@@ -571,7 +571,7 @@ const FreeMemberDashboard = () => {
                 <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
                   <Sparkles className="w-7 h-7 text-primary" />
                 </div>
-                <DialogTitle className="font-display text-xl">Your Wooffy Membership</DialogTitle>
+                <DialogTitle className="font-display text-xl">{t("freeMember.benefitsDialog.title")}</DialogTitle>
               </DialogHeader>
 
               {/* Free Features */}
@@ -579,17 +579,17 @@ const FreeMemberDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-700 rounded-full px-3 py-1 text-xs font-bold">
-                      ✨ Free — Yours Now
+                      {t("freeMember.benefitsDialog.freeBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: MapPin, label: "Dog-Friendly Directory", desc: "Find dog-friendly cafés, parks and more", color: "text-teal-600 bg-teal-100" },
-                      { icon: AlertTriangle, label: "Lost & Found Alerts", desc: "Report and search for lost or found pets", color: "text-amber-600 bg-amber-100" },
-                      { icon: Users, label: "Community Q&A", desc: "Ask questions and help fellow pet parents", color: "text-indigo-600 bg-indigo-100" },
-                      { icon: Gift, label: "Browse Offers", desc: "Preview exclusive partner deals", color: "text-purple-600 bg-purple-100" },
-                      { icon: Heart, label: "Pet Profiles", desc: "Create profiles with photos and breed info", color: "text-rose-600 bg-rose-100" },
-                      { icon: Syringe, label: "Pet Health Records", desc: "Track vaccinations, appointments and vet visits", color: "text-blue-600 bg-blue-100" },
+                      { icon: MapPin, label: t("freeMember.benefitsDialog.directory"), desc: t("freeMember.benefitsDialog.directoryDesc"), color: "text-teal-600 bg-teal-100" },
+                      { icon: AlertTriangle, label: t("freeMember.benefitsDialog.lostFound"), desc: t("freeMember.benefitsDialog.lostFoundDesc"), color: "text-amber-600 bg-amber-100" },
+                      { icon: Users, label: t("freeMember.benefitsDialog.qa"), desc: t("freeMember.benefitsDialog.qaDesc"), color: "text-indigo-600 bg-indigo-100" },
+                      { icon: Gift, label: t("freeMember.benefitsDialog.browseOffers"), desc: t("freeMember.benefitsDialog.browseOffersDesc"), color: "text-purple-600 bg-purple-100" },
+                      { icon: Heart, label: t("freeMember.benefitsDialog.petProfiles"), desc: t("freeMember.benefitsDialog.petProfilesDesc"), color: "text-rose-600 bg-rose-100" },
+                      { icon: Syringe, label: t("freeMember.benefitsDialog.petHealth"), desc: t("freeMember.benefitsDialog.petHealthDesc"), color: "text-blue-600 bg-blue-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
@@ -608,13 +608,13 @@ const FreeMemberDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-bold">
-                      👑 Premium — Coming Soon
+                      {t("freeMember.benefitsDialog.premiumBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: Gift, label: "Exclusive Discounts", desc: "Save at pet shops, trainers, groomers, hotels & more", color: "text-primary bg-primary/10" },
-                      { icon: Bot, label: "AI Health Assistant", desc: "24/7 AI-powered pet health guidance", color: "text-violet-600 bg-violet-100" },
+                      { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc"), color: "text-primary bg-primary/10" },
+                      { icon: Bot, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc"), color: "text-violet-600 bg-violet-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
@@ -634,7 +634,7 @@ const FreeMemberDashboard = () => {
 
                 <div className="bg-primary/5 rounded-xl p-3 border border-primary/20 text-center">
                   <p className="text-xs text-muted-foreground">
-                    Premium plans starting at <span className="font-bold text-primary">€29/year</span> — we'll notify you when they launch! 🐾
+                    {t("freeMember.benefitsDialog.premiumNote")}<span className="font-bold text-primary">{t("freeMember.benefitsDialog.perYear")}</span>{t("freeMember.benefitsDialog.premiumNoteEnd")}
                   </p>
                 </div>
               </div>
@@ -643,7 +643,7 @@ const FreeMemberDashboard = () => {
                 className="w-full mt-1" 
                 onClick={() => setShowComingSoon(false)}
               >
-                Got it!
+                {t("freeMember.benefitsDialog.gotIt")}
               </Button>
             </DialogContent>
           </Dialog>
