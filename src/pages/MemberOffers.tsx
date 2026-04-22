@@ -25,6 +25,8 @@ import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
 import { businessCategories, getCategoryLabel } from "@/data/businessCategories";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Offer {
   id: string;
@@ -63,6 +65,7 @@ const categories = [
 
 const MemberOffers = () => {
   const { user, loading } = useAuth();
+  const { t, i18n } = useTranslation();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
