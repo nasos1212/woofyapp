@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
