@@ -60,15 +60,16 @@ interface Offer {
 
 type SortOption = "newest" | "discount_high" | "discount_low" | "expiry" | "business_name";
 
-const categories = [
-  { id: "all", label: "All" },
-  ...businessCategories.map((cat) => ({ id: cat.value, label: cat.label })),
-];
+
 
 const MemberOffers = () => {
   const { user, loading } = useAuth();
   const { t, i18n } = useTranslation();
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
+  const categories = [
+    { id: "all", label: t("offers.allCategoriesShort") },
+    ...businessCategories.map((cat) => ({ id: cat.value, label: getCategoryLabel(cat.value) })),
+  ];
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
