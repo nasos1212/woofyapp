@@ -103,9 +103,26 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 ];
 
 const PetHealthRecords = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { hasMembership, membership, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
+
+  const recordTypeLabels: Record<string, string> = {
+    vaccination: t("petHealth.recordTypes.vaccination"),
+    vet_visit: t("petHealth.recordTypes.vet_visit"),
+    medication: t("petHealth.recordTypes.medication"),
+    allergy: t("petHealth.recordTypes.allergy"),
+    surgery: t("petHealth.recordTypes.surgery"),
+    other: t("petHealth.recordTypes.other"),
+  };
+
+  const INTERVAL_OPTIONS = INTERVAL_VALUES.map(v => ({
+    value: v,
+    label: t(`petHealth.intervals.${v}`),
+    days: INTERVAL_DAYS_MAP[v],
+  }));
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -152,9 +169,9 @@ const PetHealthRecords = () => {
   };
 
   const REMINDER_OPTIONS = [
-    { value: 3, label: "3 days before" },
-    { value: 1, label: "1 day before" },
-    { value: 0, label: "On the day" },
+    { value: 3, label: t("petHealth.reminderOptions.threeDays") },
+    { value: 1, label: t("petHealth.reminderOptions.oneDay") },
+    { value: 0, label: t("petHealth.reminderOptions.onTheDay") },
   ];
 
   const toggleReminderDay = (day: number) => {
