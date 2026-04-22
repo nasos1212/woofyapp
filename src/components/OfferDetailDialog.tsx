@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getCategoryLabel } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { Link, useNavigate } from "react-router-dom";
 import { isPast, isFuture } from "date-fns";
 import { formatRelative } from "@/lib/relativeTime";
