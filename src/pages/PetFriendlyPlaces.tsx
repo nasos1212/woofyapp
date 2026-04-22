@@ -78,6 +78,7 @@ const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; 
 
 const PetFriendlyPlaces = () => {
   const { user, loading } = useAuth();
+  const { t, i18n } = useTranslation();
   const [places, setPlaces] = useState<PetFriendlyPlace[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
