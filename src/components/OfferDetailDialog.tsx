@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { getCategoryLabel } from "@/data/businessCategories";
 import { Link, useNavigate } from "react-router-dom";
-import { formatDistanceToNow, isPast, isFuture } from "date-fns";
+import { isPast, isFuture } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import { formatDate } from "@/lib/utils";
 import { Building2, MapPin, Percent, Check, ExternalLink, Clock, AlertTriangle, Lock, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -98,7 +99,7 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
     if (daysLeft <= 7) {
       return { 
         type: "expiring", 
-        label: t("offerDialog.expiresIn", { when: formatDistanceToNow(validUntil, { addSuffix: true }) })
+        label: t("offerDialog.expiresIn", { when: formatRelative(validUntil) })
       };
     }
     

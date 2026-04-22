@@ -61,7 +61,7 @@ import {
   ChevronLeft,
   Trash2
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatRelative } from '@/lib/relativeTime';
 import { formatDate } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -431,7 +431,7 @@ const CommunityQuestion = () => {
                       {question.is_anonymous ? 'Anonymous' : (question.author?.full_name || 'Anonymous')}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {formatDate(new Date(question.created_at))} · {formatDistanceToNow(new Date(question.created_at), { addSuffix: true })}
+                      {formatDate(new Date(question.created_at))} · {formatRelative(question.created_at)}
                     </p>
                   </div>
                 </div>
@@ -652,7 +652,7 @@ const CommunityQuestion = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-muted-foreground">
-                                    {formatDistanceToNow(new Date(answer.created_at), { addSuffix: true })}
+                                    {formatRelative(answer.created_at)}
                                   </span>
                                   <ContributorBadges 
                                     totalAnswers={answer.expert_stats?.total_answers}

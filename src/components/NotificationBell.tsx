@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import { useNavigate } from "react-router-dom";
 import { useBarkSound } from "@/hooks/useBarkSound";
 
@@ -153,9 +153,7 @@ const NotificationBell = () => {
                   {notification.message}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(notification.created_at), {
-                    addSuffix: true,
-                  })}
+                  {formatRelative(notification.created_at)}
                 </span>
               </DropdownMenuItem>
             ))}

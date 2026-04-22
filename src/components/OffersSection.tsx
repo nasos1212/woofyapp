@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDistanceToNow, isPast } from "date-fns";
+import { isPast } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
 import { getCategoryLabel } from "@/data/businessCategories";
 import { useTranslation } from "react-i18next";
@@ -135,7 +136,7 @@ const OffersSection = () => {
       if (daysLeft <= 7) {
         return { 
           type: "expiring", 
-          label: `Ends ${formatDistanceToNow(validUntil, { addSuffix: true })}` 
+          label: `Ends ${formatRelative(validUntil)}` 
         };
       }
     }

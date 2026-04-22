@@ -22,7 +22,8 @@ import LocationSelector from "@/components/LocationSelector";
 import CityMultiSelector from "@/components/CityMultiSelector";
 import AlertPhotoCarousel from "@/components/AlertPhotoCarousel";
 import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
-import { formatDistanceToNow, format } from "date-fns";
+import { format } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 import EditAlertDialog from "@/components/EditAlertDialog";
 import { getBreedsByPetType } from "@/data/petBreeds";
 import { useTranslation } from "react-i18next";
@@ -539,7 +540,7 @@ const LostFoundAlerts = () => {
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="w-4 h-4 flex-shrink-0" />
-              <span>{formatDistanceToNow(new Date(alert.last_seen_date), { addSuffix: true })}</span>
+              <span>{formatRelative(alert.last_seen_date)}</span>
             </div>
           </div>
 

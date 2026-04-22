@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelative } from "@/lib/relativeTime";
 
 interface Conversation {
   id: string;
@@ -326,10 +326,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Updated{" "}
-                          {formatDistanceToNow(new Date(conv.updated_at), {
-                            addSuffix: true,
-                          })}
+                          Updated {formatRelative(conv.updated_at)}
                         </p>
                       </button>
                     ))}
@@ -406,9 +403,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                               : "text-muted-foreground"
                           }`}
                         >
-                          {formatDistanceToNow(new Date(msg.created_at), {
-                            addSuffix: true,
-                          })}
+                          {formatRelative(msg.created_at)}
                         </p>
                       </div>
                     </div>
