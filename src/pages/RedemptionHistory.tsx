@@ -8,7 +8,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate } from "@/lib/utils";
-import { getCategoryLabel } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import {
