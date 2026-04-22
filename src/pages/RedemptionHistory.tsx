@@ -38,6 +38,7 @@ interface Redemption {
 
 const RedemptionHistory = () => {
   const { user, loading } = useAuth();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
