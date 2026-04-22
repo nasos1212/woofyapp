@@ -348,7 +348,7 @@ const PetFriendlyPlaces = () => {
                           )}
                         >
                           <Navigation className="w-3 h-3 mr-1" />
-                          Go
+                          {t("petFriendlyPlaces.actions.go")}
                         </Button>
                         {place.phone && (
                           <a
@@ -356,7 +356,7 @@ const PetFriendlyPlaces = () => {
                             className="flex-1 inline-flex items-center justify-center gap-1 h-7 text-xs px-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground font-medium"
                           >
                             <Phone className="w-3 h-3" />
-                            Call
+                            {t("petFriendlyPlaces.actions.call")}
                           </a>
                         )}
                         {place.website && (
