@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Syringe, Stethoscope, Pill, AlertCircle, Plus, Calendar, Trash2, FileText, CheckCircle, Clock, Bell, BellRing, Pencil, Upload, X, ExternalLink, File, Download, Loader2, ArrowLeft } from "lucide-react";
@@ -47,24 +48,20 @@ interface Pet {
   pet_type: "dog" | "cat";
 }
 
-const recordTypeConfig: Record<string, { icon: React.ReactNode; label: string; color: string }> = {
-  vaccination: { icon: <Syringe className="w-4 h-4" />, label: "Vaccination", color: "bg-blue-100 text-blue-700" },
-  vet_visit: { icon: <Stethoscope className="w-4 h-4" />, label: "Vet Visit", color: "bg-green-100 text-green-700" },
-  medication: { icon: <Pill className="w-4 h-4" />, label: "Medication", color: "bg-purple-100 text-purple-700" },
-  allergy: { icon: <AlertCircle className="w-4 h-4" />, label: "Allergy", color: "bg-red-100 text-red-700" },
-  surgery: { icon: <FileText className="w-4 h-4" />, label: "Surgery", color: "bg-orange-100 text-orange-700" },
-  other: { icon: <FileText className="w-4 h-4" />, label: "Other", color: "bg-gray-100 text-gray-700" },
+const recordTypeConfig: Record<string, { icon: React.ReactNode; color: string }> = {
+  vaccination: { icon: <Syringe className="w-4 h-4" />, color: "bg-blue-100 text-blue-700" },
+  vet_visit: { icon: <Stethoscope className="w-4 h-4" />, color: "bg-green-100 text-green-700" },
+  medication: { icon: <Pill className="w-4 h-4" />, color: "bg-purple-100 text-purple-700" },
+  allergy: { icon: <AlertCircle className="w-4 h-4" />, color: "bg-red-100 text-red-700" },
+  surgery: { icon: <FileText className="w-4 h-4" />, color: "bg-orange-100 text-orange-700" },
+  other: { icon: <FileText className="w-4 h-4" />, color: "bg-gray-100 text-gray-700" },
 };
 
-const INTERVAL_OPTIONS = [
-  { value: 'once', label: 'One-time only', days: 0 },
-  { value: 'daily', label: 'Daily (1 day)', days: 1 },
-  { value: 'monthly', label: 'Monthly (30 days)', days: 30 },
-  { value: 'quarterly', label: 'Every 3 months (90 days)', days: 90 },
-  { value: 'biannually', label: 'Every 6 months (180 days)', days: 180 },
-  { value: 'yearly', label: 'Yearly (365 days)', days: 365 },
-  { value: 'custom', label: 'Custom interval', days: 0 },
-] as const;
+const INTERVAL_VALUES = ['once', 'daily', 'monthly', 'quarterly', 'biannually', 'yearly', 'custom'] as const;
+const INTERVAL_DAYS_MAP: Record<string, number> = {
+  once: 0, daily: 1, monthly: 30, quarterly: 90, biannually: 180, yearly: 365, custom: 0,
+};
+
 
 interface TreatmentPreset {
   id: string;
@@ -106,9 +103,26 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
 ];
 
 const PetHealthRecords = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { hasMembership, membership, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
+
+  const recordTypeLabels: Record<string, string> = {
+    vaccination: t("petHealth.recordTypes.vaccination"),
+    vet_visit: t("petHealth.recordTypes.vet_visit"),
+    medication: t("petHealth.recordTypes.medication"),
+    allergy: t("petHealth.recordTypes.allergy"),
+    surgery: t("petHealth.recordTypes.surgery"),
+    other: t("petHealth.recordTypes.other"),
+  };
+
+  const INTERVAL_OPTIONS = INTERVAL_VALUES.map(v => ({
+    value: v,
+    label: t(`petHealth.intervals.${v}`),
+    days: INTERVAL_DAYS_MAP[v],
+  }));
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -155,9 +169,9 @@ const PetHealthRecords = () => {
   };
 
   const REMINDER_OPTIONS = [
-    { value: 3, label: "3 days before" },
-    { value: 1, label: "1 day before" },
-    { value: 0, label: "On the day" },
+    { value: 3, label: t("petHealth.reminderOptions.threeDays") },
+    { value: 1, label: t("petHealth.reminderOptions.oneDay") },
+    { value: 0, label: t("petHealth.reminderOptions.onTheDay") },
   ];
 
   const toggleReminderDay = (day: number) => {
@@ -285,7 +299,7 @@ const PetHealthRecords = () => {
     const newFiles: File[] = [];
     for (let i = 0; i < files.length; i++) {
       if (currentTotal + newFiles.length >= MAX_DOCUMENTS) {
-        toast.error(`Maximum ${MAX_DOCUMENTS} documents allowed`);
+        toast.error(t("petHealth.toasts.maxDocs", { max: MAX_DOCUMENTS }));
         break;
       }
       const validation = validateDocumentFile(files[i]);
@@ -326,7 +340,7 @@ const PetHealthRecords = () => {
     if (!user || !selectedPet) return;
 
     if (!title) {
-      toast.error("Please enter a title");
+      toast.error(t("petHealth.toasts.enterTitle"));
       return;
     }
 
@@ -382,19 +396,19 @@ const PetHealthRecords = () => {
           }
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
-          toast.error("Record saved but document upload failed");
+          toast.error(t("petHealth.toasts.uploadFailedKept"));
         } finally {
           setIsUploading(false);
         }
       }
 
-      toast.success("Health record added!");
+      toast.success(t("petHealth.toasts.added"));
       setShowAddDialog(false);
       resetForm();
       fetchRecords();
     } catch (error) {
       console.error("Error adding record:", error);
-      toast.error("Failed to add record");
+      toast.error(t("petHealth.toasts.addFailed"));
     } finally {
       setIsAdding(false);
     }
@@ -428,7 +442,7 @@ const PetHealthRecords = () => {
       });
     } catch (err) {
       console.error("Error accessing document:", err);
-      toast.error("Failed to access document");
+      toast.error(t("petHealth.toasts.accessFailed"));
     } finally {
       setIsLoadingPreview(false);
     }
@@ -463,20 +477,20 @@ const PetHealthRecords = () => {
       if (error) throw error;
 
       if (isOneTime) {
-        toast.success(`${selectedPet.pet_name}'s one-time treatment completed!`);
+        toast.success(t("petHealth.toasts.oneTimeDone", { name: selectedPet.pet_name }));
       } else {
-        const intervalLabel = record.reminder_interval_type === 'monthly' ? '1 month' :
-          record.reminder_interval_type === 'quarterly' ? '3 months' :
-          record.reminder_interval_type === 'biannually' ? '6 months' :
-          record.reminder_interval_type === 'yearly' ? '1 year' :
-          `${intervalDays} days`;
-        toast.success(`Marked as done! Next due in ${intervalLabel}.`);
+        const intervalLabel = record.reminder_interval_type === 'monthly' ? t("petHealth.intervals.oneMonth") :
+          record.reminder_interval_type === 'quarterly' ? t("petHealth.intervals.threeMonths") :
+          record.reminder_interval_type === 'biannually' ? t("petHealth.intervals.sixMonths") :
+          record.reminder_interval_type === 'yearly' ? t("petHealth.intervals.oneYear") :
+          t("petHealth.intervals.daysSuffix", { days: intervalDays });
+        toast.success(t("petHealth.toasts.doneNext", { interval: intervalLabel }));
       }
 
       fetchRecords();
     } catch (error) {
       console.error("Error updating record:", error);
-      toast.error("Failed to update record");
+      toast.error(t("petHealth.toasts.updateFailed"));
     }
   };
 
@@ -488,11 +502,11 @@ const PetHealthRecords = () => {
         .eq("id", recordId);
 
       if (error) throw error;
-      toast.success("Record deleted");
+      toast.success(t("petHealth.toasts.deleted"));
       fetchRecords();
     } catch (error) {
       console.error("Error deleting record:", error);
-      toast.error("Failed to delete record");
+      toast.error(t("petHealth.toasts.deleteFailed"));
     }
   };
 
@@ -543,7 +557,7 @@ const PetHealthRecords = () => {
     if (!user || !editingRecord) return;
 
     if (!title) {
-      toast.error("Please enter a title");
+      toast.error(t("petHealth.toasts.enterTitle"));
       return;
     }
 
@@ -584,7 +598,7 @@ const PetHealthRecords = () => {
           existingPaths = [...existingPaths, ...uploadedPaths];
         } catch (uploadErr) {
           console.error("Document upload failed:", uploadErr);
-          toast.error("Failed to upload new document");
+          toast.error(t("petHealth.toasts.newUploadFailed"));
         } finally {
           setIsUploading(false);
         }
@@ -612,13 +626,13 @@ const PetHealthRecords = () => {
 
       if (error) throw error;
 
-      toast.success("Health record updated!");
+      toast.success(t("petHealth.toasts.updated"));
       setShowAddDialog(false);
       resetForm();
       fetchRecords();
     } catch (error) {
       console.error("Error updating record:", error);
-      toast.error("Failed to update record");
+      toast.error(t("petHealth.toasts.updateFailed"));
     } finally {
       setIsAdding(false);
     }
@@ -670,24 +684,24 @@ const PetHealthRecords = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'overdue':
-        return <Badge variant="destructive" className="gap-1"><AlertCircle className="w-3 h-3" />Overdue</Badge>;
+        return <Badge variant="destructive" className="gap-1"><AlertCircle className="w-3 h-3" />{t("petHealth.status.overdue")}</Badge>;
       case 'due-today':
-        return <Badge className="gap-1 bg-amber-500"><BellRing className="w-3 h-3" />Due Today</Badge>;
+        return <Badge className="gap-1 bg-amber-500"><BellRing className="w-3 h-3" />{t("petHealth.status.dueToday")}</Badge>;
       case 'due-soon':
-        return <Badge className="gap-1 bg-orange-500"><Clock className="w-3 h-3" />Due Soon</Badge>;
+        return <Badge className="gap-1 bg-orange-500"><Clock className="w-3 h-3" />{t("petHealth.status.dueSoon")}</Badge>;
       default:
-        return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />Upcoming</Badge>;
+        return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />{t("petHealth.status.upcoming")}</Badge>;
     }
   };
 
   const getIntervalLabel = (type: string | null, days: number | null) => {
-    if (type === 'once') return 'One-time';
-    if (type === 'daily') return 'Daily';
-    if (type === 'monthly') return 'Monthly';
-    if (type === 'quarterly') return 'Every 3 mo';
-    if (type === 'biannually') return 'Every 6 mo';
-    if (type === 'yearly') return 'Yearly';
-    if (type === 'custom' && days) return `Every ${days} days`;
+    if (type === 'once') return t("petHealth.intervals.shortOnce");
+    if (type === 'daily') return t("petHealth.intervals.shortDaily");
+    if (type === 'monthly') return t("petHealth.intervals.shortMonthly");
+    if (type === 'quarterly') return t("petHealth.intervals.shortQuarterly");
+    if (type === 'biannually') return t("petHealth.intervals.shortBiannually");
+    if (type === 'yearly') return t("petHealth.intervals.shortYearly");
+    if (type === 'custom' && days) return t("petHealth.intervals.shortCustom", { days });
     return '';
   };
 
@@ -702,8 +716,8 @@ const PetHealthRecords = () => {
   return (
     <>
       <Helmet>
-        <title>Pet Health Records | Wooffy</title>
-        <meta name="description" content="Track vaccinations, medications, vet visits, and health reminders for your pets." />
+        <title>{t("petHealth.pageTitle")}</title>
+        <meta name="description" content={t("petHealth.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-paw-cream to-background overflow-x-hidden">
@@ -717,16 +731,16 @@ const PetHealthRecords = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t("petHealth.back")}
           </Button>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Health Records 💊
+                {t("petHealth.title")} 💊
               </h1>
               <p className="text-muted-foreground">
-                Track vaccinations, medications, and vet visits
+                {t("petHealth.subtitle")}
               </p>
             </div>
 
@@ -737,21 +751,21 @@ const PetHealthRecords = () => {
               <DialogTrigger asChild>
                 <Button className="gap-2" disabled={!selectedPet} onClick={() => resetForm()}>
                   <Plus className="w-4 h-4" />
-                  Add Record
+                  {t("petHealth.addRecord")}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>{editingRecord ? "Edit Health Record" : "Add Health Record"}</DialogTitle>
+                  <DialogTitle>{editingRecord ? t("petHealth.dialog.editTitle") : t("petHealth.dialog.addTitle")}</DialogTitle>
                   <DialogDescription>
                     {editingRecord 
-                      ? "Update this health record's details and attached document."
-                      : "Add a vaccination, medication, or other health record for your pet."}
+                      ? t("petHealth.dialog.editDescription")
+                      : t("petHealth.dialog.addDescription")}
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label>Record Type</Label>
+                    <Label>{t("petHealth.dialog.recordType")}</Label>
                     <Select value={recordType} onValueChange={(v) => {
                       setRecordType(v);
                       setSelectedPreset("");
@@ -763,7 +777,7 @@ const PetHealthRecords = () => {
                         {Object.entries(recordTypeConfig).map(([key, config]) => (
                           <SelectItem key={key} value={key}>
                             <span className="flex items-center gap-2">
-                              {config.icon} {config.label}
+                              {config.icon} {recordTypeLabels[key]}
                             </span>
                           </SelectItem>
                         ))}
@@ -774,10 +788,10 @@ const PetHealthRecords = () => {
                   {/* Show presets for vaccinations and medications - filtered by record type AND pet type */}
                   {(recordType === 'vaccination' || recordType === 'medication') && selectedPet && (
                     <div className="space-y-2">
-                      <Label>Quick Select for {selectedPet.pet_name} ({selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'})</Label>
+                      <Label>{t("petHealth.dialog.quickSelect", { name: selectedPet.pet_name, type: selectedPet.pet_type === 'dog' ? t("petHealth.dialog.dog") : t("petHealth.dialog.cat") })}</Label>
                       <Select value={selectedPreset} onValueChange={handlePresetSelect}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose a common treatment..." />
+                          <SelectValue placeholder={t("petHealth.dialog.chooseTreatment")} />
                         </SelectTrigger>
                         <SelectContent>
                           {recordType === 'medication' && (
@@ -788,7 +802,7 @@ const PetHealthRecords = () => {
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
                               ).length > 0 && (
                                 <>
-                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Daily Medications</div>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupDaily")}</div>
                                   {TREATMENT_PRESETS.filter(p => 
                                     p.recordType === 'medication' && 
                                     p.intervalType === 'daily' && 
@@ -800,7 +814,7 @@ const PetHealthRecords = () => {
                                   ))}
                                 </>
                               )}
-                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Prevention (Monthly)</div>
+                              <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupPrevention")}</div>
                               {TREATMENT_PRESETS.filter(p => 
                                 p.category === 'prevention' && 
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
@@ -816,7 +830,7 @@ const PetHealthRecords = () => {
                                 (p.petType === 'both' || p.petType === selectedPet.pet_type)
                               ).length > 0 && (
                                 <>
-                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Other Medications</div>
+                                  <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">{t("petHealth.dialog.groupOther")}</div>
                                   {TREATMENT_PRESETS.filter(p => 
                                     p.recordType === 'medication' && 
                                     p.category === 'medication' && 
@@ -834,7 +848,7 @@ const PetHealthRecords = () => {
                           {recordType === 'vaccination' && (
                             <>
                               <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                                {selectedPet.pet_type === 'dog' ? '🐕 Dog' : '🐱 Cat'} Vaccines
+                                {selectedPet.pet_type === 'dog' ? t("petHealth.dialog.groupVaccinesDog") : t("petHealth.dialog.groupVaccinesCat")}
                               </div>
                               {TREATMENT_PRESETS.filter(p => 
                                 p.recordType === 'vaccination' && 
@@ -847,7 +861,7 @@ const PetHealthRecords = () => {
                             </>
                           )}
                           <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1 pt-1"></div>
-                          <SelectItem value="custom">✏️ Other / Custom</SelectItem>
+                          <SelectItem value="custom">{t("petHealth.dialog.customOther")}</SelectItem>
                         </SelectContent>
                       </Select>
                       {selectedPreset && selectedPreset !== 'custom' && (
@@ -859,7 +873,7 @@ const PetHealthRecords = () => {
                   )}
 
                   <div className="space-y-2">
-                    <Label>Title *</Label>
+                    <Label>{t("petHealth.dialog.titleLabel")}</Label>
                     <Input
                       value={title}
                       onChange={(e) => {
@@ -868,37 +882,37 @@ const PetHealthRecords = () => {
                           setSelectedPreset('custom');
                         }
                       }}
-                      placeholder="e.g., Rabies Vaccine"
+                      placeholder={t("petHealth.dialog.titlePlaceholder")}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Description</Label>
+                    <Label>{t("petHealth.dialog.description")}</Label>
                     <Textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Additional details..."
+                      placeholder={t("petHealth.dialog.descriptionPlaceholder")}
                     />
                   </div>
 
                   {/* For vaccinations/medications: just show date administered, next due is auto-calculated */}
                   {(recordType === 'vaccination' || recordType === 'medication') ? (
                     <div className="space-y-2">
-                      <Label>Date Given</Label>
+                      <Label>{t("petHealth.dialog.dateGiven")}</Label>
                       <Input
                         type="date"
                         value={dateAdministered}
                         onChange={(e) => setDateAdministered(e.target.value)}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Next due date will be auto-calculated based on the interval below
+                        {t("petHealth.dialog.dateGivenHint")}
                       </p>
                     </div>
                   ) : (
                     <>
                       <div className="space-y-2">
-                        <Label>Date</Label>
+                        <Label>{t("petHealth.dialog.date")}</Label>
                         <Input
                           type="date"
                           value={dateAdministered}
@@ -911,7 +925,7 @@ const PetHealthRecords = () => {
                         <div className="space-y-2">
                           <Label className="flex items-center gap-2">
                             <Bell className="w-4 h-4" />
-                            Remind Me
+                            {t("petHealth.dialog.remindMe")}
                           </Label>
                           <div className="flex flex-wrap gap-2">
                             {REMINDER_OPTIONS.map((option) => (
@@ -930,7 +944,7 @@ const PetHealthRecords = () => {
                           </div>
                           {reminderDaysBefore.length > 0 && (
                             <p className="text-xs text-primary">
-                              ✓ You'll be reminded in your Wooffy Reminders
+                              {t("petHealth.dialog.remindHint")}
                             </p>
                           )}
                         </div>
@@ -942,7 +956,7 @@ const PetHealthRecords = () => {
                   {(recordType === 'vaccination' || recordType === 'medication') && (
                     <>
                       <div className="space-y-2">
-                        <Label>Reminder Interval</Label>
+                        <Label>{t("petHealth.dialog.reminderInterval")}</Label>
                         <Select value={intervalType} onValueChange={setIntervalType}>
                           <SelectTrigger>
                             <SelectValue />
@@ -957,27 +971,27 @@ const PetHealthRecords = () => {
                         </Select>
                         {intervalType !== 'once' && (
                           <p className="text-xs text-primary">
-                            ✓ This will appear in your Reminders tab
+                            {t("petHealth.dialog.reminderHint")}
                           </p>
                         )}
                       </div>
                       {intervalType === 'custom' && (
                         <div className="space-y-2">
-                          <Label>Custom Interval (days)</Label>
+                          <Label>{t("petHealth.dialog.customInterval")}</Label>
                           <Input
                             type="number"
                             min="1"
                             max="730"
                             value={customDays}
                             onChange={(e) => setCustomDays(e.target.value)}
-                            placeholder="Enter number of days"
+                            placeholder={t("petHealth.dialog.customIntervalPlaceholder")}
                           />
                         </div>
                       )}
                       {/* Preferred time for daily medications */}
                       {intervalType === 'daily' && (
                         <div className="space-y-2">
-                          <Label>Preferred Time (24h format, Cyprus/Athens timezone)</Label>
+                          <Label>{t("petHealth.dialog.preferredTime")}</Label>
                           <div className="flex gap-2 items-center">
                             <Select
                               value={preferredTime ? preferredTime.split(':')[0] : ''}
@@ -1018,7 +1032,7 @@ const PetHealthRecords = () => {
                             </Select>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            Set a reminder time for this daily medication
+                            {t("petHealth.dialog.preferredTimeHint")}
                           </p>
                         </div>
                       )}
@@ -1027,41 +1041,41 @@ const PetHealthRecords = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Veterinarian</Label>
+                      <Label>{t("petHealth.dialog.veterinarian")}</Label>
                       <Input
                         value={vetName}
                         onChange={(e) => setVetName(e.target.value)}
-                        placeholder="Dr. Smith"
+                        placeholder={t("petHealth.dialog.vetPlaceholder")}
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Clinic</Label>
+                      <Label>{t("petHealth.dialog.clinic")}</Label>
                       <Input
                         value={clinicName}
                         onChange={(e) => setClinicName(e.target.value)}
-                        placeholder="Wooffy Vet Clinic"
+                        placeholder={t("petHealth.dialog.clinicPlaceholder")}
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Notes</Label>
+                    <Label>{t("petHealth.dialog.notes")}</Label>
                     <Textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      placeholder="Any additional notes..."
+                      placeholder={t("petHealth.dialog.notesPlaceholder")}
                     />
                   </div>
 
                   {/* Document Upload */}
                   <div className="space-y-2">
-                    <Label>Attach Documents (Optional, up to {MAX_DOCUMENTS})</Label>
+                    <Label>{t("petHealth.dialog.attachDocs", { max: MAX_DOCUMENTS })}</Label>
                     
                     {/* Show existing documents when editing */}
                     {editingRecord?.document_url && !removeExistingDocument && (
                       <div className="space-y-1">
                         {parseDocumentUrls(editingRecord.document_url).map((docPath, idx) => {
-                          const fileName = docPath.split('/').pop() || `Document ${idx + 1}`;
+                          const fileName = docPath.split('/').pop() || t("petHealth.dialog.documentLabel", { n: idx + 1 });
                           return (
                             <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg">
                               <File className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -1073,7 +1087,7 @@ const PetHealthRecords = () => {
                                 className="text-xs shrink-0"
                                 onClick={() => handleViewDocument({ ...editingRecord, document_url: docPath })}
                               >
-                                View
+                                {t("petHealth.actions.view")}
                               </Button>
                             </div>
                           );
@@ -1085,14 +1099,14 @@ const PetHealthRecords = () => {
                           className="text-xs text-destructive hover:text-destructive"
                           onClick={() => setRemoveExistingDocument(true)}
                         >
-                          Remove all existing documents
+                          {t("petHealth.dialog.removeAllDocs")}
                         </Button>
                       </div>
                     )}
                     
                     {removeExistingDocument && documentFiles.length === 0 && (
                       <div className="flex items-center gap-2 p-2 bg-destructive/10 rounded-lg">
-                        <span className="text-sm text-destructive flex-1">Documents will be removed</span>
+                        <span className="text-sm text-destructive flex-1">{t("petHealth.dialog.docsWillBeRemoved")}</span>
                         <Button
                           type="button"
                           variant="ghost"
@@ -1100,7 +1114,7 @@ const PetHealthRecords = () => {
                           className="text-xs"
                           onClick={() => setRemoveExistingDocument(false)}
                         >
-                          Undo
+                          {t("petHealth.dialog.undo")}
                         </Button>
                       </div>
                     )}
@@ -1149,20 +1163,20 @@ const PetHealthRecords = () => {
                           >
                             <Upload className="w-4 h-4" />
                             {documentFiles.length > 0 || (editingRecord?.document_url && !removeExistingDocument) 
-                              ? "Add More Files" : "Upload Files"}
+                              ? t("petHealth.dialog.addMoreFiles") : t("petHealth.dialog.uploadFiles")}
                           </Button>
                         </div>
                       ) : null;
                     })()}
                     <p className="text-xs text-muted-foreground">
-                      PDF, images, or Word docs up to 10MB each. Great for vet receipts & certificates.
+                      {t("petHealth.dialog.uploadHint")}
                     </p>
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isAdding || isUploading}>
                     {isAdding || isUploading 
-                      ? (isUploading ? "Uploading..." : "Saving...") 
-                      : (editingRecord ? "Update Record" : "Add Record")}
+                      ? (isUploading ? t("petHealth.dialog.uploading") : t("petHealth.dialog.saving")) 
+                      : (editingRecord ? t("petHealth.dialog.updateRecord") : t("petHealth.dialog.addRecordBtn"))}
                   </Button>
                 </form>
               </DialogContent>
@@ -1191,9 +1205,9 @@ const PetHealthRecords = () => {
           {pets.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-2xl">
               <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="font-semibold text-foreground mb-2">No pets found</h3>
-              <p className="text-muted-foreground mb-4">Add a pet to your membership first</p>
-              <Button onClick={() => navigate("/member/add-pet")}>Add Pet</Button>
+              <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noPets")}</h3>
+              <p className="text-muted-foreground mb-4">{t("petHealth.noPetsHint")}</p>
+              <Button onClick={() => navigate("/member/add-pet")}>{t("petHealth.addPet")}</Button>
             </div>
           ) : (
             <>
@@ -1204,7 +1218,7 @@ const PetHealthRecords = () => {
                     <AlertCircle className={`h-6 w-6 ${overdueCount > 0 ? "text-destructive" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-xl font-bold">{overdueCount}</p>
-                      <p className="text-xs text-muted-foreground">Overdue</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.overdue")}</p>
                     </div>
                   </div>
                 </div>
@@ -1213,7 +1227,7 @@ const PetHealthRecords = () => {
                     <Bell className={`h-6 w-6 ${dueSoonCount > 0 ? "text-amber-500" : "text-muted-foreground"}`} />
                     <div>
                       <p className="text-xl font-bold">{dueSoonCount}</p>
-                      <p className="text-xs text-muted-foreground">Due Soon</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.dueSoon")}</p>
                     </div>
                   </div>
                 </div>
@@ -1222,7 +1236,7 @@ const PetHealthRecords = () => {
                     <CheckCircle className="h-6 w-6 text-green-500" />
                     <div>
                       <p className="text-xl font-bold">{records.length}</p>
-                      <p className="text-xs text-muted-foreground">Total</p>
+                      <p className="text-xs text-muted-foreground">{t("petHealth.summary.total")}</p>
                     </div>
                   </div>
                 </div>
@@ -1232,14 +1246,14 @@ const PetHealthRecords = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-4 w-full flex h-auto gap-1 p-1">
                   <TabsTrigger value="reminders" className="flex-1 text-xs sm:text-sm gap-1">
-                    <Bell className="w-3 h-3" /> Reminders
+                    <Bell className="w-3 h-3" /> {t("petHealth.tabs.reminders")}
                     {reminders.length > 0 && (
                       <Badge variant="secondary" className="ml-1 text-xs">{reminders.length}</Badge>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">All Records</TabsTrigger>
-                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">Vaccines</TabsTrigger>
-                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">Meds</TabsTrigger>
+                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.all")}</TabsTrigger>
+                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.vaccines")}</TabsTrigger>
+                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.meds")}</TabsTrigger>
                 </TabsList>
 
                 {/* Reminders Tab */}
@@ -1247,9 +1261,9 @@ const PetHealthRecords = () => {
                   {reminders.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">All caught up!</h3>
-                      <p className="text-muted-foreground mb-4">No upcoming reminders for {selectedPet?.pet_name}</p>
-                      <Button onClick={() => setShowAddDialog(true)}>Add Treatment</Button>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.allCaughtUp")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noReminders", { name: selectedPet?.pet_name })}</p>
+                      <Button onClick={() => setShowAddDialog(true)}>{t("petHealth.addTreatment")}</Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -1272,7 +1286,7 @@ const PetHealthRecords = () => {
                                 {getStatusBadge(reminder.status)}
                               </div>
                               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                                <span>Due: {formatDate(new Date(reminder.next_due_date!))}</span>
+                                <span>{t("petHealth.fields.due")}: {formatDate(new Date(reminder.next_due_date!))}</span>
                                 {reminder.reminder_interval_type && (
                                   <span className="text-xs">
                                     ({getIntervalLabel(reminder.reminder_interval_type, reminder.reminder_interval_days)})
@@ -1286,7 +1300,7 @@ const PetHealthRecords = () => {
                               </div>
                               {reminder.status === 'overdue' && (
                                 <p className="text-destructive text-sm mt-1">
-                                  {Math.abs(reminder.daysUntil)} days overdue
+                                  {t("petHealth.status.daysOverdue", { count: Math.abs(reminder.daysUntil) })}
                                 </p>
                               )}
                               {reminder.document_url && (
@@ -1300,7 +1314,7 @@ const PetHealthRecords = () => {
                                       onClick={() => handleViewSingleDocument(docPath, reminder.title)}
                                     >
                                       <File className="w-3 h-3" />
-                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? `Doc ${docIdx + 1}` : 'Document'}
+                                      {parseDocumentUrls(reminder.document_url!).length > 1 ? t("petHealth.fields.doc", { n: docIdx + 1 }) : t("petHealth.fields.document")}
                                     </Button>
                                   ))}
                                 </div>
@@ -1321,7 +1335,7 @@ const PetHealthRecords = () => {
                                 onClick={() => markAsCompleted(reminder)}
                               >
                                 <CheckCircle className="mr-1 h-4 w-4" />
-                                Done
+                                {t("petHealth.actions.done")}
                               </Button>
                             </div>
                           </div>
@@ -1336,9 +1350,9 @@ const PetHealthRecords = () => {
                   {records.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">No health records yet</h3>
-                      <p className="text-muted-foreground mb-4">Start tracking {selectedPet?.pet_name}'s health history</p>
-                      <Button onClick={() => setShowAddDialog(true)}>Add First Record</Button>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noRecords")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noRecordsHint", { name: selectedPet?.pet_name })}</p>
+                      <Button onClick={() => setShowAddDialog(true)}>{t("petHealth.addFirstRecord")}</Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -1379,13 +1393,13 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Date: {formatDate(new Date(record.date_administered))}</span>
+                                <span>{t("petHealth.fields.date")}: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
-                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
+                                <span>{t("petHealth.fields.next")}: {formatDate(new Date(record.next_due_date))}</span>
                               )}
-                              {record.veterinarian_name && <span>Vet: {record.veterinarian_name}</span>}
-                              {record.clinic_name && <span>Clinic: {record.clinic_name}</span>}
+                              {record.veterinarian_name && <span>{t("petHealth.fields.vet")}: {record.veterinarian_name}</span>}
+                              {record.clinic_name && <span>{t("petHealth.fields.clinic")}: {record.clinic_name}</span>}
                             </div>
                             {record.document_url && (
                               <div className="flex flex-wrap gap-2 mt-2">
@@ -1398,7 +1412,7 @@ const PetHealthRecords = () => {
                                     onClick={() => handleViewSingleDocument(docPath, record.title)}
                                   >
                                     <File className="w-4 h-4" />
-                                    {parseDocumentUrls(record.document_url!).length > 1 ? `Document ${docIdx + 1}` : 'View Document'}
+                                    {parseDocumentUrls(record.document_url!).length > 1 ? t("petHealth.fields.documentN", { n: docIdx + 1 }) : t("petHealth.fields.viewDocument")}
                                     <ExternalLink className="w-3 h-3" />
                                   </Button>
                                 ))}
