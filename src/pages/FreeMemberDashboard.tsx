@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { 
   Users, 
   Gift, 
@@ -44,6 +45,7 @@ interface Pet {
 }
 
 const FreeMemberDashboard = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const navigate = useNavigate();
