@@ -243,18 +243,18 @@ const LostFoundAlerts = () => {
 
     for (let i = 0; i < files.length; i++) {
       if (petPhotos.length + newFiles.length >= MAX_PHOTOS) {
-        toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+        toast.error(t("lostFound.toasts.maxPhotos", { max: MAX_PHOTOS }));
         break;
       }
 
       const file = files[i];
 
       if (!file.type.startsWith("image/")) {
-        toast.error("Please select image files only");
+        toast.error(t("lostFound.toasts.imagesOnly"));
         continue;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
+        toast.error(t("lostFound.toasts.tooLarge", { name: file.name }));
         continue;
       }
 
