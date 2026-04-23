@@ -912,7 +912,7 @@ const LostFoundAlerts = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Photos * (up to {MAX_PHOTOS})</Label>
+                      <Label>{t("lostFound.form.photosLabel", { max: MAX_PHOTOS })}</Label>
 
                       {petPhotoPreviews.length > 0 && (
                         <div className="grid grid-cols-3 gap-3 mb-2">
@@ -943,12 +943,12 @@ const LostFoundAlerts = () => {
                                 </Button>
                                 {index === 0 && (
                                   <span className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">
-                                    Main
+                                    {t("lostFound.form.photoMain")}
                                   </span>
                                 )}
                                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
                                   <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                    {editingPhotoIndex === index ? "Close" : "Adjust"}
+                                    {editingPhotoIndex === index ? t("lostFound.form.photoClose") : t("lostFound.form.photoAdjust")}
                                   </span>
                                 </div>
                               </div>
@@ -971,10 +971,10 @@ const LostFoundAlerts = () => {
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-1">
-                                <Label className="text-sm font-medium">Adjust Photo {editingPhotoIndex + 1}</Label>
+                                <Label className="text-sm font-medium">{t("lostFound.form.adjustPhoto", { n: editingPhotoIndex + 1 })}</Label>
                                 <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded">{photoPositions[editingPhotoIndex]}%</span>
                               </div>
-                              <p className="text-xs text-muted-foreground">Slide to adjust which part of the photo is visible</p>
+                              <p className="text-xs text-muted-foreground">{t("lostFound.form.adjustHint")}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -1031,7 +1031,7 @@ const LostFoundAlerts = () => {
                             className="w-full mt-3 text-muted-foreground"
                             onClick={() => setEditingPhotoIndex(null)}
                           >
-                            Done adjusting
+                            {t("lostFound.form.doneAdjusting")}
                           </Button>
                         </div>
                       )}
@@ -1041,8 +1041,8 @@ const LostFoundAlerts = () => {
                           <Upload className="w-6 h-6 text-muted-foreground mb-1" />
                           <span className="text-sm text-muted-foreground">
                             {petPhotoPreviews.length === 0
-                              ? "Click to upload photos"
-                              : `Add more (${petPhotoPreviews.length}/${MAX_PHOTOS})`}
+                              ? t("lostFound.form.uploadClick")
+                              : t("lostFound.form.uploadAddMore", { current: petPhotoPreviews.length, max: MAX_PHOTOS })}
                           </span>
                           <input
                             type="file"
@@ -1057,44 +1057,44 @@ const LostFoundAlerts = () => {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>Contact Phone *</Label>
+                        <Label>{t("lostFound.form.contactPhone")}</Label>
                         <Input
                           value={contactPhone}
                           onChange={(e) => setContactPhone(e.target.value)}
-                          placeholder="Your phone"
+                          placeholder={t("lostFound.form.phonePlaceholder")}
                           required
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label>Contact Email</Label>
+                        <Label>{t("lostFound.form.contactEmail")}</Label>
                         <Input
                           type="email"
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
-                          placeholder="Your email"
+                          placeholder={t("lostFound.form.emailPlaceholder")}
                         />
                       </div>
                     </div>
 
                     {alertType === "lost" && (
                       <div className="space-y-2">
-                        <Label>Reward Offered (optional)</Label>
+                        <Label>{t("lostFound.form.rewardOptional")}</Label>
                         <Input
                           value={rewardOffered}
                           onChange={(e) => setRewardOffered(e.target.value)}
-                          placeholder="e.g., €100"
+                          placeholder={t("lostFound.form.rewardPlaceholder")}
                         />
                       </div>
                     )}
 
                     <Button type="submit" className="w-full" disabled={isCreating || isUploadingPhoto}>
                       {isUploadingPhoto
-                        ? "Uploading photos..."
+                        ? t("lostFound.form.uploadingPhotos")
                         : isCreating
-                        ? "Creating..."
+                        ? t("lostFound.form.creating")
                         : alertType === "lost"
-                        ? "Create Lost Pet Alert"
-                        : "Report Found Pet"}
+                        ? t("lostFound.form.submitLost")
+                        : t("lostFound.form.submitFound")}
                     </Button>
                   </form>
                 </DialogContent>
