@@ -497,7 +497,7 @@ const LostFoundAlerts = () => {
           mainPhotoUrl={alert.pet_photo_url}
           petName={alert.pet_name}
           badge={{
-            text: isLost ? "Lost" : "Found",
+            text: isLost ? t("lostFound.card.lost") : t("lostFound.card.found"),
             className: statusBadgeColor
           }}
         />
@@ -516,13 +516,13 @@ const LostFoundAlerts = () => {
               )}
               {alert.microchip_status && alert.microchip_status !== "unknown" && (
                 <Badge variant="outline" className={alert.microchip_status === "yes" ? "text-green-700 border-green-200 bg-green-50" : "text-muted-foreground"}>
-                  Microchip: {alert.microchip_status === "yes" ? "Yes" : "No"}
+                  {t("lostFound.card.microchipLabel")} {alert.microchip_status === "yes" ? t("lostFound.card.microchipYes") : t("lostFound.card.microchipNo")}
                 </Badge>
               )}
             </div>
             {isLost && alert.reward_offered && (
               <Badge className="bg-green-100 text-green-700 border-green-200">
-                Reward: {alert.reward_offered}
+                {t("lostFound.card.rewardLabel")} {alert.reward_offered}
               </Badge>
             )}
           </div>
@@ -568,7 +568,7 @@ const LostFoundAlerts = () => {
                   className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium"
                 >
                   <Phone className="w-4 h-4" />
-                  Call Now
+                  {t("lostFound.card.callNow")}
                 </a>
                 {alert.contact_email && (
                   <a
@@ -591,7 +591,7 @@ const LostFoundAlerts = () => {
                     }}
                   >
                     <Pencil className="w-4 h-4" />
-                    Edit
+                    {t("lostFound.card.edit")}
                   </Button>
                   <Button
                     variant="outline"
@@ -600,7 +600,7 @@ const LostFoundAlerts = () => {
                     onClick={() => markAsResolved(alert.id, alert.alert_type)}
                   >
                     <CheckCircle2 className="w-4 h-4" />
-                    {isLost ? "Mark as Found" : "Mark as Reunited"}
+                    {isLost ? t("lostFound.card.markAsFound") : t("lostFound.card.markAsReunited")}
                   </Button>
                 </div>
               )}
@@ -608,7 +608,7 @@ const LostFoundAlerts = () => {
           ) : (
             <div className="mt-4 pt-4 border-t">
               <p className="text-sm text-muted-foreground text-center">
-                Enable notifications to see contact info and help
+                {t("lostFound.card.enableToSeeContact")}
               </p>
             </div>
           )}
@@ -620,8 +620,8 @@ const LostFoundAlerts = () => {
   return (
     <>
       <Helmet>
-        <title>Lost&Found Alerts | Wooffy Community</title>
-        <meta name="description" content="Community-powered lost and found pet alert system in Cyprus. Help reunite pets with their families." />
+        <title>{t("lostFound.pageTitle")}</title>
+        <meta name="description" content={t("lostFound.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background overflow-x-hidden">
@@ -635,16 +635,16 @@ const LostFoundAlerts = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("lostFound.backToDashboard")}
           </Button>
 
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-                Lost&Found Alerts
+                {t("lostFound.title")}
               </h1>
               <p className="text-muted-foreground">
-                Help reunite pets with their families. {lostAlerts.length} lost, {foundAlerts.length} found.
+                {t("lostFound.subtitleCounts", { lost: lostAlerts.length, found: foundAlerts.length })}
               </p>
             </div>
 
@@ -657,12 +657,12 @@ const LostFoundAlerts = () => {
                     ) : (
                       <BellOff className="w-4 h-4" />
                     )}
-                    Notifications
+                    {t("lostFound.notifications")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Alert Notification Settings</DialogTitle>
+                    <DialogTitle>{t("lostFound.settingsDialog.title")}</DialogTitle>
                   </DialogHeader>
 
                   {!user ? (
