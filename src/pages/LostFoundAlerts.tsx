@@ -669,17 +669,17 @@ const LostFoundAlerts = () => {
                     <div className="py-8 text-center">
                       <BellOff className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                       <p className="text-muted-foreground mb-4">
-                        Please log in to enable notifications and help find lost pets in your area.
+                        {t("lostFound.settingsDialog.loginPrompt")}
                       </p>
-                      <Button onClick={() => navigate("/auth")}>Log In</Button>
+                      <Button onClick={() => navigate("/auth")}>{t("lostFound.settingsDialog.logIn")}</Button>
                     </div>
                   ) : (
                     <div className="space-y-6 pt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label className="text-base font-medium">Enable Notifications</Label>
+                          <Label className="text-base font-medium">{t("lostFound.settingsDialog.enableLabel")}</Label>
                           <p className="text-sm text-muted-foreground">
-                            Get notified about lost and found pets in your cities
+                            {t("lostFound.settingsDialog.enableDesc")}
                           </p>
                         </div>
                         <Switch
@@ -693,13 +693,13 @@ const LostFoundAlerts = () => {
                           <CityMultiSelector
                             selectedLocations={selectedCities}
                             onLocationsChange={setSelectedCities}
-                            label="Your Cities/Areas"
-                            description="Select cities where you'd like to help find pets"
+                            label={t("lostFound.settingsDialog.citiesLabel")}
+                            description={t("lostFound.settingsDialog.citiesDesc")}
                           />
 
                           <div className="bg-primary/10 rounded-lg p-4">
                             <p className="text-sm text-foreground">
-                              By enabling notifications, you'll be able to see contact information for alerts to help reunite pets with their families.
+                              {t("lostFound.settingsDialog.infoBox")}
                             </p>
                           </div>
                         </div>
@@ -710,7 +710,7 @@ const LostFoundAlerts = () => {
                         className="w-full"
                         disabled={isSavingPrefs}
                       >
-                        {isSavingPrefs ? "Saving..." : "Save Preferences"}
+                        {isSavingPrefs ? t("lostFound.settingsDialog.saving") : t("lostFound.settingsDialog.save")}
                       </Button>
                     </div>
                   )}
@@ -721,17 +721,17 @@ const LostFoundAlerts = () => {
                 <DialogTrigger asChild>
                   <Button className="gap-2">
                     <Plus className="w-4 h-4" />
-                    Report Pet
+                    {t("lostFound.reportPet")}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>Report a Pet</DialogTitle>
+                    <DialogTitle>{t("lostFound.form.title")}</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleCreateAlert} className="space-y-4 pt-4">
                     {/* Alert Type Selection */}
                     <div className="space-y-2">
-                      <Label>What are you reporting?</Label>
+                      <Label>{t("lostFound.form.whatReporting")}</Label>
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           type="button"
@@ -740,8 +740,8 @@ const LostFoundAlerts = () => {
                           onClick={() => setAlertType("lost")}
                         >
                           <AlertTriangle className="w-5 h-5" />
-                          <span>Lost Pet</span>
-                          <span className="text-xs opacity-75">My pet is missing</span>
+                          <span>{t("lostFound.form.lostPet")}</span>
+                          <span className="text-xs opacity-75">{t("lostFound.form.lostPetDesc")}</span>
                         </Button>
                         <Button
                           type="button"
@@ -750,15 +750,15 @@ const LostFoundAlerts = () => {
                           onClick={() => setAlertType("found")}
                         >
                           <Eye className="w-5 h-5" />
-                          <span>Found Pet</span>
-                          <span className="text-xs opacity-75">I found a stray</span>
+                          <span>{t("lostFound.form.foundPet")}</span>
+                          <span className="text-xs opacity-75">{t("lostFound.form.foundPetDesc")}</span>
                         </Button>
                       </div>
                     </div>
 
                     {/* Pet Type Selection */}
                     <div className="space-y-2">
-                      <Label>Type of Pet</Label>
+                      <Label>{t("lostFound.form.petTypeLabel")}</Label>
                       <div className="flex gap-2">
                         <Button
                           type="button"
@@ -767,7 +767,7 @@ const LostFoundAlerts = () => {
                           onClick={() => setPetType("dog")}
                           className="gap-1"
                         >
-                          <Dog className="w-4 h-4" /> Dog
+                          <Dog className="w-4 h-4" /> {t("lostFound.form.dog")}
                         </Button>
                         <Button
                           type="button"
@@ -776,7 +776,7 @@ const LostFoundAlerts = () => {
                           onClick={() => setPetType("cat")}
                           className="gap-1"
                         >
-                          <Cat className="w-4 h-4" /> Cat
+                          <Cat className="w-4 h-4" /> {t("lostFound.form.cat")}
                         </Button>
                         <Button
                           type="button"
@@ -785,7 +785,7 @@ const LostFoundAlerts = () => {
                           onClick={() => setPetType("other")}
                           className="gap-1"
                         >
-                          <HelpCircle className="w-4 h-4" /> Other
+                          <HelpCircle className="w-4 h-4" /> {t("lostFound.form.other")}
                         </Button>
                       </div>
                     </div>
@@ -793,16 +793,16 @@ const LostFoundAlerts = () => {
                     {/* For Lost pets - select from my pets */}
                     {alertType === "lost" && myPets.length > 0 && (
                       <div className="space-y-2">
-                        <Label>Select your pet (optional)</Label>
+                        <Label>{t("lostFound.form.selectPetOptional")}</Label>
                         <select
                           value={selectedPetId}
                           onChange={(e) => handlePetSelect(e.target.value)}
                           className="w-full px-3 py-2 border rounded-lg bg-background"
                         >
-                          <option value="">-- Manual entry --</option>
+                          <option value="">{t("lostFound.form.manualEntry")}</option>
                           {myPets.map((pet) => (
                             <option key={pet.id} value={pet.id}>
-                              {pet.pet_name} ({pet.pet_breed || "Unknown breed"})
+                              {pet.pet_name} ({pet.pet_breed || t("lostFound.form.unknownBreed")})
                             </option>
                           ))}
                         </select>
@@ -811,24 +811,24 @@ const LostFoundAlerts = () => {
 
                     <div className="space-y-2">
                       <Label>
-                        {alertType === "lost" ? "Pet Name *" : "Pet Name (if known)"}
+                        {alertType === "lost" ? t("lostFound.form.petNameLost") : t("lostFound.form.petNameFound")}
                       </Label>
                       <Input
                         value={petName}
                         onChange={(e) => setPetName(e.target.value)}
-                        placeholder={alertType === "lost" ? "e.g., Max" : "Leave blank if unknown"}
+                        placeholder={alertType === "lost" ? t("lostFound.form.petNamePlaceholderLost") : t("lostFound.form.petNamePlaceholderFound")}
                         required={alertType === "lost"}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Breed (if known)</Label>
+                      <Label>{t("lostFound.form.breedLabel")}</Label>
                       <Select value={petBreed || "_none"} onValueChange={(v) => setPetBreed(v === "_none" ? "" : v)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select breed" />
+                          <SelectValue placeholder={t("lostFound.form.breedPlaceholder")} />
                         </SelectTrigger>
                         <SelectContent position="popper" className="max-h-[40vh]">
-                          <SelectItem value="_none">Unknown / Not sure</SelectItem>
+                          <SelectItem value="_none">{t("lostFound.form.breedUnknown")}</SelectItem>
                           {getBreedsByPetType(petType === "other" ? "dog" : petType).map((breed) => (
                             <SelectItem key={breed} value={breed}>{breed}</SelectItem>
                           ))}
@@ -837,14 +837,14 @@ const LostFoundAlerts = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Description *</Label>
+                      <Label>{t("lostFound.form.descriptionLabel")}</Label>
                       <Textarea
                         value={petDescription}
                         onChange={(e) => setPetDescription(e.target.value)}
                         placeholder={
                           alertType === "lost"
-                            ? "Color, size, distinguishing features, collar info..."
-                            : "Color, size, condition, any collar or tags, behavior..."
+                            ? t("lostFound.form.descriptionPlaceholderLost")
+                            : t("lostFound.form.descriptionPlaceholderFound")
                         }
                         required
                       />
@@ -852,19 +852,19 @@ const LostFoundAlerts = () => {
 
                     {/* Microchip Status */}
                     <div className="space-y-2">
-                      <Label>Microchip Status</Label>
+                      <Label>{t("lostFound.form.microchipLabel")}</Label>
                       <RadioGroup value={microchipStatus} onValueChange={setMicrochipStatus} className="flex gap-4">
                         <div className="flex items-center gap-1.5">
                           <RadioGroupItem value="unknown" id="chip-unknown" />
-                          <Label htmlFor="chip-unknown" className="font-normal cursor-pointer">Unknown</Label>
+                          <Label htmlFor="chip-unknown" className="font-normal cursor-pointer">{t("lostFound.form.microchipUnknown")}</Label>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <RadioGroupItem value="yes" id="chip-yes" />
-                          <Label htmlFor="chip-yes" className="font-normal cursor-pointer">Yes</Label>
+                          <Label htmlFor="chip-yes" className="font-normal cursor-pointer">{t("lostFound.form.microchipYes")}</Label>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <RadioGroupItem value="no" id="chip-no" />
-                          <Label htmlFor="chip-no" className="font-normal cursor-pointer">No</Label>
+                          <Label htmlFor="chip-no" className="font-normal cursor-pointer">{t("lostFound.form.microchipNo")}</Label>
                         </div>
                       </RadioGroup>
                     </div>
@@ -876,22 +876,22 @@ const LostFoundAlerts = () => {
                       onAreaChange={setLastSeenArea}
                       showAreaSelector={true}
                       required={true}
-                      cityLabel={alertType === "lost" ? "Last Seen City" : "Found Location City"}
-                      areaLabel="Area"
+                      cityLabel={alertType === "lost" ? t("lostFound.form.lastSeenCity") : t("lostFound.form.foundCity")}
+                      areaLabel={t("lostFound.form.areaLabel")}
                     />
 
                     <div className="space-y-2">
-                      <Label>Additional Location Details</Label>
+                      <Label>{t("lostFound.form.additionalLocation")}</Label>
                       <Input
                         value={lastSeenDetails}
                         onChange={(e) => setLastSeenDetails(e.target.value)}
-                        placeholder="e.g., Near the central park, by the fountain"
+                        placeholder={t("lostFound.form.additionalLocationPlaceholder")}
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label>{alertType === "lost" ? "Last Seen Date *" : "Date Found *"}</Label>
+                        <Label>{alertType === "lost" ? t("lostFound.form.lastSeenDate") : t("lostFound.form.dateFound")}</Label>
                         <Input
                           type="date"
                           value={lastSeenDate}
@@ -900,7 +900,7 @@ const LostFoundAlerts = () => {
                             const today = new Date().toISOString().split('T')[0];
                             // Prevent future dates
                             if (selectedDate > today) {
-                              toast.error("Date cannot be in the future");
+                              toast.error(t("lostFound.toasts.futureDate"));
                               return;
                             }
                             setLastSeenDate(selectedDate);
