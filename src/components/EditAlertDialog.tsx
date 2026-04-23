@@ -10,6 +10,7 @@ import LocationSelector from "@/components/LocationSelector";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { formatLocation, cyprusCityNames } from "@/data/cyprusLocations";
+import { useTranslation } from "react-i18next";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
@@ -44,6 +45,7 @@ interface EditAlertDialogProps {
 }
 
 const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialogProps) => {
+  const { t } = useTranslation();
   const [petName, setPetName] = useState("");
   const [petDescription, setPetDescription] = useState("");
   const [petBreed, setPetBreed] = useState("");
@@ -131,13 +133,13 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
 
     for (let i = 0; i < files.length; i++) {
       if (currentTotal + newFiles.length >= MAX_PHOTOS) {
-        toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+        toast.error(t("editAlert.errors.maxPhotos", { max: MAX_PHOTOS }));
         break;
       }
       const file = files[i];
       if (!file.type.startsWith("image/")) continue;
       if (file.size > 5 * 1024 * 1024) {
-        toast.error(`${file.name} is too large (max 5MB)`);
+        toast.error(t("editAlert.errors.tooLarge", { name: file.name }));
         continue;
       }
       newFiles.push(file);
@@ -166,17 +168,17 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
     if (!alert) return;
 
     if (alert.alert_type === "lost" && !petName) {
-      toast.error("Please enter the pet's name");
+      toast.error(t("editAlert.errors.needsName"));
       return;
     }
     if (!petDescription || !lastSeenCity || !lastSeenDate || !contactPhone) {
-      toast.error("Please fill in all required fields");
+      toast.error(t("editAlert.errors.needsFields"));
       return;
     }
 
     const remainingExisting = existingPhotos.filter(p => !photosToRemove.includes(p.id)).length;
     if (remainingExisting + newPhotos.length === 0) {
-      toast.error("Please keep at least one photo");
+      toast.error(t("editAlert.errors.needsPhoto"));
       return;
     }
 
@@ -221,7 +223,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
       // Upload new photos
       if (newPhotos.length > 0) {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error("Not authenticated");
+        if (!user) throw new Error(t("editAlert.errors.notAuthenticated"));
 
         const startOrder = remainingExisting;
         for (let i = 0; i < newPhotos.length; i++) {
@@ -271,12 +273,12 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
         }
       }
 
-      toast.success("Alert updated successfully!");
+      toast.success(t("editAlert.updated"));
       onOpenChange(false);
       onSaved();
     } catch (error) {
       console.error("Error updating alert:", error);
-      toast.error("Failed to update alert");
+      toast.error(t("editAlert.errors.updateFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -289,55 +291,55 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Alert</DialogTitle>
+          <DialogTitle>{t("editAlert.title")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSave} className="space-y-4 pt-4">
           {/* Pet Type */}
           <div className="space-y-2">
-            <Label>Type of Pet</Label>
+            <Label>{t("editAlert.petType")}</Label>
             <div className="flex gap-2">
               <Button type="button" variant={petType === "dog" ? "default" : "outline"} size="sm" onClick={() => setPetType("dog")} className="gap-1">
-                <Dog className="w-4 h-4" /> Dog
+                <Dog className="w-4 h-4" /> {t("editAlert.dog")}
               </Button>
               <Button type="button" variant={petType === "cat" ? "default" : "outline"} size="sm" onClick={() => setPetType("cat")} className="gap-1">
-                <Cat className="w-4 h-4" /> Cat
+                <Cat className="w-4 h-4" /> {t("editAlert.cat")}
               </Button>
               <Button type="button" variant={petType === "other" ? "default" : "outline"} size="sm" onClick={() => setPetType("other")} className="gap-1">
-                <HelpCircle className="w-4 h-4" /> Other
+                <HelpCircle className="w-4 h-4" /> {t("editAlert.other")}
               </Button>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>{alert?.alert_type === "lost" ? "Pet Name *" : "Pet Name (if known)"}</Label>
+            <Label>{alert?.alert_type === "lost" ? t("editAlert.petNameLost") : t("editAlert.petNameOptional")}</Label>
             <Input value={petName} onChange={(e) => setPetName(e.target.value)} required={alert?.alert_type === "lost"} />
           </div>
 
           <div className="space-y-2">
-            <Label>Breed (if known)</Label>
+            <Label>{t("editAlert.breed")}</Label>
             <Input value={petBreed} onChange={(e) => setPetBreed(e.target.value)} />
           </div>
 
           <div className="space-y-2">
-            <Label>Description *</Label>
+            <Label>{t("editAlert.description")}</Label>
             <Textarea value={petDescription} onChange={(e) => setPetDescription(e.target.value)} required />
           </div>
 
           {/* Microchip Status */}
           <div className="space-y-2">
-            <Label>Microchip Status</Label>
+            <Label>{t("editAlert.microchipStatus")}</Label>
             <RadioGroup value={microchipStatus} onValueChange={setMicrochipStatus} className="flex gap-4">
               <div className="flex items-center gap-1.5">
                 <RadioGroupItem value="unknown" id="edit-chip-unknown" />
-                <Label htmlFor="edit-chip-unknown" className="font-normal cursor-pointer">Unknown</Label>
+                <Label htmlFor="edit-chip-unknown" className="font-normal cursor-pointer">{t("editAlert.microchipUnknown")}</Label>
               </div>
               <div className="flex items-center gap-1.5">
                 <RadioGroupItem value="yes" id="edit-chip-yes" />
-                <Label htmlFor="edit-chip-yes" className="font-normal cursor-pointer">Yes</Label>
+                <Label htmlFor="edit-chip-yes" className="font-normal cursor-pointer">{t("editAlert.microchipYes")}</Label>
               </div>
               <div className="flex items-center gap-1.5">
                 <RadioGroupItem value="no" id="edit-chip-no" />
-                <Label htmlFor="edit-chip-no" className="font-normal cursor-pointer">No</Label>
+                <Label htmlFor="edit-chip-no" className="font-normal cursor-pointer">{t("editAlert.microchipNo")}</Label>
               </div>
             </RadioGroup>
           </div>
@@ -349,24 +351,24 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
             onAreaChange={setLastSeenArea}
             showAreaSelector={true}
             required={true}
-            cityLabel={alert?.alert_type === "lost" ? "Last Seen City" : "Found Location City"}
-            areaLabel="Area"
+            cityLabel={alert?.alert_type === "lost" ? t("editAlert.lastSeenCity") : t("editAlert.foundCity")}
+            areaLabel={t("editAlert.area")}
           />
 
           <div className="space-y-2">
-            <Label>Additional Location Details</Label>
+            <Label>{t("editAlert.additionalLocation")}</Label>
             <Input value={lastSeenDetails} onChange={(e) => setLastSeenDetails(e.target.value)} />
           </div>
 
           <div className="space-y-2">
-            <Label>{alert?.alert_type === "lost" ? "Last Seen Date *" : "Date Found *"}</Label>
+            <Label>{alert?.alert_type === "lost" ? t("editAlert.lastSeenDate") : t("editAlert.dateFound")}</Label>
             <Input
               type="date"
               value={lastSeenDate}
               onChange={(e) => {
                 const today = new Date().toISOString().split('T')[0];
                 if (e.target.value > today) {
-                  toast.error("Date cannot be in the future");
+                  toast.error(t("editAlert.errors.futureDate"));
                   return;
                 }
                 setLastSeenDate(e.target.value);
@@ -378,7 +380,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
 
           {/* Photos */}
           <div className="space-y-2">
-            <Label>Photos (up to {MAX_PHOTOS})</Label>
+            <Label>{t("editAlert.photosLabel", { max: MAX_PHOTOS })}</Label>
 
             {(visibleExistingPhotos.length > 0 || newPhotoPreviews.length > 0) && (
               <div className="grid grid-cols-3 gap-3 mb-2">
@@ -401,7 +403,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
                         <X className="w-3 h-3" />
                       </Button>
                       {idx === 0 && newPhotoPreviews.length === 0 && (
-                        <span className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">Main</span>
+                        <span className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">{t("editAlert.main")}</span>
                       )}
                     </div>
                   </div>
@@ -427,7 +429,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
                       >
                         <X className="w-3 h-3" />
                       </Button>
-                      <span className="absolute top-1.5 left-1.5 bg-blue-500 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">New</span>
+                      <span className="absolute top-1.5 left-1.5 bg-blue-500 text-white text-[10px] font-medium px-1.5 py-0.5 rounded-md shadow">{t("editAlert.newBadge")}</span>
                     </div>
                   </div>
                 ))}
@@ -442,8 +444,8 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
                     <img src={newPhotoPreviews[editingPhotoIndex]} alt="Editing" className="w-full h-full object-cover" style={{ objectPosition: `center ${newPhotoPositions[editingPhotoIndex] ?? 50}%` }} />
                   </div>
                   <div className="flex-1">
-                    <Label className="text-sm font-medium">Adjust New Photo</Label>
-                    <p className="text-xs text-muted-foreground">Slide to adjust visible area</p>
+                    <Label className="text-sm font-medium">{t("editAlert.adjustNewPhoto")}</Label>
+                    <p className="text-xs text-muted-foreground">{t("editAlert.adjustHint")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -455,7 +457,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                 </div>
-                <Button type="button" variant="ghost" size="sm" className="w-full mt-3 text-muted-foreground" onClick={() => setEditingPhotoIndex(null)}>Done adjusting</Button>
+                <Button type="button" variant="ghost" size="sm" className="w-full mt-3 text-muted-foreground" onClick={() => setEditingPhotoIndex(null)}>{t("editAlert.doneAdjusting")}</Button>
               </div>
             )}
 
@@ -463,7 +465,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
               <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                 <Upload className="w-6 h-6 text-muted-foreground mb-1" />
                 <span className="text-sm text-muted-foreground">
-                  Add more ({totalPhotos}/{MAX_PHOTOS})
+                  {t("editAlert.addMore", { current: totalPhotos, max: MAX_PHOTOS })}
                 </span>
                 <input type="file" accept="image/*" multiple onChange={handleNewPhotoSelect} className="hidden" />
               </label>
@@ -472,24 +474,24 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Contact Phone *</Label>
+              <Label>{t("editAlert.contactPhone")}</Label>
               <Input value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} required />
             </div>
             <div className="space-y-2">
-              <Label>Contact Email</Label>
+              <Label>{t("editAlert.contactEmail")}</Label>
               <Input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
             </div>
           </div>
 
           {alert?.alert_type === "lost" && (
             <div className="space-y-2">
-              <Label>Reward Offered (optional)</Label>
+              <Label>{t("editAlert.rewardOptional")}</Label>
               <Input value={rewardOffered} onChange={(e) => setRewardOffered(e.target.value)} />
             </div>
           )}
 
           <Button type="submit" className="w-full" disabled={isSaving}>
-            {isSaving ? "Saving..." : "Save Changes"}
+            {isSaving ? t("editAlert.saving") : t("editAlert.save")}
           </Button>
         </form>
       </DialogContent>

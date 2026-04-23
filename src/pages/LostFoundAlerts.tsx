@@ -1111,13 +1111,13 @@ const LostFoundAlerts = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-display font-semibold text-foreground mb-1">
-                    Want to help find and reunite pets?
+                    {t("lostFound.ctas.helpTitle")}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Enable notifications and add your cities to see contact information.
+                    {t("lostFound.ctas.helpDesc")}
                   </p>
                   <Button size="sm" onClick={() => setShowSettingsDialog(true)}>
-                    Enable Notifications
+                    {t("lostFound.ctas.enableNotifications")}
                   </Button>
                 </div>
               </div>
@@ -1132,13 +1132,13 @@ const LostFoundAlerts = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-display font-semibold text-foreground mb-1">
-                    Log in to help pets in Cyprus
+                    {t("lostFound.ctas.loginTitle")}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Create an account to report lost or found pets and help reunite them with families.
+                    {t("lostFound.ctas.loginDesc")}
                   </p>
                   <Button size="sm" onClick={() => navigate("/auth")}>
-                    Log In or Sign Up
+                    {t("lostFound.ctas.loginCta")}
                   </Button>
                 </div>
               </div>
@@ -1152,11 +1152,11 @@ const LostFoundAlerts = () => {
                 <SelectTrigger className="w-[180px]">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-muted-foreground" />
-                    <SelectValue placeholder="All Cities" />
+                    <SelectValue placeholder={t("lostFound.filters.allCities")} />
                   </div>
                 </SelectTrigger>
                 <SelectContent position="popper" className="max-h-[40vh]">
-                  <SelectItem value="all">All Cities</SelectItem>
+                  <SelectItem value="all">{t("lostFound.filters.allCities")}</SelectItem>
                   {cityNames.map((city) => (
                     <SelectItem key={city} value={city}>{city}</SelectItem>
                   ))}
@@ -1167,11 +1167,11 @@ const LostFoundAlerts = () => {
                 <SelectTrigger className="w-[180px]">
                   <div className="flex items-center gap-2">
                     <Filter className="w-4 h-4 text-muted-foreground" />
-                    <SelectValue placeholder="All Breeds" />
+                    <SelectValue placeholder={t("lostFound.filters.allBreeds")} />
                   </div>
                 </SelectTrigger>
                 <SelectContent position="popper" className="max-h-[40vh]">
-                  <SelectItem value="all">All Breeds</SelectItem>
+                  <SelectItem value="all">{t("lostFound.filters.allBreeds")}</SelectItem>
                   {uniqueBreeds.map((breed) => (
                     <SelectItem key={breed} value={breed}>{breed}</SelectItem>
                   ))}
@@ -1186,7 +1186,7 @@ const LostFoundAlerts = () => {
                   className="text-muted-foreground"
                 >
                   <X className="w-4 h-4 mr-1" />
-                  Clear filters
+                  {t("lostFound.filters.clear")}
                 </Button>
               )}
             </div>
@@ -1197,15 +1197,15 @@ const LostFoundAlerts = () => {
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="lost" className="gap-2">
                 <AlertTriangle className="w-4 h-4" />
-                Lost ({lostAlerts.length})
+                {t("lostFound.tabs.lost", { count: lostAlerts.length })}
               </TabsTrigger>
               <TabsTrigger value="found" className="gap-2">
                 <Eye className="w-4 h-4" />
-                Found ({foundAlerts.length})
+                {t("lostFound.tabs.found", { count: foundAlerts.length })}
               </TabsTrigger>
               <TabsTrigger value="reunited" className="gap-2">
                 <Heart className="w-4 h-4" />
-                Reunited ({reunitedAlerts.length})
+                {t("lostFound.tabs.reunited", { count: reunitedAlerts.length })}
               </TabsTrigger>
             </TabsList>
 
@@ -1213,7 +1213,7 @@ const LostFoundAlerts = () => {
               {lostAlerts.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-2xl">
                   <AlertTriangle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No active lost pet alerts</p>
+                  <p className="text-muted-foreground">{t("lostFound.empty.lost")}</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1226,9 +1226,9 @@ const LostFoundAlerts = () => {
               {foundAlerts.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-2xl">
                   <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No active found pet reports</p>
+                  <p className="text-muted-foreground">{t("lostFound.empty.found")}</p>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Found an abandoned pet? Click "Report Pet" to help find its owner!
+                    {t("lostFound.empty.foundHint")}
                   </p>
                 </div>
               ) : (
@@ -1242,7 +1242,7 @@ const LostFoundAlerts = () => {
               {reunitedAlerts.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-2xl">
                   <Heart className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">No reunited pets yet</p>
+                  <p className="text-muted-foreground">{t("lostFound.empty.reunited")}</p>
                 </div>
               ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1256,7 +1256,7 @@ const LostFoundAlerts = () => {
                         mainPhotoUrl={alert.pet_photo_url}
                         petName={alert.pet_name}
                         badge={{
-                          text: "Reunited",
+                          text: t("lostFound.card.reunited"),
                           className: "bg-green-100 text-green-700"
                         }}
                       />
@@ -1273,7 +1273,7 @@ const LostFoundAlerts = () => {
                         <div className="flex items-center gap-2 mt-2 text-green-600">
                           <CheckCircle2 className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            {alert.alert_type === "lost" ? "Found!" : "Owner Found!"}
+                            {alert.alert_type === "lost" ? t("lostFound.card.foundShort") : t("lostFound.card.ownerFound")}
                           </span>
                         </div>
                       </div>
