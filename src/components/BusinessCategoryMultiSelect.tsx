@@ -39,10 +39,9 @@ const BusinessCategoryMultiSelect = ({
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {selected.map((cat) => {
-            const option = businessCategories.find((c) => c.value === cat);
             return (
               <Badge key={cat} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
-                {option?.label || cat}
+                {getCategoryLabel(cat)}
                 <button
                   type="button"
                   onClick={() => toggle(cat)}
