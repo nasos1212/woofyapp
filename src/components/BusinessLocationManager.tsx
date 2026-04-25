@@ -167,13 +167,13 @@ const BusinessLocationManager = ({
             
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="text-sm">City *</Label>
+                <Label className="text-sm">{t("businessLocations.cityLabel")}</Label>
                 <Select
                   value={location.city}
                   onValueChange={(city) => updateLocation(index, "city", city)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
+                    <SelectValue placeholder={t("businessLocations.selectCity")} />
                   </SelectTrigger>
                   <SelectContent>
                     {cyprusCities.map((city) => (
