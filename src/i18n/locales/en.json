@@ -1791,5 +1791,19 @@
   "businessCategoriesField": {
     "defaultLabel": "Business Categories",
     "selectAtLeastOne": "Select at least one category"
+  },
+  "photoUpload": {
+    "invalidType": "Please select a valid image file (JPEG, PNG, GIF, WebP, or HEIC/HEIF)",
+    "invalidExtension": "Invalid file extension. Allowed: JPG, PNG, GIF, WebP, HEIC, HEIF",
+    "tooLarge": "Image must be less than 8MB",
+    "mustBeLoggedIn": "You must be logged in to upload photos",
+    "uploadSuccess": "Photo uploaded successfully!",
+    "uploadFailed": "Failed to upload photo",
+    "clickToUpload": "Click to upload a photo",
+    "fileHint": "JPG, PNG, GIF up to 8MB",
+    "previewAlt": "Preview",
+    "cancel": "Cancel",
+    "uploading": "Uploading...",
+    "uploadPhoto": "Upload Photo"
   }
 }

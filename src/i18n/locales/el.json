@@ -1791,5 +1791,19 @@
   "businessCategoriesField": {
     "defaultLabel": "Κατηγορίες Επιχείρησης",
     "selectAtLeastOne": "Επιλέξτε τουλάχιστον μία κατηγορία"
+  },
+  "photoUpload": {
+    "invalidType": "Επιλέξτε έγκυρη εικόνα (JPEG, PNG, GIF, WebP ή HEIC/HEIF)",
+    "invalidExtension": "Μη έγκυρη επέκταση αρχείου. Επιτρεπτές: JPG, PNG, GIF, WebP, HEIC, HEIF",
+    "tooLarge": "Η εικόνα πρέπει να είναι μικρότερη από 8MB",
+    "mustBeLoggedIn": "Πρέπει να είστε συνδεδεμένοι για να ανεβάσετε φωτογραφίες",
+    "uploadSuccess": "Η φωτογραφία ανέβηκε με επιτυχία!",
+    "uploadFailed": "Αποτυχία μεταφόρτωσης φωτογραφίας",
+    "clickToUpload": "Κάντε κλικ για να ανεβάσετε φωτογραφία",
+    "fileHint": "JPG, PNG, GIF έως 8MB",
+    "previewAlt": "Προεπισκόπηση",
+    "cancel": "Ακύρωση",
+    "uploading": "Μεταφόρτωση...",
+    "uploadPhoto": "Ανέβασμα Φωτογραφίας"
   }
 }
