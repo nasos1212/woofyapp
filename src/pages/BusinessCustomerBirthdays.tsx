@@ -669,7 +669,7 @@ const BusinessCustomerBirthdays = () => {
                               </Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">
-                              To: {offer.owner_name || "Pet Owner"}
+                              {t("businessBirthdays.toPrefix", { name: offer.owner_name || t("businessBirthdays.petOwner") })}
                             </p>
                             <p className="text-sm text-muted-foreground line-clamp-2 italic">
                               "{offer.message.substring(0, 100)}{offer.message.length > 100 ? "..." : ""}"
