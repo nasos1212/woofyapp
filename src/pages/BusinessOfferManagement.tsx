@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   Edit2,
@@ -84,6 +85,7 @@ interface Offer {
 }
 
 const BusinessOfferManagement = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -140,7 +142,7 @@ const BusinessOfferManagement = () => {
         .maybeSingle();
 
       if (!business) {
-        toast.error("No business found. Please register first.");
+        toast.error(t("businessOffers.errBusinessMissing"));
         navigate("/partner-register");
         return;
       }
@@ -189,7 +191,7 @@ const BusinessOfferManagement = () => {
       setOffers(transformedOffers);
     } catch (error) {
       console.error("Error fetching offers:", error);
-      toast.error("Failed to load offers");
+      toast.error(t("businessOffers.errLoad"));
     } finally {
       setIsLoading(false);
     }
@@ -245,17 +247,17 @@ const BusinessOfferManagement = () => {
 
   const handleSubmit = async () => {
     if (!businessId || !formData.title.trim()) {
-      toast.error("Please fill in the required fields");
+      toast.error(t("businessOffers.errFillRequired"));
       return;
     }
 
     if (!formData.discount_value || parseFloat(formData.discount_value) <= 0) {
-      toast.error("Please enter a valid discount value");
+      toast.error(t("businessOffers.errInvalidDiscount"));
       return;
     }
 
     if (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100) {
-      toast.error("Percentage discount cannot exceed 100%");
+      toast.error(t("businessOffers.errOver100"));
       return;
     }
 
@@ -288,19 +290,19 @@ const BusinessOfferManagement = () => {
           .eq("id", editingOffer.id);
 
         if (error) throw error;
-        toast.success("Offer updated successfully");
+        toast.success(t("businessOffers.okUpdated"));
       } else {
         const { error } = await supabase.from("offers").insert(offerData);
 
         if (error) throw error;
-        toast.success("Offer created successfully");
+        toast.success(t("businessOffers.okCreated"));
       }
 
       setIsDialogOpen(false);
       fetchOffers();
     } catch (error) {
       console.error("Error saving offer:", error);
-      toast.error("Failed to save offer");
+      toast.error(t("businessOffers.errSave"));
     }
   };
 
@@ -312,11 +314,11 @@ const BusinessOfferManagement = () => {
         .eq("id", offer.id);
 
       if (error) throw error;
-      toast.success(offer.is_active ? "Offer paused" : "Offer activated");
+      toast.success(offer.is_active ? t("businessOffers.okPaused") : t("businessOffers.okActivated"));
       fetchOffers();
     } catch (error) {
       console.error("Error toggling offer:", error);
-      toast.error("Failed to update offer");
+      toast.error(t("businessOffers.errToggle"));
     }
   };
 
@@ -327,12 +329,12 @@ const BusinessOfferManagement = () => {
       const { error } = await supabase.from("offers").delete().eq("id", deleteOfferId);
 
       if (error) throw error;
-      toast.success("Offer deleted");
+      toast.success(t("businessOffers.okDeleted"));
       setDeleteOfferId(null);
       fetchOffers();
     } catch (error) {
       console.error("Error deleting offer:", error);
-      toast.error("Failed to delete offer");
+      toast.error(t("businessOffers.errDelete"));
     }
   };
 
@@ -347,8 +349,8 @@ const BusinessOfferManagement = () => {
   return (
     <>
       <Helmet>
-        <title>Manage Offers | Wooffy Business</title>
-        <meta name="description" content="Create and manage your Wooffy partner offers." />
+        <title>{t("businessOffers.metaTitle")}</title>
+        <meta name="description" content={t("businessOffers.metaDesc")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -362,7 +364,7 @@ const BusinessOfferManagement = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("businessOffers.backToDashboard")}
           </Button>
 
           {/* Pending Approval Banner */}
@@ -372,15 +374,15 @@ const BusinessOfferManagement = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-                Manage Offers
+                {t("businessOffers.pageTitle")}
               </h1>
               <p className="text-slate-500">
-                Create, edit, and manage your discount offers for Wooffy members
+                {t("businessOffers.pageSubtitle")}
               </p>
             </div>
             <Button onClick={openCreateDialog} className="gap-2 w-fit" disabled={!isApproved}>
               <Plus className="w-4 h-4" />
-              Create Offer
+              {t("businessOffers.createOffer")}
             </Button>
           </div>
 
@@ -388,9 +390,9 @@ const BusinessOfferManagement = () => {
           {!isApproved && (
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Offer Management Unavailable</h3>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessOffers.unavailableTitle")}</h3>
               <p className="text-slate-500">
-                You'll be able to create and manage offers once your business is approved.
+                {t("businessOffers.unavailableDesc")}
               </p>
             </div>
           )}
@@ -399,13 +401,13 @@ const BusinessOfferManagement = () => {
           {isApproved && offers.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">No offers yet</h3>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessOffers.noOffersTitle")}</h3>
               <p className="text-slate-500 mb-6">
-                Create your first offer to start attracting Wooffy members
+                {t("businessOffers.noOffersDesc")}
               </p>
               <Button onClick={openCreateDialog} className="gap-2">
                 <Plus className="w-4 h-4" />
-                Create Your First Offer
+                {t("businessOffers.createFirst")}
               </Button>
             </div>
           ) : isApproved && (
@@ -426,7 +428,7 @@ const BusinessOfferManagement = () => {
                         {!offer.is_active && (
                           <span className="text-[10px] sm:text-xs bg-amber-100 text-amber-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
                             <Pause className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                            Paused
+                            {t("businessOffers.paused")}
                           </span>
                         )}
                       </div>
@@ -436,9 +438,9 @@ const BusinessOfferManagement = () => {
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <span className="flex items-center gap-1 text-primary font-medium">
                           {offer.discount_type === "percentage" ? (
-                            <>{offer.discount_value}% off</>
+                            <>{offer.discount_value}% {t("businessOffers.off")}</>
                           ) : (
-                            <>€{offer.discount_value} off</>
+                            <>€{offer.discount_value} {t("businessOffers.off")}</>
                           )}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -446,7 +448,7 @@ const BusinessOfferManagement = () => {
                             ? 'bg-teal-100 text-teal-700' 
                             : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.redemption_scope === 'per_pet' ? '🐾 Per Pet' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? t("businessOffers.perPet") : t("businessOffers.perMember")}
                         </span>
                         {offer.pet_type && (
                           <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -454,7 +456,7 @@ const BusinessOfferManagement = () => {
                               ? 'bg-amber-100 text-amber-700' 
                               : 'bg-purple-100 text-purple-700'
                           }`}>
-                            {offer.pet_type === 'dog' ? '🐕 Dogs' : '🐱 Cats'}
+                            {offer.pet_type === 'dog' ? t("businessOffers.dogsOnly") : t("businessOffers.catsOnly")}
                           </span>
                         )}
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -464,22 +466,24 @@ const BusinessOfferManagement = () => {
                               ? 'bg-amber-100 text-amber-700'
                               : 'bg-blue-100 text-blue-700'
                         }`}>
-                          {offer.redemption_frequency === 'one_time' ? '1x' : 
-                           offer.redemption_frequency === 'daily' ? '📅 Daily' :
-                           offer.redemption_frequency === 'weekly' ? '📆 Weekly' :
-                           offer.redemption_frequency === 'monthly' ? '🗓️ Monthly' : '♾️ Anytime'}
+                          {offer.redemption_frequency === 'one_time' ? t("businessOffers.freqOnce") : 
+                           offer.redemption_frequency === 'daily' ? t("businessOffers.freqDaily") :
+                           offer.redemption_frequency === 'weekly' ? t("businessOffers.freqWeekly") :
+                           offer.redemption_frequency === 'monthly' ? t("businessOffers.freqMonthly") : t("businessOffers.freqAnytime")}
                         </span>
                         <span className="text-slate-500">
-                          {offer.redemption_count}{offer.max_redemptions ? `/${offer.max_redemptions}` : ''} redemption{offer.redemption_count !== 1 ? "s" : ""}
+                          {offer.max_redemptions
+                            ? t("businessOffers.redemptionsWithLimit", { used: offer.redemption_count, total: offer.max_redemptions })
+                            : t("businessOffers.redemptions", { count: offer.redemption_count })}
                         </span>
                         {offer.max_redemptions && offer.redemption_count >= offer.max_redemptions && (
                           <span className="text-[10px] sm:text-xs bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded-full">
-                            Limit reached
+                            {t("businessOffers.limitReached")}
                           </span>
                         )}
                       </div>
                       {offer.terms && (
-                        <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">Terms: {offer.terms}</p>
+                        <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">{t("businessOffers.termsLabel", { terms: offer.terms })}</p>
                       )}
                     </div>
 
@@ -489,7 +493,7 @@ const BusinessOfferManagement = () => {
                         size="icon"
                         className="h-8 w-8 sm:h-10 sm:w-10"
                         onClick={() => toggleOfferStatus(offer)}
-                        title={offer.is_active ? "Pause offer" : "Activate offer"}
+                        title={offer.is_active ? t("businessOffers.pauseOffer") : t("businessOffers.activateOffer")}
                       >
                         {offer.is_active ? (
                           <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
@@ -527,36 +531,36 @@ const BusinessOfferManagement = () => {
         <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[95vw] sm:w-full">
           <DialogHeader className="flex-shrink-0 pb-2">
             <DialogTitle>
-              {editingOffer ? "Edit Offer" : "Create New Offer"}
+              {editingOffer ? t("businessOffers.dialogEditTitle") : t("businessOffers.dialogCreateTitle")}
             </DialogTitle>
             <DialogDescription>
               {editingOffer
-                ? "Update your offer details"
-                : "Fill in the details to create a new offer for Wooffy members"}
+                ? t("businessOffers.dialogEditDesc")
+                : t("businessOffers.dialogCreateDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-1 -mx-1">
             <div className="space-y-2">
-              <Label htmlFor="title">Offer Title <span className="text-destructive">*</span></Label>
+              <Label htmlFor="title">{t("businessOffers.fieldTitle")} <span className="text-destructive">*</span></Label>
               <Input
                 id="title"
-                placeholder="e.g., First Grooming Free"
+                placeholder={t("businessOffers.fieldTitlePh")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
                 className="text-base"
               />
               {!formData.title.trim() && (
-                <p className="text-xs text-destructive">Title is required</p>
+                <p className="text-xs text-destructive">{t("businessOffers.fieldTitleRequired")}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("businessOffers.fieldDescription")}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe what's included in this offer..."
+                placeholder={t("businessOffers.fieldDescriptionPh")}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
@@ -565,7 +569,7 @@ const BusinessOfferManagement = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="discount_value">Discount Value <span className="text-destructive">*</span></Label>
+                <Label htmlFor="discount_value">{t("businessOffers.fieldDiscountValue")} <span className="text-destructive">*</span></Label>
                 <Input
                   id="discount_value"
                   type="number"
@@ -573,7 +577,7 @@ const BusinessOfferManagement = () => {
                   pattern="[0-9]*"
                   min="0"
                   step="any"
-                  placeholder="e.g., 15"
+                  placeholder={t("businessOffers.fieldDiscountValuePh")}
                   value={formData.discount_value}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -591,13 +595,13 @@ const BusinessOfferManagement = () => {
                   required
                 />
                 {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) ? (
-                  <p className="text-xs text-destructive">Please enter a valid discount value</p>
+                  <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueInvalid")}</p>
                 ) : formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100 ? (
-                  <p className="text-xs text-destructive">Percentage cannot exceed 100%</p>
+                  <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueOver100")}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="discount_type">Discount Type</Label>
+                <Label htmlFor="discount_type">{t("businessOffers.fieldDiscountType")}</Label>
                 <select
                   id="discount_type"
                   value={formData.discount_type}
@@ -606,8 +610,8 @@ const BusinessOfferManagement = () => {
                   }
                   className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 >
-                  <option value="percentage">Percentage (%)</option>
-                  <option value="fixed">Fixed Amount (€)</option>
+                  <option value="percentage">{t("businessOffers.discountPercentage")}</option>
+                  <option value="fixed">{t("businessOffers.discountFixed")}</option>
                 </select>
               </div>
             </div>
@@ -615,10 +619,10 @@ const BusinessOfferManagement = () => {
             {/* Pet Type Filter */}
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                🐾 Pet Type (Optional)
+                {t("businessOffers.petTypeHeading")}
               </h4>
               <div className="space-y-2">
-                <Label htmlFor="pet_type">Which pets is this offer for?</Label>
+                <Label htmlFor="pet_type">{t("businessOffers.petTypeLabel")}</Label>
                 <select
                   id="pet_type"
                   value={formData.pet_type || ""}
@@ -627,16 +631,16 @@ const BusinessOfferManagement = () => {
                   }
                   className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 >
-                  <option value="">All Pets (Dogs & Cats)</option>
-                  <option value="dog">🐕 Dogs Only</option>
-                  <option value="cat">🐱 Cats Only</option>
+                  <option value="">{t("businessOffers.petTypeAll")}</option>
+                  <option value="dog">{t("businessOffers.petTypeDog")}</option>
+                  <option value="cat">{t("businessOffers.petTypeCat")}</option>
                 </select>
                 <p className="text-xs text-muted-foreground">
                   {formData.pet_type === 'dog' 
-                    ? '🐕 Only visible to members with dogs' 
+                    ? t("businessOffers.petTypeHelpDog")
                     : formData.pet_type === 'cat'
-                      ? '🐱 Only visible to members with cats'
-                      : '🐾 Visible to all pet owners'}
+                      ? t("businessOffers.petTypeHelpCat")
+                      : t("businessOffers.petTypeHelpAll")}
                 </p>
               </div>
             </div>
@@ -647,7 +651,7 @@ const BusinessOfferManagement = () => {
               <div className="flex items-center gap-2 mb-3">
                 <h4 className="font-medium text-sm flex items-center gap-2">
                   <Tag className="w-4 h-4" />
-                  Redemption Rules
+                  {t("businessOffers.redemptionRules")}
                 </h4>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -656,12 +660,12 @@ const BusinessOfferManagement = () => {
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-72 text-xs" align="start">
-                    <p className="font-medium mb-2">Examples:</p>
+                    <p className="font-medium mb-2">{t("businessOffers.examplesTitle")}</p>
                     <ul className="space-y-1.5 text-muted-foreground">
-                      <li><span className="text-foreground">Per Pet + Monthly</span> → "20% off grooming" - each pet once/month</li>
-                      <li><span className="text-foreground">Per Member + One-time</span> → "Free first visit" - member uses once ever</li>
-                      <li><span className="text-foreground">Per Member + Unlimited</span> → "10% on treats" - use anytime, no limits</li>
-                      <li><span className="text-foreground">Per Pet + One-time</span> → "First grooming free" - each pet uses once</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex1Tag")}</span> {t("businessOffers.ex1")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex2Tag")}</span> {t("businessOffers.ex2")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex3Tag")}</span> {t("businessOffers.ex3")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex4Tag")}</span> {t("businessOffers.ex4")}</li>
                     </ul>
                   </PopoverContent>
                 </Popover>
@@ -670,7 +674,7 @@ const BusinessOfferManagement = () => {
               <div className="space-y-4">
                 {/* Redemption Scope */}
                 <div className="space-y-2">
-                  <Label htmlFor="redemption_scope">Who can redeem?</Label>
+                  <Label htmlFor="redemption_scope">{t("businessOffers.scopeLabel")}</Label>
                   <select
                     id="redemption_scope"
                     value={formData.redemption_scope}
@@ -679,19 +683,19 @@ const BusinessOfferManagement = () => {
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <option value="per_member">Per Member</option>
-                    <option value="per_pet">Per Pet</option>
+                    <option value="per_member">{t("businessOffers.scopePerMember")}</option>
+                    <option value="per_pet">{t("businessOffers.scopePerPet")}</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' 
-                      ? '🐕 Each pet on the membership can redeem (e.g., grooming)' 
-                      : '👤 Track redemptions per membership'}
+                      ? t("businessOffers.scopeHelpPerPet")
+                      : t("businessOffers.scopeHelpPerMember")}
                   </p>
                 </div>
 
                 {/* Redemption Frequency */}
                 <div className="space-y-2">
-                  <Label htmlFor="redemption_frequency">How often can they redeem?</Label>
+                  <Label htmlFor="redemption_frequency">{t("businessOffers.freqLabel")}</Label>
                   <select
                     id="redemption_frequency"
                     value={formData.redemption_frequency}
@@ -700,38 +704,38 @@ const BusinessOfferManagement = () => {
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <option value="one_time">One-time only</option>
-                    <option value="daily">Daily (resets each day)</option>
-                    <option value="weekly">Weekly (resets each week)</option>
-                    <option value="monthly">Monthly (resets each month)</option>
-                    <option value="unlimited">Unlimited (no frequency limit)</option>
+                    <option value="one_time">{t("businessOffers.freqOpt1")}</option>
+                    <option value="daily">{t("businessOffers.freqOptDaily")}</option>
+                    <option value="weekly">{t("businessOffers.freqOptWeekly")}</option>
+                    <option value="monthly">{t("businessOffers.freqOptMonthly")}</option>
+                    <option value="unlimited">{t("businessOffers.freqOptUnlimited")}</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_frequency === 'one_time' 
-                      ? '1️⃣ Can only be used once ever' 
+                      ? t("businessOffers.freqHelpOnce")
                       : formData.redemption_frequency === 'daily'
-                        ? '📅 Resets every day at midnight'
+                        ? t("businessOffers.freqHelpDaily")
                         : formData.redemption_frequency === 'weekly'
-                          ? '📆 Resets every Monday'
+                          ? t("businessOffers.freqHelpWeekly")
                           : formData.redemption_frequency === 'monthly'
-                            ? '🗓️ Resets on the 1st of each month'
-                            : '♾️ Can be used as many times as they want'}
+                            ? t("businessOffers.freqHelpMonthly")
+                            : t("businessOffers.freqHelpUnlimited")}
                   </p>
                 </div>
 
                 {/* Example summary */}
                 <div className="bg-muted/50 rounded-lg p-3 text-sm">
-                  <p className="font-medium text-foreground mb-1">Example:</p>
+                  <p className="font-medium text-foreground mb-1">{t("businessOffers.exampleTitle")}</p>
                   <p className="text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'monthly'
-                      ? '"20% grooming" → Each pet can use once per month'
-                      : formData.redemption_scope === 'unlimited' && formData.redemption_frequency === 'unlimited'
-                        ? '"10% on treats" → Anyone can use anytime, no limits'
+                      ? t("businessOffers.exPetMonthly")
+                      : formData.redemption_frequency === 'unlimited'
+                        ? t("businessOffers.exUnlimited")
                         : formData.redemption_scope === 'per_member' && formData.redemption_frequency === 'one_time'
-                          ? '"Free first visit" → Member uses once ever'
+                          ? t("businessOffers.exMemberOnce")
                           : formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'one_time'
-                            ? '"First grooming free" → Each pet uses once ever'
-                            : `${formData.redemption_scope === 'per_pet' ? 'Each pet' : formData.redemption_scope === 'per_member' ? 'Each member' : 'Anyone'} can redeem ${formData.redemption_frequency === 'unlimited' ? 'unlimited times' : formData.redemption_frequency.replace('_', ' ')}`}
+                            ? t("businessOffers.exPetOnce")
+                            : ''}
                   </p>
                 </div>
               </div>
@@ -741,14 +745,14 @@ const BusinessOfferManagement = () => {
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                Time Restrictions (Optional)
+                {t("businessOffers.timeRestrictions")}
               </h4>
               
               <div className="space-y-4">
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Start Date</Label>
+                    <Label>{t("businessOffers.startDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -759,7 +763,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_from ? formatDate(formData.valid_from) : <span>Pick a date</span>}
+                          {formData.valid_from ? formatDate(formData.valid_from) : <span>{t("businessOffers.pickDate")}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -774,7 +778,7 @@ const BusinessOfferManagement = () => {
                     </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label>End Date</Label>
+                    <Label>{t("businessOffers.endDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -785,7 +789,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_until ? formatDate(formData.valid_until) : <span>Pick a date</span>}
+                          {formData.valid_until ? formatDate(formData.valid_until) : <span>{t("businessOffers.pickDate")}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -803,21 +807,21 @@ const BusinessOfferManagement = () => {
                 </div>
                 {(formData.valid_from || formData.valid_until) && (
                   <p className="text-xs text-muted-foreground">
-                  📅 {formData.valid_from && formData.valid_until 
-                      ? `Valid from ${formatDate(formData.valid_from)} to ${formatDate(formData.valid_until)}`
+                    {formData.valid_from && formData.valid_until 
+                      ? t("businessOffers.validRange", { from: formatDate(formData.valid_from), to: formatDate(formData.valid_until) })
                       : formData.valid_from 
-                        ? `Starts ${formatDate(formData.valid_from)}`
-                        : `Ends ${formatDate(formData.valid_until!)}`}
+                        ? t("businessOffers.validStarts", { date: formatDate(formData.valid_from) })
+                        : t("businessOffers.validEnds", { date: formatDate(formData.valid_until!) })}
                   </p>
                 )}
 
                 {/* Valid Days */}
                 <div className="space-y-2">
-                  <Label>Valid Days</Label>
+                  <Label>{t("businessOffers.validDays")}</Label>
                   <div className="flex flex-wrap gap-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                    {(['daySun','dayMon','dayTue','dayWed','dayThu','dayFri','daySat'] as const).map((dayKey, index) => (
                       <button
-                        key={day}
+                        key={dayKey}
                         type="button"
                         onClick={() => {
                           const newDays = formData.valid_days.includes(index)
@@ -831,14 +835,14 @@ const BusinessOfferManagement = () => {
                             : 'bg-background border-input hover:bg-muted'
                         }`}
                       >
-                        {day}
+                        {t(`businessOffers.${dayKey}`)}
                       </button>
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {formData.valid_days.length === 0 
-                      ? 'Valid all days (leave empty)' 
-                      : `Valid on: ${formData.valid_days.sort().map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}`}
+                      ? t("businessOffers.validAllDays")
+                      : t("businessOffers.validOn", { days: formData.valid_days.slice().sort().map(d => t(`businessOffers.${(['daySun','dayMon','dayTue','dayWed','dayThu','dayFri','daySat'] as const)[d]}`)).join(', ') })}
                   </p>
                 </div>
               </div>
@@ -847,7 +851,7 @@ const BusinessOfferManagement = () => {
 
           <DialogFooter className="flex-shrink-0 border-t pt-4 mt-2 gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
-              Cancel
+              {t("businessOffers.cancel")}
             </Button>
             <Button 
               onClick={handleSubmit}
@@ -859,7 +863,7 @@ const BusinessOfferManagement = () => {
                 (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100)
               }
             >
-              {editingOffer ? "Save Changes" : "Create Offer"}
+              {editingOffer ? t("businessOffers.saveChanges") : t("businessOffers.createBtn")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -869,19 +873,18 @@ const BusinessOfferManagement = () => {
       <AlertDialog open={!!deleteOfferId} onOpenChange={() => setDeleteOfferId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this offer?</AlertDialogTitle>
+            <AlertDialogTitle>{t("businessOffers.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The offer will be permanently deleted and
-              members will no longer be able to redeem it.
+              {t("businessOffers.deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("businessOffers.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={deleteOffer}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t("businessOffers.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
