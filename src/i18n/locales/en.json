@@ -1753,5 +1753,31 @@
     "currentPhotos": "Current Photos",
     "noPhotos": "No photos uploaded yet",
     "photoAlt": "Business photo"
+  },
+  "businessHours": {
+    "intro": "Set your opening hours for each day",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "open": "Open",
+    "closed": "Closed",
+    "openPlaceholder": "Open",
+    "closePlaceholder": "Close",
+    "to": "to",
+    "save": "Save Business Hours",
+    "saving": "Saving...",
+    "loadFailed": "Failed to load business hours",
+    "saved": "Business hours saved!",
+    "saveFailed": "Failed to save business hours"
+  },
+  "businessLocations": {
+    "selectCity": "Select city",
+    "addressPlaceholder": "Street address",
+    "additionalLocation": "Additional Location",
+    "locationN": "Location {{n}}"
   }
 }
