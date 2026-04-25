@@ -133,6 +133,7 @@ const BusinessHeader = () => {
 
           {/* Right side - user menu */}
           <div className="hidden md:flex items-center gap-3">
+            <LanguageToggle />
             <NotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -198,6 +199,7 @@ const BusinessHeader = () => {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-2">
+            <LanguageToggle />
             <NotificationBell />
             <button
               className="p-3 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
