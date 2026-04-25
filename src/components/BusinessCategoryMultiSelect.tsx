@@ -33,7 +33,7 @@ const BusinessCategoryMultiSelect = ({
   return (
     <div className="space-y-3">
       <Label>
-        {label} {required && "*"}
+        {displayLabel} {required && "*"}
       </Label>
 
       {selected.length > 0 && (
