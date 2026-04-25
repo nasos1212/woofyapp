@@ -93,7 +93,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       setHours(allDays);
     } catch (error) {
       console.error("Error fetching hours:", error);
-      toast.error("Failed to load business hours");
+      toast.error(t("businessHours.loadFailed"));
     } finally {
       setIsLoading(false);
     }
