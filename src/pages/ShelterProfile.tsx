@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Helmet } from "react-helmet-async";
 import { ensureHttps } from "@/lib/utils";
@@ -31,6 +32,7 @@ import {
 
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -132,10 +134,10 @@ const ShelterProfile = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">Shelter Not Found</h1>
-          <p className="text-muted-foreground mb-4">This shelter doesn't exist or is not yet approved.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">{t("shelterProfile.notFound")}</h1>
+          <p className="text-muted-foreground mb-4">{t("shelterProfile.notFoundDesc")}</p>
           <Button asChild>
-            <Link to="/">Go Home</Link>
+            <Link to="/">{t("shelterProfile.goHome")}</Link>
           </Button>
         </div>
       </div>
@@ -146,7 +148,7 @@ const ShelterProfile = () => {
     <>
       <Helmet>
         <title>{shelter.shelter_name} | Wooffy</title>
-        <meta name="description" content={shelter.description || `Support ${shelter.shelter_name} - a verified animal shelter partner of Wooffy.`} />
+        <meta name="description" content={shelter.description || t("shelterProfile.metaDesc", { name: shelter.shelter_name })} />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -212,12 +214,12 @@ const ShelterProfile = () => {
                           <>
                             <span>•</span>
                             <Calendar className="h-4 w-4" />
-                            <span>Since {shelter.years_operating}</span>
+                            <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
                           </>
                         )}
                       </div>
                       <Badge variant="secondary" className="bg-green-100 text-green-700">
-                        Verified Wooffy Partner
+                        {t("shelterProfile.verifiedPartner")}
                       </Badge>
                     </div>
                     
@@ -225,7 +227,7 @@ const ShelterProfile = () => {
                       <Button asChild className="gap-2">
                         <a href={ensureHttps(shelter.donation_link)} target="_blank" rel="noopener noreferrer">
                           <Heart className="h-4 w-4" />
-                          Donate Now
+                          {t("shelterProfile.donateNow")}
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>
@@ -237,7 +239,7 @@ const ShelterProfile = () => {
                     {shelter.dogs_in_care && (
                       <div className="text-center">
                         <div className="text-2xl font-bold text-primary">{shelter.dogs_in_care}</div>
-                        <div className="text-sm text-muted-foreground">Dogs in Care</div>
+                        <div className="text-sm text-muted-foreground">{t("shelterProfile.dogsInCare")}</div>
                       </div>
                     )}
                   </div>
@@ -252,7 +254,7 @@ const ShelterProfile = () => {
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
                   <Heart className="h-5 w-5 text-primary" />
-                  Our Mission
+                  {t("shelterProfile.ourMission")}
                 </h2>
                 <p className="text-muted-foreground italic text-lg leading-relaxed">
                   "{shelter.mission_statement}"
@@ -265,7 +267,7 @@ const ShelterProfile = () => {
           {shelter.description && (
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h2 className="text-lg font-semibold mb-3">About Us</h2>
+                <h2 className="text-lg font-semibold mb-3">{t("shelterProfile.aboutUs")}</h2>
                 <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
                   {shelter.description}
                 </p>
@@ -279,7 +281,7 @@ const ShelterProfile = () => {
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <PawPrint className="h-5 w-5 text-primary" />
-                  Pets Available for Adoption
+                  {t("shelterProfile.petsAvailable")}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   {adoptablePets.map((pet) => {
@@ -343,7 +345,7 @@ const ShelterProfile = () => {
           {photos && photos.length > 0 && (
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h2 className="text-lg font-semibold mb-4">Photo Gallery</h2>
+                <h2 className="text-lg font-semibold mb-4">{t("shelterProfile.photoGallery")}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {photos.map((photo) => (
                     <div 
@@ -352,7 +354,7 @@ const ShelterProfile = () => {
                     >
                       <img 
                         src={photo.photo_url} 
-                        alt={photo.caption || 'Shelter photo'}
+                        alt={photo.caption || t("shelterProfile.photoAlt")}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -365,13 +367,13 @@ const ShelterProfile = () => {
           {/* Contact Information */}
           <Card>
             <CardContent className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Contact Information</h2>
+              <h2 className="text-lg font-semibold mb-4">{t("shelterProfile.contactInfo")}</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {shelter.address && (
                   <div className="flex items-start gap-3">
                     <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-medium">Address</div>
+                      <div className="font-medium">{t("shelterProfile.address")}</div>
                       <div className="text-muted-foreground">{shelter.address}</div>
                     </div>
                   </div>
@@ -381,7 +383,7 @@ const ShelterProfile = () => {
                   <div className="flex items-start gap-3">
                     <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-medium">Phone</div>
+                      <div className="font-medium">{t("shelterProfile.phone")}</div>
                       <a href={`tel:${shelter.phone}`} className="text-primary hover:underline">
                         {shelter.phone}
                       </a>
@@ -393,7 +395,7 @@ const ShelterProfile = () => {
                   <div className="flex items-start gap-3">
                     <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-medium">Email</div>
+                      <div className="font-medium">{t("shelterProfile.email")}</div>
                       <a href={`mailto:${shelter.email}`} className="text-primary hover:underline">
                         {shelter.email}
                       </a>
@@ -405,7 +407,7 @@ const ShelterProfile = () => {
                   <div className="flex items-start gap-3">
                     <Globe className="h-5 w-5 text-muted-foreground flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-medium">Website</div>
+                      <div className="font-medium">{t("shelterProfile.website")}</div>
                       <a 
                         href={ensureHttps(shelter.website)} 
                         target="_blank" 
@@ -453,7 +455,7 @@ const ShelterProfile = () => {
           {/* Wooffy Donation Note */}
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
-              🐾 Wooffy donates 10% of membership fees to our verified shelter partners
+              {t("shelterProfile.donationNote")}
             </p>
           </div>
         </div>
@@ -530,7 +532,7 @@ const ShelterProfile = () => {
                   }}
                 >
                   <MessageSquare className="h-4 w-4" />
-                  Inquire About {viewingPet.name}
+                  {t("shelterProfile.inquireAbout", { name: viewingPet.name })}
                 </Button>
               </>
             );

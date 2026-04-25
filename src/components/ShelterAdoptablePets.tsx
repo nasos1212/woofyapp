@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,6 +46,7 @@ interface ShelterAdoptablePetsProps {
 const MAX_PHOTOS = 3;
 
 const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPet, setEditingPet] = useState<AdoptablePet | null>(null);
@@ -138,13 +140,13 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pets'] });
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pet-photos'] });
-      toast.success("Pet added successfully!");
+      toast.success(t("adoptablePets.toasts.added"));
       resetForm();
       setIsDialogOpen(false);
     },
     onError: (error) => {
       console.error('Add pet error:', error);
-      toast.error("Failed to add pet");
+      toast.error(t("adoptablePets.toasts.addFailed"));
     },
   });
 
@@ -184,14 +186,14 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pets'] });
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pet-photos'] });
-      toast.success("Pet updated successfully!");
+      toast.success(t("adoptablePets.toasts.updated"));
       resetForm();
       setIsDialogOpen(false);
       setEditingPet(null);
     },
     onError: (error) => {
       console.error('Update pet error:', error);
-      toast.error("Failed to update pet");
+      toast.error(t("adoptablePets.toasts.updateFailed"));
     },
   });
 
@@ -207,11 +209,11 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pets'] });
       queryClient.invalidateQueries({ queryKey: ['shelter-adoptable-pet-photos'] });
-      toast.success("Pet removed successfully!");
+      toast.success(t("adoptablePets.toasts.removed"));
     },
     onError: (error) => {
       console.error('Delete pet error:', error);
-      toast.error("Failed to remove pet");
+      toast.error(t("adoptablePets.toasts.removeFailed"));
     },
   });
 
@@ -247,7 +249,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      toast.error("Please enter a name for the pet");
+      toast.error(t("adoptablePets.toasts.nameRequired"));
       return;
     }
 
@@ -263,7 +265,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
     if (!file) return;
 
     if (photos.length >= MAX_PHOTOS) {
-      toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+      toast.error(t("adoptablePets.toasts.maxPhotos", { max: MAX_PHOTOS }));
       return;
     }
 
@@ -289,10 +291,10 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
         .getPublicUrl(fileName);
 
       setPhotos(prev => [...prev, publicUrl]);
-      toast.success("Photo uploaded!");
+      toast.success(t("adoptablePets.toasts.photoUploaded"));
     } catch (error) {
       console.error('Upload error:', error);
-      toast.error("Failed to upload photo");
+      toast.error(t("adoptablePets.toasts.photoUploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -327,9 +329,9 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold">Pets Available for Adoption</h3>
+          <h3 className="font-semibold">{t("adoptablePets.title")}</h3>
           <p className="text-sm text-muted-foreground">
-            Add pets that are looking for their forever homes
+            {t("adoptablePets.subtitle")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={(open) => {
@@ -339,19 +341,19 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
           <DialogTrigger asChild>
             <Button size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
-              Add Pet
+              {t("adoptablePets.addPet")}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
-                {editingPet ? "Edit Pet" : "Add New Pet"}
+                {editingPet ? t("adoptablePets.editPet") : t("adoptablePets.addNewPet")}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Photo Upload - Multiple */}
               <div className="space-y-2">
-                <Label>Photos (up to {MAX_PHOTOS})</Label>
+                <Label>{t("adoptablePets.photosLabel", { max: MAX_PHOTOS })}</Label>
                 <div className="flex flex-wrap gap-3">
                   {photos.map((url, index) => (
                     <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden">
@@ -369,7 +371,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                       </button>
                       {index === 0 && (
                         <span className="absolute bottom-0 left-0 right-0 bg-primary text-primary-foreground text-[10px] text-center py-0.5">
-                          Main
+                          {t("adoptablePets.main")}
                         </span>
                       )}
                     </div>
@@ -388,14 +390,14 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                       ) : (
                         <>
                           <Upload className="h-5 w-5 text-muted-foreground" />
-                          <span className="text-[10px] text-muted-foreground mt-1">Add</span>
+                          <span className="text-[10px] text-muted-foreground mt-1">{t("adoptablePets.add")}</span>
                         </>
                       )}
                     </label>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  First photo will be the main image. Max 5MB each.
+                  {t("adoptablePets.photoHelp")}
                 </p>
               </div>
 
@@ -486,7 +488,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="age">Age</Label>
+                <Label htmlFor="age">{t("adoptablePets.age")}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="ageValue"
@@ -498,7 +500,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                       const unit = formData.age.split(' ')[1] || 'years';
                       setFormData(prev => ({ ...prev, age: e.target.value ? `${e.target.value} ${unit}` : '' }));
                     }}
-                    placeholder="e.g., 2"
+                    placeholder={t("adoptablePets.agePlaceholder")}
                     className="w-24"
                   />
                   <Select
@@ -512,36 +514,36 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="months">months</SelectItem>
-                      <SelectItem value="years">years</SelectItem>
+                      <SelectItem value="months">{t("adoptablePets.months")}</SelectItem>
+                      <SelectItem value="years">{t("adoptablePets.years")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="gender">{t("adoptablePets.gender")}</Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, gender: value }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select" />
+                    <SelectValue placeholder={t("adoptablePets.selectGender")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="male">{t("adoptablePets.male")}</SelectItem>
+                    <SelectItem value="female">{t("adoptablePets.female")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t("adoptablePets.description")}</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Tell potential adopters about this pet's personality..."
+                  placeholder={t("adoptablePets.descriptionPlaceholder")}
                   rows={3}
                 />
               </div>
@@ -555,13 +557,13 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                     resetForm();
                   }}
                 >
-                  Cancel
+                  {t("adoptablePets.cancel")}
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={addPetMutation.isPending || updatePetMutation.isPending}
                 >
-                  {editingPet ? "Save Changes" : "Add Pet"}
+                  {editingPet ? t("adoptablePets.saveChanges") : t("adoptablePets.addPet")}
                 </Button>
               </div>
             </form>
@@ -628,7 +630,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             )}
                             {pet.age && (
                               <Badge variant="outline" className="text-xs">
-                                {/^\d+$/.test(pet.age.trim()) ? `${pet.age} years old` : pet.age}
+                                {/^\d+$/.test(pet.age.trim()) ? t("adoptablePets.yearsOld", { age: pet.age }) : pet.age}
                               </Badge>
                             )}
                             {pet.gender && (
@@ -640,7 +642,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                         </div>
                         <div className="flex items-center gap-2 self-start">
                           <Label htmlFor={`available-${pet.id}`} className="text-xs text-muted-foreground">
-                            Available
+                            {t("adoptablePets.available")}
                           </Label>
                           <Switch
                             id={`available-${pet.id}`}
