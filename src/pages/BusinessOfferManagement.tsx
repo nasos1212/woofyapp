@@ -428,7 +428,7 @@ const BusinessOfferManagement = () => {
                         {!offer.is_active && (
                           <span className="text-[10px] sm:text-xs bg-amber-100 text-amber-700 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
                             <Pause className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                            Paused
+                            {t("businessOffers.paused")}
                           </span>
                         )}
                       </div>
@@ -438,9 +438,9 @@ const BusinessOfferManagement = () => {
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm">
                         <span className="flex items-center gap-1 text-primary font-medium">
                           {offer.discount_type === "percentage" ? (
-                            <>{offer.discount_value}% off</>
+                            <>{offer.discount_value}% {t("businessOffers.off")}</>
                           ) : (
-                            <>€{offer.discount_value} off</>
+                            <>€{offer.discount_value} {t("businessOffers.off")}</>
                           )}
                         </span>
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -448,7 +448,7 @@ const BusinessOfferManagement = () => {
                             ? 'bg-teal-100 text-teal-700' 
                             : 'bg-slate-100 text-slate-600'
                         }`}>
-                          {offer.redemption_scope === 'per_pet' ? '🐾 Per Pet' : '👤 Per Member'}
+                          {offer.redemption_scope === 'per_pet' ? t("businessOffers.perPet") : t("businessOffers.perMember")}
                         </span>
                         {offer.pet_type && (
                           <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -456,7 +456,7 @@ const BusinessOfferManagement = () => {
                               ? 'bg-amber-100 text-amber-700' 
                               : 'bg-purple-100 text-purple-700'
                           }`}>
-                            {offer.pet_type === 'dog' ? '🐕 Dogs' : '🐱 Cats'}
+                            {offer.pet_type === 'dog' ? t("businessOffers.dogsOnly") : t("businessOffers.catsOnly")}
                           </span>
                         )}
                         <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
@@ -466,22 +466,24 @@ const BusinessOfferManagement = () => {
                               ? 'bg-amber-100 text-amber-700'
                               : 'bg-blue-100 text-blue-700'
                         }`}>
-                          {offer.redemption_frequency === 'one_time' ? '1x' : 
-                           offer.redemption_frequency === 'daily' ? '📅 Daily' :
-                           offer.redemption_frequency === 'weekly' ? '📆 Weekly' :
-                           offer.redemption_frequency === 'monthly' ? '🗓️ Monthly' : '♾️ Anytime'}
+                          {offer.redemption_frequency === 'one_time' ? t("businessOffers.freqOnce") : 
+                           offer.redemption_frequency === 'daily' ? t("businessOffers.freqDaily") :
+                           offer.redemption_frequency === 'weekly' ? t("businessOffers.freqWeekly") :
+                           offer.redemption_frequency === 'monthly' ? t("businessOffers.freqMonthly") : t("businessOffers.freqAnytime")}
                         </span>
                         <span className="text-slate-500">
-                          {offer.redemption_count}{offer.max_redemptions ? `/${offer.max_redemptions}` : ''} redemption{offer.redemption_count !== 1 ? "s" : ""}
+                          {offer.max_redemptions
+                            ? t("businessOffers.redemptionsWithLimit", { used: offer.redemption_count, total: offer.max_redemptions })
+                            : t("businessOffers.redemptions", { count: offer.redemption_count })}
                         </span>
                         {offer.max_redemptions && offer.redemption_count >= offer.max_redemptions && (
                           <span className="text-[10px] sm:text-xs bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded-full">
-                            Limit reached
+                            {t("businessOffers.limitReached")}
                           </span>
                         )}
                       </div>
                       {offer.terms && (
-                        <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">Terms: {offer.terms}</p>
+                        <p className="text-[10px] sm:text-xs text-slate-400 mt-1 sm:mt-2 truncate">{t("businessOffers.termsLabel", { terms: offer.terms })}</p>
                       )}
                     </div>
 
@@ -491,7 +493,7 @@ const BusinessOfferManagement = () => {
                         size="icon"
                         className="h-8 w-8 sm:h-10 sm:w-10"
                         onClick={() => toggleOfferStatus(offer)}
-                        title={offer.is_active ? "Pause offer" : "Activate offer"}
+                        title={offer.is_active ? t("businessOffers.pauseOffer") : t("businessOffers.activateOffer")}
                       >
                         {offer.is_active ? (
                           <Pause className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500" />
