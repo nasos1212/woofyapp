@@ -375,7 +375,7 @@ const BusinessCustomerBirthdays = () => {
             className="mb-6"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
+            {t("businessBirthdays.backToDashboard")}
           </Button>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
