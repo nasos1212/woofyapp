@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Heart, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface AdoptionInquiryDialogProps {
   open: boolean;
@@ -21,6 +22,7 @@ interface AdoptionInquiryDialogProps {
 }
 
 const AdoptionInquiryDialog = ({ open, onOpenChange, pet, shelterName }: AdoptionInquiryDialogProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -44,20 +46,20 @@ const AdoptionInquiryDialog = ({ open, onOpenChange, pet, shelterName }: Adoptio
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Inquiry sent! The shelter will contact you soon.");
+      toast.success(t("adoptionInquiryDialog.successToast"));
       setFormData({ name: "", email: "", phone: "", message: "" });
       onOpenChange(false);
     },
     onError: (error) => {
       console.error('Submit error:', error);
-      toast.error("Failed to send inquiry. Please try again.");
+      toast.error(t("adoptionInquiryDialog.errorToast"));
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      toast.error("Please fill in all required fields");
+      toast.error(t("adoptionInquiryDialog.fillRequired"));
       return;
     }
     submitMutation.mutate(formData);
@@ -69,54 +71,54 @@ const AdoptionInquiryDialog = ({ open, onOpenChange, pet, shelterName }: Adoptio
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-primary" />
-            Inquire About {pet.name}
+            {t("adoptionInquiryDialog.title", { name: pet.name })}
           </DialogTitle>
           <DialogDescription>
-            Send a message to {shelterName} about adopting {pet.name}
+            {t("adoptionInquiryDialog.description", { shelter: shelterName, name: pet.name })}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Your Name *</Label>
+            <Label htmlFor="name">{t("adoptionInquiryDialog.yourName")}</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter your full name"
+              placeholder={t("adoptionInquiryDialog.yourNamePlaceholder")}
               required
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address *</Label>
+            <Label htmlFor="email">{t("adoptionInquiryDialog.emailAddress")}</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              placeholder="your@email.com"
+              placeholder={t("adoptionInquiryDialog.emailPlaceholder")}
               required
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number (optional)</Label>
+            <Label htmlFor="phone">{t("adoptionInquiryDialog.phoneNumber")}</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-              placeholder="Your phone number"
+              placeholder={t("adoptionInquiryDialog.phonePlaceholder")}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="message">Message *</Label>
+            <Label htmlFor="message">{t("adoptionInquiryDialog.message")}</Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              placeholder={`Tell ${shelterName} why you're interested in adopting ${pet.name}...`}
+              placeholder={t("adoptionInquiryDialog.messagePlaceholder", { shelter: shelterName, name: pet.name })}
               rows={4}
               required
             />
@@ -128,11 +130,11 @@ const AdoptionInquiryDialog = ({ open, onOpenChange, pet, shelterName }: Adoptio
               variant="outline"
               onClick={() => onOpenChange(false)}
             >
-              Cancel
+              {t("adoptionInquiryDialog.cancel")}
             </Button>
             <Button type="submit" disabled={submitMutation.isPending} className="gap-2">
               <Send className="h-4 w-4" />
-              {submitMutation.isPending ? "Sending..." : "Send Inquiry"}
+              {submitMutation.isPending ? t("adoptionInquiryDialog.sending") : t("adoptionInquiryDialog.sendInquiry")}
             </Button>
           </div>
         </form>
