@@ -66,7 +66,7 @@ const BusinessLocationManager = ({
               <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
                 1
               </div>
-              <Label className="font-semibold">Primary Location</Label>
+              <Label className="font-semibold">{t("businessLocations.primaryLocation")}</Label>
             </div>
             
             <div className="space-y-3">
