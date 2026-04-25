@@ -695,7 +695,7 @@ const BusinessOfferManagement = () => {
 
                 {/* Redemption Frequency */}
                 <div className="space-y-2">
-                  <Label htmlFor="redemption_frequency">How often can they redeem?</Label>
+                  <Label htmlFor="redemption_frequency">{t("businessOffers.freqLabel")}</Label>
                   <select
                     id="redemption_frequency"
                     value={formData.redemption_frequency}
@@ -704,38 +704,38 @@ const BusinessOfferManagement = () => {
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <option value="one_time">One-time only</option>
-                    <option value="daily">Daily (resets each day)</option>
-                    <option value="weekly">Weekly (resets each week)</option>
-                    <option value="monthly">Monthly (resets each month)</option>
-                    <option value="unlimited">Unlimited (no frequency limit)</option>
+                    <option value="one_time">{t("businessOffers.freqOpt1")}</option>
+                    <option value="daily">{t("businessOffers.freqOptDaily")}</option>
+                    <option value="weekly">{t("businessOffers.freqOptWeekly")}</option>
+                    <option value="monthly">{t("businessOffers.freqOptMonthly")}</option>
+                    <option value="unlimited">{t("businessOffers.freqOptUnlimited")}</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_frequency === 'one_time' 
-                      ? '1️⃣ Can only be used once ever' 
+                      ? t("businessOffers.freqHelpOnce")
                       : formData.redemption_frequency === 'daily'
-                        ? '📅 Resets every day at midnight'
+                        ? t("businessOffers.freqHelpDaily")
                         : formData.redemption_frequency === 'weekly'
-                          ? '📆 Resets every Monday'
+                          ? t("businessOffers.freqHelpWeekly")
                           : formData.redemption_frequency === 'monthly'
-                            ? '🗓️ Resets on the 1st of each month'
-                            : '♾️ Can be used as many times as they want'}
+                            ? t("businessOffers.freqHelpMonthly")
+                            : t("businessOffers.freqHelpUnlimited")}
                   </p>
                 </div>
 
                 {/* Example summary */}
                 <div className="bg-muted/50 rounded-lg p-3 text-sm">
-                  <p className="font-medium text-foreground mb-1">Example:</p>
+                  <p className="font-medium text-foreground mb-1">{t("businessOffers.exampleTitle")}</p>
                   <p className="text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'monthly'
-                      ? '"20% grooming" → Each pet can use once per month'
-                      : formData.redemption_scope === 'unlimited' && formData.redemption_frequency === 'unlimited'
-                        ? '"10% on treats" → Anyone can use anytime, no limits'
+                      ? t("businessOffers.exPetMonthly")
+                      : formData.redemption_frequency === 'unlimited'
+                        ? t("businessOffers.exUnlimited")
                         : formData.redemption_scope === 'per_member' && formData.redemption_frequency === 'one_time'
-                          ? '"Free first visit" → Member uses once ever'
+                          ? t("businessOffers.exMemberOnce")
                           : formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'one_time'
-                            ? '"First grooming free" → Each pet uses once ever'
-                            : `${formData.redemption_scope === 'per_pet' ? 'Each pet' : formData.redemption_scope === 'per_member' ? 'Each member' : 'Anyone'} can redeem ${formData.redemption_frequency === 'unlimited' ? 'unlimited times' : formData.redemption_frequency.replace('_', ' ')}`}
+                            ? t("businessOffers.exPetOnce")
+                            : ''}
                   </p>
                 </div>
               </div>
@@ -745,14 +745,14 @@ const BusinessOfferManagement = () => {
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                Time Restrictions (Optional)
+                {t("businessOffers.timeRestrictions")}
               </h4>
               
               <div className="space-y-4">
                 {/* Date Range */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Start Date</Label>
+                    <Label>{t("businessOffers.startDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -763,7 +763,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_from ? formatDate(formData.valid_from) : <span>Pick a date</span>}
+                          {formData.valid_from ? formatDate(formData.valid_from) : <span>{t("businessOffers.pickDate")}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -778,7 +778,7 @@ const BusinessOfferManagement = () => {
                     </Popover>
                   </div>
                   <div className="space-y-2">
-                    <Label>End Date</Label>
+                    <Label>{t("businessOffers.endDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -789,7 +789,7 @@ const BusinessOfferManagement = () => {
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_until ? formatDate(formData.valid_until) : <span>Pick a date</span>}
+                          {formData.valid_until ? formatDate(formData.valid_until) : <span>{t("businessOffers.pickDate")}</span>}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -807,21 +807,21 @@ const BusinessOfferManagement = () => {
                 </div>
                 {(formData.valid_from || formData.valid_until) && (
                   <p className="text-xs text-muted-foreground">
-                  📅 {formData.valid_from && formData.valid_until 
-                      ? `Valid from ${formatDate(formData.valid_from)} to ${formatDate(formData.valid_until)}`
+                    {formData.valid_from && formData.valid_until 
+                      ? t("businessOffers.validRange", { from: formatDate(formData.valid_from), to: formatDate(formData.valid_until) })
                       : formData.valid_from 
-                        ? `Starts ${formatDate(formData.valid_from)}`
-                        : `Ends ${formatDate(formData.valid_until!)}`}
+                        ? t("businessOffers.validStarts", { date: formatDate(formData.valid_from) })
+                        : t("businessOffers.validEnds", { date: formatDate(formData.valid_until!) })}
                   </p>
                 )}
 
                 {/* Valid Days */}
                 <div className="space-y-2">
-                  <Label>Valid Days</Label>
+                  <Label>{t("businessOffers.validDays")}</Label>
                   <div className="flex flex-wrap gap-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
+                    {(['daySun','dayMon','dayTue','dayWed','dayThu','dayFri','daySat'] as const).map((dayKey, index) => (
                       <button
-                        key={day}
+                        key={dayKey}
                         type="button"
                         onClick={() => {
                           const newDays = formData.valid_days.includes(index)
@@ -835,14 +835,14 @@ const BusinessOfferManagement = () => {
                             : 'bg-background border-input hover:bg-muted'
                         }`}
                       >
-                        {day}
+                        {t(`businessOffers.${dayKey}`)}
                       </button>
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {formData.valid_days.length === 0 
-                      ? 'Valid all days (leave empty)' 
-                      : `Valid on: ${formData.valid_days.sort().map(d => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d]).join(', ')}`}
+                      ? t("businessOffers.validAllDays")
+                      : t("businessOffers.validOn", { days: formData.valid_days.slice().sort().map(d => t(`businessOffers.${(['daySun','dayMon','dayTue','dayWed','dayThu','dayFri','daySat'] as const)[d]}`)).join(', ') })}
                   </p>
                 </div>
               </div>
@@ -851,7 +851,7 @@ const BusinessOfferManagement = () => {
 
           <DialogFooter className="flex-shrink-0 border-t pt-4 mt-2 gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)} className="w-full sm:w-auto">
-              Cancel
+              {t("businessOffers.cancel")}
             </Button>
             <Button 
               onClick={handleSubmit}
@@ -863,7 +863,7 @@ const BusinessOfferManagement = () => {
                 (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100)
               }
             >
-              {editingOffer ? "Save Changes" : "Create Offer"}
+              {editingOffer ? t("businessOffers.saveChanges") : t("businessOffers.createBtn")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -873,19 +873,18 @@ const BusinessOfferManagement = () => {
       <AlertDialog open={!!deleteOfferId} onOpenChange={() => setDeleteOfferId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this offer?</AlertDialogTitle>
+            <AlertDialogTitle>{t("businessOffers.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The offer will be permanently deleted and
-              members will no longer be able to redeem it.
+              {t("businessOffers.deleteDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("businessOffers.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={deleteOffer}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Delete
+              {t("businessOffers.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
