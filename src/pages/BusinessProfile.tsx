@@ -351,7 +351,7 @@ export default function BusinessProfile() {
         {isPreviewMode && (
           <div className="bg-primary text-primary-foreground py-3 px-4 text-center pt-[calc(0.75rem+env(safe-area-inset-top))]">
             <p className="text-sm font-medium">
-              👁️ Preview Mode — This is how members see your profile
+              {t("businessProfile.previewBanner")}
             </p>
             <Button 
               variant="secondary" 
@@ -359,7 +359,7 @@ export default function BusinessProfile() {
               className="mt-2"
               onClick={() => navigate("/business")}
             >
-              Exit Preview
+              {t("businessProfile.exitPreview")}
             </Button>
           </div>
         )}
