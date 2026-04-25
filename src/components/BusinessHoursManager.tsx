@@ -207,7 +207,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     </SelectContent>
                   </Select>
 
-                  <span className="text-muted-foreground text-sm">to</span>
+                  <span className="text-muted-foreground text-sm">{t("businessHours.to")}</span>
 
                   <Select
                     value={formatTime(hour.close_time)}
