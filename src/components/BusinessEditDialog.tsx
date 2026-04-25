@@ -90,7 +90,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   };
   const handleSave = async () => {
     if (!businessName.trim()) {
-      toast.error("Business name is required");
+      toast.error(t("businessEditDialog.nameRequired"));
       return;
     }
 
@@ -112,12 +112,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
       if (error) throw error;
 
-      toast.success("Business profile updated!");
+      toast.success(t("businessEditDialog.updated"));
       onSave();
       onOpenChange(false);
     } catch (error: any) {
       console.error("Error updating business:", error);
-      toast.error(error.message || "Failed to update business");
+      toast.error(error.message || t("businessEditDialog.updateFailed"));
     } finally {
       setIsSaving(false);
     }
