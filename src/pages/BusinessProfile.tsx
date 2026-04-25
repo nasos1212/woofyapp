@@ -750,7 +750,7 @@ export default function BusinessProfile() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  No reviews yet. Be the first to review!
+                  {t("businessProfile.noReviews")}
                 </p>
               )}
             </CardContent>
