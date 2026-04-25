@@ -665,7 +665,7 @@ const BusinessCustomerBirthdays = () => {
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-semibold">{offer.pet_name}</h3>
                               <Badge variant="outline" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                {offer.discount_type === "percentage" ? `${offer.discount_value}% off` : `€${offer.discount_value} off`}
+                                {offer.discount_type === "percentage" ? t("businessBirthdays.discountPercent", { value: offer.discount_value }) : t("businessBirthdays.discountFixed", { value: offer.discount_value })}
                               </Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">
