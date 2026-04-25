@@ -237,11 +237,11 @@ const BusinessLocationManager = ({
         className="w-full border-dashed gap-2"
       >
         <Plus className="w-4 h-4" />
-        Add Another Store Location
+        {t("businessLocations.addLocation")}
       </Button>
       
       <p className="text-xs text-muted-foreground text-center">
-        Have multiple stores? Add each location with its specific address and phone number.
+        {t("businessLocations.helpText")}
       </p>
     </div>
   );
