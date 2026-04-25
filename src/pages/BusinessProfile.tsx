@@ -373,7 +373,7 @@ export default function BusinessProfile() {
               className="mb-4 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Go Back
+              {t("businessProfile.goBack")}
             </Button>
           )}
 
