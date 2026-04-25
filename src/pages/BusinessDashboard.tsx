@@ -958,11 +958,11 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'valid' && scanResult.offerId && (
                           <div className="mt-4 p-3 bg-green-100 rounded-lg">
                             <p className="text-green-800 font-medium">
-                              🎁 Apply discount: {scanResult.discount}
+                              {t("businessDashboard.result.applyDiscount", { discount: scanResult.discount })}
                             </p>
                             {scanResult.offerType === 'per_pet' && scanResult.availablePets && (
                               <p className="text-green-700 text-sm mt-1">
-                                {scanResult.offerPetType === 'cat' ? '🐱' : '🐕'} Per-pet offer: {scanResult.redeemedPetsCount}/{scanResult.totalPets} pets have used this
+                                {t("businessDashboard.result.perPetInfo", { icon: scanResult.offerPetType === 'cat' ? '🐱' : '🐕', used: scanResult.redeemedPetsCount, total: scanResult.totalPets })}
                               </p>
                             )}
                           </div>
@@ -974,8 +974,8 @@ const BusinessDashboard = () => {
                             <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
                               {scanResult.offerPetType === 'cat' ? <Cat className="w-4 h-4" /> : <Dog className="w-4 h-4" />}
                               {scanResult.offerType === 'per_pet' 
-                                ? `Select which ${scanResult.offerPetType === 'cat' ? 'cat' : 'pet'} is using this offer:` 
-                                : 'Which pet is this for? (optional for tracking)'}
+                                ? t("businessDashboard.result.selectPetPerPet", { type: scanResult.offerPetType === 'cat' ? t("businessDashboard.result.catLabel") : t("businessDashboard.result.petLabel") })
+                                : t("businessDashboard.result.selectPetOptional")}
                             </label>
                             <div className="grid grid-cols-2 gap-2">
                               {scanResult.availablePets.map((pet) => (
