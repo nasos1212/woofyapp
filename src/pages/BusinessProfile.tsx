@@ -247,7 +247,7 @@ export default function BusinessProfile() {
 
     } catch (error) {
       console.error("Error fetching business:", error);
-      toast.error("Failed to load business profile");
+      toast.error(t("businessProfile.toastLoadFailed"));
     } finally {
       setLoading(false);
     }
