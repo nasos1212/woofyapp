@@ -66,7 +66,7 @@ const BusinessCategoryMultiSelect = ({
               onCheckedChange={() => toggle(cat.value)}
               className="data-[state=checked]:bg-primary"
             />
-            {cat.label}
+            {getCategoryLabel(cat.value)}
           </label>
         ))}
       </div>
