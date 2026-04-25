@@ -703,7 +703,7 @@ export default function BusinessProfile() {
                     size="sm"
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    {existingReview ? "Update Review" : "Submit Review"}
+                    {existingReview ? t("businessProfile.updateReviewBtn") : t("businessProfile.submitReviewBtn")}
                   </Button>
                 </div>
               )}
