@@ -592,7 +592,7 @@ export default function BusinessProfile() {
           {photos.length > 0 && (
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle className="text-lg">Photos</CardTitle>
+                <CardTitle className="text-lg">{t("businessProfile.photos")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
