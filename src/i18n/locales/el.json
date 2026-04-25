@@ -1805,5 +1805,32 @@
     "cancel": "Ακύρωση",
     "uploading": "Μεταφόρτωση...",
     "uploadPhoto": "Ανέβασμα Φωτογραφίας"
+  },
+  "support": {
+    "titleSupport": "Υποστήριξη",
+    "titleNewRequest": "Νέο Αίτημα",
+    "newSupportRequest": "Νέο Αίτημα Υποστήριξης",
+    "noConversations": "Δεν υπάρχουν συνομιλίες ακόμη",
+    "noConversationsHint": "Ξεκινήστε ένα νέο αίτημα για να λάβετε βοήθεια",
+    "updatedPrefix": "Ενημερώθηκε",
+    "subjectLabel": "Θέμα",
+    "subjectPlaceholder": "Σύντομη περιγραφή του ζητήματος",
+    "messageLabel": "Μήνυμα",
+    "messagePlaceholder": "Περιγράψτε αναλυτικά το ζήτημα ή την ερώτησή σας...",
+    "sending": "Αποστολή...",
+    "sendRequest": "Αποστολή Αιτήματος",
+    "messageSentTitle": "Το μήνυμα στάλθηκε!",
+    "messageSentDesc": "Θα σας απαντήσουμε το συντομότερο δυνατό.",
+    "errorTitle": "Σφάλμα",
+    "createFailed": "Αποτυχία αποστολής μηνύματος. Δοκιμάστε ξανά.",
+    "sendFailed": "Αποτυχία αποστολής μηνύματος. Δοκιμάστε ξανά.",
+    "typeMessagePlaceholder": "Πληκτρολογήστε το μήνυμά σας...",
+    "conversationClosed": "Αυτή η συνομιλία έχει {{status}}.",
+    "status": {
+      "open": "ανοιχτή",
+      "pending": "σε εκκρεμότητα",
+      "resolved": "επιλυθεί",
+      "closed": "κλείσει"
+    }
   }
 }

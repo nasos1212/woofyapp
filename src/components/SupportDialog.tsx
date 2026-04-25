@@ -15,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { formatRelative } from "@/lib/relativeTime";
+import { useTranslation } from "react-i18next";
 
 interface Conversation {
   id: string;
@@ -41,6 +42,7 @@ interface SupportDialogProps {
 const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [view, setView] = useState<"list" | "new" | "conversation">("list");
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
@@ -179,8 +181,8 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
       });
 
       toast({
-        title: "Message sent!",
-        description: "We'll get back to you as soon as possible.",
+        title: t("support.messageSentTitle"),
+        description: t("support.messageSentDesc"),
       });
 
       setNewSubject("");
@@ -191,8 +193,8 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
     } catch (error) {
       console.error("Error creating conversation:", error);
       toast({
-        title: "Error",
-        description: "Failed to send your message. Please try again.",
+        title: t("support.errorTitle"),
+        description: t("support.createFailed"),
         variant: "destructive",
       });
     }
@@ -228,8 +230,8 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: t("support.errorTitle"),
+        description: t("support.sendFailed"),
         variant: "destructive",
       });
     }
@@ -276,8 +278,8 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
               </Button>
             )}
             <DialogTitle>
-              {view === "list" && "Support"}
-              {view === "new" && "New Request"}
+              {view === "list" && t("support.titleSupport")}
+              {view === "new" && t("support.titleNewRequest")}
               {view === "conversation" && selectedConversation?.subject}
             </DialogTitle>
           </div>
@@ -293,7 +295,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                   variant="outline"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  New Support Request
+                  {t("support.newSupportRequest")}
                 </Button>
               </div>
               <ScrollArea className="flex-1 px-4">
@@ -303,8 +305,8 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                   </div>
                 ) : conversations.length === 0 ? (
                   <div className="text-center py-8 text-muted-foreground">
-                    <p>No conversations yet</p>
-                    <p className="text-sm">Start a new request to get help</p>
+                    <p>{t("support.noConversations")}</p>
+                    <p className="text-sm">{t("support.noConversationsHint")}</p>
                   </div>
                 ) : (
                   <div className="space-y-2 pb-4">
@@ -322,11 +324,11 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                             variant="secondary"
                             className={`${getStatusColor(conv.status)} text-white text-xs`}
                           >
-                            {conv.status}
+                            {t(`support.status.${conv.status}`, conv.status)}
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Updated {formatRelative(conv.updated_at)}
+                          {t("support.updatedPrefix")} {formatRelative(conv.updated_at)}
                         </p>
                       </button>
                     ))}
@@ -339,18 +341,18 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
           {view === "new" && (
             <div className="p-4 space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Subject</label>
+                <label className="text-sm font-medium">{t("support.subjectLabel")}</label>
                 <Input
-                  placeholder="Brief description of your issue"
+                  placeholder={t("support.subjectPlaceholder")}
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value)}
                   maxLength={100}
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Message</label>
+                <label className="text-sm font-medium">{t("support.messageLabel")}</label>
                 <Textarea
-                  placeholder="Describe your issue or question in detail..."
+                  placeholder={t("support.messagePlaceholder")}
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   rows={6}
@@ -365,12 +367,12 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                 {sending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Sending...
+                    {t("support.sending")}
                   </>
                 ) : (
                   <>
                     <Send className="h-4 w-4 mr-2" />
-                    Send Request
+                    {t("support.sendRequest")}
                   </>
                 )}
               </Button>
@@ -415,7 +417,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <Input
-                      placeholder="Type your message..."
+                      placeholder={t("support.typeMessagePlaceholder")}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       onKeyDown={(e) => {
@@ -441,7 +443,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
                 </div>
               ) : (
                 <div className="p-4 border-t text-center text-sm text-muted-foreground">
-                  This conversation has been {selectedConversation.status}.
+                  {t("support.conversationClosed", { status: t(`support.status.${selectedConversation.status}`, selectedConversation.status) })}
                 </div>
               )}
             </div>

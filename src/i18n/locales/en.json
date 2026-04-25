@@ -1805,5 +1805,32 @@
     "cancel": "Cancel",
     "uploading": "Uploading...",
     "uploadPhoto": "Upload Photo"
+  },
+  "support": {
+    "titleSupport": "Support",
+    "titleNewRequest": "New Request",
+    "newSupportRequest": "New Support Request",
+    "noConversations": "No conversations yet",
+    "noConversationsHint": "Start a new request to get help",
+    "updatedPrefix": "Updated",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Brief description of your issue",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Describe your issue or question in detail...",
+    "sending": "Sending...",
+    "sendRequest": "Send Request",
+    "messageSentTitle": "Message sent!",
+    "messageSentDesc": "We'll get back to you as soon as possible.",
+    "errorTitle": "Error",
+    "createFailed": "Failed to send your message. Please try again.",
+    "sendFailed": "Failed to send message. Please try again.",
+    "typeMessagePlaceholder": "Type your message...",
+    "conversationClosed": "This conversation has been {{status}}.",
+    "status": {
+      "open": "open",
+      "pending": "pending",
+      "resolved": "resolved",
+      "closed": "closed"
+    }
   }
 }
