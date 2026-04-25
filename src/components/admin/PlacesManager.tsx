@@ -471,6 +471,9 @@ const PlacesManager = () => {
                       <TableBody>
                         {filteredPlaces.map((place) => {
                           const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                          const submitter = place.added_by_user_id ? submitterMap[place.added_by_user_id] : null;
+                          const submitterLabel = submitter?.full_name || submitter?.email || (place.added_by_user_id ? "Unknown user" : "Public form");
+                          const submitterRole = place.submitted_by === "owner" ? "Owner" : place.submitted_by === "someone_else" ? "Recommender" : null;
                           return (
                           <TableRow key={place.id}>
                             <TableCell>
