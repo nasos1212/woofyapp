@@ -1787,5 +1787,9 @@
     "mapsLabel": "Google Maps Link",
     "addLocation": "Add Another Store Location",
     "helpText": "Have multiple stores? Add each location with its specific address and phone number."
+  },
+  "businessCategoriesField": {
+    "defaultLabel": "Business Categories",
+    "selectAtLeastOne": "Select at least one category"
   }
 }
