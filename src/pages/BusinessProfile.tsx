@@ -342,8 +342,8 @@ export default function BusinessProfile() {
   return (
     <>
       <Helmet>
-        <title>{business.business_name} | Wooffy Partner</title>
-        <meta name="description" content={business.description || `${business.business_name} - Wooffy partner business`} />
+        <title>{business.business_name} | {t("businessProfile.pageTitleSuffix")}</title>
+        <meta name="description" content={business.description || t("businessProfile.metaDescription", { name: business.business_name })} />
       </Helmet>
 
       <div className="min-h-screen bg-background">
