@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Mail, Phone, MessageSquare, Clock, CheckCircle, XCircle, Inbox } from "lucide-react";
 import { formatRelative } from "@/lib/relativeTime";
+import { useTranslation } from "react-i18next";
 
 interface AdoptionInquiry {
   id: string;
@@ -28,6 +29,7 @@ interface ShelterAdoptionInquiriesProps {
 }
 
 const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const { data: inquiries, isLoading } = useQuery({
@@ -62,11 +64,11 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adoption-inquiries'] });
-      toast.success("Status updated!");
+      toast.success(t("adoptionInquiries.toasts.statusUpdated"));
     },
     onError: (error) => {
       console.error('Update error:', error);
-      toast.error("Failed to update status");
+      toast.error(t("adoptionInquiries.toasts.updateFailed"));
     },
   });
 
@@ -81,24 +83,25 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adoption-inquiries'] });
-      toast.success("Inquiry deleted");
+      toast.success(t("adoptionInquiries.toasts.deleted"));
     },
     onError: (error) => {
       console.error('Delete error:', error);
-      toast.error("Failed to delete inquiry");
+      toast.error(t("adoptionInquiries.toasts.deleteFailed"));
     },
   });
 
   const getStatusBadge = (status: string) => {
+    const label = t(`adoptionInquiries.status.${status}`, status);
     switch (status) {
       case 'contacted':
-        return <Badge className="bg-blue-100 text-blue-700"><Clock className="h-3 w-3 mr-1" />Contacted</Badge>;
+        return <Badge className="bg-blue-100 text-blue-700"><Clock className="h-3 w-3 mr-1" />{label}</Badge>;
       case 'approved':
-        return <Badge className="bg-green-100 text-green-700"><CheckCircle className="h-3 w-3 mr-1" />Approved</Badge>;
+        return <Badge className="bg-green-100 text-green-700"><CheckCircle className="h-3 w-3 mr-1" />{label}</Badge>;
       case 'declined':
-        return <Badge className="bg-red-100 text-red-700"><XCircle className="h-3 w-3 mr-1" />Declined</Badge>;
+        return <Badge className="bg-red-100 text-red-700"><XCircle className="h-3 w-3 mr-1" />{label}</Badge>;
       default:
-        return <Badge className="bg-yellow-100 text-yellow-700"><Inbox className="h-3 w-3 mr-1" />Pending</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-700"><Inbox className="h-3 w-3 mr-1" />{label}</Badge>;
     }
   };
 
@@ -118,15 +121,15 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold flex items-center gap-2">
-            Adoption Inquiries
+            {t("adoptionInquiries.title")}
             {pendingCount > 0 && (
               <Badge variant="destructive" className="text-xs">
-                {pendingCount} new
+                {t("adoptionInquiries.newBadge", { count: pendingCount })}
               </Badge>
             )}
           </h3>
           <p className="text-sm text-muted-foreground">
-            Manage inquiries from potential adopters
+            {t("adoptionInquiries.subtitle")}
           </p>
         </div>
       </div>
@@ -144,7 +147,7 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                         {getStatusBadge(inquiry.status)}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Interested in: <span className="font-medium text-foreground">{inquiry.shelter_adoptable_pets?.name || 'Unknown Pet'}</span>
+                        {t("adoptionInquiries.interestedIn")} <span className="font-medium text-foreground">{inquiry.shelter_adoptable_pets?.name || t("adoptionInquiries.unknownPet")}</span>
                         <span className="capitalize"> ({inquiry.shelter_adoptable_pets?.pet_type})</span>
                       </p>
                     </div>
@@ -181,7 +184,7 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
 
                   <div className="flex items-center justify-between pt-2 border-t">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Status:</span>
+                      <span className="text-sm text-muted-foreground">{t("adoptionInquiries.statusLabel")}</span>
                       <Select
                         value={inquiry.status}
                         onValueChange={(value) => updateStatusMutation.mutate({ id: inquiry.id, status: value })}
@@ -190,10 +193,10 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="contacted">Contacted</SelectItem>
-                          <SelectItem value="approved">Approved</SelectItem>
-                          <SelectItem value="declined">Declined</SelectItem>
+                          <SelectItem value="pending">{t("adoptionInquiries.status.pending")}</SelectItem>
+                          <SelectItem value="contacted">{t("adoptionInquiries.status.contacted")}</SelectItem>
+                          <SelectItem value="approved">{t("adoptionInquiries.status.approved")}</SelectItem>
+                          <SelectItem value="declined">{t("adoptionInquiries.status.declined")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -202,12 +205,12 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                       size="sm"
                       className="text-destructive hover:text-destructive"
                       onClick={() => {
-                        if (confirm("Delete this inquiry?")) {
+                        if (confirm(t("adoptionInquiries.confirmDelete"))) {
                           deleteMutation.mutate(inquiry.id);
                         }
                       }}
                     >
-                      Delete
+                      {t("adoptionInquiries.delete")}
                     </Button>
                   </div>
                 </div>
@@ -219,9 +222,9 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
         <Card>
           <CardContent className="py-8 text-center">
             <Inbox className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-            <h4 className="font-medium mb-1">No inquiries yet</h4>
+            <h4 className="font-medium mb-1">{t("adoptionInquiries.noInquiries")}</h4>
             <p className="text-sm text-muted-foreground">
-              When visitors inquire about your pets, they'll appear here
+              {t("adoptionInquiries.noInquiriesDesc")}
             </p>
           </CardContent>
         </Card>
