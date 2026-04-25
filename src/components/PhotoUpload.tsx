@@ -3,6 +3,7 @@ import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 // Allowed image types - explicitly exclude SVG for security (can contain scripts)
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
@@ -14,6 +15,7 @@ interface PhotoUploadProps {
 }
 
 export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -25,7 +27,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
 
     // Validate file type - explicitly check against allowed types (no SVG)
     if (!ALLOWED_IMAGE_TYPES.includes(file.type.toLowerCase())) {
-      toast.error("Please select a valid image file (JPEG, PNG, GIF, WebP, or HEIC/HEIF)");
+      toast.error(t("photoUpload.invalidType"));
       return;
     }
 
@@ -33,13 +35,13 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
     const extension = file.name.split('.').pop()?.toLowerCase();
     const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'heic', 'heif'];
     if (!extension || !validExtensions.includes(extension)) {
-      toast.error("Invalid file extension. Allowed: JPG, PNG, GIF, WebP, HEIC, HEIF");
+      toast.error(t("photoUpload.invalidExtension"));
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > MAX_FILE_SIZE) {
-      toast.error("Image must be less than 8MB");
+      toast.error(t("photoUpload.tooLarge"));
       return;
     }
 
@@ -62,7 +64,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("You must be logged in to upload photos");
+        toast.error(t("photoUpload.mustBeLoggedIn"));
         return;
       }
 
@@ -90,12 +92,12 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
 
       if (dbError) throw dbError;
 
-      toast.success("Photo uploaded successfully!");
+      toast.success(t("photoUpload.uploadSuccess"));
       clearSelection();
       onUploadComplete();
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error(error.message || "Failed to upload photo");
+      toast.error(error.message || t("photoUpload.uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -118,17 +120,17 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
         >
           <Upload className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
           <p className="text-sm text-muted-foreground mb-1">
-            Click to upload a photo
+            {t("photoUpload.clickToUpload")}
           </p>
           <p className="text-xs text-muted-foreground">
-            JPG, PNG, GIF up to 8MB
+            {t("photoUpload.fileHint")}
           </p>
         </div>
       ) : (
         <div className="relative">
           <img
             src={preview}
-            alt="Preview"
+            alt={t("photoUpload.previewAlt")}
             className="w-full h-48 object-cover rounded-lg"
           />
           <Button
@@ -151,7 +153,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
             disabled={uploading}
             className="flex-1"
           >
-            Cancel
+            {t("photoUpload.cancel")}
           </Button>
           <Button
             onClick={handleUpload}
@@ -161,12 +163,12 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
             {uploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Uploading...
+                {t("photoUpload.uploading")}
               </>
             ) : (
               <>
                 <ImageIcon className="w-4 h-4" />
-                Upload Photo
+                {t("photoUpload.uploadPhoto")}
               </>
             )}
           </Button>
