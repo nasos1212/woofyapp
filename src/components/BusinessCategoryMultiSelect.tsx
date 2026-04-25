@@ -73,7 +73,7 @@ const BusinessCategoryMultiSelect = ({
 
       {required && selected.length === 0 && (
         <p className="text-xs text-muted-foreground italic">
-          Select at least one category
+          {t("businessCategoriesField.selectAtLeastOne")}
         </p>
       )}
     </div>
