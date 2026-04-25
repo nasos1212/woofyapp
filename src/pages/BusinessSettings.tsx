@@ -389,7 +389,7 @@ const BusinessSettings = () => {
     return (
       <>
         <Helmet>
-          <title>Business Settings | Wooffy Business</title>
+          <title>{t("businessSettings.pageTitle")}</title>
         </Helmet>
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
@@ -401,13 +401,13 @@ const BusinessSettings = () => {
               className="mb-6 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              {t("businessSettings.backToDashboard")}
             </Button>
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Profile Settings Unavailable</h3>
-              <p className="text-slate-500">Edit your business profile once your account is approved.</p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessSettings.unavailableTitle")}</h3>
+              <p className="text-slate-500">{t("businessSettings.unavailableDesc")}</p>
             </div>
           </main>
           <div className="pb-20 md:pb-0" />
@@ -420,8 +420,8 @@ const BusinessSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Business Settings | Wooffy Business</title>
-        <meta name="description" content="Manage your Wooffy business profile settings." />
+        <title>{t("businessSettings.pageTitle")}</title>
+        <meta name="description" content={t("businessSettings.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -435,48 +435,48 @@ const BusinessSettings = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("businessSettings.backToDashboard")}
           </Button>
 
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              Business Settings
+              {t("businessSettings.headerTitle")}
             </h1>
-            <p className="text-slate-500">Manage your business profile and photos</p>
+            <p className="text-slate-500">{t("businessSettings.headerSubtitle")}</p>
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="profile" className="gap-2">
                 <Building2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Profile</span>
+                <span className="hidden sm:inline">{t("businessSettings.tabProfile")}</span>
               </TabsTrigger>
               <TabsTrigger value="locations" className="gap-2">
                 <MapPin className="w-4 h-4" />
-                <span className="hidden sm:inline">Locations</span>
+                <span className="hidden sm:inline">{t("businessSettings.tabLocations")}</span>
               </TabsTrigger>
               <TabsTrigger value="hours" className="gap-2">
                 <Clock className="w-4 h-4" />
-                <span className="hidden sm:inline">Hours</span>
+                <span className="hidden sm:inline">{t("businessSettings.tabHours")}</span>
               </TabsTrigger>
               <TabsTrigger value="photos" className="gap-2">
                 <ImageIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Photos</span>
+                <span className="hidden sm:inline">{t("businessSettings.tabPhotos")}</span>
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile">
               <Card>
                 <CardHeader>
-                  <CardTitle>Business Profile</CardTitle>
+                  <CardTitle>{t("businessSettings.profileTitle")}</CardTitle>
                   <CardDescription>
-                    Update your business information visible to Wooffy members
+                    {t("businessSettings.profileDesc")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {/* Logo Upload */}
                   <div className="space-y-3">
-                    <Label>Business Logo</Label>
+                    <Label>{t("businessSettings.logoLabel")}</Label>
                     <div className="flex items-center gap-4">
                       <div className="w-20 h-20 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-300">
                         {formData.logo_url ? (
@@ -505,7 +505,7 @@ const BusinessSettings = () => {
                           className="gap-2"
                         >
                           <Camera className="w-4 h-4" />
-                          {isUploadingLogo ? "Uploading..." : "Upload Logo"}
+                          {isUploadingLogo ? t("businessSettings.uploading") : t("businessSettings.uploadLogo")}
                         </Button>
                         {formData.logo_url && (
                           <Button
@@ -515,22 +515,22 @@ const BusinessSettings = () => {
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
-                            Remove
+                            {t("businessSettings.remove")}
                           </Button>
                         )}
                       </div>
                     </div>
                     <p className="text-xs text-slate-500">
-                      Recommended: Square image, max {formatFileSize(MAX_IMAGE_SIZE)}
+                      {t("businessSettings.logoHelp", { size: formatFileSize(MAX_IMAGE_SIZE) })}
                     </p>
                   </div>
 
                   {/* Business Name */}
                   <div className="space-y-2">
-                    <Label htmlFor="businessName">Business Name *</Label>
+                    <Label htmlFor="businessName">{t("businessSettings.businessName")}</Label>
                     <Input
                       id="businessName"
-                      placeholder="Your Business Name"
+                      placeholder={t("businessSettings.businessNamePlaceholder")}
                       value={formData.business_name}
                       onChange={(e) => setFormData(prev => ({ ...prev, business_name: e.target.value }))}
                       required
@@ -549,10 +549,10 @@ const BusinessSettings = () => {
 
                   {/* Description */}
                   <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
+                    <Label htmlFor="description">{t("businessSettings.description")}</Label>
                     <Textarea
                       id="description"
-                      placeholder="Tell pet owners about your services..."
+                      placeholder={t("businessSettings.descriptionPlaceholder")}
                       value={formData.description || ""}
                       onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       rows={4}
@@ -562,13 +562,13 @@ const BusinessSettings = () => {
                   {/* Contact Info */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email">{t("businessSettings.email")}</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input
                           id="email"
                           type="email"
-                          placeholder="contact@business.com"
+                          placeholder={t("businessSettings.emailPlaceholder")}
                           value={formData.email}
                           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                           className="pl-10"
@@ -577,12 +577,12 @@ const BusinessSettings = () => {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
+                      <Label htmlFor="phone">{t("businessSettings.phone")}</Label>
                       <div className="relative">
                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input
                           id="phone"
-                          placeholder="+357 99 123 456"
+                          placeholder={t("businessSettings.phonePlaceholder")}
                           value={formData.phone || ""}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                           className="pl-10"
@@ -594,12 +594,12 @@ const BusinessSettings = () => {
 
                   {/* Website */}
                   <div className="space-y-2">
-                    <Label htmlFor="website">Website</Label>
+                    <Label htmlFor="website">{t("businessSettings.website")}</Label>
                     <div className="relative">
                       <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                       <Input
                         id="website"
-                        placeholder="https://www.yourbusiness.com"
+                        placeholder={t("businessSettings.websitePlaceholder")}
                         value={formData.website || ""}
                         onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
                         className="pl-10"
@@ -609,15 +609,15 @@ const BusinessSettings = () => {
 
                   {/* Social Media Links */}
                   <div className="space-y-4">
-                    <Label className="text-base font-semibold">Social Media</Label>
+                    <Label className="text-base font-semibold">{t("businessSettings.socialMedia")}</Label>
                     <div className="grid grid-cols-1 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="instagram_url">Instagram</Label>
+                        <Label htmlFor="instagram_url">{t("businessSettings.instagram")}</Label>
                         <div className="relative">
                           <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                           <Input
                             id="instagram_url"
-                            placeholder="https://instagram.com/yourbusiness"
+                            placeholder={t("businessSettings.instagramPlaceholder")}
                             value={formData.instagram_url || ""}
                             onChange={(e) => setFormData(prev => ({ ...prev, instagram_url: e.target.value }))}
                             className="pl-10"
@@ -625,12 +625,12 @@ const BusinessSettings = () => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="facebook_url">Facebook</Label>
+                        <Label htmlFor="facebook_url">{t("businessSettings.facebook")}</Label>
                         <div className="relative">
                           <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                           <Input
                             id="facebook_url"
-                            placeholder="https://facebook.com/yourbusiness"
+                            placeholder={t("businessSettings.facebookPlaceholder")}
                             value={formData.facebook_url || ""}
                             onChange={(e) => setFormData(prev => ({ ...prev, facebook_url: e.target.value }))}
                             className="pl-10"
@@ -638,12 +638,12 @@ const BusinessSettings = () => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="tiktok_url">TikTok</Label>
+                        <Label htmlFor="tiktok_url">{t("businessSettings.tiktok")}</Label>
                         <div className="relative">
                           <TikTokIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                           <Input
                             id="tiktok_url"
-                            placeholder="https://tiktok.com/@yourbusiness"
+                            placeholder={t("businessSettings.tiktokPlaceholder")}
                             value={formData.tiktok_url || ""}
                             onChange={(e) => setFormData(prev => ({ ...prev, tiktok_url: e.target.value }))}
                             className="pl-10"
@@ -657,7 +657,7 @@ const BusinessSettings = () => {
                   <div className="flex justify-end pt-4">
                     <Button onClick={handleSave} disabled={isSaving} className="gap-2">
                       <Save className="w-4 h-4" />
-                      {isSaving ? "Saving..." : "Save Changes"}
+                      {isSaving ? t("businessSettings.saving") : t("businessSettings.saveChanges")}
                     </Button>
                   </div>
                 </CardContent>
@@ -667,9 +667,9 @@ const BusinessSettings = () => {
             <TabsContent value="locations">
               <Card>
                 <CardHeader>
-                  <CardTitle>Store Locations</CardTitle>
+                  <CardTitle>{t("businessSettings.locationsTitle")}</CardTitle>
                   <CardDescription>
-                    Manage your business locations so customers can find you
+                    {t("businessSettings.locationsDesc")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -681,7 +681,7 @@ const BusinessSettings = () => {
                   <div className="flex justify-end pt-4">
                     <Button onClick={handleSaveLocations} disabled={isSavingLocations} className="gap-2">
                       <Save className="w-4 h-4" />
-                      {isSavingLocations ? "Saving..." : "Save Locations"}
+                      {isSavingLocations ? t("businessSettings.savingLocations") : t("businessSettings.saveLocations")}
                     </Button>
                   </div>
                 </CardContent>
@@ -691,9 +691,9 @@ const BusinessSettings = () => {
             <TabsContent value="hours">
               <Card>
                 <CardHeader>
-                  <CardTitle>Business Hours</CardTitle>
+                  <CardTitle>{t("businessSettings.hoursTitle")}</CardTitle>
                   <CardDescription>
-                    Set your opening hours so customers know when to visit
+                    {t("businessSettings.hoursDesc")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -705,9 +705,9 @@ const BusinessSettings = () => {
             <TabsContent value="photos">
               <Card>
                 <CardHeader>
-                  <CardTitle>Business Photos</CardTitle>
+                  <CardTitle>{t("businessSettings.photosTitle")}</CardTitle>
                   <CardDescription>
-                    Add photos to showcase your business to potential customers
+                    {t("businessSettings.photosDesc")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -718,13 +718,13 @@ const BusinessSettings = () => {
 
                   {photos.length > 0 && (
                     <div className="space-y-3">
-                      <Label>Current Photos</Label>
+                      <Label>{t("businessSettings.currentPhotos")}</Label>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {photos.map((photo) => (
                           <div key={photo.id} className="relative group">
                             <img
                               src={photo.photo_url}
-                              alt={photo.caption || "Business photo"}
+                              alt={photo.caption || t("businessSettings.photoAlt")}
                               className="w-full h-32 object-cover rounded-lg"
                             />
                             <Button
@@ -744,8 +744,8 @@ const BusinessSettings = () => {
                   {photos.length === 0 && (
                     <div className="text-center py-8 text-slate-500">
                       <ImageIcon className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-                      <p>No photos uploaded yet</p>
-                      <p className="text-sm">Add photos to make your profile stand out</p>
+                      <p>{t("businessSettings.noPhotos")}</p>
+                      <p className="text-sm">{t("businessSettings.noPhotosHelp")}</p>
                     </div>
                   )}
                 </CardContent>
