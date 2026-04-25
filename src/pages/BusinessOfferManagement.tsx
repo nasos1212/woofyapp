@@ -531,36 +531,36 @@ const BusinessOfferManagement = () => {
         <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[95vw] sm:w-full">
           <DialogHeader className="flex-shrink-0 pb-2">
             <DialogTitle>
-              {editingOffer ? "Edit Offer" : "Create New Offer"}
+              {editingOffer ? t("businessOffers.dialogEditTitle") : t("businessOffers.dialogCreateTitle")}
             </DialogTitle>
             <DialogDescription>
               {editingOffer
-                ? "Update your offer details"
-                : "Fill in the details to create a new offer for Wooffy members"}
+                ? t("businessOffers.dialogEditDesc")
+                : t("businessOffers.dialogCreateDesc")}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-1 -mx-1">
             <div className="space-y-2">
-              <Label htmlFor="title">Offer Title <span className="text-destructive">*</span></Label>
+              <Label htmlFor="title">{t("businessOffers.fieldTitle")} <span className="text-destructive">*</span></Label>
               <Input
                 id="title"
-                placeholder="e.g., First Grooming Free"
+                placeholder={t("businessOffers.fieldTitlePh")}
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
                 className="text-base"
               />
               {!formData.title.trim() && (
-                <p className="text-xs text-destructive">Title is required</p>
+                <p className="text-xs text-destructive">{t("businessOffers.fieldTitleRequired")}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("businessOffers.fieldDescription")}</Label>
               <Textarea
                 id="description"
-                placeholder="Describe what's included in this offer..."
+                placeholder={t("businessOffers.fieldDescriptionPh")}
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
@@ -569,7 +569,7 @@ const BusinessOfferManagement = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="discount_value">Discount Value <span className="text-destructive">*</span></Label>
+                <Label htmlFor="discount_value">{t("businessOffers.fieldDiscountValue")} <span className="text-destructive">*</span></Label>
                 <Input
                   id="discount_value"
                   type="number"
@@ -577,7 +577,7 @@ const BusinessOfferManagement = () => {
                   pattern="[0-9]*"
                   min="0"
                   step="any"
-                  placeholder="e.g., 15"
+                  placeholder={t("businessOffers.fieldDiscountValuePh")}
                   value={formData.discount_value}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -595,13 +595,13 @@ const BusinessOfferManagement = () => {
                   required
                 />
                 {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) ? (
-                  <p className="text-xs text-destructive">Please enter a valid discount value</p>
+                  <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueInvalid")}</p>
                 ) : formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100 ? (
-                  <p className="text-xs text-destructive">Percentage cannot exceed 100%</p>
+                  <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueOver100")}</p>
                 ) : null}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="discount_type">Discount Type</Label>
+                <Label htmlFor="discount_type">{t("businessOffers.fieldDiscountType")}</Label>
                 <select
                   id="discount_type"
                   value={formData.discount_type}
@@ -610,8 +610,8 @@ const BusinessOfferManagement = () => {
                   }
                   className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 >
-                  <option value="percentage">Percentage (%)</option>
-                  <option value="fixed">Fixed Amount (€)</option>
+                  <option value="percentage">{t("businessOffers.discountPercentage")}</option>
+                  <option value="fixed">{t("businessOffers.discountFixed")}</option>
                 </select>
               </div>
             </div>
@@ -619,10 +619,10 @@ const BusinessOfferManagement = () => {
             {/* Pet Type Filter */}
             <div className="border-t pt-4 mt-4">
               <h4 className="font-medium text-sm mb-3 flex items-center gap-2">
-                🐾 Pet Type (Optional)
+                {t("businessOffers.petTypeHeading")}
               </h4>
               <div className="space-y-2">
-                <Label htmlFor="pet_type">Which pets is this offer for?</Label>
+                <Label htmlFor="pet_type">{t("businessOffers.petTypeLabel")}</Label>
                 <select
                   id="pet_type"
                   value={formData.pet_type || ""}
@@ -631,16 +631,16 @@ const BusinessOfferManagement = () => {
                   }
                   className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                 >
-                  <option value="">All Pets (Dogs & Cats)</option>
-                  <option value="dog">🐕 Dogs Only</option>
-                  <option value="cat">🐱 Cats Only</option>
+                  <option value="">{t("businessOffers.petTypeAll")}</option>
+                  <option value="dog">{t("businessOffers.petTypeDog")}</option>
+                  <option value="cat">{t("businessOffers.petTypeCat")}</option>
                 </select>
                 <p className="text-xs text-muted-foreground">
                   {formData.pet_type === 'dog' 
-                    ? '🐕 Only visible to members with dogs' 
+                    ? t("businessOffers.petTypeHelpDog")
                     : formData.pet_type === 'cat'
-                      ? '🐱 Only visible to members with cats'
-                      : '🐾 Visible to all pet owners'}
+                      ? t("businessOffers.petTypeHelpCat")
+                      : t("businessOffers.petTypeHelpAll")}
                 </p>
               </div>
             </div>
@@ -651,7 +651,7 @@ const BusinessOfferManagement = () => {
               <div className="flex items-center gap-2 mb-3">
                 <h4 className="font-medium text-sm flex items-center gap-2">
                   <Tag className="w-4 h-4" />
-                  Redemption Rules
+                  {t("businessOffers.redemptionRules")}
                 </h4>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -660,12 +660,12 @@ const BusinessOfferManagement = () => {
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-72 text-xs" align="start">
-                    <p className="font-medium mb-2">Examples:</p>
+                    <p className="font-medium mb-2">{t("businessOffers.examplesTitle")}</p>
                     <ul className="space-y-1.5 text-muted-foreground">
-                      <li><span className="text-foreground">Per Pet + Monthly</span> → "20% off grooming" - each pet once/month</li>
-                      <li><span className="text-foreground">Per Member + One-time</span> → "Free first visit" - member uses once ever</li>
-                      <li><span className="text-foreground">Per Member + Unlimited</span> → "10% on treats" - use anytime, no limits</li>
-                      <li><span className="text-foreground">Per Pet + One-time</span> → "First grooming free" - each pet uses once</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex1Tag")}</span> {t("businessOffers.ex1")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex2Tag")}</span> {t("businessOffers.ex2")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex3Tag")}</span> {t("businessOffers.ex3")}</li>
+                      <li><span className="text-foreground">{t("businessOffers.ex4Tag")}</span> {t("businessOffers.ex4")}</li>
                     </ul>
                   </PopoverContent>
                 </Popover>
@@ -674,7 +674,7 @@ const BusinessOfferManagement = () => {
               <div className="space-y-4">
                 {/* Redemption Scope */}
                 <div className="space-y-2">
-                  <Label htmlFor="redemption_scope">Who can redeem?</Label>
+                  <Label htmlFor="redemption_scope">{t("businessOffers.scopeLabel")}</Label>
                   <select
                     id="redemption_scope"
                     value={formData.redemption_scope}
@@ -683,13 +683,13 @@ const BusinessOfferManagement = () => {
                     }
                     className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
                   >
-                    <option value="per_member">Per Member</option>
-                    <option value="per_pet">Per Pet</option>
+                    <option value="per_member">{t("businessOffers.scopePerMember")}</option>
+                    <option value="per_pet">{t("businessOffers.scopePerPet")}</option>
                   </select>
                   <p className="text-xs text-muted-foreground">
                     {formData.redemption_scope === 'per_pet' 
-                      ? '🐕 Each pet on the membership can redeem (e.g., grooming)' 
-                      : '👤 Track redemptions per membership'}
+                      ? t("businessOffers.scopeHelpPerPet")
+                      : t("businessOffers.scopeHelpPerMember")}
                   </p>
                 </div>
 
