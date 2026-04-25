@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   TrendingUp,
   Users,
@@ -51,6 +52,7 @@ interface CustomerInsight {
 }
 
 const BusinessAnalytics = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -414,7 +416,7 @@ const BusinessAnalytics = () => {
 
     } catch (error) {
       console.error("Error fetching analytics:", error);
-      toast.error("Failed to load analytics");
+      toast.error(t("businessAnalytics.exportFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -435,7 +437,7 @@ const BusinessAnalytics = () => {
     a.download = `wooffy-analytics-${format(new Date(), "yyyy-MM-dd")}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Data exported successfully");
+    toast.success(t("businessAnalytics.exportSuccess"));
   };
 
   const monthChange =
@@ -459,7 +461,7 @@ const BusinessAnalytics = () => {
     return (
       <>
         <Helmet>
-          <title>Analytics | Wooffy Business</title>
+          <title>{t("businessAnalytics.pageTitle")}</title>
         </Helmet>
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
@@ -471,13 +473,13 @@ const BusinessAnalytics = () => {
               className="mb-6 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              {t("businessAnalytics.backToDashboard")}
             </Button>
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Analytics Unavailable</h3>
-              <p className="text-slate-500">Analytics will be available once your business is approved.</p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessAnalytics.unavailableTitle")}</h3>
+              <p className="text-slate-500">{t("businessAnalytics.unavailableDesc")}</p>
             </div>
           </main>
           <div className="pb-20 md:pb-0" />
@@ -490,10 +492,10 @@ const BusinessAnalytics = () => {
   return (
     <>
       <Helmet>
-        <title>Analytics | Wooffy Business</title>
+        <title>{t("businessAnalytics.pageTitle")}</title>
         <meta
           name="description"
-          content="View your Wooffy business analytics and customer insights."
+          content={t("businessAnalytics.metaDescription")}
         />
       </Helmet>
 
@@ -508,16 +510,16 @@ const BusinessAnalytics = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("businessAnalytics.backToDashboard")}
           </Button>
 
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-1 sm:mb-2">
-                Analytics Dashboard
+                {t("businessAnalytics.headerTitle")}
               </h1>
-              <p className="text-sm sm:text-base text-slate-500">Track your Wooffy performance</p>
+              <p className="text-sm sm:text-base text-slate-500">{t("businessAnalytics.headerSubtitle")}</p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -533,13 +535,13 @@ const BusinessAnalytics = () => {
                         : "text-slate-600 hover:bg-slate-100"
                     }`}
                   >
-                    {range === "7d" ? "7D" : range === "30d" ? "30D" : "6M"}
+                    {range === "7d" ? t("businessAnalytics.range7d") : range === "30d" ? t("businessAnalytics.range30d") : t("businessAnalytics.range6m")}
                   </button>
                 ))}
               </div>
               <Button variant="outline" onClick={exportData} className="gap-2" size="sm">
                 <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Export</span>
+                <span className="hidden sm:inline">{t("businessAnalytics.export")}</span>
               </Button>
             </div>
           </div>
@@ -550,7 +552,7 @@ const BusinessAnalytics = () => {
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Tag className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                 <div className="flex items-center gap-1">
-                  <MetricTooltip text="Number of times members used your offers this month. The percentage shows month-over-month change." />
+                  <MetricTooltip text={t("businessAnalytics.redemptionsTooltip")} />
                   <span
                     className={`text-[10px] sm:text-xs font-medium flex items-center gap-0.5 ${
                       monthChange >= 0 ? "text-green-600" : "text-red-600"
@@ -568,40 +570,40 @@ const BusinessAnalytics = () => {
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.thisMonth}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">Redemptions This Month</p>
+              <p className="text-xs sm:text-sm text-slate-500">{t("businessAnalytics.redemptionsThisMonth")}</p>
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-                <MetricTooltip text="Total unique Wooffy members who have redeemed at least one of your offers." />
+                <MetricTooltip text={t("businessAnalytics.customersTooltip")} />
               </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {stats.uniqueCustomers}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">Customers</p>
+              <p className="text-xs sm:text-sm text-slate-500">{t("businessAnalytics.customers")}</p>
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-violet-500" />
-                <MetricTooltip text="Number of times members visited your business profile page." />
+                <MetricTooltip text={t("businessAnalytics.profileViewsTooltip")} />
               </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {engagementStats.profileViews}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">Profile Views</p>
+              <p className="text-xs sm:text-sm text-slate-500">{t("businessAnalytics.profileViews")}</p>
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-1 sm:mb-2">
                 <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
-                <MetricTooltip text="How many times your business appeared in the partners directory listing." />
+                <MetricTooltip text={t("businessAnalytics.directoryImpressionsTooltip")} />
               </div>
               <div className="text-xl sm:text-3xl font-display font-bold text-slate-900">
                 {engagementStats.directoryImpressions}
               </div>
-              <p className="text-xs sm:text-sm text-slate-500">Directory Impressions</p>
+              <p className="text-xs sm:text-sm text-slate-500">{t("businessAnalytics.directoryImpressions")}</p>
             </div>
           </div>
 
@@ -610,20 +612,20 @@ const BusinessAnalytics = () => {
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-3">
                 <Eye className="w-4 h-4 text-indigo-500" />
-                <h3 className="font-semibold text-slate-900 text-sm">Offer Views</h3>
-                <MetricTooltip text="Number of times members viewed the details of one of your offers." />
+                <h3 className="font-semibold text-slate-900 text-sm">{t("businessAnalytics.offerViews")}</h3>
+                <MetricTooltip text={t("businessAnalytics.offerViewsTooltip")} />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.offerViews}
               </div>
-              <p className="text-xs text-slate-500">Times your offers were seen</p>
+              <p className="text-xs text-slate-500">{t("businessAnalytics.offerViewsSubtitle")}</p>
             </div>
 
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-3">
                 <Share2 className="w-4 h-4 text-pink-500" />
-                <h3 className="font-semibold text-slate-900 text-sm">Social Clicks</h3>
-                <MetricTooltip text="Clicks on your social media links (Instagram, Facebook, TikTok, Website) from your profile." />
+                <h3 className="font-semibold text-slate-900 text-sm">{t("businessAnalytics.socialClicks")}</h3>
+                <MetricTooltip text={t("businessAnalytics.socialClicksTooltip")} />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.socialClicks}
@@ -642,8 +644,8 @@ const BusinessAnalytics = () => {
             <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-3">
                 <MousePointerClick className="w-4 h-4 text-emerald-500" />
-                <h3 className="font-semibold text-slate-900 text-sm">Contact Clicks</h3>
-                <MetricTooltip text="Clicks on your phone number or Google Maps link from your profile." />
+                <h3 className="font-semibold text-slate-900 text-sm">{t("businessAnalytics.contactClicks")}</h3>
+                <MetricTooltip text={t("businessAnalytics.contactClicksTooltip")} />
               </div>
               <div className="text-2xl font-display font-bold text-slate-900 mb-1">
                 {engagementStats.contactClicks}
@@ -652,7 +654,7 @@ const BusinessAnalytics = () => {
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {Object.entries(engagementStats.contactBreakdown).map(([type, count]) => (
                     <span key={type} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
-                      {type === "phone" ? "📞 Phone" : "📍 Maps"}: {count}
+                      {type === "phone" ? t("businessAnalytics.contactPhone") : t("businessAnalytics.contactMaps")}: {count}
                     </span>
                   ))}
                 </div>
@@ -662,9 +664,9 @@ const BusinessAnalytics = () => {
 
           {/* Top Offers */}
           <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 mb-6">
-            <h2 className="font-display font-semibold text-slate-900 mb-4">Top Offers</h2>
+            <h2 className="font-display font-semibold text-slate-900 mb-4">{t("businessAnalytics.topOffers")}</h2>
             {topOffers.length === 0 ? (
-              <p className="text-slate-500 text-sm">No redemptions yet</p>
+              <p className="text-slate-500 text-sm">{t("businessAnalytics.noRedemptions")}</p>
             ) : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
                 {topOffers.map((offer, i) => (
@@ -677,7 +679,7 @@ const BusinessAnalytics = () => {
                         {offer.title}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <p className="text-xs text-slate-500">{offer.discount} off</p>
+                        <p className="text-xs text-slate-500">{t("businessAnalytics.discountOff", { discount: offer.discount })}</p>
                         <span className="inline-flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-primary/10 text-primary text-[10px] sm:text-xs font-medium shrink-0">
                           <Tag className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                           {offer.redemptions}
@@ -693,26 +695,26 @@ const BusinessAnalytics = () => {
           {/* Customer Insights */}
           <div className="mt-6 bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-slate-200">
-              <h2 className="font-display font-semibold text-slate-900">Top Customers</h2>
+              <h2 className="font-display font-semibold text-slate-900">{t("businessAnalytics.topCustomers")}</h2>
             </div>
             {customers.length === 0 ? (
-              <div className="p-12 text-center text-slate-500">No customers yet</div>
+              <div className="p-12 text-center text-slate-500">{t("businessAnalytics.noCustomers")}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-slate-50">
                      <tr>
                       <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        Customer
+                        {t("businessAnalytics.colCustomer")}
                       </th>
                       <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3 hidden sm:table-cell">
-                        Pets
+                        {t("businessAnalytics.colPets")}
                       </th>
                       <th className="text-center text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        Redemptions
+                        {t("businessAnalytics.colRedemptions")}
                       </th>
                       <th className="text-right text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        Last Visit
+                        {t("businessAnalytics.colLastVisit")}
                       </th>
                     </tr>
                   </thead>
@@ -722,7 +724,7 @@ const BusinessAnalytics = () => {
                         <td className="px-3 sm:px-6 py-3 sm:py-4">
                           <div>
                             <p className="text-sm font-medium text-slate-900">
-                              {customer.member_name || "Unknown"}
+                              {customer.member_name || t("businessAnalytics.unknownMember")}
                             </p>
                             <p className="text-xs font-mono text-slate-500">
                               {customer.member_number}
