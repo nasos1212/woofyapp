@@ -1255,6 +1255,17 @@ const UserManagement = () => {
                               {user.business.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.business.description}</p>
                               )}
+                              {/* Visibility toggle - hide internal/test accounts from public + analytics */}
+                              <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
+                                <Switch
+                                  checked={user.business.is_hidden}
+                                  onCheckedChange={() => toggleBusinessHidden(user.business!.id, user.business!.is_hidden)}
+                                />
+                                <div className="text-sm">
+                                  <p className="font-medium">Hide from public &amp; metrics</p>
+                                  <p className="text-xs text-muted-foreground">When ON, this business is excluded from the public partner directory and admin analytics.</p>
+                                </div>
+                              </div>
                               <div className="flex gap-2 flex-wrap">
                                 {user.business.website && (
                                   <Button size="sm" variant="outline" asChild>
@@ -1361,6 +1372,17 @@ const UserManagement = () => {
                               {user.shelter.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.shelter.description}</p>
                               )}
+                              {/* Visibility toggle - hide internal/test accounts from public + analytics */}
+                              <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
+                                <Switch
+                                  checked={user.shelter.is_hidden}
+                                  onCheckedChange={() => toggleShelterHidden(user.shelter!.id, user.shelter!.is_hidden)}
+                                />
+                                <div className="text-sm">
+                                  <p className="font-medium">Hide from public &amp; metrics</p>
+                                  <p className="text-xs text-muted-foreground">When ON, this shelter is excluded from the public shelters list and admin analytics.</p>
+                                </div>
+                              </div>
                               <div className="flex gap-2 flex-wrap">
                                 {user.shelter.website && (
                                   <Button size="sm" variant="outline" asChild>
