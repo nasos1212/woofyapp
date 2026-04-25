@@ -1111,7 +1111,7 @@ const BusinessDashboard = () => {
                         disabled={isVerifying}
                         className="w-full mt-4 bg-green-600 hover:bg-green-700"
                       >
-                        {isVerifying ? 'Confirming...' : 'Confirm Redemption'}
+                        {isVerifying ? t("businessDashboard.result.confirming") : t("businessDashboard.result.confirmRedemption")}
                       </Button>
                     )}
 
@@ -1119,10 +1119,10 @@ const BusinessDashboard = () => {
                     {scanResult.status === 'valid' && !scanResult.offerId && (!scanResult.pendingBirthdayOffers || scanResult.pendingBirthdayOffers.length === 0) && (
                       <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-center">
                         <p className="text-slate-600">
-                          ✅ Member verified! No birthday offers available at this time.
+                          {t("businessDashboard.result.noBirthdayOffers")}
                         </p>
                         <p className="text-sm text-slate-500 mt-1">
-                          Select a regular offer above to redeem a discount.
+                          {t("businessDashboard.result.selectRegularOffer")}
                         </p>
                       </div>
                     )}
