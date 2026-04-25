@@ -675,7 +675,7 @@ const BusinessCustomerBirthdays = () => {
                               "{offer.message.substring(0, 100)}{offer.message.length > 100 ? "..." : ""}"
                             </p>
                             {offer.message.length > 100 && (
-                              <p className="text-xs text-primary mt-1">Tap to read full message →</p>
+                              <p className="text-xs text-primary mt-1">{t("businessBirthdays.tapToRead")}</p>
                             )}
                           </div>
                           <div className="text-right text-xs text-muted-foreground shrink-0">
