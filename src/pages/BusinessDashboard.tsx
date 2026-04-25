@@ -1137,30 +1137,30 @@ const BusinessDashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-slate-900 flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
-                    Recent Redemptions
+                    {t("businessDashboard.recent.title")}
                   </h3>
                   <Link 
                     to="/business/history" 
                     className="text-sm text-primary hover:underline"
                   >
-                    View All →
+                    {t("businessDashboard.recent.viewAll")}
                   </Link>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Customer</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Pet</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Offer</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Time</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.customer")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.pet")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.offer")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.time")}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {recentRedemptions.length === 0 ? (
                         <tr>
                           <td colSpan={4} className="py-8 text-center text-slate-500">
-                            No redemptions yet. Verify a member to get started!
+                            {t("businessDashboard.recent.empty")}
                           </td>
                         </tr>
                       ) : (
@@ -1169,18 +1169,18 @@ const BusinessDashboard = () => {
                             <td className="py-3 px-2">
                               <div>
                                 <p className="font-medium text-slate-900">
-                                  {redemption.member_name || 'Customer'}
+                                  {redemption.member_name || t("businessDashboard.recent.customerFallback")}
                                 </p>
                                 <p className="text-xs text-slate-500 font-mono">
-                                  {redemption.member_number || (redemption.isBirthday ? 'Birthday' : 'N/A')}
+                                  {redemption.member_number || (redemption.isBirthday ? t("businessDashboard.recent.birthdayLabel") : t("businessDashboard.recent.na"))}
                                 </p>
                               </div>
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.pet_names || 'N/A'}
+                              {redemption.pet_names || t("businessDashboard.recent.na")}
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.offer?.title || 'N/A'}
+                              {redemption.offer?.title || t("businessDashboard.recent.na")}
                             </td>
                             <td className="py-3 px-2 text-slate-500 text-sm">
                               {formatTimeAgo(redemption.redeemed_at)}
