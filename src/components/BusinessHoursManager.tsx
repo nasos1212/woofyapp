@@ -158,12 +158,12 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-muted-foreground mb-4">
         <Clock className="w-4 h-4" />
-        <span className="text-sm">Set your opening hours for each day</span>
+        <span className="text-sm">{t("businessHours.intro")}</span>
       </div>
 
       <div className="space-y-3">
         {hours.map((hour) => {
-          const dayLabel = DAYS_OF_WEEK.find((d) => d.value === hour.day_of_week)?.label;
+          const dayLabel = t(`businessHours.${DAY_KEYS.find((d) => d.value === hour.day_of_week)?.key}`);
 
           return (
             <div
