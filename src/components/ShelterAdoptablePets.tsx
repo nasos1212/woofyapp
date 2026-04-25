@@ -663,20 +663,20 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                           onClick={() => handleEdit(pet)}
                         >
                           <Edit2 className="h-3 w-3 mr-1" />
-                          Edit
+                          {t("adoptablePets.edit")}
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           className="text-destructive hover:text-destructive"
                           onClick={() => {
-                            if (confirm("Are you sure you want to remove this pet?")) {
+                            if (confirm(t("adoptablePets.confirmRemove"))) {
                               deletePetMutation.mutate(pet.id);
                             }
                           }}
                         >
                           <Trash2 className="h-3 w-3 mr-1" />
-                          Remove
+                          {t("adoptablePets.remove")}
                         </Button>
                       </div>
                     </div>
@@ -690,13 +690,13 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
         <Card>
           <CardContent className="py-8 text-center">
             <PawPrint className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-            <h4 className="font-medium mb-1">No pets added yet</h4>
+            <h4 className="font-medium mb-1">{t("adoptablePets.noPets")}</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              Add pets that are available for adoption to showcase them on your profile
+              {t("adoptablePets.noPetsDesc")}
             </p>
             <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Your First Pet
+              {t("adoptablePets.addFirst")}
             </Button>
           </CardContent>
         </Card>
