@@ -58,15 +58,36 @@
     "ctaJoin": "Join Free Today",
     "noCard": "No credit card needed · Upgrade anytime",
     "free": {
-      "directory": { "title": "Dog-Friendly Directory", "desc": "Find dog-friendly cafés, restaurants, parks and hidden gems near you." },
-      "lostFound": { "title": "Lost & Found Alerts", "desc": "Report and search for lost or found pets in your area." },
-      "community": { "title": "Community Q&A", "desc": "Connect with fellow pet parents. Share tips, ask questions, and help each other." },
-      "profiles": { "title": "Pet Profiles", "desc": "Create detailed profiles for all your pets with photos, breed info and birthdays." },
-      "health": { "title": "Pet Health Records", "desc": "Track vaccinations, appointments and vet visits with smart reminders." }
+      "directory": {
+        "title": "Dog-Friendly Directory",
+        "desc": "Find dog-friendly cafés, restaurants, parks and hidden gems near you."
+      },
+      "lostFound": {
+        "title": "Lost & Found Alerts",
+        "desc": "Report and search for lost or found pets in your area."
+      },
+      "community": {
+        "title": "Community Q&A",
+        "desc": "Connect with fellow pet parents. Share tips, ask questions, and help each other."
+      },
+      "profiles": {
+        "title": "Pet Profiles",
+        "desc": "Create detailed profiles for all your pets with photos, breed info and birthdays."
+      },
+      "health": {
+        "title": "Pet Health Records",
+        "desc": "Track vaccinations, appointments and vet visits with smart reminders."
+      }
     },
     "premium": {
-      "discounts": { "title": "Exclusive Discounts", "desc": "Save at pet shops, trainers, groomers, hotels and more with your membership card." },
-      "ai": { "title": "AI Health Assistant", "desc": "Get instant guidance on pet health questions powered by AI — available 24/7." }
+      "discounts": {
+        "title": "Exclusive Discounts",
+        "desc": "Save at pet shops, trainers, groomers, hotels and more with your membership card."
+      },
+      "ai": {
+        "title": "AI Health Assistant",
+        "desc": "Get instant guidance on pet health questions powered by AI — available 24/7."
+      }
     }
   },
   "freemium": {
@@ -86,12 +107,30 @@
     "getStarted": "Get Started",
     "bottomNote": "💡 Start exploring for free. Upgrade only when you want access to exclusive partner discounts and premium features!",
     "tour": {
-      "welcome": { "title": "Welcome to Wooffy! 🎉", "desc": "Your free membership gives you access to amazing pet community features. Let us show you around!" },
-      "community": { "title": "Community Q&A 💬", "desc": "Ask questions, share experiences, and get advice from fellow pet parents across Cyprus. Your voice matters!" },
-      "lostFound": { "title": "Lost & Found Alerts 🔍", "desc": "Report or find lost pets in your area. Together, we help reunite pets with their families — fast." },
-      "places": { "title": "Dog-Friendly Places 📍", "desc": "Discover cafés, parks, beaches and more that welcome your furry friends. Rate and review your favourites!" },
-      "shelters": { "title": "Support Shelters ❤️", "desc": "Browse local shelters, meet adoptable pets, and make a difference in an animal's life." },
-      "done": { "title": "You're All Set! 🥳", "desc": "Start exploring — all of these features are completely free. Enjoy being part of the Wooffy community!" }
+      "welcome": {
+        "title": "Welcome to Wooffy! 🎉",
+        "desc": "Your free membership gives you access to amazing pet community features. Let us show you around!"
+      },
+      "community": {
+        "title": "Community Q&A 💬",
+        "desc": "Ask questions, share experiences, and get advice from fellow pet parents across Cyprus. Your voice matters!"
+      },
+      "lostFound": {
+        "title": "Lost & Found Alerts 🔍",
+        "desc": "Report or find lost pets in your area. Together, we help reunite pets with their families — fast."
+      },
+      "places": {
+        "title": "Dog-Friendly Places 📍",
+        "desc": "Discover cafés, parks, beaches and more that welcome your furry friends. Rate and review your favourites!"
+      },
+      "shelters": {
+        "title": "Support Shelters ❤️",
+        "desc": "Browse local shelters, meet adoptable pets, and make a difference in an animal's life."
+      },
+      "done": {
+        "title": "You're All Set! 🥳",
+        "desc": "Start exploring — all of these features are completely free. Enjoy being part of the Wooffy community!"
+      }
     }
   },
   "pricing": {
@@ -105,9 +144,18 @@
     "savings": "💡 The Average Member Saves €200+ Per Year",
     "savingsSub": "That's a 7x return on your membership investment!",
     "plans": {
-      "solo": { "name": "Solo Paw", "label": "For your one & only furball 🐾" },
-      "duo": { "name": "Dynamic Duo", "label": "Because one buddy wasn't enough! 🐶🐱" },
-      "pack": { "name": "Pack Leader", "label": "You run the zoo — we've got you 🦁" }
+      "solo": {
+        "name": "Solo Paw",
+        "label": "For your one & only furball 🐾"
+      },
+      "duo": {
+        "name": "Dynamic Duo",
+        "label": "Because one buddy wasn't enough! 🐶🐱"
+      },
+      "pack": {
+        "name": "Pack Leader",
+        "label": "You run the zoo — we've got you 🦁"
+      }
     },
     "shared": {
       "discounts": "Access to all partner discounts",
@@ -150,25 +198,72 @@
     "ctaAction": "Get listed for free!"
   },
   "shelters": {
-    "badge": "Giving Back",
-    "titlePart": "10% goes to",
-    "titleHighlight": "Animal Shelters",
-    "subtitle": "Every Wooffy membership directly supports whitelisted animal shelters. Together, we're making a difference for animals in need.",
+    "pageTitle": "Pet Shelters | Wooffy",
+    "metaDescription": "Support local pet shelters in Cyprus. 10% of every Wooffy membership goes to helping shelters care for dogs in need.",
+    "backToDashboard": "Back to Dashboard",
+    "title": "Pet Shelters",
+    "subtitle": "10% of your membership supports these amazing shelters",
     "partnerShelters": "Partner Shelters",
-    "transparent": "Transparent Giving",
-    "ourPartners": "Our Whitelisted Shelter Partners",
-    "comingSoon": "Coming Soon",
-    "joinUs": "Join us!",
-    "areYou": "Are you an animal shelter? Apply to join our whitelist.",
-    "goDashboard": "Go to Shelter Dashboard",
-    "applyAuth": "Apply as a Shelter Partner",
-    "loginApply": "Login to Apply as Shelter Partner"
+    "targetDonation": "Target Donation for 2026",
+    "noShelters": "No shelters available yet",
+    "dogsInCare": "dogs in care",
+    "website": "Website",
+    "ctaTitle": "Want to help even more?",
+    "ctaDesc": "Visit any shelter's page to find their donation link and support them directly."
   },
   "offers": {
-    "title": "Featured Offers",
-    "loading": "Loading offers...",
-    "subtitle": "Exclusive discounts from our partner businesses. Join Wooffy to unlock all offers!",
-    "viewAll": "View All Offers"
+    "pageTitle": "Available Offers | Wooffy",
+    "metaDescription": "Browse all available discounts and offers from Wooffy partner businesses.",
+    "backToDashboard": "Back to Dashboard",
+    "previewMode": "Preview Mode",
+    "previewSub": "Upgrade to redeem these exclusive offers",
+    "upgradeNow": "Upgrade Now",
+    "title": "Available Offers",
+    "subtitle_one": "{{count}} offer from our partner businesses",
+    "subtitle_other": "{{count}} offers from our partner businesses",
+    "availableToRedeem": "• {{count}} available to redeem",
+    "searchPlaceholder": "Search offers or businesses...",
+    "allCategoriesShort": "All",
+    "allCities": "All Cities",
+    "petFilter": {
+      "all": "All Pets",
+      "dogs": "🐕 Dogs",
+      "cats": "🐱 Cats"
+    },
+    "showingAll": "Showing all",
+    "hidingRedeemed": "Hiding redeemed",
+    "favoritesOnly": "Favorites only",
+    "showFavorites": "Show favorites",
+    "sort": {
+      "placeholder": "Sort by",
+      "newest": "Newest First",
+      "discountHigh": "Highest Discount",
+      "discountLow": "Lowest Discount",
+      "expiry": "Expiring Soon",
+      "businessName": "Business Name"
+    },
+    "noOffersFound": "No offers found",
+    "noOffersHint": "Try adjusting your filters or search query",
+    "specialOffer": "Special Offer",
+    "percentOff": "{{value}}% off",
+    "euroOff": "€{{value}} off",
+    "limitedTime": "Limited Time",
+    "expired": "Expired",
+    "endsIn": "Ends {{when}}",
+    "expiresIn": "Expires {{when}}",
+    "validUntil": "Valid until {{date}}",
+    "locationTBD": "Location TBD",
+    "newBadge": "New",
+    "dogsOnly": "🐕 Dogs Only",
+    "catsOnly": "🐱 Cats Only",
+    "perPet": "🐾 Per Pet",
+    "monthly": "🗓️ Monthly",
+    "weekly": "📆 Weekly",
+    "daily": "📅 Daily",
+    "anytime": "♾️ Anytime",
+    "upgradeToRedeem": "Upgrade to Redeem",
+    "redeemed": "Redeemed",
+    "available": "Available"
   },
   "footer": {
     "tagline": "The ultimate membership for pet lovers. Unlock discounts, connect with community, and make every moment with your pet special.",
@@ -417,20 +512,6 @@
       "other": "Other"
     }
   },
-  "shelters": {
-    "pageTitle": "Pet Shelters | Wooffy",
-    "metaDescription": "Support local pet shelters in Cyprus. 10% of every Wooffy membership goes to helping shelters care for dogs in need.",
-    "backToDashboard": "Back to Dashboard",
-    "title": "Pet Shelters",
-    "subtitle": "10% of your membership supports these amazing shelters",
-    "partnerShelters": "Partner Shelters",
-    "targetDonation": "Target Donation for 2026",
-    "noShelters": "No shelters available yet",
-    "dogsInCare": "dogs in care",
-    "website": "Website",
-    "ctaTitle": "Want to help even more?",
-    "ctaDesc": "Visit any shelter's page to find their donation link and support them directly."
-  },
   "lostFound": {
     "pageTitle": "Lost & Found Alerts | Wooffy Community",
     "metaDescription": "Community-powered lost and found pet alert system in Cyprus. Help reunite pets with their families.",
@@ -630,60 +711,6 @@
     "noMatch": "No partners match your filters",
     "noPartners": "No partners available yet",
     "clearFilters": "Clear filters"
-  },
-  "offers": {
-    "pageTitle": "Available Offers | Wooffy",
-    "metaDescription": "Browse all available discounts and offers from Wooffy partner businesses.",
-    "backToDashboard": "Back to Dashboard",
-    "previewMode": "Preview Mode",
-    "previewSub": "Upgrade to redeem these exclusive offers",
-    "upgradeNow": "Upgrade Now",
-    "title": "Available Offers",
-    "subtitle_one": "{{count}} offer from our partner businesses",
-    "subtitle_other": "{{count}} offers from our partner businesses",
-    "availableToRedeem": "• {{count}} available to redeem",
-    "searchPlaceholder": "Search offers or businesses...",
-    "allCategoriesShort": "All",
-    "allCities": "All Cities",
-    "petFilter": {
-      "all": "All Pets",
-      "dogs": "🐕 Dogs",
-      "cats": "🐱 Cats"
-    },
-    "showingAll": "Showing all",
-    "hidingRedeemed": "Hiding redeemed",
-    "favoritesOnly": "Favorites only",
-    "showFavorites": "Show favorites",
-    "sort": {
-      "placeholder": "Sort by",
-      "newest": "Newest First",
-      "discountHigh": "Highest Discount",
-      "discountLow": "Lowest Discount",
-      "expiry": "Expiring Soon",
-      "businessName": "Business Name"
-    },
-    "noOffersFound": "No offers found",
-    "noOffersHint": "Try adjusting your filters or search query",
-    "specialOffer": "Special Offer",
-    "percentOff": "{{value}}% off",
-    "euroOff": "€{{value}} off",
-    "limitedTime": "Limited Time",
-    "expired": "Expired",
-    "endsIn": "Ends {{when}}",
-    "expiresIn": "Expires {{when}}",
-    "validUntil": "Valid until {{date}}",
-    "locationTBD": "Location TBD",
-    "newBadge": "New",
-    "dogsOnly": "🐕 Dogs Only",
-    "catsOnly": "🐱 Cats Only",
-    "perPet": "🐾 Per Pet",
-    "monthly": "🗓️ Monthly",
-    "weekly": "📆 Weekly",
-    "daily": "📅 Daily",
-    "anytime": "♾️ Anytime",
-    "upgradeToRedeem": "Upgrade to Redeem",
-    "redeemed": "Redeemed",
-    "available": "Available"
   },
   "offerDialog": {
     "limitedTime": "Limited Time",
@@ -1158,5 +1185,181 @@
     "pet_cemetery": "Pet Cemetery",
     "pet_food_supplier": "Pet Food Supplier",
     "other": "Other"
+  },
+  "businessNav": {
+    "dashboard": "Dashboard",
+    "offers": "Offers",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "manageOffers": "Manage Offers",
+    "previewAsMember": "Preview as Member",
+    "adminDashboard": "Admin Dashboard",
+    "signOut": "Sign Out",
+    "yourBusiness": "Your Business",
+    "business": "Business",
+    "partnerPortal": "Partner Portal",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "pendingApproval": {
+    "pendingTitle": "Pending Approval",
+    "pendingDesc": "Your business is currently under review. Once approved, you'll be able to create offers, verify members, and access all partner features. This usually takes 1-2 business days.",
+    "rejectedTitle": "Application Rejected",
+    "rejectedDesc": "Unfortunately, your business application was not approved. Please contact our support team for more information or to reapply.",
+    "contactSupport": "Contact Support"
+  },
+  "contactPopover": {
+    "defaultTrigger": "Contact us",
+    "howToReach": "How would you like to reach us?",
+    "messageUs": "Message Us",
+    "sendEmail": "Send an Email",
+    "emailCopiedTitle": "Email address copied!",
+    "emailCopiedDesc": "hello@wooffy.app has been copied to your clipboard. Your email app should open - if not, paste the address manually."
+  },
+  "businessDashboard": {
+    "metaTitle": "{{name}} | Wooffy Business Portal",
+    "metaTitleFallback": "Partner Dashboard | Wooffy Business Portal",
+    "metaDesc": "Verify Wooffy members and track redemptions at your business.",
+    "fallbackTitle": "Partner Dashboard",
+    "subtitle": "Verify members and track your Wooffy redemptions",
+    "loading": "Loading...",
+    "nav": {
+      "offers": "Offers",
+      "offersActive": "{{count}} active",
+      "redemptions": "Redemptions",
+      "viewHistory": "View history",
+      "analytics": "Analytics",
+      "insights": "Insights",
+      "birthdays": "Birthdays",
+      "celebrate": "Celebrate",
+      "settings": "Settings",
+      "profile": "Profile",
+      "pending": "Pending"
+    },
+    "verification": {
+      "title": "Member Verification",
+      "tip": "💡 <strong>Quick tip:</strong> Scan QR code or enter member ID, select offer, then confirm redemption.",
+      "unavailableTitle": "Verification Unavailable",
+      "unavailableDesc": "Member verification will be available once your business is approved.",
+      "scanQr": "Scan QR Code",
+      "openCamera": "Open Camera Scanner",
+      "orManual": "or enter manually",
+      "memberId": "Member ID",
+      "memberIdPlaceholder": "e.g., WF-2026-123456",
+      "verificationType": "Verification Type",
+      "birthdayVerification": "🎂 Birthday Verification",
+      "offerOption": "{{title}} ({{value}}{{symbol}} off)",
+      "verifyBtn": "Verify Member",
+      "verifying": "Verifying...",
+      "pointCamera": "Point camera at member's QR code",
+      "qrScannedTitle": "QR Code Scanned",
+      "qrScannedDesc": "Member ID: {{id}}",
+      "missingTitle": "Missing Information",
+      "missingDesc": "Please enter a member ID.",
+      "sessionExpiredTitle": "Session Expired",
+      "sessionExpiredDesc": "Please log in again to verify members.",
+      "authErrorTitle": "Authentication Error",
+      "authErrorDesc": "Please log in again.",
+      "tooManyTitle": "Too Many Attempts",
+      "tooManyDesc": "Please wait before trying again.",
+      "tooManyFailedTitle": "Too Many Failed Attempts",
+      "tooManyFailedDesc": "Please wait {{minutes}} minutes before trying again.",
+      "warningTitle": "Warning",
+      "attemptsRemaining": "{{count}} verification attempts remaining.",
+      "cameraErrorTitle": "Camera Error",
+      "cameraErrorDesc": "Could not access camera. Please check permissions."
+    },
+    "result": {
+      "valid": "✓ Valid Membership",
+      "expired": "⚠ Membership Expired",
+      "alreadyRedeemed": "⚠ Offer Already Redeemed",
+      "limitReached": "⚠ Offer Limit Reached",
+      "invalid": "✗ Invalid Member ID",
+      "member": "Member",
+      "pet": "Pet",
+      "memberIdLabel": "Member ID",
+      "expiryDate": "Expiry Date",
+      "applyDiscount": "🎁 Apply discount: {{discount}}",
+      "perPetInfo": "{{icon}} Per-pet offer: {{used}}/{{total}} pets have used this",
+      "selectPetPerPet": "Select which {{type}} is using this offer:",
+      "selectPetOptional": "Which pet is this for? (optional for tracking)",
+      "petLabel": "pet",
+      "catLabel": "cat",
+      "expiredMsg": "Membership expired. Suggest renewal to continue enjoying discounts.",
+      "alreadyRedeemedMsg": "This member has already redeemed \"{{title}}\". Each offer can only be used once.",
+      "limitReachedMsg": "\"{{title}}\" has reached its maximum redemption limit. Consider creating a new offer or increasing the limit.",
+      "invalidMsg": "This member ID is not recognized. Please check and try again.",
+      "attemptsRemainingShort": "{{count}} verification attempts remaining",
+      "rateLimitedTitle": "🚫 Too many failed attempts",
+      "rateLimitedDesc": "Please wait {{minutes}} minutes before trying again.",
+      "confirmRedemption": "Confirm Redemption",
+      "confirming": "Confirming...",
+      "noBirthdayOffers": "✅ Member verified! No birthday offers available at this time.",
+      "selectRegularOffer": "Select a regular offer above to redeem a discount.",
+      "selectPetTitle": "Select a Pet",
+      "selectPetDesc": "Please select which pet is using this offer.",
+      "redemptionConfirmedTitle": "Redemption Confirmed! 🎉",
+      "redemptionConfirmedDesc": "{{name}} saved {{discount}}. They've been notified!",
+      "alreadyRedeemedTitle": "Already Redeemed",
+      "alreadyRedeemedDescOffer": "This offer has already been redeemed by this member.",
+      "redemptionFailedTitle": "Redemption Failed",
+      "redemptionFailedDesc": "Could not record the redemption. Please try again."
+    },
+    "birthdayOffers": {
+      "heading": "🎂 Birthday Offers to Redeem ({{count}})",
+      "intro": "This member has birthday offers they can use at your business!",
+      "petBirthday": "{{name}}'s Birthday 🎉",
+      "petBirthdayPlain": "{{name}}'s Birthday",
+      "fromYourBusiness": "From your business",
+      "fromOtherBusiness": "From another business",
+      "redeemNow": "Redeem Now",
+      "redeem": "Redeem",
+      "redeeming": "Redeeming...",
+      "alreadyRedeemedTitle": "Already Redeemed",
+      "alreadyRedeemedDesc": "This birthday offer has already been redeemed.",
+      "successTitle": "Birthday Offer Redeemed! 🎂",
+      "successDesc": "{{pet}}'s birthday offer was successfully redeemed. They saved {{discount}}!",
+      "failTitle": "Redemption Failed",
+      "failDesc": "Could not redeem the birthday offer. Please try again."
+    },
+    "recent": {
+      "title": "Recent Redemptions",
+      "viewAll": "View All →",
+      "customer": "Customer",
+      "pet": "Pet",
+      "offer": "Offer",
+      "time": "Time",
+      "empty": "No redemptions yet. Verify a member to get started!",
+      "customerFallback": "Customer",
+      "birthdayLabel": "Birthday",
+      "na": "N/A",
+      "birthdayOfferTitle": "🎂 Birthday: {{pet}}"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minsAgo": "{{count}} mins ago",
+      "hoursAgo": "{{count}} hours ago"
+    },
+    "stats": {
+      "thisMonth": "This Month",
+      "viewDetails": "View details →",
+      "redemptions": "Redemptions",
+      "totalThisMonth": "Total this month",
+      "newCustomers": "New Customers",
+      "firstTime": "First-time redeemers"
+    },
+    "yourOffers": {
+      "title": "Your Active Offers",
+      "active": "{{count}} active",
+      "empty": "No active offers yet",
+      "createFirst": "Create First Offer",
+      "off": "OFF",
+      "moreOffers": "+{{count}} more offers →"
+    },
+    "support": {
+      "title": "Need Help?",
+      "desc": "Contact our partner support team for assistance with verification or billing.",
+      "contact": "Contact Support"
+    }
   }
 }
