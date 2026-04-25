@@ -327,12 +327,12 @@ export default function BusinessProfile() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground mb-2">Business not found</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">{t("businessProfile.notFound")}</h2>
           <button 
             onClick={() => navigate(-1)} 
             className="text-primary hover:underline"
           >
-            Go back
+            {t("businessProfile.notFoundBack")}
           </button>
         </div>
       </div>
