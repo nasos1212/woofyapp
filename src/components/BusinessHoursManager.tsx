@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Clock } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -25,14 +26,14 @@ interface BusinessHoursManagerProps {
   businessId: string;
 }
 
-const DAYS_OF_WEEK = [
-  { value: 0, label: "Sunday" },
-  { value: 1, label: "Monday" },
-  { value: 2, label: "Tuesday" },
-  { value: 3, label: "Wednesday" },
-  { value: 4, label: "Thursday" },
-  { value: 5, label: "Friday" },
-  { value: 6, label: "Saturday" },
+const DAY_KEYS = [
+  { value: 0, key: "sunday" },
+  { value: 1, key: "monday" },
+  { value: 2, key: "tuesday" },
+  { value: 3, key: "wednesday" },
+  { value: 4, key: "thursday" },
+  { value: 5, key: "friday" },
+  { value: 6, key: "saturday" },
 ];
 
 const TIME_OPTIONS = [
@@ -51,6 +52,7 @@ const formatTime = (time: string | null): string => {
 };
 
 export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) {
+  const { t } = useTranslation();
   const [hours, setHours] = useState<BusinessHour[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +72,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       if (error) throw error;
 
       // Initialize with all days, merging existing data
-      const allDays: BusinessHour[] = DAYS_OF_WEEK.map((day) => {
+      const allDays: BusinessHour[] = DAY_KEYS.map((day) => {
         const existing = data?.find((h) => h.day_of_week === day.value);
         return existing
           ? {
@@ -91,7 +93,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       setHours(allDays);
     } catch (error) {
       console.error("Error fetching hours:", error);
-      toast.error("Failed to load business hours");
+      toast.error(t("businessHours.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -132,11 +134,11 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
         }
       }
 
-      toast.success("Business hours saved!");
+      toast.success(t("businessHours.saved"));
       fetchHours(); // Refresh to get new IDs
     } catch (error: any) {
       console.error("Error saving hours:", error);
-      toast.error(error.message || "Failed to save business hours");
+      toast.error(error.message || t("businessHours.saveFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -156,12 +158,12 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
     <div className="space-y-4">
       <div className="flex items-center gap-2 text-muted-foreground mb-4">
         <Clock className="w-4 h-4" />
-        <span className="text-sm">Set your opening hours for each day</span>
+        <span className="text-sm">{t("businessHours.intro")}</span>
       </div>
 
       <div className="space-y-3">
         {hours.map((hour) => {
-          const dayLabel = DAYS_OF_WEEK.find((d) => d.value === hour.day_of_week)?.label;
+          const dayLabel = t(`businessHours.${DAY_KEYS.find((d) => d.value === hour.day_of_week)?.key}`);
 
           return (
             <div
@@ -180,7 +182,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     }
                   />
                   <Label className="text-xs text-muted-foreground w-12">
-                    {hour.is_closed ? "Closed" : "Open"}
+                    {hour.is_closed ? t("businessHours.closed") : t("businessHours.open")}
                   </Label>
                 </div>
               </div>
@@ -194,7 +196,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     }
                   >
                     <SelectTrigger className="w-[90px] sm:w-24 h-9">
-                      <SelectValue placeholder="Open" />
+                      <SelectValue placeholder={t("businessHours.openPlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {TIME_OPTIONS.map((time) => (
@@ -205,7 +207,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     </SelectContent>
                   </Select>
 
-                  <span className="text-muted-foreground text-sm">to</span>
+                  <span className="text-muted-foreground text-sm">{t("businessHours.to")}</span>
 
                   <Select
                     value={formatTime(hour.close_time)}
@@ -214,7 +216,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     }
                   >
                     <SelectTrigger className="w-[90px] sm:w-24 h-9">
-                      <SelectValue placeholder="Close" />
+                      <SelectValue placeholder={t("businessHours.closePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {TIME_OPTIONS.map((time) => (
@@ -232,7 +234,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       </div>
 
       <Button onClick={handleSave} disabled={isSaving} className="w-full mt-4">
-        {isSaving ? "Saving..." : "Save Business Hours"}
+        {isSaving ? t("businessHours.saving") : t("businessHours.save")}
       </Button>
     </div>
   );

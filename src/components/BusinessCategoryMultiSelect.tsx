@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { businessCategories } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 
 interface BusinessCategoryMultiSelectProps {
   selected: string[];
@@ -14,9 +16,12 @@ interface BusinessCategoryMultiSelectProps {
 const BusinessCategoryMultiSelect = ({
   selected,
   onChange,
-  label = "Business Categories",
+  label,
   required = false,
 }: BusinessCategoryMultiSelectProps) => {
+  const { t } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
+  const displayLabel = label ?? t("businessCategoriesField.defaultLabel");
   const toggle = (value: string) => {
     if (selected.includes(value)) {
       onChange(selected.filter((c) => c !== value));
@@ -28,16 +33,15 @@ const BusinessCategoryMultiSelect = ({
   return (
     <div className="space-y-3">
       <Label>
-        {label} {required && "*"}
+        {displayLabel} {required && "*"}
       </Label>
 
       {selected.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {selected.map((cat) => {
-            const option = businessCategories.find((c) => c.value === cat);
             return (
               <Badge key={cat} variant="secondary" className="pl-2 pr-1 py-1 flex items-center gap-1">
-                {option?.label || cat}
+                {getCategoryLabel(cat)}
                 <button
                   type="button"
                   onClick={() => toggle(cat)}
@@ -62,14 +66,14 @@ const BusinessCategoryMultiSelect = ({
               onCheckedChange={() => toggle(cat.value)}
               className="data-[state=checked]:bg-primary"
             />
-            {cat.label}
+            {getCategoryLabel(cat.value)}
           </label>
         ))}
       </div>
 
       {required && selected.length === 0 && (
         <p className="text-xs text-muted-foreground italic">
-          Select at least one category
+          {t("businessCategoriesField.selectAtLeastOne")}
         </p>
       )}
     </div>

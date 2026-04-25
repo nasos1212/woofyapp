@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Plus, Trash2, MapPin, Phone, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ const BusinessLocationManager = ({
   primaryLocation,
   onPrimaryLocationChange,
 }: BusinessLocationManagerProps) => {
+  const { t } = useTranslation();
   const addLocation = () => {
     onLocationsChange([
       ...locations,
@@ -64,12 +66,12 @@ const BusinessLocationManager = ({
               <div className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-bold">
                 1
               </div>
-              <Label className="font-semibold">Primary Location</Label>
+              <Label className="font-semibold">{t("businessLocations.primaryLocation")}</Label>
             </div>
             
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="text-sm">City *</Label>
+                <Label className="text-sm">{t("businessLocations.cityLabel")}</Label>
                 <Select
                   value={primaryLocation.city}
                   onValueChange={(city) =>
@@ -77,7 +79,7 @@ const BusinessLocationManager = ({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
+                    <SelectValue placeholder={t("businessLocations.selectCity")} />
                   </SelectTrigger>
                   <SelectContent>
                     {cyprusCities.map((city) => (
@@ -91,11 +93,11 @@ const BusinessLocationManager = ({
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-sm">Address</Label>
+                  <Label className="text-sm">{t("businessLocations.addressLabel")}</Label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="Street address"
+                      placeholder={t("businessLocations.addressPlaceholder")}
                       value={primaryLocation.address}
                       onChange={(e) =>
                         onPrimaryLocationChange({ ...primaryLocation, address: e.target.value })
@@ -105,11 +107,11 @@ const BusinessLocationManager = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm">Phone *</Label>
+                  <Label className="text-sm">{t("businessLocations.phoneRequired")}</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="+353 1 234 5678"
+                      placeholder="+357 99 123 456"
                       value={primaryLocation.phone}
                       onChange={(e) =>
                         onPrimaryLocationChange({ ...primaryLocation, phone: e.target.value })
@@ -121,7 +123,7 @@ const BusinessLocationManager = ({
               </div>
               
               <div className="space-y-2">
-                <Label className="text-sm">Google Maps Link</Label>
+                <Label className="text-sm">{t("businessLocations.mapsLabel")}</Label>
                 <div className="relative">
                   <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -149,7 +151,7 @@ const BusinessLocationManager = ({
                   {primaryLocation ? index + 2 : index + 1}
                 </div>
                 <Label className="font-semibold">
-                  {primaryLocation ? "Additional Location" : `Location ${index + 1}`}
+                  {primaryLocation ? t("businessLocations.additionalLocation") : t("businessLocations.locationN", { n: index + 1 })}
                 </Label>
               </div>
               <Button
@@ -165,13 +167,13 @@ const BusinessLocationManager = ({
             
             <div className="space-y-3">
               <div className="space-y-2">
-                <Label className="text-sm">City *</Label>
+                <Label className="text-sm">{t("businessLocations.cityLabel")}</Label>
                 <Select
                   value={location.city}
                   onValueChange={(city) => updateLocation(index, "city", city)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select city" />
+                    <SelectValue placeholder={t("businessLocations.selectCity")} />
                   </SelectTrigger>
                   <SelectContent>
                     {cyprusCities.map((city) => (
@@ -185,11 +187,11 @@ const BusinessLocationManager = ({
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-sm">Address</Label>
+                  <Label className="text-sm">{t("businessLocations.addressLabel")}</Label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="Street address"
+                      placeholder={t("businessLocations.addressPlaceholder")}
                       value={location.address}
                       onChange={(e) => updateLocation(index, "address", e.target.value)}
                       className="pl-10"
@@ -197,11 +199,11 @@ const BusinessLocationManager = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm">Phone</Label>
+                  <Label className="text-sm">{t("businessLocations.phoneLabel")}</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="+353 1 234 5678"
+                      placeholder="+357 99 123 456"
                       value={location.phone}
                       onChange={(e) => updateLocation(index, "phone", e.target.value)}
                       className="pl-10"
@@ -211,7 +213,7 @@ const BusinessLocationManager = ({
               </div>
               
               <div className="space-y-2">
-                <Label className="text-sm">Google Maps Link</Label>
+                <Label className="text-sm">{t("businessLocations.mapsLabel")}</Label>
                 <div className="relative">
                   <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -235,11 +237,11 @@ const BusinessLocationManager = ({
         className="w-full border-dashed gap-2"
       >
         <Plus className="w-4 h-4" />
-        Add Another Store Location
+        {t("businessLocations.addLocation")}
       </Button>
       
       <p className="text-xs text-muted-foreground text-center">
-        Have multiple stores? Add each location with its specific address and phone number.
+        {t("businessLocations.helpText")}
       </p>
     </div>
   );
