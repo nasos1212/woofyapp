@@ -998,7 +998,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'expired' && (
                           <div className="mt-4 p-3 bg-amber-100 rounded-lg">
                             <p className="text-amber-800 text-sm">
-                              Membership expired. Suggest renewal to continue enjoying discounts.
+                              {t("businessDashboard.result.expiredMsg")}
                             </p>
                           </div>
                         )}
@@ -1006,7 +1006,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'already_redeemed' && (
                           <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                             <p className="text-orange-800 text-sm">
-                              This member has already redeemed "{scanResult.offerTitle}". Each offer can only be used once.
+                              {t("businessDashboard.result.alreadyRedeemedMsg", { title: scanResult.offerTitle })}
                             </p>
                           </div>
                         )}
@@ -1014,7 +1014,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'limit_reached' && (
                           <div className="mt-4 p-3 bg-purple-100 rounded-lg">
                             <p className="text-purple-800 text-sm">
-                              "{scanResult.offerTitle}" has reached its maximum redemption limit. Consider creating a new offer or increasing the limit.
+                              {t("businessDashboard.result.limitReachedMsg", { title: scanResult.offerTitle })}
                             </p>
                           </div>
                         )}
@@ -1022,11 +1022,11 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'invalid' && (
                           <div>
                             <p className="text-red-600 text-sm">
-                              This member ID is not recognized. Please check and try again.
+                              {t("businessDashboard.result.invalidMsg")}
                             </p>
                             {scanResult.attemptsRemaining !== undefined && (
                               <p className="text-slate-500 text-xs mt-2">
-                                {scanResult.attemptsRemaining} verification attempts remaining
+                                {t("businessDashboard.result.attemptsRemainingShort", { count: scanResult.attemptsRemaining })}
                               </p>
                             )}
                           </div>
@@ -1035,10 +1035,10 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'rate_limited' && (
                           <div className="p-3 bg-red-100 rounded-lg">
                             <p className="text-red-800 font-medium">
-                              🚫 Too many failed attempts
+                              {t("businessDashboard.result.rateLimitedTitle")}
                             </p>
                             <p className="text-red-700 text-sm mt-1">
-                              Please wait {scanResult.remainingMinutes} minutes before trying again.
+                              {t("businessDashboard.result.rateLimitedDesc", { minutes: scanResult.remainingMinutes })}
                             </p>
                           </div>
                         )}
