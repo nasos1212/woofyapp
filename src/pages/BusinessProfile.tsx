@@ -761,20 +761,20 @@ export default function BusinessProfile() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                Business Hours
+                {t("businessProfile.businessHours")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {businessHours.length > 0 ? (
                 <div className="space-y-2">
                   {[
-                    { value: 0, label: "Sunday" },
-                    { value: 1, label: "Monday" },
-                    { value: 2, label: "Tuesday" },
-                    { value: 3, label: "Wednesday" },
-                    { value: 4, label: "Thursday" },
-                    { value: 5, label: "Friday" },
-                    { value: 6, label: "Saturday" },
+                    { value: 0, label: t("businessProfile.daySunday") },
+                    { value: 1, label: t("businessProfile.dayMonday") },
+                    { value: 2, label: t("businessProfile.dayTuesday") },
+                    { value: 3, label: t("businessProfile.dayWednesday") },
+                    { value: 4, label: t("businessProfile.dayThursday") },
+                    { value: 5, label: t("businessProfile.dayFriday") },
+                    { value: 6, label: t("businessProfile.daySaturday") },
                   ].map((day) => {
                     const hours = businessHours.find((h) => h.day_of_week === day.value);
                     const today = new Date().getDay();
@@ -789,13 +789,13 @@ export default function BusinessProfile() {
                       >
                         <span className={`text-sm ${isToday ? "text-primary" : "text-foreground"}`}>
                           {day.label}
-                          {isToday && <span className="ml-2 text-xs">(Today)</span>}
+                          {isToday && <span className="ml-2 text-xs">{t("businessProfile.today")}</span>}
                         </span>
                         <span className={`text-sm ${hours?.is_closed ? "text-muted-foreground" : isToday ? "text-primary" : "text-foreground"}`}>
                           {!hours ? (
                             "—"
                           ) : hours.is_closed ? (
-                            "Closed"
+                            t("businessProfile.closed")
                           ) : (
                             `${hours.open_time?.slice(0, 5)} - ${hours.close_time?.slice(0, 5)}`
                           )}
@@ -806,7 +806,7 @@ export default function BusinessProfile() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-sm">
-                  Contact the business directly for their current operating hours.
+                  {t("businessProfile.noHours")}
                 </p>
               )}
             </CardContent>
