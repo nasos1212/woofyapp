@@ -445,7 +445,7 @@ const ShelterDashboard = () => {
                   <TabsContent value="basic" className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="shelter_name">Shelter Name</Label>
+                        <Label htmlFor="shelter_name">{t("shelter.fields.shelterName")}</Label>
                         <Input
                           id="shelter_name"
                           value={formData.shelter_name}
@@ -453,7 +453,7 @@ const ShelterDashboard = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="contact_name">Contact Person</Label>
+                        <Label htmlFor="contact_name">{t("shelter.fields.contactPerson")}</Label>
                         <Input
                           id="contact_name"
                           value={formData.contact_name}
@@ -464,7 +464,7 @@ const ShelterDashboard = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">{t("shelter.fields.email")}</Label>
                         <Input
                           id="email"
                           type="email"
@@ -473,7 +473,7 @@ const ShelterDashboard = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Phone</Label>
+                        <Label htmlFor="phone">{t("shelter.fields.phone")}</Label>
                         <Input
                           id="phone"
                           value={formData.phone}
@@ -484,7 +484,7 @@ const ShelterDashboard = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
+                        <Label htmlFor="location">{t("shelter.fields.location")}</Label>
                         <Input
                           id="location"
                           value={formData.location}
@@ -492,7 +492,7 @@ const ShelterDashboard = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="city">City</Label>
+                        <Label htmlFor="city">{t("shelter.fields.city")}</Label>
                         <Input
                           id="city"
                           value={formData.city}
@@ -502,7 +502,7 @@ const ShelterDashboard = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="address">Full Address</Label>
+                      <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
                       <Input
                         id="address"
                         value={formData.address}
@@ -513,44 +513,44 @@ const ShelterDashboard = () => {
 
                   <TabsContent value="about" className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="description">About Your Shelter</Label>
+                      <Label htmlFor="description">{t("shelter.fields.aboutShelter")}</Label>
                       <Textarea
                         id="description"
                         rows={4}
                         value={formData.description}
                         onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                        placeholder="Tell visitors about your shelter, history, and what makes you special..."
+                        placeholder={t("shelter.fields.aboutPlaceholder")}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="mission_statement">Mission Statement</Label>
+                      <Label htmlFor="mission_statement">{t("shelter.fields.missionStatement")}</Label>
                       <Textarea
                         id="mission_statement"
                         rows={3}
                         value={formData.mission_statement}
                         onChange={(e) => setFormData(prev => ({ ...prev, mission_statement: e.target.value }))}
-                        placeholder="Your shelter's mission in a few sentences..."
+                        placeholder={t("shelter.fields.missionPlaceholder")}
                       />
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="dogs_in_care">Dogs Currently in Care</Label>
+                        <Label htmlFor="dogs_in_care">{t("shelter.fields.dogsInCare")}</Label>
                         <Input
                           id="dogs_in_care"
                           value={formData.dogs_in_care}
                           onChange={(e) => setFormData(prev => ({ ...prev, dogs_in_care: e.target.value }))}
-                          placeholder="e.g., 25-30"
+                          placeholder={t("shelter.fields.dogsInCarePlaceholder")}
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="years_operating">Operating Since (Year)</Label>
+                        <Label htmlFor="years_operating">{t("shelter.fields.operatingSinceLabel")}</Label>
                         <Input
                           id="years_operating"
                           value={formData.years_operating}
                           onChange={(e) => setFormData(prev => ({ ...prev, years_operating: e.target.value }))}
-                          placeholder="e.g., 2020"
+                          placeholder={t("shelter.fields.operatingSincePlaceholder")}
                         />
                       </div>
                     </div>
@@ -558,27 +558,27 @@ const ShelterDashboard = () => {
 
                   <TabsContent value="social" className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="website">Website</Label>
+                      <Label htmlFor="website">{t("shelter.fields.website")}</Label>
                       <Input
                         id="website"
                         type="url"
                         value={formData.website}
                         onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                        placeholder="https://yourwebsite.com"
+                        placeholder={t("shelter.fields.websitePlaceholder")}
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="donation_link">Donation Link</Label>
+                      <Label htmlFor="donation_link">{t("shelter.fields.donationLink")}</Label>
                       <Input
                         id="donation_link"
                         type="url"
                         value={formData.donation_link}
                         onChange={(e) => setFormData(prev => ({ ...prev, donation_link: e.target.value }))}
-                        placeholder="https://donate.yourwebsite.com"
+                        placeholder={t("shelter.fields.donationLinkPlaceholder")}
                       />
                       <p className="text-xs text-muted-foreground">
-                        This will show as a "Donate Now" button on your profile
+                        {t("shelter.fields.donationHelp")}
                       </p>
                     </div>
 
@@ -586,7 +586,7 @@ const ShelterDashboard = () => {
                       <div className="space-y-2">
                         <Label htmlFor="facebook_url" className="flex items-center gap-2">
                           <Facebook className="h-4 w-4" />
-                          Facebook URL
+                          {t("shelter.fields.facebookUrl")}
                         </Label>
                         <Input
                           id="facebook_url"
@@ -599,7 +599,7 @@ const ShelterDashboard = () => {
                       <div className="space-y-2">
                         <Label htmlFor="instagram_url" className="flex items-center gap-2">
                           <Instagram className="h-4 w-4" />
-                          Instagram URL
+                          {t("shelter.fields.instagramUrl")}
                         </Label>
                         <Input
                           id="instagram_url"
@@ -611,7 +611,7 @@ const ShelterDashboard = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="tiktok_url" className="flex items-center gap-2">
-                          TikTok URL
+                          {t("shelter.fields.tiktokUrl")}
                         </Label>
                         <Input
                           id="tiktok_url"
@@ -628,7 +628,7 @@ const ShelterDashboard = () => {
                     <div className="flex justify-start mt-6 pt-4 border-t">
                       <Button type="submit" disabled={updateMutation.isPending}>
                         <Save className="h-4 w-4 mr-2" />
-                        {updateMutation.isPending ? "Saving..." : "Save Changes"}
+                        {updateMutation.isPending ? t("shelter.saving") : t("shelter.saveChanges")}
                       </Button>
                     </div>
                   )}
@@ -636,17 +636,17 @@ const ShelterDashboard = () => {
 
                   <TabsContent value="branding" className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-medium mb-1">Cover Photo</h3>
+                      <h3 className="text-lg font-medium mb-1">{t("shelter.branding.coverPhoto")}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        This photo appears at the top of your public shelter profile.
+                        {t("shelter.branding.coverPhotoDesc")}
                       </p>
                       <ShelterHeaderUpload shelterId={shelter.id} currentLogoUrl={shelter.logo_url} currentCoverUrl={shelter.cover_photo_url} currentCoverPosition={shelter.cover_photo_position} />
                     </div>
 
                     <div>
-                      <h3 className="text-lg font-medium mb-1">Photo Gallery</h3>
+                      <h3 className="text-lg font-medium mb-1">{t("shelter.branding.photoGallery")}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Upload photos of your shelter, dogs, and activities. These will be displayed on your public profile.
+                        {t("shelter.branding.photoGalleryDesc")}
                       </p>
                       <ShelterGalleryUpload shelterId={shelter.id} />
                     </div>
