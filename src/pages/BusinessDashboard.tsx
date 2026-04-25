@@ -924,11 +924,11 @@ const BusinessDashboard = () => {
                           scanResult.status === 'limit_reached' ? 'text-purple-700' :
                           'text-red-700'
                         }`}>
-                          {scanResult.status === 'valid' && '✓ Valid Membership'}
-                          {scanResult.status === 'expired' && '⚠ Membership Expired'}
-                          {scanResult.status === 'already_redeemed' && '⚠ Offer Already Redeemed'}
-                          {scanResult.status === 'limit_reached' && '⚠ Offer Limit Reached'}
-                          {scanResult.status === 'invalid' && '✗ Invalid Member ID'}
+                          {scanResult.status === 'valid' && t("businessDashboard.result.valid")}
+                          {scanResult.status === 'expired' && t("businessDashboard.result.expired")}
+                          {scanResult.status === 'already_redeemed' && t("businessDashboard.result.alreadyRedeemed")}
+                          {scanResult.status === 'limit_reached' && t("businessDashboard.result.limitReached")}
+                          {scanResult.status === 'invalid' && t("businessDashboard.result.invalid")}
                         </h3>
 
                         {scanResult.status !== 'invalid' && (
