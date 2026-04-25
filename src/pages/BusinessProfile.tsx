@@ -202,7 +202,7 @@ export default function BusinessProfile() {
         
         const reviewsWithNames = reviewsData.map(review => ({
           ...review,
-          user_name: profileMap.get(review.user_id) || "Anonymous"
+          user_name: profileMap.get(review.user_id) || t("businessProfile.anonymous")
         }));
         
         setReviews(reviewsWithNames);
