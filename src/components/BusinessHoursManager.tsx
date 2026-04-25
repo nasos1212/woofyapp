@@ -182,7 +182,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     }
                   />
                   <Label className="text-xs text-muted-foreground w-12">
-                    {hour.is_closed ? "Closed" : "Open"}
+                    {hour.is_closed ? t("businessHours.closed") : t("businessHours.open")}
                   </Label>
                 </div>
               </div>
