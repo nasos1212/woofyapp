@@ -751,6 +751,24 @@ const PlacesManager = () => {
                 )}
               </div>
 
+              {/* Submitter Info */}
+              {(() => {
+                const submitter = viewingPlace.added_by_user_id ? submitterMap[viewingPlace.added_by_user_id] : null;
+                const submitterLabel = submitter?.full_name || submitter?.email || (viewingPlace.added_by_user_id ? "Unknown user" : "Public form (no account)");
+                const submitterRole = viewingPlace.submitted_by === "owner" ? "Owns/manages this place" : viewingPlace.submitted_by === "someone_else" ? "Recommending a place" : null;
+                return (
+                  <div className="p-3 rounded-lg bg-muted/40 border border-border/50">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Submitted by</p>
+                    <p className="text-sm font-medium">{submitterLabel}</p>
+                    {submitter?.email && submitter?.full_name && (
+                      <p className="text-xs text-muted-foreground">{submitter.email}</p>
+                    )}
+                    {submitterRole && (
+                      <p className="text-xs text-muted-foreground mt-1">{submitterRole}</p>
+                    )}
+                  </div>
+                );
+              })()}
               {/* Duplicate Warning */}
               {!viewingPlace.verified && (() => {
                 const dupes = findDuplicates(viewingPlace, verifiedPlaces);
