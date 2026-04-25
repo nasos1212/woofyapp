@@ -631,8 +631,8 @@ const BusinessDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>{business?.business_name || "Partner Dashboard"} | Wooffy Business Portal</title>
-        <meta name="description" content="Verify Wooffy members and track redemptions at your business." />
+        <title>{business?.business_name ? t("businessDashboard.metaTitle", { name: business.business_name }) : t("businessDashboard.metaTitleFallback")}</title>
+        <meta name="description" content={t("businessDashboard.metaDesc")} />
       </Helmet>
 
       {/* Celebration Animation */}
@@ -652,9 +652,9 @@ const BusinessDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              {business?.business_name || "Partner Dashboard"}
+              {business?.business_name || t("businessDashboard.fallbackTitle")}
             </h1>
-            <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
+            <p className="text-slate-500">{t("businessDashboard.subtitle")}</p>
           </div>
 
 
@@ -669,8 +669,8 @@ const BusinessDashboard = () => {
                   <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Offers</h3>
-                  <p className="text-xs sm:text-sm text-slate-500">{offers.length} active</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.offers")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500">{t("businessDashboard.nav.offersActive", { count: offers.length })}</p>
                 </div>
               </Link>
             ) : (
@@ -679,8 +679,8 @@ const BusinessDashboard = () => {
                   <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Offers</h3>
-                  <p className="text-xs sm:text-sm text-slate-400">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.offers")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -693,8 +693,8 @@ const BusinessDashboard = () => {
                   <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Redemptions</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">View history</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.redemptions")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.viewHistory")}</p>
                 </div>
               </Link>
             ) : (
@@ -703,8 +703,8 @@ const BusinessDashboard = () => {
                   <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Redemptions</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.redemptions")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -717,8 +717,8 @@ const BusinessDashboard = () => {
                   <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Analytics</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Insights</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.analytics")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.insights")}</p>
                 </div>
               </Link>
             ) : (
@@ -727,8 +727,8 @@ const BusinessDashboard = () => {
                   <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Analytics</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.analytics")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -741,8 +741,8 @@ const BusinessDashboard = () => {
                   <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Birthdays</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Celebrate</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.birthdays")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.celebrate")}</p>
                 </div>
               </Link>
             ) : (
@@ -751,8 +751,8 @@ const BusinessDashboard = () => {
                   <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Birthdays</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.birthdays")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -765,8 +765,8 @@ const BusinessDashboard = () => {
                 <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Settings</h3>
-                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Profile</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.settings")}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.profile")}</p>
               </div>
             </Link>
           </div>
@@ -778,10 +778,10 @@ const BusinessDashboard = () => {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <h2 className="font-display text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
                   <ScanLine className="w-5 h-5 text-primary" />
-                  Member Verification
+                  {t("businessDashboard.verification.title")}
                 </h2>
                 <p className="text-sm text-slate-500 mb-6">
-                  💡 <span className="font-medium">Quick tip:</span> Scan QR code or enter member ID, select offer, then confirm redemption.
+                  <Trans i18nKey="businessDashboard.verification.tip" components={{ strong: <span className="font-medium" /> }} />
                 </p>
 
                 {!isApproved ? (
@@ -789,9 +789,9 @@ const BusinessDashboard = () => {
                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Clock className="w-8 h-8 text-slate-400" />
                     </div>
-                    <h3 className="font-semibold text-slate-600 mb-2">Verification Unavailable</h3>
+                    <h3 className="font-semibold text-slate-600 mb-2">{t("businessDashboard.verification.unavailableTitle")}</h3>
                     <p className="text-sm text-slate-500">
-                      Member verification will be available once your business is approved.
+                      {t("businessDashboard.verification.unavailableDesc")}
                     </p>
                   </div>
                 ) : (
@@ -801,7 +801,7 @@ const BusinessDashboard = () => {
                   <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
                       <div className="flex items-center justify-between p-4 border-b">
-                        <h3 className="font-display font-semibold text-slate-900">Scan QR Code</h3>
+                        <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.verification.scanQr")}</h3>
                         <button 
                           onClick={() => setIsScannerOpen(false)}
                           className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -816,8 +816,8 @@ const BusinessDashboard = () => {
                             onError={(error) => {
                               console.error('Scanner error:', error);
                               toast({
-                                title: "Camera Error",
-                                description: "Could not access camera. Please check permissions.",
+                                title: t("businessDashboard.verification.cameraErrorTitle"),
+                                description: t("businessDashboard.verification.cameraErrorDesc"),
                                 variant: "destructive",
                               });
                             }}
@@ -828,7 +828,7 @@ const BusinessDashboard = () => {
                           />
                         </div>
                         <p className="text-center text-sm text-slate-500 mt-4">
-                          Point camera at member's QR code
+                          {t("businessDashboard.verification.pointCamera")}
                         </p>
                       </div>
                     </div>
@@ -844,7 +844,7 @@ const BusinessDashboard = () => {
                     className="w-full gap-2 border-primary text-primary hover:bg-primary/5"
                   >
                     <Camera className="w-5 h-5" />
-                    Open Camera Scanner
+                    {t("businessDashboard.verification.openCamera")}
                   </Button>
 
                   <div className="relative">
@@ -852,16 +852,16 @@ const BusinessDashboard = () => {
                       <div className="w-full border-t border-slate-200" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-white px-2 text-slate-500">or enter manually</span>
+                      <span className="bg-white px-2 text-slate-500">{t("businessDashboard.verification.orManual")}</span>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Member ID
+                      {t("businessDashboard.verification.memberId")}
                     </label>
                     <Input
-                      placeholder="e.g., WF-2026-123456"
+                      placeholder={t("businessDashboard.verification.memberIdPlaceholder")}
                       value={memberIdInput}
                       onChange={(e) => setMemberIdInput(e.target.value)}
                       className="font-mono"
@@ -870,17 +870,17 @@ const BusinessDashboard = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Verification Type
+                      {t("businessDashboard.verification.verificationType")}
                     </label>
                     <select
                       value={selectedOfferId}
                       onChange={(e) => setSelectedOfferId(e.target.value)}
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
                     >
-                      <option value="birthday">🎂 Birthday Verification</option>
+                      <option value="birthday">{t("businessDashboard.verification.birthdayVerification")}</option>
                       {offers.map(offer => (
                         <option key={offer.id} value={offer.id}>
-                          {offer.title} ({offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} off)
+                          {t("businessDashboard.verification.offerOption", { title: offer.title, value: offer.discount_value, symbol: offer.discount_type === 'percentage' ? '%' : '€' })}
                         </option>
                       ))}
                     </select>
