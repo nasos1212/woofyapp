@@ -195,6 +195,26 @@ const PlacesManager = () => {
       const { data, error } = await query;
       if (error) throw error;
       setPlaces(data || []);
+
+      // Fetch submitter profiles
+      const userIds = Array.from(
+        new Set(
+          [...(allData || []), ...(data || [])]
+            .map((p: any) => p.added_by_user_id)
+            .filter((id: string | null): id is string => !!id)
+        )
+      );
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, email")
+          .in("user_id", userIds);
+        const map: Record<string, SubmitterInfo> = {};
+        (profiles || []).forEach((p: any) => {
+          map[p.user_id] = { full_name: p.full_name, email: p.email };
+        });
+        setSubmitterMap(map);
+      }
     } catch (error) {
       console.error("Error fetching places:", error);
       toast({
