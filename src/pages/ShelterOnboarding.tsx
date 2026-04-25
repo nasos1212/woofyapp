@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Home, Heart, Users, DollarSign, CheckCircle, ArrowRight, ArrowLeft, Mail, Phone, MapPin, Globe, FileText, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ import { ensureHttps } from "@/lib/utils";
 const ShelterOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   
   const [step, setStep] = useState(1);
@@ -113,15 +115,15 @@ const ShelterOnboarding = () => {
         );
       
       toast({
-        title: "Application Submitted! 🎉",
-        description: "We'll review your application and get back to you soon.",
+        title: t("shelterOnboarding.successToastTitle"),
+        description: t("shelterOnboarding.successToastDesc"),
       });
       
       setStep(4);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit application",
+        title: t("shelterOnboarding.errorTitle"),
+        description: error.message || t("shelterOnboarding.submitFailed"),
         variant: "destructive",
       });
     } finally {
@@ -134,7 +136,7 @@ const ShelterOnboarding = () => {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50">
         <div className="flex flex-col items-center gap-4">
           <Dog className="w-12 h-12 text-rose-500 animate-bounce" />
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t("shelterOnboarding.loading")}</p>
         </div>
       </div>
     );
@@ -150,33 +152,33 @@ const ShelterOnboarding = () => {
               <CheckCircle className="w-10 h-10 text-white" />
             </div>
             <CardTitle className="text-2xl font-display text-rose-700">
-              Application Submitted!
+              {t("shelterOnboarding.applicationSubmitted")}
             </CardTitle>
             <CardDescription className="text-base">
-              Thank you for applying to become a Wooffy partner shelter
+              {t("shelterOnboarding.applicationSubmittedDesc")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="bg-rose-50 rounded-xl p-6 text-left space-y-4">
-              <h3 className="font-semibold text-rose-800">What happens next?</h3>
+              <h3 className="font-semibold text-rose-800">{t("shelterOnboarding.whatHappensNext")}</h3>
               <ul className="space-y-3 text-sm text-rose-700">
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-rose-200 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-rose-700 font-semibold text-xs">1</span>
                   </div>
-                  <span>Our team will review your application within 2-3 business days</span>
+                  <span>{t("shelterOnboarding.step1")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-rose-200 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-rose-700 font-semibold text-xs">2</span>
                   </div>
-                  <span>We may reach out for additional information if needed</span>
+                  <span>{t("shelterOnboarding.step2")}</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-rose-200 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-rose-700 font-semibold text-xs">3</span>
                   </div>
-                  <span>Once approved, you'll receive access to your shelter dashboard</span>
+                  <span>{t("shelterOnboarding.step3")}</span>
                 </li>
               </ul>
             </div>
@@ -185,9 +187,9 @@ const ShelterOnboarding = () => {
               <div className="flex items-center gap-3">
                 <Heart className="w-8 h-8 text-rose-500" />
                 <div className="text-left">
-                  <p className="font-semibold text-rose-800">10% Contribution</p>
+                  <p className="font-semibold text-rose-800">{t("shelterOnboarding.contributionTitle")}</p>
                   <p className="text-sm text-rose-600">
-                    As an approved shelter, you'll receive a share of 10% of membership proceeds
+                    {t("shelterOnboarding.contributionDesc")}
                   </p>
                 </div>
               </div>
@@ -197,7 +199,7 @@ const ShelterOnboarding = () => {
               onClick={() => navigate("/")}
               className="w-full bg-rose-500 hover:bg-rose-600"
             >
-              Return to Homepage
+              {t("shelterOnboarding.returnHome")}
             </Button>
           </CardContent>
         </Card>
@@ -216,17 +218,17 @@ const ShelterOnboarding = () => {
           className="absolute top-4 left-4 text-white/80 hover:text-white hover:bg-white/10"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
+          {t("shelterOnboarding.back")}
         </Button>
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Home className="w-8 h-8" />
           </div>
           <h1 className="font-display text-3xl font-bold mb-2">
-            Become a Partner Shelter
+            {t("shelterOnboarding.becomePartner")}
           </h1>
           <p className="text-rose-100">
-            Join Wooffy and share in 10% of membership proceeds
+            {t("shelterOnboarding.joinSubtitle")}
           </p>
         </div>
       </div>
@@ -259,27 +261,27 @@ const ShelterOnboarding = () => {
               <div className="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center mb-3">
                 <DollarSign className="w-5 h-5 text-rose-600" />
               </div>
-              <h3 className="font-semibold text-rose-800 mb-1">10% Revenue Share</h3>
+              <h3 className="font-semibold text-rose-800 mb-1">{t("shelterOnboarding.benefit1Title")}</h3>
               <p className="text-sm text-muted-foreground">
-                Share in 10% of membership fees
+                {t("shelterOnboarding.benefit1Desc")}
               </p>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-rose-100">
               <div className="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center mb-3">
                 <Users className="w-5 h-5 text-rose-600" />
               </div>
-              <h3 className="font-semibold text-rose-800 mb-1">Community Exposure</h3>
+              <h3 className="font-semibold text-rose-800 mb-1">{t("shelterOnboarding.benefit2Title")}</h3>
               <p className="text-sm text-muted-foreground">
-                Featured on our platform
+                {t("shelterOnboarding.benefit2Desc")}
               </p>
             </div>
             <div className="bg-white rounded-xl p-4 shadow-sm border border-rose-100">
               <div className="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center mb-3">
                 <Heart className="w-5 h-5 text-rose-600" />
               </div>
-              <h3 className="font-semibold text-rose-800 mb-1">Support Animals</h3>
+              <h3 className="font-semibold text-rose-800 mb-1">{t("shelterOnboarding.benefit3Title")}</h3>
               <p className="text-sm text-muted-foreground">
-                Help more animals find homes
+                {t("shelterOnboarding.benefit3Desc")}
               </p>
             </div>
           </div>
@@ -292,17 +294,17 @@ const ShelterOnboarding = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Home className="w-5 h-5 text-rose-500" />
-                  Shelter Information
+                  {t("shelterOnboarding.step1Title")}
                 </CardTitle>
-                <CardDescription>Tell us about your shelter</CardDescription>
+                <CardDescription>{t("shelterOnboarding.step1Subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="shelterName">Shelter Name *</Label>
+                    <Label htmlFor="shelterName">{t("shelterOnboarding.shelterName")}</Label>
                     <Input
                       id="shelterName"
-                      placeholder="e.g., The Asher House"
+                      placeholder={t("shelterOnboarding.shelterNamePlaceholder")}
                       value={shelterName}
                       onChange={(e) => setShelterName(e.target.value)}
                     />
@@ -310,10 +312,10 @@ const ShelterOnboarding = () => {
                   
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="city">City *</Label>
+                      <Label htmlFor="city">{t("shelterOnboarding.city")}</Label>
                       <Select value={city} onValueChange={setCity}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select city" />
+                          <SelectValue placeholder={t("shelterOnboarding.selectCity")} />
                         </SelectTrigger>
                         <SelectContent>
                           {cyprusCityNames.map((c) => (
@@ -323,10 +325,10 @@ const ShelterOnboarding = () => {
                       </Select>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="address">Address</Label>
+                      <Label htmlFor="address">{t("shelterOnboarding.address")}</Label>
                       <Input
                         id="address"
-                        placeholder="Street address"
+                        placeholder={t("shelterOnboarding.addressPlaceholder")}
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                       />
@@ -334,10 +336,10 @@ const ShelterOnboarding = () => {
                   </div>
                   
                   <div className="grid gap-2">
-                    <Label htmlFor="description">About Your Shelter</Label>
+                    <Label htmlFor="description">{t("shelterOnboarding.aboutLabel")}</Label>
                     <Textarea
                       id="description"
-                      placeholder="Tell us about your shelter, its history, and what makes it special..."
+                      placeholder={t("shelterOnboarding.aboutPlaceholder")}
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
@@ -351,7 +353,7 @@ const ShelterOnboarding = () => {
                     disabled={!shelterName || !city}
                     className="bg-rose-500 hover:bg-rose-600"
                   >
-                    Continue
+                    {t("shelterOnboarding.continue")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -364,17 +366,17 @@ const ShelterOnboarding = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Mail className="w-5 h-5 text-rose-500" />
-                  Contact Details
+                  {t("shelterOnboarding.step2Title")}
                 </CardTitle>
-                <CardDescription>How can we reach you?</CardDescription>
+                <CardDescription>{t("shelterOnboarding.step2Subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="contactName">Contact Person Name *</Label>
+                    <Label htmlFor="contactName">{t("shelterOnboarding.contactName")}</Label>
                     <Input
                       id="contactName"
-                      placeholder="Full name"
+                      placeholder={t("shelterOnboarding.contactNamePlaceholder")}
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
                     />
@@ -382,7 +384,7 @@ const ShelterOnboarding = () => {
                   
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email">{t("shelterOnboarding.email")}</Label>
                       <Input
                         id="email"
                         type="email"
@@ -392,7 +394,7 @@ const ShelterOnboarding = () => {
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="phone">Phone</Label>
+                      <Label htmlFor="phone">{t("shelterOnboarding.phone")}</Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -404,7 +406,7 @@ const ShelterOnboarding = () => {
                   </div>
                   
                   <div className="grid gap-2">
-                    <Label htmlFor="website">Website</Label>
+                    <Label htmlFor="website">{t("shelterOnboarding.website")}</Label>
                     <Input
                       id="website"
                       type="url"
@@ -420,14 +422,14 @@ const ShelterOnboarding = () => {
                     variant="outline" 
                     onClick={() => setStep(1)}
                   >
-                    Back
+                    {t("shelterOnboarding.back")}
                   </Button>
                   <Button 
                     onClick={() => setStep(3)}
                     disabled={!contactName || !email}
                     className="bg-rose-500 hover:bg-rose-600"
                   >
-                    Continue
+                    {t("shelterOnboarding.continue")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -440,17 +442,17 @@ const ShelterOnboarding = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="w-5 h-5 text-rose-500" />
-                  Your Mission
+                  {t("shelterOnboarding.step3Title")}
                 </CardTitle>
-                <CardDescription>Tell us about your work</CardDescription>
+                <CardDescription>{t("shelterOnboarding.step3Subtitle")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="missionStatement">Mission Statement</Label>
+                    <Label htmlFor="missionStatement">{t("shelterOnboarding.missionLabel")}</Label>
                     <Textarea
                       id="missionStatement"
-                      placeholder="What drives your shelter? What's your mission?"
+                      placeholder={t("shelterOnboarding.missionPlaceholder")}
                       value={missionStatement}
                       onChange={(e) => setMissionStatement(e.target.value)}
                       rows={3}
@@ -459,20 +461,20 @@ const ShelterOnboarding = () => {
                   
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="dogsInCare">Dogs Currently in Care *</Label>
+                      <Label htmlFor="dogsInCare">{t("shelterOnboarding.dogsInCareLabel")}</Label>
                       <Input
                         id="dogsInCare"
-                        placeholder="e.g., 25"
+                        placeholder={t("shelterOnboarding.dogsInCarePlaceholder")}
                         value={dogsInCare}
                         onChange={(e) => setDogsInCare(e.target.value)}
                         required
                       />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="yearsOperating">Operating Since (Year)</Label>
+                      <Label htmlFor="yearsOperating">{t("shelterOnboarding.operatingSinceLabel")}</Label>
                       <Input
                         id="yearsOperating"
-                        placeholder="e.g., 2020"
+                        placeholder={t("shelterOnboarding.operatingSincePlaceholder")}
                         value={yearsOperating}
                         onChange={(e) => setYearsOperating(e.target.value)}
                       />
@@ -482,22 +484,22 @@ const ShelterOnboarding = () => {
                 
                 {/* Summary Preview */}
                 <div className="bg-rose-50 rounded-xl p-4 mt-6">
-                  <h4 className="font-semibold text-rose-800 mb-3">Application Summary</h4>
+                  <h4 className="font-semibold text-rose-800 mb-3">{t("shelterOnboarding.applicationSummary")}</h4>
                   <div className="grid gap-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Shelter:</span>
+                      <span className="text-muted-foreground">{t("shelterOnboarding.shelterField")}</span>
                       <span className="font-medium">{shelterName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Location:</span>
+                      <span className="text-muted-foreground">{t("shelterOnboarding.locationField")}</span>
                       <span className="font-medium">{city}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Contact:</span>
+                      <span className="text-muted-foreground">{t("shelterOnboarding.contactField")}</span>
                       <span className="font-medium">{contactName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Email:</span>
+                      <span className="text-muted-foreground">{t("shelterOnboarding.emailField")}</span>
                       <span className="font-medium">{email}</span>
                     </div>
                   </div>
@@ -508,7 +510,7 @@ const ShelterOnboarding = () => {
                     variant="outline" 
                     onClick={() => setStep(2)}
                   >
-                    Back
+                    {t("shelterOnboarding.back")}
                   </Button>
                   <Button 
                     onClick={handleSubmit}
@@ -518,11 +520,11 @@ const ShelterOnboarding = () => {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Submitting...
+                        {t("shelterOnboarding.submitting")}
                       </>
                     ) : (
                       <>
-                        Submit Application
+                        {t("shelterOnboarding.submitApplication")}
                         <CheckCircle className="w-4 h-4 ml-2" />
                       </>
                     )}
