@@ -209,7 +209,18 @@
     "dogsInCare": "dogs in care",
     "website": "Website",
     "ctaTitle": "Want to help even more?",
-    "ctaDesc": "Visit any shelter's page to find their donation link and support them directly."
+    "ctaDesc": "Visit any shelter's page to find their donation link and support them directly.",
+    "badge": "Supporting Animal Shelters",
+    "titlePart": "Every Membership",
+    "titleHighlight": "Helps a Shelter",
+    "transparent": "Transparent",
+    "ourPartners": "Our Partner Shelters",
+    "comingSoon": "Coming Soon",
+    "joinUs": "Join us",
+    "areYou": "Are you a shelter?",
+    "applyAuth": "Apply to become a partner shelter",
+    "loginApply": "Log in to apply as a partner shelter",
+    "goDashboard": "Go to Shelter Dashboard"
   },
   "offers": {
     "pageTitle": "Available Offers | Wooffy",
