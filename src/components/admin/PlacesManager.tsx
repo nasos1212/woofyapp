@@ -597,6 +597,9 @@ const PlacesManager = () => {
                   <div className="md:hidden space-y-3">
                     {filteredPlaces.map((place) => {
                       const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                      const submitter = place.added_by_user_id ? submitterMap[place.added_by_user_id] : null;
+                      const submitterLabel = submitter?.full_name || submitter?.email || (place.added_by_user_id ? "Unknown user" : "Public form");
+                      const submitterRole = place.submitted_by === "owner" ? "Owner" : place.submitted_by === "someone_else" ? "Recommender" : null;
                       return (
                       <div
                         key={place.id}
@@ -616,6 +619,10 @@ const PlacesManager = () => {
                                 Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                               </p>
                             )}
+                            <p className="text-xs text-muted-foreground mt-1">
+                              By: <span className="font-medium text-foreground">{submitterLabel}</span>
+                              {submitterRole && <span className="ml-1">({submitterRole})</span>}
+                            </p>
                           </div>
                           {place.verified ? (
                             <Badge className="bg-green-100 text-green-700 shrink-0 text-xs">
