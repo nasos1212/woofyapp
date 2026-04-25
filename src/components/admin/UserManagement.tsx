@@ -1028,6 +1028,11 @@ const UserManagement = () => {
                             {/* Shelter Status - show for shelter record OR shelter role without record */}
                             {user.shelter ? getStatusBadge(user.shelter.verification_status) : 
                               user.roles.includes("shelter") && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>}
+
+                            {/* Hidden badge for test/internal accounts */}
+                            {((user.business?.is_hidden) || (user.shelter?.is_hidden)) && (
+                              <Badge className="bg-slate-500/20 text-slate-300 border-slate-500/30 text-xs">Hidden</Badge>
+                            )}
                           </div>
                           
                           <p className="text-sm text-muted-foreground truncate">{user.email}</p>
