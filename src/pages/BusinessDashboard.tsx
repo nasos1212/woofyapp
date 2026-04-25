@@ -886,7 +886,7 @@ const BusinessDashboard = () => {
                     </select>
                     {selectedOfferId === "birthday" && (
                       <p className="text-xs text-pink-600 mt-1">
-                        Check for birthday offers available for this member
+                        {t("businessDashboard.verification.birthdayHint", "Check for birthday offers available for this member")}
                       </p>
                     )}
                   </div>
@@ -896,7 +896,7 @@ const BusinessDashboard = () => {
                     disabled={isVerifying || !memberIdInput.trim()}
                     className="w-full bg-primary hover:bg-primary/90"
                   >
-                    {isVerifying ? 'Verifying...' : 'Verify Member'}
+                    {isVerifying ? t("businessDashboard.verification.verifying") : t("businessDashboard.verification.verifyBtn")}
                   </Button>
                 </div>
 
