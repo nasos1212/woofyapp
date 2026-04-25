@@ -234,7 +234,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       </div>
 
       <Button onClick={handleSave} disabled={isSaving} className="w-full mt-4">
-        {isSaving ? "Saving..." : "Save Business Hours"}
+        {isSaving ? t("businessHours.saving") : t("businessHours.save")}
       </Button>
     </div>
   );
