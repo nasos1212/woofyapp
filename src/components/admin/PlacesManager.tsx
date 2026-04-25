@@ -79,6 +79,13 @@ interface Place {
   is_emergency: boolean | null;
   created_at: string;
   google_maps_url: string | null;
+  submitted_by: string | null;
+  added_by_user_id: string | null;
+}
+
+interface SubmitterInfo {
+  full_name: string | null;
+  email: string | null;
 }
 
 interface PlaceFormData {
@@ -137,7 +144,7 @@ const PlacesManager = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingPlace, setViewingPlace] = useState<Place | null>(null);
-
+  const [submitterMap, setSubmitterMap] = useState<Record<string, SubmitterInfo>>({});
   const findDuplicates = (place: Place, allVerified: Place[]): Place[] => {
     const normalizedName = place.name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
     return allVerified.filter((p) => {
@@ -188,6 +195,26 @@ const PlacesManager = () => {
       const { data, error } = await query;
       if (error) throw error;
       setPlaces(data || []);
+
+      // Fetch submitter profiles
+      const userIds = Array.from(
+        new Set(
+          [...(allData || []), ...(data || [])]
+            .map((p: any) => p.added_by_user_id)
+            .filter((id: string | null): id is string => !!id)
+        )
+      );
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, email")
+          .in("user_id", userIds);
+        const map: Record<string, SubmitterInfo> = {};
+        (profiles || []).forEach((p: any) => {
+          map[p.user_id] = { full_name: p.full_name, email: p.email };
+        });
+        setSubmitterMap(map);
+      }
     } catch (error) {
       console.error("Error fetching places:", error);
       toast({
@@ -444,6 +471,9 @@ const PlacesManager = () => {
                       <TableBody>
                         {filteredPlaces.map((place) => {
                           const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                          const submitter = place.added_by_user_id ? submitterMap[place.added_by_user_id] : null;
+                          const submitterLabel = submitter?.full_name || submitter?.email || (place.added_by_user_id ? "Unknown user" : "Public form");
+                          const submitterRole = place.submitted_by === "owner" ? "Owner" : place.submitted_by === "someone_else" ? "Recommender" : null;
                           return (
                           <TableRow key={place.id}>
                             <TableCell>
@@ -460,6 +490,10 @@ const PlacesManager = () => {
                                     Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                                   </p>
                                 )}
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  By: <span className="font-medium text-foreground">{submitterLabel}</span>
+                                  {submitterRole && <span className="ml-1">({submitterRole})</span>}
+                                </p>
                               </div>
                             </TableCell>
                             <TableCell>
@@ -563,6 +597,9 @@ const PlacesManager = () => {
                   <div className="md:hidden space-y-3">
                     {filteredPlaces.map((place) => {
                       const duplicates = !place.verified ? findDuplicates(place, verifiedPlaces) : [];
+                      const submitter = place.added_by_user_id ? submitterMap[place.added_by_user_id] : null;
+                      const submitterLabel = submitter?.full_name || submitter?.email || (place.added_by_user_id ? "Unknown user" : "Public form");
+                      const submitterRole = place.submitted_by === "owner" ? "Owner" : place.submitted_by === "someone_else" ? "Recommender" : null;
                       return (
                       <div
                         key={place.id}
@@ -582,6 +619,10 @@ const PlacesManager = () => {
                                 Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                               </p>
                             )}
+                            <p className="text-xs text-muted-foreground mt-1">
+                              By: <span className="font-medium text-foreground">{submitterLabel}</span>
+                              {submitterRole && <span className="ml-1">({submitterRole})</span>}
+                            </p>
                           </div>
                           {place.verified ? (
                             <Badge className="bg-green-100 text-green-700 shrink-0 text-xs">
@@ -710,6 +751,24 @@ const PlacesManager = () => {
                 )}
               </div>
 
+              {/* Submitter Info */}
+              {(() => {
+                const submitter = viewingPlace.added_by_user_id ? submitterMap[viewingPlace.added_by_user_id] : null;
+                const submitterLabel = submitter?.full_name || submitter?.email || (viewingPlace.added_by_user_id ? "Unknown user" : "Public form (no account)");
+                const submitterRole = viewingPlace.submitted_by === "owner" ? "Owns/manages this place" : viewingPlace.submitted_by === "someone_else" ? "Recommending a place" : null;
+                return (
+                  <div className="p-3 rounded-lg bg-muted/40 border border-border/50">
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Submitted by</p>
+                    <p className="text-sm font-medium">{submitterLabel}</p>
+                    {submitter?.email && submitter?.full_name && (
+                      <p className="text-xs text-muted-foreground">{submitter.email}</p>
+                    )}
+                    {submitterRole && (
+                      <p className="text-xs text-muted-foreground mt-1">{submitterRole}</p>
+                    )}
+                  </div>
+                );
+              })()}
               {/* Duplicate Warning */}
               {!viewingPlace.verified && (() => {
                 const dupes = findDuplicates(viewingPlace, verifiedPlaces);
