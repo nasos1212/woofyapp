@@ -264,7 +264,7 @@ const BusinessDashboard = () => {
         membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
         isBirthday: true,
         offer: {
-          title: `🎂 Birthday: ${r.pet_name}`,
+          title: t("businessDashboard.recent.birthdayOfferTitle", { pet: r.pet_name }),
           discount_value: r.discount_value,
           discount_type: r.discount_type,
         },
@@ -315,8 +315,8 @@ const BusinessDashboard = () => {
   const verifyMember = async () => {
     if (!memberIdInput.trim() || !business) {
       toast({
-        title: "Missing Information",
-        description: "Please enter a member ID.",
+        title: t("businessDashboard.verification.missingTitle"),
+        description: t("businessDashboard.verification.missingDesc"),
         variant: "destructive",
       });
       return;
@@ -332,8 +332,8 @@ const BusinessDashboard = () => {
       if (!sessionData?.session) {
         console.error('No active session - user needs to re-login');
         toast({
-          title: "Session Expired",
-          description: "Please log in again to verify members.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -360,8 +360,8 @@ const BusinessDashboard = () => {
         // Check if it's an auth error
         if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
           toast({
-            title: "Authentication Error",
-            description: "Please log in again.",
+            title: t("businessDashboard.verification.authErrorTitle"),
+            description: t("businessDashboard.verification.authErrorDesc"),
             variant: "destructive",
           });
           return;
@@ -374,8 +374,8 @@ const BusinessDashboard = () => {
             remainingMinutes: 30,
           });
           toast({
-            title: "Too Many Attempts",
-            description: "Please wait before trying again.",
+            title: t("businessDashboard.verification.tooManyTitle"),
+            description: t("businessDashboard.verification.tooManyDesc"),
             variant: "destructive",
           });
           return;
@@ -393,8 +393,8 @@ const BusinessDashboard = () => {
           remainingMinutes: data.remainingMinutes,
         });
         toast({
-          title: "Too Many Failed Attempts",
-          description: `Please wait ${data.remainingMinutes} minutes before trying again.`,
+          title: t("businessDashboard.verification.tooManyFailedTitle"),
+          description: t("businessDashboard.verification.tooManyFailedDesc", { minutes: data.remainingMinutes }),
           variant: "destructive",
         });
         return;
@@ -406,8 +406,8 @@ const BusinessDashboard = () => {
       // Show warning if running low on attempts
       if (data.attemptsRemaining !== undefined && data.attemptsRemaining <= 3) {
         toast({
-          title: "Warning",
-          description: `${data.attemptsRemaining} verification attempts remaining.`,
+          title: t("businessDashboard.verification.warningTitle"),
+          description: t("businessDashboard.verification.attemptsRemaining", { count: data.attemptsRemaining }),
           variant: "destructive",
         });
       }
@@ -426,8 +426,8 @@ const BusinessDashboard = () => {
     // For per-pet offers, require pet selection (optional for per-member offers)
     if (scanResult.offerType === 'per_pet' && !selectedPetId) {
       toast({
-        title: "Select a Pet",
-        description: "Please select which pet is using this offer.",
+        title: t("businessDashboard.result.selectPetTitle"),
+        description: t("businessDashboard.result.selectPetDesc"),
         variant: "destructive",
       });
       return;
@@ -441,8 +441,8 @@ const BusinessDashboard = () => {
       
       if (!accessToken) {
         toast({
-          title: "Session Expired",
-          description: "Please log in again to continue.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -468,8 +468,8 @@ const BusinessDashboard = () => {
       if (data.error) {
         if (data.code === 'ALREADY_REDEEMED') {
           toast({
-            title: "Already Redeemed",
-            description: "This offer has already been redeemed by this member.",
+            title: t("businessDashboard.result.alreadyRedeemedTitle"),
+            description: t("businessDashboard.result.alreadyRedeemedDescOffer"),
             variant: "destructive",
           });
         } else {
@@ -483,8 +483,8 @@ const BusinessDashboard = () => {
       playSuccessSound();
 
       toast({
-        title: "Redemption Confirmed! 🎉",
-        description: `${scanResult.memberName} saved ${data.redemption.discount}. They've been notified!`,
+        title: t("businessDashboard.result.redemptionConfirmedTitle"),
+        description: t("businessDashboard.result.redemptionConfirmedDesc", { name: scanResult.memberName, discount: data.redemption.discount }),
       });
 
       setScanResult(null);
@@ -495,8 +495,8 @@ const BusinessDashboard = () => {
     } catch (error) {
       console.error('Redemption error:', error);
       toast({
-        title: "Redemption Failed",
-        description: "Could not record the redemption. Please try again.",
+        title: t("businessDashboard.result.redemptionFailedTitle"),
+        description: t("businessDashboard.result.redemptionFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -515,8 +515,8 @@ const BusinessDashboard = () => {
 
       if (!accessToken) {
         toast({
-          title: "Session Expired",
-          description: "Please log in again to continue.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -540,8 +540,8 @@ const BusinessDashboard = () => {
       if (data.error) {
         if (data.code === 'ALREADY_REDEEMED') {
           toast({
-            title: "Already Redeemed",
-            description: "This birthday offer has already been redeemed.",
+            title: t("businessDashboard.birthdayOffers.alreadyRedeemedTitle"),
+            description: t("businessDashboard.birthdayOffers.alreadyRedeemedDesc"),
             variant: "destructive",
           });
         } else {
@@ -555,8 +555,8 @@ const BusinessDashboard = () => {
       playSuccessSound();
 
       toast({
-        title: "Birthday Offer Redeemed! 🎂",
-        description: `${data.redemption.pet_name}'s birthday offer was successfully redeemed. They saved ${data.redemption.discount}!`,
+        title: t("businessDashboard.birthdayOffers.successTitle"),
+        description: t("businessDashboard.birthdayOffers.successDesc", { pet: data.redemption.pet_name, discount: data.redemption.discount }),
       });
 
       // Remove this birthday offer from the scan result
@@ -570,8 +570,8 @@ const BusinessDashboard = () => {
     } catch (error) {
       console.error('Birthday redemption error:', error);
       toast({
-        title: "Redemption Failed",
-        description: "Could not redeem the birthday offer. Please try again.",
+        title: t("businessDashboard.birthdayOffers.failTitle"),
+        description: t("businessDashboard.birthdayOffers.failDesc"),
         variant: "destructive",
       });
     } finally {
@@ -585,10 +585,10 @@ const BusinessDashboard = () => {
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} mins ago`;
+    if (diffMins < 1) return t("businessDashboard.time.justNow");
+    if (diffMins < 60) return t("businessDashboard.time.minsAgo", { count: diffMins });
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffHours < 24) return t("businessDashboard.time.hoursAgo", { count: diffHours });
     return formatDate(date);
   };
 
@@ -610,8 +610,8 @@ const BusinessDashboard = () => {
       setIsScannerOpen(false);
       
       toast({
-        title: "QR Code Scanned",
-        description: `Member ID: ${memberId}`,
+        title: t("businessDashboard.verification.qrScannedTitle"),
+        description: t("businessDashboard.verification.qrScannedDesc", { id: memberId }),
       });
     }
   };
@@ -622,7 +622,7 @@ const BusinessDashboard = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t("businessDashboard.loading")}</p>
         </div>
       </div>
     );
