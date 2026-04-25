@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   Edit2,
@@ -84,6 +85,7 @@ interface Offer {
 }
 
 const BusinessOfferManagement = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -140,7 +142,7 @@ const BusinessOfferManagement = () => {
         .maybeSingle();
 
       if (!business) {
-        toast.error("No business found. Please register first.");
+        toast.error(t("businessOffers.errBusinessMissing"));
         navigate("/partner-register");
         return;
       }
@@ -189,7 +191,7 @@ const BusinessOfferManagement = () => {
       setOffers(transformedOffers);
     } catch (error) {
       console.error("Error fetching offers:", error);
-      toast.error("Failed to load offers");
+      toast.error(t("businessOffers.errLoad"));
     } finally {
       setIsLoading(false);
     }
@@ -245,17 +247,17 @@ const BusinessOfferManagement = () => {
 
   const handleSubmit = async () => {
     if (!businessId || !formData.title.trim()) {
-      toast.error("Please fill in the required fields");
+      toast.error(t("businessOffers.errFillRequired"));
       return;
     }
 
     if (!formData.discount_value || parseFloat(formData.discount_value) <= 0) {
-      toast.error("Please enter a valid discount value");
+      toast.error(t("businessOffers.errInvalidDiscount"));
       return;
     }
 
     if (formData.discount_type === "percentage" && parseFloat(formData.discount_value) > 100) {
-      toast.error("Percentage discount cannot exceed 100%");
+      toast.error(t("businessOffers.errOver100"));
       return;
     }
 
@@ -288,19 +290,19 @@ const BusinessOfferManagement = () => {
           .eq("id", editingOffer.id);
 
         if (error) throw error;
-        toast.success("Offer updated successfully");
+        toast.success(t("businessOffers.okUpdated"));
       } else {
         const { error } = await supabase.from("offers").insert(offerData);
 
         if (error) throw error;
-        toast.success("Offer created successfully");
+        toast.success(t("businessOffers.okCreated"));
       }
 
       setIsDialogOpen(false);
       fetchOffers();
     } catch (error) {
       console.error("Error saving offer:", error);
-      toast.error("Failed to save offer");
+      toast.error(t("businessOffers.errSave"));
     }
   };
 
@@ -312,11 +314,11 @@ const BusinessOfferManagement = () => {
         .eq("id", offer.id);
 
       if (error) throw error;
-      toast.success(offer.is_active ? "Offer paused" : "Offer activated");
+      toast.success(offer.is_active ? t("businessOffers.okPaused") : t("businessOffers.okActivated"));
       fetchOffers();
     } catch (error) {
       console.error("Error toggling offer:", error);
-      toast.error("Failed to update offer");
+      toast.error(t("businessOffers.errToggle"));
     }
   };
 
@@ -327,12 +329,12 @@ const BusinessOfferManagement = () => {
       const { error } = await supabase.from("offers").delete().eq("id", deleteOfferId);
 
       if (error) throw error;
-      toast.success("Offer deleted");
+      toast.success(t("businessOffers.okDeleted"));
       setDeleteOfferId(null);
       fetchOffers();
     } catch (error) {
       console.error("Error deleting offer:", error);
-      toast.error("Failed to delete offer");
+      toast.error(t("businessOffers.errDelete"));
     }
   };
 
