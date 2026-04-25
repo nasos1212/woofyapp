@@ -349,8 +349,8 @@ const BusinessOfferManagement = () => {
   return (
     <>
       <Helmet>
-        <title>Manage Offers | Wooffy Business</title>
-        <meta name="description" content="Create and manage your Wooffy partner offers." />
+        <title>{t("businessOffers.metaTitle")}</title>
+        <meta name="description" content={t("businessOffers.metaDesc")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -364,7 +364,7 @@ const BusinessOfferManagement = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("businessOffers.backToDashboard")}
           </Button>
 
           {/* Pending Approval Banner */}
@@ -374,15 +374,15 @@ const BusinessOfferManagement = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-                Manage Offers
+                {t("businessOffers.pageTitle")}
               </h1>
               <p className="text-slate-500">
-                Create, edit, and manage your discount offers for Wooffy members
+                {t("businessOffers.pageSubtitle")}
               </p>
             </div>
             <Button onClick={openCreateDialog} className="gap-2 w-fit" disabled={!isApproved}>
               <Plus className="w-4 h-4" />
-              Create Offer
+              {t("businessOffers.createOffer")}
             </Button>
           </div>
 
@@ -390,9 +390,9 @@ const BusinessOfferManagement = () => {
           {!isApproved && (
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Offer Management Unavailable</h3>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessOffers.unavailableTitle")}</h3>
               <p className="text-slate-500">
-                You'll be able to create and manage offers once your business is approved.
+                {t("businessOffers.unavailableDesc")}
               </p>
             </div>
           )}
@@ -401,13 +401,13 @@ const BusinessOfferManagement = () => {
           {isApproved && offers.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Tag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">No offers yet</h3>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessOffers.noOffersTitle")}</h3>
               <p className="text-slate-500 mb-6">
-                Create your first offer to start attracting Wooffy members
+                {t("businessOffers.noOffersDesc")}
               </p>
               <Button onClick={openCreateDialog} className="gap-2">
                 <Plus className="w-4 h-4" />
-                Create Your First Offer
+                {t("businessOffers.createFirst")}
               </Button>
             </div>
           ) : isApproved && (
