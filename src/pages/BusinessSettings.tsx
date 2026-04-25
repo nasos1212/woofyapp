@@ -194,7 +194,7 @@ const BusinessSettings = () => {
       })) || []);
     } catch (error) {
       console.error("Error fetching business:", error);
-      toast.error("Failed to load business data");
+      toast.error(t("businessSettings.toastLoadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -202,12 +202,12 @@ const BusinessSettings = () => {
 
   const handleSave = async () => {
     if (!formData.business_name.trim()) {
-      toast.error("Business name is required");
+      toast.error(t("businessSettings.toastNameRequired"));
       return;
     }
 
     if (!formData.email.trim()) {
-      toast.error("Email is required");
+      toast.error(t("businessSettings.toastEmailRequired"));
       return;
     }
 
@@ -234,10 +234,10 @@ const BusinessSettings = () => {
 
       if (error) throw error;
 
-      toast.success("Business profile updated!");
+      toast.success(t("businessSettings.toastUpdated"));
     } catch (error: any) {
       console.error("Error updating business:", error);
-      toast.error(error.message || "Failed to update business");
+      toast.error(error.message || t("businessSettings.toastUpdateFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -278,10 +278,10 @@ const BusinessSettings = () => {
       if (updateError) throw updateError;
 
       setFormData(prev => ({ ...prev, logo_url: publicUrl }));
-      toast.success("Logo updated!");
+      toast.success(t("businessSettings.toastLogoUpdated"));
     } catch (error: any) {
       console.error("Error uploading logo:", error);
-      toast.error(error.message || "Failed to upload logo");
+      toast.error(error.message || t("businessSettings.toastLogoUploadFailed"));
     } finally {
       setIsUploadingLogo(false);
       if (fileInputRef.current) {
@@ -300,10 +300,10 @@ const BusinessSettings = () => {
       if (error) throw error;
 
       setFormData(prev => ({ ...prev, logo_url: "" }));
-      toast.success("Logo removed");
+      toast.success(t("businessSettings.toastLogoRemoved"));
     } catch (error: any) {
       console.error("Error removing logo:", error);
-      toast.error(error.message || "Failed to remove logo");
+      toast.error(error.message || t("businessSettings.toastLogoRemoveFailed"));
     }
   };
 
@@ -315,11 +315,11 @@ const BusinessSettings = () => {
         .eq("id", photoId);
 
       if (error) throw error;
-      toast.success("Photo deleted");
+      toast.success(t("businessSettings.toastPhotoDeleted"));
       setPhotos(prev => prev.filter(p => p.id !== photoId));
     } catch (error: any) {
       console.error("Error deleting photo:", error);
-      toast.error(error.message || "Failed to delete photo");
+      toast.error(error.message || t("businessSettings.toastPhotoDeleteFailed"));
     }
   };
 
@@ -368,10 +368,10 @@ const BusinessSettings = () => {
         setFormData(prev => ({ ...prev, city: allCities.join(", ") }));
       }
       
-      toast.success("Locations saved successfully");
+      toast.success(t("businessSettings.toastLocationsSaved"));
     } catch (error: any) {
       console.error("Error saving locations:", error);
-      toast.error(error.message || "Failed to save locations");
+      toast.error(error.message || t("businessSettings.toastLocationsSaveFailed"));
     } finally {
       setIsSavingLocations(false);
     }
