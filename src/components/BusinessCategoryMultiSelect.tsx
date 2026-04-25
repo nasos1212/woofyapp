@@ -1,8 +1,10 @@
+import { useTranslation } from "react-i18next";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { businessCategories } from "@/data/businessCategories";
+import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 
 interface BusinessCategoryMultiSelectProps {
   selected: string[];
@@ -14,9 +16,12 @@ interface BusinessCategoryMultiSelectProps {
 const BusinessCategoryMultiSelect = ({
   selected,
   onChange,
-  label = "Business Categories",
+  label,
   required = false,
 }: BusinessCategoryMultiSelectProps) => {
+  const { t } = useTranslation();
+  const { label: getCategoryLabel } = useBusinessCategoryLabel();
+  const displayLabel = label ?? t("businessCategoriesField.defaultLabel");
   const toggle = (value: string) => {
     if (selected.includes(value)) {
       onChange(selected.filter((c) => c !== value));
