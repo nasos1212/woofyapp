@@ -216,7 +216,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
                     }
                   >
                     <SelectTrigger className="w-[90px] sm:w-24 h-9">
-                      <SelectValue placeholder="Close" />
+                      <SelectValue placeholder={t("businessHours.closePlaceholder")} />
                     </SelectTrigger>
                     <SelectContent>
                       {TIME_OPTIONS.map((time) => (
