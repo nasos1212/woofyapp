@@ -538,7 +538,7 @@ export default function BusinessProfile() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <MapPin className="w-5 h-5" />
-                  Store Locations
+                  {t("businessProfile.storeLocations")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
