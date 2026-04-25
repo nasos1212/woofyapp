@@ -1050,10 +1050,10 @@ const BusinessDashboard = () => {
                       <div className="mt-4 p-4 bg-pink-50 border border-pink-200 rounded-lg">
                         <h4 className="font-semibold text-pink-800 mb-3 flex items-center gap-2">
                           <Cake className="w-4 h-4" />
-                          🎂 Birthday Offers to Redeem ({scanResult.pendingBirthdayOffers.length})
+                          {t("businessDashboard.birthdayOffers.heading", { count: scanResult.pendingBirthdayOffers.length })}
                         </h4>
                         <p className="text-sm text-pink-700 mb-3">
-                          This member has birthday offers they can use at your business!
+                          {t("businessDashboard.birthdayOffers.intro")}
                         </p>
                         <div className="space-y-2">
                           {scanResult.pendingBirthdayOffers
@@ -1061,11 +1061,11 @@ const BusinessDashboard = () => {
                             .map((offer) => (
                             <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-200 ring-2 ring-pink-300">
                               <div>
-                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday 🎉</p>
+                                <p className="font-medium text-pink-900">{t("businessDashboard.birthdayOffers.petBirthday", { name: offer.pet_name })}</p>
                                 <p className="text-sm text-pink-700 font-semibold">
                                   {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
                                 </p>
-                                <p className="text-xs text-pink-600">From your business</p>
+                                <p className="text-xs text-pink-600">{t("businessDashboard.birthdayOffers.fromYourBusiness")}</p>
                               </div>
                               <Button
                                 size="sm"
@@ -1073,7 +1073,7 @@ const BusinessDashboard = () => {
                                 disabled={isRedeemingBirthday === offer.id}
                                 className="bg-pink-500 hover:bg-pink-600"
                               >
-                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem Now'}
+                                {isRedeemingBirthday === offer.id ? t("businessDashboard.birthdayOffers.redeeming") : t("businessDashboard.birthdayOffers.redeemNow")}
                               </Button>
                             </div>
                           ))}
@@ -1083,11 +1083,11 @@ const BusinessDashboard = () => {
                             .map((offer) => (
                             <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-100">
                               <div>
-                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday</p>
+                                <p className="font-medium text-pink-900">{t("businessDashboard.birthdayOffers.petBirthdayPlain", { name: offer.pet_name })}</p>
                                 <p className="text-sm text-pink-700">
                                   {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
                                 </p>
-                                <p className="text-xs text-pink-500">From another business</p>
+                                <p className="text-xs text-pink-500">{t("businessDashboard.birthdayOffers.fromOtherBusiness")}</p>
                               </div>
                               <Button
                                 size="sm"
@@ -1096,7 +1096,7 @@ const BusinessDashboard = () => {
                                 disabled={isRedeemingBirthday === offer.id}
                                 className="border-pink-300 text-pink-600 hover:bg-pink-50"
                               >
-                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem'}
+                                {isRedeemingBirthday === offer.id ? t("businessDashboard.birthdayOffers.redeeming") : t("businessDashboard.birthdayOffers.redeem")}
                               </Button>
                             </div>
                           ))}
