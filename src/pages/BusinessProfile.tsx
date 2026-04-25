@@ -304,9 +304,9 @@ export default function BusinessProfile() {
 
   const formatDiscount = (offer: Offer) => {
     if (offer.discount_type === "percentage") {
-      return `${offer.discount_value}% OFF`;
+      return t("businessProfile.discountOffPercent", { value: offer.discount_value });
     } else if (offer.discount_type === "fixed") {
-      return `$${offer.discount_value} OFF`;
+      return t("businessProfile.discountOffFixed", { value: offer.discount_value });
     }
     return offer.discount_type;
   };
