@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/useAuth";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,6 +67,7 @@ interface SentBirthdayOffer {
 }
 
 const BusinessCustomerBirthdays = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
