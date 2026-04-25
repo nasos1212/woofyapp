@@ -18,7 +18,7 @@ const GeographicIntelligence = () => {
       const [profilesRes, petsRes, businessesRes, placesRes] = await Promise.all([
         supabase.from("profiles").select("user_id, preferred_city"),
         supabase.from("pets").select("owner_user_id"),
-        supabase.from("businesses").select("city").eq("verification_status", "approved"),
+        supabase.from("businesses").select("city").eq("verification_status", "approved").eq("is_hidden", false),
         supabase.from("pet_friendly_places").select("city"),
       ]);
 

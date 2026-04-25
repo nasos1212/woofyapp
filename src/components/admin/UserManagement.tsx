@@ -45,6 +45,7 @@ interface BusinessInfo {
   category: string;
   categories: string[];
   verification_status: string;
+  is_hidden: boolean;
   city: string | null;
   address: string | null;
   phone: string | null;
@@ -67,6 +68,7 @@ interface ShelterInfo {
   shelter_name: string;
   contact_name: string;
   verification_status: string;
+  is_hidden: boolean;
   city: string | null;
   location: string;
   address: string | null;
@@ -204,6 +206,7 @@ const UserManagement = () => {
         category: b.category,
         categories: (b as any).categories || [b.category],
         verification_status: b.verification_status,
+        is_hidden: (b as any).is_hidden ?? false,
         city: b.city,
         address: b.address,
         phone: b.phone,
@@ -226,6 +229,7 @@ const UserManagement = () => {
         shelter_name: s.shelter_name,
         contact_name: s.contact_name,
         verification_status: s.verification_status,
+        is_hidden: (s as any).is_hidden ?? false,
         city: s.city,
         location: s.location,
         address: s.address,
@@ -602,6 +606,33 @@ const UserManagement = () => {
     }
   };
 
+  const toggleBusinessHidden = async (businessId: string, currentHidden: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("businesses")
+        .update({ is_hidden: !currentHidden })
+        .eq("id", businessId);
+      if (error) throw error;
+      toast.success(!currentHidden ? "Business hidden from public" : "Business is now visible");
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update visibility");
+    }
+  };
+
+  const toggleShelterHidden = async (shelterId: string, currentHidden: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("shelters")
+        .update({ is_hidden: !currentHidden })
+        .eq("id", shelterId);
+      if (error) throw error;
+      toast.success(!currentHidden ? "Shelter hidden from public" : "Shelter is now visible");
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update visibility");
+    }
+  };
 
   const addRole = async (userId: string, role: string) => {
     try {
@@ -997,6 +1028,11 @@ const UserManagement = () => {
                             {/* Shelter Status - show for shelter record OR shelter role without record */}
                             {user.shelter ? getStatusBadge(user.shelter.verification_status) : 
                               user.roles.includes("shelter") && <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30">Pending Onboarding</Badge>}
+
+                            {/* Hidden badge for test/internal accounts */}
+                            {((user.business?.is_hidden) || (user.shelter?.is_hidden)) && (
+                              <Badge className="bg-slate-500/20 text-slate-300 border-slate-500/30 text-xs">Hidden</Badge>
+                            )}
                           </div>
                           
                           <p className="text-sm text-muted-foreground truncate">{user.email}</p>
@@ -1219,6 +1255,17 @@ const UserManagement = () => {
                               {user.business.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.business.description}</p>
                               )}
+                              {/* Visibility toggle - hide internal/test accounts from public + analytics */}
+                              <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
+                                <Switch
+                                  checked={user.business.is_hidden}
+                                  onCheckedChange={() => toggleBusinessHidden(user.business!.id, user.business!.is_hidden)}
+                                />
+                                <div className="text-sm">
+                                  <p className="font-medium">Hide from public &amp; metrics</p>
+                                  <p className="text-xs text-muted-foreground">When ON, this business is excluded from the public partner directory and admin analytics.</p>
+                                </div>
+                              </div>
                               <div className="flex gap-2 flex-wrap">
                                 {user.business.website && (
                                   <Button size="sm" variant="outline" asChild>
@@ -1325,6 +1372,17 @@ const UserManagement = () => {
                               {user.shelter.description && (
                                 <p className="text-sm text-muted-foreground mb-3">{user.shelter.description}</p>
                               )}
+                              {/* Visibility toggle - hide internal/test accounts from public + analytics */}
+                              <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
+                                <Switch
+                                  checked={user.shelter.is_hidden}
+                                  onCheckedChange={() => toggleShelterHidden(user.shelter!.id, user.shelter!.is_hidden)}
+                                />
+                                <div className="text-sm">
+                                  <p className="font-medium">Hide from public &amp; metrics</p>
+                                  <p className="text-xs text-muted-foreground">When ON, this shelter is excluded from the public shelters list and admin analytics.</p>
+                                </div>
+                              </div>
                               <div className="flex gap-2 flex-wrap">
                                 {user.shelter.website && (
                                   <Button size="sm" variant="outline" asChild>

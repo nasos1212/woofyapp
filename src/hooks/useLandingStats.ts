@@ -28,7 +28,7 @@ export const useLandingStats = (): LandingStats => {
       try {
         // Fetch all counts in parallel
         const [businessesResult, membersResult, sheltersResult] = await Promise.all([
-          // Count approved businesses using public view (RLS-safe for anonymous users)
+          // Count approved, non-hidden businesses (the view itself excludes hidden ones)
           supabase
             .from("businesses_public")
             .select("*", { count: "exact", head: true })
@@ -38,11 +38,12 @@ export const useLandingStats = (): LandingStats => {
             .from("user_roles")
             .select("*", { count: "exact", head: true })
             .eq("role", "member"),
-          // Count approved shelters
+          // Count approved, non-hidden shelters
           supabase
             .from("shelters")
             .select("*", { count: "exact", head: true })
-            .eq("verification_status", "approved"),
+            .eq("verification_status", "approved")
+            .eq("is_hidden", false),
         ]);
 
         // Use actual counts if available, otherwise use fallbacks

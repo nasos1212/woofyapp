@@ -483,6 +483,7 @@ export type Database = {
           google_maps_url: string | null
           id: string
           instagram_url: string | null
+          is_hidden: boolean
           logo_url: string | null
           phone: string | null
           tiktok_url: string | null
@@ -505,6 +506,7 @@ export type Database = {
           google_maps_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_hidden?: boolean
           logo_url?: string | null
           phone?: string | null
           tiktok_url?: string | null
@@ -527,6 +529,7 @@ export type Database = {
           google_maps_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_hidden?: boolean
           logo_url?: string | null
           phone?: string | null
           tiktok_url?: string | null
@@ -2363,6 +2366,7 @@ export type Database = {
           facebook_url: string | null
           id: string
           instagram_url: string | null
+          is_hidden: boolean
           location: string
           logo_url: string | null
           mission_statement: string | null
@@ -2391,6 +2395,7 @@ export type Database = {
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_hidden?: boolean
           location: string
           logo_url?: string | null
           mission_statement?: string | null
@@ -2419,6 +2424,7 @@ export type Database = {
           facebook_url?: string | null
           id?: string
           instagram_url?: string | null
+          is_hidden?: boolean
           location?: string
           logo_url?: string | null
           mission_statement?: string | null
