@@ -151,7 +151,7 @@ const BusinessLocationManager = ({
                   {primaryLocation ? index + 2 : index + 1}
                 </div>
                 <Label className="font-semibold">
-                  {primaryLocation ? "Additional Location" : `Location ${index + 1}`}
+                  {primaryLocation ? t("businessLocations.additionalLocation") : t("businessLocations.locationN", { n: index + 1 })}
                 </Label>
               </div>
               <Button
