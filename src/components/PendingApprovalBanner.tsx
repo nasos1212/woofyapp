@@ -1,4 +1,5 @@
-import { AlertCircle, Clock, XCircle } from "lucide-react";
+import { Clock, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { VerificationStatus } from "@/hooks/useBusinessVerification";
 import ContactPopover from "@/components/ContactPopover";
 
@@ -7,6 +8,7 @@ interface PendingApprovalBannerProps {
 }
 
 const PendingApprovalBanner = ({ status }: PendingApprovalBannerProps) => {
+  const { t } = useTranslation();
   if (status === "approved") return null;
 
   if (status === "pending") {
@@ -17,10 +19,9 @@ const PendingApprovalBanner = ({ status }: PendingApprovalBannerProps) => {
             <Clock className="w-5 h-5 text-amber-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-amber-800">Pending Approval</h3>
+            <h3 className="font-semibold text-amber-800">{t("pendingApproval.pendingTitle")}</h3>
             <p className="text-sm text-amber-700 mt-1">
-              Your business is currently under review. Once approved, you'll be able to create offers, 
-              verify members, and access all partner features. This usually takes 1-2 business days.
+              {t("pendingApproval.pendingDesc")}
             </p>
           </div>
         </div>
@@ -36,13 +37,12 @@ const PendingApprovalBanner = ({ status }: PendingApprovalBannerProps) => {
             <XCircle className="w-5 h-5 text-red-600" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-red-800">Application Rejected</h3>
+            <h3 className="font-semibold text-red-800">{t("pendingApproval.rejectedTitle")}</h3>
             <p className="text-sm text-red-700 mt-1 mb-3">
-              Unfortunately, your business application was not approved. Please contact our support team 
-              for more information or to reapply.
+              {t("pendingApproval.rejectedDesc")}
             </p>
             <ContactPopover 
-              triggerText="Contact Support" 
+              triggerText={t("pendingApproval.contactSupport")} 
               triggerSize="sm"
             />
           </div>
