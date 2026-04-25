@@ -144,7 +144,7 @@ const PlacesManager = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewingPlace, setViewingPlace] = useState<Place | null>(null);
-
+  const [submitterMap, setSubmitterMap] = useState<Record<string, SubmitterInfo>>({});
   const findDuplicates = (place: Place, allVerified: Place[]): Place[] => {
     const normalizedName = place.name.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
     return allVerified.filter((p) => {
