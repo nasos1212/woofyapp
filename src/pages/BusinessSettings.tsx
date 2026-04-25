@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   ArrowLeft,
   Building2,
@@ -89,6 +90,7 @@ const categoryOptions = [
 ]; // kept for reference but using multi-select now
 
 const BusinessSettings = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
