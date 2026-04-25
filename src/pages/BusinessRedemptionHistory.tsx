@@ -44,6 +44,7 @@ interface Offer {
 }
 
 const BusinessRedemptionHistory = () => {
+  const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -348,7 +349,7 @@ const BusinessRedemptionHistory = () => {
     return (
       <>
         <Helmet>
-          <title>Redemption History | Wooffy Business</title>
+          <title>{t("businessRedemptions.pageTitle")}</title>
         </Helmet>
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
           <BusinessHeader />
@@ -356,8 +357,8 @@ const BusinessRedemptionHistory = () => {
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Redemption History Unavailable</h3>
-              <p className="text-slate-500">View your redemption history once your business is approved.</p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessRedemptions.unavailableTitle")}</h3>
+              <p className="text-slate-500">{t("businessRedemptions.unavailableDesc")}</p>
             </div>
           </main>
           <div className="pb-20 md:pb-0" />
@@ -370,8 +371,8 @@ const BusinessRedemptionHistory = () => {
   return (
     <>
       <Helmet>
-        <title>Redemption History | Wooffy Business</title>
-        <meta name="description" content="View and filter your complete redemption history." />
+        <title>{t("businessRedemptions.pageTitle")}</title>
+        <meta name="description" content={t("businessRedemptions.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
@@ -385,22 +386,22 @@ const BusinessRedemptionHistory = () => {
               className="inline-flex items-center gap-2 text-slate-500 hover:text-primary mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
+              {t("businessRedemptions.backToDashboard")}
             </Link>
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              Redemption History
+              {t("businessRedemptions.headerTitle")}
             </h1>
-            <p className="text-slate-500">View and filter all your past redemptions</p>
+            <p className="text-slate-500">{t("businessRedemptions.headerSubtitle")}</p>
           </div>
 
           {/* Stats Summary */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-6">
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
-              <p className="text-slate-500 text-xs sm:text-sm">Redemptions</p>
+              <p className="text-slate-500 text-xs sm:text-sm">{t("businessRedemptions.statRedemptions")}</p>
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">{filteredRedemptions.length}</p>
             </div>
             <div className="bg-white rounded-xl p-3 sm:p-4 border border-slate-200">
-              <p className="text-slate-500 text-xs sm:text-sm">Customers</p>
+              <p className="text-slate-500 text-xs sm:text-sm">{t("businessRedemptions.statCustomers")}</p>
               <p className="font-display text-lg sm:text-2xl font-bold text-slate-900">
                 {new Set(filteredRedemptions.map(r => r.membership_id || r.member_number).filter(Boolean)).size}
               </p>
@@ -414,7 +415,7 @@ const BusinessRedemptionHistory = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <Input
-                  placeholder="Search customer..."
+                  placeholder={t("businessRedemptions.searchPlaceholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -426,10 +427,10 @@ const BusinessRedemptionHistory = () => {
                 <Select value={selectedOffer} onValueChange={setSelectedOffer}>
                   <SelectTrigger className="w-full sm:w-[180px]">
                     <Filter className="w-4 h-4 mr-2 text-slate-400" />
-                    <SelectValue placeholder="All Offers" />
+                    <SelectValue placeholder={t("businessRedemptions.allOffers")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Offers</SelectItem>
+                    <SelectItem value="all">{t("businessRedemptions.allOffers")}</SelectItem>
                     {offers.map(offer => (
                       <SelectItem key={offer.id} value={offer.id}>
                         {offer.title}
@@ -442,15 +443,15 @@ const BusinessRedemptionHistory = () => {
                 <Select value={dateRange} onValueChange={setDateRange}>
                   <SelectTrigger className="w-full sm:w-[160px]">
                     <Calendar className="w-4 h-4 mr-2 text-slate-400" />
-                    <SelectValue placeholder="All Time" />
+                    <SelectValue placeholder={t("businessRedemptions.allTime")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Time</SelectItem>
-                    <SelectItem value="today">Today</SelectItem>
-                    <SelectItem value="week">Last 7 Days</SelectItem>
-                    <SelectItem value="month">This Month</SelectItem>
-                    <SelectItem value="30days">Last 30 Days</SelectItem>
-                    <SelectItem value="90days">Last 90 Days</SelectItem>
+                    <SelectItem value="all">{t("businessRedemptions.allTime")}</SelectItem>
+                    <SelectItem value="today">{t("businessRedemptions.today")}</SelectItem>
+                    <SelectItem value="week">{t("businessRedemptions.last7Days")}</SelectItem>
+                    <SelectItem value="month">{t("businessRedemptions.thisMonth")}</SelectItem>
+                    <SelectItem value="30days">{t("businessRedemptions.last30Days")}</SelectItem>
+                    <SelectItem value="90days">{t("businessRedemptions.last90Days")}</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -463,7 +464,7 @@ const BusinessRedemptionHistory = () => {
                   size="sm"
                 >
                   <Download className="w-4 h-4" />
-                  <span className="sm:inline">Export</span>
+                  <span className="sm:inline">{t("businessRedemptions.export")}</span>
                 </Button>
               </div>
             </div>
@@ -472,15 +473,15 @@ const BusinessRedemptionHistory = () => {
           {/* Redemptions Table */}
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             {isLoading ? (
-              <div className="p-8 text-center text-slate-500">Loading...</div>
+              <div className="p-8 text-center text-slate-500">{t("businessRedemptions.loading")}</div>
             ) : filteredRedemptions.length === 0 ? (
               <div className="p-8 text-center">
                 <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                <p className="text-slate-500">No redemptions found</p>
+                <p className="text-slate-500">{t("businessRedemptions.noResults")}</p>
                 <p className="text-sm text-slate-400 mt-1">
                   {redemptions.length > 0 
-                    ? "Try adjusting your filters" 
-                    : "Redemptions will appear here after members use your offers"}
+                    ? t("businessRedemptions.noResultsHelp")
+                    : t("businessRedemptions.noResultsEmpty")}
                 </p>
               </div>
             ) : (
@@ -488,11 +489,11 @@ const BusinessRedemptionHistory = () => {
                 <table className="w-full">
                   <thead className="bg-slate-50 border-b border-slate-200">
                     <tr>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Date & Time</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Customer</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Pet</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Offer</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">Discount</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colDateTime")}</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colCustomer")}</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colPet")}</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colOffer")}</th>
+                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colDiscount")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -504,19 +505,19 @@ const BusinessRedemptionHistory = () => {
                         <td className="py-4 px-4">
                           <div>
                             <p className="font-medium text-slate-900">
-                              {redemption.member_name || 'Member'}
+                              {redemption.member_name || t("businessRedemptions.member")}
                             </p>
                             <p className="text-xs text-slate-500">
-                              {redemption.member_number || 'N/A'}
+                              {redemption.member_number || t("businessRedemptions.notAvailable")}
                             </p>
                           </div>
                         </td>
                         <td className="py-4 px-4 text-slate-600">
-                          {redemption.pet_names || 'N/A'}
+                          {redemption.pet_names || t("businessRedemptions.notAvailable")}
                         </td>
                         <td className="py-4 px-4">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                            {redemption.offer?.title || 'N/A'}
+                            {redemption.offer?.title || t("businessRedemptions.notAvailable")}
                           </span>
                         </td>
                         <td className="py-4 px-4">
