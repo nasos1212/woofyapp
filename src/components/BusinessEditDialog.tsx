@@ -267,13 +267,13 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
               {photos.length > 0 && (
                 <div className="space-y-3">
-                  <Label>Current Photos</Label>
+                  <Label>{t("businessEditDialog.currentPhotos")}</Label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {photos.map((photo) => (
                       <div key={photo.id} className="relative group">
                         <img
                           src={photo.photo_url}
-                          alt={photo.caption || "Business photo"}
+                          alt={photo.caption || t("businessEditDialog.photoAlt")}
                           className="w-full h-32 object-cover rounded-lg"
                         />
                         <Button
@@ -292,7 +292,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
               {photos.length === 0 && !loadingPhotos && (
                 <p className="text-center text-muted-foreground py-4">
-                  No photos uploaded yet
+                  {t("businessEditDialog.noPhotos")}
                 </p>
               )}
             </div>
