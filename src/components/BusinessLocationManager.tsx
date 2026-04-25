@@ -93,11 +93,11 @@ const BusinessLocationManager = ({
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label className="text-sm">Address</Label>
+                  <Label className="text-sm">{t("businessLocations.addressLabel")}</Label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="Street address"
+                      placeholder={t("businessLocations.addressPlaceholder")}
                       value={primaryLocation.address}
                       onChange={(e) =>
                         onPrimaryLocationChange({ ...primaryLocation, address: e.target.value })
