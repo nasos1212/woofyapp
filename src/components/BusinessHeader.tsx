@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, Eye, Tag, Shield, LogOut, Bell, BarChart3, LayoutDashboard, Settings } from "lucide-react";
+import { Dog, Menu, X, Building2, Eye, Tag, Shield, LogOut, BarChart3, LayoutDashboard, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -22,6 +23,7 @@ const BusinessHeader = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -88,9 +90,9 @@ const BusinessHeader = () => {
   };
 
   const navLinks = [
-    { name: "Dashboard", href: "/business", icon: LayoutDashboard },
-    { name: "Offers", href: "/business/offers", icon: Tag },
-    { name: "Analytics", href: "/business/analytics", icon: BarChart3 },
+    { name: t("businessNav.dashboard"), href: "/business", icon: LayoutDashboard },
+    { name: t("businessNav.offers"), href: "/business/offers", icon: Tag },
+    { name: t("businessNav.analytics"), href: "/business/analytics", icon: BarChart3 },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -106,7 +108,7 @@ const BusinessHeader = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-display font-bold text-xl text-foreground">Wooffy</span>
-              <span className="text-[10px] text-muted-foreground -mt-1 hidden sm:block">Partner Portal</span>
+              <span className="text-[10px] text-muted-foreground -mt-1 hidden sm:block">{t("businessNav.partnerPortal")}</span>
             </div>
           </Link>
 
@@ -135,37 +137,37 @@ const BusinessHeader = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 gap-2 px-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={profile?.avatar_url || undefined} alt={business?.business_name || "Business"} />
+                    <AvatarImage src={profile?.avatar_url || undefined} alt={business?.business_name || t("businessNav.business")} />
                     <AvatarFallback className="bg-slate-700 text-white text-sm font-medium">
                       <Building2 className="w-4 h-4" />
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium text-foreground hidden lg:block max-w-[120px] truncate">
-                    {business?.business_name || "Business"}
+                    {business?.business_name || t("businessNav.business")}
                   </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{business?.business_name || "Your Business"}</p>
+                  <p className="text-sm font-medium">{business?.business_name || t("businessNav.yourBusiness")}</p>
                   <p className="text-xs text-muted-foreground">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/business")}>
                   <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
+                  {t("businessNav.dashboard")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/business/offers")}>
                   <Tag className="mr-2 h-4 w-4" />
-                  Manage Offers
+                  {t("businessNav.manageOffers")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/business/analytics")}>
                   <BarChart3 className="mr-2 h-4 w-4" />
-                  Analytics
+                  {t("businessNav.analytics")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/business/settings")}>
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  {t("businessNav.settings")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
@@ -173,21 +175,21 @@ const BusinessHeader = () => {
                   disabled={!business?.id}
                 >
                   <Eye className="mr-2 h-4 w-4" />
-                  Preview as Member
+                  {t("businessNav.previewAsMember")}
                 </DropdownMenuItem>
                 {isAdmin && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
                       <Shield className="mr-2 h-4 w-4" />
-                      Admin Dashboard
+                      {t("businessNav.adminDashboard")}
                     </DropdownMenuItem>
                   </>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
+                  {t("businessNav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -199,7 +201,7 @@ const BusinessHeader = () => {
             <button
               className="p-3 -mr-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-label={isMenuOpen ? t("businessNav.closeMenu") : t("businessNav.openMenu")}
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6 text-foreground" />
@@ -240,14 +242,14 @@ const BusinessHeader = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               <Settings className="w-5 h-5" />
-              Settings
+              {t("businessNav.settings")}
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               {business?.id && (
                 <Link to={`/business/${business.id}?preview=true`} onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2">
                     <Eye className="w-4 h-4" />
-                    Preview as Member
+                    {t("businessNav.previewAsMember")}
                   </Button>
                 </Link>
               )}
@@ -255,13 +257,13 @@ const BusinessHeader = () => {
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2 text-primary">
                     <Shield className="w-4 h-4" />
-                    Admin Dashboard
+                    {t("businessNav.adminDashboard")}
                   </Button>
                 </Link>
               )}
               <Button variant="ghost" className="w-full justify-start gap-2 text-destructive" onClick={handleSignOut}>
                 <LogOut className="w-4 h-4" />
-                Sign Out
+                {t("businessNav.signOut")}
               </Button>
             </div>
           </nav>
