@@ -14,6 +14,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
+import LanguageToggle from "./LanguageToggle";
 
 const BusinessHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
