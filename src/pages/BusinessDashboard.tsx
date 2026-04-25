@@ -934,19 +934,19 @@ const BusinessDashboard = () => {
                         {scanResult.status !== 'invalid' && (
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-slate-500">Member</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.member")}</p>
                               <p className="font-medium text-slate-900">{scanResult.memberName}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Pet</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.pet")}</p>
                               <p className="font-medium text-slate-900">{scanResult.petName}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Member ID</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.memberIdLabel")}</p>
                               <p className="font-mono text-xs text-slate-900">{scanResult.memberId}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Expiry Date</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.expiryDate")}</p>
                               <p className={`font-medium ${scanResult.status === 'expired' ? 'text-red-600' : 'text-slate-900'}`}>
                                 {scanResult.expiryDate}
                               </p>
