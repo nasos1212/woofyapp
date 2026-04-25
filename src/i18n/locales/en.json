@@ -217,9 +217,9 @@
     "ourPartners": "Our Partner Shelters",
     "comingSoon": "Coming Soon",
     "joinUs": "Join us",
-    "areYou": "Are you a shelter?",
-    "applyAuth": "Apply to become a partner shelter",
-    "loginApply": "Log in to apply as a partner shelter",
+    "areYou": "Are you an animal shelter? Apply to join our whitelist.",
+    "applyAuth": "Apply as a Shelter Partner",
+    "loginApply": "Login to Apply as Shelter Partner",
     "goDashboard": "Go to Shelter Dashboard"
   },
   "offers": {
