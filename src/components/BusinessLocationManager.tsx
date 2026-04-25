@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cyprusCities } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 export interface BusinessLocation {
   id?: string;
@@ -38,7 +39,7 @@ const BusinessLocationManager = ({
   primaryLocation,
   onPrimaryLocationChange,
 }: BusinessLocationManagerProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const addLocation = () => {
     onLocationsChange([
       ...locations,
@@ -84,7 +85,7 @@ const BusinessLocationManager = ({
                   <SelectContent>
                     {cyprusCities.map((city) => (
                       <SelectItem key={city.name} value={city.name}>
-                        {city.name}
+                          {getCityDisplayName(city.name, i18n.language)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -178,7 +179,7 @@ const BusinessLocationManager = ({
                   <SelectContent>
                     {cyprusCities.map((city) => (
                       <SelectItem key={city.name} value={city.name}>
-                        {city.name}
+                         {getCityDisplayName(city.name, i18n.language)}
                       </SelectItem>
                     ))}
                   </SelectContent>
