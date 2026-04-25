@@ -199,11 +199,11 @@ const BusinessLocationManager = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm">Phone</Label>
+                  <Label className="text-sm">{t("businessLocations.phoneLabel")}</Label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
-                      placeholder="+353 1 234 5678"
+                      placeholder="+357 99 123 456"
                       value={location.phone}
                       onChange={(e) => updateLocation(index, "phone", e.target.value)}
                       className="pl-10"
