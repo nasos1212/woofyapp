@@ -490,6 +490,10 @@ const PlacesManager = () => {
                                     Possible duplicate of: {duplicates.map(d => d.name).join(', ')}
                                   </p>
                                 )}
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  By: <span className="font-medium text-foreground">{submitterLabel}</span>
+                                  {submitterRole && <span className="ml-1">({submitterRole})</span>}
+                                </p>
                               </div>
                             </TableCell>
                             <TableCell>
