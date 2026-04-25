@@ -886,7 +886,7 @@ const BusinessDashboard = () => {
                     </select>
                     {selectedOfferId === "birthday" && (
                       <p className="text-xs text-pink-600 mt-1">
-                        Check for birthday offers available for this member
+                        {t("businessDashboard.verification.birthdayHint", "Check for birthday offers available for this member")}
                       </p>
                     )}
                   </div>
@@ -896,7 +896,7 @@ const BusinessDashboard = () => {
                     disabled={isVerifying || !memberIdInput.trim()}
                     className="w-full bg-primary hover:bg-primary/90"
                   >
-                    {isVerifying ? 'Verifying...' : 'Verify Member'}
+                    {isVerifying ? t("businessDashboard.verification.verifying") : t("businessDashboard.verification.verifyBtn")}
                   </Button>
                 </div>
 
@@ -924,29 +924,29 @@ const BusinessDashboard = () => {
                           scanResult.status === 'limit_reached' ? 'text-purple-700' :
                           'text-red-700'
                         }`}>
-                          {scanResult.status === 'valid' && '✓ Valid Membership'}
-                          {scanResult.status === 'expired' && '⚠ Membership Expired'}
-                          {scanResult.status === 'already_redeemed' && '⚠ Offer Already Redeemed'}
-                          {scanResult.status === 'limit_reached' && '⚠ Offer Limit Reached'}
-                          {scanResult.status === 'invalid' && '✗ Invalid Member ID'}
+                          {scanResult.status === 'valid' && t("businessDashboard.result.valid")}
+                          {scanResult.status === 'expired' && t("businessDashboard.result.expired")}
+                          {scanResult.status === 'already_redeemed' && t("businessDashboard.result.alreadyRedeemed")}
+                          {scanResult.status === 'limit_reached' && t("businessDashboard.result.limitReached")}
+                          {scanResult.status === 'invalid' && t("businessDashboard.result.invalid")}
                         </h3>
 
                         {scanResult.status !== 'invalid' && (
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <p className="text-slate-500">Member</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.member")}</p>
                               <p className="font-medium text-slate-900">{scanResult.memberName}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Pet</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.pet")}</p>
                               <p className="font-medium text-slate-900">{scanResult.petName}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Member ID</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.memberIdLabel")}</p>
                               <p className="font-mono text-xs text-slate-900">{scanResult.memberId}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Expiry Date</p>
+                              <p className="text-slate-500">{t("businessDashboard.result.expiryDate")}</p>
                               <p className={`font-medium ${scanResult.status === 'expired' ? 'text-red-600' : 'text-slate-900'}`}>
                                 {scanResult.expiryDate}
                               </p>
@@ -958,11 +958,11 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'valid' && scanResult.offerId && (
                           <div className="mt-4 p-3 bg-green-100 rounded-lg">
                             <p className="text-green-800 font-medium">
-                              🎁 Apply discount: {scanResult.discount}
+                              {t("businessDashboard.result.applyDiscount", { discount: scanResult.discount })}
                             </p>
                             {scanResult.offerType === 'per_pet' && scanResult.availablePets && (
                               <p className="text-green-700 text-sm mt-1">
-                                {scanResult.offerPetType === 'cat' ? '🐱' : '🐕'} Per-pet offer: {scanResult.redeemedPetsCount}/{scanResult.totalPets} pets have used this
+                                {t("businessDashboard.result.perPetInfo", { icon: scanResult.offerPetType === 'cat' ? '🐱' : '🐕', used: scanResult.redeemedPetsCount, total: scanResult.totalPets })}
                               </p>
                             )}
                           </div>
@@ -974,8 +974,8 @@ const BusinessDashboard = () => {
                             <label className="block text-sm font-medium text-teal-800 mb-2 flex items-center gap-2">
                               {scanResult.offerPetType === 'cat' ? <Cat className="w-4 h-4" /> : <Dog className="w-4 h-4" />}
                               {scanResult.offerType === 'per_pet' 
-                                ? `Select which ${scanResult.offerPetType === 'cat' ? 'cat' : 'pet'} is using this offer:` 
-                                : 'Which pet is this for? (optional for tracking)'}
+                                ? t("businessDashboard.result.selectPetPerPet", { type: scanResult.offerPetType === 'cat' ? t("businessDashboard.result.catLabel") : t("businessDashboard.result.petLabel") })
+                                : t("businessDashboard.result.selectPetOptional")}
                             </label>
                             <div className="grid grid-cols-2 gap-2">
                               {scanResult.availablePets.map((pet) => (
@@ -998,7 +998,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'expired' && (
                           <div className="mt-4 p-3 bg-amber-100 rounded-lg">
                             <p className="text-amber-800 text-sm">
-                              Membership expired. Suggest renewal to continue enjoying discounts.
+                              {t("businessDashboard.result.expiredMsg")}
                             </p>
                           </div>
                         )}
@@ -1006,7 +1006,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'already_redeemed' && (
                           <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                             <p className="text-orange-800 text-sm">
-                              This member has already redeemed "{scanResult.offerTitle}". Each offer can only be used once.
+                              {t("businessDashboard.result.alreadyRedeemedMsg", { title: scanResult.offerTitle })}
                             </p>
                           </div>
                         )}
@@ -1014,7 +1014,7 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'limit_reached' && (
                           <div className="mt-4 p-3 bg-purple-100 rounded-lg">
                             <p className="text-purple-800 text-sm">
-                              "{scanResult.offerTitle}" has reached its maximum redemption limit. Consider creating a new offer or increasing the limit.
+                              {t("businessDashboard.result.limitReachedMsg", { title: scanResult.offerTitle })}
                             </p>
                           </div>
                         )}
@@ -1022,11 +1022,11 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'invalid' && (
                           <div>
                             <p className="text-red-600 text-sm">
-                              This member ID is not recognized. Please check and try again.
+                              {t("businessDashboard.result.invalidMsg")}
                             </p>
                             {scanResult.attemptsRemaining !== undefined && (
                               <p className="text-slate-500 text-xs mt-2">
-                                {scanResult.attemptsRemaining} verification attempts remaining
+                                {t("businessDashboard.result.attemptsRemainingShort", { count: scanResult.attemptsRemaining })}
                               </p>
                             )}
                           </div>
@@ -1035,10 +1035,10 @@ const BusinessDashboard = () => {
                         {scanResult.status === 'rate_limited' && (
                           <div className="p-3 bg-red-100 rounded-lg">
                             <p className="text-red-800 font-medium">
-                              🚫 Too many failed attempts
+                              {t("businessDashboard.result.rateLimitedTitle")}
                             </p>
                             <p className="text-red-700 text-sm mt-1">
-                              Please wait {scanResult.remainingMinutes} minutes before trying again.
+                              {t("businessDashboard.result.rateLimitedDesc", { minutes: scanResult.remainingMinutes })}
                             </p>
                           </div>
                         )}
@@ -1050,10 +1050,10 @@ const BusinessDashboard = () => {
                       <div className="mt-4 p-4 bg-pink-50 border border-pink-200 rounded-lg">
                         <h4 className="font-semibold text-pink-800 mb-3 flex items-center gap-2">
                           <Cake className="w-4 h-4" />
-                          🎂 Birthday Offers to Redeem ({scanResult.pendingBirthdayOffers.length})
+                          {t("businessDashboard.birthdayOffers.heading", { count: scanResult.pendingBirthdayOffers.length })}
                         </h4>
                         <p className="text-sm text-pink-700 mb-3">
-                          This member has birthday offers they can use at your business!
+                          {t("businessDashboard.birthdayOffers.intro")}
                         </p>
                         <div className="space-y-2">
                           {scanResult.pendingBirthdayOffers
@@ -1061,11 +1061,11 @@ const BusinessDashboard = () => {
                             .map((offer) => (
                             <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-200 ring-2 ring-pink-300">
                               <div>
-                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday 🎉</p>
+                                <p className="font-medium text-pink-900">{t("businessDashboard.birthdayOffers.petBirthday", { name: offer.pet_name })}</p>
                                 <p className="text-sm text-pink-700 font-semibold">
                                   {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
                                 </p>
-                                <p className="text-xs text-pink-600">From your business</p>
+                                <p className="text-xs text-pink-600">{t("businessDashboard.birthdayOffers.fromYourBusiness")}</p>
                               </div>
                               <Button
                                 size="sm"
@@ -1073,7 +1073,7 @@ const BusinessDashboard = () => {
                                 disabled={isRedeemingBirthday === offer.id}
                                 className="bg-pink-500 hover:bg-pink-600"
                               >
-                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem Now'}
+                                {isRedeemingBirthday === offer.id ? t("businessDashboard.birthdayOffers.redeeming") : t("businessDashboard.birthdayOffers.redeemNow")}
                               </Button>
                             </div>
                           ))}
@@ -1083,11 +1083,11 @@ const BusinessDashboard = () => {
                             .map((offer) => (
                             <div key={offer.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-pink-100">
                               <div>
-                                <p className="font-medium text-pink-900">{offer.pet_name}'s Birthday</p>
+                                <p className="font-medium text-pink-900">{t("businessDashboard.birthdayOffers.petBirthdayPlain", { name: offer.pet_name })}</p>
                                 <p className="text-sm text-pink-700">
                                   {offer.discount_type === 'percentage' ? `${offer.discount_value}%` : `€${offer.discount_value}`} off
                                 </p>
-                                <p className="text-xs text-pink-500">From another business</p>
+                                <p className="text-xs text-pink-500">{t("businessDashboard.birthdayOffers.fromOtherBusiness")}</p>
                               </div>
                               <Button
                                 size="sm"
@@ -1096,7 +1096,7 @@ const BusinessDashboard = () => {
                                 disabled={isRedeemingBirthday === offer.id}
                                 className="border-pink-300 text-pink-600 hover:bg-pink-50"
                               >
-                                {isRedeemingBirthday === offer.id ? 'Redeeming...' : 'Redeem'}
+                                {isRedeemingBirthday === offer.id ? t("businessDashboard.birthdayOffers.redeeming") : t("businessDashboard.birthdayOffers.redeem")}
                               </Button>
                             </div>
                           ))}
@@ -1111,7 +1111,7 @@ const BusinessDashboard = () => {
                         disabled={isVerifying}
                         className="w-full mt-4 bg-green-600 hover:bg-green-700"
                       >
-                        {isVerifying ? 'Confirming...' : 'Confirm Redemption'}
+                        {isVerifying ? t("businessDashboard.result.confirming") : t("businessDashboard.result.confirmRedemption")}
                       </Button>
                     )}
 
@@ -1119,10 +1119,10 @@ const BusinessDashboard = () => {
                     {scanResult.status === 'valid' && !scanResult.offerId && (!scanResult.pendingBirthdayOffers || scanResult.pendingBirthdayOffers.length === 0) && (
                       <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-center">
                         <p className="text-slate-600">
-                          ✅ Member verified! No birthday offers available at this time.
+                          {t("businessDashboard.result.noBirthdayOffers")}
                         </p>
                         <p className="text-sm text-slate-500 mt-1">
-                          Select a regular offer above to redeem a discount.
+                          {t("businessDashboard.result.selectRegularOffer")}
                         </p>
                       </div>
                     )}
@@ -1137,30 +1137,30 @@ const BusinessDashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-slate-900 flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
-                    Recent Redemptions
+                    {t("businessDashboard.recent.title")}
                   </h3>
                   <Link 
                     to="/business/history" 
                     className="text-sm text-primary hover:underline"
                   >
-                    View All →
+                    {t("businessDashboard.recent.viewAll")}
                   </Link>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Customer</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Pet</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Offer</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Time</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.customer")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.pet")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.offer")}</th>
+                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.time")}</th>
                       </tr>
                     </thead>
                     <tbody>
                       {recentRedemptions.length === 0 ? (
                         <tr>
                           <td colSpan={4} className="py-8 text-center text-slate-500">
-                            No redemptions yet. Verify a member to get started!
+                            {t("businessDashboard.recent.empty")}
                           </td>
                         </tr>
                       ) : (
@@ -1169,18 +1169,18 @@ const BusinessDashboard = () => {
                             <td className="py-3 px-2">
                               <div>
                                 <p className="font-medium text-slate-900">
-                                  {redemption.member_name || 'Customer'}
+                                  {redemption.member_name || t("businessDashboard.recent.customerFallback")}
                                 </p>
                                 <p className="text-xs text-slate-500 font-mono">
-                                  {redemption.member_number || (redemption.isBirthday ? 'Birthday' : 'N/A')}
+                                  {redemption.member_number || (redemption.isBirthday ? t("businessDashboard.recent.birthdayLabel") : t("businessDashboard.recent.na"))}
                                 </p>
                               </div>
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.pet_names || 'N/A'}
+                              {redemption.pet_names || t("businessDashboard.recent.na")}
                             </td>
                             <td className="py-3 px-2 text-slate-600">
-                              {redemption.offer?.title || 'N/A'}
+                              {redemption.offer?.title || t("businessDashboard.recent.na")}
                             </td>
                             <td className="py-3 px-2 text-slate-500 text-sm">
                               {formatTimeAgo(redemption.redeemed_at)}
@@ -1199,9 +1199,9 @@ const BusinessDashboard = () => {
               {/* Quick Stats */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display font-semibold text-slate-900">This Month</h3>
+                  <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.stats.thisMonth")}</h3>
                   <Link to="/business/analytics" className="text-xs text-primary hover:underline">
-                    View details →
+                    {t("businessDashboard.stats.viewDetails")}
                   </Link>
                 </div>
                 <div className="space-y-4">
@@ -1211,8 +1211,8 @@ const BusinessDashboard = () => {
                         <Users className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <span className="text-slate-600">Redemptions</span>
-                        <p className="text-xs text-slate-400">Total this month</p>
+                        <span className="text-slate-600">{t("businessDashboard.stats.redemptions")}</span>
+                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.totalThisMonth")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.redemptions}</span>
@@ -1223,8 +1223,8 @@ const BusinessDashboard = () => {
                         <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <span className="text-slate-600">New Customers</span>
-                        <p className="text-xs text-slate-400">First-time redeemers</p>
+                        <span className="text-slate-600">{t("businessDashboard.stats.newCustomers")}</span>
+                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.firstTime")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.newCustomers}</span>
@@ -1235,16 +1235,16 @@ const BusinessDashboard = () => {
               {/* Your Offers */}
               <div className="bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl p-6 text-white">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-display font-semibold">Your Active Offers</h3>
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{offers.length} active</span>
+                  <h3 className="font-display font-semibold">{t("businessDashboard.yourOffers.title")}</h3>
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{t("businessDashboard.yourOffers.active", { count: offers.length })}</span>
                 </div>
                 {offers.length === 0 ? (
                   <div className="bg-white/10 rounded-xl p-4 text-center">
                     <Tag className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-white/70 text-sm mb-3">No active offers yet</p>
+                    <p className="text-white/70 text-sm mb-3">{t("businessDashboard.yourOffers.empty")}</p>
                     <Link to="/business/offers">
                       <Button size="sm" variant="secondary" className="bg-white text-slate-900 hover:bg-white/90">
-                        Create First Offer
+                        {t("businessDashboard.yourOffers.createFirst")}
                       </Button>
                     </Link>
                   </div>
@@ -1253,14 +1253,14 @@ const BusinessDashboard = () => {
                     {offers.slice(0, 3).map(offer => (
                       <div key={offer.id} className="bg-white/10 rounded-xl p-3 hover:bg-white/15 transition-colors">
                         <p className="font-display font-bold">
-                          {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} OFF
+                          {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} {t("businessDashboard.yourOffers.off")}
                         </p>
                         <p className="text-white/70 text-sm">{offer.title}</p>
                       </div>
                     ))}
                     {offers.length > 3 && (
                       <Link to="/business/offers" className="block text-center text-white/70 text-sm hover:text-white pt-2">
-                        +{offers.length - 3} more offers →
+                        {t("businessDashboard.yourOffers.moreOffers", { count: offers.length - 3 })}
                       </Link>
                     )}
                   </div>
@@ -1270,11 +1270,11 @@ const BusinessDashboard = () => {
 
               {/* Support */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h3 className="font-display font-semibold text-slate-900 mb-3">Need Help?</h3>
+                <h3 className="font-display font-semibold text-slate-900 mb-3">{t("businessDashboard.support.title")}</h3>
                 <p className="text-sm text-slate-500 mb-4">
-                  Contact our partner support team for assistance with verification or billing.
+                  {t("businessDashboard.support.desc")}
                 </p>
-                <ContactPopover triggerText="Contact Support" triggerClassName="w-full" />
+                <ContactPopover triggerText={t("businessDashboard.support.contact")} triggerClassName="w-full" />
               </div>
             </div>
           </div>

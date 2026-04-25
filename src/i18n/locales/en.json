@@ -1267,7 +1267,8 @@
       "warningTitle": "Warning",
       "attemptsRemaining": "{{count}} verification attempts remaining.",
       "cameraErrorTitle": "Camera Error",
-      "cameraErrorDesc": "Could not access camera. Please check permissions."
+      "cameraErrorDesc": "Could not access camera. Please check permissions.",
+      "birthdayHint": "Check for birthday offers available for this member"
     },
     "result": {
       "valid": "✓ Valid Membership",
