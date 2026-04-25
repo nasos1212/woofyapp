@@ -606,6 +606,33 @@ const UserManagement = () => {
     }
   };
 
+  const toggleBusinessHidden = async (businessId: string, currentHidden: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("businesses")
+        .update({ is_hidden: !currentHidden })
+        .eq("id", businessId);
+      if (error) throw error;
+      toast.success(!currentHidden ? "Business hidden from public" : "Business is now visible");
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update visibility");
+    }
+  };
+
+  const toggleShelterHidden = async (shelterId: string, currentHidden: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("shelters")
+        .update({ is_hidden: !currentHidden })
+        .eq("id", shelterId);
+      if (error) throw error;
+      toast.success(!currentHidden ? "Shelter hidden from public" : "Shelter is now visible");
+      fetchAllUsers();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update visibility");
+    }
+  };
 
   const addRole = async (userId: string, role: string) => {
     try {
