@@ -1199,9 +1199,9 @@ const BusinessDashboard = () => {
               {/* Quick Stats */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display font-semibold text-slate-900">This Month</h3>
+                  <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.stats.thisMonth")}</h3>
                   <Link to="/business/analytics" className="text-xs text-primary hover:underline">
-                    View details →
+                    {t("businessDashboard.stats.viewDetails")}
                   </Link>
                 </div>
                 <div className="space-y-4">
@@ -1211,8 +1211,8 @@ const BusinessDashboard = () => {
                         <Users className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <span className="text-slate-600">Redemptions</span>
-                        <p className="text-xs text-slate-400">Total this month</p>
+                        <span className="text-slate-600">{t("businessDashboard.stats.redemptions")}</span>
+                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.totalThisMonth")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.redemptions}</span>
@@ -1223,8 +1223,8 @@ const BusinessDashboard = () => {
                         <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <span className="text-slate-600">New Customers</span>
-                        <p className="text-xs text-slate-400">First-time redeemers</p>
+                        <span className="text-slate-600">{t("businessDashboard.stats.newCustomers")}</span>
+                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.firstTime")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.newCustomers}</span>
@@ -1235,16 +1235,16 @@ const BusinessDashboard = () => {
               {/* Your Offers */}
               <div className="bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl p-6 text-white">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-display font-semibold">Your Active Offers</h3>
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{offers.length} active</span>
+                  <h3 className="font-display font-semibold">{t("businessDashboard.yourOffers.title")}</h3>
+                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">{t("businessDashboard.yourOffers.active", { count: offers.length })}</span>
                 </div>
                 {offers.length === 0 ? (
                   <div className="bg-white/10 rounded-xl p-4 text-center">
                     <Tag className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-white/70 text-sm mb-3">No active offers yet</p>
+                    <p className="text-white/70 text-sm mb-3">{t("businessDashboard.yourOffers.empty")}</p>
                     <Link to="/business/offers">
                       <Button size="sm" variant="secondary" className="bg-white text-slate-900 hover:bg-white/90">
-                        Create First Offer
+                        {t("businessDashboard.yourOffers.createFirst")}
                       </Button>
                     </Link>
                   </div>
@@ -1253,14 +1253,14 @@ const BusinessDashboard = () => {
                     {offers.slice(0, 3).map(offer => (
                       <div key={offer.id} className="bg-white/10 rounded-xl p-3 hover:bg-white/15 transition-colors">
                         <p className="font-display font-bold">
-                          {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} OFF
+                          {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} {t("businessDashboard.yourOffers.off")}
                         </p>
                         <p className="text-white/70 text-sm">{offer.title}</p>
                       </div>
                     ))}
                     {offers.length > 3 && (
                       <Link to="/business/offers" className="block text-center text-white/70 text-sm hover:text-white pt-2">
-                        +{offers.length - 3} more offers →
+                        {t("businessDashboard.yourOffers.moreOffers", { count: offers.length - 3 })}
                       </Link>
                     )}
                   </div>
@@ -1270,11 +1270,11 @@ const BusinessDashboard = () => {
 
               {/* Support */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                <h3 className="font-display font-semibold text-slate-900 mb-3">Need Help?</h3>
+                <h3 className="font-display font-semibold text-slate-900 mb-3">{t("businessDashboard.support.title")}</h3>
                 <p className="text-sm text-slate-500 mb-4">
-                  Contact our partner support team for assistance with verification or billing.
+                  {t("businessDashboard.support.desc")}
                 </p>
-                <ContactPopover triggerText="Contact Support" triggerClassName="w-full" />
+                <ContactPopover triggerText={t("businessDashboard.support.contact")} triggerClassName="w-full" />
               </div>
             </div>
           </div>
