@@ -117,8 +117,8 @@ const BusinessCustomerBirthdays = () => {
       if (businessError) throw businessError;
       if (!businessData) {
         toast({
-          title: "No business found",
-          description: "You need to register a business first.",
+          title: t("businessBirthdays.toastNoBusiness"),
+          description: t("businessBirthdays.toastNoBusinessDesc"),
           variant: "destructive",
         });
         navigate("/partner-register");
@@ -260,8 +260,8 @@ const BusinessCustomerBirthdays = () => {
       }
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to load data",
+        title: t("businessBirthdays.toastError"),
+        description: error.message || t("businessBirthdays.toastLoadFailed"),
         variant: "destructive",
       });
     } finally {
@@ -302,14 +302,14 @@ const BusinessCustomerBirthdays = () => {
       }
 
       toast({
-        title: "Settings saved",
-        description: "Your birthday reminder settings have been updated.",
+        title: t("businessBirthdays.toastSettingsSaved"),
+        description: t("businessBirthdays.toastSettingsSavedDesc"),
       });
       setShowSettings(false);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to save settings",
+        title: t("businessBirthdays.toastError"),
+        description: error.message || t("businessBirthdays.toastSettingsFailed"),
         variant: "destructive",
       });
     } finally {
@@ -319,11 +319,11 @@ const BusinessCustomerBirthdays = () => {
 
   const getBirthdayBadge = (daysUntil: number) => {
     if (daysUntil === 0) {
-      return <Badge className="gap-1 bg-gradient-to-r from-pink-500 to-purple-500"><PartyPopper className="w-3 h-3" />Today!</Badge>;
+      return <Badge className="gap-1 bg-gradient-to-r from-pink-500 to-purple-500"><PartyPopper className="w-3 h-3" />{t("businessBirthdays.todayBadge")}</Badge>;
     } else if (daysUntil <= 7) {
-      return <Badge className="gap-1 bg-amber-500"><Cake className="w-3 h-3" />This Week</Badge>;
+      return <Badge className="gap-1 bg-amber-500"><Cake className="w-3 h-3" />{t("businessBirthdays.weekBadge")}</Badge>;
     } else {
-      return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />In {daysUntil} days</Badge>;
+      return <Badge variant="secondary" className="gap-1"><Calendar className="w-3 h-3" />{t("businessBirthdays.daysBadge", { days: daysUntil })}</Badge>;
     }
   };
 
@@ -339,7 +339,7 @@ const BusinessCustomerBirthdays = () => {
     return (
       <>
         <Helmet>
-          <title>Customer Pet Birthdays | Business Dashboard</title>
+          <title>{t("businessBirthdays.pageTitle")}</title>
         </Helmet>
         <BusinessHeader />
         <main className="min-h-screen bg-background pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] pb-16">
@@ -347,8 +347,8 @@ const BusinessCustomerBirthdays = () => {
             <PendingApprovalBanner status={verificationStatus} />
             <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
               <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="font-display font-semibold text-lg mb-2">Birthday Tracking Unavailable</h3>
-              <p className="text-slate-500">Track customer pet birthdays once your business is approved.</p>
+              <h3 className="font-display font-semibold text-lg mb-2">{t("businessBirthdays.unavailableTitle")}</h3>
+              <p className="text-slate-500">{t("businessBirthdays.unavailableDesc")}</p>
             </div>
           </div>
         </main>
@@ -452,7 +452,7 @@ const BusinessCustomerBirthdays = () => {
                   <Users className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "all" ? "text-primary" : "text-muted-foreground"}`} />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">{customerPets.filter(p => p.birthday).length}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">All Pets</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t("businessBirthdays.statAllPets")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -466,7 +466,7 @@ const BusinessCustomerBirthdays = () => {
                   <Cake className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "week" ? "text-pink-500" : "text-pink-500"}`} />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.filter(b => b.daysUntil <= 7).length}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">This Week</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t("businessBirthdays.statThisWeek")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -480,7 +480,7 @@ const BusinessCustomerBirthdays = () => {
                   <Gift className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "month" ? "text-amber-500" : "text-amber-500"}`} />
                   <div>
                     <p className="text-lg sm:text-2xl font-bold">{upcomingBirthdays.length}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">This Month</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{t("businessBirthdays.statThisMonth")}</p>
                   </div>
                 </div>
               </CardContent>
@@ -495,13 +495,13 @@ const BusinessCustomerBirthdays = () => {
               ? upcomingBirthdays
               : upcomingBirthdays; // "all" shows upcoming (within 30 days)
 
-            const filterLabel = birthdayFilter === "week" ? "This Week" : birthdayFilter === "month" ? "This Month" : "Upcoming";
+            const filterLabel = birthdayFilter === "week" ? t("businessBirthdays.statThisWeek") : birthdayFilter === "month" ? t("businessBirthdays.statThisMonth") : t("businessBirthdays.upcoming");
 
             return (
               <>
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <PartyPopper className="h-5 w-5" />
-                  {filterLabel} Birthdays
+                  {t("businessBirthdays.birthdaysHeader", { label: filterLabel })}
                   {filteredBirthdays.length > 0 && (
                     <Badge variant="secondary">{filteredBirthdays.length}</Badge>
                   )}
@@ -517,13 +517,13 @@ const BusinessCustomerBirthdays = () => {
                   <Card>
                     <CardContent className="py-12 text-center">
                       <Cake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No birthdays {filterLabel.toLowerCase()}</h3>
+                      <h3 className="text-lg font-semibold mb-2">{t("businessBirthdays.noBirthdaysTitle", { label: filterLabel.toLowerCase() })}</h3>
                       <p className="text-muted-foreground">
                         {customerPets.length === 0 
-                          ? "You don't have any customer interactions yet. Birthdays will appear here once customers redeem offers."
+                          ? t("businessBirthdays.noBirthdaysEmpty")
                           : birthdayFilter === "week" 
-                          ? "No pet birthdays in the next 7 days."
-                          : "No pet birthdays in the next 30 days. Check back soon!"}
+                          ? t("businessBirthdays.noBirthdaysWeek")
+                          : t("businessBirthdays.noBirthdaysMonth")}
                       </p>
                     </CardContent>
                   </Card>
@@ -540,7 +540,7 @@ const BusinessCustomerBirthdays = () => {
                                 <h3 className="font-semibold text-base sm:text-lg">{pet.pet_name}</h3>
                                 {getBirthdayBadge(pet.daysUntil)}
                                 <span className="text-xs sm:text-sm text-muted-foreground">
-                                  Turning {pet.age}!
+                                  {t("businessBirthdays.turning", { age: pet.age })}
                                 </span>
                               </div>
                               
@@ -550,7 +550,7 @@ const BusinessCustomerBirthdays = () => {
                               )}
                               {/* Owner info */}
                               <p className="text-sm text-muted-foreground mb-1">
-                                Owner: <span className="font-medium">{pet.owner_name || pet.owner_email || "Unknown"}</span>
+                                {t("businessBirthdays.owner")} <span className="font-medium">{pet.owner_name || pet.owner_email || t("businessBirthdays.unknown")}</span>
                               </p>
                               
                               {/* Date info - simplified on mobile */}
@@ -560,7 +560,7 @@ const BusinessCustomerBirthdays = () => {
                                   {formatDate(pet.nextBirthday)}
                                 </span>
                                 {pet.last_interaction && (
-                                  <span className="hidden sm:inline">Last visit: {formatDate(new Date(pet.last_interaction))}</span>
+                                  <span className="hidden sm:inline">{t("businessBirthdays.lastVisit", { date: formatDate(new Date(pet.last_interaction)) })}</span>
                                 )}
                               </div>
                             </div>
@@ -570,7 +570,7 @@ const BusinessCustomerBirthdays = () => {
                               {pet.alreadySentOffer ? (
                                 <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                                   <Gift className="mr-1 h-3 w-3" />
-                                  Sent
+                                  {t("businessBirthdays.sentBadge")}
                                 </Badge>
                               ) : (
                                 <Button 
@@ -583,7 +583,7 @@ const BusinessCustomerBirthdays = () => {
                                   }}
                                 >
                                   <Gift className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                                  Send Offer
+                                  {t("businessBirthdays.sendOffer")}
                                 </Button>
                               )}
                             </div>
@@ -602,7 +602,7 @@ const BusinessCustomerBirthdays = () => {
             <>
               <h2 className="text-xl font-semibold mb-4 mt-8 flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                All Customer Pets
+                {t("businessBirthdays.allCustomerPets")}
               </h2>
               <div className="grid gap-4">
                 {customerPets.map((pet) => (
@@ -623,7 +623,7 @@ const BusinessCustomerBirthdays = () => {
                               {formatDate(new Date(pet.birthday))}
                             </p>
                           ) : (
-                            <p className="text-muted-foreground">No birthday set</p>
+                            <p className="text-muted-foreground">{t("businessBirthdays.noBirthdaySet")}</p>
                           )}
                         </div>
                       </div>
@@ -643,7 +643,7 @@ const BusinessCustomerBirthdays = () => {
               >
                 <h2 className="text-xl font-semibold flex items-center gap-2">
                   <Send className="h-5 w-5" />
-                  Sent Birthday Offers
+                  {t("businessBirthdays.sentBirthdayOffers")}
                   <Badge variant="secondary" className="ml-2">{sentOffers.length}</Badge>
                 </h2>
                 <Button variant="ghost" size="sm">
