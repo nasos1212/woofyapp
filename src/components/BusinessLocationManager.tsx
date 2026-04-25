@@ -213,7 +213,7 @@ const BusinessLocationManager = ({
               </div>
               
               <div className="space-y-2">
-                <Label className="text-sm">Google Maps Link</Label>
+                <Label className="text-sm">{t("businessLocations.mapsLabel")}</Label>
                 <div className="relative">
                   <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
