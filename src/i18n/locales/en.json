@@ -1778,6 +1778,14 @@
     "selectCity": "Select city",
     "addressPlaceholder": "Street address",
     "additionalLocation": "Additional Location",
-    "locationN": "Location {{n}}"
+    "locationN": "Location {{n}}",
+    "primaryLocation": "Primary Location",
+    "cityLabel": "City *",
+    "addressLabel": "Address",
+    "phoneLabel": "Phone",
+    "phoneRequired": "Phone *",
+    "mapsLabel": "Google Maps Link",
+    "addLocation": "Add Another Store Location",
+    "helpText": "Have multiple stores? Add each location with its specific address and phone number."
   }
 }

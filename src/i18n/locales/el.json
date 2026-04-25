@@ -1778,6 +1778,14 @@
     "selectCity": "Επιλέξτε πόλη",
     "addressPlaceholder": "Διεύθυνση οδού",
     "additionalLocation": "Επιπλέον Τοποθεσία",
-    "locationN": "Τοποθεσία {{n}}"
+    "locationN": "Τοποθεσία {{n}}",
+    "primaryLocation": "Κύρια Τοποθεσία",
+    "cityLabel": "Πόλη *",
+    "addressLabel": "Διεύθυνση",
+    "phoneLabel": "Τηλέφωνο",
+    "phoneRequired": "Τηλέφωνο *",
+    "mapsLabel": "Σύνδεσμος Google Maps",
+    "addLocation": "Προσθήκη Άλλης Τοποθεσίας Καταστήματος",
+    "helpText": "Έχετε πολλά καταστήματα; Προσθέστε κάθε τοποθεσία με τη συγκεκριμένη διεύθυνση και τηλέφωνο."
   }
 }
