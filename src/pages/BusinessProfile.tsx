@@ -690,7 +690,7 @@ export default function BusinessProfile() {
                   </div>
 
                   <Textarea
-                    placeholder="Share your experience..."
+                    placeholder={t("businessProfile.reviewPlaceholder")}
                     value={userReview}
                     onChange={(e) => setUserReview(e.target.value)}
                     className="mb-3"
