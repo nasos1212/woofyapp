@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
@@ -82,6 +83,7 @@ import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
@@ -200,7 +202,7 @@ export default function BusinessProfile() {
         
         const reviewsWithNames = reviewsData.map(review => ({
           ...review,
-          user_name: profileMap.get(review.user_id) || "Anonymous"
+          user_name: profileMap.get(review.user_id) || t("businessProfile.anonymous")
         }));
         
         setReviews(reviewsWithNames);
@@ -245,7 +247,7 @@ export default function BusinessProfile() {
 
     } catch (error) {
       console.error("Error fetching business:", error);
-      toast.error("Failed to load business profile");
+      toast.error(t("businessProfile.toastLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -253,12 +255,12 @@ export default function BusinessProfile() {
 
   const handleSubmitReview = async () => {
     if (!user) {
-      toast.error("Please log in to leave a review");
+      toast.error(t("businessProfile.toastLoginToReview"));
       return;
     }
 
     if (userRating === 0) {
-      toast.error("Please select a rating");
+      toast.error(t("businessProfile.toastSelectRating"));
       return;
     }
 
@@ -275,7 +277,7 @@ export default function BusinessProfile() {
           .eq("id", existingReview.id);
 
         if (error) throw error;
-        toast.success("Review updated!");
+        toast.success(t("businessProfile.toastReviewUpdated"));
       } else {
         // Create new review
         const { error } = await supabase
@@ -288,13 +290,13 @@ export default function BusinessProfile() {
           });
 
         if (error) throw error;
-        toast.success("Review submitted!");
+        toast.success(t("businessProfile.toastReviewSubmitted"));
       }
 
       fetchBusinessData();
     } catch (error) {
       console.error("Error submitting review:", error);
-      toast.error("Failed to submit review");
+      toast.error(t("businessProfile.toastReviewFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -302,9 +304,9 @@ export default function BusinessProfile() {
 
   const formatDiscount = (offer: Offer) => {
     if (offer.discount_type === "percentage") {
-      return `${offer.discount_value}% OFF`;
+      return t("businessProfile.discountOffPercent", { value: offer.discount_value });
     } else if (offer.discount_type === "fixed") {
-      return `$${offer.discount_value} OFF`;
+      return t("businessProfile.discountOffFixed", { value: offer.discount_value });
     }
     return offer.discount_type;
   };
@@ -325,12 +327,12 @@ export default function BusinessProfile() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-foreground mb-2">Business not found</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-2">{t("businessProfile.notFound")}</h2>
           <button 
             onClick={() => navigate(-1)} 
             className="text-primary hover:underline"
           >
-            Go back
+            {t("businessProfile.notFoundBack")}
           </button>
         </div>
       </div>
@@ -340,8 +342,8 @@ export default function BusinessProfile() {
   return (
     <>
       <Helmet>
-        <title>{business.business_name} | Wooffy Partner</title>
-        <meta name="description" content={business.description || `${business.business_name} - Wooffy partner business`} />
+        <title>{business.business_name} | {t("businessProfile.pageTitleSuffix")}</title>
+        <meta name="description" content={business.description || t("businessProfile.metaDescription", { name: business.business_name })} />
       </Helmet>
 
       <div className="min-h-screen bg-background">
@@ -349,7 +351,7 @@ export default function BusinessProfile() {
         {isPreviewMode && (
           <div className="bg-primary text-primary-foreground py-3 px-4 text-center pt-[calc(0.75rem+env(safe-area-inset-top))]">
             <p className="text-sm font-medium">
-              👁️ Preview Mode — This is how members see your profile
+              {t("businessProfile.previewBanner")}
             </p>
             <Button 
               variant="secondary" 
@@ -357,7 +359,7 @@ export default function BusinessProfile() {
               className="mt-2"
               onClick={() => navigate("/business")}
             >
-              Exit Preview
+              {t("businessProfile.exitPreview")}
             </Button>
           </div>
         )}
@@ -371,7 +373,7 @@ export default function BusinessProfile() {
               className="mb-4 gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Go Back
+              {t("businessProfile.goBack")}
             </Button>
           )}
 
@@ -423,7 +425,7 @@ export default function BusinessProfile() {
                         className="gap-2"
                       >
                         <Pencil className="w-4 h-4" />
-                        Edit Profile
+                        {t("businessProfile.editProfile")}
                       </Button>
                     )}
                   
@@ -435,7 +437,7 @@ export default function BusinessProfile() {
                           {averageRating.toFixed(1)}
                         </span>
                         <span className="text-muted-foreground text-sm">
-                          ({reviews.length} reviews)
+                          {t("businessProfile.reviews", { count: reviews.length })}
                         </span>
                       </div>
                     )}
@@ -481,7 +483,7 @@ export default function BusinessProfile() {
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
                       <Globe className="w-4 h-4" />
-                      Website
+                      {t("businessProfile.websiteBtn")}
                     </a>
                   )}
                   {business.instagram_url && (
@@ -536,7 +538,7 @@ export default function BusinessProfile() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <MapPin className="w-5 h-5" />
-                  Store Locations
+                  {t("businessProfile.storeLocations")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -575,7 +577,7 @@ export default function BusinessProfile() {
                             onClick={() => trackContactClick(business.id, business.business_name, "google_maps")}
                           >
                             <MapPin className="w-3.5 h-3.5" />
-                            Directions
+                            {t("businessProfile.directions")}
                           </a>
                         )}
                       </div>
@@ -590,7 +592,7 @@ export default function BusinessProfile() {
           {photos.length > 0 && (
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle className="text-lg">Photos</CardTitle>
+                <CardTitle className="text-lg">{t("businessProfile.photos")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -617,7 +619,7 @@ export default function BusinessProfile() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Tag className="w-5 h-5" />
-                  Available Offers
+                  {t("businessProfile.availableOffers")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -657,7 +659,7 @@ export default function BusinessProfile() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Star className="w-5 h-5" />
-                Reviews
+                {t("businessProfile.reviewsTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -665,7 +667,7 @@ export default function BusinessProfile() {
               {user && !isOwner && (
                 <div className="mb-6 p-4 bg-muted/50 rounded-xl">
                   <h4 className="font-medium text-foreground mb-3">
-                    {existingReview ? "Update your review" : "Write a review"}
+                    {existingReview ? t("businessProfile.updateReviewTitle") : t("businessProfile.writeReviewTitle")}
                   </h4>
                   
                   {/* Star Rating */}
@@ -688,7 +690,7 @@ export default function BusinessProfile() {
                   </div>
 
                   <Textarea
-                    placeholder="Share your experience..."
+                    placeholder={t("businessProfile.reviewPlaceholder")}
                     value={userReview}
                     onChange={(e) => setUserReview(e.target.value)}
                     className="mb-3"
@@ -701,7 +703,7 @@ export default function BusinessProfile() {
                     size="sm"
                   >
                     <Send className="w-4 h-4 mr-2" />
-                    {existingReview ? "Update Review" : "Submit Review"}
+                    {existingReview ? t("businessProfile.updateReviewBtn") : t("businessProfile.submitReviewBtn")}
                   </Button>
                 </div>
               )}
@@ -748,7 +750,7 @@ export default function BusinessProfile() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-center py-4">
-                  No reviews yet. Be the first to review!
+                  {t("businessProfile.noReviews")}
                 </p>
               )}
             </CardContent>
@@ -759,20 +761,20 @@ export default function BusinessProfile() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                Business Hours
+                {t("businessProfile.businessHours")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {businessHours.length > 0 ? (
                 <div className="space-y-2">
                   {[
-                    { value: 0, label: "Sunday" },
-                    { value: 1, label: "Monday" },
-                    { value: 2, label: "Tuesday" },
-                    { value: 3, label: "Wednesday" },
-                    { value: 4, label: "Thursday" },
-                    { value: 5, label: "Friday" },
-                    { value: 6, label: "Saturday" },
+                    { value: 0, label: t("businessProfile.daySunday") },
+                    { value: 1, label: t("businessProfile.dayMonday") },
+                    { value: 2, label: t("businessProfile.dayTuesday") },
+                    { value: 3, label: t("businessProfile.dayWednesday") },
+                    { value: 4, label: t("businessProfile.dayThursday") },
+                    { value: 5, label: t("businessProfile.dayFriday") },
+                    { value: 6, label: t("businessProfile.daySaturday") },
                   ].map((day) => {
                     const hours = businessHours.find((h) => h.day_of_week === day.value);
                     const today = new Date().getDay();
@@ -787,13 +789,13 @@ export default function BusinessProfile() {
                       >
                         <span className={`text-sm ${isToday ? "text-primary" : "text-foreground"}`}>
                           {day.label}
-                          {isToday && <span className="ml-2 text-xs">(Today)</span>}
+                          {isToday && <span className="ml-2 text-xs">{t("businessProfile.today")}</span>}
                         </span>
                         <span className={`text-sm ${hours?.is_closed ? "text-muted-foreground" : isToday ? "text-primary" : "text-foreground"}`}>
                           {!hours ? (
                             "—"
                           ) : hours.is_closed ? (
-                            "Closed"
+                            t("businessProfile.closed")
                           ) : (
                             `${hours.open_time?.slice(0, 5)} - ${hours.close_time?.slice(0, 5)}`
                           )}
@@ -804,7 +806,7 @@ export default function BusinessProfile() {
                 </div>
               ) : (
                 <p className="text-muted-foreground text-sm">
-                  Contact the business directly for their current operating hours.
+                  {t("businessProfile.noHours")}
                 </p>
               )}
             </CardContent>

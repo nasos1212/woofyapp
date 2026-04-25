@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ interface BusinessEditDialogProps {
 }
 
 export function BusinessEditDialog({ business, open, onOpenChange, onSave }: BusinessEditDialogProps) {
+  const { t } = useTranslation();
   const [businessName, setBusinessName] = useState(business.business_name);
   const [description, setDescription] = useState(business.description || "");
   const [address, setAddress] = useState(business.address || "");
@@ -79,16 +81,16 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
         .eq("id", photoId);
 
       if (error) throw error;
-      toast.success("Photo deleted");
+      toast.success(t("businessEditDialog.photoDeleted"));
       fetchPhotos();
     } catch (error: any) {
       console.error("Error deleting photo:", error);
-      toast.error(error.message || "Failed to delete photo");
+      toast.error(error.message || t("businessEditDialog.deleteFailed"));
     }
   };
   const handleSave = async () => {
     if (!businessName.trim()) {
-      toast.error("Business name is required");
+      toast.error(t("businessEditDialog.nameRequired"));
       return;
     }
 
@@ -110,12 +112,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
       if (error) throw error;
 
-      toast.success("Business profile updated!");
+      toast.success(t("businessEditDialog.updated"));
       onSave();
       onOpenChange(false);
     } catch (error: any) {
       console.error("Error updating business:", error);
-      toast.error(error.message || "Failed to update business");
+      toast.error(error.message || t("businessEditDialog.updateFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -125,24 +127,24 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Business Profile</DialogTitle>
+          <DialogTitle>{t("businessEditDialog.title")}</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="details">{t("businessEditDialog.tabDetails")}</TabsTrigger>
             <TabsTrigger value="photos" className="gap-2">
               <ImageIcon className="w-4 h-4" />
-              Photos ({photos.length})
+              {t("businessEditDialog.tabPhotos")} ({photos.length})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="businessName">Business Name *</Label>
+              <Label htmlFor="businessName">{t("businessEditDialog.nameLabel")}</Label>
               <Input
                 id="businessName"
-                placeholder="Your Business Name"
+                placeholder={t("businessEditDialog.namePlaceholder")}
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
                 required
@@ -150,10 +152,10 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t("businessEditDialog.descLabel")}</Label>
               <Textarea
                 id="description"
-                placeholder="Tell pet owners about your services..."
+                placeholder={t("businessEditDialog.descPlaceholder")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
@@ -162,12 +164,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">{t("businessEditDialog.addressLabel")}</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="address"
-                    placeholder="Street address"
+                    placeholder={t("businessEditDialog.addressPlaceholder")}
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     className="pl-10"
@@ -175,10 +177,10 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">{t("businessEditDialog.cityLabel")}</Label>
                 <Input
                   id="city"
-                  placeholder="City"
+                  placeholder={t("businessEditDialog.cityPlaceholder")}
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                 />
@@ -187,12 +189,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">{t("businessEditDialog.phoneLabel")}</Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="phone"
-                    placeholder="+353 1 234 5678"
+                    placeholder={t("businessEditDialog.phonePlaceholder")}
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="pl-10"
@@ -200,13 +202,13 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Business Email</Label>
+                <Label htmlFor="email">{t("businessEditDialog.emailLabel")}</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="contact@business.com"
+                    placeholder={t("businessEditDialog.emailPlaceholder")}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10"
@@ -216,12 +218,12 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website">{t("businessEditDialog.websiteLabel")}</Label>
               <div className="relative">
                 <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="website"
-                  placeholder="https://www.yourbusiness.com"
+                  placeholder={t("businessEditDialog.websitePlaceholder")}
                   value={website}
                   onChange={(e) => setWebsite(e.target.value)}
                   className="pl-10"
@@ -230,28 +232,28 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="googleMapsUrl">Google Maps Link</Label>
+              <Label htmlFor="googleMapsUrl">{t("businessEditDialog.mapsLabel")}</Label>
               <div className="relative">
                 <Map className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="googleMapsUrl"
-                  placeholder="https://maps.google.com/..."
+                  placeholder={t("businessEditDialog.mapsPlaceholder")}
                   value={googleMapsUrl}
                   onChange={(e) => setGoogleMapsUrl(e.target.value)}
                   className="pl-10"
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Paste your Google Maps share link so customers can find you easily
+                {t("businessEditDialog.mapsHelp")}
               </p>
             </div>
 
             <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
-                Cancel
+                {t("businessEditDialog.cancel")}
               </Button>
               <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Changes"}
+                {isSaving ? t("businessEditDialog.saving") : t("businessEditDialog.save")}
               </Button>
             </div>
           </TabsContent>
@@ -265,13 +267,13 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
               {photos.length > 0 && (
                 <div className="space-y-3">
-                  <Label>Current Photos</Label>
+                  <Label>{t("businessEditDialog.currentPhotos")}</Label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {photos.map((photo) => (
                       <div key={photo.id} className="relative group">
                         <img
                           src={photo.photo_url}
-                          alt={photo.caption || "Business photo"}
+                          alt={photo.caption || t("businessEditDialog.photoAlt")}
                           className="w-full h-32 object-cover rounded-lg"
                         />
                         <Button
@@ -290,7 +292,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
               {photos.length === 0 && !loadingPhotos && (
                 <p className="text-center text-muted-foreground py-4">
-                  No photos uploaded yet
+                  {t("businessEditDialog.noPhotos")}
                 </p>
               )}
             </div>
