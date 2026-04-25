@@ -659,7 +659,7 @@ export default function BusinessProfile() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Star className="w-5 h-5" />
-                Reviews
+                {t("businessProfile.reviewsTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
