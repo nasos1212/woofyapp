@@ -83,6 +83,7 @@ import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 
 export default function BusinessProfile() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
