@@ -382,15 +382,15 @@ const BusinessCustomerBirthdays = () => {
             <div>
               <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-2 sm:gap-3">
                 <Cake className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
-                Pet Birthdays
+                {t("businessBirthdays.headerTitle")}
               </h1>
               <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
-                Celebrate your customers' pets
+                {t("businessBirthdays.headerSubtitle")}
               </p>
             </div>
             <Button variant="outline" size="sm" onClick={() => setShowSettings(!showSettings)}>
               <Settings className="mr-1 sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Settings</span>
+              <span className="hidden sm:inline">{t("businessBirthdays.settings")}</span>
             </Button>
           </div>
 
@@ -398,14 +398,14 @@ const BusinessCustomerBirthdays = () => {
           {showSettings && (
             <Card className="mb-8">
               <CardHeader>
-                <CardTitle>Birthday Reminder Settings</CardTitle>
-                <CardDescription>Configure how you want to be notified about upcoming birthdays</CardDescription>
+                <CardTitle>{t("businessBirthdays.settingsTitle")}</CardTitle>
+                <CardDescription>{t("businessBirthdays.settingsDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label htmlFor="enabled">Enable Birthday Reminders</Label>
-                    <p className="text-sm text-muted-foreground">Get notified about upcoming pet birthdays</p>
+                    <Label htmlFor="enabled">{t("businessBirthdays.enableLabel")}</Label>
+                    <p className="text-sm text-muted-foreground">{t("businessBirthdays.enableHelp")}</p>
                   </div>
                   <Switch
                     id="enabled"
@@ -414,7 +414,7 @@ const BusinessCustomerBirthdays = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="days">Days Before Reminder</Label>
+                  <Label htmlFor="days">{t("businessBirthdays.daysLabel")}</Label>
                   <Input
                     id="days"
                     type="number"
@@ -426,16 +426,16 @@ const BusinessCustomerBirthdays = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="message">Custom Birthday Message (Optional)</Label>
+                  <Label htmlFor="message">{t("businessBirthdays.messageLabel")}</Label>
                   <Textarea
                     id="message"
-                    placeholder="e.g., Happy Birthday! Enjoy 20% off your next visit..."
+                    placeholder={t("businessBirthdays.messagePlaceholder")}
                     value={settings.custom_message || ""}
                     onChange={(e) => setSettings(prev => ({ ...prev, custom_message: e.target.value || null }))}
                   />
                 </div>
                 <Button onClick={saveSettings} disabled={savingSettings}>
-                  {savingSettings ? "Saving..." : "Save Settings"}
+                  {savingSettings ? t("businessBirthdays.savingSettings") : t("businessBirthdays.saveSettings")}
                 </Button>
               </CardContent>
             </Card>
@@ -665,17 +665,17 @@ const BusinessCustomerBirthdays = () => {
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-semibold">{offer.pet_name}</h3>
                               <Badge variant="outline" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                                {offer.discount_type === "percentage" ? `${offer.discount_value}% off` : `€${offer.discount_value} off`}
+                                {offer.discount_type === "percentage" ? t("businessBirthdays.discountPercent", { value: offer.discount_value }) : t("businessBirthdays.discountFixed", { value: offer.discount_value })}
                               </Badge>
                             </div>
                             <p className="text-sm text-muted-foreground mb-2">
-                              To: {offer.owner_name || "Pet Owner"}
+                              {t("businessBirthdays.toPrefix", { name: offer.owner_name || t("businessBirthdays.petOwner") })}
                             </p>
                             <p className="text-sm text-muted-foreground line-clamp-2 italic">
                               "{offer.message.substring(0, 100)}{offer.message.length > 100 ? "..." : ""}"
                             </p>
                             {offer.message.length > 100 && (
-                              <p className="text-xs text-primary mt-1">Tap to read full message →</p>
+                              <p className="text-xs text-primary mt-1">{t("businessBirthdays.tapToRead")}</p>
                             )}
                           </div>
                           <div className="text-right text-xs text-muted-foreground shrink-0">
