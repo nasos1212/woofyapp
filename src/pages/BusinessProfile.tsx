@@ -425,7 +425,7 @@ export default function BusinessProfile() {
                         className="gap-2"
                       >
                         <Pencil className="w-4 h-4" />
-                        Edit Profile
+                        {t("businessProfile.editProfile")}
                       </Button>
                     )}
                   
