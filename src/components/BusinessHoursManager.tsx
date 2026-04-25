@@ -134,11 +134,11 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
         }
       }
 
-      toast.success("Business hours saved!");
+      toast.success(t("businessHours.saved"));
       fetchHours(); // Refresh to get new IDs
     } catch (error: any) {
       console.error("Error saving hours:", error);
-      toast.error(error.message || "Failed to save business hours");
+      toast.error(error.message || t("businessHours.saveFailed"));
     } finally {
       setIsSaving(false);
     }
