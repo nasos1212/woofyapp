@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   TrendingUp,
   Users,
@@ -51,6 +52,7 @@ interface CustomerInsight {
 }
 
 const BusinessAnalytics = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -414,7 +416,7 @@ const BusinessAnalytics = () => {
 
     } catch (error) {
       console.error("Error fetching analytics:", error);
-      toast.error("Failed to load analytics");
+      toast.error(t("businessAnalytics.exportFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -435,7 +437,7 @@ const BusinessAnalytics = () => {
     a.download = `wooffy-analytics-${format(new Date(), "yyyy-MM-dd")}.csv`;
     a.click();
     URL.revokeObjectURL(url);
-    toast.success("Data exported successfully");
+    toast.success(t("businessAnalytics.exportSuccess"));
   };
 
   const monthChange =
