@@ -79,6 +79,13 @@ interface Place {
   is_emergency: boolean | null;
   created_at: string;
   google_maps_url: string | null;
+  submitted_by: string | null;
+  added_by_user_id: string | null;
+}
+
+interface SubmitterInfo {
+  full_name: string | null;
+  email: string | null;
 }
 
 interface PlaceFormData {
