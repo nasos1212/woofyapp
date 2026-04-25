@@ -277,7 +277,7 @@ export default function BusinessProfile() {
           .eq("id", existingReview.id);
 
         if (error) throw error;
-        toast.success("Review updated!");
+        toast.success(t("businessProfile.toastReviewUpdated"));
       } else {
         // Create new review
         const { error } = await supabase
@@ -290,13 +290,13 @@ export default function BusinessProfile() {
           });
 
         if (error) throw error;
-        toast.success("Review submitted!");
+        toast.success(t("businessProfile.toastReviewSubmitted"));
       }
 
       fetchBusinessData();
     } catch (error) {
       console.error("Error submitting review:", error);
-      toast.error("Failed to submit review");
+      toast.error(t("businessProfile.toastReviewFailed"));
     } finally {
       setSubmitting(false);
     }
