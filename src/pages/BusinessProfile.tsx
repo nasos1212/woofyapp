@@ -483,7 +483,7 @@ export default function BusinessProfile() {
                       className="inline-flex items-center gap-2 px-3 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/80 transition-colors text-sm font-medium"
                     >
                       <Globe className="w-4 h-4" />
-                      Website
+                      {t("businessProfile.websiteBtn")}
                     </a>
                   )}
                   {business.instagram_url && (
