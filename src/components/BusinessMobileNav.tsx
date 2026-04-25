@@ -1,17 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, Tag, BarChart3, Settings } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { path: "/business", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/business/offers", icon: Tag, label: "Offers" },
-  { path: "/business/analytics", icon: BarChart3, label: "Analytics" },
-  { path: "/business/settings", icon: Settings, label: "Settings" },
-];
 
 const BusinessMobileNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const navItems = [
+    { path: "/business", icon: LayoutDashboard, label: t("businessNav.dashboard") },
+    { path: "/business/offers", icon: Tag, label: t("businessNav.offers") },
+    { path: "/business/analytics", icon: BarChart3, label: t("businessNav.analytics") },
+    { path: "/business/settings", icon: Settings, label: t("businessNav.settings") },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border md:hidden">

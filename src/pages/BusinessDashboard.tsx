@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, Cat, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -75,6 +76,7 @@ const BusinessDashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { playSuccessSound } = useSuccessSound();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
@@ -262,7 +264,7 @@ const BusinessDashboard = () => {
         membership_id: membershipId || r.owner_user_id, // Fallback to owner_user_id
         isBirthday: true,
         offer: {
-          title: `🎂 Birthday: ${r.pet_name}`,
+          title: t("businessDashboard.recent.birthdayOfferTitle", { pet: r.pet_name }),
           discount_value: r.discount_value,
           discount_type: r.discount_type,
         },
@@ -313,8 +315,8 @@ const BusinessDashboard = () => {
   const verifyMember = async () => {
     if (!memberIdInput.trim() || !business) {
       toast({
-        title: "Missing Information",
-        description: "Please enter a member ID.",
+        title: t("businessDashboard.verification.missingTitle"),
+        description: t("businessDashboard.verification.missingDesc"),
         variant: "destructive",
       });
       return;
@@ -330,8 +332,8 @@ const BusinessDashboard = () => {
       if (!sessionData?.session) {
         console.error('No active session - user needs to re-login');
         toast({
-          title: "Session Expired",
-          description: "Please log in again to verify members.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -358,8 +360,8 @@ const BusinessDashboard = () => {
         // Check if it's an auth error
         if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
           toast({
-            title: "Authentication Error",
-            description: "Please log in again.",
+            title: t("businessDashboard.verification.authErrorTitle"),
+            description: t("businessDashboard.verification.authErrorDesc"),
             variant: "destructive",
           });
           return;
@@ -372,8 +374,8 @@ const BusinessDashboard = () => {
             remainingMinutes: 30,
           });
           toast({
-            title: "Too Many Attempts",
-            description: "Please wait before trying again.",
+            title: t("businessDashboard.verification.tooManyTitle"),
+            description: t("businessDashboard.verification.tooManyDesc"),
             variant: "destructive",
           });
           return;
@@ -391,8 +393,8 @@ const BusinessDashboard = () => {
           remainingMinutes: data.remainingMinutes,
         });
         toast({
-          title: "Too Many Failed Attempts",
-          description: `Please wait ${data.remainingMinutes} minutes before trying again.`,
+          title: t("businessDashboard.verification.tooManyFailedTitle"),
+          description: t("businessDashboard.verification.tooManyFailedDesc", { minutes: data.remainingMinutes }),
           variant: "destructive",
         });
         return;
@@ -404,8 +406,8 @@ const BusinessDashboard = () => {
       // Show warning if running low on attempts
       if (data.attemptsRemaining !== undefined && data.attemptsRemaining <= 3) {
         toast({
-          title: "Warning",
-          description: `${data.attemptsRemaining} verification attempts remaining.`,
+          title: t("businessDashboard.verification.warningTitle"),
+          description: t("businessDashboard.verification.attemptsRemaining", { count: data.attemptsRemaining }),
           variant: "destructive",
         });
       }
@@ -424,8 +426,8 @@ const BusinessDashboard = () => {
     // For per-pet offers, require pet selection (optional for per-member offers)
     if (scanResult.offerType === 'per_pet' && !selectedPetId) {
       toast({
-        title: "Select a Pet",
-        description: "Please select which pet is using this offer.",
+        title: t("businessDashboard.result.selectPetTitle"),
+        description: t("businessDashboard.result.selectPetDesc"),
         variant: "destructive",
       });
       return;
@@ -439,8 +441,8 @@ const BusinessDashboard = () => {
       
       if (!accessToken) {
         toast({
-          title: "Session Expired",
-          description: "Please log in again to continue.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -466,8 +468,8 @@ const BusinessDashboard = () => {
       if (data.error) {
         if (data.code === 'ALREADY_REDEEMED') {
           toast({
-            title: "Already Redeemed",
-            description: "This offer has already been redeemed by this member.",
+            title: t("businessDashboard.result.alreadyRedeemedTitle"),
+            description: t("businessDashboard.result.alreadyRedeemedDescOffer"),
             variant: "destructive",
           });
         } else {
@@ -481,8 +483,8 @@ const BusinessDashboard = () => {
       playSuccessSound();
 
       toast({
-        title: "Redemption Confirmed! 🎉",
-        description: `${scanResult.memberName} saved ${data.redemption.discount}. They've been notified!`,
+        title: t("businessDashboard.result.redemptionConfirmedTitle"),
+        description: t("businessDashboard.result.redemptionConfirmedDesc", { name: scanResult.memberName, discount: data.redemption.discount }),
       });
 
       setScanResult(null);
@@ -493,8 +495,8 @@ const BusinessDashboard = () => {
     } catch (error) {
       console.error('Redemption error:', error);
       toast({
-        title: "Redemption Failed",
-        description: "Could not record the redemption. Please try again.",
+        title: t("businessDashboard.result.redemptionFailedTitle"),
+        description: t("businessDashboard.result.redemptionFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -513,8 +515,8 @@ const BusinessDashboard = () => {
 
       if (!accessToken) {
         toast({
-          title: "Session Expired",
-          description: "Please log in again to continue.",
+          title: t("businessDashboard.verification.sessionExpiredTitle"),
+          description: t("businessDashboard.verification.sessionExpiredDesc"),
           variant: "destructive",
         });
         return;
@@ -538,8 +540,8 @@ const BusinessDashboard = () => {
       if (data.error) {
         if (data.code === 'ALREADY_REDEEMED') {
           toast({
-            title: "Already Redeemed",
-            description: "This birthday offer has already been redeemed.",
+            title: t("businessDashboard.birthdayOffers.alreadyRedeemedTitle"),
+            description: t("businessDashboard.birthdayOffers.alreadyRedeemedDesc"),
             variant: "destructive",
           });
         } else {
@@ -553,8 +555,8 @@ const BusinessDashboard = () => {
       playSuccessSound();
 
       toast({
-        title: "Birthday Offer Redeemed! 🎂",
-        description: `${data.redemption.pet_name}'s birthday offer was successfully redeemed. They saved ${data.redemption.discount}!`,
+        title: t("businessDashboard.birthdayOffers.successTitle"),
+        description: t("businessDashboard.birthdayOffers.successDesc", { pet: data.redemption.pet_name, discount: data.redemption.discount }),
       });
 
       // Remove this birthday offer from the scan result
@@ -568,8 +570,8 @@ const BusinessDashboard = () => {
     } catch (error) {
       console.error('Birthday redemption error:', error);
       toast({
-        title: "Redemption Failed",
-        description: "Could not redeem the birthday offer. Please try again.",
+        title: t("businessDashboard.birthdayOffers.failTitle"),
+        description: t("businessDashboard.birthdayOffers.failDesc"),
         variant: "destructive",
       });
     } finally {
@@ -583,10 +585,10 @@ const BusinessDashboard = () => {
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} mins ago`;
+    if (diffMins < 1) return t("businessDashboard.time.justNow");
+    if (diffMins < 60) return t("businessDashboard.time.minsAgo", { count: diffMins });
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours} hours ago`;
+    if (diffHours < 24) return t("businessDashboard.time.hoursAgo", { count: diffHours });
     return formatDate(date);
   };
 
@@ -608,8 +610,8 @@ const BusinessDashboard = () => {
       setIsScannerOpen(false);
       
       toast({
-        title: "QR Code Scanned",
-        description: `Member ID: ${memberId}`,
+        title: t("businessDashboard.verification.qrScannedTitle"),
+        description: t("businessDashboard.verification.qrScannedDesc", { id: memberId }),
       });
     }
   };
@@ -620,7 +622,7 @@ const BusinessDashboard = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">{t("businessDashboard.loading")}</p>
         </div>
       </div>
     );
@@ -629,8 +631,8 @@ const BusinessDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>{business?.business_name || "Partner Dashboard"} | Wooffy Business Portal</title>
-        <meta name="description" content="Verify Wooffy members and track redemptions at your business." />
+        <title>{business?.business_name ? t("businessDashboard.metaTitle", { name: business.business_name }) : t("businessDashboard.metaTitleFallback")}</title>
+        <meta name="description" content={t("businessDashboard.metaDesc")} />
       </Helmet>
 
       {/* Celebration Animation */}
@@ -650,9 +652,9 @@ const BusinessDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2">
-              {business?.business_name || "Partner Dashboard"}
+              {business?.business_name || t("businessDashboard.fallbackTitle")}
             </h1>
-            <p className="text-slate-500">Verify members and track your Wooffy redemptions</p>
+            <p className="text-slate-500">{t("businessDashboard.subtitle")}</p>
           </div>
 
 
@@ -667,8 +669,8 @@ const BusinessDashboard = () => {
                   <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Offers</h3>
-                  <p className="text-xs sm:text-sm text-slate-500">{offers.length} active</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.offers")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500">{t("businessDashboard.nav.offersActive", { count: offers.length })}</p>
                 </div>
               </Link>
             ) : (
@@ -677,8 +679,8 @@ const BusinessDashboard = () => {
                   <Tag className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Offers</h3>
-                  <p className="text-xs sm:text-sm text-slate-400">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.offers")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -691,8 +693,8 @@ const BusinessDashboard = () => {
                   <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Redemptions</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">View history</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.redemptions")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.viewHistory")}</p>
                 </div>
               </Link>
             ) : (
@@ -701,8 +703,8 @@ const BusinessDashboard = () => {
                   <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Redemptions</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.redemptions")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -715,8 +717,8 @@ const BusinessDashboard = () => {
                   <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Analytics</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Insights</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.analytics")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.insights")}</p>
                 </div>
               </Link>
             ) : (
@@ -725,8 +727,8 @@ const BusinessDashboard = () => {
                   <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Analytics</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.analytics")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -739,8 +741,8 @@ const BusinessDashboard = () => {
                   <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Birthdays</h3>
-                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Celebrate</p>
+                  <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.birthdays")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.celebrate")}</p>
                 </div>
               </Link>
             ) : (
@@ -749,8 +751,8 @@ const BusinessDashboard = () => {
                   <Cake className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">Birthdays</h3>
-                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">Pending</p>
+                  <h3 className="font-semibold text-slate-500 text-sm sm:text-base">{t("businessDashboard.nav.birthdays")}</h3>
+                  <p className="text-xs sm:text-sm text-slate-400 hidden sm:block">{t("businessDashboard.nav.pending")}</p>
                 </div>
               </div>
             )}
@@ -763,8 +765,8 @@ const BusinessDashboard = () => {
                 <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">Settings</h3>
-                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">Profile</p>
+                <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{t("businessDashboard.nav.settings")}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 hidden sm:block">{t("businessDashboard.nav.profile")}</p>
               </div>
             </Link>
           </div>
@@ -776,10 +778,10 @@ const BusinessDashboard = () => {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <h2 className="font-display text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
                   <ScanLine className="w-5 h-5 text-primary" />
-                  Member Verification
+                  {t("businessDashboard.verification.title")}
                 </h2>
                 <p className="text-sm text-slate-500 mb-6">
-                  💡 <span className="font-medium">Quick tip:</span> Scan QR code or enter member ID, select offer, then confirm redemption.
+                  <Trans i18nKey="businessDashboard.verification.tip" components={{ strong: <span className="font-medium" /> }} />
                 </p>
 
                 {!isApproved ? (
@@ -787,9 +789,9 @@ const BusinessDashboard = () => {
                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Clock className="w-8 h-8 text-slate-400" />
                     </div>
-                    <h3 className="font-semibold text-slate-600 mb-2">Verification Unavailable</h3>
+                    <h3 className="font-semibold text-slate-600 mb-2">{t("businessDashboard.verification.unavailableTitle")}</h3>
                     <p className="text-sm text-slate-500">
-                      Member verification will be available once your business is approved.
+                      {t("businessDashboard.verification.unavailableDesc")}
                     </p>
                   </div>
                 ) : (
@@ -799,7 +801,7 @@ const BusinessDashboard = () => {
                   <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
                       <div className="flex items-center justify-between p-4 border-b">
-                        <h3 className="font-display font-semibold text-slate-900">Scan QR Code</h3>
+                        <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.verification.scanQr")}</h3>
                         <button 
                           onClick={() => setIsScannerOpen(false)}
                           className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -814,8 +816,8 @@ const BusinessDashboard = () => {
                             onError={(error) => {
                               console.error('Scanner error:', error);
                               toast({
-                                title: "Camera Error",
-                                description: "Could not access camera. Please check permissions.",
+                                title: t("businessDashboard.verification.cameraErrorTitle"),
+                                description: t("businessDashboard.verification.cameraErrorDesc"),
                                 variant: "destructive",
                               });
                             }}
@@ -826,7 +828,7 @@ const BusinessDashboard = () => {
                           />
                         </div>
                         <p className="text-center text-sm text-slate-500 mt-4">
-                          Point camera at member's QR code
+                          {t("businessDashboard.verification.pointCamera")}
                         </p>
                       </div>
                     </div>
@@ -842,7 +844,7 @@ const BusinessDashboard = () => {
                     className="w-full gap-2 border-primary text-primary hover:bg-primary/5"
                   >
                     <Camera className="w-5 h-5" />
-                    Open Camera Scanner
+                    {t("businessDashboard.verification.openCamera")}
                   </Button>
 
                   <div className="relative">
@@ -850,16 +852,16 @@ const BusinessDashboard = () => {
                       <div className="w-full border-t border-slate-200" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-white px-2 text-slate-500">or enter manually</span>
+                      <span className="bg-white px-2 text-slate-500">{t("businessDashboard.verification.orManual")}</span>
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Member ID
+                      {t("businessDashboard.verification.memberId")}
                     </label>
                     <Input
-                      placeholder="e.g., WF-2026-123456"
+                      placeholder={t("businessDashboard.verification.memberIdPlaceholder")}
                       value={memberIdInput}
                       onChange={(e) => setMemberIdInput(e.target.value)}
                       className="font-mono"
@@ -868,17 +870,17 @@ const BusinessDashboard = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">
-                      Verification Type
+                      {t("businessDashboard.verification.verificationType")}
                     </label>
                     <select
                       value={selectedOfferId}
                       onChange={(e) => setSelectedOfferId(e.target.value)}
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
                     >
-                      <option value="birthday">🎂 Birthday Verification</option>
+                      <option value="birthday">{t("businessDashboard.verification.birthdayVerification")}</option>
                       {offers.map(offer => (
                         <option key={offer.id} value={offer.id}>
-                          {offer.title} ({offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} off)
+                          {t("businessDashboard.verification.offerOption", { title: offer.title, value: offer.discount_value, symbol: offer.discount_type === 'percentage' ? '%' : '€' })}
                         </option>
                       ))}
                     </select>

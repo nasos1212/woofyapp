@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, MessageSquare } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -19,23 +20,25 @@ interface ContactPopoverProps {
 }
 
 const ContactPopover = ({
-  triggerText = "Contact us",
+  triggerText,
   triggerVariant = "outline",
   triggerSize = "sm",
   triggerClassName = "",
   showIcon = true,
   asLink = false,
 }: ContactPopoverProps) => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [showSupportDialog, setShowSupportDialog] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const label = triggerText ?? t("contactPopover.defaultTrigger");
 
   const handleEmailClick = () => {
     navigator.clipboard.writeText("hello@wooffy.app");
     window.location.href = "mailto:hello@wooffy.app";
     toast({
-      title: "Email address copied!",
-      description: "hello@wooffy.app has been copied to your clipboard. Your email app should open - if not, paste the address manually.",
+      title: t("contactPopover.emailCopiedTitle"),
+      description: t("contactPopover.emailCopiedDesc"),
     });
     setPopoverOpen(false);
   };
@@ -51,17 +54,17 @@ const ContactPopover = ({
         <PopoverTrigger asChild>
           {asLink ? (
             <button className={`text-primary hover:underline ${triggerClassName}`}>
-              {triggerText}
+              {label}
             </button>
           ) : (
             <Button variant={triggerVariant} size={triggerSize} className={`gap-2 ${triggerClassName}`}>
               {showIcon && <MessageSquare className="w-4 h-4" />}
-              {triggerText}
+              {label}
             </Button>
           )}
         </PopoverTrigger>
         <PopoverContent className="w-64 p-3" align="center">
-          <p className="text-sm font-medium mb-3 text-center">How would you like to reach us?</p>
+          <p className="text-sm font-medium mb-3 text-center">{t("contactPopover.howToReach")}</p>
           <div className="flex flex-col gap-2">
             <Button
               variant="default"
@@ -70,7 +73,7 @@ const ContactPopover = ({
               onClick={handleMessageClick}
             >
               <MessageSquare className="w-4 h-4" />
-              Message Us
+              {t("contactPopover.messageUs")}
             </Button>
             <Button
               variant="outline"
@@ -79,7 +82,7 @@ const ContactPopover = ({
               onClick={handleEmailClick}
             >
               <Mail className="w-4 h-4" />
-              Send an Email
+              {t("contactPopover.sendEmail")}
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">hello@wooffy.app</p>
