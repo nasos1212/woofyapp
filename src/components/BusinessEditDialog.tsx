@@ -81,11 +81,11 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
         .eq("id", photoId);
 
       if (error) throw error;
-      toast.success("Photo deleted");
+      toast.success(t("businessEditDialog.photoDeleted"));
       fetchPhotos();
     } catch (error: any) {
       console.error("Error deleting photo:", error);
-      toast.error(error.message || "Failed to delete photo");
+      toast.error(error.message || t("businessEditDialog.deleteFailed"));
     }
   };
   const handleSave = async () => {
