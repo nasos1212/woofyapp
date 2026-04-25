@@ -255,12 +255,12 @@ export default function BusinessProfile() {
 
   const handleSubmitReview = async () => {
     if (!user) {
-      toast.error("Please log in to leave a review");
+      toast.error(t("businessProfile.toastLoginToReview"));
       return;
     }
 
     if (userRating === 0) {
-      toast.error("Please select a rating");
+      toast.error(t("businessProfile.toastSelectRating"));
       return;
     }
 
