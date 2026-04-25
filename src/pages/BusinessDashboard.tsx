@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { ScanLine, CheckCircle2, XCircle, Clock, Users, TrendingUp, Gift, Building2, Bell, AlertCircle, Camera, X, BarChart3, Tag, Cake, HelpCircle, Dog, Cat, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -75,6 +76,7 @@ const BusinessDashboard = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { playSuccessSound } = useSuccessSound();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
