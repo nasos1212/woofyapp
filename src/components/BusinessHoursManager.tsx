@@ -52,6 +52,7 @@ const formatTime = (time: string | null): string => {
 };
 
 export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) {
+  const { t } = useTranslation();
   const [hours, setHours] = useState<BusinessHour[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
