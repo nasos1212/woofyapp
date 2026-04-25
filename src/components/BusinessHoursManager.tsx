@@ -72,7 +72,7 @@ export function BusinessHoursManager({ businessId }: BusinessHoursManagerProps) 
       if (error) throw error;
 
       // Initialize with all days, merging existing data
-      const allDays: BusinessHour[] = DAYS_OF_WEEK.map((day) => {
+      const allDays: BusinessHour[] = DAY_KEYS.map((day) => {
         const existing = data?.find((h) => h.day_of_week === day.value);
         return existing
           ? {
