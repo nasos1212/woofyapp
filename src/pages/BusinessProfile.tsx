@@ -577,7 +577,7 @@ export default function BusinessProfile() {
                             onClick={() => trackContactClick(business.id, business.business_name, "google_maps")}
                           >
                             <MapPin className="w-3.5 h-3.5" />
-                            Directions
+                            {t("businessProfile.directions")}
                           </a>
                         )}
                       </div>
