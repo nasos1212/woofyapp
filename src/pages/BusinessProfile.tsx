@@ -437,7 +437,7 @@ export default function BusinessProfile() {
                           {averageRating.toFixed(1)}
                         </span>
                         <span className="text-muted-foreground text-sm">
-                          ({reviews.length} reviews)
+                          {t("businessProfile.reviews", { count: reviews.length })}
                         </span>
                       </div>
                     )}
