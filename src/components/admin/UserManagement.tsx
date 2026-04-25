@@ -45,6 +45,7 @@ interface BusinessInfo {
   category: string;
   categories: string[];
   verification_status: string;
+  is_hidden: boolean;
   city: string | null;
   address: string | null;
   phone: string | null;
@@ -67,6 +68,7 @@ interface ShelterInfo {
   shelter_name: string;
   contact_name: string;
   verification_status: string;
+  is_hidden: boolean;
   city: string | null;
   location: string;
   address: string | null;
@@ -204,6 +206,7 @@ const UserManagement = () => {
         category: b.category,
         categories: (b as any).categories || [b.category],
         verification_status: b.verification_status,
+        is_hidden: (b as any).is_hidden ?? false,
         city: b.city,
         address: b.address,
         phone: b.phone,
@@ -226,6 +229,7 @@ const UserManagement = () => {
         shelter_name: s.shelter_name,
         contact_name: s.contact_name,
         verification_status: s.verification_status,
+        is_hidden: (s as any).is_hidden ?? false,
         city: s.city,
         location: s.location,
         address: s.address,
