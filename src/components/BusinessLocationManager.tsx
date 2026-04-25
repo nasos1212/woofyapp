@@ -38,6 +38,7 @@ const BusinessLocationManager = ({
   primaryLocation,
   onPrimaryLocationChange,
 }: BusinessLocationManagerProps) => {
+  const { t } = useTranslation();
   const addLocation = () => {
     onLocationsChange([
       ...locations,
