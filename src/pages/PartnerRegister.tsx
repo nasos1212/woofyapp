@@ -23,10 +23,12 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import BusinessLocationManager, { BusinessLocation } from "@/components/BusinessLocationManager";
 import { ensureHttps } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
 const PartnerRegister = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -218,15 +220,15 @@ const PartnerRegister = () => {
         }, { onConflict: 'user_id,role' });
       
       toast({
-        title: "Application Submitted!",
-        description: "Your partner application is now under review. We'll notify you once approved.",
+        title: t("partnerRegister.applicationSubmittedTitle"),
+        description: t("partnerRegister.applicationSubmittedDesc"),
       });
       
       navigate("/business");
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit application",
+        title: t("partnerRegister.errorTitle"),
+        description: error.message || t("partnerRegister.errorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -237,7 +239,7 @@ const PartnerRegister = () => {
   if (loading || existingBusiness === null) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">{t("partnerRegister.loading")}</div>
       </div>
     );
   }
@@ -270,21 +272,21 @@ const PartnerRegister = () => {
             <AlertDialogHeader>
               <AlertDialogTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
-                Leave Registration?
+                {t("partnerRegister.exitTitle")}
               </AlertDialogTitle>
               <AlertDialogDescription>
-                You will be signed out, but don't worry — your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.
+                {t("partnerRegister.exitDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setPendingNavigation(null)}>
-                Continue Editing
+                {t("partnerRegister.continueEditing")}
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmNavigation}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                Leave Without Saving
+                {t("partnerRegister.leaveWithout")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -296,7 +298,7 @@ const PartnerRegister = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {step > 1 ? "Back to Business Info" : "Back to Home"}
+          {step > 1 ? t("partnerRegister.backToBusinessInfo") : t("partnerRegister.backToHome")}
         </Button>
 
         {/* Progress - simplified to 2 steps */}
@@ -305,7 +307,7 @@ const PartnerRegister = () => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
               {step > 1 ? <Check className="w-4 h-4" /> : "1"}
             </div>
-            <span className="font-medium hidden sm:inline">Business Info</span>
+            <span className="font-medium hidden sm:inline">{t("partnerRegister.stepBusinessInfo")}</span>
           </div>
           <div className="flex-1 h-1 bg-muted rounded">
             <div className={`h-full bg-primary rounded transition-all ${step >= 2 ? "w-full" : "w-0"}`} />
@@ -314,7 +316,7 @@ const PartnerRegister = () => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
               2
             </div>
-            <span className="font-medium hidden sm:inline">Review</span>
+            <span className="font-medium hidden sm:inline">{t("partnerRegister.stepReview")}</span>
           </div>
         </div>
 
@@ -327,17 +329,17 @@ const PartnerRegister = () => {
                   <Building2 className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">Business Information</h1>
-                  <p className="text-muted-foreground">Tell us about your business</p>
+                  <h1 className="font-display text-2xl font-bold text-foreground">{t("partnerRegister.businessInfoTitle")}</h1>
+                  <p className="text-muted-foreground">{t("partnerRegister.businessInfoSubtitle")}</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="businessName">Business Name *</Label>
+                  <Label htmlFor="businessName">{t("partnerRegister.businessName")}</Label>
                   <Input
                     id="businessName"
-                    placeholder="Your Business Name"
+                    placeholder={t("partnerRegister.businessNamePlaceholder")}
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     required
@@ -352,16 +354,16 @@ const PartnerRegister = () => {
                       setOtherCategoryDescription("");
                     }
                   }}
-                  label="Business Categories"
+                  label={t("partnerRegister.businessCategoriesLabel")}
                   required
                 />
 
                 {selectedCategories.includes("other") && (
                   <div className="space-y-2">
-                    <Label htmlFor="otherCategoryDescription">What type of business or service? *</Label>
+                    <Label htmlFor="otherCategoryDescription">{t("partnerRegister.otherTypeLabel")}</Label>
                     <Input
                       id="otherCategoryDescription"
-                      placeholder="e.g., Pet Photography, Dog Walking, Pet Transport..."
+                      placeholder={t("partnerRegister.otherTypePlaceholder")}
                       value={otherCategoryDescription}
                       onChange={(e) => setOtherCategoryDescription(e.target.value)}
                       required
@@ -370,10 +372,10 @@ const PartnerRegister = () => {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">{t("partnerRegister.descriptionLabel")}</Label>
                   <Textarea
                     id="description"
-                    placeholder="Tell pet owners about your services..."
+                    placeholder={t("partnerRegister.descriptionPlaceholder")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
@@ -382,9 +384,9 @@ const PartnerRegister = () => {
 
                 {/* Store Locations */}
                 <div className="space-y-2">
-                  <Label className="font-semibold">Store Locations *</Label>
+                  <Label className="font-semibold">{t("partnerRegister.storeLocations")}</Label>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Add your store locations with their specific address and phone number.
+                    {t("partnerRegister.storeLocationsHelp")}
                   </p>
                   <BusinessLocationManager
                     locations={additionalLocations}
@@ -397,11 +399,11 @@ const PartnerRegister = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-1.5">
-                      <Label htmlFor="email">Business Contact Email</Label>
+                      <Label htmlFor="email">{t("partnerRegister.contactEmail")}</Label>
                       <div className="group relative">
                         <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                          This email will be shown on your public business profile so customers can contact you. By default, we use your login email. If you'd prefer a different customer-facing email (e.g. info@yourbusiness.com), click the link below to add one.
+                          {t("partnerRegister.contactEmailTooltip")}
                         </div>
                       </div>
                     </div>
@@ -421,11 +423,11 @@ const PartnerRegister = () => {
                         onClick={() => setUseDifferentEmail(true)}
                         className="text-xs text-primary hover:underline"
                       >
-                        Use a different email for customers?
+                        {t("partnerRegister.useDifferentEmail")}
                       </button>
                     ) : (
                       <div className="space-y-1.5 mt-2">
-                        <Label htmlFor="customEmail" className="text-xs">Customer-facing email</Label>
+                        <Label htmlFor="customEmail" className="text-xs">{t("partnerRegister.customerEmail")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                           <Input
@@ -446,7 +448,7 @@ const PartnerRegister = () => {
                           }}
                           className="text-xs text-muted-foreground hover:underline"
                         >
-                          Cancel — use login email
+                          {t("partnerRegister.cancelLoginEmail")}
                         </button>
                       </div>
                     )}
@@ -456,20 +458,20 @@ const PartnerRegister = () => {
                 {/* Web & Social Presence */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-1.5">
-                    <Label className="font-semibold">Web & Social Presence *</Label>
+                    <Label className="font-semibold">{t("partnerRegister.webSocialLabel")}</Label>
                     <div className="group relative">
                       <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                        Provide at least one link so customers can find you online. This can be a website or any social media profile.
+                        {t("partnerRegister.webSocialTooltip")}
                       </div>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Add at least one: website or social media link.
+                    {t("partnerRegister.webSocialHelp")}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label htmlFor="website" className="text-sm">Website</Label>
+                      <Label htmlFor="website" className="text-sm">{t("partnerRegister.website")}</Label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -482,7 +484,7 @@ const PartnerRegister = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="instagram" className="text-sm">Instagram</Label>
+                      <Label htmlFor="instagram" className="text-sm">{t("partnerRegister.instagram")}</Label>
                       <div className="relative">
                         <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -495,7 +497,7 @@ const PartnerRegister = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="facebook" className="text-sm">Facebook</Label>
+                      <Label htmlFor="facebook" className="text-sm">{t("partnerRegister.facebook")}</Label>
                       <div className="relative">
                         <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -508,7 +510,7 @@ const PartnerRegister = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="tiktok" className="text-sm">TikTok</Label>
+                      <Label htmlFor="tiktok" className="text-sm">{t("partnerRegister.tiktok")}</Label>
                       <div className="relative">
                         <Music className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
@@ -530,7 +532,7 @@ const PartnerRegister = () => {
                   onClick={() => setStep(2)}
                   disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || (!website.trim() && !instagramUrl.trim() && !facebookUrl.trim() && !tiktokUrl.trim()) || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
                 >
-                  Review & Submit
+                  {t("partnerRegister.reviewSubmit")}
                 </Button>
               </div>
             </>
@@ -544,22 +546,22 @@ const PartnerRegister = () => {
                   <Check className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">Review & Submit</h1>
-                  <p className="text-muted-foreground">Confirm your partner application</p>
+                  <h1 className="font-display text-2xl font-bold text-foreground">{t("partnerRegister.reviewTitle")}</h1>
+                  <p className="text-muted-foreground">{t("partnerRegister.reviewSubtitle")}</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 {/* Business Summary */}
                 <div className="p-4 bg-muted/50 rounded-xl">
-                  <h3 className="font-semibold text-foreground mb-3">Business Details</h3>
+                  <h3 className="font-semibold text-foreground mb-3">{t("partnerRegister.businessDetails")}</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Name:</span>
+                      <span className="text-muted-foreground">{t("partnerRegister.name")}</span>
                       <span className="font-medium">{businessName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Categories:</span>
+                      <span className="text-muted-foreground">{t("partnerRegister.categories")}</span>
                       <span className="font-medium text-right">
                         {getCategoriesLabel(selectedCategories)}
                         {selectedCategories.includes("other") && otherCategoryDescription && ` (${otherCategoryDescription})`}
@@ -570,7 +572,7 @@ const PartnerRegister = () => {
 
                 {/* Locations Summary */}
                 <div className="p-4 bg-muted/50 rounded-xl">
-                  <h3 className="font-semibold text-foreground mb-3">Store Locations</h3>
+                  <h3 className="font-semibold text-foreground mb-3">{t("partnerRegister.locationsHeading")}</h3>
                   <div className="space-y-3">
                     {allLocations.map((loc, index) => (
                       <div key={index} className="p-3 bg-background rounded-lg border">
@@ -583,7 +585,7 @@ const PartnerRegister = () => {
                         <div className="text-sm text-muted-foreground space-y-1 ml-7">
                           {loc.address && <div>📍 {loc.address}</div>}
                           {loc.phone && <div>📞 {loc.phone}</div>}
-                          {loc.google_maps_url && <div>🗺️ Google Maps link added</div>}
+                          {loc.google_maps_url && <div>🗺️ {t("partnerRegister.googleMapsAdded")}</div>}
                         </div>
                       </div>
                     ))}
@@ -595,10 +597,9 @@ const PartnerRegister = () => {
                 <div className="p-4 bg-paw-peach rounded-xl flex gap-3">
                   <Clock className="w-5 h-5 text-paw-orange flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground">Verification Required</p>
+                    <p className="font-medium text-foreground">{t("partnerRegister.verificationRequired")}</p>
                     <p className="text-sm text-muted-foreground">
-                      Your application will be reviewed by our team within 2-3 business days. 
-                      You'll receive an email once approved.
+                      {t("partnerRegister.verificationDesc")}
                     </p>
                   </div>
                 </div>
@@ -606,14 +607,14 @@ const PartnerRegister = () => {
 
               <div className="mt-8 flex justify-between">
                 <Button variant="ghost" onClick={() => setStep(1)}>
-                  Back
+                  {t("partnerRegister.back")}
                 </Button>
                 <Button
                   variant="hero"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                  {isSubmitting ? t("partnerRegister.submitting") : t("partnerRegister.submitApplication")}
                 </Button>
               </div>
             </>

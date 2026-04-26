@@ -3,10 +3,12 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 
 const Terms = () => {
   const navigate = useNavigate();
   const { hash } = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (hash) {
@@ -22,8 +24,8 @@ const Terms = () => {
   return (
     <>
       <Helmet>
-        <title>Terms & Conditions | Wooffy</title>
-        <meta name="description" content="Read the Terms and Conditions, Privacy Policy, and Shelter Participation Agreement for Wooffy.App." />
+        <title>{t("termsPage.metaTitle")}</title>
+        <meta name="description" content={t("termsPage.metaDescription")} />
       </Helmet>
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8 max-w-3xl">
@@ -33,7 +35,7 @@ const Terms = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back
+            {t("termsPage.back")}
           </Button>
 
           <article className="prose prose-sm sm:prose max-w-none dark:prose-invert prose-headings:font-display">

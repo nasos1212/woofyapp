@@ -56,15 +56,8 @@ interface UserContext {
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/pet-health-assistant`;
 
-const suggestedQuestions = [
-  "What vaccines does my pet need?",
-  "How often should I groom my pet?",
-  "My pet is scratching a lot, what could it be?",
-  "What human foods are toxic to pets?",
-  "How much exercise does my breed need?",
-  "What offers would be good for my pet?",
-  "When is my pet's next vaccination due?",
-];
+// Suggested questions are loaded via t() inside the component
+
 
 const PetHealthAssistant = () => {
   const { t } = useTranslation();
@@ -704,7 +697,7 @@ const PetHealthAssistant = () => {
       }
     } catch (error) {
       console.error("Chat error:", error);
-      const errorMessage = "I'm sorry, I encountered an error. Please try again in a moment. 🐾";
+      const errorMessage = t("petHealthAssistantUI.errorMessage");
       setMessages((prev) => [
         ...prev,
         {
@@ -751,7 +744,7 @@ const PetHealthAssistant = () => {
     setCurrentSessionId(null);
     setMessages([]);
     
-    toast.success(`Switched to ${pet.pet_name}`);
+    toast.success(t("petHealthAssistantUI.switchedTo", { name: pet.pet_name }));
     trackFeatureUse("ai_pet_switch", { pet_name: pet.pet_name, pet_breed: pet.pet_breed });
   };
   // Handle language change - just update the preference, no greeting
@@ -790,8 +783,8 @@ const PetHealthAssistant = () => {
   return (
     <>
       <Helmet>
-        <title>AI Pet Assistant | Wooffy</title>
-        <meta name="description" content="Get instant pet advice from our AI-powered assistant." />
+        <title>{t("petHealthAssistantUI.metaTitle")}</title>
+        <meta name="description" content={t("petHealthAssistantUI.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-soft to-background flex flex-col">
@@ -807,7 +800,7 @@ const PetHealthAssistant = () => {
             className="mb-4 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("petHealthAssistantUI.back")}
           </Button>
 
           <div className="mb-6">
@@ -818,10 +811,10 @@ const PetHealthAssistant = () => {
                 </div>
                 <div>
                   <h1 className="font-display text-xl font-bold text-foreground">
-                    Wooffy Assistant
+                    {t("petHealthAssistantUI.title")}
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    Ask me anything about your pet! 🐾
+                    {t("petHealthAssistantUI.subtitle")}
                   </p>
                 </div>
               </div>
@@ -839,7 +832,7 @@ const PetHealthAssistant = () => {
                   onClick={() => setShowHistory(!showHistory)}
                 >
                   <History className="w-4 h-4 mr-1" />
-                  History
+                  {t("petHealthAssistantUI.history")}
                 </Button>
               </div>
             </div>
@@ -886,15 +879,19 @@ const PetHealthAssistant = () => {
                   <Sparkles className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="font-display font-semibold text-foreground mb-2">
-                  How can I help today?
+                  {t("petHealthAssistantUI.howCanIHelp")}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-6 max-w-sm">
-                  Ask me about pet health, nutrition, behavior, or any concerns you have about your furry friend.
+                  {t("petHealthAssistantUI.howCanIHelpDesc")}
                 </p>
 
                 {/* Suggested Questions */}
                 <div className="flex flex-wrap justify-center gap-2">
-                  {suggestedQuestions.slice(0, 3).map((q, i) => (
+                  {[
+                    t("petHealthAssistantUI.suggestedQ1"),
+                    t("petHealthAssistantUI.suggestedQ2"),
+                    t("petHealthAssistantUI.suggestedQ3"),
+                  ].map((q, i) => (
                     <button
                       key={i}
                       onClick={() => sendMessage(q)}
@@ -952,8 +949,7 @@ const PetHealthAssistant = () => {
           <div className="flex items-start gap-2 mb-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
             <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-xs text-amber-700">
-              Wooffy is an AI assistant and cannot replace professional veterinary care. 
-              For emergencies, please contact your vet immediately.
+              {t("petHealthAssistantUI.disclaimer")}
             </p>
           </div>
 
@@ -962,7 +958,7 @@ const PetHealthAssistant = () => {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about your pet's health..."
+              placeholder={t("petHealthAssistantUI.inputPlaceholder")}
               className="resize-none min-h-[50px] max-h-[120px]"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
