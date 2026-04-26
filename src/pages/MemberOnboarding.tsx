@@ -88,6 +88,7 @@ interface ExistingMembership {
 }
 
 const MemberOnboarding = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
