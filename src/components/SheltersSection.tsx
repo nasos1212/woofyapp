@@ -98,7 +98,7 @@ const SheltersSection = () => {
     e.preventDefault();
     
     if (!user) {
-      toast.error("Please log in to submit an application");
+      toast.error(t("shelterApply.loginRequired"));
       return;
     }
     
@@ -122,22 +122,11 @@ const SheltersSection = () => {
 
       if (error) {
         console.error("Error submitting shelter application:", error);
-        toast.error("Failed to submit application. Please try again.");
+        toast.error(t("shelterApply.submitFailed"));
         return;
       }
 
-      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
-      setIsDialogOpen(false);
-      // Redirect to shelter dashboard
-      navigate('/shelter-dashboard');
-
-      if (error) {
-        console.error("Error submitting shelter application:", error);
-        toast.error("Failed to submit application. Please try again.");
-        return;
-      }
-
-      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
+      toast.success(t("shelterApply.submitted"));
       setIsDialogOpen(false);
       setFormData({
         shelterName: "",
@@ -150,9 +139,11 @@ const SheltersSection = () => {
         yearsOperating: "",
         description: "",
       });
+      // Redirect to shelter dashboard
+      navigate('/shelter-dashboard');
     } catch (err) {
       console.error("Error:", err);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(t("shelterApply.unexpected"));
     } finally {
       setIsSubmitting(false);
     }
