@@ -8,18 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
-
-const passwordSchema = z.object({
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must be less than 128 characters"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+import { useTranslation } from "react-i18next";
 
 const ResetPassword = () => {
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,16 +20,25 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const passwordSchema = z.object({
+    password: z.string()
+      .min(8, t("resetPassword.passwordMin"))
+      .max(128, t("resetPassword.passwordMax")),
+    confirmPassword: z.string(),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t("resetPassword.passwordsDontMatch"),
+    path: ["confirmPassword"],
+  });
+
   useEffect(() => {
-    // Check for error in URL hash (Supabase redirects with error in hash)
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
     const error = hashParams.get('error');
     const errorDescription = hashParams.get('error_description');
     
     if (error) {
-      setErrorMessage(errorDescription || 'The reset link is invalid or has expired.');
+      setErrorMessage(errorDescription || t("resetPassword.linkExpiredDefault"));
     }
-  }, []);
+  }, [t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +53,7 @@ const ResetPassword = () => {
       if (!validationResult.success) {
         const firstError = validationResult.error.errors[0];
         toast({
-          title: "Validation Error",
+          title: t("resetPassword.validationError"),
           description: firstError.message,
           variant: "destructive",
         });
@@ -66,26 +67,25 @@ const ResetPassword = () => {
 
       if (error) {
         toast({
-          title: "Reset Failed",
+          title: t("resetPassword.resetFailed"),
           description: error.message,
           variant: "destructive",
         });
       } else {
         setIsSuccess(true);
         toast({
-          title: "Password Updated!",
-          description: "Your password has been successfully reset.",
+          title: t("resetPassword.passwordUpdated"),
+          description: t("resetPassword.passwordUpdatedDesc"),
         });
         
-        // Redirect to login after a delay
         setTimeout(() => {
           navigate("/auth");
         }, 2000);
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: t("resetPassword.errorTitle"),
+        description: t("resetPassword.errorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -102,13 +102,13 @@ const ResetPassword = () => {
               <Dog className="w-8 h-8 text-destructive" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-              Link Expired
+              {t("resetPassword.linkExpiredTitle")}
             </h1>
             <p className="text-muted-foreground mb-6">
               {errorMessage}
             </p>
             <Button onClick={() => navigate("/auth")} variant="hero" className="w-full">
-              Request New Link
+              {t("resetPassword.requestNewLink")}
             </Button>
           </div>
         </div>
@@ -125,10 +125,10 @@ const ResetPassword = () => {
               <Check className="w-8 h-8 text-green-600" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground mb-2">
-              Password Reset!
+              {t("resetPassword.passwordResetTitle")}
             </h1>
             <p className="text-muted-foreground mb-6">
-              Your password has been successfully updated. Redirecting to login...
+              {t("resetPassword.passwordResetDesc")}
             </p>
             <DogLoader size="md" />
           </div>
@@ -146,27 +146,25 @@ const ResetPassword = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Login
+          {t("resetPassword.backToLogin")}
         </Button>
 
         <div className="bg-card rounded-2xl shadow-card p-8">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-hero rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Dog className="w-8 h-8 text-primary-foreground" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              Reset Password
+              {t("resetPassword.title")}
             </h1>
             <p className="text-muted-foreground mt-2">
-              Enter your new password below
+              {t("resetPassword.subtitle")}
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">New Password</Label>
+              <Label htmlFor="password">{t("resetPassword.newPassword")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -182,7 +180,7 @@ const ResetPassword = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">{t("resetPassword.confirmPassword")}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -203,7 +201,7 @@ const ResetPassword = () => {
               className="w-full"
               disabled={isLoading}
             >
-              {isLoading ? <DogLoader size="sm" /> : "Update Password"}
+              {isLoading ? <DogLoader size="sm" /> : t("resetPassword.updatePassword")}
             </Button>
           </form>
         </div>
