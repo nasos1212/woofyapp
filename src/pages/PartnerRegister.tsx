@@ -23,6 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import BusinessLocationManager, { BusinessLocation } from "@/components/BusinessLocationManager";
 import { ensureHttps } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
