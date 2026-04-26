@@ -220,15 +220,15 @@ const PartnerRegister = () => {
         }, { onConflict: 'user_id,role' });
       
       toast({
-        title: "Application Submitted!",
-        description: "Your partner application is now under review. We'll notify you once approved.",
+        title: t("partnerRegister.applicationSubmittedTitle"),
+        description: t("partnerRegister.applicationSubmittedDesc"),
       });
       
       navigate("/business");
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit application",
+        title: t("partnerRegister.errorTitle"),
+        description: error.message || t("partnerRegister.errorDesc"),
         variant: "destructive",
       });
     } finally {
