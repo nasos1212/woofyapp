@@ -471,7 +471,7 @@ const PartnerRegister = () => {
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label htmlFor="website" className="text-sm">Website</Label>
+                      <Label htmlFor="website" className="text-sm">{t("partnerRegister.website")}</Label>
                       <div className="relative">
                         <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
