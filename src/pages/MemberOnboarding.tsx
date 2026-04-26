@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { useTranslation } from "react-i18next";
 import { Dog, Cat, Plus, Trash2, Check, ArrowRight, ArrowLeft, MapPin, ChevronDown, RefreshCw, Sparkles, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -154,11 +155,11 @@ const MemberOnboarding = () => {
 
       if (error) throw error;
 
-      toast.success("Welcome back! Your membership has been reactivated 🎉");
+      toast.success(t("memberOnboardingToasts.reactivated"));
       navigate("/member");
     } catch (error: any) {
       console.error("Reactivation error:", error);
-      toast.error(error.message || "Failed to reactivate membership");
+      toast.error(error.message || t("memberOnboardingToasts.reactivateFailed"));
     } finally {
       setIsReactivating(false);
     }
@@ -208,13 +209,13 @@ const MemberOnboarding = () => {
     // Validate at least one pet has a name
     const validPets = pets.filter((p) => p.name.trim());
     if (validPets.length === 0) {
-      toast.error("Please add at least one pet with a name");
+      toast.error(t("memberOnboardingToasts.needPetName"));
       return;
     }
     // Check for future birthdays
     const futureBirthdayPet = validPets.find(hasFutureBirthday);
     if (futureBirthdayPet) {
-      toast.error(`${futureBirthdayPet.name || "A pet"}'s birthday cannot be a future date`);
+      toast.error(t("memberOnboardingToasts.futureBirthday", { name: futureBirthdayPet.name || t("memberOnboardingToasts.futureBirthdayGeneric") }));
       return;
     }
     setStep("location");
@@ -300,11 +301,11 @@ const MemberOnboarding = () => {
           .eq("user_id", user.id);
       }
 
-      toast.success("Welcome to Wooffy! 🎉");
+      toast.success(t("memberOnboardingToasts.welcome"));
       navigate("/member");
     } catch (error: any) {
       console.error("Onboarding error:", error);
-      toast.error(error.message || "Failed to complete setup");
+      toast.error(error.message || t("memberOnboardingToasts.completeFailed"));
     } finally {
       setIsSubmitting(false);
     }
