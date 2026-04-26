@@ -2148,8 +2148,77 @@
       "coverRemoved": "Cover photo removed",
       "logoRemoveFailed": "Failed to remove logo",
       "coverRemoveFailed": "Failed to remove cover photo",
-      "positionSaved": "Cover position saved!",
+    "positionSaved": "Cover position saved!",
       "positionSaveFailed": "Failed to save position"
+    }
+  },
+  "memberDashboard": {
+    "pageTitle": "My Wooffy Dashboard | Member Area",
+    "pageDescription": "Access your Wooffy membership card, view savings, and discover nearby pet deals.",
+    "hello": "Hello, {{name}}! 👋",
+    "member": "Member",
+    "subtitle": "Here's your Wooffy membership overview",
+    "card": {
+      "title": "Your Membership Card",
+      "plans": "Plans",
+      "upgrade": "Upgrade",
+      "qrHint": "Show this QR code at any partner business to redeem your discounts"
+    },
+    "stats": {
+      "dealsUsed": "Deals Used",
+      "dealsUsedEmpty": "Start saving!",
+      "dealsUsedView": "View history",
+      "daysLeft": "Days Left",
+      "renewSoon": "Renew soon!",
+      "plentyOfTime": "Plenty of time",
+      "toShelters": "To Shelters",
+      "fromYourFee": "From your fee"
+    },
+    "pets": {
+      "title": "Your Pets",
+      "addPet": "Add Pet",
+      "add": "Add",
+      "mixedBreed": "Mixed breed",
+      "empty": "No pets added yet",
+      "anotherFriend": "Got another furry friend?",
+      "upgradePrompt": "Upgrade your plan to add more pets and unlock Pack Leader benefits!",
+      "upgrade": "Upgrade"
+    },
+    "nearby": {
+      "title": "Nearby Offers",
+      "selectCity": "Select your city",
+      "privacyNote": "Your location is never tracked. You choose what to share.",
+      "selectAbove": "Select your city above to see nearby offers",
+      "noneInCity": "No offers in {{city}} yet",
+      "browseAll": "Browse all offers",
+      "percentOff": "{{value}}% off",
+      "euroOff": "€{{value}} off",
+      "viewAllPartners": "View All Partners"
+    },
+    "quickAccess": {
+      "title": "Quick Access",
+      "aiAssistant": "AI Pet Assistant",
+      "aiAssistantDesc": "Ask pet questions",
+      "healthRecords": "Health Records",
+      "healthRecordsDesc": "Vaccinations, reminders & vet visits",
+      "lostFound": "Lost&Found Alerts",
+      "lostFoundDesc": "Report lost or found pets",
+      "places": "Dog-Friendly Places",
+      "placesDesc": "Beaches, cafés, hotels & more",
+      "placesJoke": "(Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)",
+      "browseOffers": "Browse Offers",
+      "browseOffersDesc": "Discover deals & discounts",
+      "partners": "Our Partners",
+      "partnersDesc": "Browse partner businesses",
+      "shelters": "Shelters",
+      "sheltersDesc": "Support local pet shelters"
+    },
+    "activity": {
+      "title": "Recent Activity",
+      "viewAll": "View all",
+      "empty": "No redemptions yet",
+      "browseOffers": "Browse offers",
+      "saved": "saved"
     }
   }
 }

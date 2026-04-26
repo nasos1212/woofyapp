@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check, History, Heart, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MembershipCardFull from "@/components/MembershipCardFull";
@@ -80,6 +81,7 @@ interface NearbyOffer {
 }
 
 const MemberDashboard = () => {
+  const { t } = useTranslation();
   const { user, loading, signOut } = useAuth();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();
@@ -300,7 +302,7 @@ const MemberDashboard = () => {
     }
   };
 
-  const firstName = profile?.full_name?.split(" ")[0] || "Member";
+  const firstName = profile?.full_name?.split(" ")[0] || t("memberDashboard.member");
   const initials = profile?.full_name
     ?.split(" ")
     .map((n) => n[0])
@@ -358,8 +360,8 @@ const MemberDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>My Wooffy Dashboard | Member Area</title>
-        <meta name="description" content="Access your Wooffy membership card, view savings, and discover nearby pet deals." />
+        <title>{t("memberDashboard.pageTitle")}</title>
+        <meta name="description" content={t("memberDashboard.pageDescription")} />
       </Helmet>
 
         <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background w-screen max-w-[100vw] overflow-x-hidden">
@@ -402,9 +404,9 @@ const MemberDashboard = () => {
           {/* Welcome */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Hello, {firstName}! 👋
+              {t("memberDashboard.hello", { name: firstName })}
             </h1>
-            <p className="text-muted-foreground">Here's your Wooffy membership overview</p>
+            <p className="text-muted-foreground">{t("memberDashboard.subtitle")}</p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 w-full">
@@ -415,15 +417,15 @@ const MemberDashboard = () => {
                 <div className="flex items-center justify-between mb-4 gap-2">
                   <h2 className="font-display text-base sm:text-lg font-semibold text-foreground flex items-center gap-2 min-w-0">
                     <QrCode className="w-5 h-5 text-primary flex-shrink-0" />
-                    <span className="truncate">Your Membership Card</span>
+                    <span className="truncate">{t("memberDashboard.card.title")}</span>
                   </h2>
                   <Link to="/member/upgrade" className="flex-shrink-0">
                     <Button variant="outline" size="sm" className="gap-1.5">
                       <Sparkles className="w-4 h-4" />
                       {membership?.plan_type === "family" ? (
-                        <span>Plans</span>
+                        <span>{t("memberDashboard.card.plans")}</span>
                       ) : (
-                        <span>Upgrade</span>
+                        <span>{t("memberDashboard.card.upgrade")}</span>
                       )}
                     </Button>
                   </Link>
@@ -436,7 +438,7 @@ const MemberDashboard = () => {
                   memberSince={memberSince}
                 />
                 <p className="text-sm text-muted-foreground mt-4 text-center">
-                  Show this QR code at any partner business to redeem your discounts
+                  {t("memberDashboard.card.qrHint")}
                 </p>
               </div>
 
@@ -449,8 +451,8 @@ const MemberDashboard = () => {
                       <Gift className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Deals Used</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{stats.dealsUsed === 0 ? "Start saving!" : "View history"}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.dealsUsed")}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{stats.dealsUsed === 0 ? t("memberDashboard.stats.dealsUsedEmpty") : t("memberDashboard.stats.dealsUsedView")}</p>
                 </Link>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
@@ -459,8 +461,8 @@ const MemberDashboard = () => {
                       <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Days Left</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{daysLeft <= 30 ? "Renew soon!" : "Plenty of time"}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.daysLeft")}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{daysLeft <= 30 ? t("memberDashboard.stats.renewSoon") : t("memberDashboard.stats.plentyOfTime")}</p>
                 </div>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
@@ -469,8 +471,8 @@ const MemberDashboard = () => {
                       <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
                     </div>
                   </div>
-                  <p className="text-xs sm:text-sm text-muted-foreground">To Shelters</p>
-                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">From your fee</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.toShelters")}</p>
+                  <p className="text-xs text-muted-foreground/70 mt-1 hidden sm:block">{t("memberDashboard.stats.fromYourFee")}</p>
                 </div>
               </div>
 
@@ -481,14 +483,14 @@ const MemberDashboard = () => {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
                       <span className="text-lg sm:text-xl">🐾</span>
                     </div>
-                    Your Pets
+                    {t("memberDashboard.pets.title")}
                   </h3>
 {membership && pets.length < membership.max_pets && (
                     <Link to="/member/add-pet">
                       <Button variant="outline" size="sm" className="gap-1.5">
                         <PlusCircle className="w-4 h-4" />
-                        <span className="hidden sm:inline">Add Pet</span>
-                        <span className="sm:hidden">Add</span>
+                        <span className="hidden sm:inline">{t("memberDashboard.pets.addPet")}</span>
+                        <span className="sm:hidden">{t("memberDashboard.pets.add")}</span>
                       </Button>
                     </Link>
                   )}
@@ -507,7 +509,7 @@ const MemberDashboard = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-teal-800 text-base sm:text-lg truncate">{pet.pet_name}</p>
-                            <p className="text-xs sm:text-sm text-teal-600/70 truncate">{pet.pet_breed || "Mixed breed"}</p>
+                            <p className="text-xs sm:text-sm text-teal-600/70 truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
                           </div>
                           <div className="text-teal-500 text-lg sm:text-xl shrink-0">→</div>
                         </div>
@@ -517,7 +519,7 @@ const MemberDashboard = () => {
                 ) : (
                   <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
                     <div className="text-4xl sm:text-5xl mb-3">🐾</div>
-                    <p className="text-teal-600/70 text-base sm:text-lg">No pets added yet</p>
+                    <p className="text-teal-600/70 text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
                   </div>
                 )}
                 
@@ -529,12 +531,12 @@ const MemberDashboard = () => {
                         <Sparkles className="w-5 h-5 text-primary" />
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-foreground text-sm">Got another furry friend?</p>
-                        <p className="text-xs text-muted-foreground">Upgrade your plan to add more pets and unlock Pack Leader benefits!</p>
+                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.pets.anotherFriend")}</p>
+                        <p className="text-xs text-muted-foreground">{t("memberDashboard.pets.upgradePrompt")}</p>
                       </div>
                       <Link to="/member/upgrade">
                         <Button size="sm" variant="hero" className="shrink-0">
-                          Upgrade
+                          {t("memberDashboard.pets.upgrade")}
                         </Button>
                       </Link>
                     </div>
@@ -547,7 +549,7 @@ const MemberDashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-primary" />
-                    Nearby Offers
+                    {t("memberDashboard.nearby.title")}
                   </h3>
                 </div>
                 
@@ -562,7 +564,7 @@ const MemberDashboard = () => {
                       >
                         <span className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-muted-foreground" />
-                          {profile?.preferred_city || "Select your city"}
+                          {profile?.preferred_city || t("memberDashboard.nearby.selectCity")}
                         </span>
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       </Button>
@@ -583,7 +585,7 @@ const MemberDashboard = () => {
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Your location is never tracked. You choose what to share.
+                    {t("memberDashboard.nearby.privacyNote")}
                   </p>
                 </div>
 
@@ -591,14 +593,14 @@ const MemberDashboard = () => {
                   {!profile?.preferred_city ? (
                     <div className="text-center py-6 text-muted-foreground">
                       <MapPin className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">Select your city above to see nearby offers</p>
+                      <p className="text-sm">{t("memberDashboard.nearby.selectAbove")}</p>
                     </div>
                   ) : nearbyOffers.length === 0 ? (
                     <div className="text-center py-6 text-muted-foreground">
                       <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No offers in {profile.preferred_city} yet</p>
+                      <p className="text-sm">{t("memberDashboard.nearby.noneInCity", { city: profile.preferred_city })}</p>
                       <Link to="/member/offers" className="text-primary text-sm hover:underline">
-                        Browse all offers
+                        {t("memberDashboard.nearby.browseAll")}
                       </Link>
                     </div>
                   ) : (
@@ -617,8 +619,8 @@ const MemberDashboard = () => {
                         </div>
                         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full whitespace-nowrap">
                           {offer.discount_type === "percentage" 
-                            ? `${offer.discount_value}% off` 
-                            : `€${offer.discount_value} off`}
+                            ? t("memberDashboard.nearby.percentOff", { value: offer.discount_value })
+                            : t("memberDashboard.nearby.euroOff", { value: offer.discount_value })}
                         </span>
                       </Link>
                     ))
@@ -626,7 +628,7 @@ const MemberDashboard = () => {
                 </div>
                 <Link to="/member/offers">
                   <Button variant="outline" size="sm" className="w-full mt-4">
-                    View All Partners
+                    {t("memberDashboard.nearby.viewAllPartners")}
                   </Button>
                 </Link>
               </div>
@@ -637,15 +639,15 @@ const MemberDashboard = () => {
 
               {/* Quick Access - New Features */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
-                <h3 className="font-display font-semibold text-foreground mb-4">Quick Access</h3>
+                <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
                 <div className="space-y-3">
                   <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                       <Bot className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">AI Pet Assistant</p>
-                      <p className="text-xs text-muted-foreground">Ask pet questions</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.aiAssistantDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
@@ -653,8 +655,8 @@ const MemberDashboard = () => {
                       <Syringe className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Health Records</p>
-                      <p className="text-xs text-muted-foreground">Vaccinations, reminders & vet visits</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.healthRecordsDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
@@ -662,8 +664,8 @@ const MemberDashboard = () => {
                       <AlertTriangle className="w-5 h-5 text-red-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Lost&Found Alerts</p>
-                      <p className="text-xs text-muted-foreground">Report lost or found pets</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.lostFound")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.lostFoundDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/pet-friendly-places" className="flex items-start gap-3 p-3 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
@@ -671,9 +673,9 @@ const MemberDashboard = () => {
                       <MapPin className="w-5 h-5 text-teal-600" />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">Dog-Friendly Places</p>
-                      <p className="text-xs text-muted-foreground">Beaches, cafés, hotels & more</p>
-                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5 hidden sm:block">(Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.places")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.placesDesc")}</p>
+                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5 hidden sm:block">{t("memberDashboard.quickAccess.placesJoke")}</p>
                     </div>
                   </Link>
                   <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
@@ -681,8 +683,8 @@ const MemberDashboard = () => {
                       <Gift className="w-5 h-5 text-green-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Browse Offers</p>
-                      <p className="text-xs text-muted-foreground">Discover deals & discounts</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.browseOffers")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.browseOffersDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
@@ -690,8 +692,8 @@ const MemberDashboard = () => {
                       <Building2 className="w-5 h-5 text-purple-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Our Partners</p>
-                      <p className="text-xs text-muted-foreground">Browse partner businesses</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.partnersDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
@@ -699,8 +701,8 @@ const MemberDashboard = () => {
                       <Heart className="w-5 h-5 text-amber-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground text-sm">Shelters</p>
-                      <p className="text-xs text-muted-foreground">Support local pet shelters</p>
+                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.shelters")}</p>
+                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.sheltersDesc")}</p>
                     </div>
                   </Link>
                 </div>
@@ -711,11 +713,11 @@ const MemberDashboard = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-foreground flex items-center gap-2">
                     <Clock className="w-5 h-5 text-primary" />
-                    Recent Activity
+                    {t("memberDashboard.activity.title")}
                   </h3>
                   {redemptions.length > 0 && (
                     <Link to="/member/history" className="text-sm text-primary hover:underline">
-                      View all
+                      {t("memberDashboard.activity.viewAll")}
                     </Link>
                   )}
                 </div>
@@ -723,9 +725,9 @@ const MemberDashboard = () => {
                   {redemptions.length === 0 ? (
                     <div className="text-center py-6 text-muted-foreground">
                       <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">No redemptions yet</p>
+                      <p className="text-sm">{t("memberDashboard.activity.empty")}</p>
                       <Link to="/member/offers" className="text-primary text-sm hover:underline">
-                        Browse offers
+                        {t("memberDashboard.activity.browseOffers")}
                       </Link>
                     </div>
                   ) : (
@@ -743,7 +745,7 @@ const MemberDashboard = () => {
                           </div>
                           <div className="text-right">
                             <span className="text-green-500 font-semibold">{savedAmount}</span>
-                            <p className="text-xs text-muted-foreground">saved</p>
+                            <p className="text-xs text-muted-foreground">{t("memberDashboard.activity.saved")}</p>
                           </div>
                         </div>
                       );
