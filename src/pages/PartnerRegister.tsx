@@ -458,16 +458,16 @@ const PartnerRegister = () => {
                 {/* Web & Social Presence */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-1.5">
-                    <Label className="font-semibold">Web & Social Presence *</Label>
+                    <Label className="font-semibold">{t("partnerRegister.webSocialLabel")}</Label>
                     <div className="group relative">
                       <HelpCircle className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
                       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-popover text-popover-foreground text-xs rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                        Provide at least one link so customers can find you online. This can be a website or any social media profile.
+                        {t("partnerRegister.webSocialTooltip")}
                       </div>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Add at least one: website or social media link.
+                    {t("partnerRegister.webSocialHelp")}
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
