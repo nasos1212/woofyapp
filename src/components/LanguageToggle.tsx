@@ -1,4 +1,3 @@
-import { Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,9 +9,9 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-const LANGS: { code: "en" | "el"; label: string; short: string }[] = [
-  { code: "en", label: "English", short: "EN" },
-  { code: "el", label: "Ελληνικά", short: "ΕΛ" },
+const LANGS: { code: "en" | "el"; label: string; short: string; flag: string }[] = [
+  { code: "en", label: "English", short: "EN", flag: "🇬🇧" },
+  { code: "el", label: "Ελληνικά", short: "ΕΛ", flag: "🇬🇷" },
 ];
 
 interface Props {
@@ -45,7 +44,7 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant={variant} size="sm" className={className}>
-          <Globe className="w-4 h-4 mr-1" />
+          <span className="text-base leading-none mr-1.5" aria-hidden>{current.flag}</span>
           <span className="text-xs font-semibold">{current.short}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -54,9 +53,10 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
           <DropdownMenuItem
             key={lang.code}
             onClick={() => handleSelect(lang.code)}
-            className={i18n.language === lang.code ? "bg-muted font-medium" : ""}
+            className={`gap-2 ${i18n.language === lang.code ? "bg-muted font-medium" : ""}`}
           >
-            {lang.label}
+            <span className="text-base leading-none" aria-hidden>{lang.flag}</span>
+            <span>{lang.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
