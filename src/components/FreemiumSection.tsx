@@ -99,7 +99,7 @@ const FreemiumSection = () => {
             </div>
 
             <ul className="space-y-3 mb-2">
-              <li className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">
+              <li className="text-xs text-muted-foreground tracking-wide font-semibold mb-2">
                 {t("freemium.everythingPlus")}
               </li>
               {premiumFeatures.map((feature, i) => (
