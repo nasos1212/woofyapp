@@ -239,7 +239,7 @@ const PartnerRegister = () => {
   if (loading || existingBusiness === null) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">{t("partnerRegister.loading")}</div>
       </div>
     );
   }
