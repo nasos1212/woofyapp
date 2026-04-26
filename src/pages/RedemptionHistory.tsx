@@ -224,10 +224,10 @@ const RedemptionHistory = () => {
   return (
     <>
       <Helmet>
-        <title>Redemption History | Wooffy</title>
+        <title>{t("redemptionHistory.metaTitle")}</title>
         <meta
           name="description"
-          content="View your Wooffy redemption history and track your savings."
+          content={t("redemptionHistory.metaDescription")}
         />
       </Helmet>
 
@@ -242,16 +242,16 @@ const RedemptionHistory = () => {
             className="mb-6 gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            {t("redemptionHistory.back")}
           </Button>
 
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
-              Redemption History
+              {t("redemptionHistory.pageTitle")}
             </h1>
             <p className="text-muted-foreground">
-              Track your savings and see how much you've benefited from Wooffy
+              {t("redemptionHistory.pageSubtitle")}
             </p>
           </div>
 
@@ -260,7 +260,7 @@ const RedemptionHistory = () => {
             <div className="bg-gradient-hero rounded-2xl p-5 text-white">
               <PiggyBank className="w-6 h-6 mb-2 opacity-80" />
               <div className="text-3xl font-display font-bold">€{stats.totalSaved}</div>
-              <p className="text-sm opacity-80">Fixed Savings</p>
+              <p className="text-sm opacity-80">{t("redemptionHistory.fixedSavings")}</p>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow-soft border-2 border-primary/20">
               <TrendingUp className="w-6 h-6 mb-2 text-primary" />
@@ -268,7 +268,7 @@ const RedemptionHistory = () => {
                 {stats.avgPercentage > 0 ? `${stats.avgPercentage}%` : '-'}
               </div>
               <p className="text-sm text-muted-foreground">
-                Avg % Discount {stats.percentageCount > 0 && `(${stats.percentageCount}x)`}
+                {t("redemptionHistory.avgDiscount")} {stats.percentageCount > 0 && `(${stats.percentageCount}x)`}
               </p>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow-soft">
@@ -276,14 +276,14 @@ const RedemptionHistory = () => {
               <div className="text-3xl font-display font-bold text-foreground">
                 {stats.totalRedemptions}
               </div>
-              <p className="text-sm text-muted-foreground">Total Redemptions</p>
+              <p className="text-sm text-muted-foreground">{t("redemptionHistory.totalRedemptions")}</p>
             </div>
             <div className="bg-white rounded-2xl p-5 shadow-soft">
               <Calendar className="w-6 h-6 mb-2 text-yellow-500" />
               <div className="text-3xl font-display font-bold text-foreground">
                 {stats.thisMonth}
               </div>
-              <p className="text-sm text-muted-foreground">This Month</p>
+              <p className="text-sm text-muted-foreground">{t("redemptionHistory.thisMonth")}</p>
             </div>
           </div>
 
@@ -291,7 +291,7 @@ const RedemptionHistory = () => {
           <div className="bg-white rounded-2xl shadow-soft overflow-hidden">
             <div className="p-6 border-b border-border">
               <h2 className="font-display font-semibold text-foreground">
-                All Redemptions
+                {t("redemptionHistory.allRedemptions")}
               </h2>
             </div>
 
@@ -299,14 +299,14 @@ const RedemptionHistory = () => {
               <div className="p-12 text-center">
                 <Tag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-display font-semibold text-lg mb-2">
-                  No redemptions yet
+                  {t("redemptionHistory.emptyTitle")}
                 </h3>
                 <p className="text-muted-foreground mb-4">
-                  Start using your Wooffy card at partner businesses to see your history here
+                  {t("redemptionHistory.emptyDesc")}
                 </p>
                 <Link to="/member/offers">
                   <button className="text-primary font-medium hover:underline">
-                    Browse available offers →
+                    {t("redemptionHistory.browseOffers")}
                   </button>
                 </Link>
               </div>
@@ -324,10 +324,10 @@ const RedemptionHistory = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-foreground truncate">
-                          {redemption.offer?.title || "Offer"}
+                          {redemption.offer?.title || t("redemptionHistory.offerFallback")}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {redemption.business?.business_name || "Business"}
+                          {redemption.business?.business_name || t("redemptionHistory.businessFallback")}
                         </p>
                       </div>
                       <div className="text-right flex-shrink-0">
@@ -352,7 +352,7 @@ const RedemptionHistory = () => {
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Tag className="w-5 h-5 text-primary" />
-                  Redemption Details
+                  {t("redemptionHistory.detailsTitle")}
                 </DialogTitle>
               </DialogHeader>
               
@@ -361,26 +361,26 @@ const RedemptionHistory = () => {
                   {/* Offer Info */}
                   <div className="bg-muted/50 rounded-xl p-4 space-y-3">
                     <div>
-                      <p className="text-sm text-muted-foreground">Offer</p>
-                      <p className="font-semibold text-lg">{selectedRedemption.offer?.title || "Offer"}</p>
+                      <p className="text-sm text-muted-foreground">{t("redemptionHistory.offer")}</p>
+                      <p className="font-semibold text-lg">{selectedRedemption.offer?.title || t("redemptionHistory.offerFallback")}</p>
                     </div>
                     
                     {selectedRedemption.offer?.description && (
                       <div>
-                        <p className="text-sm text-muted-foreground">Description</p>
+                        <p className="text-sm text-muted-foreground">{t("redemptionHistory.description")}</p>
                         <p className="text-foreground">{selectedRedemption.offer.description}</p>
                       </div>
                     )}
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm text-muted-foreground">Discount</p>
+                        <p className="text-sm text-muted-foreground">{t("redemptionHistory.discount")}</p>
                         <p className="font-semibold text-green-600 text-lg">
                           {formatDiscount(selectedRedemption.offer)}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-muted-foreground">Redeemed</p>
+                        <p className="text-sm text-muted-foreground">{t("redemptionHistory.redeemed")}</p>
                         <p className="font-medium">
                           {formatDate(new Date(selectedRedemption.redeemed_at))}
                         </p>
@@ -395,7 +395,7 @@ const RedemptionHistory = () => {
                         <Building2 className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <p className="font-semibold">{selectedRedemption.business?.business_name || "Business"}</p>
+                        <p className="font-semibold">{selectedRedemption.business?.business_name || t("redemptionHistory.businessFallback")}</p>
                         <p className="text-sm text-muted-foreground">
                           {getCategoryLabel(selectedRedemption.business?.category || "other")}
                         </p>
@@ -410,7 +410,7 @@ const RedemptionHistory = () => {
                       }}
                     >
                       <ExternalLink className="w-4 h-4" />
-                      Visit Company
+                      {t("redemptionHistory.visitCompany")}
                     </Button>
                   </div>
                 </div>
