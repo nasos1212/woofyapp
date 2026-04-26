@@ -151,7 +151,7 @@ const RedemptionHistory = () => {
         id: r.id,
         redeemed_at: r.redeemed_at!,
         offer: {
-          title: `🎂 Birthday Offer for ${r.pet_name}`,
+          title: t("redemptionHistory.birthdayOfferFor", { name: r.pet_name }),
           description: r.message,
           discount_value: r.discount_value,
           discount_type: r.discount_type,
