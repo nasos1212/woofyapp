@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useTranslation, Trans } from "react-i18next";
 
 interface RatingPromptDialogProps {
   open: boolean;
@@ -32,6 +33,7 @@ const RatingPromptDialog = ({
   onRated,
   onDismiss,
 }: RatingPromptDialogProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -58,12 +60,12 @@ const RatingPromptDialog = ({
         .update({ prompted_at: new Date().toISOString() })
         .eq("id", promptId);
 
-      toast.success("Thanks for your review! 🎉");
+      toast.success(t("ratingPrompt.thanks"));
       onRated?.();
       onClose();
     } catch (error) {
       console.error("Error submitting review:", error);
-      toast.error("Failed to submit review");
+      toast.error(t("ratingPrompt.submitFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -89,10 +91,14 @@ const RatingPromptDialog = ({
         <DialogHeader>
           <DialogTitle className="font-display text-xl flex items-center gap-2">
             <span className="text-2xl">⭐</span>
-            How was your experience?
+            {t("ratingPrompt.title")}
           </DialogTitle>
           <DialogDescription>
-            You recently visited <strong>{businessName}</strong>. Rate your experience to help other pet owners!
+            <Trans
+              i18nKey="ratingPrompt.description"
+              values={{ name: businessName }}
+              components={{ strong: <strong /> }}
+            />
           </DialogDescription>
         </DialogHeader>
 
@@ -121,18 +127,14 @@ const RatingPromptDialog = ({
 
           {rating > 0 && (
             <p className="text-center text-sm text-muted-foreground">
-              {rating === 1 && "Poor"}
-              {rating === 2 && "Fair"}
-              {rating === 3 && "Good"}
-              {rating === 4 && "Very Good"}
-              {rating === 5 && "Excellent!"}
+              {t(`ratingPrompt.labels.${rating}`)}
             </p>
           )}
 
           {/* Review Text */}
           <div>
             <Textarea
-              placeholder="Share more about your experience (optional)"
+              placeholder={t("ratingPrompt.reviewPlaceholder")}
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               rows={3}
@@ -147,7 +149,7 @@ const RatingPromptDialog = ({
               disabled={rating === 0 || isSubmitting}
               className="w-full"
             >
-              {isSubmitting ? "Submitting..." : "Submit Review"}
+              {isSubmitting ? t("ratingPrompt.submitting") : t("ratingPrompt.submit")}
             </Button>
             <div className="flex gap-2">
               <Button
@@ -155,14 +157,14 @@ const RatingPromptDialog = ({
                 onClick={handleLater}
                 className="flex-1"
               >
-                Remind Me Later
+                {t("ratingPrompt.later")}
               </Button>
               <Button
                 variant="ghost"
                 onClick={handleDismiss}
                 className="flex-1 text-muted-foreground"
               >
-                Don't Ask Again
+                {t("ratingPrompt.dontAskAgain")}
               </Button>
             </div>
           </div>
