@@ -207,10 +207,10 @@ const RedemptionHistory = () => {
   };
 
   const formatDiscount = (offer: Redemption["offer"]) => {
-    if (!offer?.discount_value) return "Special Offer";
+    if (!offer?.discount_value) return t("redemptionHistory.specialOffer");
     return offer.discount_type === "percentage"
-      ? `${offer.discount_value}% off`
-      : `€${offer.discount_value} off`;
+      ? t("redemptionHistory.percentOff", { value: offer.discount_value })
+      : t("redemptionHistory.euroOff", { value: offer.discount_value });
   };
 
   if (loading || isLoading) {
