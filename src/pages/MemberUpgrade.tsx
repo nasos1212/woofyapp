@@ -8,8 +8,10 @@ import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useMembership } from "@/hooks/useMembership";
+import { useTranslation } from "react-i18next";
 
 const MemberUpgrade = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const { hasMembership } = useMembership();
@@ -37,8 +39,8 @@ const MemberUpgrade = () => {
   return (
     <>
       <Helmet>
-        <title>Premium Plans | Wooffy</title>
-        <meta name="description" content="Premium plans are coming soon to Wooffy." />
+        <title>{t("memberUpgrade.metaTitle")}</title>
+        <meta name="description" content={t("memberUpgrade.metaDescription")} />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background overflow-x-hidden">
@@ -52,86 +54,53 @@ const MemberUpgrade = () => {
             className="mb-6"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            {t("memberUpgrade.back")}
           </Button>
 
           <div className="text-center space-y-6">
-            {/* Icon */}
             <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
               <Crown className="w-10 h-10 text-primary" />
             </div>
 
-            {/* Title */}
             <div>
               <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-3">
-                Something Exciting is Coming! 🐾
+                {t("memberUpgrade.title")}
               </h1>
               <p className="text-muted-foreground text-base leading-relaxed max-w-md mx-auto">
-                Premium plans are on their way! We're working hard to bring you exclusive discounts, 
-                AI health assistant, pet birthday offers and much more.
+                {t("memberUpgrade.subtitle")}
               </p>
             </div>
 
-            {/* What you can enjoy now */}
             <div className="bg-card rounded-2xl p-6 border border-border shadow-card text-left">
               <h3 className="font-display font-semibold text-foreground mb-4 flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />
-                In the meantime, enjoy your free features:
+                {t("memberUpgrade.enjoyHeading")}
               </h3>
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <PawPrint className="w-4 h-4 text-primary" />
+                {[
+                  { icon: PawPrint, key: "feature1" },
+                  { icon: ClipboardList, key: "feature2" },
+                  { icon: Search, key: "feature3" },
+                  { icon: MapPin, key: "feature4" },
+                  { icon: Users, key: "feature5" },
+                ].map(({ icon: Icon, key }) => (
+                  <div key={key} className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                      <Icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-sm text-foreground">{t(`memberUpgrade.${key}Title`)}</p>
+                      <p className="text-xs text-muted-foreground">{t(`memberUpgrade.${key}Desc`)}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">Pet Profiles (up to 5)</p>
-                    <p className="text-xs text-muted-foreground">Create and manage profiles for your pets</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <ClipboardList className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">Pet Health Records</p>
-                    <p className="text-xs text-muted-foreground">Track vaccinations, vet visits & reminders</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Search className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">Lost & Found Alerts</p>
-                    <p className="text-xs text-muted-foreground">Report and search for lost or found pets</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <MapPin className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">Dog-Friendly Places</p>
-                    <p className="text-xs text-muted-foreground">Discover dog-friendly spots near you</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                    <Users className="w-4 h-4 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-sm text-foreground">Community Q&A</p>
-                    <p className="text-xs text-muted-foreground">Connect with fellow pet parents</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Promise */}
             <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
               <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
                 <Heart className="w-4 h-4 text-primary" />
-                We'll notify you as soon as premium plans are available!
+                {t("memberUpgrade.promise")}
               </p>
             </div>
 
@@ -139,7 +108,7 @@ const MemberUpgrade = () => {
               variant="outline"
               onClick={() => navigate(hasMembership ? "/member" : "/member/free")}
             >
-              Back to Dashboard
+              {t("memberUpgrade.back")}
             </Button>
           </div>
         </main>
