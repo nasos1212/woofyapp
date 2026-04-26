@@ -43,6 +43,7 @@ const ChatHistoryPanel = ({
   onStartNewChat,
   onClose,
 }: ChatHistoryPanelProps) => {
+  const { t } = useTranslation();
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [filterPet, setFilterPet] = useState<string | "all">("all");
@@ -95,7 +96,7 @@ const ChatHistoryPanel = ({
     
     await onUpdateSessionTitle(sessionId, editingTitle.trim());
     setEditingSessionId(null);
-    toast.success("Title updated");
+    toast.success(t("petHealthAssistantToasts.titleUpdated"));
   };
 
   const cancelEditingTitle = () => {
