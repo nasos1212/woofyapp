@@ -28,6 +28,7 @@ import { useTranslation } from "react-i18next";
 type BusinessCategory = Database["public"]["Enums"]["business_category"];
 
 const PartnerRegister = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
