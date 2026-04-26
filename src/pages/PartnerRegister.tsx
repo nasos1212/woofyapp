@@ -532,7 +532,7 @@ const PartnerRegister = () => {
                   onClick={() => setStep(2)}
                   disabled={!businessName || selectedCategories.length === 0 || !primaryLocation.city || !primaryLocation.phone || (!website.trim() && !instagramUrl.trim() && !facebookUrl.trim() && !tiktokUrl.trim()) || (selectedCategories.includes("other") && !otherCategoryDescription.trim())}
                 >
-                  Review & Submit
+                  {t("partnerRegister.reviewSubmit")}
                 </Button>
               </div>
             </>
@@ -546,22 +546,22 @@ const PartnerRegister = () => {
                   <Check className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">Review & Submit</h1>
-                  <p className="text-muted-foreground">Confirm your partner application</p>
+                  <h1 className="font-display text-2xl font-bold text-foreground">{t("partnerRegister.reviewTitle")}</h1>
+                  <p className="text-muted-foreground">{t("partnerRegister.reviewSubtitle")}</p>
                 </div>
               </div>
 
               <div className="space-y-6">
                 {/* Business Summary */}
                 <div className="p-4 bg-muted/50 rounded-xl">
-                  <h3 className="font-semibold text-foreground mb-3">Business Details</h3>
+                  <h3 className="font-semibold text-foreground mb-3">{t("partnerRegister.businessDetails")}</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Name:</span>
+                      <span className="text-muted-foreground">{t("partnerRegister.name")}</span>
                       <span className="font-medium">{businessName}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Categories:</span>
+                      <span className="text-muted-foreground">{t("partnerRegister.categories")}</span>
                       <span className="font-medium text-right">
                         {getCategoriesLabel(selectedCategories)}
                         {selectedCategories.includes("other") && otherCategoryDescription && ` (${otherCategoryDescription})`}
@@ -572,7 +572,7 @@ const PartnerRegister = () => {
 
                 {/* Locations Summary */}
                 <div className="p-4 bg-muted/50 rounded-xl">
-                  <h3 className="font-semibold text-foreground mb-3">Store Locations</h3>
+                  <h3 className="font-semibold text-foreground mb-3">{t("partnerRegister.locationsHeading")}</h3>
                   <div className="space-y-3">
                     {allLocations.map((loc, index) => (
                       <div key={index} className="p-3 bg-background rounded-lg border">
@@ -585,7 +585,7 @@ const PartnerRegister = () => {
                         <div className="text-sm text-muted-foreground space-y-1 ml-7">
                           {loc.address && <div>📍 {loc.address}</div>}
                           {loc.phone && <div>📞 {loc.phone}</div>}
-                          {loc.google_maps_url && <div>🗺️ Google Maps link added</div>}
+                          {loc.google_maps_url && <div>🗺️ {t("partnerRegister.googleMapsAdded")}</div>}
                         </div>
                       </div>
                     ))}
@@ -597,10 +597,9 @@ const PartnerRegister = () => {
                 <div className="p-4 bg-paw-peach rounded-xl flex gap-3">
                   <Clock className="w-5 h-5 text-paw-orange flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-medium text-foreground">Verification Required</p>
+                    <p className="font-medium text-foreground">{t("partnerRegister.verificationRequired")}</p>
                     <p className="text-sm text-muted-foreground">
-                      Your application will be reviewed by our team within 2-3 business days. 
-                      You'll receive an email once approved.
+                      {t("partnerRegister.verificationDesc")}
                     </p>
                   </div>
                 </div>
@@ -608,14 +607,14 @@ const PartnerRegister = () => {
 
               <div className="mt-8 flex justify-between">
                 <Button variant="ghost" onClick={() => setStep(1)}>
-                  Back
+                  {t("partnerRegister.back")}
                 </Button>
                 <Button
                   variant="hero"
                   onClick={handleSubmit}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit Application"}
+                  {isSubmitting ? t("partnerRegister.submitting") : t("partnerRegister.submitApplication")}
                 </Button>
               </div>
             </>
