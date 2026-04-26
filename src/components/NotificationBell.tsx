@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,6 +25,7 @@ interface Notification {
   user_id: string;
 }
 const NotificationBell = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   const { playBark } = useBarkSound();
@@ -120,7 +122,7 @@ const NotificationBell = () => {
       <DropdownMenuContent align="end" className="w-[calc(100vw-2rem)] max-w-80 sm:w-80">
         {notifications.length === 0 ? (
           <div className="p-4 text-center text-muted-foreground">
-            No notifications
+            {t("notificationsPage.noNotifications")}
           </div>
         ) : (
           <>
@@ -132,7 +134,7 @@ const NotificationBell = () => {
                   className="text-xs text-muted-foreground hover:text-foreground w-full"
                   onClick={markAllAsRead}
                 >
-                  Mark all as read
+                  {t("notificationsPage.markAllRead")}
                 </Button>
               </div>
             )}
@@ -164,7 +166,7 @@ const NotificationBell = () => {
                 className="text-xs text-primary hover:text-primary/80 w-full"
                 onClick={() => navigate("/member/notifications")}
               >
-                View all notifications
+                {t("notificationsPage.viewAll")}
               </Button>
             </div>
           </>

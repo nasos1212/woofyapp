@@ -2220,5 +2220,14 @@
       "browseOffers": "Browse offers",
       "saved": "saved"
     }
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all notifications",
+    "noNotifications": "No notifications",
+    "noNotificationsYet": "No notifications yet",
+    "showingLast": "Showing last 10 notifications",
+    "tapToRead": "Tap to read full message →"
   }
 }

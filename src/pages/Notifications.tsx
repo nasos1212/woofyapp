@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Bell, ArrowLeft, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,6 +45,7 @@ type RawNotification = {
 };
 
 const Notifications = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -194,7 +196,7 @@ const Notifications = () => {
             </Button>
             <div className="flex items-center gap-2">
               <Bell className="h-6 w-6 text-primary" />
-              <h1 className="font-display text-2xl font-bold">Notifications</h1>
+              <h1 className="font-display text-2xl font-bold">{t("notificationsPage.title")}</h1>
             </div>
           </div>
           
@@ -206,7 +208,7 @@ const Notifications = () => {
               className="gap-2"
             >
               <CheckCheck className="h-4 w-4" />
-              Mark all as read
+              {t("notificationsPage.markAllRead")}
             </Button>
           )}
         </div>
@@ -216,7 +218,7 @@ const Notifications = () => {
             <Card>
               <CardContent className="py-12 text-center">
                 <Bell className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No notifications yet</p>
+                <p className="text-muted-foreground">{t("notificationsPage.noNotificationsYet")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -247,7 +249,7 @@ const Notifications = () => {
                           ? notification.message.slice(0, 100) + (notification.message.length > 100 ? "..." : "")
                           : notification.message}
                         {notification.type === "birthday_offer" && (
-                          <span className="ml-1 text-primary font-medium">Tap to read full message →</span>
+                          <span className="ml-1 text-primary font-medium">{t("notificationsPage.tapToRead")}</span>
                         )}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2">
@@ -275,7 +277,7 @@ const Notifications = () => {
         </div>
 
         <p className="text-xs text-muted-foreground text-center mt-6">
-          Showing last 10 notifications
+          {t("notificationsPage.showingLast")}
         </p>
 
         {/* Birthday Offer Dialog */}
