@@ -38,6 +38,7 @@ interface Redemption {
 }
 
 const RedemptionHistory = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
