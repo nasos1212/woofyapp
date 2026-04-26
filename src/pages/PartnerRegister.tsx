@@ -510,7 +510,7 @@ const PartnerRegister = () => {
                       </div>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="tiktok" className="text-sm">TikTok</Label>
+                      <Label htmlFor="tiktok" className="text-sm">{t("partnerRegister.tiktok")}</Label>
                       <div className="relative">
                         <Music className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                         <Input
