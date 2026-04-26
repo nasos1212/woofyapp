@@ -672,15 +672,15 @@ const CommunityQuestion = () => {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Accept this answer?</AlertDialogTitle>
+                                    <AlertDialogTitle>{t("communityQuestionDialogs.acceptTitle")}</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                      This will mark your question as resolved and highlight this answer as the solution.
+                                      {t("communityQuestionDialogs.acceptDescription")}
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel>{t("communityQuestionDialogs.acceptCancel")}</AlertDialogCancel>
                                     <AlertDialogAction onClick={() => handleAccept(answer.id)}>
-                                      Accept Answer
+                                      {t("communityQuestionDialogs.acceptConfirm")}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
                                 </AlertDialogContent>
@@ -887,19 +887,19 @@ const CommunityQuestion = () => {
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Delete this question?</AlertDialogTitle>
+                <AlertDialogTitle>{t("communityQuestionDialogs.deleteTitle")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete your question and all its answers. This action cannot be undone.
+                  {t("communityQuestionDialogs.deleteDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                <AlertDialogCancel disabled={isDeleting}>{t("communityQuestionDialogs.deleteCancel")}</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleDeleteQuestion}
                   disabled={isDeleting}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
-                  {isDeleting ? 'Deleting...' : 'Yes, delete'}
+                  {isDeleting ? t("communityQuestionDialogs.deleting") : t("communityQuestionDialogs.deleteConfirm")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

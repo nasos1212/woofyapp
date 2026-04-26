@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { useActivityTracking } from "@/hooks/useActivityTracking";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import LanguageSelector from "@/components/LanguageSelector";
 import ChatHistoryPanel from "@/components/ChatHistoryPanel";
 
@@ -66,6 +67,7 @@ const suggestedQuestions = [
 ];
 
 const PetHealthAssistant = () => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
@@ -240,7 +242,7 @@ const PetHealthAssistant = () => {
       setMessages([]);
     }
     
-    toast.success("Conversation deleted");
+    toast.success(t("petHealthAssistantToasts.conversationDeleted"));
   };
 
   const fetchFullUserContext = async () => {
@@ -581,7 +583,7 @@ const PetHealthAssistant = () => {
     if (!sessionId) {
       sessionId = await createNewSession();
       if (!sessionId) {
-        toast.error("Failed to create chat session");
+        toast.error(t("petHealthAssistantToasts.createSessionFailed"));
         return;
       }
     }

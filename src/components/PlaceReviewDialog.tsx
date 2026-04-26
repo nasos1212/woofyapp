@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { validateImageFile } from "@/lib/fileValidation";
 
 interface PlaceReviewDialogProps {
@@ -39,6 +40,7 @@ const PlaceReviewDialog = ({
   existingPhotoUrl2,
   onReviewSubmitted,
 }: PlaceReviewDialogProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [rating, setRating] = useState(existingRating || 0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -169,7 +171,7 @@ const PlaceReviewDialog = ({
       onClose();
     } catch (error) {
       console.error("Error submitting review:", error);
-      toast.error("Failed to submit review. Please try again.");
+      toast.error(t("placeReview.submitFailed"));
     } finally {
       setIsSubmitting(false);
     }

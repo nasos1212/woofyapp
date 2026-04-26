@@ -98,7 +98,7 @@ const SheltersSection = () => {
     e.preventDefault();
     
     if (!user) {
-      toast.error("Please log in to submit an application");
+      toast.error(t("shelterApply.loginRequired"));
       return;
     }
     
@@ -122,22 +122,11 @@ const SheltersSection = () => {
 
       if (error) {
         console.error("Error submitting shelter application:", error);
-        toast.error("Failed to submit application. Please try again.");
+        toast.error(t("shelterApply.submitFailed"));
         return;
       }
 
-      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
-      setIsDialogOpen(false);
-      // Redirect to shelter dashboard
-      navigate('/shelter-dashboard');
-
-      if (error) {
-        console.error("Error submitting shelter application:", error);
-        toast.error("Failed to submit application. Please try again.");
-        return;
-      }
-
-      toast.success("Application submitted! We'll review your application and get back to you within 5 business days.");
+      toast.success(t("shelterApply.submitted"));
       setIsDialogOpen(false);
       setFormData({
         shelterName: "",
@@ -150,9 +139,11 @@ const SheltersSection = () => {
         yearsOperating: "",
         description: "",
       });
+      // Redirect to shelter dashboard
+      navigate('/shelter-dashboard');
     } catch (err) {
       console.error("Error:", err);
-      toast.error("An unexpected error occurred. Please try again.");
+      toast.error(t("shelterApply.unexpected"));
     } finally {
       setIsSubmitting(false);
     }
@@ -262,110 +253,110 @@ const SheltersSection = () => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-display text-xl">Apply as a Shelter Partner</DialogTitle>
+            <DialogTitle className="font-display text-xl">{t("shelterApply.title")}</DialogTitle>
             <DialogDescription>
-              Join our whitelist and share in 10% of all Wooffy membership proceeds, split amongst our shelter partners. Fill out the form below and we'll review your application.
+              {t("shelterApply.description")}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="shelterName">Shelter Name *</Label>
+                <Label htmlFor="shelterName">{t("shelterApply.shelterName")}</Label>
                 <Input
                   id="shelterName"
                   required
                   value={formData.shelterName}
                   onChange={(e) => setFormData(prev => ({ ...prev, shelterName: e.target.value }))}
-                  placeholder="Happy Tails Rescue"
+                  placeholder={t("shelterApply.shelterNamePlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contactName">Contact Person *</Label>
+                <Label htmlFor="contactName">{t("shelterApply.contactPerson")}</Label>
                 <Input
                   id="contactName"
                   required
                   value={formData.contactName}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
-                  placeholder="John Smith"
+                  placeholder={t("shelterApply.contactPersonPlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address *</Label>
+                <Label htmlFor="email">{t("shelterApply.email")}</Label>
                 <Input
                   id="email"
                   type="email"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="contact@shelter.com"
+                  placeholder={t("shelterApply.emailPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">{t("shelterApply.phone")}</Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+357 99 123 456"
+                  placeholder={t("shelterApply.phonePlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="location">Location *</Label>
+                <Label htmlFor="location">{t("shelterApply.location")}</Label>
                 <Input
                   id="location"
                   required
                   value={formData.location}
                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                  placeholder="Nicosia, Cyprus"
+                  placeholder={t("shelterApply.locationPlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
+                <Label htmlFor="website">{t("shelterApply.website")}</Label>
                 <Input
                   id="website"
                   type="url"
                   value={formData.website}
                   onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                  placeholder="https://shelter.com"
+                  placeholder={t("shelterApply.websitePlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="dogsCount">Dogs Currently in Care *</Label>
+                <Label htmlFor="dogsCount">{t("shelterApply.dogsCount")}</Label>
                 <Select
                   value={formData.dogsCount}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, dogsCount: value }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select range" />
+                    <SelectValue placeholder={t("shelterApply.dogsCountPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1-10">1-10 dogs</SelectItem>
-                    <SelectItem value="11-25">11-25 dogs</SelectItem>
-                    <SelectItem value="26-50">26-50 dogs</SelectItem>
-                    <SelectItem value="51-100">51-100 dogs</SelectItem>
-                    <SelectItem value="100+">100+ dogs</SelectItem>
+                    <SelectItem value="1-10">{t("shelterApply.dogsRange1")}</SelectItem>
+                    <SelectItem value="11-25">{t("shelterApply.dogsRange2")}</SelectItem>
+                    <SelectItem value="26-50">{t("shelterApply.dogsRange3")}</SelectItem>
+                    <SelectItem value="51-100">{t("shelterApply.dogsRange4")}</SelectItem>
+                    <SelectItem value="100+">{t("shelterApply.dogsRange5")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="yearsOperating">Operating Since *</Label>
+                <Label htmlFor="yearsOperating">{t("shelterApply.operatingSince")}</Label>
                 <Select
                   value={formData.yearsOperating}
                   onValueChange={(value) => setFormData(prev => ({ ...prev, yearsOperating: value }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select year" />
+                    <SelectValue placeholder={t("shelterApply.yearPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i).map((year) => (
@@ -377,32 +368,32 @@ const SheltersSection = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Tell us about your shelter *</Label>
+              <Label htmlFor="description">{t("shelterApply.tellAbout")}</Label>
               <Textarea
                 id="description"
                 required
                 rows={4}
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                placeholder="Describe your mission, services, and why you'd like to partner with Wooffy..."
+                placeholder={t("shelterApply.tellAboutPlaceholder")}
               />
             </div>
 
             <div className="bg-rose-50 rounded-lg p-4 text-sm text-rose-700">
-              <strong>What happens next?</strong>
+              <strong>{t("shelterApply.whatHappensNext")}</strong>
               <ul className="list-disc list-inside mt-2 space-y-1">
-                <li>We'll review your application within 5 business days</li>
-                <li>If approved, you'll share in 10% of all membership proceeds (split amongst all partner shelters)</li>
-                <li>Your shelter will be featured on our website</li>
+                <li>{t("shelterApply.next1")}</li>
+                <li>{t("shelterApply.next2")}</li>
+                <li>{t("shelterApply.next3")}</li>
               </ul>
             </div>
 
             <div className="flex gap-3 justify-end pt-2">
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
+                {t("shelterApply.cancel")}
               </Button>
               <Button type="submit" disabled={isSubmitting} className="bg-rose-500 hover:bg-rose-600">
-                {isSubmitting ? "Submitting..." : "Submit Application"}
+                {isSubmitting ? t("shelterApply.submitting") : t("shelterApply.submit")}
               </Button>
             </div>
           </form>

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Dog, Trash2, Pencil, Check, X, Plus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { formatDate as formatDateStandard } from "@/lib/utils";
 
 interface Pet {
@@ -42,6 +43,7 @@ const ChatHistoryPanel = ({
   onStartNewChat,
   onClose,
 }: ChatHistoryPanelProps) => {
+  const { t } = useTranslation();
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingTitle, setEditingTitle] = useState("");
   const [filterPet, setFilterPet] = useState<string | "all">("all");
@@ -94,7 +96,7 @@ const ChatHistoryPanel = ({
     
     await onUpdateSessionTitle(sessionId, editingTitle.trim());
     setEditingSessionId(null);
-    toast.success("Title updated");
+    toast.success(t("petHealthAssistantToasts.titleUpdated"));
   };
 
   const cancelEditingTitle = () => {

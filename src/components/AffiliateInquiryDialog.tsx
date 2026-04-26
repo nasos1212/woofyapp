@@ -9,21 +9,15 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, User, Mail, Phone, MessageSquare } from "lucide-react";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
 
 interface AffiliateInquiryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const affiliateSchema = z.object({
-  fullName: z.string().trim().min(1, "Full name is required").max(100, "Name must be less than 100 characters"),
-  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
-  phone: z.string().trim().min(1, "Phone number is required").max(20, "Phone number must be less than 20 characters"),
-  audience: z.string().min(1, "Please select your audience type"),
-  message: z.string().trim().max(1000, "Message must be less than 1000 characters").optional(),
-});
-
 const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogProps) => {
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -33,29 +27,27 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
     message: "",
   });
 
+  const affiliateSchema = z.object({
+    fullName: z.string().trim().min(1, t("affiliateInquiry.validation.fullNameRequired")).max(100, t("affiliateInquiry.validation.fullNameMax")),
+    email: z.string().trim().email(t("affiliateInquiry.validation.emailInvalid")).max(255, t("affiliateInquiry.validation.emailMax")),
+    phone: z.string().trim().min(1, t("affiliateInquiry.validation.phoneRequired")).max(20, t("affiliateInquiry.validation.phoneMax")),
+    audience: z.string().min(1, t("affiliateInquiry.validation.audienceRequired")),
+    message: z.string().trim().max(1000, t("affiliateInquiry.validation.messageMax")).optional(),
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    console.log("Affiliate form submitted with data:", formData);
     
     const validation = affiliateSchema.safeParse(formData);
     if (!validation.success) {
       const firstError = validation.error.errors[0];
-      console.error("Validation failed:", validation.error.errors);
       toast.error(firstError.message);
       return;
     }
-    
-    console.log("Validation passed, inserting to database...");
 
     setIsSubmitting(true);
 
     try {
-      console.log("Attempting to insert affiliate inquiry...");
-      
-      // Store directly in affiliate_inquiries table
-      // Note: We don't use .select() because the INSERT policy allows anyone,
-      // but SELECT policy is admin-only, so we can't read back the inserted row
       const { error: dbError } = await supabase
         .from("affiliate_inquiries")
         .insert({
@@ -71,8 +63,6 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
         throw new Error(dbError.message || "Failed to submit inquiry");
       }
 
-      console.log("Affiliate inquiry inserted successfully");
-
       // Send notification email
       await supabase.functions.invoke("send-support-notification", {
         body: {
@@ -85,7 +75,7 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
         },
       });
 
-      toast.success("Thank you! We'll be in touch soon.");
+      toast.success(t("affiliateInquiry.thanks"));
       onOpenChange(false);
       setFormData({
         fullName: "",
@@ -96,7 +86,7 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
       });
     } catch (error) {
       console.error("Error submitting affiliate inquiry:", error);
-      toast.error("Failed to submit. Please try again or email us directly.");
+      toast.error(t("affiliateInquiry.submitFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -108,10 +98,10 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5 text-primary" />
-            Become an Affiliate
+            {t("affiliateInquiry.title")}
           </DialogTitle>
           <DialogDescription>
-            Earn rewards by introducing pet owners to Wooffy.
+            {t("affiliateInquiry.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -119,13 +109,13 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
           <div className="space-y-2">
             <Label htmlFor="fullName" className="flex items-center gap-1.5">
               <User className="h-3.5 w-3.5" />
-              Full Name *
+              {t("affiliateInquiry.fullName")}
             </Label>
             <Input
               id="fullName"
               value={formData.fullName}
               onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-              placeholder="Your full name"
+              placeholder={t("affiliateInquiry.fullNamePlaceholder")}
               required
             />
           </div>
@@ -134,14 +124,14 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
             <div className="space-y-2">
               <Label htmlFor="email" className="flex items-center gap-1.5">
                 <Mail className="h-3.5 w-3.5" />
-                Email *
+                {t("affiliateInquiry.email")}
               </Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="email@example.com"
+                placeholder={t("affiliateInquiry.emailPlaceholder")}
                 required
               />
             </div>
@@ -149,35 +139,35 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
             <div className="space-y-2">
               <Label htmlFor="phone" className="flex items-center gap-1.5">
                 <Phone className="h-3.5 w-3.5" />
-                Phone *
+                {t("affiliateInquiry.phone")}
               </Label>
               <Input
                 id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                placeholder="+357 99 123456"
+                placeholder={t("affiliateInquiry.phonePlaceholder")}
                 required
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="audience">Who would you refer? *</Label>
+            <Label htmlFor="audience">{t("affiliateInquiry.audience")}</Label>
             <Select
               value={formData.audience}
               onValueChange={(value) => setFormData({ ...formData, audience: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select your audience" />
+                <SelectValue placeholder={t("affiliateInquiry.audiencePlaceholder")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="friends_family">Friends & Family</SelectItem>
-                <SelectItem value="social_media">Social Media Followers</SelectItem>
-                <SelectItem value="pet_community">Pet Community / Groups</SelectItem>
-                <SelectItem value="workplace">Colleagues / Workplace</SelectItem>
-                <SelectItem value="clients">My Clients / Customers</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+                <SelectItem value="friends_family">{t("affiliateInquiry.audienceFriends")}</SelectItem>
+                <SelectItem value="social_media">{t("affiliateInquiry.audienceSocial")}</SelectItem>
+                <SelectItem value="pet_community">{t("affiliateInquiry.audiencePet")}</SelectItem>
+                <SelectItem value="workplace">{t("affiliateInquiry.audienceWork")}</SelectItem>
+                <SelectItem value="clients">{t("affiliateInquiry.audienceClients")}</SelectItem>
+                <SelectItem value="other">{t("affiliateInquiry.audienceOther")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -185,19 +175,19 @@ const AffiliateInquiryDialog = ({ open, onOpenChange }: AffiliateInquiryDialogPr
           <div className="space-y-2">
             <Label htmlFor="message" className="flex items-center gap-1.5">
               <MessageSquare className="h-3.5 w-3.5" />
-              Tell us more (optional)
+              {t("affiliateInquiry.message")}
             </Label>
             <Textarea
               id="message"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              placeholder="How do you plan to introduce pet owners to Wooffy?"
+              placeholder={t("affiliateInquiry.messagePlaceholder")}
               rows={3}
             />
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Join Affiliate Program"}
+            {isSubmitting ? t("affiliateInquiry.submitting") : t("affiliateInquiry.submit")}
           </Button>
         </form>
       </DialogContent>
