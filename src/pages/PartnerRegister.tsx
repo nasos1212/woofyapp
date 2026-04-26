@@ -272,21 +272,21 @@ const PartnerRegister = () => {
             <AlertDialogHeader>
               <AlertDialogTitle className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
-                Leave Registration?
+                {t("partnerRegister.exitTitle")}
               </AlertDialogTitle>
               <AlertDialogDescription>
-                You will be signed out, but don't worry — your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.
+                {t("partnerRegister.exitDescription")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setPendingNavigation(null)}>
-                Continue Editing
+                {t("partnerRegister.continueEditing")}
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmNavigation}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                Leave Without Saving
+                {t("partnerRegister.leaveWithout")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -298,7 +298,7 @@ const PartnerRegister = () => {
           className="mb-6 gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {step > 1 ? "Back to Business Info" : "Back to Home"}
+          {step > 1 ? t("partnerRegister.backToBusinessInfo") : t("partnerRegister.backToHome")}
         </Button>
 
         {/* Progress - simplified to 2 steps */}
@@ -307,7 +307,7 @@ const PartnerRegister = () => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
               {step > 1 ? <Check className="w-4 h-4" /> : "1"}
             </div>
-            <span className="font-medium hidden sm:inline">Business Info</span>
+            <span className="font-medium hidden sm:inline">{t("partnerRegister.stepBusinessInfo")}</span>
           </div>
           <div className="flex-1 h-1 bg-muted rounded">
             <div className={`h-full bg-primary rounded transition-all ${step >= 2 ? "w-full" : "w-0"}`} />
@@ -316,7 +316,7 @@ const PartnerRegister = () => {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
               2
             </div>
-            <span className="font-medium hidden sm:inline">Review</span>
+            <span className="font-medium hidden sm:inline">{t("partnerRegister.stepReview")}</span>
           </div>
         </div>
 
