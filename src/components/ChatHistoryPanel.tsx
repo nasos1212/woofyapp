@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Dog, Trash2, Pencil, Check, X, Plus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { formatDate as formatDateStandard } from "@/lib/utils";
 
 interface Pet {
