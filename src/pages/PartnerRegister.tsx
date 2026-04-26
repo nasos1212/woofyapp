@@ -329,17 +329,17 @@ const PartnerRegister = () => {
                   <Building2 className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">Business Information</h1>
-                  <p className="text-muted-foreground">Tell us about your business</p>
+                  <h1 className="font-display text-2xl font-bold text-foreground">{t("partnerRegister.businessInfoTitle")}</h1>
+                  <p className="text-muted-foreground">{t("partnerRegister.businessInfoSubtitle")}</p>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="businessName">Business Name *</Label>
+                  <Label htmlFor="businessName">{t("partnerRegister.businessName")}</Label>
                   <Input
                     id="businessName"
-                    placeholder="Your Business Name"
+                    placeholder={t("partnerRegister.businessNamePlaceholder")}
                     value={businessName}
                     onChange={(e) => setBusinessName(e.target.value)}
                     required
@@ -354,16 +354,16 @@ const PartnerRegister = () => {
                       setOtherCategoryDescription("");
                     }
                   }}
-                  label="Business Categories"
+                  label={t("partnerRegister.businessCategoriesLabel")}
                   required
                 />
 
                 {selectedCategories.includes("other") && (
                   <div className="space-y-2">
-                    <Label htmlFor="otherCategoryDescription">What type of business or service? *</Label>
+                    <Label htmlFor="otherCategoryDescription">{t("partnerRegister.otherTypeLabel")}</Label>
                     <Input
                       id="otherCategoryDescription"
-                      placeholder="e.g., Pet Photography, Dog Walking, Pet Transport..."
+                      placeholder={t("partnerRegister.otherTypePlaceholder")}
                       value={otherCategoryDescription}
                       onChange={(e) => setOtherCategoryDescription(e.target.value)}
                       required
@@ -372,10 +372,10 @@ const PartnerRegister = () => {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">{t("partnerRegister.descriptionLabel")}</Label>
                   <Textarea
                     id="description"
-                    placeholder="Tell pet owners about your services..."
+                    placeholder={t("partnerRegister.descriptionPlaceholder")}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
@@ -384,9 +384,9 @@ const PartnerRegister = () => {
 
                 {/* Store Locations */}
                 <div className="space-y-2">
-                  <Label className="font-semibold">Store Locations *</Label>
+                  <Label className="font-semibold">{t("partnerRegister.storeLocations")}</Label>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Add your store locations with their specific address and phone number.
+                    {t("partnerRegister.storeLocationsHelp")}
                   </p>
                   <BusinessLocationManager
                     locations={additionalLocations}
