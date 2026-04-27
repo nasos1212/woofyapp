@@ -23,6 +23,7 @@ import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 
 const placeTypes = [
   { value: "cafe", label: "Café" },
+  { value: "patisserie", label: "Patisserie" },
   { value: "restaurant", label: "Restaurant" },
   { value: "bar", label: "Bar" },
   { value: "hotel", label: "Hotel" },
@@ -30,7 +31,6 @@ const placeTypes = [
   { value: "park", label: "Park" },
   { value: "nature_trail", label: "Nature Trail" },
   { value: "pharmacy", label: "Pharmacy" },
-  { value: "patisserie", label: "Patisserie" },
   { value: "store", label: "Retail Store" },
   { value: "office", label: "Office" },
   { value: "other", label: "Other" },
