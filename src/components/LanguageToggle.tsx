@@ -10,8 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 const LANGS: { code: "en" | "el"; label: string; short: string; flag: string }[] = [
-  { code: "en", label: "English", short: "EN", flag: "🇬🇧" },
-  { code: "el", label: "Ελληνικά", short: "ΕΛ", flag: "🇬🇷" },
+  { code: "en", label: "English", short: "EN", flag: "https://flagcdn.com/gb.svg" },
+  { code: "el", label: "Ελληνικά", short: "ΕΛ", flag: "https://flagcdn.com/gr.svg" },
 ];
 
 interface Props {
