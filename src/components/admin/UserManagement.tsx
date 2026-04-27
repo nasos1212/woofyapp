@@ -41,6 +41,7 @@ interface BusinessLocation {
 
 interface BusinessInfo {
   id: string;
+  user_id: string;
   business_name: string;
   category: string;
   categories: string[];
