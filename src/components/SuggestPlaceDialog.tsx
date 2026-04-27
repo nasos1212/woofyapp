@@ -35,6 +35,7 @@ const placeTypes = [
   { value: "park", label: "Park" },
   { value: "nature_trail", label: "Nature Trail" },
   { value: "pharmacy", label: "Pharmacy" },
+  { value: "patisserie", label: "Patisserie" },
   { value: "store", label: "Retail Store" },
   { value: "office", label: "Office" },
   { value: "other", label: "Other" },
