@@ -285,7 +285,8 @@
     "terms": "Terms of Service",
     "contact": "Contact",
     "copyright": "© 2026 Wooffy. An effort to unite pet lovers all over Cyprus. 💫",
-    "emailCopied": "Email copied to clipboard!"
+    "emailCopied": "Email copied to clipboard!",
+    "country": "Cyprus"
   },
   "auth": {
     "backHome": "Back to Home",
