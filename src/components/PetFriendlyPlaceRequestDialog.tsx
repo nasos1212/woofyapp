@@ -69,7 +69,7 @@ const PetFriendlyPlaceRequestDialog = () => {
     const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, website, description, submittedBy });
     if (!result.success) {
       toast({
-        title: "Validation Error",
+        title: t("getListed.dialog.validationError"),
         description: result.error.errors[0].message,
         variant: "destructive",
       });
@@ -93,8 +93,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       if (error) throw error;
 
       toast({
-        title: "Request Submitted! 🎉",
-        description: "We'll review your place and add it to the list shortly.",
+        title: t("getListed.dialog.successTitle"),
+        description: t("getListed.dialog.successDesc"),
       });
       setName("");
       setPlaceType("");
@@ -108,8 +108,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       setOpen(false);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit request. Please try again.",
+        title: t("getListed.dialog.errorTitle"),
+        description: error.message || t("getListed.dialog.errorDesc"),
         variant: "destructive",
       });
     } finally {
