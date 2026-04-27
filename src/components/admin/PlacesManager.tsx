@@ -16,6 +16,7 @@ import {
   Copy
 } from "lucide-react";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
+import { petFriendlyPlaceTypeLabels } from "@/data/petFriendlyPlaceTypes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,20 +103,7 @@ interface PlaceFormData {
   verified: boolean;
 }
 
-const placeTypeLabels: Record<string, string> = {
-  beach: "Beach",
-  cafe: "Café",
-  restaurant: "Restaurant",
-  bar: "Bar",
-  hotel: "Hotel",
-  park: "Park",
-  nature_trail: "Nature Trail",
-  pharmacy: "Pharmacy",
-  patisserie: "Patisserie",
-  store: "Retail Store",
-  office: "Office",
-  other: "Other",
-};
+const placeTypeLabels = petFriendlyPlaceTypeLabels;
 
 const defaultFormData: PlaceFormData = {
   name: "",

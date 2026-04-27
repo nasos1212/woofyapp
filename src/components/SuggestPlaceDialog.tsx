@@ -25,21 +25,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
+import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
 
-const placeTypes = [
-  { value: "beach", label: "Beach" },
-  { value: "cafe", label: "Café" },
-  { value: "restaurant", label: "Restaurant" },
-  { value: "bar", label: "Bar" },
-  { value: "hotel", label: "Hotel" },
-  { value: "park", label: "Park" },
-  { value: "nature_trail", label: "Nature Trail" },
-  { value: "pharmacy", label: "Pharmacy" },
-  { value: "patisserie", label: "Patisserie" },
-  { value: "store", label: "Retail Store" },
-  { value: "office", label: "Office" },
-  { value: "other", label: "Other" },
-];
+const placeTypes = petFriendlyPlaceTypes;
 
 interface SuggestPlaceDialogProps {
   onPlaceAdded?: () => void;
