@@ -28,6 +28,31 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Wooffy" />
     <meta name="twitter:image" content="https://www.wooffy.app/wooffy-logo.png" />
+
+    <!-- Force-clear legacy service workers & caches (runs before app loads) -->
+    <script>
+      (function () {
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              if (!regs || regs.length === 0) return;
+              var hadSW = false;
+              regs.forEach(function (r) { hadSW = true; r.unregister(); });
+              if (hadSW && 'caches' in window) {
+                caches.keys().then(function (keys) {
+                  return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+                }).then(function () {
+                  if (!sessionStorage.getItem('__sw_cleared__')) {
+                    sessionStorage.setItem('__sw_cleared__', '1');
+                    location.reload();
+                  }
+                });
+              }
+            }).catch(function () {});
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body>
