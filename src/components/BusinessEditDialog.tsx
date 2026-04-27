@@ -134,6 +134,15 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
       if (error) throw error;
 
+      // Also update the owner's display name on the profile
+      if (business.user_id) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ full_name: ownerName.trim() || null })
+          .eq("id", business.user_id);
+        if (profileError) throw profileError;
+      }
+
       toast.success(t("businessEditDialog.updated"));
       onSave();
       onOpenChange(false);
