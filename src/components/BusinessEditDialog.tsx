@@ -172,6 +172,19 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
           <TabsContent value="details" className="space-y-4 py-4">
             <div className="space-y-2">
+              <Label htmlFor="ownerName">Owner / Contact Name</Label>
+              <Input
+                id="ownerName"
+                placeholder="e.g. John Doe"
+                value={ownerName}
+                onChange={(e) => setOwnerName(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                The personal name shown on this user's profile.
+              </p>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="businessName">{t("businessEditDialog.nameLabel")}</Label>
               <Input
                 id="businessName"
