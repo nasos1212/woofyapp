@@ -17,16 +17,16 @@
     "dogFriendlyPlaces": "Dog-Friendly Μέρη",
     "shelters": "Καταφύγια",
     "pricing": "Τιμές",
-    "dashboard": "Πίνακας",
+    "dashboard": "Αρχική",
     "offers": "Προσφορές",
     "community": "Κοινότητα",
-    "myDashboard": "Ο Πίνακάς μου",
+    "myDashboard": "Η Αρχική μου",
     "browseOffers": "Δείτε Προσφορές",
-    "communityHub": "Κέντρο Κοινότητας",
+    "communityHub": "Κοινότητα",
     "redemptionHistory": "Ιστορικό Εξαργυρώσεων",
     "notifications": "Ειδοποιήσεις",
     "upgradeToPremium": "Αναβάθμιση σε Premium",
-    "adminDashboard": "Πίνακας Διαχειριστή"
+    "adminDashboard": "Αρχική Διαχειριστή"
   },
   "hero": {
     "badge": "Δωρεάν εγγραφή · Χωρίς πιστωτική κάρτα",
