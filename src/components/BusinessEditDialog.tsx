@@ -69,7 +69,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
     const { data } = await supabase
       .from("profiles")
       .select("full_name")
-      .eq("id", business.user_id)
+      .eq("user_id", business.user_id)
       .maybeSingle();
     setOwnerName(data?.full_name || "");
   };
