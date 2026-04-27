@@ -69,7 +69,7 @@ const PetFriendlyPlaceRequestDialog = () => {
     const result = formSchema.safeParse({ name, placeType, city, phone, googleMapsUrl, website, description, submittedBy });
     if (!result.success) {
       toast({
-        title: "Validation Error",
+        title: t("getListed.dialog.validationError"),
         description: result.error.errors[0].message,
         variant: "destructive",
       });
@@ -93,8 +93,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       if (error) throw error;
 
       toast({
-        title: "Request Submitted! 🎉",
-        description: "We'll review your place and add it to the list shortly.",
+        title: t("getListed.dialog.successTitle"),
+        description: t("getListed.dialog.successDesc"),
       });
       setName("");
       setPlaceType("");
@@ -108,8 +108,8 @@ const PetFriendlyPlaceRequestDialog = () => {
       setOpen(false);
     } catch (error: any) {
       toast({
-        title: "Error",
-        description: error.message || "Failed to submit request. Please try again.",
+        title: t("getListed.dialog.errorTitle"),
+        description: error.message || t("getListed.dialog.errorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -131,22 +131,22 @@ const PetFriendlyPlaceRequestDialog = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
-            Get Listed on Our Directory
+            {t("getListed.dialog.title")}
           </DialogTitle>
           <DialogDescription>
-            No account needed! Fill in your details and we'll add your place after a quick verification.
+            {t("getListed.dialog.description")}
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
+              {t("getListed.dialog.joke")}
             </span>
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div className="space-y-2">
-            <Label htmlFor="place-name">Place Name *</Label>
+            <Label htmlFor="place-name">{t("getListed.dialog.placeName")} *</Label>
             <Input
               id="place-name"
-              placeholder="e.g. Sunny Beach Café"
+              placeholder={t("getListed.dialog.placeNamePh")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={100}
@@ -155,15 +155,15 @@ const PetFriendlyPlaceRequestDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-type">Type *</Label>
+            <Label htmlFor="place-type">{t("getListed.dialog.type")} *</Label>
             <Select value={placeType} onValueChange={setPlaceType}>
               <SelectTrigger>
-                <SelectValue placeholder="Select place type" />
+                <SelectValue placeholder={t("getListed.dialog.typePh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
-                {placeTypes.map((t) => (
-                  <SelectItem key={t.value} value={t.value}>
-                    {t.label}
+                {placeTypes.map((pt) => (
+                  <SelectItem key={pt.value} value={pt.value}>
+                    {pt.label}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -171,10 +171,10 @@ const PetFriendlyPlaceRequestDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-city">City *</Label>
+            <Label htmlFor="place-city">{t("getListed.dialog.city")} *</Label>
             <Select value={city} onValueChange={(v) => { setCity(v); setArea(""); }}>
               <SelectTrigger>
-                <SelectValue placeholder="Select city" />
+                <SelectValue placeholder={t("getListed.dialog.cityPh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((c) => (
@@ -186,7 +186,7 @@ const PetFriendlyPlaceRequestDialog = () => {
 
           {availableAreas.length > 0 && (
             <div className="space-y-2">
-              <Label>Area / Neighborhood</Label>
+              <Label>{t("getListed.dialog.area")}</Label>
               <SearchableAreaSelect
                 areas={availableAreas}
                 value={area}
@@ -196,7 +196,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="google-maps">Google Maps Link *</Label>
+            <Label htmlFor="google-maps">{t("getListed.dialog.googleMaps")} *</Label>
             <Input
               id="google-maps"
               placeholder="https://maps.google.com/..."
@@ -206,26 +206,26 @@ const PetFriendlyPlaceRequestDialog = () => {
               required
             />
             <p className="text-xs text-muted-foreground">
-              Open the place in Google Maps, click "Share" and paste the link here
+              {t("getListed.dialog.googleMapsHelp")}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label>Who is submitting? *</Label>
+            <Label>{t("getListed.dialog.whoSubmitting")} *</Label>
             <RadioGroup value={submittedBy} onValueChange={(v) => setSubmittedBy(v as "owner" | "someone_else")} className="flex gap-4">
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="owner" id="req-owner" />
-                <Label htmlFor="req-owner" className="font-normal cursor-pointer">I own/manage this place</Label>
+                <Label htmlFor="req-owner" className="font-normal cursor-pointer">{t("getListed.dialog.owner")}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="someone_else" id="req-someone" />
-                <Label htmlFor="req-someone" className="font-normal cursor-pointer">Recommending a place</Label>
+                <Label htmlFor="req-someone" className="font-normal cursor-pointer">{t("getListed.dialog.recommend")}</Label>
               </div>
             </RadioGroup>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-phone">Phone</Label>
+            <Label htmlFor="place-phone">{t("getListed.dialog.phone")}</Label>
             <Input
               id="place-phone"
               type="tel"
@@ -236,7 +236,7 @@ const PetFriendlyPlaceRequestDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-website">Website</Label>
+            <Label htmlFor="place-website">{t("getListed.dialog.website")}</Label>
             <Input
               id="place-website"
               type="url"
@@ -247,10 +247,10 @@ const PetFriendlyPlaceRequestDialog = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="place-description">Description</Label>
+            <Label htmlFor="place-description">{t("getListed.dialog.descLabel")}</Label>
             <Textarea
               id="place-description"
-              placeholder="Tell us what makes this place pet-friendly..."
+              placeholder={t("getListed.dialog.descPh")}
               value={description}
               onChange={(e) => {
                 if (e.target.value.length <= 140) {
@@ -271,7 +271,7 @@ const PetFriendlyPlaceRequestDialog = () => {
             className="w-full"
             disabled={isSubmitting || !name.trim() || !placeType || !city || !googleMapsUrl.trim()}
           >
-            {isSubmitting ? "Submitting..." : "Submit Request"}
+            {isSubmitting ? t("getListed.dialog.submitting") : t("getListed.dialog.submit")}
           </Button>
         </form>
       </DialogContent>

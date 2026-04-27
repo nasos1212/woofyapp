@@ -91,7 +91,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 py-2">
                 <MapPin className="w-4 h-4 mt-0.5 text-wooffy-sky flex-shrink-0" />
-                <span>Cyprus</span>
+                <span>{t("footer.country")}</span>
               </li>
             </ul>
           </div>
