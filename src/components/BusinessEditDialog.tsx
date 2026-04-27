@@ -60,8 +60,19 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   useEffect(() => {
     if (open) {
       fetchPhotos();
+      fetchOwnerName();
     }
   }, [open, business.id]);
+
+  const fetchOwnerName = async () => {
+    if (!business.user_id) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", business.user_id)
+      .maybeSingle();
+    setOwnerName(data?.full_name || "");
+  };
 
   const fetchPhotos = async () => {
     setLoadingPhotos(true);
