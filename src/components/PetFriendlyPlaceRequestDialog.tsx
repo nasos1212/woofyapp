@@ -20,21 +20,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
+import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
 
-const placeTypes = [
-  { value: "cafe", label: "Café" },
-  { value: "restaurant", label: "Restaurant" },
-  { value: "bar", label: "Bar" },
-  { value: "hotel", label: "Hotel" },
-  { value: "beach", label: "Beach" },
-  { value: "park", label: "Park" },
-  { value: "nature_trail", label: "Nature Trail" },
-  { value: "pharmacy", label: "Pharmacy" },
-  { value: "patisserie", label: "Patisserie" },
-  { value: "store", label: "Retail Store" },
-  { value: "office", label: "Office" },
-  { value: "other", label: "Other" },
-];
+const placeTypes = petFriendlyPlaceTypes;
 
 const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
