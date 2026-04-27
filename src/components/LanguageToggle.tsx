@@ -65,13 +65,6 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
           >
             <img src={lang.flag} alt={lang.label} className="w-5 h-[14px] object-cover rounded-[2px] border border-border/40" />
             <span>{lang.label}</span>
-          <DropdownMenuItem
-            key={lang.code}
-            onClick={() => handleSelect(lang.code)}
-            className={`gap-2 ${i18n.language === lang.code ? "bg-muted font-medium" : ""}`}
-          >
-            <span className="text-base leading-none" aria-hidden>{lang.flag}</span>
-            <span>{lang.label}</span>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
