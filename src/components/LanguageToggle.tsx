@@ -43,9 +43,15 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={variant} size="sm" className={className}>
-          <span className="text-base leading-none mr-1.5" aria-hidden>{current.flag}</span>
-          <span className="text-xs font-semibold">{current.short}</span>
+        <Button
+          variant={variant}
+          size="sm"
+          className={`px-2 sm:px-3 h-9 gap-1 sm:gap-1.5 ${className ?? ""}`}
+        >
+          <span className="text-sm sm:text-base leading-none" aria-hidden>
+            {current.flag}
+          </span>
+          <span className="text-[11px] sm:text-xs font-semibold">{current.short}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
