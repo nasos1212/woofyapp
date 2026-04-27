@@ -41,6 +41,7 @@ interface BusinessEditDialogProps {
 
 export function BusinessEditDialog({ business, open, onOpenChange, onSave }: BusinessEditDialogProps) {
   const { t } = useTranslation();
+  const [ownerName, setOwnerName] = useState("");
   const [businessName, setBusinessName] = useState(business.business_name);
   const [description, setDescription] = useState(business.description || "");
   const [address, setAddress] = useState(business.address || "");
