@@ -64,18 +64,18 @@ interface PetFriendlyPlace {
 }
 
 const placeTypeConfig: Record<string, { label: string; icon: React.ElementType; color: string; bgColor: string }> = {
-  bar: { label: "Bar", icon: Wine, color: "text-rose-600", bgColor: "bg-rose-100" },
   beach: { label: "Beach", icon: Waves, color: "text-cyan-600", bgColor: "bg-cyan-100" },
   cafe: { label: "Café", icon: Coffee, color: "text-amber-600", bgColor: "bg-amber-100" },
+  restaurant: { label: "Restaurant", icon: UtensilsCrossed, color: "text-orange-600", bgColor: "bg-orange-100" },
+  bar: { label: "Bar", icon: Wine, color: "text-rose-600", bgColor: "bg-rose-100" },
   hotel: { label: "Hotel", icon: Hotel, color: "text-purple-600", bgColor: "bg-purple-100" },
+  park: { label: "Park", icon: TreePine, color: "text-green-600", bgColor: "bg-green-100" },
   nature_trail: { label: "Nature Trail", icon: Footprints, color: "text-emerald-600", bgColor: "bg-emerald-100" },
+  pharmacy: { label: "Pharmacy", icon: Pill, color: "text-blue-600", bgColor: "bg-blue-100" },
+  patisserie: { label: "Patisserie", icon: Cake, color: "text-pink-600", bgColor: "bg-pink-100" },
+  store: { label: "Retail Store", icon: ShoppingBag, color: "text-indigo-600", bgColor: "bg-indigo-100" },
   office: { label: "Office", icon: Briefcase, color: "text-slate-600", bgColor: "bg-slate-100" },
   other: { label: "Other", icon: Building2, color: "text-gray-600", bgColor: "bg-gray-100" },
-  park: { label: "Park", icon: TreePine, color: "text-green-600", bgColor: "bg-green-100" },
-  patisserie: { label: "Patisserie", icon: Cake, color: "text-pink-600", bgColor: "bg-pink-100" },
-  pharmacy: { label: "Pharmacy", icon: Pill, color: "text-blue-600", bgColor: "bg-blue-100" },
-  restaurant: { label: "Restaurant", icon: UtensilsCrossed, color: "text-orange-600", bgColor: "bg-orange-100" },
-  store: { label: "Retail Store", icon: ShoppingBag, color: "text-indigo-600", bgColor: "bg-indigo-100" },
 };
 
 const PetFriendlyPlaces = () => {
