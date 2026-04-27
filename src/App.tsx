@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
-import PWAUpdatePrompt from "./components/PWAUpdatePrompt";
+import { useEffect } from "react";
 
 import SupportButton from "./components/SupportButton";
 import Index from "./pages/Index";
@@ -51,12 +51,26 @@ import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
+const ServiceWorkerCleanup = () => {
+  useEffect(() => {
+    if (!("serviceWorker" in navigator)) return;
+
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => {
+        void registration.unregister();
+      });
+    });
+  }, []);
+
+  return null;
+};
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
-          <PWAUpdatePrompt />
+          <ServiceWorkerCleanup />
           <Toaster />
           <Sonner />
           <BrowserRouter>
