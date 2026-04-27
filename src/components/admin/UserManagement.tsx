@@ -41,6 +41,7 @@ interface BusinessLocation {
 
 interface BusinessInfo {
   id: string;
+  user_id: string;
   business_name: string;
   category: string;
   categories: string[];
@@ -202,6 +203,7 @@ const UserManagement = () => {
       const businessesMap = new Map<string, BusinessInfo>();
       (businessesResult.data || []).forEach(b => businessesMap.set(b.user_id, {
         id: b.id,
+        user_id: b.user_id,
         business_name: b.business_name,
         category: b.category,
         categories: (b as any).categories || [b.category],

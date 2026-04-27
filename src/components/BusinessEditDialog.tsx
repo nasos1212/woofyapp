@@ -18,6 +18,7 @@ interface BusinessPhoto {
 }
 interface Business {
   id: string;
+  user_id?: string;
   business_name: string;
   description: string | null;
   phone?: string | null;
@@ -40,6 +41,7 @@ interface BusinessEditDialogProps {
 
 export function BusinessEditDialog({ business, open, onOpenChange, onSave }: BusinessEditDialogProps) {
   const { t } = useTranslation();
+  const [ownerName, setOwnerName] = useState("");
   const [businessName, setBusinessName] = useState(business.business_name);
   const [description, setDescription] = useState(business.description || "");
   const [address, setAddress] = useState(business.address || "");
@@ -58,8 +60,19 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   useEffect(() => {
     if (open) {
       fetchPhotos();
+      fetchOwnerName();
     }
   }, [open, business.id]);
+
+  const fetchOwnerName = async () => {
+    if (!business.user_id) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", business.user_id)
+      .maybeSingle();
+    setOwnerName(data?.full_name || "");
+  };
 
   const fetchPhotos = async () => {
     setLoadingPhotos(true);
@@ -121,6 +134,15 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
 
       if (error) throw error;
 
+      // Also update the owner's display name on the profile
+      if (business.user_id) {
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ full_name: ownerName.trim() || null })
+          .eq("id", business.user_id);
+        if (profileError) throw profileError;
+      }
+
       toast.success(t("businessEditDialog.updated"));
       onSave();
       onOpenChange(false);
@@ -149,6 +171,19 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
           </TabsList>
 
           <TabsContent value="details" className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="ownerName">Owner / Contact Name</Label>
+              <Input
+                id="ownerName"
+                placeholder="e.g. John Doe"
+                value={ownerName}
+                onChange={(e) => setOwnerName(e.target.value)}
+              />
+              <p className="text-xs text-muted-foreground">
+                The personal name shown on this user's profile.
+              </p>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="businessName">{t("businessEditDialog.nameLabel")}</Label>
               <Input
