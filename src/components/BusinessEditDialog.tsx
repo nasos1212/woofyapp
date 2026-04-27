@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon } from "lucide-react";
+import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon, Facebook, Instagram, Music2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,9 @@ interface Business {
   city: string | null;
   website: string | null;
   google_maps_url: string | null;
+  facebook_url?: string | null;
+  instagram_url?: string | null;
+  tiktok_url?: string | null;
 }
 
 interface BusinessEditDialogProps {
@@ -45,6 +48,9 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
   const [email, setEmail] = useState(business.email || "");
   const [website, setWebsite] = useState(business.website || "");
   const [googleMapsUrl, setGoogleMapsUrl] = useState(business.google_maps_url || "");
+  const [facebookUrl, setFacebookUrl] = useState(business.facebook_url || "");
+  const [instagramUrl, setInstagramUrl] = useState(business.instagram_url || "");
+  const [tiktokUrl, setTiktokUrl] = useState(business.tiktok_url || "");
   const [isSaving, setIsSaving] = useState(false);
   const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
   const [loadingPhotos, setLoadingPhotos] = useState(false);
@@ -107,6 +113,9 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
           email: email.trim(),
           website: website.trim() || null,
           google_maps_url: googleMapsUrl.trim() || null,
+          facebook_url: facebookUrl.trim() || null,
+          instagram_url: instagramUrl.trim() || null,
+          tiktok_url: tiktokUrl.trim() || null,
         })
         .eq("id", business.id);
 
@@ -248,6 +257,48 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
               </p>
             </div>
 
+            <div className="space-y-3 pt-2 border-t">
+              <Label className="text-sm font-semibold">Social Media</Label>
+              <div className="space-y-2">
+                <Label htmlFor="facebookUrl" className="text-xs text-muted-foreground">Facebook</Label>
+                <div className="relative">
+                  <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="facebookUrl"
+                    placeholder="https://facebook.com/yourpage"
+                    value={facebookUrl}
+                    onChange={(e) => setFacebookUrl(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="instagramUrl" className="text-xs text-muted-foreground">Instagram</Label>
+                <div className="relative">
+                  <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="instagramUrl"
+                    placeholder="https://instagram.com/yourhandle"
+                    value={instagramUrl}
+                    onChange={(e) => setInstagramUrl(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="tiktokUrl" className="text-xs text-muted-foreground">TikTok</Label>
+                <div className="relative">
+                  <Music2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    id="tiktokUrl"
+                    placeholder="https://tiktok.com/@yourhandle"
+                    value={tiktokUrl}
+                    onChange={(e) => setTiktokUrl(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+            </div>
             <div className="flex justify-end gap-3 pt-4">
               <Button variant="outline" onClick={() => onOpenChange(false)}>
                 {t("businessEditDialog.cancel")}
