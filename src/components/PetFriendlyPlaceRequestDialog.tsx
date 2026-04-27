@@ -22,18 +22,18 @@ import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 
 const placeTypes = [
-  { value: "cafe", label: "Café" },
-  { value: "patisserie", label: "Patisserie" },
-  { value: "restaurant", label: "Restaurant" },
   { value: "bar", label: "Bar" },
-  { value: "hotel", label: "Hotel" },
   { value: "beach", label: "Beach" },
-  { value: "park", label: "Park" },
+  { value: "cafe", label: "Café" },
+  { value: "hotel", label: "Hotel" },
   { value: "nature_trail", label: "Nature Trail" },
-  { value: "pharmacy", label: "Pharmacy" },
-  { value: "store", label: "Retail Store" },
   { value: "office", label: "Office" },
   { value: "other", label: "Other" },
+  { value: "park", label: "Park" },
+  { value: "patisserie", label: "Patisserie" },
+  { value: "pharmacy", label: "Pharmacy" },
+  { value: "restaurant", label: "Restaurant" },
+  { value: "store", label: "Retail Store" },
 ];
 
 const formSchema = z.object({
