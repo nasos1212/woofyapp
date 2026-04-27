@@ -10,8 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 const LANGS: { code: "en" | "el"; label: string; short: string; flag: string }[] = [
-  { code: "en", label: "English", short: "EN", flag: "🇬🇧" },
-  { code: "el", label: "Ελληνικά", short: "ΕΛ", flag: "🇬🇷" },
+  { code: "en", label: "English", short: "EN", flag: "https://flagcdn.com/gb.svg" },
+  { code: "el", label: "Ελληνικά", short: "ΕΛ", flag: "https://flagcdn.com/gr.svg" },
 ];
 
 interface Props {
@@ -48,9 +48,11 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
           size="sm"
           className={`px-2 sm:px-3 h-9 gap-1 sm:gap-1.5 ${className ?? ""}`}
         >
-          <span className="text-sm sm:text-base leading-none" aria-hidden>
-            {current.flag}
-          </span>
+          <img
+            src={current.flag}
+            alt={current.label}
+            className="w-5 h-[14px] sm:w-6 sm:h-[18px] object-cover rounded-[2px] border border-border/40"
+          />
           <span className="text-[11px] sm:text-xs font-semibold">{current.short}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -61,7 +63,7 @@ const LanguageToggle = ({ className, variant = "ghost" }: Props) => {
             onClick={() => handleSelect(lang.code)}
             className={`gap-2 ${i18n.language === lang.code ? "bg-muted font-medium" : ""}`}
           >
-            <span className="text-base leading-none" aria-hidden>{lang.flag}</span>
+            <img src={lang.flag} alt={lang.label} className="w-5 h-[14px] object-cover rounded-[2px] border border-border/40" />
             <span>{lang.label}</span>
           </DropdownMenuItem>
         ))}
