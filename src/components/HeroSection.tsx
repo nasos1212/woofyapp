@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
-import MembershipCard from "./MembershipCard";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
 import heroImage from "@/assets/hero-dog.jpg";
 
@@ -17,11 +16,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-[90dvh] w-full overflow-hidden bg-background pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-12 sm:pb-20">
       {/* Atmospheric glows */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      />
-      <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/15 blur-3xl" />
+      <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/10 blur-3xl" />
       <div className="pointer-events-none absolute top-1/3 right-[-10%] w-[28rem] h-[28rem] rounded-full bg-accent/10 blur-3xl" />
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
@@ -29,20 +24,23 @@ const HeroSection = () => {
           {/* TEXT COLUMN */}
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 text-primary font-bold text-[11px] tracking-widest uppercase mb-6 ring-1 ring-primary/20">
-              <Sparkles className="w-3.5 h-3.5" />
-              {t("hero.badge")}
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              {t("hero.vipBadge")}
             </div>
 
-            <h1 className="font-display font-black text-foreground tracking-[-0.03em] leading-[0.95] text-[2.75rem] sm:text-6xl lg:text-7xl">
-              {t("hero.titlePart1")} {t("hero.titleOf")}{" "}
-              <span className="text-gradient">{t("hero.titleHighlight")}</span>
+            <h1 className="font-display font-black text-foreground tracking-[-0.04em] leading-[0.88] text-[3.75rem] sm:text-[5.5rem] lg:text-[7rem]">
+              {t("hero.newTitle1")}
+              <br />
+              <span className="text-gradient">{t("hero.newTitle2")}</span>
+              <br />
+              {t("hero.newTitle3")}
             </h1>
 
-            <p className="mt-5 sm:mt-6 text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed">
-              {t("hero.description")}
+            <p className="mt-6 sm:mt-8 text-base sm:text-lg lg:text-xl text-muted-foreground font-medium max-w-[34ch] leading-relaxed">
+              {t("hero.newTagline")}
             </p>
 
-            <div className="mt-7 sm:mt-9 flex flex-col sm:flex-row w-full sm:w-auto gap-3 sm:gap-4">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row w-full sm:w-auto gap-3 sm:gap-4">
               <Button
                 variant="hero"
                 size="xl"
@@ -61,86 +59,68 @@ const HeroSection = () => {
                 {t("hero.ctaPlaces")}
               </Button>
             </div>
+          </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 justify-center lg:justify-start text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-primary" />
-                <span>{t("hero.directory")}</span>
-              </div>
-              <div className="w-1 h-1 bg-muted-foreground rounded-full hidden sm:block" />
-              <div className="flex items-center gap-1.5">
-                <Heart className="w-4 h-4 text-destructive" />
-                <span>{t("hero.loved")}</span>
+          {/* PASS COLUMN */}
+          <div className="relative w-full flex items-center justify-center mt-4 lg:mt-0">
+            <div className="relative w-[260px] sm:w-[300px] aspect-[1/1.5] rotate-6 lg:rotate-12 transition-transform duration-700 hover:rotate-[8deg] hover:-translate-y-2">
+              {/* Drop shadow halo */}
+              <div className="absolute inset-0 bg-primary/30 blur-3xl translate-y-12 rounded-[2.5rem] -z-10" />
+
+              {/* Holographic gradient frame */}
+              <div className="absolute inset-0 rounded-[2.5rem] p-[3px] shadow-card overflow-hidden bg-[linear-gradient(135deg,hsl(var(--accent))_0%,hsl(var(--primary))_50%,hsl(var(--wooffy-sky))_100%)]">
+                {/* Inner card */}
+                <div className="relative w-full h-full bg-card/90 backdrop-blur-xl rounded-[2.3rem] flex flex-col p-5 sm:p-6 ring-1 ring-border">
+                  {/* Lanyard slot */}
+                  <div className="w-14 h-3.5 bg-foreground/20 rounded-full mx-auto mb-5 sm:mb-6 ring-1 ring-border" />
+
+                  {/* Header row */}
+                  <div className="flex justify-between items-start">
+                    <div className="font-display font-black text-foreground text-2xl sm:text-3xl tracking-tighter">
+                      {t("hero.passLabel")}
+                    </div>
+                    <div className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-soft">
+                      {t("hero.passVip")}
+                    </div>
+                  </div>
+
+                  {/* Photo */}
+                  <div className="relative w-full aspect-[4/3] rounded-2xl mt-5 sm:mt-6 overflow-hidden ring-2 ring-border bg-muted">
+                    <img
+                      src={heroImage}
+                      alt="Wooffy member pet"
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+                    <div className="absolute bottom-2.5 left-3 right-3">
+                      <div className="text-primary-foreground font-display font-black text-lg leading-none drop-shadow">
+                        {t("hero.passPet")}
+                      </div>
+                      <div className="text-primary-foreground/85 font-bold text-[10px] uppercase tracking-widest mt-1">
+                        {t("hero.passBreed")}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-auto pt-5 flex justify-between items-end text-foreground">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground mb-1">
+                        {t("hero.passMemberSince")}
+                      </div>
+                      <div className="text-2xl font-display font-black tabular-nums">
+                        2026
+                      </div>
+                    </div>
+                    <div className="w-9 h-9 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center">
+                      <span className="block w-2.5 h-2.5 bg-primary rounded-full animate-pulse" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* MEMBERSHIP CARD COLUMN (original component, unchanged) */}
-          <div className="relative mt-4 lg:mt-0">
-            <div className="animate-float">
-              <MembershipCard />
-            </div>
-
-            <div className="absolute -top-4 -right-4 bg-card rounded-2xl p-4 shadow-card border border-border animate-bounce-slow hidden lg:block">
-              <p className="font-display font-bold text-2xl text-primary">€29</p>
-              <p className="text-xs text-muted-foreground">{t("hero.perYear")}</p>
-            </div>
-
-            <div className="absolute -bottom-12 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-green-600 text-lg">✓</span>
-              </div>
-              <div>
-                <p className="font-medium text-sm text-foreground">{t("hero.tryToday")}</p>
-                <p className="text-xs text-muted-foreground">{t("hero.joinPack")}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Compact stats strip (kept, just slimmer) */}
-        <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 bg-card/70 backdrop-blur-sm rounded-2xl p-3 sm:p-5 shadow-soft border border-border">
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/10 rounded-xl flex items-center justify-center mb-1.5 sm:mb-2">
-                <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-              </div>
-              <p className="font-display font-bold text-xl sm:text-2xl text-gradient">100+</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">
-                {t("hero.partnerBusinesses")}
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center px-1 border-x border-border">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 bg-green-500/10 rounded-xl flex items-center justify-center mb-1.5 sm:mb-2">
-                <PiggyBank className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
-              </div>
-              <p className="font-display font-bold text-xl sm:text-2xl text-green-600">€200+</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">
-                {t("hero.yearlySavings")}
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center px-1">
-              <div className="w-9 h-9 sm:w-11 sm:h-11 bg-rose-500/10 rounded-xl flex items-center justify-center mb-1.5 sm:mb-2">
-                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
-              </div>
-              <p className="font-display font-bold text-xl sm:text-2xl text-rose-500">5+</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 leading-tight">
-                {t("hero.sheltersSupported")}
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="#get-listed"
-            className="mt-5 inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium flex-wrap justify-center w-full"
-          >
-            <MapPin className="w-4 h-4" />
-            <span>{t("hero.ownPlace")}</span>
-            <span className="inline-flex items-center gap-1 bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-bold shadow-soft whitespace-nowrap">
-              {t("hero.getListedFree")}
-              <ArrowRight className="w-3 h-3" />
-            </span>
-          </a>
         </div>
 
         {/* Member journey - DO NOT change */}
