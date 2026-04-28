@@ -222,7 +222,21 @@
       "successTitle": "Request Submitted! 🎉",
       "successDesc": "We'll review your place and add it to the list shortly.",
       "errorTitle": "Error",
-      "errorDesc": "Failed to submit request. Please try again."
+      "errorDesc": "Failed to submit request. Please try again.",
+      "types": {
+        "beach": "Beach",
+        "cafe": "Café",
+        "restaurant": "Restaurant",
+        "bar": "Bar",
+        "hotel": "Hotel",
+        "park": "Park",
+        "nature_trail": "Nature Trail",
+        "pharmacy": "Pharmacy",
+        "patisserie": "Patisserie",
+        "store": "Retail Store",
+        "office": "Office",
+        "other": "Other"
+      }
     }
   },
   "shelters": {
