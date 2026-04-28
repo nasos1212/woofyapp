@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
 import heroImage from "@/assets/hero-dog.jpg";
+import peekingDog from "@/assets/peeking-dog.png";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -119,17 +120,58 @@ const HeroSection = () => {
             </a>
           </div>
 
-          <div className="relative mt-4 lg:mt-0">
-            <div className="animate-float">
-              <MembershipCard />
+          <div className="relative mt-4 lg:mt-0 flex justify-center items-center min-h-[520px] lg:min-h-[640px]">
+            {/* Peeking dog behind the phone */}
+            <img
+              src={peekingDog}
+              alt="Happy dog peeking"
+              width={1024}
+              height={1024}
+              className="absolute z-0 pointer-events-none select-none animate-float
+                         w-[260px] sm:w-[340px] lg:w-[420px]
+                         right-[-30px] sm:right-[-20px] lg:right-[-60px]
+                         top-[20px] lg:top-[40px]
+                         drop-shadow-[0_25px_40px_rgba(0,0,0,0.18)]"
+              style={{ animationDelay: '0.4s' }}
+            />
+
+            {/* iPhone mockup frame wrapping the existing MembershipCard */}
+            <div className="relative z-10 animate-float">
+              <div
+                className="relative mx-auto rounded-[2.8rem] bg-gradient-to-b from-neutral-900 to-neutral-800 p-3 sm:p-4 shadow-2xl border-[3px] border-neutral-700"
+                style={{
+                  boxShadow:
+                    "0 30px 60px -15px rgba(0,0,0,0.35), 0 0 0 2px rgba(255,255,255,0.05) inset",
+                }}
+              >
+                {/* Side buttons */}
+                <div className="absolute -left-[5px] top-24 w-[5px] h-10 bg-neutral-700 rounded-l-md" />
+                <div className="absolute -left-[5px] top-40 w-[5px] h-16 bg-neutral-700 rounded-l-md" />
+                <div className="absolute -right-[5px] top-32 w-[5px] h-20 bg-neutral-700 rounded-r-md" />
+
+                {/* Inner screen */}
+                <div className="relative rounded-[2.1rem] bg-background overflow-hidden p-3 sm:p-4">
+                  {/* Dynamic island */}
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-20 w-24 h-6 bg-neutral-900 rounded-full" />
+
+                  {/* Status bar spacer */}
+                  <div className="h-7" />
+
+                  {/* The unchanged MembershipCard */}
+                  <div className="w-[280px] sm:w-[320px]">
+                    <MembershipCard />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="absolute -top-4 -right-4 bg-card rounded-2xl p-4 shadow-card border border-border animate-bounce-slow hidden lg:block">
+            {/* Floating chips — kept as-is */}
+            <div className="absolute -top-4 right-2 lg:-top-4 lg:-right-4 bg-card rounded-2xl p-4 shadow-card border border-border animate-bounce-slow hidden lg:block z-20">
               <p className="font-display font-bold text-2xl text-primary">€29</p>
               <p className="text-xs text-muted-foreground">{t("hero.perYear")}</p>
             </div>
 
-            <div className="absolute -bottom-12 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2">
+            <div className="absolute -bottom-6 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2 z-20">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                 <span className="text-green-600 text-lg">✓</span>
               </div>
@@ -138,6 +180,10 @@ const HeroSection = () => {
                 <p className="text-xs text-muted-foreground">{t("hero.joinPack")}</p>
               </div>
             </div>
+
+            {/* Paw prints around the phone */}
+            <div className="absolute -bottom-2 left-10 text-3xl opacity-40 animate-bounce-slow z-0" style={{ animationDelay: '0.2s' }}>🐾</div>
+            <div className="absolute top-8 left-2 text-2xl opacity-30 animate-bounce-slow z-0" style={{ animationDelay: '0.9s' }}>🐾</div>
           </div>
         </div>
 
