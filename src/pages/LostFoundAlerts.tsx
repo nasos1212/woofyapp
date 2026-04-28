@@ -532,7 +532,7 @@ const LostFoundAlerts = () => {
           <div className="space-y-2 text-sm">
             <div className="flex items-start gap-2 text-muted-foreground">
               <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-              <span>{alert.last_seen_location}</span>
+              <span>{getLocationDisplayName(alert.last_seen_location, i18n.language)}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
