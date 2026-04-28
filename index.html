@@ -58,6 +58,54 @@
         } catch (e) {}
       })();
     </script>
+
+    <!-- Auto-update: silently reloads when a new version is published (fixes iOS Safari stale cache) -->
+    <script>
+      (function () {
+        var currentBundle = null;
+        var bundleRegex = /\/assets\/index-[A-Za-z0-9_-]+\.js/;
+
+        function getCurrentBundle() {
+          var scripts = document.getElementsByTagName('script');
+          for (var i = 0; i < scripts.length; i++) {
+            var src = scripts[i].src || '';
+            var m = src.match(bundleRegex);
+            if (m) return m[0];
+          }
+          return null;
+        }
+
+        function checkForUpdate() {
+          if (!currentBundle) currentBundle = getCurrentBundle();
+          if (!currentBundle) return;
+          fetch('/?_v=' + Date.now(), { cache: 'no-store', credentials: 'same-origin' })
+            .then(function (r) { return r.ok ? r.text() : null; })
+            .then(function (html) {
+              if (!html) return;
+              var m = html.match(bundleRegex);
+              if (m && m[0] !== currentBundle) {
+                // New version published — reload once.
+                if (!sessionStorage.getItem('__app_updated__')) {
+                  sessionStorage.setItem('__app_updated__', '1');
+                  location.reload();
+                }
+              }
+            })
+            .catch(function () {});
+        }
+
+        // Check on load, on tab focus, and every 5 minutes.
+        window.addEventListener('load', function () {
+          currentBundle = getCurrentBundle();
+          sessionStorage.removeItem('__app_updated__');
+          setTimeout(checkForUpdate, 3000);
+          setInterval(checkForUpdate, 5 * 60 * 1000);
+        });
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible') checkForUpdate();
+        });
+      })();
+    </script>
   </head>
 
   <body>
