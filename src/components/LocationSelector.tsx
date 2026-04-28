@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin, ChevronDown } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cyprusCities, getAreasForCity } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface LocationSelectorProps {
   selectedCity: string;
