@@ -2556,6 +2556,17 @@
     "suggestedQ2": "How often should I groom my pet?",
     "suggestedQ3": "My pet is scratching a lot, what could it be?"
   },
+  "chatHistory": {
+    "title": "Chat History",
+    "newChat": "New Chat",
+    "conversationsOne": "{{count}} conversation",
+    "conversationsOther": "{{count}} conversations",
+    "allPets": "All Pets",
+    "noConversationsAbout": "No conversations about {{pet}} yet",
+    "noPrevious": "No previous conversations",
+    "startFirst": "Start your first chat",
+    "untitled": "Untitled conversation"
+  },
   "proactiveAlerts": {
     "title": "Wooffy Reminders",
     "overdue": "{{count}} overdue",

@@ -2556,6 +2556,17 @@
     "suggestedQ2": "Πόσο συχνά πρέπει να περιποιούμαι το κατοικίδιό μου;",
     "suggestedQ3": "Το κατοικίδιό μου ξύνεται πολύ, τι μπορεί να είναι;"
   },
+  "chatHistory": {
+    "title": "Ιστορικό Συνομιλιών",
+    "newChat": "Νέα Συνομιλία",
+    "conversationsOne": "{{count}} συνομιλία",
+    "conversationsOther": "{{count}} συνομιλίες",
+    "allPets": "Όλα τα Κατοικίδια",
+    "noConversationsAbout": "Δεν υπάρχουν συνομιλίες για το/τη {{pet}} ακόμη",
+    "noPrevious": "Δεν υπάρχουν προηγούμενες συνομιλίες",
+    "startFirst": "Ξεκίνα την πρώτη σου συνομιλία",
+    "untitled": "Συνομιλία χωρίς τίτλο"
+  },
   "proactiveAlerts": {
     "title": "Wooffy Υπενθυμίσεις",
     "overdue": "{{count}} εκπρόθεσμα",
