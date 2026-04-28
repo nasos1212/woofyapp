@@ -348,3 +348,24 @@ export function getCityDisplayName(cityName: string, language: string): string {
   }
   return cityName;
 }
+
+/**
+ * Translates a composite location string (e.g. "Limassol - Germasogeia" or
+ * "Limassol, Germasogeia") segment-by-segment using the city/area map.
+ * The DB value is unchanged — only the rendered label is localized.
+ */
+export function getLocationDisplayName(location: string, language: string): string {
+  if (!location) return location;
+  if (language !== "el") return location;
+  // Split on common separators while preserving them
+  return location
+    .split(/(\s*[-,/|]\s*)/)
+    .map((part) => {
+      if (/^\s*[-,/|]\s*$/.test(part)) return part;
+      const trimmed = part.trim();
+      if (!trimmed) return part;
+      const translated = GREEK_CITY_MAP[trimmed];
+      return translated ? part.replace(trimmed, translated) : part;
+    })
+    .join("");
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { MapPin, ChevronDown } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
@@ -9,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cyprusCities, getAreasForCity } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface LocationSelectorProps {
   selectedCity: string;
@@ -31,6 +33,7 @@ const LocationSelector = ({
   cityLabel = "City",
   areaLabel = "Area",
 }: LocationSelectorProps) => {
+  const { t, i18n } = useTranslation();
   const [areas, setAreas] = useState<string[]>([]);
 
   useEffect(() => {
@@ -56,12 +59,12 @@ const LocationSelector = ({
         </Label>
         <Select value={selectedCity} onValueChange={onCityChange}>
           <SelectTrigger>
-            <SelectValue placeholder="Select a city..." />
+            <SelectValue placeholder={t("locationSelector.selectCityPlaceholder", "Select a city...")} />
           </SelectTrigger>
           <SelectContent>
             {cyprusCities.map((city) => (
               <SelectItem key={city.name} value={city.name}>
-                {city.name}
+                {getCityDisplayName(city.name, i18n.language)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -73,13 +76,13 @@ const LocationSelector = ({
           <Label>{areaLabel}</Label>
           <Select value={selectedArea} onValueChange={onAreaChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select an area (optional)..." />
+              <SelectValue placeholder={t("locationSelector.selectAreaPlaceholder", "Select an area (optional)...")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all-areas">All areas</SelectItem>
+              <SelectItem value="all-areas">{t("locationSelector.allAreas", "All areas")}</SelectItem>
               {areas.map((area) => (
                 <SelectItem key={area} value={area}>
-                  {area}
+                  {getCityDisplayName(area, i18n.language)}
                 </SelectItem>
               ))}
             </SelectContent>

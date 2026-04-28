@@ -27,7 +27,7 @@ import { formatRelative } from "@/lib/relativeTime";
 import EditAlertDialog from "@/components/EditAlertDialog";
 import { getBreedsByPetType } from "@/data/petBreeds";
 import { useTranslation } from "react-i18next";
-import { getCityDisplayName } from "@/lib/cityDisplay";
+import { getCityDisplayName, getLocationDisplayName } from "@/lib/cityDisplay";
 
 type AlertType = "lost" | "found";
 type PetType = "dog" | "cat" | "other";
@@ -532,7 +532,7 @@ const LostFoundAlerts = () => {
           <div className="space-y-2 text-sm">
             <div className="flex items-start gap-2 text-muted-foreground">
               <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-              <span>{alert.last_seen_location}</span>
+              <span>{getLocationDisplayName(alert.last_seen_location, i18n.language)}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Calendar className="w-4 h-4 flex-shrink-0" />
@@ -1268,7 +1268,7 @@ const LostFoundAlerts = () => {
                           </h3>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {alert.last_seen_location}
+                          {getLocationDisplayName(alert.last_seen_location, i18n.language)}
                         </p>
                         <div className="flex items-center gap-2 mt-2 text-green-600">
                           <CheckCircle2 className="w-4 h-4" />
