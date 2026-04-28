@@ -46,17 +46,7 @@
     "getListedFree": "Δωρεάν Καταχώρηση",
     "tryToday": "Δοκιμάστε το σήμερα - γουφ!",
     "joinPack": "Γίνετε μέλος της αγέλης",
-    "perYear": "/χρόνο",
-    "vipBadge": "Πρόσβαση VIP Διαθέσιμη",
-    "newTitle1": "Το",
-    "newTitle2": "Καλύτερο",
-    "newTitle3": "Club.",
-    "newTagline": "Το πιο γνωστό μυστικό της Κύπρου για τα καλύτερα τετράποδα. Ξεκλείδωσε αποκλειστικά μέρη για σένα και τον καλύτερό σου φίλο.",
-    "passLabel": "WOOFFY",
-    "passVip": "VIP",
-    "passMemberSince": "Μέλος από",
-    "passPet": "Το κατοικίδιό σου",
-    "passBreed": "Μέλος Κύπρου"
+    "perYear": "/χρόνο"
   },
   "benefits": {
     "badge": "Όλα όσα παίρνετε με το Wooffy",

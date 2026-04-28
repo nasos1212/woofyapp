@@ -46,17 +46,7 @@
     "getListedFree": "Get Listed for Free",
     "tryToday": "Try it today - wooff!",
     "joinPack": "Join the pack",
-    "perYear": "/year",
-    "vipBadge": "VIP Access Open",
-    "newTitle1": "The",
-    "newTitle2": "Goodest",
-    "newTitle3": "Club.",
-    "newTagline": "Cyprus' worst-kept secret for top-tier tails. Unlock exclusive spots for you and your best friend.",
-    "passLabel": "WOOFFY",
-    "passVip": "VIP",
-    "passMemberSince": "Member Since",
-    "passPet": "Your Pet",
-    "passBreed": "Cyprus Member"
+    "perYear": "/year"
   },
   "benefits": {
     "badge": "Everything You Get with Wooffy",
