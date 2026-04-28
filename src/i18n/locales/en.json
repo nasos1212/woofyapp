@@ -331,6 +331,9 @@
     "country": "Cyprus"
   },
   "auth": {
+    "welcomeToastTitle": "Hello {{name}}! 👋",
+    "welcomeToastDescription": "Great to have you here!",
+    "welcomeToastFallbackName": "there",
     "backHome": "Back to Home",
     "backSignIn": "Back to Sign In",
     "backLogin": "Back to Login",
