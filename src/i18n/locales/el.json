@@ -331,6 +331,9 @@
     "country": "Κύπρος"
   },
   "auth": {
+    "welcomeToastTitle": "Γεια σου, {{name}}! 👋",
+    "welcomeToastDescription": "Χαιρόμαστε που είσαι εδώ!",
+    "welcomeToastFallbackName": "φίλε",
     "backHome": "Πίσω στην Αρχική",
     "backSignIn": "Πίσω στη Σύνδεση",
     "backLogin": "Πίσω στη Σύνδεση",
