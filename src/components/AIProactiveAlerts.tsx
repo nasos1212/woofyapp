@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { differenceInDays } from "date-fns";
 import { formatDate } from "@/lib/utils";
 import { toZonedTime } from "date-fns-tz";
@@ -42,29 +43,24 @@ const alertIcons: Record<string, React.ReactNode> = {
   birthday: <Gift className="w-5 h-5" />,
 };
 
-const statusConfig: Record<string, { label: string; className: string; bgClass: string }> = {
-  overdue: { 
-    label: "Overdue", 
+const statusStyles: Record<string, { className: string; bgClass: string }> = {
+  overdue: {
     className: "bg-red-500 text-white",
     bgClass: "bg-gradient-to-r from-red-50 to-red-100 border-red-200"
   },
-  today: { 
-    label: "Due Today", 
+  today: {
     className: "bg-orange-500 text-white",
     bgClass: "bg-gradient-to-r from-orange-50 to-amber-100 border-orange-200"
   },
-  urgent: { 
-    label: "Due Soon", 
+  urgent: {
     className: "bg-amber-500 text-white",
     bgClass: "bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200"
   },
-  soon: { 
-    label: "This Week", 
+  soon: {
     className: "bg-blue-500 text-white",
     bgClass: "bg-gradient-to-r from-blue-50 to-sky-100 border-blue-200"
   },
-  upcoming: { 
-    label: "Coming Up", 
+  upcoming: {
     className: "bg-slate-500 text-white",
     bgClass: "bg-gradient-to-r from-slate-50 to-gray-100 border-slate-200"
   },
@@ -73,6 +69,7 @@ const statusConfig: Record<string, { label: string; className: string; bgClass: 
 export const AIProactiveAlerts = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState<ProactiveAlert[]>([]);
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -332,10 +329,13 @@ export const AIProactiveAlerts = () => {
   };
 
   const getDaysText = (daysUntil: number) => {
-    if (daysUntil < 0) return `${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`;
-    if (daysUntil === 0) return "Today";
-    if (daysUntil === 1) return "Tomorrow";
-    return `In ${daysUntil} days`;
+    if (daysUntil < 0) {
+      const n = Math.abs(daysUntil);
+      return t(n === 1 ? "proactiveAlerts.days.overdueOne" : "proactiveAlerts.days.overdueOther", { count: n });
+    }
+    if (daysUntil === 0) return t("proactiveAlerts.days.today");
+    if (daysUntil === 1) return t("proactiveAlerts.days.tomorrow");
+    return t("proactiveAlerts.days.inDays", { count: daysUntil });
   };
 
   const hasUrgentItems = reminders.some(r => r.status === "overdue" || r.status === "today" || r.status === "urgent");
@@ -375,17 +375,17 @@ export const AIProactiveAlerts = () => {
           </div>
           <div>
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              Wooffy Reminders
+              {t("proactiveAlerts.title")}
               {(overdueCount > 0 || todayCount > 0) && (
                 <Badge variant="destructive" className="text-xs">
-                  {overdueCount > 0 && `${overdueCount} overdue`}
+                  {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
                   {overdueCount > 0 && todayCount > 0 && " · "}
-                  {todayCount > 0 && `${todayCount} today`}
+                  {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
                 </Badge>
               )}
             </h3>
             <p className="text-xs text-muted-foreground">
-              {reminders.length} upcoming reminder{reminders.length !== 1 ? 's' : ''}
+              {t(reminders.length === 1 ? "proactiveAlerts.upcomingOne" : "proactiveAlerts.upcomingOther", { count: reminders.length })}
             </p>
           </div>
         </div>
@@ -400,7 +400,7 @@ export const AIProactiveAlerts = () => {
                 setIsCollapsed(false);
               }}
             >
-              Show More
+              {t("proactiveAlerts.showMore")}
             </Button>
           ) : (
             <Button
@@ -412,7 +412,7 @@ export const AIProactiveAlerts = () => {
                 hideWidget();
               }}
             >
-              Hide
+              {t("proactiveAlerts.hide")}
             </Button>
           )}
           <ChevronRight className={cn(
@@ -431,7 +431,7 @@ export const AIProactiveAlerts = () => {
               key={`${reminder.type}-${reminder.id}`}
               className={cn(
                 "relative p-3 rounded-lg border transition-all cursor-pointer hover:shadow-md",
-                statusConfig[reminder.status].bgClass
+                statusStyles[reminder.status].bgClass
               )}
               onClick={() => {
                 if (reminder.type === "birthday") {
@@ -454,8 +454,8 @@ export const AIProactiveAlerts = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="font-medium text-sm truncate">{reminder.title}</p>
-                    <Badge className={cn("text-[10px] px-1.5 py-0 shrink-0", statusConfig[reminder.status].className)}>
-                      {statusConfig[reminder.status].label}
+                    <Badge className={cn("text-[10px] px-1.5 py-0 shrink-0", statusStyles[reminder.status].className)}>
+                      {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -482,7 +482,7 @@ export const AIProactiveAlerts = () => {
               className="w-full text-sm text-primary hover:text-primary/80"
               onClick={() => navigate("/member/health-records")}
             >
-              View all {reminders.length} reminders
+              {t("proactiveAlerts.viewAll", { count: reminders.length })}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           )}
@@ -490,7 +490,7 @@ export const AIProactiveAlerts = () => {
           {/* AI Alerts (offer suggestions, etc.) */}
           {alerts.filter(a => a.alert_type === "offer_suggestion").length > 0 && (
             <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground mb-2">Suggestions for you</p>
+              <p className="text-xs text-muted-foreground mb-2">{t("proactiveAlerts.suggestions")}</p>
               {alerts.filter(a => a.alert_type === "offer_suggestion").map((alert) => (
                 <div
                   key={alert.id}

@@ -1430,10 +1430,10 @@ const PetHealthRecords = () => {
                   {records.filter(r => r.record_type === 'vaccination').length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <Syringe className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">No vaccinations recorded</h3>
-                      <p className="text-muted-foreground mb-4">Track your pet's vaccine history</p>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noVaccines")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noVaccinesHint")}</p>
                       <Button onClick={() => { setRecordType('vaccination'); setShowAddDialog(true); }}>
-                        Add Vaccination
+                        {t("petHealth.addVaccination")}
                       </Button>
                     </div>
                   ) : (
@@ -1464,7 +1464,7 @@ const PetHealthRecords = () => {
                                     onClick={() => markAsCompleted(record)}
                                   >
                                     <CheckCircle className="mr-1 h-4 w-4" />
-                                    Done
+                                    {t("petHealth.actions.done")}
                                   </Button>
                                 )}
                                 <Button
@@ -1487,10 +1487,10 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Last: {formatDate(new Date(record.date_administered))}</span>
+                                <span>{t("petHealth.fields.last")}: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
-                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
+                                <span>{t("petHealth.fields.next")}: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
                           </div>
@@ -1505,10 +1505,10 @@ const PetHealthRecords = () => {
                   {records.filter(r => r.record_type === 'medication').length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-2xl">
                       <Pill className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="font-semibold text-foreground mb-2">No medications recorded</h3>
-                      <p className="text-muted-foreground mb-4">Track flea/tick, heartworm, and other medications</p>
+                      <h3 className="font-semibold text-foreground mb-2">{t("petHealth.noMeds")}</h3>
+                      <p className="text-muted-foreground mb-4">{t("petHealth.noMedsHint")}</p>
                       <Button onClick={() => { setRecordType('medication'); setShowAddDialog(true); }}>
-                        Add Medication
+                        {t("petHealth.addMedication")}
                       </Button>
                     </div>
                   ) : (
@@ -1539,7 +1539,7 @@ const PetHealthRecords = () => {
                                     onClick={() => markAsCompleted(record)}
                                   >
                                     <CheckCircle className="mr-1 h-4 w-4" />
-                                    Done
+                                    {t("petHealth.actions.done")}
                                   </Button>
                                 )}
                                 <Button
@@ -1562,10 +1562,10 @@ const PetHealthRecords = () => {
                             </div>
                             <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
                               {record.date_administered && (
-                                <span>Last: {formatDate(new Date(record.date_administered))}</span>
+                                <span>{t("petHealth.fields.last")}: {formatDate(new Date(record.date_administered))}</span>
                               )}
                               {record.next_due_date && (record.record_type === 'vaccination' || record.record_type === 'medication') && (
-                                <span>Next: {formatDate(new Date(record.next_due_date))}</span>
+                                <span>{t("petHealth.fields.next")}: {formatDate(new Date(record.next_due_date))}</span>
                               )}
                             </div>
                           </div>
@@ -1585,7 +1585,7 @@ const PetHealthRecords = () => {
             <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
               <div className="flex items-center justify-between pr-8">
                 <DialogTitle className="text-lg font-semibold truncate">
-                  {previewDocument?.title} - Document
+                  {previewDocument?.title} - {t("petHealth.preview.documentSuffix")}
                 </DialogTitle>
                 <div className="flex items-center gap-2">
                   <Button
@@ -1595,7 +1595,7 @@ const PetHealthRecords = () => {
                     onClick={() => previewDocument && window.open(previewDocument.url, '_blank')}
                   >
                     <ExternalLink className="w-4 h-4" />
-                    Open in New Tab
+                    {t("petHealth.preview.openInNewTab")}
                   </Button>
                   <Button
                     variant="outline"
@@ -1605,7 +1605,7 @@ const PetHealthRecords = () => {
                   >
                     <a href={previewDocument?.url} download>
                       <Download className="w-4 h-4" />
-                      Download
+                      {t("petHealth.preview.download")}
                     </a>
                   </Button>
                 </div>
@@ -1634,15 +1634,15 @@ const PetHealthRecords = () => {
                 <div className="h-full flex flex-col items-center justify-center gap-4 p-8 text-center">
                   <File className="w-16 h-16 text-muted-foreground" />
                   <div>
-                    <p className="font-medium text-foreground mb-1">Preview not available</p>
+                    <p className="font-medium text-foreground mb-1">{t("petHealth.preview.notAvailable")}</p>
                     <p className="text-sm text-muted-foreground">
-                      This file type cannot be previewed. Download the file to view it.
+                      {t("petHealth.preview.notAvailableHint")}
                     </p>
                   </div>
                   <Button asChild>
                     <a href={previewDocument?.url} download className="gap-2">
                       <Download className="w-4 h-4" />
-                      Download File
+                      {t("petHealth.preview.downloadFile")}
                     </a>
                   </Button>
                 </div>

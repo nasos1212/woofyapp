@@ -1158,7 +1158,7 @@ const LostFoundAlerts = () => {
                 <SelectContent position="popper" className="max-h-[40vh]">
                   <SelectItem value="all">{t("lostFound.filters.allCities")}</SelectItem>
                   {cityNames.map((city) => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                    <SelectItem key={city} value={city}>{getCityDisplayName(city, i18n.language)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
