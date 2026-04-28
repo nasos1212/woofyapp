@@ -400,7 +400,7 @@ export const AIProactiveAlerts = () => {
                 setIsCollapsed(false);
               }}
             >
-              Show More
+              {t("proactiveAlerts.showMore")}
             </Button>
           ) : (
             <Button
@@ -412,7 +412,7 @@ export const AIProactiveAlerts = () => {
                 hideWidget();
               }}
             >
-              Hide
+              {t("proactiveAlerts.hide")}
             </Button>
           )}
           <ChevronRight className={cn(
@@ -431,7 +431,7 @@ export const AIProactiveAlerts = () => {
               key={`${reminder.type}-${reminder.id}`}
               className={cn(
                 "relative p-3 rounded-lg border transition-all cursor-pointer hover:shadow-md",
-                statusConfig[reminder.status].bgClass
+                statusStyles[reminder.status].bgClass
               )}
               onClick={() => {
                 if (reminder.type === "birthday") {
@@ -454,8 +454,8 @@ export const AIProactiveAlerts = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="font-medium text-sm truncate">{reminder.title}</p>
-                    <Badge className={cn("text-[10px] px-1.5 py-0 shrink-0", statusConfig[reminder.status].className)}>
-                      {statusConfig[reminder.status].label}
+                    <Badge className={cn("text-[10px] px-1.5 py-0 shrink-0", statusStyles[reminder.status].className)}>
+                      {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -482,7 +482,7 @@ export const AIProactiveAlerts = () => {
               className="w-full text-sm text-primary hover:text-primary/80"
               onClick={() => navigate("/member/health-records")}
             >
-              View all {reminders.length} reminders
+              {t("proactiveAlerts.viewAll", { count: reminders.length })}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           )}
@@ -490,7 +490,7 @@ export const AIProactiveAlerts = () => {
           {/* AI Alerts (offer suggestions, etc.) */}
           {alerts.filter(a => a.alert_type === "offer_suggestion").length > 0 && (
             <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground mb-2">Suggestions for you</p>
+              <p className="text-xs text-muted-foreground mb-2">{t("proactiveAlerts.suggestions")}</p>
               {alerts.filter(a => a.alert_type === "offer_suggestion").map((alert) => (
                 <div
                   key={alert.id}
