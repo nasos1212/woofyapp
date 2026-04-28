@@ -31,6 +31,7 @@ const SearchableAreaSelect = ({
   onValueChange,
   placeholder = "Select area (optional)",
 }: SearchableAreaSelectProps) => {
+  const { i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +48,9 @@ const SearchableAreaSelect = ({
           aria-expanded={open}
           className="w-full justify-between font-normal"
         >
-          {value || <span className="text-muted-foreground">{placeholder}</span>}
+          {value
+            ? getCityDisplayName(value, i18n.language)
+            : <span className="text-muted-foreground">{placeholder}</span>}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -84,7 +87,7 @@ const SearchableAreaSelect = ({
                         value === area ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    {area}
+                    {getCityDisplayName(area, i18n.language)}
                   </CommandItem>
                 ))}
               </CommandGroup>
