@@ -55,11 +55,32 @@ const ServiceWorkerCleanup = () => {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-      registrations.forEach((registration) => {
-        void registration.unregister();
-      });
-    });
+    const RELOAD_FLAG = "wooffy-sw-cleared-v2";
+
+    (async () => {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const hadRegistrations = registrations.length > 0;
+
+        await Promise.all(registrations.map((r) => r.unregister()));
+
+        // Also wipe any cached responses left behind by old service workers
+        if ("caches" in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+
+        // If we just cleared a stale SW/cache, force one reload so the
+        // device fetches the latest bundle (otherwise it keeps serving
+        // the cached HTML/JS until the user manually refreshes).
+        if ((hadRegistrations || (window as any).__wooffyHadCaches) && !sessionStorage.getItem(RELOAD_FLAG)) {
+          sessionStorage.setItem(RELOAD_FLAG, "1");
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error("Service worker cleanup error:", error);
+      }
+    })();
   }, []);
 
   return null;
