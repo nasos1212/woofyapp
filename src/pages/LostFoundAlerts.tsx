@@ -1268,7 +1268,7 @@ const LostFoundAlerts = () => {
                           </h3>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {alert.last_seen_location}
+                          {getLocationDisplayName(alert.last_seen_location, i18n.language)}
                         </p>
                         <div className="flex items-center gap-2 mt-2 text-green-600">
                           <CheckCircle2 className="w-4 h-4" />
