@@ -1,9 +1,8 @@
-import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank, Check, Coffee, Bone } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
-import heroVideo from "@/assets/hero-dog-video.mp4.asset.json";
-import heroPoster from "@/assets/hero-dog-poster.jpg";
+import heroImage from "@/assets/hero-dog.jpg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -16,25 +15,16 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-8 sm:pb-16 overflow-hidden">
-      {/* Looping dog video backdrop */}
-      <div className="absolute inset-0 overflow-hidden">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={heroVideo.url}
-          poster={heroPoster}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-        />
-        {/* Navy gradient overlay so text stays crisp */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/70 lg:from-background/85 lg:via-background/30 lg:to-background/60" />
-      </div>
-      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-30" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-40" />
+    <section className="relative min-h-screen pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-8 sm:pb-16 overflow-hidden bg-gradient-to-b from-wooffy-soft/40 via-background to-background">
+      {/* Subtle dog photo, very faded */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.06]"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
+      {/* Soft brand glows */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-50" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-60" />
+      <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-40" />
 
       <div className="absolute top-32 left-[5%] text-4xl opacity-20 animate-bounce-slow" style={{ animationDelay: '0s' }}>🐾</div>
       <div className="absolute top-48 right-[8%] text-3xl opacity-15 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>🐾</div>
