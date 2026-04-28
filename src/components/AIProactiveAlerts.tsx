@@ -375,17 +375,17 @@ export const AIProactiveAlerts = () => {
           </div>
           <div>
             <h3 className="font-semibold text-sm flex items-center gap-2">
-              Wooffy Reminders
+              {t("proactiveAlerts.title")}
               {(overdueCount > 0 || todayCount > 0) && (
                 <Badge variant="destructive" className="text-xs">
-                  {overdueCount > 0 && `${overdueCount} overdue`}
+                  {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
                   {overdueCount > 0 && todayCount > 0 && " · "}
-                  {todayCount > 0 && `${todayCount} today`}
+                  {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
                 </Badge>
               )}
             </h3>
             <p className="text-xs text-muted-foreground">
-              {reminders.length} upcoming reminder{reminders.length !== 1 ? 's' : ''}
+              {t(reminders.length === 1 ? "proactiveAlerts.upcomingOne" : "proactiveAlerts.upcomingOther", { count: reminders.length })}
             </p>
           </div>
         </div>
