@@ -1,9 +1,8 @@
-import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank, Check, Coffee, Bone } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
-import heroVideo from "@/assets/hero-dog-video.mp4.asset.json";
-import heroPoster from "@/assets/hero-dog-poster.jpg";
+import heroImage from "@/assets/hero-dog.jpg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -16,25 +15,16 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-8 sm:pb-16 overflow-hidden">
-      {/* Looping dog video backdrop */}
-      <div className="absolute inset-0 overflow-hidden">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={heroVideo.url}
-          poster={heroPoster}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-        />
-        {/* Navy gradient overlay so text stays crisp */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-background/70 lg:from-background/85 lg:via-background/30 lg:to-background/60" />
-      </div>
-      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-30" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-40" />
+    <section className="relative min-h-screen pt-[calc(4.5rem+env(safe-area-inset-top))] sm:pt-[calc(6rem+env(safe-area-inset-top))] pb-8 sm:pb-16 overflow-hidden bg-gradient-to-b from-wooffy-soft/40 via-background to-background">
+      {/* Subtle dog photo, very faded */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.06]"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
+      {/* Soft brand glows */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-50" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-60" />
+      <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl opacity-40" />
 
       <div className="absolute top-32 left-[5%] text-4xl opacity-20 animate-bounce-slow" style={{ animationDelay: '0s' }}>🐾</div>
       <div className="absolute top-48 right-[8%] text-3xl opacity-15 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>🐾</div>
@@ -137,31 +127,19 @@ const HeroSection = () => {
               <MembershipCard />
             </div>
 
-            {/* Floating brand chips around the card */}
-            <div className="absolute -top-3 -right-2 sm:-top-4 sm:-right-4 bg-card rounded-2xl p-3 sm:p-4 shadow-card border border-border animate-bounce-slow">
-              <p className="font-display font-bold text-xl sm:text-2xl text-primary">€29</p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">{t("hero.perYear")}</p>
+            <div className="absolute -top-4 -right-4 bg-card rounded-2xl p-4 shadow-card border border-border animate-bounce-slow hidden lg:block">
+              <p className="font-display font-bold text-2xl text-primary">€29</p>
+              <p className="text-xs text-muted-foreground">{t("hero.perYear")}</p>
             </div>
 
-            <div className="absolute top-1/2 -left-3 sm:-left-6 -translate-y-1/2 bg-card rounded-full pl-2 pr-3 py-1.5 sm:pl-2.5 sm:pr-4 sm:py-2 shadow-card border border-border flex items-center gap-1.5 sm:gap-2 animate-float" style={{ animationDelay: '0.4s' }}>
-              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-green-100 rounded-full flex items-center justify-center shrink-0">
-                <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600" />
+            <div className="absolute -bottom-12 -left-4 bg-card rounded-2xl px-4 py-3 shadow-card border border-border hidden lg:flex items-center gap-2">
+              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-green-600 text-lg">✓</span>
               </div>
-              <span className="text-[11px] sm:text-xs font-semibold text-foreground whitespace-nowrap">Vet discounts</span>
-            </div>
-
-            <div className="absolute -bottom-3 right-4 sm:-bottom-4 sm:right-8 bg-card rounded-full pl-2 pr-3 py-1.5 sm:pl-2.5 sm:pr-4 sm:py-2 shadow-card border border-border flex items-center gap-1.5 sm:gap-2 animate-bounce-slow" style={{ animationDelay: '0.8s' }}>
-              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-amber-100 rounded-full flex items-center justify-center shrink-0">
-                <Coffee className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600" />
+              <div>
+                <p className="font-medium text-sm text-foreground">{t("hero.tryToday")}</p>
+                <p className="text-xs text-muted-foreground">{t("hero.joinPack")}</p>
               </div>
-              <span className="text-[11px] sm:text-xs font-semibold text-foreground whitespace-nowrap">Dog-friendly cafés</span>
-            </div>
-
-            <div className="absolute -bottom-10 left-2 sm:-bottom-12 sm:left-4 bg-card rounded-full pl-2 pr-3 py-1.5 sm:pl-2.5 sm:pr-4 sm:py-2 shadow-card border border-border flex items-center gap-1.5 sm:gap-2 animate-float hidden xs:flex" style={{ animationDelay: '1.2s' }}>
-              <div className="w-6 h-6 sm:w-7 sm:h-7 bg-rose-100 rounded-full flex items-center justify-center shrink-0">
-                <Bone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
-              </div>
-              <span className="text-[11px] sm:text-xs font-semibold text-foreground whitespace-nowrap">Treats & more</span>
             </div>
           </div>
         </div>
