@@ -69,6 +69,7 @@ const statusStyles: Record<string, { className: string; bgClass: string }> = {
 export const AIProactiveAlerts = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState<ProactiveAlert[]>([]);
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -328,10 +329,13 @@ export const AIProactiveAlerts = () => {
   };
 
   const getDaysText = (daysUntil: number) => {
-    if (daysUntil < 0) return `${Math.abs(daysUntil)} day${Math.abs(daysUntil) !== 1 ? 's' : ''} overdue`;
-    if (daysUntil === 0) return "Today";
-    if (daysUntil === 1) return "Tomorrow";
-    return `In ${daysUntil} days`;
+    if (daysUntil < 0) {
+      const n = Math.abs(daysUntil);
+      return t(n === 1 ? "proactiveAlerts.days.overdueOne" : "proactiveAlerts.days.overdueOther", { count: n });
+    }
+    if (daysUntil === 0) return t("proactiveAlerts.days.today");
+    if (daysUntil === 1) return t("proactiveAlerts.days.tomorrow");
+    return t("proactiveAlerts.days.inDays", { count: daysUntil });
   };
 
   const hasUrgentItems = reminders.some(r => r.status === "overdue" || r.status === "today" || r.status === "urgent");
