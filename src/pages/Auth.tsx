@@ -149,13 +149,13 @@ const Auth = () => {
       const hasBusiness = !!business;
       const hasMembership = !!membership;
       const hasShelter = !!shelter;
-      const userName = profile?.full_name || "there";
+      const userName = profile?.full_name || t("auth.welcomeToastFallbackName");
       
       // Helper to show welcome toast
       const showWelcomeToast = () => {
         toast({
-          title: `Hello ${userName}! 👋`,
-          description: "Great to have you here!",
+          title: t("auth.welcomeToastTitle", { name: userName }),
+          description: t("auth.welcomeToastDescription"),
         });
       };
       
