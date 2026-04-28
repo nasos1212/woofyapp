@@ -2554,6 +2554,31 @@
     "suggestedQ2": "Πόσο συχνά πρέπει να περιποιούμαι το κατοικίδιό μου;",
     "suggestedQ3": "Το κατοικίδιό μου ξύνεται πολύ, τι μπορεί να είναι;"
   },
+  "proactiveAlerts": {
+    "title": "Wooffy Υπενθυμίσεις",
+    "overdue": "{{count}} εκπρόθεσμα",
+    "today": "{{count}} σήμερα",
+    "upcomingOne": "{{count}} επερχόμενη υπενθύμιση",
+    "upcomingOther": "{{count}} επερχόμενες υπενθυμίσεις",
+    "showMore": "Δες Περισσότερα",
+    "hide": "Απόκρυψη",
+    "viewAll": "Δες όλες τις {{count}} υπενθυμίσεις",
+    "suggestions": "Προτάσεις για σένα",
+    "status": {
+      "overdue": "Εκπρόθεσμο",
+      "today": "Σήμερα",
+      "urgent": "Σύντομα",
+      "soon": "Αυτή την Εβδομάδα",
+      "upcoming": "Επερχόμενο"
+    },
+    "days": {
+      "overdueOne": "{{count}} ημέρα καθυστέρηση",
+      "overdueOther": "{{count}} ημέρες καθυστέρηση",
+      "today": "Σήμερα",
+      "tomorrow": "Αύριο",
+      "inDays": "Σε {{count}} ημέρες"
+    }
+  },
   "notFoundPage": {
     "title": "404",
     "message": "Ωχ! Η σελίδα δεν βρέθηκε",

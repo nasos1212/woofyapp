@@ -2554,6 +2554,31 @@
     "suggestedQ2": "How often should I groom my pet?",
     "suggestedQ3": "My pet is scratching a lot, what could it be?"
   },
+  "proactiveAlerts": {
+    "title": "Wooffy Reminders",
+    "overdue": "{{count}} overdue",
+    "today": "{{count}} today",
+    "upcomingOne": "{{count}} upcoming reminder",
+    "upcomingOther": "{{count}} upcoming reminders",
+    "showMore": "Show More",
+    "hide": "Hide",
+    "viewAll": "View all {{count}} reminders",
+    "suggestions": "Suggestions for you",
+    "status": {
+      "overdue": "Overdue",
+      "today": "Due Today",
+      "urgent": "Due Soon",
+      "soon": "This Week",
+      "upcoming": "Coming Up"
+    },
+    "days": {
+      "overdueOne": "{{count}} day overdue",
+      "overdueOther": "{{count}} days overdue",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "inDays": "In {{count}} days"
+    }
+  },
   "notFoundPage": {
     "title": "404",
     "message": "Oops! Page not found",
