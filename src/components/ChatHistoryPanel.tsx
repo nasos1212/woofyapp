@@ -162,7 +162,7 @@ const ChatHistoryPanel = ({
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
-              All Pets
+              {t("chatHistory.allPets")}
             </button>
             {pets.map((pet) => {
               const count = chatSessions.filter(s => s.pet_name === pet.pet_name).length;
@@ -197,8 +197,8 @@ const ChatHistoryPanel = ({
             <MessageSquare className="w-10 h-10 text-muted-foreground/30 mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">
               {filterPet !== "all" 
-                ? `No conversations about ${filterPet} yet`
-                : "No previous conversations"}
+                ? t("chatHistory.noConversationsAbout", { pet: filterPet })
+                : t("chatHistory.noPrevious")}
             </p>
             <Button
               variant="outline"
@@ -209,7 +209,7 @@ const ChatHistoryPanel = ({
               }}
               className="mt-3"
             >
-              Start your first chat
+              {t("chatHistory.startFirst")}
             </Button>
           </div>
         ) : (
@@ -276,7 +276,7 @@ const ChatHistoryPanel = ({
                         ) : (
                           <>
                             <p className="text-sm font-medium truncate pr-2">
-                              {session.title || "Untitled conversation"}
+                              {session.title || t("chatHistory.untitled")}
                             </p>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className="text-xs text-muted-foreground">
