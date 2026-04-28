@@ -1,8 +1,9 @@
-import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank } from "lucide-react";
+import { ArrowRight, Sparkles, Heart, MapPin, Building2, PiggyBank, Check, Coffee, Bone } from "lucide-react";
 import { Button } from "./ui/button";
 import MembershipCard from "./MembershipCard";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
-import heroImage from "@/assets/hero-dog.jpg";
+import heroVideo from "@/assets/hero-dog-video.mp4.asset.json";
+import heroPoster from "@/assets/hero-dog-poster.jpg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
