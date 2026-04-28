@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { differenceInDays } from "date-fns";
 import { formatDate } from "@/lib/utils";
 import { toZonedTime } from "date-fns-tz";
@@ -42,29 +43,24 @@ const alertIcons: Record<string, React.ReactNode> = {
   birthday: <Gift className="w-5 h-5" />,
 };
 
-const statusConfig: Record<string, { label: string; className: string; bgClass: string }> = {
-  overdue: { 
-    label: "Overdue", 
+const statusStyles: Record<string, { className: string; bgClass: string }> = {
+  overdue: {
     className: "bg-red-500 text-white",
     bgClass: "bg-gradient-to-r from-red-50 to-red-100 border-red-200"
   },
-  today: { 
-    label: "Due Today", 
+  today: {
     className: "bg-orange-500 text-white",
     bgClass: "bg-gradient-to-r from-orange-50 to-amber-100 border-orange-200"
   },
-  urgent: { 
-    label: "Due Soon", 
+  urgent: {
     className: "bg-amber-500 text-white",
     bgClass: "bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200"
   },
-  soon: { 
-    label: "This Week", 
+  soon: {
     className: "bg-blue-500 text-white",
     bgClass: "bg-gradient-to-r from-blue-50 to-sky-100 border-blue-200"
   },
-  upcoming: { 
-    label: "Coming Up", 
+  upcoming: {
     className: "bg-slate-500 text-white",
     bgClass: "bg-gradient-to-r from-slate-50 to-gray-100 border-slate-200"
   },
