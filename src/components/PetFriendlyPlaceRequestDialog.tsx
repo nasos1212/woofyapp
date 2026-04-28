@@ -152,7 +152,7 @@ const PetFriendlyPlaceRequestDialog = () => {
               <SelectContent position="popper" className="max-h-[40vh]">
                 {placeTypes.map((pt) => (
                   <SelectItem key={pt.value} value={pt.value}>
-                    {pt.label}
+                    {t(`getListed.dialog.types.${pt.value}`, pt.label)}
                   </SelectItem>
                 ))}
               </SelectContent>
