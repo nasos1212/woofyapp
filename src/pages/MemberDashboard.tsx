@@ -626,7 +626,7 @@ const MemberDashboard = () => {
                     ))
                   )}
                 </div>
-                <Link to="/member/offers">
+                <Link to="/member/partners">
                   <Button variant="outline" size="sm" className="w-full mt-4">
                     {t("memberDashboard.nearby.viewAllPartners")}
                   </Button>
