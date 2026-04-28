@@ -132,9 +132,9 @@ const ChatHistoryPanel = ({
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-semibold text-sm flex items-center gap-2">
             <MessageSquare className="w-4 h-4" />
-            Chat History
+            {t("chatHistory.title")}
             <span className="text-xs text-muted-foreground font-normal">
-              ({totalSessions} conversation{totalSessions !== 1 ? "s" : ""})
+              ({t(totalSessions === 1 ? "chatHistory.conversationsOne" : "chatHistory.conversationsOther", { count: totalSessions })})
             </span>
           </h3>
           <Button
@@ -147,7 +147,7 @@ const ChatHistoryPanel = ({
             className="h-8"
           >
             <Plus className="w-3 h-3 mr-1" />
-            New Chat
+            {t("chatHistory.newChat")}
           </Button>
         </div>
         
