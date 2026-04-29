@@ -102,9 +102,9 @@ const CityMultiSelector = ({
       const [city, area] = location.split(" > ");
       // Shorten city name for display
       const shortCity = city.split(" (")[0];
-      return `${area}, ${shortCity}`;
+      return `${getCityDisplayName(area, i18n.language)}, ${getCityDisplayName(shortCity, i18n.language)}`;
     }
-    return location.split(" (")[0]; // Just city name without English name
+    return getCityDisplayName(location.split(" (")[0], i18n.language); // Just city name without English name
   };
 
   return (
