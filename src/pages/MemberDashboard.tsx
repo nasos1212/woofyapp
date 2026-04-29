@@ -81,7 +81,7 @@ interface NearbyOffer {
 }
 
 const MemberDashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading, signOut } = useAuth();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
   const navigate = useNavigate();

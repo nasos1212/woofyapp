@@ -35,7 +35,7 @@ interface Offer {
 
 const OffersSection = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
