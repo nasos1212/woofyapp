@@ -723,21 +723,17 @@ const BusinessOfferManagement = () => {
                   </p>
                 </div>
 
-                {/* Example summary */}
-                <div className="bg-muted/50 rounded-lg p-3 text-sm">
-                  <p className="font-medium text-foreground mb-1">{t("businessOffers.exampleTitle")}</p>
-                  <p className="text-muted-foreground">
-                    {formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'monthly'
-                      ? t("businessOffers.exPetMonthly")
-                      : formData.redemption_frequency === 'unlimited'
-                        ? t("businessOffers.exUnlimited")
-                        : formData.redemption_scope === 'per_member' && formData.redemption_frequency === 'one_time'
-                          ? t("businessOffers.exMemberOnce")
-                          : formData.redemption_scope === 'per_pet' && formData.redemption_frequency === 'one_time'
-                            ? t("businessOffers.exPetOnce")
-                            : ''}
-                  </p>
-                </div>
+                {/* Example summary - only for one-time */}
+                {formData.redemption_frequency === 'one_time' && (
+                  <div className="bg-muted/50 rounded-lg p-3 text-sm">
+                    <p className="font-medium text-foreground mb-1">{t("businessOffers.exampleTitle")}</p>
+                    <p className="text-muted-foreground">
+                      {formData.redemption_scope === 'per_pet'
+                        ? t("businessOffers.exPetOnce")
+                        : t("businessOffers.exMemberOnce")}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
