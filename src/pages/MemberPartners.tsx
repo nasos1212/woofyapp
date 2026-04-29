@@ -169,7 +169,7 @@ const MemberPartners = () => {
                   </DropdownMenuItem>
                   {businessCategories.map((cat) => (
                     <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                      {cat.label}
+                      {getCategoryLabel(cat.value)}
                     </DropdownMenuItem>
                   ))}
                 </div>
