@@ -187,7 +187,7 @@ const CityMultiSelector = ({
                         disabled={isCityFullySelected(city)}
                         className="data-[state=checked]:bg-primary"
                       />
-                      {area}
+                      {getCityDisplayName(area, i18n.language)}
                     </label>
                   ))}
                 </div>
