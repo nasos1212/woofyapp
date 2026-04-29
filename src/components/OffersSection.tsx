@@ -10,6 +10,7 @@ import { formatRelative } from "@/lib/relativeTime";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Offer {
   id: string;

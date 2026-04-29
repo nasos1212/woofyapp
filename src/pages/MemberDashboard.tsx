@@ -26,6 +26,7 @@ import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
 
 import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
 
