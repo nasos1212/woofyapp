@@ -3,6 +3,8 @@ import { Users, MapPin, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface MembersNearYouProps {
   city: string | null;
@@ -11,6 +13,7 @@ interface MembersNearYouProps {
 
 const MembersNearYou = ({ city, onSetCity }: MembersNearYouProps) => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const [memberCount, setMemberCount] = useState(0);
   const [petCount, setPetCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -98,7 +101,7 @@ const MembersNearYou = ({ city, onSetCity }: MembersNearYouProps) => {
         <div className="flex-1">
           <p className="font-semibold text-foreground text-sm flex items-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-primary" />
-            {city}
+            {getCityDisplayName(city, i18n.language)}
           </p>
           <p className="text-xs text-muted-foreground">
             🐾 <span className="font-medium text-foreground">{memberCount}</span> {memberCount === 1 ? "member" : "members"} & <span className="font-medium text-foreground">{petCount}</span> {petCount === 1 ? "pet" : "pets"} in your area

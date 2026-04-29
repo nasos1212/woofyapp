@@ -10,6 +10,7 @@ import { formatRelative } from "@/lib/relativeTime";
 import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface Offer {
   id: string;
@@ -35,7 +36,7 @@ interface Offer {
 
 const OffersSection = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -239,7 +240,7 @@ const OffersSection = () => {
                     {offer.business.city && (
                       <>
                         <span>•</span>
-                        <span>{offer.business.city}</span>
+                        <span>{getCityDisplayName(offer.business.city, i18n.language)}</span>
                       </>
                     )}
                   </div>

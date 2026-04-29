@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 import DogLoader from "@/components/DogLoader";
 
 interface Place {
@@ -25,6 +27,7 @@ interface PlacesMapProps {
 }
 
 const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
+  const { i18n } = useTranslation();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -136,7 +139,7 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
           
           ${(place.address || place.area || place.city) ? `
             <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
-              📍 ${[place.address, place.area, place.city].filter(Boolean).join(", ")}
+              📍 ${[place.address, place.area ? getCityDisplayName(place.area, i18n.language) : null, place.city ? getCityDisplayName(place.city, i18n.language) : null].filter(Boolean).join(", ")}
             </p>
           ` : ''}
           
