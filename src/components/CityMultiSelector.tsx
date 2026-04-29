@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cyprusCities, CyprusArea } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface CityMultiSelectorProps {
   selectedLocations: string[]; // Format: "City" or "City > Area"
@@ -27,7 +28,7 @@ const CityMultiSelector = ({
   label,
   description,
 }: CityMultiSelectorProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const resolvedLabel = label ?? t("cityMultiSelect.selectLabel");
   const isWholeIslandSelected = selectedLocations.includes(WHOLE_ISLAND_KEY);
 
@@ -101,9 +102,9 @@ const CityMultiSelector = ({
       const [city, area] = location.split(" > ");
       // Shorten city name for display
       const shortCity = city.split(" (")[0];
-      return `${area}, ${shortCity}`;
+      return `${getCityDisplayName(area, i18n.language)}, ${getCityDisplayName(shortCity, i18n.language)}`;
     }
-    return location.split(" (")[0]; // Just city name without English name
+    return getCityDisplayName(location.split(" (")[0], i18n.language); // Just city name without English name
   };
 
   return (
@@ -168,7 +169,7 @@ const CityMultiSelector = ({
                   className="data-[state=checked]:bg-primary"
                 />
                 <AccordionTrigger className="flex-1 py-3 hover:no-underline">
-                  <span className="text-sm font-medium">{city.name}</span>
+                  <span className="text-sm font-medium">{getCityDisplayName(city.name, i18n.language)}</span>
                 </AccordionTrigger>
               </div>
               <AccordionContent className="pb-3 pt-0">
@@ -186,7 +187,7 @@ const CityMultiSelector = ({
                         disabled={isCityFullySelected(city)}
                         className="data-[state=checked]:bg-primary"
                       />
-                      {area}
+                      {getCityDisplayName(area, i18n.language)}
                     </label>
                   ))}
                 </div>
