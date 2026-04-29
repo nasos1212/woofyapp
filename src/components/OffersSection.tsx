@@ -239,7 +239,7 @@ const OffersSection = () => {
                     {offer.business.city && (
                       <>
                         <span>•</span>
-                        <span>{offer.business.city}</span>
+                        <span>{getCityDisplayName(offer.business.city, i18n.language)}</span>
                       </>
                     )}
                   </div>

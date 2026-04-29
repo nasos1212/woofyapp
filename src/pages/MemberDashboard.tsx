@@ -564,7 +564,7 @@ const MemberDashboard = () => {
                       >
                         <span className="flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-muted-foreground" />
-                          {profile?.preferred_city || t("memberDashboard.nearby.selectCity")}
+                          {profile?.preferred_city ? getCityDisplayName(profile.preferred_city, i18n.language) : t("memberDashboard.nearby.selectCity")}
                         </span>
                         <ChevronDown className="w-4 h-4 text-muted-foreground" />
                       </Button>
@@ -576,7 +576,7 @@ const MemberDashboard = () => {
                           onClick={() => handleCityChange(city)}
                           className="flex items-center justify-between cursor-pointer"
                         >
-                          {city}
+                          {getCityDisplayName(city, i18n.language)}
                           {profile?.preferred_city === city && (
                             <Check className="w-4 h-4 text-primary" />
                           )}
@@ -598,7 +598,7 @@ const MemberDashboard = () => {
                   ) : nearbyOffers.length === 0 ? (
                     <div className="text-center py-6 text-muted-foreground">
                       <Gift className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">{t("memberDashboard.nearby.noneInCity", { city: profile.preferred_city })}</p>
+                      <p className="text-sm">{t("memberDashboard.nearby.noneInCity", { city: getCityDisplayName(profile.preferred_city, i18n.language) })}</p>
                       <Link to="/member/offers" className="text-primary text-sm hover:underline">
                         {t("memberDashboard.nearby.browseAll")}
                       </Link>
