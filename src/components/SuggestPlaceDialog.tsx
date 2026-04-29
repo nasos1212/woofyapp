@@ -25,6 +25,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
+import { useTranslation } from "react-i18next";
 import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
 
 const placeTypes = petFriendlyPlaceTypes;
@@ -34,6 +36,7 @@ interface SuggestPlaceDialogProps {
 }
 
 const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
+  const { i18n } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -222,7 +225,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((city) => (
                   <SelectItem key={city} value={city}>
-                    {city}
+                    {getCityDisplayName(city, i18n.language)}
                   </SelectItem>
                 ))}
               </SelectContent>
