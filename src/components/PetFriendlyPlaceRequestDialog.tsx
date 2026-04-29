@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
 
@@ -36,7 +37,7 @@ const formSchema = z.object({
 });
 
 const PetFriendlyPlaceRequestDialog = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [placeType, setPlaceType] = useState("");
@@ -167,7 +168,7 @@ const PetFriendlyPlaceRequestDialog = () => {
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                  <SelectItem key={c} value={c}>{getCityDisplayName(c, i18n.language)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
