@@ -1,4 +1,9 @@
 {
+  "locationSelector": {
+    "selectCityPlaceholder": "Επίλεξε πόλη...",
+    "selectAreaPlaceholder": "Επίλεξε περιοχή (προαιρετικό)...",
+    "allAreas": "Όλες οι περιοχές"
+  },
   "common": {
     "joinNow": "Εγγραφή",
     "signIn": "Σύνδεση",
