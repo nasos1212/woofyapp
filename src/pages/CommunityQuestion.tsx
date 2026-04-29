@@ -204,13 +204,13 @@ const CommunityQuestion = () => {
     for (const file of files) {
       const validation = validateImageFile(file);
       if (!validation.valid) {
-        toast.error(validation.error || 'Invalid file');
+        toast.error(validation.error || t('communityQuestion.invalidFile'));
         return;
       }
     }
     
     if (answerPhotos.length + files.length > 3) {
-      toast.error('Maximum 3 photos allowed per answer');
+      toast.error(t('communityQuestion.maxPhotos'));
       return;
     }
 
@@ -253,7 +253,7 @@ const CommunityQuestion = () => {
     const shareUrl = `${window.location.origin}/community/question/${question.id}`;
     const shareData = {
       title: question.title,
-      text: `Check out this question on Wooffy Community: ${question.title}`,
+      text: t('communityQuestion.shareTitle', { title: question.title }),
       url: shareUrl,
     };
 
@@ -261,20 +261,20 @@ const CommunityQuestion = () => {
       // Try native share dialog first
       if (navigator.share && navigator.canShare?.(shareData)) {
         await navigator.share(shareData);
-        toast.success('Shared successfully!');
+        toast.success(t('communityQuestion.shareSuccess'));
       } else {
         // Fallback to clipboard
         await navigator.clipboard.writeText(shareUrl);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('communityQuestion.shareCopied'));
       }
     } catch (error) {
       // User cancelled or error - try clipboard as fallback
       if ((error as Error).name !== 'AbortError') {
         try {
           await navigator.clipboard.writeText(shareUrl);
-          toast.success('Link copied to clipboard!');
+          toast.success(t('communityQuestion.shareCopied'));
         } catch {
-          toast.error('Failed to share');
+          toast.error(t('communityQuestion.shareFailed'));
         }
       }
     }
@@ -296,13 +296,13 @@ const CommunityQuestion = () => {
 
       if (error) throw error;
 
-      toast.success('Report submitted. Thank you for helping keep our community safe.');
+      toast.success(t('communityQuestion.reportSuccess'));
       setShowReportDialog(false);
       setReportReason('');
       setReportDetails('');
     } catch (error) {
       console.error('Error submitting report:', error);
-      toast.error('Failed to submit report. Please try again.');
+      toast.error(t('communityQuestion.reportFailed'));
     } finally {
       setIsSubmittingReport(false);
     }
@@ -342,11 +342,11 @@ const CommunityQuestion = () => {
 
       if (error) throw error;
 
-      toast.success('Question deleted successfully');
+      toast.success(t('communityQuestion.deleteSuccess'));
       navigate('/community');
     } catch (error) {
       console.error('Error deleting question:', error);
-      toast.error('Failed to delete question. Please try again.');
+      toast.error(t('communityQuestion.deleteFailed'));
     } finally {
       setIsDeleting(false);
     }
@@ -364,9 +364,9 @@ const CommunityQuestion = () => {
   if (!question) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-4">Question not found</h1>
+        <h1 className="text-2xl font-bold mb-4">{t('communityQuestion.notFound')}</h1>
         <Button onClick={() => navigate('/community')}>
-          Back to Community
+          {t('communityQuestion.backToCommunity')}
         </Button>
       </div>
     );
@@ -406,7 +406,7 @@ const CommunityQuestion = () => {
             className="mb-4"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
-            Back to Community
+            {t('communityQuestion.backToCommunity')}
           </Button>
 
           {/* Question Card */}
@@ -428,7 +428,7 @@ const CommunityQuestion = () => {
                   )}
                   <div>
                     <p className="font-medium">
-                      {question.is_anonymous ? 'Anonymous' : (question.author?.full_name || 'Anonymous')}
+                      {question.is_anonymous ? t('communityQuestion.anonymous') : (question.author?.full_name || t('communityQuestion.anonymous'))}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(new Date(question.created_at))} · {formatRelative(question.created_at)}
@@ -515,8 +515,8 @@ const CommunityQuestion = () => {
                       className="text-xs sm:text-sm"
                     >
                       <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-                      <span className="hidden sm:inline">This helped me</span>
-                      <span className="sm:hidden">Helped</span>
+                      <span className="hidden sm:inline">{t('communityQuestion.thisHelpedMe')}</span>
+                      <span className="sm:hidden">{t('communityQuestion.helped')}</span>
                     </Button>
                   )}
                   <Button
@@ -537,12 +537,12 @@ const CommunityQuestion = () => {
                       {question.is_following ? (
                         <>
                           <BellOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
-                          <span className="hidden sm:inline">Unfollow</span>
+                          <span className="hidden sm:inline">{t('communityQuestion.unfollow')}</span>
                         </>
                       ) : (
                         <>
                           <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1" />
-                          <span className="hidden sm:inline">Follow</span>
+                          <span className="hidden sm:inline">{t('communityQuestion.follow')}</span>
                         </>
                       )}
                     </Button>
@@ -556,7 +556,7 @@ const CommunityQuestion = () => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem onClick={handleShare}>
                         <Share2 className="w-4 h-4 mr-2" />
-                        Share
+                        {t('communityQuestion.share')}
                       </DropdownMenuItem>
                       {!isOwner && (
                         <DropdownMenuItem 
@@ -564,7 +564,7 @@ const CommunityQuestion = () => {
                           onClick={() => setShowReportDialog(true)}
                         >
                           <Flag className="w-4 h-4 mr-2" />
-                          Report
+                          {t('communityQuestion.report')}
                         </DropdownMenuItem>
                       )}
                       {isOwner && (
@@ -573,7 +573,7 @@ const CommunityQuestion = () => {
                           onClick={() => setShowDeleteDialog(true)}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
-                          Delete Question
+                          {t('communityQuestion.deleteQuestion')}
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>
@@ -587,7 +587,7 @@ const CommunityQuestion = () => {
           <div className="mb-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <MessageCircle className="w-5 h-5" />
-              {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+              {answers.length === 1 ? t('communityQuestion.answerOne', { count: answers.length }) : t('communityQuestion.answerOther', { count: answers.length })}
             </h2>
 
             {answers.length > 0 ? (
@@ -635,18 +635,18 @@ const CommunityQuestion = () => {
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span className="font-medium text-sm">
-                                    {answer.author?.full_name || 'Anonymous'}
+                                    {answer.author?.full_name || t('communityQuestion.anonymous')}
                                   </span>
                                   {answer.is_verified_pro && (
                                     <Badge className="bg-blue-500 text-white text-xs">
                                       <Shield className="w-3 h-3 mr-1" />
-                                      Verified Pro
+                                      {t('communityQuestion.verifiedPro')}
                                     </Badge>
                                   )}
                                   {answer.is_accepted && (
                                     <Badge className="bg-green-500 text-white text-xs">
                                       <CheckCircle2 className="w-3 h-3 mr-1" />
-                                      Accepted
+                                      {t('communityQuestion.accepted')}
                                     </Badge>
                                   )}
                                 </div>
@@ -667,7 +667,7 @@ const CommunityQuestion = () => {
                                 <AlertDialogTrigger asChild>
                                   <Button variant="outline" size="sm" className="text-green-600">
                                     <CheckCircle2 className="w-4 h-4 mr-1" />
-                                    Accept Answer
+                                    {t('communityQuestion.acceptAnswer')}
                                   </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
@@ -716,9 +716,9 @@ const CommunityQuestion = () => {
             ) : (
               <Card className="p-8 text-center">
                 <MessageCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">No answers yet</h3>
+                <h3 className="font-semibold mb-2">{t('communityQuestion.noAnswers')}</h3>
                 <p className="text-muted-foreground">
-                  Be the first to help with this question!
+                  {t('communityQuestion.noAnswersDesc')}
                 </p>
               </Card>
             )}
@@ -728,12 +728,12 @@ const CommunityQuestion = () => {
           {question.status !== 'closed' && (
             <Card>
               <CardHeader>
-                <h3 className="font-semibold">Your Answer</h3>
+                <h3 className="font-semibold">{t('communityQuestion.yourAnswer')}</h3>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmitAnswer} className="space-y-4">
                   <Textarea
-                    placeholder="Share your experience or advice..."
+                    placeholder={t('communityQuestion.answerPlaceholder')}
                     value={answerContent}
                     onChange={(e) => setAnswerContent(e.target.value)}
                     className="min-h-[120px]"
@@ -774,10 +774,10 @@ const CommunityQuestion = () => {
 
                   <div className="flex justify-end">
                     <Button type="submit" disabled={!answerContent.trim() || submitting}>
-                      {submitting ? 'Posting...' : (
+                      {submitting ? t('communityQuestion.posting') : (
                         <>
                           <Send className="w-4 h-4 mr-2" />
-                          Post Answer
+                          {t('communityQuestion.postAnswer')}
                         </>
                       )}
                     </Button>
@@ -813,47 +813,47 @@ const CommunityQuestion = () => {
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Flag className="w-5 h-5 text-destructive" />
-                  Report Question
+                  {t('communityQuestion.reportTitle')}
                 </DialogTitle>
                 <DialogDescription>
-                  Help us keep the community safe by reporting inappropriate content.
+                  {t('communityQuestion.reportDescription')}
                 </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-4 py-4">
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium">Why are you reporting this?</Label>
+                  <Label className="text-sm font-medium">{t('communityQuestion.reportWhy')}</Label>
                   <RadioGroup value={reportReason} onValueChange={setReportReason}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="spam" id="spam" />
-                      <Label htmlFor="spam" className="font-normal">Spam or misleading</Label>
+                      <Label htmlFor="spam" className="font-normal">{t('communityQuestion.reportSpam')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="inappropriate" id="inappropriate" />
-                      <Label htmlFor="inappropriate" className="font-normal">Inappropriate content</Label>
+                      <Label htmlFor="inappropriate" className="font-normal">{t('communityQuestion.reportInappropriate')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="harassment" id="harassment" />
-                      <Label htmlFor="harassment" className="font-normal">Harassment or abuse</Label>
+                      <Label htmlFor="harassment" className="font-normal">{t('communityQuestion.reportHarassment')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="misinformation" id="misinformation" />
-                      <Label htmlFor="misinformation" className="font-normal">Harmful misinformation</Label>
+                      <Label htmlFor="misinformation" className="font-normal">{t('communityQuestion.reportMisinfo')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="other" id="other" />
-                      <Label htmlFor="other" className="font-normal">Other</Label>
+                      <Label htmlFor="other" className="font-normal">{t('communityQuestion.reportOther')}</Label>
                     </div>
                   </RadioGroup>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="report-details" className="text-sm font-medium">
-                    Additional details (optional)
+                    {t('communityQuestion.reportDetails')}
                   </Label>
                   <Textarea
                     id="report-details"
-                    placeholder="Provide more context about your report..."
+                    placeholder={t('communityQuestion.reportDetailsPh')}
                     value={reportDetails}
                     onChange={(e) => setReportDetails(e.target.value)}
                     rows={3}
@@ -870,14 +870,14 @@ const CommunityQuestion = () => {
                     setReportDetails('');
                   }}
                 >
-                  Cancel
+                  {t('communityQuestion.cancel')}
                 </Button>
                 <Button
                   variant="destructive"
                   onClick={handleReport}
                   disabled={!reportReason || isSubmittingReport}
                 >
-                  {isSubmittingReport ? 'Submitting...' : 'Submit Report'}
+                  {isSubmittingReport ? t('communityQuestion.reportSubmitting') : t('communityQuestion.reportSubmit')}
                 </Button>
               </DialogFooter>
             </DialogContent>
