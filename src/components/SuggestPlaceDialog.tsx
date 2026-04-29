@@ -36,12 +36,12 @@ interface SuggestPlaceDialogProps {
 }
 
 const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: "",
     place_type: "",
@@ -54,16 +54,11 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     submitted_by: "someone_else" as "owner" | "someone_else",
   });
 
-  // Get available areas based on selected city
   const availableAreas = formData.city ? getAreasForCity(formData.city) : [];
 
-  // We don't extract coordinates from links as they can be inaccurate
-  // Instead, we store the google_maps_url and use it directly for navigation
-  // The coordinates are just fallback values based on city/area for database requirements
-
   const isValidMapsLink = (url: string): boolean => {
-    return url.includes("google.com/maps") || 
-           url.includes("goo.gl/maps") || 
+    return url.includes("google.com/maps") ||
+           url.includes("goo.gl/maps") ||
            url.includes("maps.google.com") ||
            url.includes("maps.app.goo.gl") ||
            url.includes("maps.apple.com") ||
@@ -72,11 +67,11 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user) {
       toast({
-        title: "Please sign in",
-        description: "You need to be signed in to suggest a place.",
+        title: t("suggestPlace.signInTitle"),
+        description: t("suggestPlace.signInDesc"),
         variant: "destructive",
       });
       return;
@@ -84,8 +79,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
     if (!formData.name || !formData.place_type || !formData.city || !formData.google_maps_link) {
       toast({
-        title: "Missing information",
-        description: "Please fill in the required fields (name, type, city, map link).",
+        title: t("suggestPlace.missingTitle"),
+        description: t("suggestPlace.missingDesc"),
         variant: "destructive",
       });
       return;
@@ -93,14 +88,13 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
     if (!isValidMapsLink(formData.google_maps_link)) {
       toast({
-        title: "Invalid map link",
-        description: "Please paste a valid Google Maps or Apple Maps link.",
+        title: t("suggestPlace.invalidMapTitle"),
+        description: t("suggestPlace.invalidMapDesc"),
         variant: "destructive",
       });
       return;
     }
 
-    // Use city/area fallback coordinates for database (the actual navigation uses google_maps_url)
     const fallbackCoords = getCoordinatesForLocation(formData.city, formData.area);
     const latitude = fallbackCoords.lat;
     const longitude = fallbackCoords.lng;
@@ -127,8 +121,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
       if (error) throw error;
 
       toast({
-        title: "Thank you! 🎉",
-        description: "Your suggestion has been submitted for review.",
+        title: t("suggestPlace.successTitle"),
+        description: t("suggestPlace.successDesc"),
       });
 
       setFormData({
@@ -147,8 +141,8 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
     } catch (error) {
       console.error("Error submitting place:", error);
       toast({
-        title: "Error",
-        description: "Failed to submit your suggestion. Please try again.",
+        title: t("suggestPlace.errorTitle"),
+        description: t("suggestPlace.errorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -161,20 +155,19 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="w-4 h-4" />
-          Suggest a Place
+          {t("suggestPlace.trigger")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />
-            Suggest a Dog-Friendly Place
+            {t("suggestPlace.title")}
           </DialogTitle>
           <DialogDescription>
-            Know a place that welcomes pets? Share it with the community!
-            Your suggestion will be reviewed before being published.
+            {t("suggestPlace.description")}
             <span className="block text-[11px] italic opacity-70 mt-1">
-              (Please do not bring your horse or crocodile to the cafés, just your dog. Thanks 🐊)
+              {t("suggestPlace.joke")}
             </span>
           </DialogDescription>
         </DialogHeader>
@@ -182,10 +175,10 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           {/* Name */}
           <div className="space-y-2">
-            <Label htmlFor="name">Place Name *</Label>
+            <Label htmlFor="name">{t("suggestPlace.placeName")} *</Label>
             <Input
               id="name"
-              placeholder="e.g. Sunny Beach Café"
+              placeholder={t("suggestPlace.placeNamePh")}
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
@@ -194,18 +187,18 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
           {/* Type */}
           <div className="space-y-2">
-            <Label htmlFor="type">Type *</Label>
+            <Label htmlFor="type">{t("suggestPlace.type")} *</Label>
             <Select
               value={formData.place_type}
               onValueChange={(value) => setFormData({ ...formData, place_type: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select type" />
+                <SelectValue placeholder={t("suggestPlace.typePh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
                 {placeTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
-                    {type.label}
+                    {t(`getListed.dialog.types.${type.value}`, type.label)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -214,13 +207,13 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
           {/* City */}
           <div className="space-y-2">
-            <Label htmlFor="city">City *</Label>
+            <Label htmlFor="city">{t("suggestPlace.city")} *</Label>
             <Select
               value={formData.city}
               onValueChange={(value) => setFormData({ ...formData, city: value, area: "" })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select city" />
+                <SelectValue placeholder={t("suggestPlace.cityPh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
                 {cyprusCityNames.map((city) => (
@@ -235,56 +228,56 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
           {/* Area */}
           {availableAreas.length > 0 && (
             <div className="space-y-2">
-              <Label htmlFor="area">Area / Neighborhood</Label>
+              <Label htmlFor="area">{t("suggestPlace.area")}</Label>
               <SearchableAreaSelect
                 areas={availableAreas}
                 value={formData.area}
                 onValueChange={(value) => setFormData({ ...formData, area: value })}
               />
               <p className="text-xs text-muted-foreground">
-                This helps us categorize the place more accurately
+                {t("suggestPlace.areaHelp")}
               </p>
             </div>
           )}
 
           {/* Google Maps Link */}
           <div className="space-y-2">
-            <Label htmlFor="google_maps_link">Google Maps Link *</Label>
+            <Label htmlFor="google_maps_link">{t("suggestPlace.googleMaps")} *</Label>
             <Input
               id="google_maps_link"
               type="url"
-              placeholder="e.g. https://maps.app.goo.gl/YSWaKyiCztHkoiXa7"
+              placeholder={t("suggestPlace.googleMapsPh")}
               value={formData.google_maps_link}
               onChange={(e) => setFormData({ ...formData, google_maps_link: e.target.value })}
               required
             />
             <p className="text-xs text-muted-foreground">
-              Open the place in Google Maps, click "Share" and paste the link here
+              {t("suggestPlace.googleMapsHelp")}
             </p>
           </div>
 
           {/* Submitted By */}
           <div className="space-y-2">
-            <Label>Who is submitting? *</Label>
-            <RadioGroup 
-              value={formData.submitted_by} 
-              onValueChange={(v) => setFormData({ ...formData, submitted_by: v as "owner" | "someone_else" })} 
+            <Label>{t("suggestPlace.whoSubmitting")} *</Label>
+            <RadioGroup
+              value={formData.submitted_by}
+              onValueChange={(v) => setFormData({ ...formData, submitted_by: v as "owner" | "someone_else" })}
               className="flex gap-4"
             >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="owner" id="suggest-owner" />
-                <Label htmlFor="suggest-owner" className="font-normal cursor-pointer">I own/manage this place</Label>
+                <Label htmlFor="suggest-owner" className="font-normal cursor-pointer">{t("suggestPlace.owner")}</Label>
               </div>
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="someone_else" id="suggest-someone" />
-                <Label htmlFor="suggest-someone" className="font-normal cursor-pointer">Recommending a place</Label>
+                <Label htmlFor="suggest-someone" className="font-normal cursor-pointer">{t("suggestPlace.recommend")}</Label>
               </div>
             </RadioGroup>
           </div>
 
           {/* Phone */}
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{t("suggestPlace.phone")}</Label>
             <Input
               id="phone"
               type="tel"
@@ -296,7 +289,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
           {/* Website */}
           <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
+            <Label htmlFor="website">{t("suggestPlace.website")}</Label>
             <Input
               id="website"
               type="url"
@@ -308,10 +301,10 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
           {/* Description */}
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("suggestPlace.descLabel")}</Label>
             <Textarea
               id="description"
-              placeholder="Tell us what makes this place dog-friendly..."
+              placeholder={t("suggestPlace.descPh")}
               value={formData.description}
               onChange={(e) => {
                 if (e.target.value.length <= 140) {
@@ -333,10 +326,10 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
               onClick={() => setOpen(false)}
               className="flex-1"
             >
-              Cancel
+              {t("suggestPlace.cancel")}
             </Button>
             <Button type="submit" disabled={isSubmitting} className="flex-1">
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? t("suggestPlace.submitting") : t("suggestPlace.submit")}
             </Button>
           </div>
         </form>
