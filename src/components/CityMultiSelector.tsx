@@ -28,7 +28,7 @@ const CityMultiSelector = ({
   label,
   description,
 }: CityMultiSelectorProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const resolvedLabel = label ?? t("cityMultiSelect.selectLabel");
   const isWholeIslandSelected = selectedLocations.includes(WHOLE_ISLAND_KEY);
 
