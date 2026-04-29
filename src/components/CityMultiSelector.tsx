@@ -169,7 +169,7 @@ const CityMultiSelector = ({
                   className="data-[state=checked]:bg-primary"
                 />
                 <AccordionTrigger className="flex-1 py-3 hover:no-underline">
-                  <span className="text-sm font-medium">{city.name}</span>
+                  <span className="text-sm font-medium">{getCityDisplayName(city.name, i18n.language)}</span>
                 </AccordionTrigger>
               </div>
               <AccordionContent className="pb-3 pt-0">
