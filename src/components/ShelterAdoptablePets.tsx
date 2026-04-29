@@ -621,7 +621,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                           <h4 className="font-medium truncate">{pet.name}</h4>
                           <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs capitalize">
-                              {pet.pet_type}
+                              {t(`shelterPetForm.${pet.pet_type}`, pet.pet_type)}
                             </Badge>
                             {pet.breed && (
                               <Badge variant="outline" className="text-xs truncate max-w-[120px]">
@@ -635,7 +635,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             )}
                             {pet.gender && (
                               <Badge variant="outline" className="text-xs capitalize">
-                                {pet.gender}
+                                {t(`adoptablePets.${pet.gender}`, pet.gender)}
                               </Badge>
                             )}
                           </div>
