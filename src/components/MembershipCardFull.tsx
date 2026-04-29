@@ -1,5 +1,6 @@
 import { Dog, Crown } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useTranslation } from "react-i18next";
 
 interface MembershipCardFullProps {
   memberName?: string;
@@ -18,6 +19,7 @@ const MembershipCardFull = ({
   memberId = "WF-2026-XX",
   expiryDate = "25/12/2025"
 }: MembershipCardFullProps) => {
+  const { t } = useTranslation();
   // QR code contains just the member ID for businesses to scan
   // Businesses use their dashboard scanner which extracts and verifies this ID
   const qrValue = memberId;
@@ -49,17 +51,17 @@ const MembershipCardFull = ({
           </div>
           <div className="flex items-center gap-1">
             <Crown className="w-4 h-4 text-wooffy-accent" />
-            <span className="text-xs font-medium text-wooffy-light">Premium</span>
+            <span className="text-xs font-medium text-wooffy-light">{t("membershipCard.premium")}</span>
           </div>
         </div>
 
         {/* Member info with QR code */}
         <div className="relative flex justify-between items-start mt-2 sm:mt-0">
           <div className="pl-2">
-            <p className="text-wooffy-light/70 text-sm">Member</p>
+            <p className="text-wooffy-light/70 text-sm">{t("membershipCard.member")}</p>
             <p className="font-display font-semibold text-lg text-wooffy-sky">{memberName}</p>
             <p className="text-wooffy-light/70 text-sm mt-2">
-              {petNames && petNames.length > 1 ? "Furry Friends" : "Furry Friend"}
+              {petNames && petNames.length > 1 ? t("membershipCard.furryFriends") : t("membershipCard.furryFriend")}
             </p>
             <p className="font-display font-semibold text-base text-wooffy-sky">{formatPetDisplay()}</p>
           </div>
@@ -75,20 +77,20 @@ const MembershipCardFull = ({
                 fgColor="#1a1f36"
               />
             </div>
-            <p className="text-wooffy-light/60 text-[10px] mt-1">Scan to verify</p>
+            <p className="text-wooffy-light/60 text-[10px] mt-1">{t("membershipCard.scanToVerify")}</p>
           </div>
         </div>
 
         {/* Card number */}
         <div className="relative pt-2 border-t border-wooffy-blue/30 flex justify-between items-center">
           <div>
-            <p className="text-wooffy-light/70 text-[10px]">Member ID</p>
+            <p className="text-wooffy-light/70 text-[10px]">{t("membershipCard.memberId")}</p>
             <p className="font-mono text-xs text-wooffy-light/80 tracking-wider">
               {memberId}
             </p>
           </div>
           <p className="text-wooffy-light/70 text-xs">
-            Valid until: {expiryDate}
+            {t("membershipCard.validUntil", { date: expiryDate })}
           </p>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Cake, Gift, Calendar, User, Clock } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface SentBirthdayOffer {
   id: string;
@@ -25,10 +26,11 @@ export function SentBirthdayOfferViewDialog({
   onOpenChange,
   offer,
 }: SentBirthdayOfferViewDialogProps) {
+  const { t } = useTranslation();
   if (!offer) return null;
 
-  const discountText = offer.discount_type === 'percentage' 
-    ? `${offer.discount_value}% off` 
+  const discountText = offer.discount_type === 'percentage'
+    ? `${offer.discount_value}% off`
     : `€${offer.discount_value} off`;
 
   return (
@@ -37,15 +39,14 @@ export function SentBirthdayOfferViewDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Gift className="h-5 w-5 text-green-500" />
-            Sent Birthday Offer
+            {t("sentBirthdayOfferView.title")}
           </DialogTitle>
           <DialogDescription>
-            Birthday offer details for {offer.pet_name}
+            {t("sentBirthdayOfferView.subtitle", { petName: offer.pet_name })}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          {/* Pet & Owner Info */}
           <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 rounded-lg border border-green-200 dark:border-green-800">
             <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
               <Cake className="h-6 w-6 text-green-600 dark:text-green-400" />
@@ -54,7 +55,7 @@ export function SentBirthdayOfferViewDialog({
               <p className="font-semibold">{offer.pet_name}</p>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <User className="h-3 w-3" />
-                <span>{offer.owner_name || "Pet Owner"}</span>
+                <span>{offer.owner_name || t("sentBirthdayOfferView.petOwner")}</span>
               </div>
             </div>
             <Badge className="bg-green-500 text-white text-xs">
@@ -63,19 +64,17 @@ export function SentBirthdayOfferViewDialog({
             </Badge>
           </div>
 
-          {/* Full Message */}
           <div className="space-y-2">
-            <h4 className="font-medium text-sm text-muted-foreground">Your message:</h4>
+            <h4 className="font-medium text-sm text-muted-foreground">{t("sentBirthdayOfferView.yourMessage")}</h4>
             <div className="p-4 bg-muted rounded-lg whitespace-pre-wrap text-sm max-h-[200px] overflow-y-auto">
               {offer.message}
             </div>
           </div>
 
-          {/* Date & Time */}
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span>Sent on {formatDate(new Date(offer.sent_at))}</span>
+              <span>{t("sentBirthdayOfferView.sentOn", { date: formatDate(new Date(offer.sent_at)) })}</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
