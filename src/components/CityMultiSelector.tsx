@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cyprusCities, CyprusArea } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 
 interface CityMultiSelectorProps {
   selectedLocations: string[]; // Format: "City" or "City > Area"
