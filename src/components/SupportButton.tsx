@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageCircleQuestion, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SupportDialog from "./SupportDialog";
@@ -6,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const SupportButton = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -117,7 +119,7 @@ const SupportButton = () => {
       <button
         onClick={handleExpand}
         className="fixed bottom-[5.5rem] md:bottom-6 right-4 z-50 h-8 w-8 rounded-full bg-primary shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
-        aria-label="Expand support"
+        aria-label={t("supportButton.expandAria")}
       >
         {unreadCount > 0 ? (
           <span className="text-[10px] font-bold text-primary-foreground">
@@ -138,7 +140,7 @@ const SupportButton = () => {
           className="h-8 w-8 rounded-full shadow-lg opacity-80 hover:opacity-100"
           size="icon"
           variant="secondary"
-          aria-label="Minimize support widget"
+          aria-label={t("supportButton.minimizeAria")}
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -146,7 +148,7 @@ const SupportButton = () => {
           onClick={() => setOpen(true)}
           className="h-14 w-14 rounded-full shadow-lg"
           size="icon"
-          aria-label="Get support"
+          aria-label={t("supportButton.getSupportAria")}
         >
           <MessageCircleQuestion className="h-7 w-7" />
           {unreadCount > 0 && (
