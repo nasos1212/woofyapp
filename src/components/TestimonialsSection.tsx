@@ -1,4 +1,5 @@
 import { Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const testimonials = [
   {
@@ -25,16 +26,17 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const { t } = useTranslation();
   return (
     <section className="py-20 lg:py-32">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
-            What Our Members Say
+            {t("testimonialsSection.title")}
           </h2>
           <p className="text-lg text-muted-foreground">
-            Join the Wooffy family of happy pet parents who are saving money and building community.
+            {t("testimonialsSection.description")}
           </p>
         </div>
 

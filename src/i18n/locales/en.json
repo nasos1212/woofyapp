@@ -2638,5 +2638,152 @@
     "metaTitle": "Terms & Conditions | Wooffy",
     "metaDescription": "Read the Terms and Conditions, Privacy Policy, and Shelter Participation Agreement for Wooffy.App.",
     "back": "Back"
+  },
+  "partnersSection": {
+    "badge": "Growing Network",
+    "title": "Our Partner Network",
+    "description": "From local pet shops to premium hotels, our network keeps growing. Show your Wooffy card and enjoy instant savings everywhere.",
+    "cat": {
+      "petShops": "Pet Shops",
+      "veterinaries": "Veterinaries",
+      "trainers": "Trainers",
+      "petHotels": "Pet Hotels",
+      "groomers": "Groomers",
+      "other": "Other"
+    }
+  },
+  "hubSection": {
+    "title": "Your Pet Owner Hub",
+    "description": "More than just discounts. Wooffy is your all-in-one companion for pet parenthood. Connect, discover, and make every moment with your pet count.",
+    "cta": "Sign up today",
+    "ctaHelp": "All Wooffy members get early access to new features",
+    "features": {
+      "events": {
+        "title": "Events & Meetups",
+        "desc": "Discover and join local pet events, dog walks, training sessions, and community gatherings."
+      },
+      "forum": {
+        "title": "Community Forum",
+        "desc": "Connect with fellow pet parents. Share tips, ask questions, and build friendships."
+      },
+      "directory": {
+        "title": "Dog-Friendly Directory",
+        "desc": "Find dog parks, dog-friendly restaurants, and hidden gems in your area."
+      },
+      "reminders": {
+        "title": "Smart Reminders",
+        "desc": "Never miss vaccinations, grooming appointments, or your pet's special days."
+      }
+    }
+  },
+  "testimonialsSection": {
+    "title": "What Our Members Say",
+    "description": "Join the Wooffy family of happy pet parents who are saving money and building community."
+  },
+  "membershipCard": {
+    "premium": "Premium",
+    "member": "Member",
+    "furryFriend": "Furry Friend",
+    "furryFriends": "Furry Friends",
+    "scanToVerify": "Scan to verify",
+    "memberId": "Member ID",
+    "since": "Since {{year}}",
+    "validUntil": "Valid until: {{date}}"
+  },
+  "birthdayOfferModal": {
+    "title": "Send Birthday Offer",
+    "description": "Create a special birthday message for {{petName}}",
+    "turning": "Turning {{age}}!",
+    "offerType": "Offer Type",
+    "quickDiscount": "Quick Discount",
+    "useExisting": "Use Existing Offer",
+    "discountType": "Discount Type",
+    "percentage": "Percentage",
+    "fixedAmount": "Fixed Amount",
+    "birthdayDiscount": "Birthday Discount (%)",
+    "birthdayGift": "Birthday Gift (€)",
+    "selectOffer": "Select Offer",
+    "chooseOffer": "Choose an offer...",
+    "birthdayMessage": "Birthday Message",
+    "messagePlaceholder": "Write a special birthday message...",
+    "messageHelp": "This message will be sent as a notification to the pet owner. The offer is valid for 30 days.",
+    "cancel": "Cancel",
+    "sending": "Sending...",
+    "send": "Send Birthday Offer",
+    "defaultMessage": "🎂 Happy Birthday, {{petName}}! 🎉\n\nTo celebrate this special day, we'd like to offer you {{discount}} your next visit at {{businessName}}.\n\nWe hope to see you soon! 🐾",
+    "toastSentTitle": "🎉 Birthday offer sent!",
+    "toastSentDesc": "{{owner}} will receive your birthday message for {{petName}}.",
+    "toastErrorTitle": "Error sending offer",
+    "toastErrorDesc": "Failed to send birthday offer",
+    "notifTitle": "🎂 Birthday Surprise from {{businessName}}!",
+    "thePetOwner": "The pet owner"
+  },
+  "birthdayOfferView": {
+    "title": "Birthday Offer",
+    "subtitle": "Special offer for {{petName}}'s birthday",
+    "messageFromBusiness": "Message from the business:",
+    "receivedOn": "Received on {{date}}",
+    "validFor30": "Valid for 30 days",
+    "instructions": "💡 Show this message to the business when you visit to redeem your birthday offer!",
+    "close": "Close"
+  },
+  "sentBirthdayOfferView": {
+    "title": "Sent Birthday Offer",
+    "subtitle": "Birthday offer details for {{petName}}",
+    "petOwner": "Pet Owner",
+    "yourMessage": "Your message:",
+    "sentOn": "Sent on {{date}}"
+  },
+  "placeRating": {
+    "reviewOne": "({{count}} review)",
+    "reviewOther": "({{count}} reviews)",
+    "yourRating": "• Your rating: {{rating}}★",
+    "editReview": "Edit Review",
+    "writeReview": "Write Review",
+    "hideReviews": "Hide Reviews",
+    "viewReviews": "View Reviews",
+    "you": "You",
+    "anonymous": "Anonymous",
+    "thisPlace": "this place",
+    "reviewPhotoAlt": "Review photo {{n}}",
+    "reviewFullSize": "Review photo full size"
+  },
+  "supportButton": {
+    "expandAria": "Expand support",
+    "minimizeAria": "Minimize support widget",
+    "getSupportAria": "Get support"
+  },
+  "cityMultiSelect": {
+    "selectLabel": "Select Cities/Areas",
+    "wholeIsland": "🇨🇾 Whole Island",
+    "wholeIslandFull": "🇨🇾 Whole Island (All Cities)",
+    "noneSelected": "No locations selected. Select at least one city or area."
+  },
+  "shelterPetForm": {
+    "namePh": "e.g., Buddy",
+    "type": "Type",
+    "dog": "Dog",
+    "cat": "Cat",
+    "other": "Other",
+    "breed": "Breed",
+    "breedPh": "Enter breed"
+  },
+  "communityQuestion": {
+    "notFound": "Question not found",
+    "thisHelpedMe": "This helped me",
+    "helped": "Helped",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "noAnswers": "No answers yet",
+    "yourAnswer": "Your Answer",
+    "reportSpam": "Spam or misleading",
+    "reportInappropriate": "Inappropriate content",
+    "reportHarassment": "Harassment or abuse",
+    "reportMisinfo": "Harmful misinformation",
+    "reportOther": "Other"
+  },
+  "commonExtra": {
+    "close": "Close",
+    "cancel": "Cancel"
   }
 }

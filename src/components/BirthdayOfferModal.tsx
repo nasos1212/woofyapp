@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Cake, Gift, Send, Sparkles, User, Dog, Percent, Euro } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface BirthdayPet {
   pet_id: string;
@@ -47,6 +48,7 @@ export function BirthdayOfferModal({
   existingOffers,
   onSuccess,
 }: BirthdayOfferModalProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [sending, setSending] = useState(false);
   const [offerType, setOfferType] = useState<"existing" | "custom">("custom");
@@ -64,9 +66,8 @@ export function BirthdayOfferModal({
     setCustomDiscount("15");
     setFixedAmount("5");
     if (pet) {
-      setMessage(
-        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you 15% off your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
-      );
+      const discountText = `15% off`;
+      setMessage(t("birthdayOfferModal.defaultMessage", { petName: pet.pet_name, discount: discountText, businessName }));
     }
   };
 
@@ -85,9 +86,7 @@ export function BirthdayOfferModal({
     }
     if (pet) {
       const discountText = mode === "percentage" ? `${discount}% off` : `€${discount} off`;
-      setMessage(
-        `🎂 Happy ${pet.age}${getOrdinalSuffix(pet.age)} Birthday, ${pet.pet_name}! 🎉\n\nTo celebrate this special day, we'd like to offer you ${discountText} your next visit at ${businessName}.\n\nWe hope to see you soon! 🐾`
-      );
+      setMessage(t("birthdayOfferModal.defaultMessage", { petName: pet.pet_name, discount: discountText, businessName }));
     }
   };
 
@@ -111,7 +110,7 @@ export function BirthdayOfferModal({
       // Create notification for the pet owner
       const { error: notifError } = await supabase.from("notifications").insert({
         user_id: pet.owner_user_id,
-        title: `🎂 Birthday Surprise from ${businessName}!`,
+        title: t("birthdayOfferModal.notifTitle", { businessName }),
         message: message,
         type: "birthday_offer",
         data: {
@@ -150,16 +149,16 @@ export function BirthdayOfferModal({
       }
 
       toast({
-        title: "🎉 Birthday offer sent!",
-        description: `${pet.owner_name || "The pet owner"} will receive your birthday message for ${pet.pet_name}.`,
+        title: t("birthdayOfferModal.toastSentTitle"),
+        description: t("birthdayOfferModal.toastSentDesc", { owner: pet.owner_name || t("birthdayOfferModal.thePetOwner"), petName: pet.pet_name }),
       });
 
       onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {
       toast({
-        title: "Error sending offer",
-        description: error.message || "Failed to send birthday offer",
+        title: t("birthdayOfferModal.toastErrorTitle"),
+        description: error.message || t("birthdayOfferModal.toastErrorDesc"),
         variant: "destructive",
       });
     } finally {
@@ -185,10 +184,10 @@ export function BirthdayOfferModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Cake className="h-5 w-5 text-pink-500" />
-            Send Birthday Offer
+            {t("birthdayOfferModal.title")}
           </DialogTitle>
           <DialogDescription>
-            Create a special birthday message for {pet.pet_name}
+            {t("birthdayOfferModal.description", { petName: pet.pet_name })}
           </DialogDescription>
         </DialogHeader>
 
@@ -204,7 +203,7 @@ export function BirthdayOfferModal({
                   <h4 className="font-semibold">{pet.pet_name}</h4>
                   <Badge variant="secondary" className="text-xs">
                     <Sparkles className="h-3 w-3 mr-1" />
-                    Turning {pet.age}!
+                    {t("birthdayOfferModal.turning", { age: pet.age })}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -218,25 +217,15 @@ export function BirthdayOfferModal({
 
           {/* Offer Type Selection */}
           <div className="space-y-3">
-            <Label>Offer Type</Label>
+            <Label>{t("birthdayOfferModal.offerType")}</Label>
             <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={offerType === "custom" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setOfferType("custom")}
-              >
+              <Button type="button" variant={offerType === "custom" ? "default" : "outline"} size="sm" onClick={() => setOfferType("custom")}>
                 <Gift className="h-4 w-4 mr-1" />
-                Quick Discount
+                {t("birthdayOfferModal.quickDiscount")}
               </Button>
               {existingOffers.length > 0 && (
-                <Button
-                  type="button"
-                  variant={offerType === "existing" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setOfferType("existing")}
-                >
-                  Use Existing Offer
+                <Button type="button" variant={offerType === "existing" ? "default" : "outline"} size="sm" onClick={() => setOfferType("existing")}>
+                  {t("birthdayOfferModal.useExisting")}
                 </Button>
               )}
             </div>
@@ -247,25 +236,15 @@ export function BirthdayOfferModal({
             <div className="space-y-4">
               {/* Discount Mode Toggle */}
               <div className="space-y-2">
-                <Label>Discount Type</Label>
+                <Label>{t("birthdayOfferModal.discountType")}</Label>
                 <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant={discountMode === "percentage" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleDiscountModeChange("percentage")}
-                  >
+                  <Button type="button" variant={discountMode === "percentage" ? "default" : "outline"} size="sm" onClick={() => handleDiscountModeChange("percentage")}>
                     <Percent className="h-4 w-4 mr-1" />
-                    Percentage
+                    {t("birthdayOfferModal.percentage")}
                   </Button>
-                  <Button
-                    type="button"
-                    variant={discountMode === "fixed" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleDiscountModeChange("fixed")}
-                  >
+                  <Button type="button" variant={discountMode === "fixed" ? "default" : "outline"} size="sm" onClick={() => handleDiscountModeChange("fixed")}>
                     <Euro className="h-4 w-4 mr-1" />
-                    Fixed Amount
+                    {t("birthdayOfferModal.fixedAmount")}
                   </Button>
                 </div>
               </div>
@@ -273,7 +252,7 @@ export function BirthdayOfferModal({
               {/* Discount Value */}
               {discountMode === "percentage" ? (
                 <div className="space-y-2">
-                  <Label htmlFor="discount">Birthday Discount (%)</Label>
+                  <Label htmlFor="discount">{t("birthdayOfferModal.birthdayDiscount")}</Label>
                   <div className="flex gap-2 flex-wrap">
                     {["10", "15", "20", "25"].map((val) => (
                       <Button
@@ -299,7 +278,7 @@ export function BirthdayOfferModal({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <Label htmlFor="fixedAmount">Birthday Gift (€)</Label>
+                  <Label htmlFor="fixedAmount">{t("birthdayOfferModal.birthdayGift")}</Label>
                   <div className="flex gap-2 flex-wrap">
                     {["5", "10", "15", "20"].map((val) => (
                       <Button
@@ -330,10 +309,10 @@ export function BirthdayOfferModal({
             </div>
           ) : (
             <div className="space-y-2">
-              <Label>Select Offer</Label>
+              <Label>{t("birthdayOfferModal.selectOffer")}</Label>
               <Select value={selectedOfferId} onValueChange={setSelectedOfferId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose an offer..." />
+                  <SelectValue placeholder={t("birthdayOfferModal.chooseOffer")} />
                 </SelectTrigger>
                 <SelectContent>
                   {existingOffers.map((offer) => (
@@ -348,35 +327,35 @@ export function BirthdayOfferModal({
 
           {/* Message */}
           <div className="space-y-2">
-            <Label htmlFor="message">Birthday Message</Label>
+            <Label htmlFor="message">{t("birthdayOfferModal.birthdayMessage")}</Label>
             <Textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
-              placeholder="Write a special birthday message..."
+              placeholder={t("birthdayOfferModal.messagePlaceholder")}
             />
             <p className="text-xs text-muted-foreground">
-              This message will be sent as a notification to the pet owner. The offer is valid for 30 days.
+              {t("birthdayOfferModal.messageHelp")}
             </p>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t("birthdayOfferModal.cancel")}
           </Button>
-          <Button 
+          <Button
             onClick={handleSend} 
             disabled={sending || !message.trim() || (offerType === "existing" && !selectedOfferId)}
             className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
           >
             {sending ? (
-              "Sending..."
+              t("birthdayOfferModal.sending")
             ) : (
               <>
                 <Send className="h-4 w-4 mr-2" />
-                Send Birthday Offer
+                {t("birthdayOfferModal.send")}
               </>
             )}
           </Button>
