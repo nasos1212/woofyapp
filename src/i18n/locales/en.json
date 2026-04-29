@@ -1627,7 +1627,7 @@
     "tiktokPlaceholder": "https://tiktok.com/@yourbusiness",
     "saveChanges": "Save Changes",
     "saving": "Saving...",
-    "locationsTitle": "Store Locations",
+    "locationsTitle": "Locations",
     "locationsDesc": "Manage your business locations so customers can find you",
     "saveLocations": "Save Locations",
     "savingLocations": "Saving...",
@@ -1662,7 +1662,7 @@
     "editProfile": "Edit Profile",
     "reviews": "({{count}} reviews)",
     "websiteBtn": "Website",
-    "storeLocations": "Store Locations",
+    "storeLocations": "Locations",
     "directions": "Directions",
     "photos": "Photos",
     "availableOffers": "Available Offers",
@@ -1845,8 +1845,8 @@
     "phoneLabel": "Phone",
     "phoneRequired": "Phone *",
     "mapsLabel": "Google Maps Link",
-    "addLocation": "Add Another Store Location",
-    "helpText": "Have multiple stores? Add each location with its specific address and phone number."
+    "addLocation": "Add Another Location",
+    "helpText": "Add each location with its specific address and phone number."
   },
   "businessCategoriesField": {
     "defaultLabel": "Business Categories",
