@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MapPin, X, Check } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -23,9 +24,11 @@ const WHOLE_ISLAND_KEY = "Whole Island";
 const CityMultiSelector = ({
   selectedLocations,
   onLocationsChange,
-  label = "Select Cities/Areas",
+  label,
   description,
 }: CityMultiSelectorProps) => {
+  const { t } = useTranslation();
+  const resolvedLabel = label ?? t("cityMultiSelect.selectLabel");
   const isWholeIslandSelected = selectedLocations.includes(WHOLE_ISLAND_KEY);
 
   const isLocationSelected = (city: string, area?: string): boolean => {
@@ -92,7 +95,7 @@ const CityMultiSelector = ({
 
   const getDisplayName = (location: string): string => {
     if (location === WHOLE_ISLAND_KEY) {
-      return "🇨🇾 Whole Island";
+      return t("cityMultiSelect.wholeIsland");
     }
     if (location.includes(" > ")) {
       const [city, area] = location.split(" > ");
@@ -108,7 +111,7 @@ const CityMultiSelector = ({
       <div>
         <Label className="flex items-center gap-2 text-base font-medium">
           <MapPin className="w-4 h-4" />
-          {label}
+          {resolvedLabel}
         </Label>
         {description && (
           <p className="text-sm text-muted-foreground mt-1">{description}</p>
@@ -150,7 +153,7 @@ const CityMultiSelector = ({
             htmlFor="whole-island"
             className="text-sm font-medium cursor-pointer flex items-center gap-2"
           >
-            🇨🇾 Whole Island (All Cities)
+            {t("cityMultiSelect.wholeIslandFull")}
           </label>
         </div>
 
@@ -195,7 +198,7 @@ const CityMultiSelector = ({
 
       {selectedLocations.length === 0 && (
         <p className="text-sm text-muted-foreground italic">
-          No locations selected. Select at least one city or area.
+          {t("cityMultiSelect.noneSelected")}
         </p>
       )}
     </div>

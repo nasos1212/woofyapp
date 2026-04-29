@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Star, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ interface ReviewData {
 }
 
 const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size = "md" }: PlaceRatingProps) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [userReview, setUserReview] = useState<ReviewData | null>(null);
   const [reviews, setReviews] = useState<ReviewData[]>([]);
@@ -103,10 +105,10 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
       {/* Info row */}
       <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
         {ratingCount > 0 && (
-          <span>({ratingCount} {ratingCount === 1 ? "review" : "reviews"})</span>
+          <span>{ratingCount === 1 ? t("placeRating.reviewOne", { count: ratingCount }) : t("placeRating.reviewOther", { count: ratingCount })}</span>
         )}
         {userReview && (
-          <span className="text-primary">• Your rating: {userReview.rating}★</span>
+          <span className="text-primary">{t("placeRating.yourRating", { rating: userReview.rating })}</span>
         )}
       </div>
 
@@ -119,7 +121,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
           onClick={() => setReviewDialogOpen(true)}
         >
           <Star className="w-3 h-3" />
-          {userReview ? "Edit Review" : "Write Review"}
+          {userReview ? t("placeRating.editReview") : t("placeRating.writeReview")}
         </Button>
 
         {reviewsWithContent.length > 0 && (
@@ -130,7 +132,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
             onClick={() => setShowReviews(!showReviews)}
           >
             <MessageSquare className="w-3 h-3" />
-            {showReviews ? "Hide Reviews" : "View Reviews"}
+            {showReviews ? t("placeRating.hideReviews") : t("placeRating.viewReviews")}
           </Button>
         )}
       </div>
@@ -152,8 +154,8 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                 ))}
                 <span className="ml-1 font-medium text-foreground">
                   {review.user_id === user?.id
-                    ? "You"
-                    : review.reviewer_name || "Anonymous"}
+                    ? t("placeRating.you")
+                    : review.reviewer_name || t("placeRating.anonymous")}
                 </span>
               </div>
               {review.review_text && (
@@ -165,7 +167,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                   {review.photo_url && (
                     <img
                       src={review.photo_url}
-                      alt="Review photo 1"
+                      alt={t("placeRating.reviewPhotoAlt", { n: 1 })}
                       className={cn(
                         "max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity",
                         review.photo_url_2 ? "w-1/2" : "w-full"
@@ -176,7 +178,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                   {review.photo_url_2 && (
                     <img
                       src={review.photo_url_2}
-                      alt="Review photo 2"
+                      alt={t("placeRating.reviewPhotoAlt", { n: 2 })}
                       className={cn(
                         "max-h-48 object-contain rounded-md bg-muted cursor-pointer hover:opacity-90 transition-opacity",
                         review.photo_url ? "w-1/2" : "w-full"
@@ -196,7 +198,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
         open={reviewDialogOpen}
         onClose={() => setReviewDialogOpen(false)}
         placeId={placeId}
-        placeName={placeName || "this place"}
+        placeName={placeName || t("placeRating.thisPlace")}
         existingRating={userReview?.rating}
         existingReviewText={userReview?.review_text}
         existingPhotoUrl={userReview?.photo_url}
@@ -209,7 +211,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
           {lightboxUrl && (
             <img
               src={lightboxUrl}
-              alt="Review photo full size"
+              alt={t("placeRating.reviewFullSize")}
               className="max-w-full max-h-[85vh] object-contain rounded-md"
             />
           )}
