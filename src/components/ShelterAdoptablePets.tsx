@@ -359,7 +359,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                     <div key={index} className="relative w-20 h-20 rounded-lg overflow-hidden">
                       <img 
                         src={url} 
-                        alt={`Pet photo ${index + 1}`} 
+                        alt={t("shelterPetForm.petPhotoAlt", { n: index + 1 })} 
                         className="w-full h-full object-cover"
                       />
                       <button
@@ -403,17 +403,17 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name *</Label>
+                  <Label htmlFor="name">{t("shelterPetForm.name")}</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="e.g., Buddy"
+                    placeholder={t("shelterPetForm.namePh")}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="pet_type">Type</Label>
+                  <Label htmlFor="pet_type">{t("shelterPetForm.type")}</Label>
                   <Select
                     value={formData.pet_type}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, pet_type: value, breed: "" }))}
@@ -422,22 +422,22 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="dog">Dog</SelectItem>
-                      <SelectItem value="cat">Cat</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="dog">{t("shelterPetForm.dog")}</SelectItem>
+                      <SelectItem value="cat">{t("shelterPetForm.cat")}</SelectItem>
+                      <SelectItem value="other">{t("shelterPetForm.other")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="breed">Breed</Label>
+                <Label htmlFor="breed">{t("shelterPetForm.breed")}</Label>
                 {formData.pet_type === "other" ? (
                   <Input
                     id="breed"
                     value={formData.breed}
                     onChange={(e) => setFormData(prev => ({ ...prev, breed: e.target.value }))}
-                    placeholder="Enter breed"
+                    placeholder={t("shelterPetForm.breedPh")}
                   />
                 ) : (
                   <Popover open={breedOpen} onOpenChange={setBreedOpen}>
@@ -448,18 +448,18 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                         aria-expanded={breedOpen}
                         className="w-full justify-between font-normal text-left"
                       >
-                        <span className="truncate">{formData.breed || "Select breed..."}</span>
+                        <span className="truncate">{formData.breed || t("shelterPetForm.selectBreed")}</span>
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[--radix-popover-trigger-width] p-0 pointer-events-auto" align="start">
                       <Command>
-                        <CommandInput placeholder="Search breed..." />
+                        <CommandInput placeholder={t("shelterPetForm.searchBreed")} />
                         <CommandList 
                           ref={breedListRef}
                           className="max-h-[220px] overflow-y-scroll [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background"
                         >
-                          <CommandEmpty>No breed found.</CommandEmpty>
+                          <CommandEmpty>{t("shelterPetForm.noBreedFound")}</CommandEmpty>
                           <CommandGroup>
                             {breeds.map((breed) => (
                               <CommandItem
