@@ -1,4 +1,9 @@
 {
+  "locationSelector": {
+    "selectCityPlaceholder": "Select a city...",
+    "selectAreaPlaceholder": "Select an area (optional)...",
+    "allAreas": "All areas"
+  },
   "common": {
     "joinNow": "Join Now",
     "signIn": "Sign in",
