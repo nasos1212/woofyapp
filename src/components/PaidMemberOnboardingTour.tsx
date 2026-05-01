@@ -24,7 +24,7 @@ const steps: TourStep[] = [
     iconColor: "text-amber-600",
     title: "Exclusive Offers 🎁",
     description:
-      "Browse and redeem discounts from our verified partner businesses — just show your membership card!",
+      "Browse and redeem discounts from our verified partner businesses, just show your membership card!",
   },
   {
     icon: Syringe,
@@ -40,7 +40,7 @@ const steps: TourStep[] = [
     iconColor: "text-violet-600",
     title: "AI Health Assistant 🤖",
     description:
-      "Get instant, breed-aware health advice for your pet powered by AI — available 24/7.",
+      "Get instant, breed-aware health advice for your pet powered by AI, available 24/7.",
   },
   {
     icon: MapPin,
@@ -64,7 +64,7 @@ const steps: TourStep[] = [
     iconColor: "text-primary",
     title: "You're All Set! 🥳",
     description:
-      "Start exploring your dashboard — your membership saves you an average of €200+ per year!",
+      "Start exploring your dashboard, your membership saves you an average of €200+ per year!",
   },
 ];
 
