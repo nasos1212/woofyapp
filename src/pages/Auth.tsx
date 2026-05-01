@@ -786,6 +786,9 @@ const Auth = () => {
                     required={!isLogin}
                   />
                 </div>
+                {accountType !== "business" && accountType !== "shelter" && (
+                  <p className="text-xs text-muted-foreground">{t("auth.fullNameHint")}</p>
+                )}
               </div>
             )}
 
