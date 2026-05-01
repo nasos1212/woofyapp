@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,6 +27,7 @@ const OnboardingTour = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [animating, setAnimating] = useState(false);
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const scopedStorageKey = user ? `${storageKey}:${user.id}` : storageKey;
 
@@ -198,7 +200,7 @@ const OnboardingTour = ({
           <div className="flex items-center gap-3">
             {!isFirst && (
               <Button variant="outline" onClick={handleBack} className="flex-1">
-                Back
+                {t("common.back")}
               </Button>
             )}
             {isFirst && (
@@ -207,11 +209,11 @@ const OnboardingTour = ({
                 onClick={handleClose}
                 className="flex-1 text-muted-foreground"
               >
-                Skip
+                {t("common.skip")}
               </Button>
             )}
             <Button onClick={handleNext} className="flex-1 gap-2">
-              {isLast ? "Let's Go!" : "Next"}
+              {isLast ? t("common.letsGo") : t("common.next")}
               {!isLast && <ArrowRight className="w-4 h-4" />}
             </Button>
           </div>
