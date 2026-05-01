@@ -12,13 +12,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 import { Dog, Loader2 as LoaderIcon } from "lucide-react";
 import { ensureHttps } from "@/lib/utils";
 
 const ShelterOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   
   const [step, setStep] = useState(1);
@@ -319,7 +320,7 @@ const ShelterOnboarding = () => {
                         </SelectTrigger>
                         <SelectContent>
                           {cyprusCityNames.map((c) => (
-                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                            <SelectItem key={c} value={c}>{getCityDisplayName(c, i18n.language)}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
