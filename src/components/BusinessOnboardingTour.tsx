@@ -40,7 +40,7 @@ const steps: TourStep[] = [
     iconColor: "text-rose-600",
     title: "Pet Birthday Offers 🎂",
     description:
-      "Send special birthday offers to pets in your area — a great way to build loyalty and delight customers!",
+      "Send special birthday offers to pets in your area, a great way to build loyalty and delight customers!",
   },
   {
     icon: BarChart3,
@@ -56,7 +56,7 @@ const steps: TourStep[] = [
     iconColor: "text-teal-600",
     title: "Your Business Profile 🏪",
     description:
-      "Keep your profile up to date — add photos, business hours, locations, and social links to attract more pet parents.",
+      "Keep your profile up to date, add photos, business hours, locations, and social links to attract more pet parents.",
   },
   {
     icon: PartyPopper,

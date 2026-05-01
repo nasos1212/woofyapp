@@ -40,7 +40,7 @@ const steps: TourStep[] = [
     iconColor: "text-teal-600",
     title: "Adoptable Pets 🐾",
     description:
-      "List your pets available for adoption with photos and descriptions — and receive inquiries directly!",
+      "List your pets available for adoption with photos and descriptions, and receive inquiries directly!",
   },
   {
     icon: Globe,

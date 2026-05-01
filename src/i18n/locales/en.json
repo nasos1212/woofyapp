@@ -38,7 +38,7 @@
     "titlePart1": "Unlock a World",
     "titleOf": "of",
     "titleHighlight": "Pet Benefits",
-    "description": "Start for free — create pet profiles, track health records, discover dog-friendly places, report lost/found pets & join our community. Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.",
+    "description": "Start for free, create pet profiles, track health records, discover dog-friendly places, report lost/found pets & join our community. Upgrade anytime for exclusive discounts at pet shops, trainers, hotels & more.",
     "ctaJoin": "Join Free Today",
     "ctaPlaces": "Dog-Friendly Places",
     "targets": "Our targets for 2026",
@@ -91,7 +91,7 @@
       },
       "ai": {
         "title": "AI Health Assistant",
-        "desc": "Get instant guidance on pet health questions powered by AI — available 24/7."
+        "desc": "Get instant guidance on pet health questions powered by AI, available 24/7."
       }
     }
   },
@@ -122,7 +122,7 @@
       },
       "lostFound": {
         "title": "Lost & Found Alerts 🔍",
-        "desc": "Report or find lost pets in your area. Together, we help reunite pets with their families — fast."
+        "desc": "Report or find lost pets in your area. Together, we help reunite pets with their families, fast."
       },
       "places": {
         "title": "Dog-Friendly Places 📍",
@@ -134,7 +134,7 @@
       },
       "done": {
         "title": "You're All Set! 🥳",
-        "desc": "Start exploring — all of these features are completely free. Enjoy being part of the Wooffy community!"
+        "desc": "Start exploring, all of these features are completely free. Enjoy being part of the Wooffy community!"
       }
     }
   },
@@ -159,7 +159,7 @@
       },
       "pack": {
         "name": "Pack Leader",
-        "label": "You run the zoo — we've got you 🦁"
+        "label": "You run the zoo, we've got you 🦁"
       }
     },
     "shared": {
@@ -498,8 +498,8 @@
     },
     "benefitsDialog": {
       "title": "Your Wooffy Membership",
-      "freeBadge": "✨ Free — Yours Now",
-      "premiumBadge": "👑 Premium — Coming Soon",
+      "freeBadge": "✨ Free, Yours Now",
+      "premiumBadge": "👑 Premium, Coming Soon",
       "directory": "Dog-Friendly Directory",
       "directoryDesc": "Find dog-friendly cafés, parks and more",
       "lostFound": "Lost & Found Alerts",
@@ -517,7 +517,7 @@
       "ai": "AI Health Assistant",
       "aiDesc": "24/7 AI-powered pet health guidance",
       "premiumNote": "Premium plans starting at ",
-      "premiumNoteEnd": " — we'll notify you when they launch! 🐾",
+      "premiumNoteEnd": ", we'll notify you when they launch! 🐾",
       "perYear": "€29/year",
       "gotIt": "Got it!"
     }
@@ -803,7 +803,7 @@
   },
   "partners": {
     "pageTitle": "Our Partners | Wooffy",
-    "metaDescription": "Browse all Wooffy partner businesses. From pet shops to vets, groomers and more — discover who accepts your Wooffy card.",
+    "metaDescription": "Browse all Wooffy partner businesses. From pet shops to vets, groomers and more, discover who accepts your Wooffy card.",
     "backToDashboard": "Back to Dashboard",
     "title": "Our Partners",
     "subtitle_one": "{{count}} trusted partner offering services for you and your pet",
@@ -1699,7 +1699,7 @@
   "businessProfile": {
     "pageTitleSuffix": "Wooffy Partner",
     "metaDescription": "{{name}} - Wooffy partner business",
-    "previewBanner": "👁️ Preview Mode — This is how members see your profile",
+    "previewBanner": "👁️ Preview Mode, This is how members see your profile",
     "exitPreview": "Exit Preview",
     "goBack": "Go Back",
     "editProfile": "Edit Profile",
@@ -2489,7 +2489,7 @@
   "partnerRegister": {
     "loading": "Loading...",
     "exitTitle": "Leave Registration?",
-    "exitDescription": "You will be signed out, but don't worry — your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.",
+    "exitDescription": "You will be signed out, but don't worry, your account is saved. When you sign back in with the same email and password, you'll return to this form to complete your business profile.",
     "continueEditing": "Continue Editing",
     "leaveWithout": "Leave Without Saving",
     "backToBusinessInfo": "Back to Business Info",
@@ -2511,7 +2511,7 @@
     "contactEmailTooltip": "This email will be shown on your public business profile so customers can contact you. By default, we use your login email. If you'd prefer a different customer-facing email (e.g. info@yourbusiness.com), click the link below to add one.",
     "useDifferentEmail": "Use a different email for customers?",
     "customerEmail": "Customer-facing email",
-    "cancelLoginEmail": "Cancel — use login email",
+    "cancelLoginEmail": "Cancel, use login email",
     "webSocialLabel": "Web & Social Presence *",
     "webSocialTooltip": "Provide at least one link so customers can find you online. This can be a website or any social media profile.",
     "webSocialHelp": "Add at least one: website or social media link.",
@@ -2558,7 +2558,7 @@
     "ctaBusiness": "Log In & Set Up Your Business",
     "ctaShelter": "Log In & Set Up Your Shelter",
     "ctaMember": "Continue to Login",
-    "savedNote": "Your account is saved — you can always come back and log in later to finish setup."
+    "savedNote": "Your account is saved, you can always come back and log in later to finish setup."
   },
   "resetPassword": {
     "linkExpiredTitle": "Link Expired",
