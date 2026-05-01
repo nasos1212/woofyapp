@@ -394,6 +394,7 @@
     "alreadyAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
     "fullName": "Full Name",
+    "fullNameHint": "Please use Latin characters (e.g. Maria Georgiou)",
     "email": "Email",
     "password": "Password",
     "forgotPassword": "Forgot password?",

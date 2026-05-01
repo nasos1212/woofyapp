@@ -394,6 +394,7 @@
     "alreadyAccount": "Έχετε ήδη λογαριασμό;",
     "noAccount": "Δεν έχετε λογαριασμό;",
     "fullName": "Πλήρες Όνομα",
+    "fullNameHint": "Παρακαλώ χρησιμοποιήστε λατινικούς χαρακτήρες (π.χ. Maria Georgiou)",
     "email": "Email",
     "password": "Κωδικός",
     "forgotPassword": "Ξεχάσατε τον κωδικό;",
