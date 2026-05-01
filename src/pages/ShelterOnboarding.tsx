@@ -19,7 +19,7 @@ import { ensureHttps } from "@/lib/utils";
 const ShelterOnboarding = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading: authLoading } = useAuth();
   
   const [step, setStep] = useState(1);
