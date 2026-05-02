@@ -296,7 +296,7 @@ const BlogPostPage = () => {
             </div>
           )}
         </main>
-        <Footer />
+        {!user && <Footer />}
         <BackToTop />
       </div>
     </>
