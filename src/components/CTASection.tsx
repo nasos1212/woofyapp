@@ -24,11 +24,11 @@ const CTASection = () => {
 
           <Button
             size="xl"
-            className="bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-light hover:scale-105 shadow-lg group"
+            className="bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-light hover:scale-105 shadow-lg group max-w-full w-full sm:w-auto whitespace-normal h-auto min-h-[3.5rem] py-3 px-6 text-base sm:text-lg leading-snug"
             onClick={() => navigate("/auth")}
           >
-            {t("cta.button")}
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <span className="flex-1 text-center">{t("cta.button")}</span>
+            <ArrowRight className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
           </Button>
 
           <p className="text-sm text-wooffy-light/60 mt-4">
