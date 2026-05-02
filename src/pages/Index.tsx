@@ -15,6 +15,7 @@ import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
 import FounderSection from "@/components/FounderSection";
 import Footer from "@/components/Footer";
+import LatestFromBlog from "@/components/LatestFromBlog";
 import BackToTop from "@/components/BackToTop";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
