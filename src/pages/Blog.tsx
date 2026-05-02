@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { Clock, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
@@ -107,6 +107,15 @@ const Blog = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container mx-auto px-4 pt-[calc(6rem+env(safe-area-inset-top))] pb-16 max-w-6xl">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="mb-4 -ml-2"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            {t("common.back")}
+          </Button>
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">{t("blog.title")}</h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">{t("blog.subtitle")}</p>
