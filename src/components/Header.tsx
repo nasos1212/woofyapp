@@ -137,11 +137,13 @@ const Header = () => {
     { name: t("header.dashboard"), href: dashboardPath, isRoute: true },
     ...(!isShelter ? [{ name: t("header.offers"), href: "/member/offers", isRoute: true }] : []),
     { name: t("header.community"), href: "/community", isRoute: true },
+    { name: t("header.blog"), href: "/blog", isRoute: true },
 ] : [
     { name: t("header.benefits"), href: "#benefits" },
     { name: t("header.dogFriendlyPlaces"), href: "#get-listed" },
     { name: t("header.shelters"), href: "#shelters" },
     { name: t("header.pricing"), href: "#freemium" },
+    { name: t("header.blog"), href: "/blog", isRoute: true },
   ];
 
   // Logo links to dashboard when logged in, home when not
