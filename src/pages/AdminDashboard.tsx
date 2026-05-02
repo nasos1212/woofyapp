@@ -258,6 +258,10 @@ const AdminDashboard = () => {
           <TabsContent value="reports">
             <CommunityReportsManager />
           </TabsContent>
+
+          <TabsContent value="blog">
+            <BlogManager />
+          </TabsContent>
         </Tabs>
       </div>
     </div>
