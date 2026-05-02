@@ -48,6 +48,8 @@ import MemberPartners from "./pages/MemberPartners";
 import PetFriendlyPlaces from "./pages/PetFriendlyPlaces";
 import VerifyEmail from "./pages/VerifyEmail";
 import Terms from "./pages/Terms";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
