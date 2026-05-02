@@ -133,11 +133,11 @@ const Blog = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => (user ? navigate(dashboardPath) : navigate(-1))}
             className="mb-4 -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("common.back")}
+            {user ? t("header.myDashboard") : t("common.back")}
           </Button>
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">{t("blog.title")}</h1>
