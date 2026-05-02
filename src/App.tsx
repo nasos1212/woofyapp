@@ -138,6 +138,8 @@ const App = () => (
               <Route path="/shelter-onboarding" element={<ShelterOnboarding />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             
