@@ -57,10 +57,10 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.quickLinks")}</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">{t("header.benefits")}</button></li>
-              <li><button onClick={() => scrollToSection("get-listed")} className="hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
-              <li><button onClick={() => scrollToSection("shelters")} className="hover:text-wooffy-sky transition-colors">{t("header.shelters")}</button></li>
-              <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
+              <li><button onClick={() => scrollToSection("benefits")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.benefits")}</button></li>
+              <li><button onClick={() => scrollToSection("get-listed")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
+              <li><button onClick={() => scrollToSection("shelters")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.shelters")}</button></li>
+              <li><button onClick={() => scrollToSection("pricing")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
             </ul>
           </div>
 
