@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown } from "lucide-react";
+import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown, BookOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -235,6 +235,10 @@ const Header = () => {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     {t("header.communityHub")}
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/blog")}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    {t("header.blog")}
+                  </DropdownMenuItem>
                   {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
@@ -312,6 +316,10 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => navigate("/community")}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     {t("header.communityHub")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/blog")}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    {t("header.blog")}
                   </DropdownMenuItem>
                   {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
