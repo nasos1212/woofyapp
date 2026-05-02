@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { BlogPost, BlogCategory, formatDate, localized } from "@/lib/blog";
+import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 
 const PAGE_SIZE = 12;
 const CATEGORIES: ("all" | BlogCategory)[] = ["all", "interview", "guide", "news", "story"];
@@ -22,11 +24,32 @@ const Blog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = (searchParams.get("category") as "all" | BlogCategory) || "all";
   const page = parseInt(searchParams.get("page") || "1", 10);
+  const { user } = useAuth();
+  const { isPaidMember } = useMembership();
+  const [dashboardPath, setDashboardPath] = useState<string>("/member/free");
 
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [featured, setFeatured] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
+
+  useEffect(() => {
+    const resolveDashboard = async () => {
+      if (!user) return;
+      const [shelterRes, businessRes] = await Promise.all([
+        supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
+        supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
+      ]);
+      if (shelterRes.data) {
+        setDashboardPath("/shelter-dashboard");
+      } else if (businessRes.data) {
+        setDashboardPath("/business");
+      } else {
+        setDashboardPath(isPaidMember ? "/member" : "/member/free");
+      }
+    };
+    resolveDashboard();
+  }, [user, isPaidMember]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -110,11 +133,11 @@ const Blog = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(-1)}
+            onClick={() => (user ? navigate(dashboardPath) : navigate(-1))}
             className="mb-4 -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            {t("common.back")}
+            {user ? t("header.myDashboard") : t("common.back")}
           </Button>
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-5xl font-display font-bold mb-3">{t("blog.title")}</h1>
