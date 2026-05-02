@@ -17,6 +17,7 @@ import PlacesManager from "@/components/admin/PlacesManager";
 import AffiliateManager from "@/components/admin/AffiliateManager";
 import CommunityReportsManager from "@/components/admin/CommunityReportsManager";
 import LostFoundManager from "@/components/admin/LostFoundManager";
+import BlogManager from "@/components/admin/BlogManager";
 
 interface PendingCounts {
   support: number;
