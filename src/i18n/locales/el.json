@@ -2856,6 +2856,11 @@
     "related": "Σχετικά άρθρα",
     "meetThePartner": "Γνωρίστε τον συνεργάτη",
     "visitProfile": "Δείτε το προφίλ",
+    "latest": "Τελευταία από το Blog",
+    "latestSubtitle": "Συμβουλές, ιστορίες και συνεντεύξεις από την κοινότητά μας.",
+    "viewAll": "Δείτε όλα τα άρθρα",
+    "discoverCardTitle": "Διαβάστε το blog μας",
+    "discoverCardSubtitle": "Συμβουλές, ιστορίες και συνεντεύξεις συνεργατών",
     "categories": {
       "all": "Όλα",
       "interview": "Συνεντεύξεις",
