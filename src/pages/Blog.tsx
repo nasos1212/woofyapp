@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { Clock, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
