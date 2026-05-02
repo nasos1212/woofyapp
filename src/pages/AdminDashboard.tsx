@@ -217,6 +217,10 @@ const AdminDashboard = () => {
               Reports
               <TabBadge count={pendingCounts.reports} />
             </TabsTrigger>
+            <TabsTrigger value="blog" className="gap-1">
+              <FileText className="w-4 h-4" />
+              Blog
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="support">
