@@ -109,6 +109,7 @@ const Index = () => {
           <OffersSection />
           <FreemiumSection />
           <PricingSection />
+          <LatestFromBlog />
           <CTASection />
         </main>
         <Footer />
