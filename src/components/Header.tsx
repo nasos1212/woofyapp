@@ -317,6 +317,10 @@ const Header = () => {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     {t("header.communityHub")}
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate("/blog")}>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    {t("header.blog")}
+                  </DropdownMenuItem>
                   {isPaidMember && (
                     <DropdownMenuItem onClick={() => navigate("/member/history")}>
                       <History className="mr-2 h-4 w-4" />
