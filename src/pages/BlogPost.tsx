@@ -111,7 +111,7 @@ const BlogPostPage = () => {
             {t("blog.backToBlog")}
           </Button>
         </div>
-        <Footer />
+        {!user && <Footer />}
       </div>
     );
   }
