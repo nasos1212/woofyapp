@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown } from "lucide-react";
+import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown, BookOpen } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
