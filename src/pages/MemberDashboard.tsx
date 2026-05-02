@@ -643,34 +643,34 @@ const MemberDashboard = () => {
                 <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
                 <div className="space-y-3">
                   <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
                       <Bot className="w-5 h-5 text-primary" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.aiAssistantDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
                       <Syringe className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.healthRecordsDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
-                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-red-100 rounded-full flex items-center justify-center">
                       <AlertTriangle className="w-5 h-5 text-red-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.lostFound")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.lostFoundDesc")}</p>
                     </div>
                   </Link>
-                  <Link to="/member/pet-friendly-places" className="flex items-start gap-3 p-3 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
-                    <div className="w-10 h-10 min-w-[2.5rem] bg-teal-100 rounded-full flex items-center justify-center mt-0.5">
+                  <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
                       <MapPin className="w-5 h-5 text-teal-600" />
                     </div>
                     <div className="min-w-0">
@@ -680,28 +680,28 @@ const MemberDashboard = () => {
                     </div>
                   </Link>
                   <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-green-100 rounded-full flex items-center justify-center">
                       <Gift className="w-5 h-5 text-green-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.browseOffers")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.browseOffersDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
                       <Building2 className="w-5 h-5 text-purple-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.partnersDesc")}</p>
                     </div>
                   </Link>
                   <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
-                    <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                    <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
                       <Heart className="w-5 h-5 text-amber-600" />
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.shelters")}</p>
                       <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.sheltersDesc")}</p>
                     </div>

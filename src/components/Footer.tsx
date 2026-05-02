@@ -57,10 +57,10 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.quickLinks")}</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => scrollToSection("benefits")} className="hover:text-wooffy-sky transition-colors">{t("header.benefits")}</button></li>
-              <li><button onClick={() => scrollToSection("get-listed")} className="hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
-              <li><button onClick={() => scrollToSection("shelters")} className="hover:text-wooffy-sky transition-colors">{t("header.shelters")}</button></li>
-              <li><button onClick={() => scrollToSection("pricing")} className="hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
+              <li><button onClick={() => scrollToSection("benefits")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.benefits")}</button></li>
+              <li><button onClick={() => scrollToSection("get-listed")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
+              <li><button onClick={() => scrollToSection("shelters")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.shelters")}</button></li>
+              <li><button onClick={() => scrollToSection("pricing")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
             </ul>
           </div>
 
@@ -68,9 +68,9 @@ const Footer = () => {
           <div>
             <h4 className="font-display font-semibold mb-4 text-wooffy-light">{t("footer.support")}</h4>
             <ul className="space-y-3 text-sm text-wooffy-light/70">
-              <li><button onClick={() => setShowAffiliateDialog(true)} className="hover:text-wooffy-sky transition-colors">{t("footer.affiliate")}</button></li>
-              <li><Link to="/terms#privacy-policy" className="hover:text-wooffy-sky transition-colors">{t("footer.privacy")}</Link></li>
-              <li><Link to="/terms" className="hover:text-wooffy-sky transition-colors">{t("footer.terms")}</Link></li>
+              <li><button onClick={() => setShowAffiliateDialog(true)} className="text-left hover:text-wooffy-sky transition-colors">{t("footer.affiliate")}</button></li>
+              <li><Link to="/terms#privacy-policy" className="block text-left hover:text-wooffy-sky transition-colors">{t("footer.privacy")}</Link></li>
+              <li><Link to="/terms" className="block text-left hover:text-wooffy-sky transition-colors">{t("footer.terms")}</Link></li>
             </ul>
           </div>
 
