@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { BlogPost, BlogCategory, formatDate, localized } from "@/lib/blog";
+import { useAuth } from "@/hooks/useAuth";
+import { useMembership } from "@/hooks/useMembership";
 
 const PAGE_SIZE = 12;
 const CATEGORIES: ("all" | BlogCategory)[] = ["all", "interview", "guide", "news", "story"];
