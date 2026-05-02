@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home, AlertTriangle } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home, AlertTriangle, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ import PlacesManager from "@/components/admin/PlacesManager";
 import AffiliateManager from "@/components/admin/AffiliateManager";
 import CommunityReportsManager from "@/components/admin/CommunityReportsManager";
 import LostFoundManager from "@/components/admin/LostFoundManager";
+import BlogManager from "@/components/admin/BlogManager";
 
 interface PendingCounts {
   support: number;
@@ -216,6 +217,10 @@ const AdminDashboard = () => {
               Reports
               <TabBadge count={pendingCounts.reports} />
             </TabsTrigger>
+            <TabsTrigger value="blog" className="gap-1">
+              <FileText className="w-4 h-4" />
+              Blog
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="support">
@@ -252,6 +257,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="reports">
             <CommunityReportsManager />
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <BlogManager />
           </TabsContent>
         </Tabs>
       </div>

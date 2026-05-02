@@ -18,7 +18,9 @@
     "submit": "Submit",
     "language": "Language",
     "english": "English",
-    "greek": "Ελληνικά"
+    "greek": "Ελληνικά",
+    "save": "Save",
+    "delete": "Delete"
   },
   "header": {
     "benefits": "Benefits",
@@ -34,7 +36,8 @@
     "redemptionHistory": "Redemption History",
     "notifications": "Notifications",
     "upgradeToPremium": "Upgrade to Premium",
-    "adminDashboard": "Admin Dashboard"
+    "adminDashboard": "Admin Dashboard",
+    "blog": "Blog"
   },
   "hero": {
     "badge": "Join Free · No Credit Card Needed",
@@ -373,7 +376,8 @@
     "contact": "Contact",
     "copyright": "© 2026 Wooffy. An effort to unite pet lovers all over Cyprus. 💫",
     "emailCopied": "Email copied to clipboard!",
-    "country": "Cyprus"
+    "country": "Cyprus",
+    "blog": "Blog"
   },
   "auth": {
     "welcomeToastTitle": "Hello {{name}}! 👋",
@@ -2831,5 +2835,65 @@
   "commonExtra": {
     "close": "Close",
     "cancel": "Cancel"
+  },
+  "blog": {
+    "metaTitle": "Wooffy Blog – Pet Care Stories, Guides & Partner Interviews",
+    "metaDescription": "Articles, guides and interviews with the businesses and shelters in the Wooffy community.",
+    "title": "Wooffy Blog",
+    "subtitle": "Stories, interviews and tips from our community of pet lovers and partners.",
+    "featured": "Featured",
+    "readMore": "Read more",
+    "minRead": "min read",
+    "empty": "No posts yet — check back soon!",
+    "prev": "Previous",
+    "next": "Next",
+    "back": "Back",
+    "backToBlog": "Back to blog",
+    "notFound": "Post not found",
+    "share": "Share",
+    "linkCopied": "Link copied",
+    "linkCopyError": "Could not copy link",
+    "related": "Related posts",
+    "meetThePartner": "Meet the partner",
+    "visitProfile": "Visit profile",
+    "categories": {
+      "all": "All",
+      "interview": "Interviews",
+      "guide": "Guides",
+      "news": "News",
+      "story": "Stories"
+    }
+  },
+  "blogAdmin": {
+    "title": "Blog",
+    "subtitle": "Manage articles and partner interviews",
+    "newPost": "New post",
+    "editPost": "Edit post",
+    "empty": "No posts yet. Create your first one!",
+    "saved": "Post saved",
+    "deleted": "Post deleted",
+    "requiredFields": "English title and content are required",
+    "uploadSuccess": "Image uploaded",
+    "category": "Category",
+    "statusLabel": "Status",
+    "slug": "URL slug",
+    "coverImage": "Cover image",
+    "upload": "Upload",
+    "remove": "Remove",
+    "authorName": "Author name",
+    "linkedBusiness": "Linked partner",
+    "linkedShelter": "Linked shelter",
+    "none": "None",
+    "titleField": "Title",
+    "excerpt": "Excerpt",
+    "content": "Content",
+    "preview": "Preview",
+    "views": "views",
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "confirmDeleteTitle": "Delete this post?",
+    "confirmDeleteDesc": "This cannot be undone."
   }
 }

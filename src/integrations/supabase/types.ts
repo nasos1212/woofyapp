@@ -241,6 +241,112 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          author_avatar_url: string | null
+          author_name: string | null
+          business_id: string | null
+          category: Database["public"]["Enums"]["blog_category"]
+          content_el: string | null
+          content_en: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          excerpt_el: string | null
+          excerpt_en: string | null
+          id: string
+          published_at: string | null
+          reading_minutes: number
+          seo_description_el: string | null
+          seo_description_en: string | null
+          seo_title_el: string | null
+          seo_title_en: string | null
+          shelter_id: string | null
+          slug: string
+          status: Database["public"]["Enums"]["blog_status"]
+          title_el: string | null
+          title_en: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          author_avatar_url?: string | null
+          author_name?: string | null
+          business_id?: string | null
+          category?: Database["public"]["Enums"]["blog_category"]
+          content_el?: string | null
+          content_en: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt_el?: string | null
+          excerpt_en?: string | null
+          id?: string
+          published_at?: string | null
+          reading_minutes?: number
+          seo_description_el?: string | null
+          seo_description_en?: string | null
+          seo_title_el?: string | null
+          seo_title_en?: string | null
+          shelter_id?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["blog_status"]
+          title_el?: string | null
+          title_en: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          author_avatar_url?: string | null
+          author_name?: string | null
+          business_id?: string | null
+          category?: Database["public"]["Enums"]["blog_category"]
+          content_el?: string | null
+          content_en?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          excerpt_el?: string | null
+          excerpt_en?: string | null
+          id?: string
+          published_at?: string | null
+          reading_minutes?: number
+          seo_description_el?: string | null
+          seo_description_en?: string | null
+          seo_title_el?: string | null
+          seo_title_en?: string | null
+          shelter_id?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["blog_status"]
+          title_el?: string | null
+          title_en?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_posts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_birthday_settings: {
         Row: {
           business_id: string
@@ -2885,6 +2991,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_blog_view: { Args: { _slug: string }; Returns: undefined }
       is_membership_owner: {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean
@@ -2901,6 +3008,8 @@ export type Database = {
     }
     Enums: {
       app_role: "member" | "business" | "admin" | "shelter"
+      blog_category: "interview" | "guide" | "news" | "story"
+      blog_status: "draft" | "published"
       business_category:
         | "trainer"
         | "pet_shop"
@@ -3047,6 +3156,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["member", "business", "admin", "shelter"],
+      blog_category: ["interview", "guide", "news", "story"],
+      blog_status: ["draft", "published"],
       business_category: [
         "trainer",
         "pet_shop",
