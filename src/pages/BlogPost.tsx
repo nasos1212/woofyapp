@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { BlogPost, formatDate, isGreek, localized } from "@/lib/blog";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 interface BusinessLite {
   id: string;
@@ -28,6 +29,7 @@ const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState<BusinessLite | null>(null);
@@ -109,7 +111,7 @@ const BlogPostPage = () => {
             {t("blog.backToBlog")}
           </Button>
         </div>
-        <Footer />
+        {!user && <Footer />}
       </div>
     );
   }
@@ -294,7 +296,7 @@ const BlogPostPage = () => {
             </div>
           )}
         </main>
-        <Footer />
+        {!user && <Footer />}
         <BackToTop />
       </div>
     </>

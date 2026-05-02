@@ -271,7 +271,7 @@ const Blog = () => {
             </>
           )}
         </main>
-        <Footer />
+        {!user && <Footer />}
         <BackToTop />
       </div>
     </>
