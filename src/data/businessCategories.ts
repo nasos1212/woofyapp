@@ -23,8 +23,15 @@ export const businessCategories: BusinessCategoryOption[] = [
   { value: "other", label: "Other" },
 ];
 
+const humanize = (value: string): string =>
+  value
+    .split("_")
+    .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : w))
+    .join(" ");
+
 export const getCategoryLabel = (category: string): string => {
-  return businessCategories.find((c) => c.value === category)?.label || category;
+  const found = businessCategories.find((c) => c.value === category)?.label;
+  return found || humanize(category);
 };
 
 export const getCategoriesLabel = (categories: string[]): string => {
