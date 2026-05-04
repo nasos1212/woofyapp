@@ -204,11 +204,6 @@ const BlogPostPage = () => {
             </div>
           </div>
 
-          {post.cover_image_url && (
-            <div className="aspect-video bg-muted rounded-xl overflow-hidden mb-8">
-              <img src={post.cover_image_url} alt={title} className="w-full h-full object-cover" />
-          </div>
-
           {business && (
             <Link
               to={`/business/${business.id}`}
@@ -233,6 +228,11 @@ const BlogPostPage = () => {
               </span>
             </Link>
           )}
+
+          {post.cover_image_url && (
+            <div className="aspect-video bg-muted rounded-xl overflow-hidden mb-8">
+              <img src={post.cover_image_url} alt={title} className="w-full h-full object-cover" />
+            </div>
           )}
 
           <article className="prose prose-slate dark:prose-invert max-w-none">
