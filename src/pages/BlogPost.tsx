@@ -207,7 +207,32 @@ const BlogPostPage = () => {
           {post.cover_image_url && (
             <div className="aspect-video bg-muted rounded-xl overflow-hidden mb-8">
               <img src={post.cover_image_url} alt={title} className="w-full h-full object-cover" />
-            </div>
+          </div>
+
+          {business && (
+            <Link
+              to={`/business/${business.id}`}
+              className="inline-flex items-center gap-2 mb-6 px-3 py-2 rounded-full bg-muted/60 hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground group"
+            >
+              {business.logo_url ? (
+                <img
+                  src={business.logo_url}
+                  alt={business.business_name}
+                  className="w-6 h-6 rounded-full object-cover bg-background"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-background flex items-center justify-center">
+                  <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              )}
+              <span>
+                {t("blog.inPartnershipWith")}{" "}
+                <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {business.business_name}
+                </span>
+              </span>
+            </Link>
+          )}
           )}
 
           <article className="prose prose-slate dark:prose-invert max-w-none">
