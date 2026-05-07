@@ -1,0 +1,1 @@
+UPDATE blog_posts SET cover_image_url='https://qvdrwfltbqhlwkqndpdp.supabase.co/storage/v1/object/public/blog-images/covers/artfully-trained-landscape-v2.jpg' WHERE slug='building-better-bonds-artfully-traineds-modern-approach-to-dog-training';
