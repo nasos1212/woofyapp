@@ -502,6 +502,33 @@ const FreeMemberDashboard = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Blog */}
+            <Card className="bg-gradient-to-r from-cyan-50 to-sky-50 border-cyan-200/50 hover:shadow-md transition-all h-full">
+              <CardContent className="p-5 h-full flex flex-col">
+                <div className="flex items-start gap-3 mb-2">
+                  <div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5 text-cyan-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {t("blog.discoverCardSubtitle")}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-auto pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => navigate("/blog")}
+                    className="border-cyan-300 text-cyan-700 hover:bg-cyan-200 hover:text-cyan-900 gap-2 w-full"
+                  >
+                    {t("blog.viewAll")}
+                    <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Subtle Upgrade Section */}
