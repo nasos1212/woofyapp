@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import MarkdownTextarea from "@/components/admin/MarkdownTextarea";
 import { Plus, Pencil, Trash2, Eye, EyeOff, Upload, Loader2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -450,7 +452,7 @@ const BlogManager = () => {
                 </div>
                 <div>
                   <Label>{t("blogAdmin.content")} (Markdown) *</Label>
-                  <Textarea rows={14} value={form.content_en} onChange={(e) => setForm((f) => ({ ...f, content_en: e.target.value }))} />
+                  <MarkdownTextarea rows={14} value={form.content_en} onChange={(v) => setForm((f) => ({ ...f, content_en: v }))} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -474,7 +476,7 @@ const BlogManager = () => {
                 </div>
                 <div>
                   <Label>{t("blogAdmin.content")} (Markdown)</Label>
-                  <Textarea rows={14} value={form.content_el} onChange={(e) => setForm((f) => ({ ...f, content_el: e.target.value }))} />
+                  <MarkdownTextarea rows={14} value={form.content_el} onChange={(v) => setForm((f) => ({ ...f, content_el: v }))} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -491,7 +493,7 @@ const BlogManager = () => {
                 <div className="rounded border p-4 max-h-[500px] overflow-y-auto">
                   <h2 className="font-bold text-2xl mb-2">{form.title_en}</h2>
                   <article className="prose prose-slate dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{form.content_en || ""}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{form.content_en || ""}</ReactMarkdown>
                   </article>
                 </div>
               </TabsContent>
