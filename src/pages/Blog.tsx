@@ -176,7 +176,7 @@ const Blog = () => {
                         <img
                           src={featured.cover_image_url}
                           alt={localized(featured.title_en, featured.title_el)}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover object-top"
                         />
                       </div>
                     )}
@@ -229,7 +229,7 @@ const Blog = () => {
                             <img
                               src={post.cover_image_url}
                               alt={localized(post.title_en, post.title_el)}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                         ) : (
