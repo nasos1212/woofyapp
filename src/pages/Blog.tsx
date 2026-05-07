@@ -113,7 +113,7 @@ const Blog = () => {
   const visiblePosts = useMemo(() => {
     if (!featured) return posts;
     // Avoid showing the same featured card twice on page 1, all category
-    if (page === 1 && activeCategory === "all") {
+    if (page === 1 && activeCategory === "all" && totalCount > 2) {
       return posts.filter((p) => p.id !== featured.id);
     }
     return posts;
