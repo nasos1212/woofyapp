@@ -208,7 +208,9 @@ const Blog = () => {
 
               {/* Grid */}
               {visiblePosts.length === 0 ? (
-                <p className="text-center text-muted-foreground py-12">{t("blog.empty")}</p>
+                !(featured && page === 1 && activeCategory === "all") && (
+                  <p className="text-center text-muted-foreground py-12">{t("blog.empty")}</p>
+                )
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {visiblePosts.map((post) => (
