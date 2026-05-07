@@ -165,7 +165,7 @@ const Blog = () => {
           ) : (
             <>
               {/* Featured */}
-              {featured && page === 1 && activeCategory === "all" && (
+              {featured && page === 1 && activeCategory === "all" && totalCount > 2 && (
                 <Card
                   className="mb-12 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                   onClick={() => navigate(`/blog/${featured.slug}`)}
