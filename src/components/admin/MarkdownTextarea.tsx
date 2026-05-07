@@ -29,10 +29,10 @@ const MarkdownTextarea = ({ value, onChange, ...rest }: Props) => {
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-1 border rounded-md p-1 bg-muted/30 w-fit">
-        <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => wrap("**")} aria-label="Bold" title="Bold (**text**)">
+        <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => wrap("<strong>", "</strong>")} aria-label="Bold" title="Bold">
           <Bold className="w-3.5 h-3.5" />
         </Button>
-        <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => wrap("*")} aria-label="Italic" title="Italic (*text*)">
+        <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => wrap("<em>", "</em>")} aria-label="Italic" title="Italic">
           <Italic className="w-3.5 h-3.5" />
         </Button>
         <Button type="button" variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => wrap("<u>", "</u>")} aria-label="Underline" title="Underline">
