@@ -212,7 +212,15 @@ const Blog = () => {
                   <p className="text-center text-muted-foreground py-12">{t("blog.empty")}</p>
                 )
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                  className={
+                    visiblePosts.length === 1
+                      ? "grid grid-cols-1 gap-6 max-w-md mx-auto"
+                      : visiblePosts.length === 2
+                        ? "grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto"
+                        : "grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  }
+                >
                   {visiblePosts.map((post) => (
                     <Link key={post.id} to={`/blog/${post.slug}`} className="group">
                       <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
