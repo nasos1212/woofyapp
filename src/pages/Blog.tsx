@@ -117,7 +117,7 @@ const Blog = () => {
       return posts.filter((p) => p.id !== featured.id);
     }
     return posts;
-  }, [posts, featured, page, activeCategory]);
+  }, [posts, featured, page, activeCategory, totalCount]);
 
   return (
     <>
