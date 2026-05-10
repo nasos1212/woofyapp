@@ -86,6 +86,8 @@ const BlogManager = () => {
   const [businesses, setBusinesses] = useState<BusinessOption[]>([]);
   const [shelters, setShelters] = useState<ShelterOption[]>([]);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string>("");
 
   const fetchPosts = async () => {
     setLoading(true);
