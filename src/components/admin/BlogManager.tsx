@@ -546,6 +546,14 @@ const BlogManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <BlogCoverCropDialog
+        open={cropOpen}
+        onOpenChange={setCropOpen}
+        imageSrc={cropSrc}
+        aspectRatio={16 / 9}
+        onCropComplete={(blob) => uploadCoverBlob(blob, "webp", "image/webp")}
+      />
     </div>
   );
 };
