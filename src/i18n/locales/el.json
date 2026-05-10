@@ -2696,13 +2696,13 @@
   },
   "membershipCard": {
     "premium": "Premium",
-    "member": "Μέλος",
-    "furryFriend": "Κατοικίδιο",
-    "furryFriends": "Κατοικίδια",
-    "scanToVerify": "Σαρώστε για επαλήθευση",
-    "memberId": "ID Μέλους",
-    "since": "Μέλος από {{year}}",
-    "validUntil": "Ισχύει έως: {{date}}"
+    "member": "Member",
+    "furryFriend": "Furry Friend",
+    "furryFriends": "Furry Friends",
+    "scanToVerify": "Scan to verify",
+    "memberId": "Member ID",
+    "since": "Since {{year}}",
+    "validUntil": "Valid until: {{date}}"
   },
   "birthdayOfferModal": {
     "title": "Αποστολή Προσφοράς Γενεθλίων",
