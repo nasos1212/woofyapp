@@ -4,7 +4,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import MarkdownTextarea from "@/components/admin/MarkdownTextarea";
-import { Plus, Pencil, Trash2, Eye, EyeOff, Upload, Loader2, ExternalLink } from "lucide-react";
+import { BlogCoverCropDialog } from "@/components/admin/BlogCoverCropDialog";
+import { Plus, Pencil, Trash2, Eye, EyeOff, Upload, Loader2, ExternalLink, Crop } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -85,6 +86,8 @@ const BlogManager = () => {
   const [businesses, setBusinesses] = useState<BusinessOption[]>([]);
   const [shelters, setShelters] = useState<ShelterOption[]>([]);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [cropSrc, setCropSrc] = useState<string>("");
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -152,22 +155,14 @@ const BlogManager = () => {
     }));
   };
 
-  const handleUploadCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const v = validateImageFile(file);
-    if (!v.valid) {
-      toast.error(v.error || "Invalid file");
-      return;
-    }
+  const uploadCoverBlob = async (blob: Blob, ext = "webp", contentType = "image/webp") => {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
       const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error } = await supabase.storage.from("blog-images").upload(path, file, {
+      const { error } = await supabase.storage.from("blog-images").upload(path, blob, {
         cacheControl: "3600",
         upsert: false,
-        contentType: file.type,
+        contentType,
       });
       if (error) throw error;
       const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
@@ -177,8 +172,30 @@ const BlogManager = () => {
       toast.error((err as Error).message);
     } finally {
       setUploading(false);
-      e.target.value = "";
     }
+  };
+
+  const handleSelectCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const v = validateImageFile(file);
+    if (!v.valid) {
+      toast.error(v.error || "Invalid file");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCropOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAdjustExisting = () => {
+    if (!form.cover_image_url) return;
+    setCropSrc(form.cover_image_url);
+    setCropOpen(true);
   };
 
   const save = async () => {
@@ -380,7 +397,7 @@ const BlogManager = () => {
                   <div className="w-32 h-20 bg-muted rounded" />
                 )}
                 <label>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleUploadCover} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleSelectCoverFile} />
                   <Button type="button" variant="outline" disabled={uploading} asChild>
                     <span className="cursor-pointer">
                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
@@ -389,9 +406,14 @@ const BlogManager = () => {
                   </Button>
                 </label>
                 {form.cover_image_url && (
-                  <Button type="button" variant="ghost" size="sm" onClick={() => setForm((f) => ({ ...f, cover_image_url: "" }))}>
-                    {t("blogAdmin.remove")}
-                  </Button>
+                  <>
+                    <Button type="button" variant="outline" size="sm" onClick={handleAdjustExisting} disabled={uploading} className="gap-1">
+                      <Crop className="w-4 h-4" /> Adjust
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setForm((f) => ({ ...f, cover_image_url: "" }))}>
+                      {t("blogAdmin.remove")}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
@@ -524,6 +546,14 @@ const BlogManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <BlogCoverCropDialog
+        open={cropOpen}
+        onOpenChange={setCropOpen}
+        imageSrc={cropSrc}
+        aspectRatio={16 / 9}
+        onCropComplete={(blob) => uploadCoverBlob(blob, "webp", "image/webp")}
+      />
     </div>
   );
 };
