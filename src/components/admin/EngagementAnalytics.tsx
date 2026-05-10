@@ -52,6 +52,7 @@ interface TopOfferEntity { name: string; businessName: string; count: number; }
 interface TopEntity { name: string; count: number; }
 
 const COLORS = ["#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899"];
+const ANALYTICS_PAGE_SIZE = 1000;
 
 // ─── Section Header ───
 const SectionHeader = ({ icon: Icon, title, subtitle }: { icon: any; title: string; subtitle: string }) => (
@@ -156,17 +157,40 @@ const EngagementAnalytics = () => {
       const days = dateRange === "7d" ? 7 : dateRange === "30d" ? 30 : 90;
       const startDate = subDays(new Date(), days);
 
-      const [eventsResult, redemptionsResult, birthdayResult] = await Promise.all([
-        supabase.from("analytics_events").select("*").gte("created_at", startDate.toISOString()).order("created_at", { ascending: false }).limit(5000),
+      const fetchAllAnalyticsEvents = async () => {
+        const allEvents: AnalyticsEvent[] = [];
+        let from = 0;
+
+        while (true) {
+          const { data, error } = await supabase
+            .from("analytics_events")
+            .select("id, event_type, entity_type, entity_id, entity_name, metadata, created_at")
+            .gte("created_at", startDate.toISOString())
+            .order("created_at", { ascending: false })
+            .range(from, from + ANALYTICS_PAGE_SIZE - 1);
+
+          if (error) throw error;
+
+          const batch = data || [];
+          allEvents.push(...batch);
+
+          if (batch.length < ANALYTICS_PAGE_SIZE) break;
+          from += ANALYTICS_PAGE_SIZE;
+        }
+
+        return allEvents;
+      };
+
+      const [eventsData, redemptionsResult, birthdayResult] = await Promise.all([
+        fetchAllAnalyticsEvents(),
         supabase.from("offer_redemptions").select(`id, redeemed_at, offer_id, business_id, member_name, offers:offer_id (title), businesses:business_id (business_name)`).gte("redeemed_at", startDate.toISOString()).order("redeemed_at", { ascending: false }),
         supabase.from("sent_birthday_offers").select(`id, pet_name, owner_name, discount_value, discount_type, sent_at, redeemed_at, business_id`).gte("sent_at", startDate.toISOString()).order("sent_at", { ascending: false }),
       ]);
 
-      if (eventsResult.error) throw eventsResult.error;
       if (redemptionsResult.error) throw redemptionsResult.error;
       if (birthdayResult.error) throw birthdayResult.error;
 
-      setEvents(eventsResult.data || []);
+      setEvents(eventsData);
       setRedemptions(redemptionsResult.data || []);
       setBirthdayOffers(birthdayResult.data || []);
     } catch (error) {
