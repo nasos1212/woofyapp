@@ -397,7 +397,7 @@ const BlogManager = () => {
                   <div className="w-32 h-20 bg-muted rounded" />
                 )}
                 <label>
-                  <input type="file" accept="image/*" className="hidden" onChange={handleUploadCover} />
+                  <input type="file" accept="image/*" className="hidden" onChange={handleSelectCoverFile} />
                   <Button type="button" variant="outline" disabled={uploading} asChild>
                     <span className="cursor-pointer">
                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
@@ -406,9 +406,14 @@ const BlogManager = () => {
                   </Button>
                 </label>
                 {form.cover_image_url && (
-                  <Button type="button" variant="ghost" size="sm" onClick={() => setForm((f) => ({ ...f, cover_image_url: "" }))}>
-                    {t("blogAdmin.remove")}
-                  </Button>
+                  <>
+                    <Button type="button" variant="outline" size="sm" onClick={handleAdjustExisting} disabled={uploading} className="gap-1">
+                      <Crop className="w-4 h-4" /> Adjust
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setForm((f) => ({ ...f, cover_image_url: "" }))}>
+                      {t("blogAdmin.remove")}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
