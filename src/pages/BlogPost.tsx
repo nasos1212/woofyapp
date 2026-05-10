@@ -243,15 +243,15 @@ const BlogPostPage = () => {
           {/* Partner card */}
           {business && post.category === "interview" && (
             <Card className="mt-10">
-              <CardContent className="p-6 flex items-center gap-4">
+              <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center gap-4 text-center sm:text-left">
                 {business.logo_url ? (
                   <img
                     src={business.logo_url}
                     alt={business.business_name}
-                    className="w-16 h-16 rounded-lg object-cover bg-muted"
+                    className="w-16 h-16 rounded-lg object-cover bg-muted mx-auto sm:mx-0 shrink-0"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center mx-auto sm:mx-0 shrink-0">
                     <Building2 className="w-7 h-7 text-muted-foreground" />
                   </div>
                 )}
@@ -259,9 +259,11 @@ const BlogPostPage = () => {
                   <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
                     {t("blog.meetThePartner")}
                   </p>
-                  <h3 className="font-semibold truncate">{business.business_name}</h3>
+                  <h3 className="font-semibold break-words">{business.business_name}</h3>
                 </div>
-                <Button onClick={() => navigate(`/business/${business.id}`)}>{t("blog.visitProfile")}</Button>
+                <Button className="w-full sm:w-auto shrink-0" onClick={() => navigate(`/business/${business.id}`)}>
+                  {t("blog.visitProfile")}
+                </Button>
               </CardContent>
             </Card>
           )}
