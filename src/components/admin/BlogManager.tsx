@@ -155,22 +155,14 @@ const BlogManager = () => {
     }));
   };
 
-  const handleUploadCover = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const v = validateImageFile(file);
-    if (!v.valid) {
-      toast.error(v.error || "Invalid file");
-      return;
-    }
+  const uploadCoverBlob = async (blob: Blob, ext = "webp", contentType = "image/webp") => {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
       const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-      const { error } = await supabase.storage.from("blog-images").upload(path, file, {
+      const { error } = await supabase.storage.from("blog-images").upload(path, blob, {
         cacheControl: "3600",
         upsert: false,
-        contentType: file.type,
+        contentType,
       });
       if (error) throw error;
       const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
@@ -180,8 +172,30 @@ const BlogManager = () => {
       toast.error((err as Error).message);
     } finally {
       setUploading(false);
-      e.target.value = "";
     }
+  };
+
+  const handleSelectCoverFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    const v = validateImageFile(file);
+    if (!v.valid) {
+      toast.error(v.error || "Invalid file");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCropSrc(reader.result as string);
+      setCropOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAdjustExisting = () => {
+    if (!form.cover_image_url) return;
+    setCropSrc(form.cover_image_url);
+    setCropOpen(true);
   };
 
   const save = async () => {
