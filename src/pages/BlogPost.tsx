@@ -81,11 +81,15 @@ const BlogPostPage = () => {
         .limit(3);
       setRelated((rel as unknown as BlogPost[]) || []);
 
-      // View count (once per session)
+      // View count (once per session) — awaited so request isn't cancelled
       const key = `wooffy-blog-view-${p.slug}`;
       if (!sessionStorage.getItem(key)) {
         sessionStorage.setItem(key, "1");
-        supabase.rpc("increment_blog_view", { _slug: p.slug });
+        const { error: viewErr } = await supabase.rpc("increment_blog_view", { _slug: p.slug });
+        if (viewErr) {
+          console.warn("increment_blog_view failed", viewErr);
+          sessionStorage.removeItem(key);
+        }
       }
     };
     load();
