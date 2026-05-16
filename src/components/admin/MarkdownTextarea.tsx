@@ -51,7 +51,7 @@ const MarkdownTextarea = ({ value, onChange, ...rest }: Props) => {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    const validation = await validateImageFile(file);
+    const validation = validateImageFile(file);
     if (!validation.valid) {
       toast.error(validation.error || "Invalid image");
       return;
@@ -62,10 +62,10 @@ const MarkdownTextarea = ({ value, onChange, ...rest }: Props) => {
       const path = `content/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const { error } = await supabase.storage
         .from("blog-images")
-        .upload(path, validation.file ?? file, {
+        .upload(path, file, {
           cacheControl: "3600",
           upsert: false,
-          contentType: (validation.file ?? file).type,
+          contentType: file.type,
         });
       if (error) throw error;
       const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
