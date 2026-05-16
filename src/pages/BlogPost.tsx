@@ -241,7 +241,21 @@ const BlogPostPage = () => {
           )}
 
           <article className="prose prose-slate dark:prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+              components={{
+                img: ({ node, ...props }) => (
+                  <img
+                    {...props}
+                    loading="lazy"
+                    className="mx-auto rounded-lg w-full sm:w-1/2 h-auto"
+                  />
+                ),
+              }}
+            >
+              {content}
+            </ReactMarkdown>
           </article>
 
           {/* Partner card */}
