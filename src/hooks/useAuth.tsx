@@ -80,39 +80,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error, data } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (!error && data.user) {
+    try {
+      const { error, data } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error || !data.user) {
+        return { error };
+      }
+
       // Check if email is verified
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id, email_verified")
         .eq("user_id", data.user.id)
         .maybeSingle();
-      
+
+      if (profileError) {
+        console.error("Error loading profile during sign in:", profileError);
+        return { error: null };
+      }
+
       if (!profile) {
-        // Create profile if it doesn't exist
-        await supabase.from("profiles").insert({
+        const { error: insertError } = await supabase.from("profiles").insert({
           user_id: data.user.id,
           email: data.user.email || email,
           full_name: data.user.user_metadata?.full_name || "",
         });
+
+        if (insertError) {
+          console.error("Error creating missing profile during sign in:", insertError);
+          return { error: null };
+        }
+
         // New profile = unverified, sign out
         await supabase.auth.signOut({ scope: 'local' });
         return { error: new Error("Please verify your email before signing in. Check your inbox for the verification link.") };
       }
-      
+
       if (!profile.email_verified) {
         // Sign out the unverified user
         await supabase.auth.signOut({ scope: 'local' });
         return { error: new Error("Please verify your email before signing in. Check your inbox for the verification link.") };
       }
+
+      return { error: null };
+    } catch (error) {
+      console.error("Unexpected sign in error:", error);
+      return { error: error instanceof Error ? error : new Error("Unable to sign in right now. Please try again.") };
     }
-    
-    return { error };
   };
 
   const signOut = async () => {
