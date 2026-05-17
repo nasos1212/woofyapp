@@ -183,7 +183,6 @@ const Blog = () => {
                     <CardContent className="p-6 md:p-8 flex flex-col justify-center">
                       <div className="flex items-center gap-2 mb-3">
                         <Badge>{t(`blog.categories.${featured.category}`)}</Badge>
-                        <span className="text-xs text-muted-foreground">{t("blog.featured")}</span>
                       </div>
                       <h2 className="text-2xl md:text-3xl font-display font-bold mb-3 line-clamp-3">
                         {localized(featured.title_en, featured.title_el)}
