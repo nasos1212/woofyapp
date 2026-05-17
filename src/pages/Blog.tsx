@@ -235,7 +235,7 @@ const Blog = () => {
                           <div className="aspect-video bg-gradient-to-br from-wooffy-sky/20 to-wooffy-blue/20" />
                         )}
                         <CardContent className="p-5">
-                          <Badge variant="secondary" className="mb-3">
+                          <Badge className="mb-3">
                             {t(`blog.categories.${post.category}`)}
                           </Badge>
                           <h3 className="font-display font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
