@@ -277,52 +277,60 @@ const MemberPartners = () => {
 
                     <div className="flex items-center gap-2 pt-3 border-t">
                       {partner.instagram_url && (
-                        <button
+                        <a
+                          href={ensureHttps(partner.instagram_url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => {
                             e.stopPropagation();
                             trackSocialClick(partner.id, partner.business_name, "instagram");
-                            window.open(ensureHttps(partner.instagram_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
                         >
                           <InstagramIcon className="w-4 h-4" />
-                        </button>
+                        </a>
                       )}
                       {partner.facebook_url && (
-                        <button
+                        <a
+                          href={ensureHttps(partner.facebook_url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => {
                             e.stopPropagation();
                             trackSocialClick(partner.id, partner.business_name, "facebook");
-                            window.open(ensureHttps(partner.facebook_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
                         >
                           <FacebookIcon className="w-4 h-4" />
-                        </button>
+                        </a>
                       )}
                       {partner.tiktok_url && (
-                        <button
+                        <a
+                          href={ensureHttps(partner.tiktok_url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => {
                             e.stopPropagation();
                             trackSocialClick(partner.id, partner.business_name, "tiktok");
-                            window.open(ensureHttps(partner.tiktok_url!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
                         >
                           <TikTokIcon className="w-4 h-4" />
-                        </button>
+                        </a>
                       )}
                       {partner.website && (
-                        <button
+                        <a
+                          href={ensureHttps(partner.website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => {
                             e.stopPropagation();
                             trackSocialClick(partner.id, partner.business_name, "website");
-                            window.open(ensureHttps(partner.website!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors ml-auto"
                         >
                           <Globe className="w-4 h-4 text-muted-foreground" />
-                        </button>
+                        </a>
                       )}
                     </div>
                   </CardContent>
