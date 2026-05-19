@@ -1,0 +1,1 @@
+UPDATE public.profiles SET full_name = 'Sandra Grooming Studio' WHERE user_id = 'bbd53ed9-3abb-4f62-a697-e09c791d8fd0';
