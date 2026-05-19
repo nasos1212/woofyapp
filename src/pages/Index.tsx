@@ -34,37 +34,39 @@ const Index = () => {
       
       setCheckingMembership(true);
       
-      // Check entity records and membership in parallel (records take priority over roles)
-      const [shelterResult, businessResult, membershipResult] = await Promise.all([
-        supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
-        supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
-        supabase.from("memberships").select("id, is_active, plan_type").eq("user_id", user.id).maybeSingle(),
-      ]);
-      
-      const hasShelter = !!shelterResult.data;
-      const hasBusiness = !!businessResult.data;
-      const hasMembership = !!membershipResult.data;
-      
-      // Shelter users - redirect to dashboard (only if they have an actual record)
-      if (hasShelter) {
-        navigate("/shelter-dashboard");
-        return;
-      }
-      
-      // Business users - redirect to business dashboard (only if they have an actual record)
-      if (hasBusiness) {
-        navigate("/business");
-        return;
-      }
-      
-      // Regular members
-      if (hasMembership && membershipResult.data?.is_active && membershipResult.data?.plan_type !== 'free') {
-        navigate("/member");
-      } else {
+      try {
+        // Use allSettled so a transient network error on one call doesn't abort the whole redirect
+        const [shelterResult, businessResult, membershipResult] = await Promise.allSettled([
+          supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
+          supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
+          supabase.from("memberships").select("id, is_active, plan_type").eq("user_id", user.id).maybeSingle(),
+        ]);
+
+        const shelterData = shelterResult.status === "fulfilled" ? shelterResult.value.data : null;
+        const businessData = businessResult.status === "fulfilled" ? businessResult.value.data : null;
+        const membershipData = membershipResult.status === "fulfilled" ? membershipResult.value.data : null;
+
+        if (shelterData) {
+          navigate("/shelter-dashboard");
+          return;
+        }
+
+        if (businessData) {
+          navigate("/business");
+          return;
+        }
+
+        if (membershipData && membershipData.is_active && membershipData.plan_type !== 'free') {
+          navigate("/member");
+        } else {
+          navigate("/member/free");
+        }
+      } catch (error) {
+        console.error("Error during post-login redirect:", error);
         navigate("/member/free");
+      } finally {
+        setCheckingMembership(false);
       }
-      
-      setCheckingMembership(false);
     };
 
     if (!loading && user && !skipRedirect) {
