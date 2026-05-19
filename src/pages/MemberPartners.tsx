@@ -316,19 +316,21 @@ const MemberPartners = () => {
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
                         >
                           <TikTokIcon className="w-4 h-4" />
-                        </button>
+                        </a>
                       )}
                       {partner.website && (
-                        <button
+                        <a
+                          href={ensureHttps(partner.website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onClick={(e) => {
                             e.stopPropagation();
                             trackSocialClick(partner.id, partner.business_name, "website");
-                            window.open(ensureHttps(partner.website!), "_blank");
                           }}
                           className="w-8 h-8 flex items-center justify-center rounded-lg bg-secondary hover:bg-secondary/80 transition-colors ml-auto"
                         >
                           <Globe className="w-4 h-4 text-muted-foreground" />
-                        </button>
+                        </a>
                       )}
                     </div>
                   </CardContent>
