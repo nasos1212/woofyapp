@@ -26,6 +26,7 @@ const GREEK_CITY_MAP: Record<string, string> = {
 
   // Nicosia areas
   "Strovolos": "Στρόβολος",
+  "Archangelos": "Αρχάγγελος",
   "Lakatamia": "Λακατάμια",
   "Engomi": "Έγκωμη",
   "Aglantzia": "Αγλαντζιά",
