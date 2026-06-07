@@ -22,6 +22,7 @@ export const cyprusCitiesWithCoords: CyprusCityWithCoords[] = [
       // Urban areas
       { name: "City Center", lat: 35.1746, lng: 33.3639 },
       { name: "Strovolos", lat: 35.1333, lng: 33.3500 },
+      { name: "Archangelos", lat: 35.1561, lng: 33.3358 },
       { name: "Lakatamia", lat: 35.1167, lng: 33.3000 },
       { name: "Engomi", lat: 35.1667, lng: 33.3500 },
       { name: "Aglantzia", lat: 35.1500, lng: 33.4000 },
