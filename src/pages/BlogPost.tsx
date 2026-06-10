@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { ArrowLeft, Clock, Share2, Facebook, Twitter, MessageCircle, Link as LinkIcon, Building2 } from "lucide-react";
 import Header from "@/components/Header";
@@ -242,7 +243,7 @@ const BlogPostPage = () => {
 
           <article className="prose prose-slate dark:prose-invert max-w-none">
             <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
+              remarkPlugins={[remarkGfm, remarkBreaks]}
               rehypePlugins={[rehypeRaw]}
               components={{
                 img: ({ node, ...props }) => (
