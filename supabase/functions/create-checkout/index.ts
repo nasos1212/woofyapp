@@ -88,7 +88,7 @@ async function createCheckoutSession(options: {
         subscription_data: { metadata: { userId: options.userId } },
       }),
     }),
-    managed_payments: { enabled: true },
+    automatic_tax: { enabled: true },
   } as any);
 
   return session.client_secret;
