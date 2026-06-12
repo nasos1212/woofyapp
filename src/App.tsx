@@ -50,6 +50,7 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Terms from "./pages/Terms";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import CheckoutReturn from "./pages/CheckoutReturn";
 
 const queryClient = new QueryClient();
 
@@ -140,6 +141,7 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
+              <Route path="/checkout/return" element={<CheckoutReturn />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             
