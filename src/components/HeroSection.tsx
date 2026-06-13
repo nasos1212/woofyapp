@@ -33,10 +33,6 @@ const HeroSection = () => {
           {/* Text overlay */}
           <div className="relative h-full min-h-[78vh] sm:min-h-[80vh] flex flex-col justify-end p-6 sm:p-12 lg:p-16">
             <div className="max-w-2xl space-y-5 sm:space-y-6 text-white">
-              <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-md rounded-full px-4 py-2 border border-white/25">
-                <Sparkles className="w-4 h-4 text-white" />
-                <span className="text-sm font-medium">{t("hero.badge")}</span>
-              </div>
 
               <h1 className="text-[2.25rem] leading-[1.05] sm:text-5xl lg:text-6xl font-display font-bold drop-shadow-lg">
                 {t("hero.titlePart1")} {t("hero.titleOf")}{" "}
