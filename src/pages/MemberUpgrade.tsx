@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { isPaymentsConfigured } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import { toast } from "sonner";
 
 const PLANS = [
@@ -84,6 +85,49 @@ const MemberUpgrade = () => {
   if (!user) {
     navigate("/auth");
     return null;
+  }
+
+  // Paid membership is not live yet — show a friendly Coming Soon screen
+  // instead of the plan selector / Stripe checkout flow.
+  if (!PAID_MEMBERSHIP_ENABLED) {
+    return (
+      <>
+        <Helmet>
+          <title>Paid Membership Coming Soon | Wooffy</title>
+          <meta name="description" content="Wooffy Paid Membership launches soon. Stay tuned for exclusive partner discounts and premium perks." />
+        </Helmet>
+
+        <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
+          <Header />
+          <main className="w-full max-w-2xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))]">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate(-1)}
+              className="mb-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back
+            </Button>
+
+            <div className="bg-card rounded-3xl p-8 sm:p-12 shadow-card border border-border text-center space-y-5">
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <Crown className="w-10 h-10 text-primary" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
+                Paid Membership is launching soon
+              </h1>
+              <p className="text-muted-foreground text-base leading-relaxed max-w-md mx-auto">
+                We're putting the final touches on Wooffy Paid Membership — exclusive partner discounts, AI Pet Health Assistant and more. Free membership stays available in the meantime.
+              </p>
+              <Button variant="hero" onClick={() => navigate("/member/free")}>
+                Back to your dashboard
+              </Button>
+            </div>
+          </main>
+        </div>
+      </>
+    );
   }
 
   const handleSelect = (priceId: string) => {

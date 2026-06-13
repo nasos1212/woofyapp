@@ -23,6 +23,7 @@ import { isPast, differenceInDays } from "date-fns";
 import { formatRelative } from "@/lib/relativeTime";
 import DogLoader from "@/components/DogLoader";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
 import { businessCategories } from "@/data/businessCategories";
@@ -388,13 +389,15 @@ const MemberOffers = () => {
                     <p className="text-sm text-muted-foreground">{t("offers.previewSub")}</p>
                   </div>
                 </div>
-                <Button 
-                  variant="hero" 
-                  size="sm"
-                  onClick={() => navigate("/member/upgrade")}
-                >
-                  {t("offers.upgradeNow")}
-                </Button>
+                {PAID_MEMBERSHIP_ENABLED && (
+                  <Button 
+                    variant="hero" 
+                    size="sm"
+                    onClick={() => navigate("/member/upgrade")}
+                  >
+                    {t("offers.upgradeNow")}
+                  </Button>
+                )}
               </div>
             </div>
           )}

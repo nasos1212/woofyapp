@@ -16,6 +16,7 @@ import { useMembership } from "@/hooks/useMembership";
 import NotificationBell from "./NotificationBell";
 import LanguageToggle from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 
 const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -249,7 +250,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
-                  {!isPaidMember && !isBusiness && !isShelter && (
+                  {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
@@ -331,7 +332,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
-                  {!isPaidMember && !isBusiness && !isShelter && (
+                  {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
