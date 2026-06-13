@@ -158,7 +158,7 @@ const Header = () => {
             <div className="w-10 h-10 bg-wooffy-dark rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <Dog className="w-6 h-6 text-wooffy-sky" />
             </div>
-            <span className="font-display font-bold text-xl text-foreground">Wooffy</span>
+            <span className="font-logo font-bold text-xl text-foreground">Wooffy</span>
           </Link>
 
           {/* Desktop nav */}
