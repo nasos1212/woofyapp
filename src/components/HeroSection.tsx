@@ -20,8 +20,8 @@ const HeroSection = () => {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
         style={{ backgroundImage: `url(${heroImage})` }}
       />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-60" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-wooffy-soft rounded-full blur-3xl opacity-20" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-wooffy-light rounded-full blur-3xl opacity-25" />
 
       <div className="absolute top-32 left-[5%] text-4xl opacity-20 animate-bounce-slow" style={{ animationDelay: '0s' }}>🐾</div>
       <div className="absolute top-48 right-[8%] text-3xl opacity-15 animate-bounce-slow" style={{ animationDelay: '0.5s' }}>🐾</div>
@@ -74,21 +74,21 @@ const HeroSection = () => {
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
                     <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-2xl sm:text-3xl text-gradient">100+</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-foreground">100+</p>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">{t("hero.partnerBusinesses")}</p>
                 </div>
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                    <PiggyBank className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <PiggyBank className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-2xl sm:text-3xl text-green-600">€200+</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-foreground">€200+</p>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">{t("hero.yearlySavings")}</p>
                 </div>
                 <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 sm:p-5 text-center shadow-soft border border-border hover:border-primary/30 hover:shadow-card transition-all duration-300">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
-                    <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                    <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   </div>
-                  <p className="font-display font-bold text-2xl sm:text-3xl text-rose-500">5+</p>
+                  <p className="font-display font-bold text-2xl sm:text-3xl text-foreground">5+</p>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-1">{t("hero.sheltersSupported")}</p>
                 </div>
               </div>

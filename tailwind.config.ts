@@ -17,7 +17,7 @@ export default {
         'xs': '400px',
       },
       fontFamily: {
-        display: ["Fredoka", "sans-serif"],
+        display: ["Plus Jakarta Sans", "sans-serif"],
         body: ["Inter", "sans-serif"],
       },
       colors: {

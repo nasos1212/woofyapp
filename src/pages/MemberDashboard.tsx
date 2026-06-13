@@ -457,9 +457,9 @@ const MemberDashboard = () => {
                 </Link>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`text-xl sm:text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`}>{daysLeft}</span>
-                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                      <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
+                    <span className={`text-xl sm:text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-600' : 'text-foreground'}`}>{daysLeft}</span>
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-primary/10'}`}>
+                      <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-600' : 'text-primary'}`} />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.daysLeft")}</p>
@@ -467,9 +467,9 @@ const MemberDashboard = () => {
                 </div>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xl sm:text-2xl font-display font-bold text-rose-500">10%</span>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-rose-100 rounded-full flex items-center justify-center">
-                      <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
+                    <span className="text-xl sm:text-2xl font-display font-bold text-foreground">10%</span>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.toShelters")}</p>
@@ -478,10 +478,10 @@ const MemberDashboard = () => {
               </div>
 
               {/* Your Pets - Most Important */}
-              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-cyan-200">
+              <div className="bg-card rounded-2xl p-4 sm:p-6 lg:p-8 shadow-soft border border-border">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h3 className="font-display text-lg sm:text-xl font-bold text-teal-800 flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
                       <span className="text-lg sm:text-xl">🐾</span>
                     </div>
                     {t("memberDashboard.pets.title")}
@@ -500,8 +500,8 @@ const MemberDashboard = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0 overflow-hidden">
+                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-muted/40 rounded-xl hover:shadow-md transition-all cursor-pointer border border-border hover:border-primary/30">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center text-2xl sm:text-3xl shrink-0 overflow-hidden">
                             {pet.photo_url ? (
                               <img src={pet.photo_url} alt={pet.pet_name} className="w-full h-full object-cover" />
                             ) : (
@@ -509,18 +509,18 @@ const MemberDashboard = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-teal-800 text-base sm:text-lg truncate">{pet.pet_name}</p>
-                            <p className="text-xs sm:text-sm text-teal-600/70 truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
+                            <p className="font-semibold text-foreground text-base sm:text-lg truncate">{pet.pet_name}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
                           </div>
-                          <div className="text-teal-500 text-lg sm:text-xl shrink-0">→</div>
+                          <div className="text-muted-foreground text-lg sm:text-xl shrink-0">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
+                  <div className="text-center py-6 sm:py-8 bg-muted/40 rounded-xl border border-border">
                     <div className="text-4xl sm:text-5xl mb-3">🐾</div>
-                    <p className="text-teal-600/70 text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
+                    <p className="text-muted-foreground text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
                   </div>
                 )}
                 
@@ -641,79 +641,54 @@ const MemberDashboard = () => {
               {/* Quick Access - New Features */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
-                <div className="space-y-3">
-                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors">
+                <div className="space-y-2">
+                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                     <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
                       <Bot className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.aiAssistantDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
                   </Link>
-                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Syringe className="w-5 h-5 text-blue-600" />
+                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Syringe className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.healthRecordsDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
                   </Link>
-                  <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-red-50 rounded-xl hover:bg-red-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-red-100 rounded-full flex items-center justify-center">
-                      <AlertTriangle className="w-5 h-5 text-red-600" />
+                  <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.lostFound")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.lostFoundDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.lostFound")}</p>
                   </Link>
-                  <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl hover:bg-teal-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-teal-600" />
+                  <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.places")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.placesDesc")}</p>
-                      <p className="text-[10px] text-muted-foreground/70 italic mt-0.5 hidden sm:block">{t("memberDashboard.quickAccess.placesJoke")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.places")}</p>
                   </Link>
-                  <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-green-100 rounded-full flex items-center justify-center">
-                      <Gift className="w-5 h-5 text-green-600" />
+                  <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Gift className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.browseOffers")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.browseOffersDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.browseOffers")}</p>
                   </Link>
-                  <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-purple-600" />
+                  <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.partnersDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
                   </Link>
-                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl hover:bg-amber-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-amber-600" />
+                  <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.shelters")}</p>
-                      <p className="text-xs text-muted-foreground">{t("memberDashboard.quickAccess.sheltersDesc")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.shelters")}</p>
                   </Link>
-                  <Link to="/blog" className="flex items-center gap-3 p-3 bg-sky-50 rounded-xl hover:bg-sky-100 transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-sky-600" />
+                  <Link to="/blog" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-full flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
-                      <p className="text-xs text-muted-foreground">{t("blog.discoverCardSubtitle")}</p>
-                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
                   </Link>
                 </div>
               </div>
