@@ -18,6 +18,7 @@ export default {
       },
       fontFamily: {
         display: ["Plus Jakarta Sans", "sans-serif"],
+        logo: ["Fredoka", "sans-serif"],
         body: ["Inter", "sans-serif"],
       },
       colors: {
