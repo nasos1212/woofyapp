@@ -457,9 +457,9 @@ const MemberDashboard = () => {
                 </Link>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className={`text-xl sm:text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`}>{daysLeft}</span>
-                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-green-100'}`}>
-                      <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-500' : 'text-green-500'}`} />
+                    <span className={`text-xl sm:text-2xl font-display font-bold ${daysLeft <= 30 ? 'text-amber-600' : 'text-foreground'}`}>{daysLeft}</span>
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${daysLeft <= 30 ? 'bg-amber-100' : 'bg-primary/10'}`}>
+                      <Clock className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${daysLeft <= 30 ? 'text-amber-600' : 'text-primary'}`} />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.daysLeft")}</p>
@@ -467,9 +467,9 @@ const MemberDashboard = () => {
                 </div>
                 <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-soft">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xl sm:text-2xl font-display font-bold text-rose-500">10%</span>
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-rose-100 rounded-full flex items-center justify-center">
-                      <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-500" />
+                    <span className="text-xl sm:text-2xl font-display font-bold text-foreground">10%</span>
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground">{t("memberDashboard.stats.toShelters")}</p>
