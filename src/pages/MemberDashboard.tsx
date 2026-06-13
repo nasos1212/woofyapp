@@ -478,10 +478,10 @@ const MemberDashboard = () => {
               </div>
 
               {/* Your Pets - Most Important */}
-              <div className="bg-gradient-to-br from-cyan-50 to-teal-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-lg border border-cyan-200">
+              <div className="bg-card rounded-2xl p-4 sm:p-6 lg:p-8 shadow-soft border border-border">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h3 className="font-display text-lg sm:text-xl font-bold text-teal-800 flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-teal-400 rounded-full flex items-center justify-center shadow-sm">
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
                       <span className="text-lg sm:text-xl">🐾</span>
                     </div>
                     {t("memberDashboard.pets.title")}
@@ -500,8 +500,8 @@ const MemberDashboard = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     {pets.map((pet) => (
                       <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-white rounded-xl hover:shadow-md transition-all cursor-pointer border border-cyan-100 hover:border-teal-300">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-300 to-teal-400 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-sm shrink-0 overflow-hidden">
+                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-muted/40 rounded-xl hover:shadow-md transition-all cursor-pointer border border-border hover:border-primary/30">
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center text-2xl sm:text-3xl shrink-0 overflow-hidden">
                             {pet.photo_url ? (
                               <img src={pet.photo_url} alt={pet.pet_name} className="w-full h-full object-cover" />
                             ) : (
@@ -509,18 +509,18 @@ const MemberDashboard = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-teal-800 text-base sm:text-lg truncate">{pet.pet_name}</p>
-                            <p className="text-xs sm:text-sm text-teal-600/70 truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
+                            <p className="font-semibold text-foreground text-base sm:text-lg truncate">{pet.pet_name}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
                           </div>
-                          <div className="text-teal-500 text-lg sm:text-xl shrink-0">→</div>
+                          <div className="text-muted-foreground text-lg sm:text-xl shrink-0">→</div>
                         </div>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 sm:py-8 bg-white rounded-xl border border-cyan-100">
+                  <div className="text-center py-6 sm:py-8 bg-muted/40 rounded-xl border border-border">
                     <div className="text-4xl sm:text-5xl mb-3">🐾</div>
-                    <p className="text-teal-600/70 text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
+                    <p className="text-muted-foreground text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
                   </div>
                 )}
                 
