@@ -20,8 +20,6 @@ export default {
         display: ["Plus Jakarta Sans", "sans-serif"],
         logo: ["Fredoka", "sans-serif"],
         body: ["Inter", "sans-serif"],
-        serif: ['"Instrument Serif"', "serif"],
-        sans: ['"Work Sans"', "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
