@@ -407,7 +407,7 @@ const MemberDashboard = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-2">
               {t("memberDashboard.hello", { name: firstName })}
             </h1>
-            <p className="text-muted-foreground">{t("memberDashboard.subtitle")}</p>
+            
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8 w-full">
