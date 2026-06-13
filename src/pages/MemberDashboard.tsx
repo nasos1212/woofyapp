@@ -23,6 +23,7 @@ import { useRatingPrompts } from "@/hooks/useRatingPrompts";
 import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 import PaidMemberOnboardingTour from "@/components/PaidMemberOnboardingTour";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 
 import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";

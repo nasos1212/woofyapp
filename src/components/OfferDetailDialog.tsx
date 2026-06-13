@@ -17,6 +17,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 
 export interface OfferWithDetails {
   id: string;

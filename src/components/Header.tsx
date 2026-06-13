@@ -16,6 +16,7 @@ import { useMembership } from "@/hooks/useMembership";
 import NotificationBell from "./NotificationBell";
 import LanguageToggle from "./LanguageToggle";
 import { useTranslation } from "react-i18next";
+import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 
 const Header = () => {
   const [isAdmin, setIsAdmin] = useState(false);
