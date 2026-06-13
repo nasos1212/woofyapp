@@ -388,13 +388,15 @@ const MemberOffers = () => {
                     <p className="text-sm text-muted-foreground">{t("offers.previewSub")}</p>
                   </div>
                 </div>
-                <Button 
-                  variant="hero" 
-                  size="sm"
-                  onClick={() => navigate("/member/upgrade")}
-                >
-                  {t("offers.upgradeNow")}
-                </Button>
+                {PAID_MEMBERSHIP_ENABLED && (
+                  <Button 
+                    variant="hero" 
+                    size="sm"
+                    onClick={() => navigate("/member/upgrade")}
+                  >
+                    {t("offers.upgradeNow")}
+                  </Button>
+                )}
               </div>
             </div>
           )}

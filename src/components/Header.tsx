@@ -249,7 +249,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
-                  {!isPaidMember && !isBusiness && !isShelter && (
+                  {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">
@@ -331,7 +331,7 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
-                  {!isPaidMember && !isBusiness && !isShelter && (
+                  {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => navigate("/member/upgrade")} className="text-wooffy-sky font-semibold">

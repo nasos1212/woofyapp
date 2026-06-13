@@ -420,16 +420,18 @@ const MemberDashboard = () => {
                     <QrCode className="w-5 h-5 text-primary flex-shrink-0" />
                     <span className="truncate">{t("memberDashboard.card.title")}</span>
                   </h2>
-                  <Link to="/member/upgrade" className="flex-shrink-0">
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                      <Sparkles className="w-4 h-4" />
-                      {membership?.plan_type === "family" ? (
-                        <span>{t("memberDashboard.card.plans")}</span>
-                      ) : (
-                        <span>{t("memberDashboard.card.upgrade")}</span>
-                      )}
-                    </Button>
-                  </Link>
+                  {PAID_MEMBERSHIP_ENABLED && (
+                    <Link to="/member/upgrade" className="flex-shrink-0">
+                      <Button variant="outline" size="sm" className="gap-1.5">
+                        <Sparkles className="w-4 h-4" />
+                        {membership?.plan_type === "family" ? (
+                          <span>{t("memberDashboard.card.plans")}</span>
+                        ) : (
+                          <span>{t("memberDashboard.card.upgrade")}</span>
+                        )}
+                      </Button>
+                    </Link>
+                  )}
                 </div>
                 <MembershipCardFull 
                   memberName={profile?.full_name || "Member"}
@@ -525,7 +527,7 @@ const MemberDashboard = () => {
                 )}
                 
                 {/* Upgrade prompt when at max pets but not on highest plan (Pack Leader / family) */}
-                {membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
+                {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
                   <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl border border-primary/20">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
