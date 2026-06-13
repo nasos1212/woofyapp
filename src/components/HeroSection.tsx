@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
 import heroImage from "@/assets/hero-dog-v2.jpg";
