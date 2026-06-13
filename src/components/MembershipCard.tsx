@@ -24,7 +24,7 @@ const MembershipCard = ({
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Dog className="w-6 h-6 text-wooffy-sky" />
-            <span className="font-display font-bold text-xl text-wooffy-sky">Wooffy</span>
+            <span className="font-logo font-bold text-xl text-wooffy-sky">Wooffy</span>
           </div>
           <div className="flex items-center gap-1">
             <Crown className="w-4 h-4 text-wooffy-accent" />

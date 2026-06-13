@@ -108,7 +108,7 @@ const BusinessHeader = () => {
               <Dog className="w-6 h-6 text-wooffy-sky" />
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-bold text-xl text-foreground">Wooffy</span>
+              <span className="font-logo font-bold text-xl text-foreground">Wooffy</span>
               <span className="text-[10px] text-muted-foreground -mt-1 hidden sm:block">{t("businessNav.partnerPortal")}</span>
             </div>
           </Link>

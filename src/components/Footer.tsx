@@ -38,7 +38,7 @@ const Footer = () => {
               <div className="w-10 h-10 bg-wooffy-blue/20 rounded-xl flex items-center justify-center">
                 <Dog className="w-6 h-6 text-wooffy-sky" />
               </div>
-              <span className="font-display font-bold text-xl text-wooffy-sky">Wooffy</span>
+              <span className="font-logo font-bold text-xl text-wooffy-sky">Wooffy</span>
             </Link>
             <p className="text-white/70 text-sm">
               {t("footer.tagline")}
