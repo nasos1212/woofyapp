@@ -26,12 +26,13 @@ const HeroSection = () => {
             className="absolute inset-0 w-full h-full object-cover"
           />
 
-          {/* Gradient scrim for legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20" />
+          {/* Gradient scrim for legibility - top-heavy on mobile, bottom-heavy on desktop */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/20 sm:hidden" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/20 hidden sm:block" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden sm:block" />
 
-          {/* Text overlay */}
-          <div className="relative h-full min-h-[78vh] sm:min-h-[80vh] flex flex-col justify-end p-6 sm:p-12 lg:p-16">
+          {/* Text overlay - top on mobile, bottom on desktop */}
+          <div className="relative h-full min-h-[78vh] sm:min-h-[80vh] flex flex-col justify-start sm:justify-end p-6 sm:p-12 lg:p-16">
             <div className="max-w-2xl space-y-5 sm:space-y-6 text-white">
 
               <h1 className="text-[2.25rem] leading-[1.05] sm:text-5xl lg:text-6xl font-display font-bold drop-shadow-lg">
