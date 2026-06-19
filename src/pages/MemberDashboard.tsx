@@ -126,12 +126,37 @@ const MemberDashboard = () => {
 
         if (profileData) setProfile(profileData);
 
-        // Fetch membership
-        const { data: membershipData } = await supabase
-          .from("memberships")
-          .select("*")
-          .eq("user_id", user.id)
-          .maybeSingle();
+        // Fetch membership with retry on transient network errors
+        // (avoids bouncing paid users to /member/free → /member loop)
+        const MAX_ATTEMPTS = 4;
+        let membershipData: any = null;
+        let membershipError: any = null;
+        for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+          try {
+            const res = await supabase
+              .from("memberships")
+              .select("*")
+              .eq("user_id", user.id)
+              .maybeSingle();
+            membershipError = res.error;
+            if (!res.error) {
+              membershipData = res.data;
+              break;
+            }
+          } catch (err) {
+            membershipError = err;
+          }
+          if (attempt < MAX_ATTEMPTS) {
+            await new Promise(r => setTimeout(r, 300 * Math.pow(2, attempt - 1)));
+          }
+        }
+
+        // If the request kept failing, don't downgrade to /member/free — just stop loading.
+        if (membershipError && !membershipData) {
+          console.error("Membership fetch failed after retries:", membershipError);
+          setIsLoading(false);
+          return;
+        }
 
         // Check if user has a valid active PAID membership
         if (!membershipData || !membershipData.is_active || membershipData.plan_type === 'free') {
