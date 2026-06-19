@@ -342,7 +342,7 @@ const FreeMemberDashboard = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
             {/* Health Records */}
-            <Card className="bg-gradient-to-r from-emerald-50 to-green-50 border-emerald-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
@@ -356,10 +356,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/health-records")}
-                    className="border-emerald-300 text-emerald-700 hover:bg-emerald-200 hover:text-emerald-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.viewRecords")}
                     <ArrowRight className="w-4 h-4" />
@@ -369,7 +369,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Lost Pet Alerts */}
-            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
@@ -383,10 +383,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/lost-found")}
-                    className="border-amber-300 text-amber-700 hover:bg-amber-200 hover:text-amber-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.viewAlerts")}
                     <ArrowRight className="w-4 h-4" />
@@ -396,7 +396,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Pet-Friendly Places */}
-            <Card className="bg-gradient-to-r from-teal-50 to-cyan-50 border-teal-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
@@ -410,10 +410,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/pet-friendly-places")}
-                    className="border-teal-300 text-teal-700 hover:bg-teal-200 hover:text-teal-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.explorePlaces")}
                     <ArrowRight className="w-4 h-4" />
@@ -423,7 +423,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Shelters */}
-            <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
@@ -437,10 +437,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/shelters")}
-                    className="border-rose-300 text-rose-700 hover:bg-rose-200 hover:text-rose-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.viewShelters")}
                     <ArrowRight className="w-4 h-4" />
@@ -450,7 +450,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Browse Offers */}
-            <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
@@ -464,10 +464,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/offers")}
-                    className="border-purple-300 text-purple-700 hover:bg-purple-200 hover:text-purple-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.viewOffers")}
                     <ArrowRight className="w-4 h-4" />
@@ -477,7 +477,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Our Partners */}
-            <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
@@ -491,10 +491,10 @@ const FreeMemberDashboard = () => {
                   </div>
                 </div>
                 <div className="mt-auto pt-4">
-                  <Button 
+                  <Button
                     variant="outline"
                     onClick={() => navigate("/member/partners")}
-                    className="border-sky-300 text-sky-700 hover:bg-sky-200 hover:text-sky-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("freeMember.cards.viewPartners")}
                     <ArrowRight className="w-4 h-4" />
@@ -504,7 +504,7 @@ const FreeMemberDashboard = () => {
             </Card>
 
             {/* Blog */}
-            <Card className="bg-gradient-to-r from-cyan-50 to-sky-50 border-cyan-200/50 hover:shadow-md transition-all h-full">
+            <Card className="hover:shadow-md transition-all h-full">
               <CardContent className="p-5 h-full flex flex-col">
                 <div className="flex items-start gap-3 mb-2">
                   <div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center shrink-0">
@@ -521,7 +521,7 @@ const FreeMemberDashboard = () => {
                   <Button
                     variant="outline"
                     onClick={() => navigate("/blog")}
-                    className="border-cyan-300 text-cyan-700 hover:bg-cyan-200 hover:text-cyan-900 gap-2 w-full"
+                    className="gap-2 w-full"
                   >
                     {t("blog.viewAll")}
                     <ArrowRight className="w-4 h-4" />
@@ -530,6 +530,7 @@ const FreeMemberDashboard = () => {
               </CardContent>
             </Card>
           </div>
+
 
           {/* Subtle Upgrade Section */}
           <div className="mb-8">
