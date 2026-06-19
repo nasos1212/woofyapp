@@ -340,196 +340,54 @@ const FreeMemberDashboard = () => {
 
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
-            {/* Health Records */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
-                    <Syringe className="w-5 h-5 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.health")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.healthDesc")}
-                    </p>
-                  </div>
+          <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
+            <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
+            <div className="space-y-2">
+              <button onClick={() => navigate("/member/health-records")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
+                  <Syringe className="w-5 h-5 text-emerald-600" />
                 </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/health-records")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.viewRecords")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.health")}</p>
+              </button>
+              <button onClick={() => navigate("/member/lost-found")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-amber-600" />
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Lost Pet Alerts */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
-                    <AlertTriangle className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.lostFound")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.lostFoundDesc")}
-                    </p>
-                  </div>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.lostFound")}</p>
+              </button>
+              <button onClick={() => navigate("/member/pet-friendly-places")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-teal-600" />
                 </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/lost-found")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.viewAlerts")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.places")}</p>
+              </button>
+              <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-rose-600" />
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Pet-Friendly Places */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
-                    <MapPin className="w-5 h-5 text-teal-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.places")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.placesDesc")}
-                    </p>
-                  </div>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
+              </button>
+              <button onClick={() => navigate("/member/offers")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
+                  <Gift className="w-5 h-5 text-purple-600" />
                 </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/pet-friendly-places")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.explorePlaces")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.browseOffers")}</p>
+              </button>
+              <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-sky-600" />
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Shelters */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
-                    <Heart className="w-5 h-5 text-rose-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.shelters")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.sheltersDesc")}
-                    </p>
-                  </div>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
+              </button>
+              <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-cyan-600" />
                 </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/shelters")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.viewShelters")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Browse Offers */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
-                    <Gift className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.browseOffers")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.browseOffersDesc")}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/offers")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.viewOffers")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Our Partners */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
-                    <Building2 className="w-5 h-5 text-sky-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("freeMember.cards.partners")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("freeMember.cards.partnersDesc")}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/member/partners")}
-                    className="gap-2 w-full"
-                  >
-                    {t("freeMember.cards.viewPartners")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Blog */}
-            <Card className="hover:shadow-md transition-all h-full">
-              <CardContent className="p-5 h-full flex flex-col">
-                <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center shrink-0">
-                    <BookOpen className="w-5 h-5 text-cyan-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("blog.discoverCardSubtitle")}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-auto pt-4">
-                  <Button
-                    variant="outline"
-                    onClick={() => navigate("/blog")}
-                    className="gap-2 w-full"
-                  >
-                    {t("blog.viewAll")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
+              </button>
+            </div>
           </div>
+
 
 
           {/* Subtle Upgrade Section */}
