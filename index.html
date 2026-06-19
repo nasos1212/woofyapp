@@ -9,10 +9,11 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
-    <title>Wooffy - Pet Membership</title>
-    <meta name="description" content="An effort to unite pet lovers all over Cyprus. Join the Wooffy community for exclusive discounts, lost pet alerts, health tracking & more." />
+    <title>Wooffy - Pet Membership Cyprus | Dog & Cat Community</title>
+    <meta name="description" content="Cyprus's pet community: dog-friendly places, lost & found alerts, shelter adoptions, partner discounts and pet health tools. Join Wooffy free." />
     <meta name="author" content="Wooffy" />
     <meta name="google-site-verification" content="oUwnQOKdNoVLUnb2ugbN8dkt0Ekd4a3N0AIRSZ8VgRk" />
+    <link rel="canonical" href="https://wooffy.app/" />
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#1A1A2E" />
@@ -23,17 +24,63 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Wooffy - Pet Membership" />
-    <meta property="og:description" content="An effort to unite pet lovers all over Cyprus. Join the Wooffy community for exclusive discounts, lost pet alerts, health tracking & more." />
+    <meta property="og:title" content="Wooffy - Pet Membership Cyprus" />
+    <meta property="og:description" content="Cyprus's pet community: dog-friendly places, lost & found alerts, shelter adoptions, partner discounts and pet health tools." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://www.wooffy.app/wooffy-logo.png" />
-    <meta property="og:url" content="https://www.wooffy.app" />
+    <meta property="og:image" content="https://wooffy.app/wooffy-logo.png" />
+    <meta property="og:url" content="https://wooffy.app/" />
     <meta property="og:site_name" content="Wooffy" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="el_GR" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@Wooffy" />
-    <meta name="twitter:image" content="https://www.wooffy.app/wooffy-logo.png" />
+    <meta name="twitter:image" content="https://wooffy.app/wooffy-logo.png" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://wooffy.app/#organization",
+          "name": "Wooffy",
+          "url": "https://wooffy.app/",
+          "logo": "https://wooffy.app/wooffy-logo.png",
+          "sameAs": [
+            "https://www.facebook.com/wooffyapp",
+            "https://www.instagram.com/wooffyapp"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://wooffy.app/#website",
+          "url": "https://wooffy.app/",
+          "name": "Wooffy",
+          "publisher": { "@id": "https://wooffy.app/#organization" },
+          "inLanguage": ["en", "el"]
+        },
+        {
+          "@type": "LocalBusiness",
+          "@id": "https://wooffy.app/#localbusiness",
+          "name": "Wooffy",
+          "description": "Pet membership community for Cyprus: dog-friendly directory, lost & found, shelter adoptions and partner discounts.",
+          "url": "https://wooffy.app/",
+          "image": "https://wooffy.app/wooffy-logo.png",
+          "areaServed": {
+            "@type": "Country",
+            "name": "Cyprus"
+          },
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "CY"
+          }
+        }
+      ]
+    }
+    </script>
 
     <!-- Force-clear legacy service workers & caches (runs before app loads) -->
     <script>
