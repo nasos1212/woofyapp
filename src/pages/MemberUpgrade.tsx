@@ -493,19 +493,23 @@ const MemberUpgrade = () => {
                         ? PLANS.findIndex((p) => p.priceId === currentPriceId)
                         : -1;
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
+                      const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
+                      const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
                         ? "Your current plan"
-                        : isPaidMember && currentIdx >= 0
-                          ? thisIdx > currentIdx
-                            ? `Upgrade to ${plan.name}`
-                            : `Switch to ${plan.name}`
-                          : `Select ${plan.name}`;
+                        : isPending
+                          ? "Scheduled at renewal"
+                          : isPaidMember && currentIdx >= 0
+                            ? thisIdx > currentIdx
+                              ? `Upgrade to ${plan.name}`
+                              : `Switch to ${plan.name}`
+                            : `Select ${plan.name}`;
                       return (
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
                           onClick={() => handleSelect(plan.priceId)}
-                          disabled={isCurrent}
+                          disabled={isCurrent || isPending || blocked}
                         >
                           {label}
                         </Button>
