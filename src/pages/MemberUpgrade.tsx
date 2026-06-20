@@ -72,13 +72,42 @@ const MemberUpgrade = () => {
   const { hasMembership, isPaidMember, membership } = useMembership();
   const navigate = useNavigate();
   const { openCheckout, closeCheckout, isOpen, checkoutElement } = useStripeCheckout();
-  const [portalLoading, setPortalLoading] = useState(false);
   const [changePlan, setChangePlan] = useState<typeof PLANS[number] | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [scheduledFor, setScheduledFor] = useState<number | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [subDetails, setSubDetails] = useState<{
+    current_period_end: string | null;
+    cancel_at_period_end: boolean;
+    status: string;
+  } | null>(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [reactivateLoading, setReactivateLoading] = useState(false);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
+
+  // Load active subscription details for in-app management
+  useEffect(() => {
+    if (!user || !isPaidMember) {
+      setSubDetails(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("current_period_end, cancel_at_period_end, status")
+        .eq("user_id", user.id)
+        .eq("environment", getStripeEnvironment())
+        .in("status", ["active", "trialing", "past_due"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!cancelled) setSubDetails(data ?? null);
+    })();
+    return () => { cancelled = true; };
+  }, [user, isPaidMember]);
 
 
   useEffect(() => {
@@ -212,32 +241,38 @@ const MemberUpgrade = () => {
   };
 
 
-  const handleManageSubscription = async () => {
-    // Open the tab synchronously inside the click handler so popup blockers
-    // treat it as user-initiated. We'll redirect it once we have the URL.
-    const portalTab = window.open("about:blank", "_blank", "noopener,noreferrer");
-    setPortalLoading(true);
+  const handleCancelSubscription = async () => {
+    setCancelLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-portal-session", {
-        body: {
-          environment: getStripeEnvironment(),
-          returnUrl: `${window.location.origin}/member/upgrade`,
-        },
+      const { data, error } = await supabase.functions.invoke("update-subscription-status", {
+        body: { action: "cancel", environment: getStripeEnvironment() },
       });
-      if (error || !data?.url) {
-        throw new Error(error?.message || "Failed to open subscription portal");
-      }
-      if (portalTab && !portalTab.closed) {
-        portalTab.location.href = data.url;
-      } else {
-        // Popup was blocked — fall back to same-tab navigation
-        window.location.href = data.url;
-      }
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      toast.success("Your membership has been canceled. You'll keep access until your renewal date.");
+      setSubDetails((s) => s ? { ...s, cancel_at_period_end: true } : s);
+      setCancelDialogOpen(false);
     } catch (e) {
-      portalTab?.close();
-      toast.error(e instanceof Error ? e.message : "Failed to open subscription portal");
+      toast.error(e instanceof Error ? e.message : "Failed to cancel subscription");
     } finally {
-      setPortalLoading(false);
+      setCancelLoading(false);
+    }
+  };
+
+  const handleReactivateSubscription = async () => {
+    setReactivateLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("update-subscription-status", {
+        body: { action: "reactivate", environment: getStripeEnvironment() },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      toast.success("Your membership has been reactivated.");
+      setSubDetails((s) => s ? { ...s, cancel_at_period_end: false } : s);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to reactivate subscription");
+    } finally {
+      setReactivateLoading(false);
     }
   };
 
