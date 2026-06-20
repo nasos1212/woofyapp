@@ -283,6 +283,7 @@ const MemberUpgrade = () => {
           })
         : "your next renewal";
       toast.success(`Your plan will switch to ${changePlan.name} on ${when}.`);
+      setPendingChange({ priceId: changePlan.priceId, scheduledFor: data?.scheduledFor ?? null });
       setChangePlan(null);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to change plan");
