@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Dog, Users, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, Crown, Star, Dog, Users, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
@@ -504,6 +504,43 @@ const MemberUpgrade = () => {
                   </div>
                 </>
               )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={cancelDialogOpen} onOpenChange={(open) => !open && !cancelLoading && setCancelDialogOpen(false)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Cancel your membership?</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              <p className="text-sm text-muted-foreground">
+                You'll keep all your paid member benefits until{" "}
+                <strong className="text-foreground">
+                  {subDetails?.current_period_end
+                    ? new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                        day: "numeric", month: "long", year: "numeric",
+                      })
+                    : "your renewal date"}
+                </strong>
+                . After that your membership will end and you won't be charged again. You can reactivate any time before then.
+              </p>
+              <div className="flex gap-2 justify-end pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setCancelDialogOpen(false)}
+                  disabled={cancelLoading}
+                >
+                  Keep membership
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleCancelSubscription}
+                  disabled={cancelLoading}
+                >
+                  {cancelLoading ? "Canceling…" : "Confirm cancellation"}
+                </Button>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
