@@ -153,7 +153,6 @@ Deno.serve(async (req) => {
         },
         {
           items: [{ price: newPrice.id, quantity: 1 }],
-          iterations: 1,
         },
       ],
       metadata: {
