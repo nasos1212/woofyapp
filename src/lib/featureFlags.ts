@@ -6,4 +6,4 @@
  * every entry point that leads to a paid upgrade. The /member/upgrade route
  * will render a "Coming Soon" screen while this is false.
  */
-export const PAID_MEMBERSHIP_ENABLED = false;
+export const PAID_MEMBERSHIP_ENABLED = true;
