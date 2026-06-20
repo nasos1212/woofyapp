@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Dog, Users, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, Crown, Star, Dog, Users, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
@@ -72,13 +72,42 @@ const MemberUpgrade = () => {
   const { hasMembership, isPaidMember, membership } = useMembership();
   const navigate = useNavigate();
   const { openCheckout, closeCheckout, isOpen, checkoutElement } = useStripeCheckout();
-  const [portalLoading, setPortalLoading] = useState(false);
   const [changePlan, setChangePlan] = useState<typeof PLANS[number] | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [scheduledFor, setScheduledFor] = useState<number | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [subDetails, setSubDetails] = useState<{
+    current_period_end: string | null;
+    cancel_at_period_end: boolean;
+    status: string;
+  } | null>(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [reactivateLoading, setReactivateLoading] = useState(false);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
+
+  // Load active subscription details for in-app management
+  useEffect(() => {
+    if (!user || !isPaidMember) {
+      setSubDetails(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("current_period_end, cancel_at_period_end, status")
+        .eq("user_id", user.id)
+        .eq("environment", getStripeEnvironment())
+        .in("status", ["active", "trialing", "past_due"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!cancelled) setSubDetails(data ?? null);
+    })();
+    return () => { cancelled = true; };
+  }, [user, isPaidMember]);
 
 
   useEffect(() => {
@@ -212,32 +241,38 @@ const MemberUpgrade = () => {
   };
 
 
-  const handleManageSubscription = async () => {
-    // Open the tab synchronously inside the click handler so popup blockers
-    // treat it as user-initiated. We'll redirect it once we have the URL.
-    const portalTab = window.open("about:blank", "_blank", "noopener,noreferrer");
-    setPortalLoading(true);
+  const handleCancelSubscription = async () => {
+    setCancelLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("create-portal-session", {
-        body: {
-          environment: getStripeEnvironment(),
-          returnUrl: `${window.location.origin}/member/upgrade`,
-        },
+      const { data, error } = await supabase.functions.invoke("update-subscription-status", {
+        body: { action: "cancel", environment: getStripeEnvironment() },
       });
-      if (error || !data?.url) {
-        throw new Error(error?.message || "Failed to open subscription portal");
-      }
-      if (portalTab && !portalTab.closed) {
-        portalTab.location.href = data.url;
-      } else {
-        // Popup was blocked — fall back to same-tab navigation
-        window.location.href = data.url;
-      }
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      toast.success("Your membership has been canceled. You'll keep access until your renewal date.");
+      setSubDetails((s) => s ? { ...s, cancel_at_period_end: true } : s);
+      setCancelDialogOpen(false);
     } catch (e) {
-      portalTab?.close();
-      toast.error(e instanceof Error ? e.message : "Failed to open subscription portal");
+      toast.error(e instanceof Error ? e.message : "Failed to cancel subscription");
     } finally {
-      setPortalLoading(false);
+      setCancelLoading(false);
+    }
+  };
+
+  const handleReactivateSubscription = async () => {
+    setReactivateLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("update-subscription-status", {
+        body: { action: "reactivate", environment: getStripeEnvironment() },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      toast.success("Your membership has been reactivated.");
+      setSubDetails((s) => s ? { ...s, cancel_at_period_end: false } : s);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to reactivate subscription");
+    } finally {
+      setReactivateLoading(false);
     }
   };
 
@@ -276,18 +311,57 @@ const MemberUpgrade = () => {
           </div>
 
           {isPaidMember && (
-            <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card text-center">
-              <p className="text-sm text-muted-foreground mb-3">
-                You already have an active paid membership ({membership?.member_number}).
-              </p>
-              <Button
-                variant="outline"
-                onClick={handleManageSubscription}
-                disabled={portalLoading}
-              >
-                {portalLoading ? "Opening…" : "Manage subscription"}
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Button>
+            <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card space-y-3">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">Active membership</p>
+                <p className="font-display font-semibold text-lg text-foreground">
+                  {membership?.member_number}
+                </p>
+              </div>
+              {subDetails?.current_period_end && (
+                <div className="text-center text-sm">
+                  {subDetails.cancel_at_period_end ? (
+                    <p className="text-amber-600 dark:text-amber-400">
+                      Cancels on{" "}
+                      <strong>
+                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                          day: "numeric", month: "long", year: "numeric",
+                        })}
+                      </strong>
+                      . You'll keep full access until then.
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      Renews automatically on{" "}
+                      <strong className="text-foreground">
+                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                          day: "numeric", month: "long", year: "numeric",
+                        })}
+                      </strong>
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="flex justify-center pt-1">
+                {subDetails?.cancel_at_period_end ? (
+                  <Button
+                    variant="hero"
+                    size="sm"
+                    onClick={handleReactivateSubscription}
+                    disabled={reactivateLoading}
+                  >
+                    {reactivateLoading ? "Reactivating…" : "Reactivate membership"}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCancelDialogOpen(true)}
+                  >
+                    Cancel membership
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
@@ -430,6 +504,43 @@ const MemberUpgrade = () => {
                   </div>
                 </>
               )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={cancelDialogOpen} onOpenChange={(open) => !open && !cancelLoading && setCancelDialogOpen(false)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Cancel your membership?</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              <p className="text-sm text-muted-foreground">
+                You'll keep all your paid member benefits until{" "}
+                <strong className="text-foreground">
+                  {subDetails?.current_period_end
+                    ? new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                        day: "numeric", month: "long", year: "numeric",
+                      })
+                    : "your renewal date"}
+                </strong>
+                . After that your membership will end and you won't be charged again. You can reactivate any time before then.
+              </p>
+              <div className="flex gap-2 justify-end pt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setCancelDialogOpen(false)}
+                  disabled={cancelLoading}
+                >
+                  Keep membership
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleCancelSubscription}
+                  disabled={cancelLoading}
+                >
+                  {cancelLoading ? "Canceling…" : "Confirm cancellation"}
+                </Button>
+              </div>
             </div>
           </DialogContent>
         </Dialog>

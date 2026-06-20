@@ -63,4 +63,9 @@ verify_jwt = false
 [functions.change-subscription-plan]
 verify_jwt = false
 
+[functions.update-subscription-status]
+verify_jwt = false
+
+
+
 
