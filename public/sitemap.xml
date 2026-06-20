@@ -39,14 +39,8 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/my-dog-kobe</loc>
-    <lastmod>2026-06-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://wooffy.app/blog/why-variety-matters-in-your-dogs-diet</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -57,26 +51,26 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/tiny-tags-big-personality-a-chat-with-woof-designed-for-pets</loc>
-    <lastmod>2026-05-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/blog/bark-master-k9-building-a-better-life-through-understanding</loc>
-    <lastmod>2026-06-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://wooffy.app/blog/never-leave-a-dog-in-a-hot-car-this-summer</loc>
-    <lastmod>2026-06-08</lastmod>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooffy.app/blog/understanding-your-dog-beyond-misbehaviour-insights-from-bark-with-nick</loc>
     <lastmod>2026-06-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooffy.app/blog/tiny-tags-big-personality-a-chat-with-woof-designed-for-pets</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooffy.app/blog/bark-master-k9-building-a-better-life-through-understanding</loc>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -88,13 +82,19 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/wooffy-founder-to-participate-in-love-without-limits-adopt-a-friend-adoption-eve</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
-    <lastmod>2026-06-18</lastmod>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooffy.app/blog/my-dog-kobe</loc>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
