@@ -417,6 +417,35 @@ const MemberUpgrade = () => {
             </div>
           )}
 
+          {isPaidMember && pendingChange && (() => {
+            const pendingPlan = PLANS.find((p) => p.priceId === pendingChange.priceId);
+            const whenStr = pendingChange.scheduledFor
+              ? new Date(pendingChange.scheduledFor * 1000).toLocaleDateString("en-GB", {
+                  day: "numeric", month: "long", year: "numeric",
+                })
+              : "your next renewal";
+            return (
+              <div className="max-w-xl mx-auto mb-8 rounded-2xl p-5 border border-primary/30 bg-primary/5 shadow-card text-center space-y-3">
+                <p className="text-sm text-muted-foreground">Scheduled plan change</p>
+                <p className="text-base text-foreground">
+                  Switching to{" "}
+                  <strong className="font-display">
+                    {pendingPlan?.name ?? "your new plan"}
+                  </strong>{" "}
+                  on <strong>{whenStr}</strong>. No charge or refund until then — you stay on your current plan.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancelPendingChange}
+                  disabled={cancelPendingLoading}
+                >
+                  {cancelPendingLoading ? "Canceling…" : "Cancel scheduled change"}
+                </Button>
+              </div>
+            );
+          })()}
+
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {PLANS.map((plan) => {
               const Icon = plan.icon;
