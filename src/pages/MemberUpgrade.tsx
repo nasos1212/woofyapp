@@ -319,13 +319,31 @@ const MemberUpgrade = () => {
                       </div>
                     </div>
                     <div className="flex-1" />
-                    <Button
-                      variant={plan.popular ? "hero" : "outline"}
-                      className="w-full"
-                      onClick={() => handleSelect(plan.priceId)}
-                    >
-                      Select {plan.name}
-                    </Button>
+                    {(() => {
+                      const isCurrent = currentPriceId === plan.priceId;
+                      const currentIdx = currentPriceId
+                        ? PLANS.findIndex((p) => p.priceId === currentPriceId)
+                        : -1;
+                      const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
+                      const label = isCurrent
+                        ? "Your current plan"
+                        : isPaidMember && currentIdx >= 0
+                          ? thisIdx > currentIdx
+                            ? `Upgrade to ${plan.name}`
+                            : `Switch to ${plan.name}`
+                          : `Select ${plan.name}`;
+                      return (
+                        <Button
+                          variant={plan.popular ? "hero" : "outline"}
+                          className="w-full"
+                          onClick={() => handleSelect(plan.priceId)}
+                          disabled={isCurrent}
+                        >
+                          {label}
+                        </Button>
+                      );
+                    })()}
+
                   </div>
                 </div>
               );
@@ -353,9 +371,55 @@ const MemberUpgrade = () => {
             <div className="px-2 sm:px-4 pb-4">{checkoutElement}</div>
           </DialogContent>
         </Dialog>
+
+        <Dialog open={!!changePlan} onOpenChange={(open) => !open && !confirmLoading && setChangePlan(null)}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Switch to {changePlan?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-2">
+              {previewLoading ? (
+                <div className="py-6 flex justify-center"><DogLoader size="sm" /></div>
+              ) : previewAmount === null ? null : (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    You'll be charged a prorated amount for the remaining time on your current plan. Your renewal date stays the same.
+                  </p>
+                  <div className="bg-muted/50 rounded-xl p-4 text-center">
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                      {previewAmount >= 0 ? "Due today" : "Credit to your account"}
+                    </p>
+                    <p className="font-display font-bold text-3xl text-foreground">
+                      {previewCurrency === "eur" ? "€" : ""}
+                      {(Math.abs(previewAmount) / 100).toFixed(2)}
+                      {previewCurrency !== "eur" ? ` ${previewCurrency.toUpperCase()}` : ""}
+                    </p>
+                  </div>
+                  <div className="flex gap-2 justify-end pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setChangePlan(null)}
+                      disabled={confirmLoading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="hero"
+                      onClick={handleConfirmChange}
+                      disabled={confirmLoading}
+                    >
+                      {confirmLoading ? "Processing…" : "Confirm change"}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
 };
+
 
 export default MemberUpgrade;
