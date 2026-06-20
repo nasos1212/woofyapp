@@ -311,18 +311,57 @@ const MemberUpgrade = () => {
           </div>
 
           {isPaidMember && (
-            <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card text-center">
-              <p className="text-sm text-muted-foreground mb-3">
-                You already have an active paid membership ({membership?.member_number}).
-              </p>
-              <Button
-                variant="outline"
-                onClick={handleManageSubscription}
-                disabled={portalLoading}
-              >
-                {portalLoading ? "Opening…" : "Manage subscription"}
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Button>
+            <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card space-y-3">
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">Active membership</p>
+                <p className="font-display font-semibold text-lg text-foreground">
+                  {membership?.member_number}
+                </p>
+              </div>
+              {subDetails?.current_period_end && (
+                <div className="text-center text-sm">
+                  {subDetails.cancel_at_period_end ? (
+                    <p className="text-amber-600 dark:text-amber-400">
+                      Cancels on{" "}
+                      <strong>
+                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                          day: "numeric", month: "long", year: "numeric",
+                        })}
+                      </strong>
+                      . You'll keep full access until then.
+                    </p>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      Renews automatically on{" "}
+                      <strong className="text-foreground">
+                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
+                          day: "numeric", month: "long", year: "numeric",
+                        })}
+                      </strong>
+                    </p>
+                  )}
+                </div>
+              )}
+              <div className="flex justify-center pt-1">
+                {subDetails?.cancel_at_period_end ? (
+                  <Button
+                    variant="hero"
+                    size="sm"
+                    onClick={handleReactivateSubscription}
+                    disabled={reactivateLoading}
+                  >
+                    {reactivateLoading ? "Reactivating…" : "Reactivate membership"}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCancelDialogOpen(true)}
+                  >
+                    Cancel membership
+                  </Button>
+                )}
+              </div>
             </div>
           )}
 
