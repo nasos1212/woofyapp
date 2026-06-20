@@ -12,12 +12,12 @@ const supabase = createClient(
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
 );
 
-// Maps lookup keys → memberships.plan_type / max_pets (kept in sync with payments-webhook)
-const PRICE_TO_PLAN: Record<string, { plan_type: string; max_pets: number }> = {
-  wooffy_solo_yearly: { plan_type: "single", max_pets: 1 },
-  wooffy_duo_yearly: { plan_type: "duo", max_pets: 2 },
-  wooffy_pack_yearly: { plan_type: "family", max_pets: 5 },
-};
+// Allowed lookup keys (kept in sync with payments-webhook)
+const ALLOWED_PRICES = new Set([
+  "wooffy_solo_yearly",
+  "wooffy_duo_yearly",
+  "wooffy_pack_yearly",
+]);
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -48,12 +48,13 @@ Deno.serve(async (req) => {
     const environment: StripeEnv =
       body.environment === "live" ? "live" : "sandbox";
     const newPriceLookupKey: string = body.priceId;
-    const mode: "preview" | "confirm" = body.mode === "confirm" ? "confirm" : "preview";
+    const mode: "preview" | "confirm" =
+      body.mode === "confirm" ? "confirm" : "preview";
 
     if (!newPriceLookupKey || !/^[a-zA-Z0-9_-]+$/.test(newPriceLookupKey)) {
       throw new Error("Invalid priceId");
     }
-    if (!PRICE_TO_PLAN[newPriceLookupKey]) {
+    if (!ALLOWED_PRICES.has(newPriceLookupKey)) {
       throw new Error("Unknown plan");
     }
 
@@ -79,13 +80,10 @@ Deno.serve(async (req) => {
     }
 
     if (sub.price_id === newPriceLookupKey) {
-      return new Response(
-        JSON.stringify({ error: "Already on this plan" }),
-        {
-          status: 400,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify({ error: "Already on this plan" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const stripe = createStripeClient(environment);
@@ -97,30 +95,25 @@ Deno.serve(async (req) => {
     if (!prices.data.length) throw new Error("New price not found");
     const newPrice = prices.data[0];
 
-    // Fetch current subscription to get the item id
+    // Fetch current subscription
     const subscription = await stripe.subscriptions.retrieve(
       sub.stripe_subscription_id as string,
     );
     const currentItem = subscription.items.data[0];
     if (!currentItem) throw new Error("Subscription has no items");
 
-    if (mode === "preview") {
-      // Preview the prorated invoice
-      const preview = await (stripe.invoices as any).createPreview({
-        customer: sub.stripe_customer_id,
-        subscription: sub.stripe_subscription_id,
-        subscription_details: {
-          items: [{ id: currentItem.id, price: newPrice.id }],
-          proration_behavior: "always_invoice",
-        },
-      });
+    // Determine renewal date (period end of current item)
+    const periodEnd: number | null =
+      (currentItem as any).current_period_end ??
+      (subscription as any).current_period_end ??
+      null;
 
+    if (mode === "preview") {
       return new Response(
         JSON.stringify({
-          amountDue: preview.amount_due,
-          currency: preview.currency,
-          subtotal: preview.subtotal,
-          total: preview.total,
+          scheduledFor: periodEnd,
+          currentPriceId: currentItem.price.id,
+          newPriceId: newPrice.id,
         }),
         {
           status: 200,
@@ -129,32 +122,60 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Confirm: apply the plan change with proration billed immediately
-    await stripe.subscriptions.update(sub.stripe_subscription_id as string, {
-      items: [{ id: currentItem.id, price: newPrice.id }],
-      proration_behavior: "always_invoice",
-      payment_behavior: "error_if_incomplete",
+    // Confirm: schedule the plan change at the next renewal (no proration / no refund).
+    // Use a Stripe subscription schedule with two phases:
+    //   phase 1: current price until period end
+    //   phase 2: new price, renews normally
+    let scheduleId = (subscription as any).schedule as string | null;
+
+    if (!scheduleId) {
+      const created = await (stripe.subscriptionSchedules as any).create({
+        from_subscription: sub.stripe_subscription_id,
+      });
+      scheduleId = created.id;
+    }
+
+    const existing = await stripe.subscriptionSchedules.retrieve(scheduleId!);
+    const firstPhase = existing.phases[0];
+    if (!firstPhase) throw new Error("Schedule has no phases");
+
+    await stripe.subscriptionSchedules.update(scheduleId!, {
+      end_behavior: "release",
+      proration_behavior: "none",
+      phases: [
+        {
+          items: firstPhase.items.map((it: any) => ({
+            price: it.price,
+            quantity: it.quantity ?? 1,
+          })),
+          start_date: firstPhase.start_date as any,
+          end_date: firstPhase.end_date as any,
+        },
+        {
+          items: [{ price: newPrice.id, quantity: 1 }],
+          iterations: 1,
+        },
+      ],
       metadata: {
-        ...(subscription.metadata || {}),
+        ...(existing.metadata || {}),
         userId: user.id,
+        pending_plan_change: newPriceLookupKey,
       },
     });
 
-    // Optimistically update memberships so UI reflects new plan immediately.
-    // Webhook will also sync, but this avoids a UI delay.
-    const mapping = PRICE_TO_PLAN[newPriceLookupKey];
-    await supabase
-      .from("memberships")
-      .update({
-        plan_type: mapping.plan_type,
-        max_pets: mapping.max_pets,
-      })
-      .eq("user_id", user.id);
+    // NOTE: Do NOT update the memberships table yet — the webhook will sync
+    // plan_type / max_pets when the new phase activates at renewal.
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        scheduledFor: periodEnd,
+      }),
+      {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   } catch (e) {
     console.error("change-subscription-plan error:", e);
     return new Response(
