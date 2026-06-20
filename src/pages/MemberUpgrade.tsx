@@ -224,7 +224,8 @@ const MemberUpgrade = () => {
       if (error || !data?.url) {
         throw new Error(error?.message || "Failed to open subscription portal");
       }
-      window.location.href = data.url;
+      window.open(data.url, "_blank", "noopener,noreferrer");
+      setPortalLoading(false);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to open subscription portal");
       setPortalLoading(false);
