@@ -111,6 +111,33 @@ const MemberUpgrade = () => {
     return () => { cancelled = true; };
   }, [user, isPaidMember]);
 
+  // Load any scheduled (pending) plan change
+  const refreshPending = async () => {
+    if (!user || !isPaidMember) {
+      setPendingChange(null);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
+        body: { mode: "status", environment: getStripeEnvironment() },
+      });
+      if (error || data?.error) {
+        setPendingChange(null);
+        return;
+      }
+      setPendingChange(data?.pending ?? null);
+    } catch {
+      setPendingChange(null);
+    }
+  };
+
+  useEffect(() => {
+    refreshPending();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isPaidMember]);
+
+
+
 
   useEffect(() => {
     if (!loading && !accountTypeLoading && isBusiness) {
