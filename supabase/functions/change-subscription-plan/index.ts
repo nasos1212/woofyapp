@@ -47,15 +47,23 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const environment: StripeEnv =
       body.environment === "live" ? "live" : "sandbox";
-    const newPriceLookupKey: string = body.priceId;
-    const mode: "preview" | "confirm" =
-      body.mode === "confirm" ? "confirm" : "preview";
+    const newPriceLookupKey: string = body.priceId ?? "";
+    const mode: "preview" | "confirm" | "status" | "cancel_pending" =
+      body.mode === "confirm"
+        ? "confirm"
+        : body.mode === "status"
+          ? "status"
+          : body.mode === "cancel_pending"
+            ? "cancel_pending"
+            : "preview";
 
-    if (!newPriceLookupKey || !/^[a-zA-Z0-9_-]+$/.test(newPriceLookupKey)) {
-      throw new Error("Invalid priceId");
-    }
-    if (!ALLOWED_PRICES.has(newPriceLookupKey)) {
-      throw new Error("Unknown plan");
+    if (mode === "preview" || mode === "confirm") {
+      if (!newPriceLookupKey || !/^[a-zA-Z0-9_-]+$/.test(newPriceLookupKey)) {
+        throw new Error("Invalid priceId");
+      }
+      if (!ALLOWED_PRICES.has(newPriceLookupKey)) {
+        throw new Error("Unknown plan");
+      }
     }
 
     // Find current active subscription
