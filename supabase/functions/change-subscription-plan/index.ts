@@ -87,14 +87,66 @@ Deno.serve(async (req) => {
       );
     }
 
+    const stripe = createStripeClient(environment);
+
+    // Helper: read pending plan change from existing schedule (if any)
+    const readPending = async (subscription: any) => {
+      const scheduleId = subscription?.schedule as string | null;
+      if (!scheduleId) return null;
+      const sched = await stripe.subscriptionSchedules.retrieve(scheduleId);
+      if (!sched || sched.status === "released" || sched.status === "canceled") return null;
+      const nextPhase = sched.phases?.[1];
+      if (!nextPhase) return null;
+      const nextPriceId = (nextPhase.items?.[0] as any)?.price as string | undefined;
+      if (!nextPriceId) return null;
+      // Resolve to lookup key
+      let lookupKey: string | null = (sched.metadata?.pending_plan_change as string) || null;
+      if (!lookupKey) {
+        try {
+          const priceObj = await stripe.prices.retrieve(nextPriceId);
+          lookupKey = priceObj.lookup_key ?? null;
+        } catch { /* noop */ }
+      }
+      return {
+        scheduleId,
+        priceId: lookupKey,
+        scheduledFor: (nextPhase.start_date as number) ?? null,
+      };
+    };
+
+    // STATUS: return current pending change (if any) without modifying anything
+    if (mode === "status") {
+      const subscription = await stripe.subscriptions.retrieve(sub.stripe_subscription_id as string);
+      const pending = await readPending(subscription);
+      return new Response(
+        JSON.stringify({ pending }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // CANCEL_PENDING: release any active schedule so the subscription continues on its current plan
+    if (mode === "cancel_pending") {
+      const subscription = await stripe.subscriptions.retrieve(sub.stripe_subscription_id as string);
+      const scheduleId = (subscription as any).schedule as string | null;
+      if (scheduleId) {
+        try {
+          await stripe.subscriptionSchedules.release(scheduleId);
+        } catch (e) {
+          console.error("release schedule failed", e);
+        }
+      }
+      return new Response(
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
     if (sub.price_id === newPriceLookupKey) {
       return new Response(JSON.stringify({ error: "Already on this plan" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
-
-    const stripe = createStripeClient(environment);
 
     // Resolve new price id from lookup key
     const prices = await stripe.prices.list({
