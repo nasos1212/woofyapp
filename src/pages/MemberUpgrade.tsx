@@ -213,6 +213,9 @@ const MemberUpgrade = () => {
 
 
   const handleManageSubscription = async () => {
+    // Open the tab synchronously inside the click handler so popup blockers
+    // treat it as user-initiated. We'll redirect it once we have the URL.
+    const portalTab = window.open("about:blank", "_blank", "noopener,noreferrer");
     setPortalLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-portal-session", {
@@ -224,10 +227,16 @@ const MemberUpgrade = () => {
       if (error || !data?.url) {
         throw new Error(error?.message || "Failed to open subscription portal");
       }
-      window.open(data.url, "_blank", "noopener,noreferrer");
-      setPortalLoading(false);
+      if (portalTab && !portalTab.closed) {
+        portalTab.location.href = data.url;
+      } else {
+        // Popup was blocked — fall back to same-tab navigation
+        window.location.href = data.url;
+      }
     } catch (e) {
+      portalTab?.close();
       toast.error(e instanceof Error ? e.message : "Failed to open subscription portal");
+    } finally {
       setPortalLoading(false);
     }
   };
