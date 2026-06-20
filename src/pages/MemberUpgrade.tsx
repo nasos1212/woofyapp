@@ -84,6 +84,8 @@ const MemberUpgrade = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
+  const [pendingChange, setPendingChange] = useState<{ priceId: string | null; scheduledFor: number | null } | null>(null);
+  const [cancelPendingLoading, setCancelPendingLoading] = useState(false);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
 
@@ -108,6 +110,33 @@ const MemberUpgrade = () => {
     })();
     return () => { cancelled = true; };
   }, [user, isPaidMember]);
+
+  // Load any scheduled (pending) plan change
+  const refreshPending = async () => {
+    if (!user || !isPaidMember) {
+      setPendingChange(null);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
+        body: { mode: "status", environment: getStripeEnvironment() },
+      });
+      if (error || data?.error) {
+        setPendingChange(null);
+        return;
+      }
+      setPendingChange(data?.pending ?? null);
+    } catch {
+      setPendingChange(null);
+    }
+  };
+
+  useEffect(() => {
+    refreshPending();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isPaidMember]);
+
+
 
 
   useEffect(() => {
@@ -177,6 +206,11 @@ const MemberUpgrade = () => {
       toast.error("Payments are not yet configured for this environment.");
       return;
     }
+    // Block additional changes while one is already scheduled
+    if (isPaidMember && pendingChange) {
+      toast.error("You already have a scheduled plan change. Cancel it before scheduling another.");
+      return;
+    }
     // Paid member switching plan → scheduled at next renewal (no proration / no refund)
     if (isPaidMember && currentPriceId && currentPriceId !== priceId) {
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
@@ -211,6 +245,23 @@ const MemberUpgrade = () => {
     });
   };
 
+  const handleCancelPendingChange = async () => {
+    setCancelPendingLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
+        body: { mode: "cancel_pending", environment: getStripeEnvironment() },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      setPendingChange(null);
+      toast.success("Scheduled plan change canceled. You'll stay on your current plan.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to cancel scheduled change");
+    } finally {
+      setCancelPendingLoading(false);
+    }
+  };
+
   const handleConfirmChange = async () => {
     if (!changePlan) return;
     setConfirmLoading(true);
@@ -232,6 +283,7 @@ const MemberUpgrade = () => {
           })
         : "your next renewal";
       toast.success(`Your plan will switch to ${changePlan.name} on ${when}.`);
+      setPendingChange({ priceId: changePlan.priceId, scheduledFor: data?.scheduledFor ?? null });
       setChangePlan(null);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to change plan");
@@ -365,6 +417,35 @@ const MemberUpgrade = () => {
             </div>
           )}
 
+          {isPaidMember && pendingChange && (() => {
+            const pendingPlan = PLANS.find((p) => p.priceId === pendingChange.priceId);
+            const whenStr = pendingChange.scheduledFor
+              ? new Date(pendingChange.scheduledFor * 1000).toLocaleDateString("en-GB", {
+                  day: "numeric", month: "long", year: "numeric",
+                })
+              : "your next renewal";
+            return (
+              <div className="max-w-xl mx-auto mb-8 rounded-2xl p-5 border border-primary/30 bg-primary/5 shadow-card text-center space-y-3">
+                <p className="text-sm text-muted-foreground">Scheduled plan change</p>
+                <p className="text-base text-foreground">
+                  Switching to{" "}
+                  <strong className="font-display">
+                    {pendingPlan?.name ?? "your new plan"}
+                  </strong>{" "}
+                  on <strong>{whenStr}</strong>. No charge or refund until then — you stay on your current plan.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCancelPendingChange}
+                  disabled={cancelPendingLoading}
+                >
+                  {cancelPendingLoading ? "Canceling…" : "Cancel scheduled change"}
+                </Button>
+              </div>
+            );
+          })()}
+
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {PLANS.map((plan) => {
               const Icon = plan.icon;
@@ -412,19 +493,23 @@ const MemberUpgrade = () => {
                         ? PLANS.findIndex((p) => p.priceId === currentPriceId)
                         : -1;
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
+                      const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
+                      const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
                         ? "Your current plan"
-                        : isPaidMember && currentIdx >= 0
-                          ? thisIdx > currentIdx
-                            ? `Upgrade to ${plan.name}`
-                            : `Switch to ${plan.name}`
-                          : `Select ${plan.name}`;
+                        : isPending
+                          ? "Scheduled at renewal"
+                          : isPaidMember && currentIdx >= 0
+                            ? thisIdx > currentIdx
+                              ? `Upgrade to ${plan.name}`
+                              : `Switch to ${plan.name}`
+                            : `Select ${plan.name}`;
                       return (
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
                           onClick={() => handleSelect(plan.priceId)}
-                          disabled={isCurrent}
+                          disabled={isCurrent || isPending || blocked}
                         >
                           {label}
                         </Button>
