@@ -149,8 +149,14 @@ const MemberUpgrade = () => {
       toast.error("Payments are not yet configured for this environment.");
       return;
     }
-    // Paid member switching plan → prorated change flow
+    // Paid member switching plan → prorated change flow (upgrades only)
     if (isPaidMember && currentPriceId && currentPriceId !== priceId) {
+      const currentIdx = PLANS.findIndex((p) => p.priceId === currentPriceId);
+      const newIdx = PLANS.findIndex((p) => p.priceId === priceId);
+      if (newIdx <= currentIdx) {
+        toast.error("Downgrades aren't available. Please contact support if you need to change to a smaller plan.");
+        return;
+      }
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
       setChangePlan(plan);
       setPreviewAmount(null);
@@ -325,19 +331,21 @@ const MemberUpgrade = () => {
                         ? PLANS.findIndex((p) => p.priceId === currentPriceId)
                         : -1;
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
+                      const isDowngrade =
+                        isPaidMember && currentIdx >= 0 && thisIdx < currentIdx;
                       const label = isCurrent
                         ? "Your current plan"
-                        : isPaidMember && currentIdx >= 0
-                          ? thisIdx > currentIdx
+                        : isDowngrade
+                          ? "Not available"
+                          : isPaidMember && currentIdx >= 0
                             ? `Upgrade to ${plan.name}`
-                            : `Switch to ${plan.name}`
-                          : `Select ${plan.name}`;
+                            : `Select ${plan.name}`;
                       return (
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
                           onClick={() => handleSelect(plan.priceId)}
-                          disabled={isCurrent}
+                          disabled={isCurrent || isDowngrade}
                         >
                           {label}
                         </Button>
