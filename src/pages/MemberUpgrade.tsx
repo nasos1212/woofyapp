@@ -84,6 +84,8 @@ const MemberUpgrade = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [reactivateLoading, setReactivateLoading] = useState(false);
+  const [pendingChange, setPendingChange] = useState<{ priceId: string | null; scheduledFor: number | null } | null>(null);
+  const [cancelPendingLoading, setCancelPendingLoading] = useState(false);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
 
