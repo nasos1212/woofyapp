@@ -162,6 +162,17 @@ Deno.serve(async (req) => {
     const currentItem = subscription.items.data[0];
     if (!currentItem) throw new Error("Subscription has no items");
 
+    // Block a second pending change while one is already scheduled.
+    if (mode === "confirm") {
+      const existingPending = await readPending(subscription);
+      if (existingPending) {
+        return new Response(
+          JSON.stringify({ error: "A plan change is already scheduled. Cancel it before scheduling another." }),
+          { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+    }
+
     // Determine renewal date (period end of current item)
     const periodEnd: number | null =
       (currentItem as any).current_period_end ??
