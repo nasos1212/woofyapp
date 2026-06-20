@@ -206,6 +206,11 @@ const MemberUpgrade = () => {
       toast.error("Payments are not yet configured for this environment.");
       return;
     }
+    // Block additional changes while one is already scheduled
+    if (isPaidMember && pendingChange) {
+      toast.error("You already have a scheduled plan change. Cancel it before scheduling another.");
+      return;
+    }
     // Paid member switching plan → scheduled at next renewal (no proration / no refund)
     if (isPaidMember && currentPriceId && currentPriceId !== priceId) {
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
@@ -238,6 +243,23 @@ const MemberUpgrade = () => {
       userId: user.id,
       returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     });
+  };
+
+  const handleCancelPendingChange = async () => {
+    setCancelPendingLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
+        body: { mode: "cancel_pending", environment: getStripeEnvironment() },
+      });
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+      setPendingChange(null);
+      toast.success("Scheduled plan change canceled. You'll stay on your current plan.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to cancel scheduled change");
+    } finally {
+      setCancelPendingLoading(false);
+    }
   };
 
   const handleConfirmChange = async () => {
