@@ -75,8 +75,7 @@ const MemberUpgrade = () => {
   const [portalLoading, setPortalLoading] = useState(false);
   const [changePlan, setChangePlan] = useState<typeof PLANS[number] | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
-  const [previewAmount, setPreviewAmount] = useState<number | null>(null);
-  const [previewCurrency, setPreviewCurrency] = useState<string>("eur");
+  const [scheduledFor, setScheduledFor] = useState<number | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
@@ -149,17 +148,11 @@ const MemberUpgrade = () => {
       toast.error("Payments are not yet configured for this environment.");
       return;
     }
-    // Paid member switching plan → prorated change flow (upgrades only)
+    // Paid member switching plan → scheduled at next renewal (no proration / no refund)
     if (isPaidMember && currentPriceId && currentPriceId !== priceId) {
-      const currentIdx = PLANS.findIndex((p) => p.priceId === currentPriceId);
-      const newIdx = PLANS.findIndex((p) => p.priceId === priceId);
-      if (newIdx <= currentIdx) {
-        toast.error("Downgrades aren't available. Please contact support if you need to change to a smaller plan.");
-        return;
-      }
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
       setChangePlan(plan);
-      setPreviewAmount(null);
+      setScheduledFor(null);
       setPreviewLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
@@ -171,8 +164,7 @@ const MemberUpgrade = () => {
         });
         if (error || !data) throw new Error(error?.message || "Failed to preview plan change");
         if (data.error) throw new Error(data.error);
-        setPreviewAmount(data.amountDue ?? 0);
-        setPreviewCurrency((data.currency || "eur").toLowerCase());
+        setScheduledFor(data.scheduledFor ?? null);
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to preview plan change");
         setChangePlan(null);
