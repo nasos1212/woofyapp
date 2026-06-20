@@ -60,3 +60,7 @@ verify_jwt = false
 [functions.create-portal-session]
 verify_jwt = false
 
+[functions.change-subscription-plan]
+verify_jwt = false
+
+
