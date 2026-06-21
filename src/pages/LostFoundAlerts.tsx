@@ -328,8 +328,8 @@ const LostFoundAlerts = () => {
       for (let i = 0; i < petPhotos.length; i++) {
         const photo = petPhotos[i];
         const fileExt = photo.name.split(".").pop();
-        const fileName = `${user.id}-${Date.now()}-${i}.${fileExt}`;
-        const filePath = `lost-pets/${fileName}`;
+        const fileName = `${Date.now()}-${i}.${fileExt}`;
+        const filePath = `lost-pets/${user.id}/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
           .from("lost-pet-photos")
