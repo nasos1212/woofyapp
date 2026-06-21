@@ -100,6 +100,8 @@ const MemberDashboard = () => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
   });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
+  const [showAllServices, setShowAllServices] = useState(false);
+
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
   const { favoriteIds } = useFavoriteOffers();
