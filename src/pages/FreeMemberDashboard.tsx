@@ -352,22 +352,30 @@ const FreeMemberDashboard = () => {
                   </div>
                 ) : (
                   <div className="rounded-xl border border-border/60 bg-muted/20 p-4">
-                    <button
-                      onClick={() => navigate(`/community/question/${recentQuestions[currentQuestionIdx].id}`)}
-                      className="w-full text-left flex items-center justify-between gap-3 hover:opacity-80 transition-opacity"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="font-medium text-foreground truncate">
-                          {recentQuestions[currentQuestionIdx].title}
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {recentQuestions[currentQuestionIdx].helped_count > 0
-                            ? `${recentQuestions[currentQuestionIdx].helped_count} ${recentQuestions[currentQuestionIdx].helped_count === 1 ? "person" : "people"} helped`
-                            : "Be the first to help"}
-                        </p>
+                    <div className="overflow-hidden">
+                      <div
+                        className="flex transition-transform duration-500 ease-in-out"
+                        style={{ transform: `translateX(-${currentQuestionIdx * 100}%)` }}
+                      >
+                        {recentQuestions.map((q) => (
+                          <button
+                            key={q.id}
+                            onClick={() => navigate(`/community/question/${q.id}`)}
+                            className="w-full shrink-0 text-left flex items-center justify-between gap-3 hover:opacity-80 transition-opacity pr-2"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <p className="font-medium text-foreground truncate">{q.title}</p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {q.helped_count > 0
+                                  ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
+                                  : "Be the first to help"}
+                              </p>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                          </button>
+                        ))}
                       </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </button>
+                    </div>
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/60">
                       <Button
                         variant="ghost"
@@ -377,9 +385,16 @@ const FreeMemberDashboard = () => {
                       >
                         ← Previous
                       </Button>
-                      <span className="text-xs text-muted-foreground">
-                        {currentQuestionIdx + 1} / {recentQuestions.length}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        {recentQuestions.map((_, i) => (
+                          <span
+                            key={i}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              i === currentQuestionIdx ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                            }`}
+                          />
+                        ))}
+                      </div>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -391,6 +406,7 @@ const FreeMemberDashboard = () => {
                     </div>
                   </div>
                 )}
+
 
                 <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
                   <Button
