@@ -179,12 +179,52 @@ Deno.serve(async (req) => {
       (subscription as any).current_period_end ??
       null;
 
+    // Detect upgrade vs downgrade by comparing unit_amount on the same currency.
+    const currentUnitAmount = (currentItem.price.unit_amount ?? 0) as number;
+    const newUnitAmount = (newPrice.unit_amount ?? 0) as number;
+    const isUpgrade = newUnitAmount > currentUnitAmount;
+
     if (mode === "preview") {
+      let amountDueNow: number | null = null;
+      let currency: string | null = (newPrice.currency as string) ?? null;
+
+      if (isUpgrade) {
+        try {
+          const preview = await (stripe.invoices as any).createPreview({
+            customer: sub.stripe_customer_id,
+            subscription: sub.stripe_subscription_id,
+            subscription_details: {
+              items: [{ id: currentItem.id, price: newPrice.id, quantity: 1 }],
+              proration_behavior: "always_invoice",
+            },
+          });
+          amountDueNow = (preview?.amount_due ?? preview?.amount_remaining ?? 0) as number;
+          currency = (preview?.currency as string) ?? currency;
+        } catch (e) {
+          console.error("invoice preview failed, falling back to estimate", e);
+          const start =
+            (currentItem as any).current_period_start ??
+            (subscription as any).current_period_start ??
+            null;
+          if (periodEnd && start) {
+            const total = periodEnd - start;
+            const remaining = Math.max(0, periodEnd - Math.floor(Date.now() / 1000));
+            const delta = newUnitAmount - currentUnitAmount;
+            amountDueNow = total > 0 ? Math.round((delta * remaining) / total) : delta;
+          } else {
+            amountDueNow = newUnitAmount - currentUnitAmount;
+          }
+        }
+      }
+
       return new Response(
         JSON.stringify({
           scheduledFor: periodEnd,
           currentPriceId: currentItem.price.id,
           newPriceId: newPrice.id,
+          isUpgrade,
+          amountDueNow,
+          currency,
         }),
         {
           status: 200,
@@ -193,10 +233,44 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Confirm: schedule the plan change at the next renewal (no proration / no refund).
-    // Use a Stripe subscription schedule with two phases:
-    //   phase 1: current price until period end
-    //   phase 2: new price, renews normally
+    // UPGRADE: swap immediately with a prorated invoice charged today.
+    if (isUpgrade) {
+      const existingScheduleId = (subscription as any).schedule as string | null;
+      if (existingScheduleId) {
+        try {
+          await stripe.subscriptionSchedules.release(existingScheduleId);
+        } catch (e) {
+          console.warn("release pending schedule before upgrade failed", e);
+        }
+      }
+
+      const updated = await stripe.subscriptions.update(
+        sub.stripe_subscription_id as string,
+        {
+          items: [{ id: currentItem.id, price: newPrice.id, quantity: 1 }],
+          proration_behavior: "always_invoice",
+          payment_behavior: "error_if_incomplete",
+          metadata: {
+            ...((subscription as any).metadata || {}),
+            userId: user.id,
+          },
+        },
+      );
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          upgraded: true,
+          subscriptionId: updated.id,
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
+    }
+
+    // DOWNGRADE: schedule the plan change at the next renewal (no proration / no refund).
     let scheduleId = (subscription as any).schedule as string | null;
 
     if (!scheduleId) {
@@ -232,9 +306,6 @@ Deno.serve(async (req) => {
         pending_plan_change: newPriceLookupKey,
       },
     });
-
-    // NOTE: Do NOT update the memberships table yet — the webhook will sync
-    // plan_type / max_pets when the new phase activates at renewal.
 
     return new Response(
       JSON.stringify({
