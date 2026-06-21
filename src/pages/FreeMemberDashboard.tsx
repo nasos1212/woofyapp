@@ -66,6 +66,7 @@ const FreeMemberDashboard = () => {
   const [pets, setPets] = useState<Pet[]>([]);
   const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([]);
   const [showAllServices, setShowAllServices] = useState(false);
+  const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
