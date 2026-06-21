@@ -812,6 +812,11 @@ const Auth = () => {
                   </svg>
                   {isLogin ? t("common.signIn") : t("common.signUp")} with Google
                 </Button>
+                {!isLogin && !acceptedTerms && (
+                  <p className="text-xs text-muted-foreground text-center">
+                    Please accept the Terms & Conditions below to continue with Google.
+                  </p>
+                )}
               </div>
 
               <div className="relative my-4">
