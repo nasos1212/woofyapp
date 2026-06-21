@@ -45,6 +45,14 @@ interface Pet {
   photo_url: string | null;
 }
 
+interface RecentQuestion {
+  id: string;
+  title: string;
+  helped_count: number;
+  created_at: string;
+}
+
+
 const FreeMemberDashboard = () => {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
@@ -56,9 +64,12 @@ const FreeMemberDashboard = () => {
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([]);
+  const [showAllServices, setShowAllServices] = useState(false);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
+
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
@@ -152,6 +163,20 @@ const FreeMemberDashboard = () => {
     fetchPets();
   }, [user]);
 
+  // Fetch latest community questions
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const { data } = await supabase
+        .from("community_questions")
+        .select("id, title, helped_count, created_at")
+        .order("created_at", { ascending: false })
+        .limit(4);
+      if (data) setRecentQuestions(data);
+    };
+    fetchQuestions();
+  }, []);
+
+
 
   if (authLoading || membershipLoading || checkingRoles) {
     return (
@@ -182,7 +207,7 @@ const FreeMemberDashboard = () => {
         <meta name="description" content={t("freeMember.pageDescription")} />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background overflow-x-hidden">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Header />
         <FreemiumOnboardingTour />
 
@@ -213,63 +238,82 @@ const FreeMemberDashboard = () => {
             </p>
           </div>
 
-          {/* Main Community Hub Section - Hero Focus */}
+          {/* Main Community Hub Section - Recent Questions Feed */}
           <div className="mb-8">
-            <Card className="bg-gradient-to-br from-cyan-500 to-teal-600 border-0 shadow-xl overflow-hidden">
-              <CardContent className="p-0">
-                <div className="p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
-                      <Users className="w-6 h-6 text-white" />
+            <Card className="border-border shadow-soft overflow-hidden">
+              <CardContent className="p-6 md:p-8">
+                <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h2 className="font-display text-xl md:text-2xl font-bold text-white">
+                      <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                         {t("freeMember.hub.title")}
                       </h2>
-                      <p className="text-white/80 text-sm">
+                      <p className="text-muted-foreground text-sm">
                         {t("freeMember.hub.tagline")}
                       </p>
                     </div>
                   </div>
-
-                  <p className="text-white/90 mb-6 max-w-lg">
-                    {t("freeMember.hub.description")}
-                  </p>
-
-                  <div className="flex flex-wrap gap-3">
-                    <Button 
-                      size="lg"
-                      onClick={() => navigate("/community")}
-                      className="bg-white text-teal-700 hover:bg-white/90 gap-2"
-                    >
-                      <MessageSquarePlus className="w-5 h-5" />
-                      {t("freeMember.hub.browse")}
-                    </Button>
-                    <Button 
-                      size="lg"
-                      variant="outline"
-                      onClick={() => navigate("/community/ask")}
-                      className="border-white bg-white text-teal-700 hover:bg-white/90 gap-2"
-                    >
-                      <HelpCircle className="w-5 h-5" />
-                      {t("freeMember.hub.ask")}
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => navigate("/community/ask")}
+                    className="gap-2"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    {t("freeMember.hub.ask")}
+                  </Button>
                 </div>
 
-                {/* Quick Actions Row */}
-                <div className="bg-white/10 backdrop-blur px-6 py-4 flex flex-wrap gap-4 md:gap-8">
-                  <button 
+                {recentQuestions.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground text-sm">
+                    {t("freeMember.hub.description")}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border/60 -mx-2">
+                    {recentQuestions.map((q) => (
+                      <button
+                        key={q.id}
+                        onClick={() => navigate(`/community/question/${q.id}`)}
+                        className="w-full text-left px-2 py-3 flex items-center justify-between gap-3 hover:bg-muted/40 rounded-lg transition-colors"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-foreground text-sm truncate">{q.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {q.helped_count > 0
+                              ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
+                              : "Be the first to help"}
+                          </p>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate("/community")}
+                    className="gap-2"
+                  >
+                    <MessageSquarePlus className="w-4 h-4" />
+                    {t("freeMember.hub.browse")}
+                  </Button>
+                  <button
                     onClick={() => navigate("/community?tab=saved")}
-                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
                     <Bookmark className="w-4 h-4" />
-                    <span className="text-sm font-medium">{t("freeMember.hub.saved")}</span>
+                    <span className="font-medium">{t("freeMember.hub.saved")}</span>
                   </button>
                 </div>
               </CardContent>
             </Card>
           </div>
+
 
           {/* My Pets Section */}
           <div className="mb-8">
@@ -340,6 +384,32 @@ const FreeMemberDashboard = () => {
 
           </div>
 
+          {/* Upgrade CTA above Quick Access */}
+          <Card className="mb-6 border-primary/20 bg-primary/5">
+            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Crown className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {t("freeMember.upgrade.unlock")}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("freeMember.upgrade.unlockDesc")}
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => navigate("/member/upgrade")}
+                className="gap-2 shrink-0 w-full sm:w-auto"
+              >
+                <Crown className="w-4 h-4" />
+                {t("freeMember.upgrade.cta")}
+              </Button>
+            </CardContent>
+          </Card>
+
           <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
             <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
             <div className="space-y-2">
@@ -361,32 +431,44 @@ const FreeMemberDashboard = () => {
                 </div>
                 <p className="font-medium text-foreground text-sm">{t("freeMember.cards.places")}</p>
               </button>
-              <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-rose-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
-              </button>
               <button onClick={() => navigate("/member/offers")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                 <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
                   <Gift className="w-5 h-5 text-purple-600" />
                 </div>
                 <p className="font-medium text-foreground text-sm">{t("freeMember.cards.browseOffers")}</p>
               </button>
-              <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-sky-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
-              </button>
-              <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-cyan-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
-              </button>
+
+              {showAllServices && (
+                <>
+                  <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-rose-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
+                  </button>
+                  <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
+                  </button>
+                  <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-cyan-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
+                  </button>
+                </>
+              )}
             </div>
+            <button
+              onClick={() => setShowAllServices((v) => !v)}
+              className="mt-3 w-full text-sm text-primary hover:underline font-medium"
+            >
+              {showAllServices ? "Show less" : "See more services"}
+            </button>
           </div>
+
 
 
 
