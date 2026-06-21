@@ -284,6 +284,13 @@ const MemberUpgrade = () => {
       });
       if (error) throw new Error(error.message);
       if (data?.error) throw new Error(data.error);
+      if (data?.upgraded) {
+        toast.success(`You've been upgraded to ${changePlan.name}. Enjoy!`);
+        setChangePlan(null);
+        // Refresh page to reflect new plan
+        setTimeout(() => window.location.reload(), 800);
+        return;
+      }
       const when = data?.scheduledFor
         ? new Date(data.scheduledFor * 1000).toLocaleDateString("en-GB", {
             day: "numeric",
