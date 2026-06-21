@@ -240,26 +240,26 @@ const FreeMemberDashboard = () => {
           </div>
 
           {/* My Pets Section - FIRST */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
-                {t("freeMember.pets.title")}
-              </h2>
-              {pets.length > 0 && (
-                <Button
-                  size="sm"
-                  onClick={() => navigate("/member/add-pet")}
-                  className="gap-1"
-                >
-                  <PlusCircle className="w-4 h-4" />
-                  {t("freeMember.pets.addPet")}
-                </Button>
-              )}
-            </div>
+          <Card className="mb-8 border-border shadow-soft overflow-hidden">
+            <CardContent className="p-6 md:p-8">
+              <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+                <h2 className="font-display text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
+                  {t("freeMember.pets.title")}
+                </h2>
+                {pets.length > 0 && (
+                  <Button
+                    size="sm"
+                    onClick={() => navigate("/member/add-pet")}
+                    className="gap-1"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    {t("freeMember.pets.addPet")}
+                  </Button>
+                )}
+              </div>
 
-            {pets.length === 0 ? (
-              <Card className="border-dashed border-2 border-primary/30 bg-primary/5">
-                <CardContent className="p-8 text-center">
+              {pets.length === 0 ? (
+                <div className="rounded-xl border-dashed border-2 border-primary/30 bg-primary/5 p-8 text-center">
                   <Dog className="w-12 h-12 text-primary/60 mx-auto mb-3" />
                   <h3 className="font-display font-semibold text-foreground mb-1 text-lg">{t("freeMember.pets.empty")}</h3>
                   <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
@@ -269,17 +269,15 @@ const FreeMemberDashboard = () => {
                     <PlusCircle className="w-5 h-5" />
                     {t("freeMember.pets.addFirst")}
                   </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {pets.map((pet) => (
-                  <Card
-                    key={pet.id}
-                    className="hover:shadow-md transition-all cursor-pointer"
-                    onClick={() => navigate(`/member/pet/${pet.id}`)}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {pets.map((pet) => (
+                    <button
+                      key={pet.id}
+                      onClick={() => navigate(`/member/pet/${pet.id}`)}
+                      className="text-left rounded-xl border border-border bg-muted/20 hover:bg-muted/40 hover:shadow-md transition-all p-4 flex items-center gap-4"
+                    >
                       {pet.photo_url ? (
                         <img
                           src={pet.photo_url}
@@ -302,12 +300,13 @@ const FreeMemberDashboard = () => {
                         </p>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
 
           {/* Community Hub Section - One question at a time */}
           <div className="mb-8">
