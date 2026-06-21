@@ -64,9 +64,12 @@ const FreeMemberDashboard = () => {
   const [redirectPath, setRedirectPath] = useState<string | null>(null);
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([]);
+  const [showAllServices, setShowAllServices] = useState(false);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
+
 
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
