@@ -163,6 +163,20 @@ const FreeMemberDashboard = () => {
     fetchPets();
   }, [user]);
 
+  // Fetch latest community questions
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const { data } = await supabase
+        .from("community_questions")
+        .select("id, title, helped_count, created_at")
+        .order("created_at", { ascending: false })
+        .limit(4);
+      if (data) setRecentQuestions(data);
+    };
+    fetchQuestions();
+  }, []);
+
+
 
   if (authLoading || membershipLoading || checkingRoles) {
     return (
