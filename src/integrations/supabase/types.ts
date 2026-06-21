@@ -3032,6 +3032,13 @@ export type Database = {
       }
       generate_referral_code: { Args: { user_name: string }; Returns: string }
       generate_share_code: { Args: never; Returns: string }
+      get_business_customer_names: {
+        Args: { _user_ids: string[] }
+        Returns: {
+          full_name: string
+          user_id: string
+        }[]
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
