@@ -75,6 +75,9 @@ const MemberUpgrade = () => {
   const [changePlan, setChangePlan] = useState<typeof PLANS[number] | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [scheduledFor, setScheduledFor] = useState<number | null>(null);
+  const [previewIsUpgrade, setPreviewIsUpgrade] = useState(false);
+  const [previewAmountDue, setPreviewAmountDue] = useState<number | null>(null);
+  const [previewCurrency, setPreviewCurrency] = useState<string | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [subDetails, setSubDetails] = useState<{
     current_period_end: string | null;
