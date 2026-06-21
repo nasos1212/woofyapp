@@ -177,6 +177,16 @@ const FreeMemberDashboard = () => {
     fetchQuestions();
   }, []);
 
+  // Auto-advance community questions every 5 seconds
+  useEffect(() => {
+    if (recentQuestions.length < 2) return;
+    const interval = setInterval(() => {
+      setCurrentQuestionIdx((i) => (i + 1) % recentQuestions.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [recentQuestions.length]);
+
+
 
 
   if (authLoading || membershipLoading || checkingRoles) {
