@@ -384,6 +384,32 @@ const FreeMemberDashboard = () => {
 
           </div>
 
+          {/* Upgrade CTA above Quick Access */}
+          <Card className="mb-6 border-primary/20 bg-primary/5">
+            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-center sm:text-left">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Crown className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {t("freeMember.upgrade.unlock")}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("freeMember.upgrade.unlockDesc")}
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => navigate("/member/upgrade")}
+                className="gap-2 shrink-0 w-full sm:w-auto"
+              >
+                <Crown className="w-4 h-4" />
+                {t("freeMember.upgrade.cta")}
+              </Button>
+            </CardContent>
+          </Card>
+
           <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
             <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
             <div className="space-y-2">
@@ -405,32 +431,44 @@ const FreeMemberDashboard = () => {
                 </div>
                 <p className="font-medium text-foreground text-sm">{t("freeMember.cards.places")}</p>
               </button>
-              <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
-                  <Heart className="w-5 h-5 text-rose-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
-              </button>
               <button onClick={() => navigate("/member/offers")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                 <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
                   <Gift className="w-5 h-5 text-purple-600" />
                 </div>
                 <p className="font-medium text-foreground text-sm">{t("freeMember.cards.browseOffers")}</p>
               </button>
-              <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-sky-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
-              </button>
-              <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-cyan-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
-              </button>
+
+              {showAllServices && (
+                <>
+                  <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-rose-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
+                  </button>
+                  <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-sky-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
+                  </button>
+                  <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
+                      <BookOpen className="w-5 h-5 text-cyan-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
+                  </button>
+                </>
+              )}
             </div>
+            <button
+              onClick={() => setShowAllServices((v) => !v)}
+              className="mt-3 w-full text-sm text-primary hover:underline font-medium"
+            >
+              {showAllServices ? "Show less" : "See more services"}
+            </button>
           </div>
+
 
 
 
