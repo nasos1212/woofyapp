@@ -672,23 +672,17 @@ const MemberDashboard = () => {
               <div className="bg-white rounded-2xl p-6 shadow-soft">
                 <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
                 <div className="space-y-2">
-                  <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-violet-100 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-violet-600" />
-                    </div>
-                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
-                  </Link>
                   <Link to="/member/offers" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                     <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
                       <Gift className="w-5 h-5 text-purple-600" />
                     </div>
                     <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.browseOffers")}</p>
                   </Link>
-                  <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <Syringe className="w-5 h-5 text-emerald-600" />
+                  <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-sky-600" />
                     </div>
-                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
                   </Link>
                   <Link to="/member/lost-found" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                     <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
@@ -696,20 +690,20 @@ const MemberDashboard = () => {
                     </div>
                     <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.lostFound")}</p>
                   </Link>
+                  <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-teal-600" />
+                    </div>
+                    <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.places")}</p>
+                  </Link>
 
                   {showAllServices && (
                     <>
-                      <Link to="/member/pet-friendly-places" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                        <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
-                          <MapPin className="w-5 h-5 text-teal-600" />
+                      <Link to="/member/health-records" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                        <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
+                          <Syringe className="w-5 h-5 text-emerald-600" />
                         </div>
-                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.places")}</p>
-                      </Link>
-                      <Link to="/member/partners" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                        <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                          <Building2 className="w-5 h-5 text-sky-600" />
-                        </div>
-                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.partners")}</p>
+                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.healthRecords")}</p>
                       </Link>
                       <Link to="/member/shelters" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                         <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
@@ -717,11 +711,11 @@ const MemberDashboard = () => {
                         </div>
                         <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.shelters")}</p>
                       </Link>
-                      <Link to="/blog" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                        <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-                          <BookOpen className="w-5 h-5 text-cyan-600" />
+                      <Link to="/member/health-assistant" className="flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                        <div className="w-10 h-10 flex-shrink-0 bg-violet-100 rounded-full flex items-center justify-center">
+                          <Bot className="w-5 h-5 text-violet-600" />
                         </div>
-                        <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
+                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.quickAccess.aiAssistant")}</p>
                       </Link>
                     </>
                   )}
@@ -733,6 +727,21 @@ const MemberDashboard = () => {
                   {showAllServices ? "Show less" : "See more services"}
                 </button>
               </div>
+
+              {/* Blog - Standalone Card */}
+              <Link
+                to="/blog"
+                className="bg-white rounded-2xl p-5 shadow-soft hover:shadow-md transition-all flex items-center gap-4 group"
+              >
+                <div className="w-12 h-12 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
+                  <BookOpen className="w-6 h-6 text-cyan-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("blog.discoverCardSubtitle", { defaultValue: "Tips, guides and stories for pet parents" })}</p>
+                </div>
+              </Link>
+
 
 
               {/* Recent Activity */}

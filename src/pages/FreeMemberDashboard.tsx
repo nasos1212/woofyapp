@@ -462,14 +462,14 @@ const FreeMemberDashboard = () => {
             </CardContent>
           </Card>
 
-          <div className="bg-white rounded-2xl p-6 shadow-soft mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-soft mb-6">
             <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
             <div className="space-y-2">
-              <button onClick={() => navigate("/member/health-records")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
-                  <Syringe className="w-5 h-5 text-emerald-600" />
+              <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
+                  <Building2 className="w-5 h-5 text-sky-600" />
                 </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.health")}</p>
+                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
               </button>
               <button onClick={() => navigate("/member/lost-found")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
                 <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
@@ -498,17 +498,11 @@ const FreeMemberDashboard = () => {
                     </div>
                     <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
                   </button>
-                  <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                      <Building2 className="w-5 h-5 text-sky-600" />
+                  <button onClick={() => navigate("/member/health-records")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
+                    <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
+                      <Syringe className="w-5 h-5 text-emerald-600" />
                     </div>
-                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
-                  </button>
-                  <button onClick={() => navigate("/blog")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-                      <BookOpen className="w-5 h-5 text-cyan-600" />
-                    </div>
-                    <p className="font-medium text-foreground text-sm">{t("blog.discoverCardTitle")}</p>
+                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.health")}</p>
                   </button>
                 </>
               )}
@@ -520,6 +514,22 @@ const FreeMemberDashboard = () => {
               {showAllServices ? "Show less" : "See more services"}
             </button>
           </div>
+
+          {/* Blog - Standalone Card */}
+          <button
+            onClick={() => navigate("/blog")}
+            className="w-full text-left bg-white rounded-2xl p-5 shadow-soft hover:shadow-md transition-all mb-8 flex items-center gap-4 group"
+          >
+            <div className="w-12 h-12 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-cyan-600" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-display font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
+              <p className="text-sm text-muted-foreground">{t("blog.discoverCardSubtitle", { defaultValue: "Tips, guides and stories for pet parents" })}</p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+          </button>
+
 
 
 
