@@ -67,15 +67,30 @@ Deno.serve(async (req) => {
     }
 
     // Find current active subscription
-    const { data: sub } = await supabase
+    // Look up sub in the requested env first; fall back to any env so users
+    // whose subscription was created in test/sandbox can still manage it
+    // after the project went live.
+    let { data: sub } = await supabase
       .from("subscriptions")
-      .select("stripe_subscription_id, stripe_customer_id, price_id, status")
+      .select("stripe_subscription_id, stripe_customer_id, price_id, status, environment")
       .eq("user_id", user.id)
       .eq("environment", environment)
       .in("status", ["active", "trialing", "past_due"])
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    if (!sub?.stripe_subscription_id) {
+      const fallback = await supabase
+        .from("subscriptions")
+        .select("stripe_subscription_id, stripe_customer_id, price_id, status, environment")
+        .eq("user_id", user.id)
+        .in("status", ["active", "trialing", "past_due"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      sub = fallback.data;
+    }
 
     if (!sub?.stripe_subscription_id) {
       return new Response(
@@ -87,7 +102,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    const stripe = createStripeClient(environment);
+    // Always use the subscription's actual environment for Stripe calls —
+    // otherwise we'd try to look up a sandbox subscription on the live key.
+    const effectiveEnv: StripeEnv =
+      (sub.environment as StripeEnv) ?? environment;
+    const stripe = createStripeClient(effectiveEnv);
 
     // Helper: read pending plan change from existing schedule (if any)
     const readPending = async (subscription: any) => {

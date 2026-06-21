@@ -39,14 +39,25 @@ Deno.serve(async (req) => {
       body.environment === "live" ? "live" : "sandbox";
     const returnUrl: string | undefined = body.returnUrl;
 
-    const { data: sub } = await supabase
+    let { data: sub } = await supabase
       .from("subscriptions")
-      .select("stripe_customer_id")
+      .select("stripe_customer_id, environment")
       .eq("user_id", user.id)
       .eq("environment", environment)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    if (!sub?.stripe_customer_id) {
+      const fallback = await supabase
+        .from("subscriptions")
+        .select("stripe_customer_id, environment")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      sub = fallback.data;
+    }
 
     if (!sub?.stripe_customer_id) {
       return new Response(JSON.stringify({ error: "No subscription found" }), {
@@ -55,7 +66,9 @@ Deno.serve(async (req) => {
       });
     }
 
-    const stripe = createStripeClient(environment);
+    const effectiveEnv: StripeEnv =
+      (sub.environment as StripeEnv) ?? environment;
+    const stripe = createStripeClient(effectiveEnv);
     const portal = await stripe.billingPortal.sessions.create({
       customer: sub.stripe_customer_id as string,
       ...(returnUrl && { return_url: returnUrl }),

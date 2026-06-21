@@ -46,15 +46,27 @@ Deno.serve(async (req) => {
       throw new Error("Invalid action");
     }
 
-    const { data: sub } = await supabase
+    let { data: sub } = await supabase
       .from("subscriptions")
-      .select("stripe_subscription_id, status")
+      .select("stripe_subscription_id, status, environment")
       .eq("user_id", user.id)
       .eq("environment", environment)
       .in("status", ["active", "trialing", "past_due"])
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    if (!sub?.stripe_subscription_id) {
+      const fallback = await supabase
+        .from("subscriptions")
+        .select("stripe_subscription_id, status, environment")
+        .eq("user_id", user.id)
+        .in("status", ["active", "trialing", "past_due"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      sub = fallback.data;
+    }
 
     if (!sub?.stripe_subscription_id) {
       return new Response(
@@ -66,7 +78,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    const stripe = createStripeClient(environment);
+    const effectiveEnv: StripeEnv =
+      (sub.environment as StripeEnv) ?? environment;
+    const stripe = createStripeClient(effectiveEnv);
 
     if (action === "cancel") {
       // Cancel at period end — member keeps access until renewal date.
