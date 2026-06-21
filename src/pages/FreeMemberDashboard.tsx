@@ -527,10 +527,11 @@ const FreeMemberDashboard = () => {
               </div>
 
               <Button 
-                className="w-full mt-1" 
-                onClick={() => setShowComingSoon(false)}
+                className="w-full mt-1 gap-2" 
+                onClick={() => { setShowComingSoon(false); navigate("/member/upgrade"); }}
               >
-                {t("freeMember.benefitsDialog.gotIt")}
+                <Crown className="w-4 h-4" />
+                {t("freeMember.upgrade.cta")}
               </Button>
             </DialogContent>
           </Dialog>
