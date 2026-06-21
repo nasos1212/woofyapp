@@ -75,6 +75,9 @@ const MemberUpgrade = () => {
   const [changePlan, setChangePlan] = useState<typeof PLANS[number] | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [scheduledFor, setScheduledFor] = useState<number | null>(null);
+  const [previewIsUpgrade, setPreviewIsUpgrade] = useState(false);
+  const [previewAmountDue, setPreviewAmountDue] = useState<number | null>(null);
+  const [previewCurrency, setPreviewCurrency] = useState<string | null>(null);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [subDetails, setSubDetails] = useState<{
     current_period_end: string | null;
@@ -216,6 +219,9 @@ const MemberUpgrade = () => {
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
       setChangePlan(plan);
       setScheduledFor(null);
+      setPreviewIsUpgrade(false);
+      setPreviewAmountDue(null);
+      setPreviewCurrency(null);
       setPreviewLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
@@ -228,6 +234,9 @@ const MemberUpgrade = () => {
         if (error || !data) throw new Error(error?.message || "Failed to preview plan change");
         if (data.error) throw new Error(data.error);
         setScheduledFor(data.scheduledFor ?? null);
+        setPreviewIsUpgrade(!!data.isUpgrade);
+        setPreviewAmountDue(typeof data.amountDueNow === "number" ? data.amountDueNow : null);
+        setPreviewCurrency(data.currency ?? null);
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to preview plan change");
         setChangePlan(null);
@@ -275,6 +284,13 @@ const MemberUpgrade = () => {
       });
       if (error) throw new Error(error.message);
       if (data?.error) throw new Error(data.error);
+      if (data?.upgraded) {
+        toast.success(`You've been upgraded to ${changePlan.name}. Enjoy!`);
+        setChangePlan(null);
+        // Refresh page to reflect new plan
+        setTimeout(() => window.location.reload(), 800);
+        return;
+      }
       const when = data?.scheduledFor
         ? new Date(data.scheduledFor * 1000).toLocaleDateString("en-GB", {
             day: "numeric",
@@ -554,22 +570,45 @@ const MemberUpgrade = () => {
                 <div className="py-6 flex justify-center"><DogLoader size="sm" /></div>
               ) : (
                 <>
-                  <p className="text-sm text-muted-foreground">
-                    Your plan will switch to <strong>{changePlan?.name}</strong> automatically on your next renewal. No charge or refund happens today — you keep your current plan and benefits until then.
-                  </p>
-                  {scheduledFor && (
-                    <div className="bg-muted/50 rounded-xl p-4 text-center">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                        Takes effect on
+                  {previewIsUpgrade ? (
+                    <>
+                      <p className="text-sm text-muted-foreground">
+                        Upgrade to <strong>{changePlan?.name}</strong> takes effect immediately. We'll charge the prorated difference to your card on file today, and your renewal date stays the same.
                       </p>
-                      <p className="font-display font-bold text-2xl text-foreground">
-                        {new Date(scheduledFor * 1000).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
+                      {typeof previewAmountDue === "number" && previewAmountDue > 0 && (
+                        <div className="bg-muted/50 rounded-xl p-4 text-center">
+                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                            Due today
+                          </p>
+                          <p className="font-display font-bold text-2xl text-foreground">
+                            {new Intl.NumberFormat("en-GB", {
+                              style: "currency",
+                              currency: (previewCurrency || "eur").toUpperCase(),
+                            }).format(previewAmountDue / 100)}
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-sm text-muted-foreground">
+                        Your plan will switch to <strong>{changePlan?.name}</strong> automatically on your next renewal. No charge or refund happens today — you keep your current plan and benefits until then.
                       </p>
-                    </div>
+                      {scheduledFor && (
+                        <div className="bg-muted/50 rounded-xl p-4 text-center">
+                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                            Takes effect on
+                          </p>
+                          <p className="font-display font-bold text-2xl text-foreground">
+                            {new Date(scheduledFor * 1000).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
                   <div className="flex gap-2 justify-end pt-2">
                     <Button
@@ -584,7 +623,9 @@ const MemberUpgrade = () => {
                       onClick={handleConfirmChange}
                       disabled={confirmLoading}
                     >
-                      {confirmLoading ? "Scheduling…" : "Schedule change"}
+                      {confirmLoading
+                        ? previewIsUpgrade ? "Charging…" : "Scheduling…"
+                        : previewIsUpgrade ? "Pay & upgrade now" : "Schedule change"}
                     </Button>
                   </div>
                 </>
