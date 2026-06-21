@@ -219,6 +219,9 @@ const MemberUpgrade = () => {
       const plan = PLANS.find((p) => p.priceId === priceId) || null;
       setChangePlan(plan);
       setScheduledFor(null);
+      setPreviewIsUpgrade(false);
+      setPreviewAmountDue(null);
+      setPreviewCurrency(null);
       setPreviewLoading(true);
       try {
         const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
@@ -231,6 +234,9 @@ const MemberUpgrade = () => {
         if (error || !data) throw new Error(error?.message || "Failed to preview plan change");
         if (data.error) throw new Error(data.error);
         setScheduledFor(data.scheduledFor ?? null);
+        setPreviewIsUpgrade(!!data.isUpgrade);
+        setPreviewAmountDue(typeof data.amountDueNow === "number" ? data.amountDueNow : null);
+        setPreviewCurrency(data.currency ?? null);
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to preview plan change");
         setChangePlan(null);
