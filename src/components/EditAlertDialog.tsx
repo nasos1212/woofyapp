@@ -229,8 +229,8 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
         for (let i = 0; i < newPhotos.length; i++) {
           const photo = newPhotos[i];
           const fileExt = photo.name.split(".").pop();
-          const fileName = `${user.id}-${Date.now()}-${i}.${fileExt}`;
-          const filePath = `lost-pets/${fileName}`;
+          const fileName = `${Date.now()}-${i}.${fileExt}`;
+          const filePath = `lost-pets/${user.id}/${fileName}`;
 
           const { error: uploadError } = await supabase.storage
             .from("lost-pet-photos")
