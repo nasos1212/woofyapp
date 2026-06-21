@@ -150,11 +150,9 @@ const BusinessRedemptionHistory = () => {
       let userToNameMap: Record<string, string> = {};
       if (ownerUserIds.length > 0) {
         const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('user_id, full_name')
-          .in('user_id', ownerUserIds);
+          .rpc('get_business_customer_names', { _user_ids: ownerUserIds });
         
-        (profilesData || []).forEach(p => {
+        (profilesData || []).forEach((p: { user_id: string; full_name: string | null }) => {
           if (p.full_name) {
             userToNameMap[p.user_id] = p.full_name;
           }
