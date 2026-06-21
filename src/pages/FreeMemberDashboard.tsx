@@ -249,79 +249,77 @@ const FreeMemberDashboard = () => {
             </p>
           </div>
 
-          {/* My Pets Section - FIRST (membership-card themed) */}
-          <div className="relative mb-8 group">
-            <div className="absolute -inset-2 bg-wooffy-blue/40 rounded-2xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-500" />
-            <Card className="relative bg-wooffy-dark border-wooffy-blue/30 shadow-card overflow-hidden">
-              <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-              <CardContent className="relative p-6 md:p-8">
-                <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-                  <h2 className="font-display text-lg md:text-xl font-bold text-wooffy-sky flex items-center gap-2">
-                    <Dog className="w-5 h-5 text-wooffy-accent" />
-                    {t("freeMember.pets.title")}
-                  </h2>
-                  {pets.length > 0 && (
-                    <Button
-                      size="sm"
-                      onClick={() => navigate("/member/add-pet")}
-                      className="gap-1 bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-sky/90"
-                    >
-                      <PlusCircle className="w-4 h-4" />
-                      {t("freeMember.pets.addPet")}
-                    </Button>
-                  )}
-                </div>
-
-                {pets.length === 0 ? (
-                  <div className="rounded-xl border-dashed border-2 border-wooffy-blue/40 bg-wooffy-blue/10 p-8 text-center">
-                    <Dog className="w-12 h-12 text-wooffy-sky/70 mx-auto mb-3" />
-                    <h3 className="font-display font-semibold text-wooffy-sky mb-1 text-lg">{t("freeMember.pets.empty")}</h3>
-                    <p className="text-sm text-wooffy-light/70 mb-5 max-w-md mx-auto">
-                      {t("freeMember.pets.emptyDesc")}
-                    </p>
-                    <Button onClick={() => navigate("/member/add-pet")} size="lg" className="gap-2 bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-sky/90">
-                      <PlusCircle className="w-5 h-5" />
-                      {t("freeMember.pets.addFirst")}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pets.map((pet) => (
-                      <button
-                        key={pet.id}
-                        onClick={() => navigate(`/member/pet/${pet.id}`)}
-                        className="text-left rounded-xl border border-wooffy-blue/30 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 hover:border-wooffy-sky/50 transition-all p-4 flex items-center gap-4"
-                      >
-                        {pet.photo_url ? (
-                          <img
-                            src={pet.photo_url}
-                            alt={pet.pet_name}
-                            className="w-14 h-14 rounded-full object-cover border-2 border-wooffy-sky/40"
-                          />
-                        ) : (
-                          <div className="w-14 h-14 rounded-full bg-wooffy-blue/30 flex items-center justify-center border-2 border-wooffy-sky/40">
-                            {pet.pet_type === 'cat' ? (
-                              <Cat className="w-6 h-6 text-wooffy-sky" />
-                            ) : (
-                              <Dog className="w-6 h-6 text-wooffy-sky" />
-                            )}
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-wooffy-sky truncate">{pet.pet_name}</h3>
-                          <p className="text-sm text-wooffy-light/70 truncate">
-                            {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
-                          </p>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-wooffy-light/60 shrink-0" />
-                      </button>
-                    ))}
-                  </div>
+          {/* My Pets Section - FIRST */}
+          <Card className="relative mb-8 overflow-hidden border-primary/20 shadow-soft bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-accent/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+            <CardContent className="relative p-6 md:p-8">
+              <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+                <h2 className="font-display text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
+                  <Dog className="w-5 h-5 text-primary" />
+                  {t("freeMember.pets.title")}
+                </h2>
+                {pets.length > 0 && (
+                  <Button
+                    size="sm"
+                    onClick={() => navigate("/member/add-pet")}
+                    className="gap-1"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    {t("freeMember.pets.addPet")}
+                  </Button>
                 )}
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+
+              {pets.length === 0 ? (
+                <div className="rounded-xl border-dashed border-2 border-primary/30 bg-background/60 p-8 text-center">
+                  <Dog className="w-12 h-12 text-primary/60 mx-auto mb-3" />
+                  <h3 className="font-display font-semibold text-foreground mb-1 text-lg">{t("freeMember.pets.empty")}</h3>
+                  <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+                    {t("freeMember.pets.emptyDesc")}
+                  </p>
+                  <Button onClick={() => navigate("/member/add-pet")} size="lg" className="gap-2">
+                    <PlusCircle className="w-5 h-5" />
+                    {t("freeMember.pets.addFirst")}
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {pets.map((pet) => (
+                    <button
+                      key={pet.id}
+                      onClick={() => navigate(`/member/pet/${pet.id}`)}
+                      className="text-left rounded-xl border border-border bg-background/80 hover:bg-background hover:shadow-md hover:border-primary/40 transition-all p-4 flex items-center gap-4"
+                    >
+                      {pet.photo_url ? (
+                        <img
+                          src={pet.photo_url}
+                          alt={pet.pet_name}
+                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                          {pet.pet_type === 'cat' ? (
+                            <Cat className="w-6 h-6 text-primary" />
+                          ) : (
+                            <Dog className="w-6 h-6 text-primary" />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
 
 
 
