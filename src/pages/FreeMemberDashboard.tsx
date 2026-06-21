@@ -442,7 +442,7 @@ const FreeMemberDashboard = () => {
               </div>
               <Button 
                 size="sm"
-                onClick={() => setShowComingSoon(true)}
+                onClick={() => navigate("/member/upgrade")}
                 className="gap-2 shrink-0"
               >
                 <Crown className="w-4 h-4" />
