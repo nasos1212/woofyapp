@@ -238,7 +238,77 @@ const FreeMemberDashboard = () => {
             </p>
           </div>
 
-          {/* Main Community Hub Section - Recent Questions Feed */}
+          {/* My Pets Section - FIRST */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
+                {t("freeMember.pets.title")}
+              </h2>
+              {pets.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={() => navigate("/member/add-pet")}
+                  className="gap-1"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  {t("freeMember.pets.addPet")}
+                </Button>
+              )}
+            </div>
+
+            {pets.length === 0 ? (
+              <Card className="border-dashed border-2 border-primary/30 bg-primary/5">
+                <CardContent className="p-8 text-center">
+                  <Dog className="w-12 h-12 text-primary/60 mx-auto mb-3" />
+                  <h3 className="font-display font-semibold text-foreground mb-1 text-lg">{t("freeMember.pets.empty")}</h3>
+                  <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+                    {t("freeMember.pets.emptyDesc")}
+                  </p>
+                  <Button onClick={() => navigate("/member/add-pet")} size="lg" className="gap-2">
+                    <PlusCircle className="w-5 h-5" />
+                    {t("freeMember.pets.addFirst")}
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {pets.map((pet) => (
+                  <Card
+                    key={pet.id}
+                    className="hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => navigate(`/member/pet/${pet.id}`)}
+                  >
+                    <CardContent className="p-4 flex items-center gap-4">
+                      {pet.photo_url ? (
+                        <img
+                          src={pet.photo_url}
+                          alt={pet.pet_name}
+                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                          {pet.pet_type === 'cat' ? (
+                            <Cat className="w-6 h-6 text-primary" />
+                          ) : (
+                            <Dog className="w-6 h-6 text-primary" />
+                          )}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Community Hub Section - One question at a time */}
           <div className="mb-8">
             <Card className="border-border shadow-soft overflow-hidden">
               <CardContent className="p-6 md:p-8">
@@ -271,24 +341,44 @@ const FreeMemberDashboard = () => {
                     {t("freeMember.hub.description")}
                   </div>
                 ) : (
-                  <div className="divide-y divide-border/60 -mx-2">
-                    {recentQuestions.map((q) => (
-                      <button
-                        key={q.id}
-                        onClick={() => navigate(`/community/question/${q.id}`)}
-                        className="w-full text-left px-2 py-3 flex items-center justify-between gap-3 hover:bg-muted/40 rounded-lg transition-colors"
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4">
+                    <button
+                      onClick={() => navigate(`/community/question/${recentQuestions[currentQuestionIdx].id}`)}
+                      className="w-full text-left flex items-center justify-between gap-3 hover:opacity-80 transition-opacity"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-foreground truncate">
+                          {recentQuestions[currentQuestionIdx].title}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {recentQuestions[currentQuestionIdx].helped_count > 0
+                            ? `${recentQuestions[currentQuestionIdx].helped_count} ${recentQuestions[currentQuestionIdx].helped_count === 1 ? "person" : "people"} helped`
+                            : "Be the first to help"}
+                        </p>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                    </button>
+                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/60">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setCurrentQuestionIdx((i) => (i - 1 + recentQuestions.length) % recentQuestions.length)}
+                        disabled={recentQuestions.length < 2}
                       >
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-foreground text-sm truncate">{q.title}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            {q.helped_count > 0
-                              ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
-                              : "Be the first to help"}
-                          </p>
-                        </div>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                      </button>
-                    ))}
+                        ← Previous
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        {currentQuestionIdx + 1} / {recentQuestions.length}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setCurrentQuestionIdx((i) => (i + 1) % recentQuestions.length)}
+                        disabled={recentQuestions.length < 2}
+                      >
+                        Next →
+                      </Button>
+                    </div>
                   </div>
                 )}
 
@@ -314,75 +404,6 @@ const FreeMemberDashboard = () => {
             </Card>
           </div>
 
-
-          {/* My Pets Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-lg font-bold text-foreground flex items-center gap-2">
-                {t("freeMember.pets.title")}
-              </h2>
-              <Button 
-                size="sm" 
-                onClick={() => navigate("/member/add-pet")}
-                className="gap-1"
-              >
-                <PlusCircle className="w-4 h-4" />
-                {t("freeMember.pets.addPet")}
-              </Button>
-            </div>
-            
-            {pets.length === 0 ? (
-              <Card className="border-dashed border-2 border-muted-foreground/20">
-                <CardContent className="p-6 text-center">
-                  <Dog className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-                  <h3 className="font-medium text-foreground mb-1">{t("freeMember.pets.empty")}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {t("freeMember.pets.emptyDesc")}
-                  </p>
-                  <Button onClick={() => navigate("/member/add-pet")} className="gap-2">
-                    <PlusCircle className="w-4 h-4" />
-                    {t("freeMember.pets.addFirst")}
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {pets.map((pet) => (
-                  <Card 
-                    key={pet.id} 
-                    className="hover:shadow-md transition-all cursor-pointer"
-                    onClick={() => navigate(`/member/pet/${pet.id}`)}
-                  >
-                    <CardContent className="p-4 flex items-center gap-4">
-                      {pet.photo_url ? (
-                        <img 
-                          src={pet.photo_url} 
-                          alt={pet.pet_name}
-                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
-                          {pet.pet_type === 'cat' ? (
-                            <Cat className="w-6 h-6 text-primary" />
-                          ) : (
-                            <Dog className="w-6 h-6 text-primary" />
-                          )}
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
-                        </p>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-
-          </div>
 
           {/* Upgrade CTA above Quick Access */}
           <Card className="mb-6 border-primary/20 bg-primary/5">
