@@ -207,7 +207,7 @@ const FreeMemberDashboard = () => {
         <meta name="description" content={t("freeMember.pageDescription")} />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 via-background to-background overflow-x-hidden">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Header />
         <FreemiumOnboardingTour />
 
