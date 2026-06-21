@@ -238,63 +238,82 @@ const FreeMemberDashboard = () => {
             </p>
           </div>
 
-          {/* Main Community Hub Section - Hero Focus */}
+          {/* Main Community Hub Section - Recent Questions Feed */}
           <div className="mb-8">
-            <Card className="bg-gradient-to-br from-cyan-500 to-teal-600 border-0 shadow-xl overflow-hidden">
-              <CardContent className="p-0">
-                <div className="p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur">
-                      <Users className="w-6 h-6 text-white" />
+            <Card className="border-border shadow-soft overflow-hidden">
+              <CardContent className="p-6 md:p-8">
+                <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 bg-primary/10 rounded-xl flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                      <h2 className="font-display text-xl md:text-2xl font-bold text-white">
+                      <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                         {t("freeMember.hub.title")}
                       </h2>
-                      <p className="text-white/80 text-sm">
+                      <p className="text-muted-foreground text-sm">
                         {t("freeMember.hub.tagline")}
                       </p>
                     </div>
                   </div>
-
-                  <p className="text-white/90 mb-6 max-w-lg">
-                    {t("freeMember.hub.description")}
-                  </p>
-
-                  <div className="flex flex-wrap gap-3">
-                    <Button 
-                      size="lg"
-                      onClick={() => navigate("/community")}
-                      className="bg-white text-teal-700 hover:bg-white/90 gap-2"
-                    >
-                      <MessageSquarePlus className="w-5 h-5" />
-                      {t("freeMember.hub.browse")}
-                    </Button>
-                    <Button 
-                      size="lg"
-                      variant="outline"
-                      onClick={() => navigate("/community/ask")}
-                      className="border-white bg-white text-teal-700 hover:bg-white/90 gap-2"
-                    >
-                      <HelpCircle className="w-5 h-5" />
-                      {t("freeMember.hub.ask")}
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => navigate("/community/ask")}
+                    className="gap-2"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                    {t("freeMember.hub.ask")}
+                  </Button>
                 </div>
 
-                {/* Quick Actions Row */}
-                <div className="bg-white/10 backdrop-blur px-6 py-4 flex flex-wrap gap-4 md:gap-8">
-                  <button 
+                {recentQuestions.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground text-sm">
+                    {t("freeMember.hub.description")}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border/60 -mx-2">
+                    {recentQuestions.map((q) => (
+                      <button
+                        key={q.id}
+                        onClick={() => navigate(`/community/question/${q.id}`)}
+                        className="w-full text-left px-2 py-3 flex items-center justify-between gap-3 hover:bg-muted/40 rounded-lg transition-colors"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-foreground text-sm truncate">{q.title}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {q.helped_count > 0
+                              ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
+                              : "Be the first to help"}
+                          </p>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate("/community")}
+                    className="gap-2"
+                  >
+                    <MessageSquarePlus className="w-4 h-4" />
+                    {t("freeMember.hub.browse")}
+                  </Button>
+                  <button
                     onClick={() => navigate("/community?tab=saved")}
-                    className="flex items-center gap-2 text-white/90 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
                   >
                     <Bookmark className="w-4 h-4" />
-                    <span className="text-sm font-medium">{t("freeMember.hub.saved")}</span>
+                    <span className="font-medium">{t("freeMember.hub.saved")}</span>
                   </button>
                 </div>
               </CardContent>
             </Card>
           </div>
+
 
           {/* My Pets Section */}
           <div className="mb-8">
