@@ -45,6 +45,14 @@ interface Pet {
   photo_url: string | null;
 }
 
+interface RecentQuestion {
+  id: string;
+  title: string;
+  helped_count: number;
+  created_at: string;
+}
+
+
 const FreeMemberDashboard = () => {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
