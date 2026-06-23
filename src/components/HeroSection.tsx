@@ -21,10 +21,11 @@ const HeroSection = () => {
           <img
             src={heroImage}
             alt={t("hero.titleHighlight")}
-            width={1280}
-            height={1280}
-            className="absolute inset-0 w-full h-full object-cover"
+            width={1920}
+            height={1005}
+            className="absolute inset-0 w-full h-full object-cover object-[68%_60%] sm:object-[center_40%]"
           />
+
 
           {/* Gradient scrim for legibility */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70 sm:hidden" />
