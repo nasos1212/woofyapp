@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
+import { Trans, useTranslation } from "react-i18next";
 import { ArrowLeft, AlertTriangle, Loader2 } from "lucide-react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const MemberSettings = () => {
   const { accountType, loading: typeLoading } = useAccountType();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [pendingDeletion, setPendingDeletion] = useState<{
     requested_at: string;
@@ -71,8 +73,8 @@ const MemberSettings = () => {
   const proceedToFinalConfirm = () => {
     if (confirmText.trim().toUpperCase() !== "DELETE") {
       toast({
-        title: "Confirmation required",
-        description: "Please type DELETE to confirm.",
+        title: t("memberSettings.confirmRequiredTitle"),
+        description: t("memberSettings.confirmRequiredDesc"),
         variant: "destructive",
       });
       return;
@@ -90,16 +92,16 @@ const MemberSettings = () => {
       if (error) throw error;
       const scheduled = (data as { scheduled_for?: string })?.scheduled_for;
       toast({
-        title: "Account scheduled for deletion",
+        title: t("memberSettings.scheduledTitle"),
         description: scheduled
-          ? `Your account will be permanently deleted on ${formatDate(scheduled)}. Sign back in within 30 days to restore it.`
-          : "Your account will be deleted in 30 days. Sign back in to restore it.",
+          ? t("memberSettings.scheduledDescWithDate", { date: formatDate(scheduled) })
+          : t("memberSettings.scheduledDescNoDate"),
       });
       setFinalConfirmOpen(false);
       await signOut();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not process deletion request.";
-      toast({ title: "Something went wrong", description: message, variant: "destructive" });
+      const message = err instanceof Error ? err.message : t("memberSettings.errorGeneric");
+      toast({ title: t("memberSettings.errorTitle"), description: message, variant: "destructive" });
     } finally {
       setSubmitting(false);
     }
@@ -112,12 +114,12 @@ const MemberSettings = () => {
       if (error) throw error;
       setPendingDeletion(null);
       toast({
-        title: "Account restored",
-        description: "Your account is active again. Welcome back!",
+        title: t("memberSettings.restoreSuccessTitle"),
+        description: t("memberSettings.restoreSuccessDesc"),
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not restore account.";
-      toast({ title: "Restore failed", description: message, variant: "destructive" });
+      const message = err instanceof Error ? err.message : t("memberSettings.restoreFailDesc");
+      toast({ title: t("memberSettings.restoreFailTitle"), description: message, variant: "destructive" });
     } finally {
       setRestoring(false);
     }
@@ -126,26 +128,29 @@ const MemberSettings = () => {
   return (
     <>
       <Helmet>
-        <title>Account Settings | Wooffy</title>
+        <title>{t("memberSettings.pageTitle")}</title>
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <Header />
       <main className="container mx-auto max-w-2xl px-4 pt-24 pb-16">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
-          <ArrowLeft className="w-4 h-4 mr-1" /> Back
+          <ArrowLeft className="w-4 h-4 mr-1" /> {t("memberSettings.back")}
         </Button>
 
-        <h1 className="text-2xl md:text-3xl font-bold mb-1">Account Settings</h1>
-        <p className="text-muted-foreground mb-8">Manage your Wooffy account.</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-1">{t("memberSettings.heading")}</h1>
+        <p className="text-muted-foreground mb-8">{t("memberSettings.subheading")}</p>
 
         {pendingDeletion && (
           <Alert variant="destructive" className="mb-6">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Account scheduled for deletion</AlertTitle>
+            <AlertTitle>{t("memberSettings.pendingTitle")}</AlertTitle>
             <AlertDescription className="space-y-3">
               <p>
-                Your account will be permanently deleted on{" "}
-                <strong>{formatDate(pendingDeletion.scheduled_for)}</strong>. You can restore it any time before then.
+                <Trans
+                  i18nKey="memberSettings.pendingDescription"
+                  values={{ date: formatDate(pendingDeletion.scheduled_for) }}
+                  components={{ strong: <strong /> }}
+                />
               </p>
               <Button
                 size="sm"
@@ -155,7 +160,7 @@ const MemberSettings = () => {
                 className="bg-background"
               >
                 {restoring ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-                Restore my account
+                {t("memberSettings.restore")}
               </Button>
             </AlertDescription>
           </Alert>
@@ -163,12 +168,12 @@ const MemberSettings = () => {
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Profile</CardTitle>
-            <CardDescription>Your basic account details.</CardDescription>
+            <CardTitle>{t("memberSettings.profileTitle")}</CardTitle>
+            <CardDescription>{t("memberSettings.profileDesc")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>
-              <span className="text-muted-foreground">Email: </span>
+              <span className="text-muted-foreground">{t("memberSettings.emailLabel")} </span>
               <span className="font-medium">{user.email}</span>
             </div>
           </CardContent>
@@ -177,20 +182,19 @@ const MemberSettings = () => {
         {isMember && !pendingDeletion && !loadingProfile && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Delete account</CardTitle>
-              <CardDescription>
-                Permanently delete your Wooffy account and all associated data, including your pets, membership,
-                redemption history, community posts and notifications.
-              </CardDescription>
+              <CardTitle className="text-base">{t("memberSettings.deleteCardTitle")}</CardTitle>
+              <CardDescription>{t("memberSettings.deleteCardDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
-                <li>Your account is soft-deleted for <strong>30 days</strong>. Sign back in any time within that window to restore it.</li>
-                <li>Any active paid membership will be canceled immediately. No refunds are issued for the remaining period.</li>
-                <li>After 30 days, all your data is permanently removed and cannot be recovered.</li>
+                <li>
+                  <Trans i18nKey="memberSettings.deleteBullet1" components={{ strong: <strong /> }} />
+                </li>
+                <li>{t("memberSettings.deleteBullet2")}</li>
+                <li>{t("memberSettings.deleteBullet3")}</li>
               </ul>
               <Button variant="destructive" onClick={() => setConfirmOpen(true)}>
-                Delete my account
+                {t("memberSettings.deleteButton")}
               </Button>
             </CardContent>
           </Card>
@@ -199,18 +203,15 @@ const MemberSettings = () => {
         {!isMember && (
           <Card>
             <CardHeader>
-              <CardTitle>Close your account</CardTitle>
-              <CardDescription>
-                Partner accounts (businesses and shelters) can't self-delete because doing so would affect customer
-                redemptions, active offers and adoption inquiries already linked to your profile.
-              </CardDescription>
+              <CardTitle>{t("memberSettings.partnerCardTitle")}</CardTitle>
+              <CardDescription>{t("memberSettings.partnerCardDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm mb-4">
-                Please contact us and we'll close your account safely after handling any outstanding obligations.
-              </p>
+              <p className="text-sm mb-4">{t("memberSettings.partnerHelp")}</p>
               <Button asChild variant="outline">
-                <a href="mailto:hello@wooffy.app?subject=Account%20closure%20request">Contact support</a>
+                <a href="mailto:hello@wooffy.app?subject=Account%20closure%20request">
+                  {t("memberSettings.contactSupport")}
+                </a>
               </Button>
             </CardContent>
           </Card>
@@ -220,26 +221,23 @@ const MemberSettings = () => {
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete your account?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will cancel any active paid membership and schedule your account and all associated data for
-              permanent deletion in 30 days. You can sign back in within that period to restore it.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{t("memberSettings.confirmTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>{t("memberSettings.confirmDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <div className="space-y-2">
             <Label htmlFor="confirm-delete">
-              Type <strong>DELETE</strong> to confirm
+              <Trans i18nKey="memberSettings.typeDeleteLabel" components={{ strong: <strong /> }} />
             </Label>
             <Input
               id="confirm-delete"
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
-              placeholder="DELETE"
+              placeholder={t("memberSettings.typeDeletePlaceholder")}
               autoComplete="off"
             />
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("memberSettings.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -248,7 +246,7 @@ const MemberSettings = () => {
               disabled={confirmText.trim().toUpperCase() !== "DELETE"}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Continue
+              {t("memberSettings.continue")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -265,20 +263,17 @@ const MemberSettings = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-destructive">
-              <AlertTriangle className="w-5 h-5" /> Final confirmation
+              <AlertTriangle className="w-5 h-5" /> {t("memberSettings.finalTitle")}
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              This is your last chance to cancel. Once you confirm, your Wooffy account will be scheduled for
-              permanent deletion.
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("memberSettings.finalDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
 
           <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-foreground space-y-2">
-            <p className="font-medium">By continuing, I understand and accept that:</p>
+            <p className="font-medium">{t("memberSettings.ackIntro")}</p>
             <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
-              <li>My account and all associated data (pets, membership, redemption history, community posts, notifications) will be permanently deleted after 30 days.</li>
-              <li>Any active paid membership will be canceled immediately and no refund will be issued for the remaining period.</li>
-              <li>After the 30-day grace period this action cannot be undone.</li>
+              <li>{t("memberSettings.ackBullet1")}</li>
+              <li>{t("memberSettings.ackBullet2")}</li>
+              <li>{t("memberSettings.ackBullet3")}</li>
             </ul>
           </div>
 
@@ -291,12 +286,12 @@ const MemberSettings = () => {
               className="mt-0.5"
             />
             <Label htmlFor="acknowledge-delete" className="text-sm leading-snug cursor-pointer">
-              I have read and accept the above, and I want to permanently delete my Wooffy account.
+              {t("memberSettings.ackCheckbox")}
             </Label>
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={submitting}>Go back</AlertDialogCancel>
+            <AlertDialogCancel disabled={submitting}>{t("memberSettings.goBack")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -306,7 +301,7 @@ const MemberSettings = () => {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-              Permanently delete my account
+              {t("memberSettings.permanentDelete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
