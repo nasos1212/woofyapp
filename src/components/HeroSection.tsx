@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
-import heroImage from "@/assets/hero-dog-v2.jpg";
+import heroImage from "@/assets/hero-dog-cat.webp";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
