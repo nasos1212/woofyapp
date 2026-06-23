@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import MemberJourneyCarousel from "./MemberJourneyCarousel";
-import heroImage from "@/assets/hero-dog-cat.webp";
+import heroImage from "@/assets/hero-dog-v2.jpg";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -21,11 +21,10 @@ const HeroSection = () => {
           <img
             src={heroImage}
             alt={t("hero.titleHighlight")}
-            width={1920}
-            height={1005}
-            className="absolute inset-0 w-full h-full object-cover object-[42%_55%] sm:object-[center_40%]"
+            width={1280}
+            height={1280}
+            className="absolute inset-0 w-full h-full object-cover"
           />
-
 
           {/* Gradient scrim for legibility */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black/70 sm:hidden" />
