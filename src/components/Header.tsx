@@ -253,7 +253,7 @@ const Header = () => {
                   {!isBusiness && !isShelter && (
                     <DropdownMenuItem onClick={() => navigate("/member/settings")}>
                       <Settings className="mr-2 h-4 w-4" />
-                      Account settings
+                      {t("header.accountSettings")}
                     </DropdownMenuItem>
                   )}
                   {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
@@ -341,7 +341,7 @@ const Header = () => {
                   {!isBusiness && !isShelter && (
                     <DropdownMenuItem onClick={() => navigate("/member/settings")}>
                       <Settings className="mr-2 h-4 w-4" />
-                      Account settings
+                      {t("header.accountSettings")}
                     </DropdownMenuItem>
                   )}
                   {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
