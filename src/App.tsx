@@ -122,6 +122,7 @@ const App = () => (
               <Route path="/member/shelters" element={<MemberShelters />} />
               <Route path="/member/partners" element={<MemberPartners />} />
               <Route path="/member/pet-friendly-places" element={<PetFriendlyPlaces />} />
+              <Route path="/member/settings" element={<MemberSettings />} />
               <Route path="/community" element={<Community />} />
               <Route path="/community/ask" element={<CommunityAsk />} />
               <Route path="/community/question/:id" element={<CommunityQuestion />} />
