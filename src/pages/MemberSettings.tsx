@@ -37,6 +37,8 @@ const MemberSettings = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [finalConfirmOpen, setFinalConfirmOpen] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
