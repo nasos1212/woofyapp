@@ -66,6 +66,16 @@ verify_jwt = false
 [functions.update-subscription-status]
 verify_jwt = false
 
+[functions.request-account-deletion]
+verify_jwt = false
+
+[functions.cancel-account-deletion]
+verify_jwt = false
+
+[functions.purge-deleted-accounts]
+verify_jwt = false
+
+
 
 
 

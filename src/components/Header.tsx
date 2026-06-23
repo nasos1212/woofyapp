@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown, BookOpen } from "lucide-react";
+import { Dog, Building2, User, Tag, Shield, LogOut, Bell, MessageCircle, History, Menu, X, Crown, BookOpen, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
@@ -250,6 +250,12 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
+                  {!isBusiness && !isShelter && (
+                    <DropdownMenuItem onClick={() => navigate("/member/settings")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Account settings
+                    </DropdownMenuItem>
+                  )}
                   {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />

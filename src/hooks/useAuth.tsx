@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           sessionStorage.removeItem('wooffy_city_prompt_dismissed');
           supabase
             .from('profiles')
-            .select('login_count, email_verified')
+            .select('login_count, email_verified, deletion_scheduled_for')
             .eq('user_id', session.user.id)
             .single()
             .then(({ data }) => {
@@ -45,6 +45,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                   .update({ login_count: currentCount + 1 })
                   .eq('user_id', session.user.id)
                   .then(() => {});
+              }
+              // Surface pending-deletion restore prompt
+              if (data?.deletion_scheduled_for && new Date(data.deletion_scheduled_for) > new Date()) {
+                const scheduled = new Date(data.deletion_scheduled_for).toLocaleDateString();
+                import('@/hooks/use-toast').then(({ toast }) => {
+                  toast({
+                    title: 'Account scheduled for deletion',
+                    description: `Your account will be permanently deleted on ${scheduled}. Visit Account settings to restore it.`,
+                    duration: 10000,
+                  });
+                });
               }
             });
         }

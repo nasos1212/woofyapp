@@ -752,8 +752,26 @@ const BusinessSettings = () => {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {/* Close account */}
+          <Card className="mt-8 border-destructive/30">
+            <CardHeader>
+              <CardTitle className="text-base">Close this business account</CardTitle>
+              <CardDescription>
+                For partner accounts we close things manually so customer redemptions, active offers and
+                analytics tied to your business are handled correctly. Email us and we'll take care of it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline">
+                <a href="mailto:hello@wooffy.app?subject=Business%20account%20closure%20request">
+                  Contact support
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
         </main>
-        
+
         {/* Spacer for mobile nav */}
         <div className="pb-20 md:pb-0" />
         <BusinessMobileNav />

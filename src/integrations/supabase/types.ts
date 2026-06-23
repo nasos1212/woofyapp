@@ -2009,6 +2009,8 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          deletion_requested_at: string | null
+          deletion_scheduled_for: string | null
           email: string
           email_verified: boolean | null
           full_name: string | null
@@ -2024,6 +2026,8 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
+          deletion_scheduled_for?: string | null
           email: string
           email_verified?: boolean | null
           full_name?: string | null
@@ -2039,6 +2043,8 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
+          deletion_scheduled_for?: string | null
           email?: string
           email_verified?: boolean | null
           full_name?: string | null
