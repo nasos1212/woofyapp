@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home, AlertTriangle, FileText } from "lucide-react";
+import { Users, Shield, TrendingUp, Clock, Gift, MessageCircleQuestion, MapPin, UserPlus, Flag, Building2, Home, AlertTriangle, FileText, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ import AffiliateManager from "@/components/admin/AffiliateManager";
 import CommunityReportsManager from "@/components/admin/CommunityReportsManager";
 import LostFoundManager from "@/components/admin/LostFoundManager";
 import BlogManager from "@/components/admin/BlogManager";
+import PendingDeletionsPanel from "@/components/admin/PendingDeletionsPanel";
 
 interface PendingCounts {
   support: number;
@@ -221,6 +222,10 @@ const AdminDashboard = () => {
               <FileText className="w-4 h-4" />
               Blog
             </TabsTrigger>
+            <TabsTrigger value="deletions" className="gap-1">
+              <Trash2 className="w-4 h-4" />
+              Deletions
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="support">
@@ -261,6 +266,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="blog">
             <BlogManager />
+          </TabsContent>
+
+          <TabsContent value="deletions">
+            <PendingDeletionsPanel />
           </TabsContent>
         </Tabs>
       </div>
