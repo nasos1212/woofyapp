@@ -250,6 +250,12 @@ const Header = () => {
                     <Bell className="mr-2 h-4 w-4" />
                     {t("header.notifications")}
                   </DropdownMenuItem>
+                  {!isBusiness && !isShelter && (
+                    <DropdownMenuItem onClick={() => navigate("/member/settings")}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      Account settings
+                    </DropdownMenuItem>
+                  )}
                   {PAID_MEMBERSHIP_ENABLED && !isPaidMember && !isBusiness && !isShelter && (
                     <>
                       <DropdownMenuSeparator />
