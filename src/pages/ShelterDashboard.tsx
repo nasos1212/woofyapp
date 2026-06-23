@@ -662,6 +662,23 @@ const ShelterDashboard = () => {
               </Tabs>
             </CardContent>
           </Card>
+
+          <Card className="mt-8 border-destructive/30">
+            <CardHeader>
+              <CardTitle className="text-base">Close this shelter account</CardTitle>
+              <CardDescription>
+                For shelter accounts we close things manually so adoption inquiries and adoptable-pet
+                listings tied to your shelter are handled correctly. Email us and we'll take care of it.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild variant="outline">
+                <a href="mailto:hello@wooffy.app?subject=Shelter%20account%20closure%20request">
+                  Contact support
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
         </main>
       </div>
     </>
