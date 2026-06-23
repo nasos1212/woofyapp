@@ -23,7 +23,7 @@ const HeroSection = () => {
             alt={t("hero.titleHighlight")}
             width={1920}
             height={1005}
-            className="absolute inset-0 w-full h-full object-cover object-[68%_60%] sm:object-[center_40%]"
+            className="absolute inset-0 w-full h-full object-cover object-[42%_55%] sm:object-[center_40%]"
           />
 
 
