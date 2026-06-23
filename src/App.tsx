@@ -22,6 +22,7 @@ import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
 import BusinessSettings from "./pages/BusinessSettings";
+import MemberSettings from "./pages/MemberSettings";
 import AdminDashboard from "./pages/AdminDashboard";
 import PetHealthAssistant from "./pages/PetHealthAssistant";
 import LostFoundAlerts from "./pages/LostFoundAlerts";
