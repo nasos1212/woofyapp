@@ -169,8 +169,8 @@ const MemberSettings = () => {
             <CardHeader>
               <CardTitle className="text-base">Delete account</CardTitle>
               <CardDescription>
-                Permanently delete your Wooffy account and all associated data — pets, membership, redemption history,
-                community posts and notifications.
+                Permanently delete your Wooffy account and all associated data, including your pets, membership,
+                redemption history, community posts and notifications.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
