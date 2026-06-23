@@ -165,11 +165,9 @@ const MemberSettings = () => {
         </Card>
 
         {isMember && !pendingDeletion && !loadingProfile && (
-          <Card className="border-destructive/40">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-destructive flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5" /> Danger zone
-              </CardTitle>
+              <CardTitle className="text-base">Delete account</CardTitle>
               <CardDescription>
                 Permanently delete your Wooffy account and all associated data — pets, membership, redemption history,
                 community posts and notifications.
