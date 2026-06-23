@@ -68,15 +68,22 @@ const MemberSettings = () => {
 
   const isMember = accountType === "member";
 
-  const handleDelete = async () => {
+  const proceedToFinalConfirm = () => {
     if (confirmText.trim().toUpperCase() !== "DELETE") {
       toast({
         title: "Confirmation required",
-        description: 'Please type DELETE to confirm.',
+        description: "Please type DELETE to confirm.",
         variant: "destructive",
       });
       return;
     }
+    setConfirmOpen(false);
+    setAcknowledged(false);
+    setFinalConfirmOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!acknowledged) return;
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("request-account-deletion");
@@ -88,7 +95,7 @@ const MemberSettings = () => {
           ? `Your account will be permanently deleted on ${formatDate(scheduled)}. Sign back in within 30 days to restore it.`
           : "Your account will be deleted in 30 days. Sign back in to restore it.",
       });
-      setConfirmOpen(false);
+      setFinalConfirmOpen(false);
       await signOut();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not process deletion request.";
