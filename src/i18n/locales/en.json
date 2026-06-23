@@ -37,7 +37,8 @@
     "notifications": "Notifications",
     "upgradeToPremium": "Upgrade to Premium",
     "adminDashboard": "Admin Dashboard",
-    "blog": "Wooffy Blog"
+    "blog": "Wooffy Blog",
+    "accountSettings": "Account settings"
   },
   "hero": {
     "badge": "Join Free · No Credit Card Needed",
