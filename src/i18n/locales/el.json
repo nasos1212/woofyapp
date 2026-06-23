@@ -37,7 +37,8 @@
     "notifications": "Ειδοποιήσεις",
     "upgradeToPremium": "Αναβάθμιση σε Premium",
     "adminDashboard": "Αρχική Διαχειριστή",
-    "blog": "Wooffy Blog"
+    "blog": "Wooffy Blog",
+    "accountSettings": "Ρυθμίσεις λογαριασμού"
   },
   "hero": {
     "badge": "Δωρεάν εγγραφή · Χωρίς πιστωτική κάρτα",
