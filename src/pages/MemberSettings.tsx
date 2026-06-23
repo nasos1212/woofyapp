@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,6 +38,8 @@ const MemberSettings = () => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [finalConfirmOpen, setFinalConfirmOpen] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
@@ -65,15 +68,22 @@ const MemberSettings = () => {
 
   const isMember = accountType === "member";
 
-  const handleDelete = async () => {
+  const proceedToFinalConfirm = () => {
     if (confirmText.trim().toUpperCase() !== "DELETE") {
       toast({
         title: "Confirmation required",
-        description: 'Please type DELETE to confirm.',
+        description: "Please type DELETE to confirm.",
         variant: "destructive",
       });
       return;
     }
+    setConfirmOpen(false);
+    setAcknowledged(false);
+    setFinalConfirmOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!acknowledged) return;
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("request-account-deletion");
@@ -85,7 +95,7 @@ const MemberSettings = () => {
           ? `Your account will be permanently deleted on ${formatDate(scheduled)}. Sign back in within 30 days to restore it.`
           : "Your account will be deleted in 30 days. Sign back in to restore it.",
       });
-      setConfirmOpen(false);
+      setFinalConfirmOpen(false);
       await signOut();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Could not process deletion request.";
@@ -229,17 +239,74 @@ const MemberSettings = () => {
             />
           </div>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={submitting}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                proceedToFinalConfirm();
+              }}
+              disabled={confirmText.trim().toUpperCase() !== "DELETE"}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={finalConfirmOpen}
+        onOpenChange={(open) => {
+          if (submitting) return;
+          setFinalConfirmOpen(open);
+          if (!open) setAcknowledged(false);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="w-5 h-5" /> Final confirmation
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This is your last chance to cancel. Once you confirm, your Wooffy account will be scheduled for
+              permanent deletion.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-foreground space-y-2">
+            <p className="font-medium">By continuing, I understand and accept that:</p>
+            <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
+              <li>My account and all associated data (pets, membership, redemption history, community posts, notifications) will be permanently deleted after 30 days.</li>
+              <li>Any active paid membership will be canceled immediately and no refund will be issued for the remaining period.</li>
+              <li>After the 30-day grace period this action cannot be undone.</li>
+            </ul>
+          </div>
+
+          <div className="flex items-start gap-2 pt-2">
+            <Checkbox
+              id="acknowledge-delete"
+              checked={acknowledged}
+              onCheckedChange={(v) => setAcknowledged(v === true)}
+              disabled={submitting}
+              className="mt-0.5"
+            />
+            <Label htmlFor="acknowledge-delete" className="text-sm leading-snug cursor-pointer">
+              I have read and accept the above, and I want to permanently delete my Wooffy account.
+            </Label>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={submitting}>Go back</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
                 handleDelete();
               }}
-              disabled={submitting || confirmText.trim().toUpperCase() !== "DELETE"}
+              disabled={submitting || !acknowledged}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-              Delete my account
+              Permanently delete my account
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
