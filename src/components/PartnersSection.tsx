@@ -98,7 +98,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
   return (
     <div className="relative">
       {/* Soft glow */}
-      <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-3xl blur-2xl" aria-hidden />
+      <div className="absolute -inset-4 bg-gradient-to-br from-amber-300/30 via-amber-200/10 to-transparent rounded-3xl blur-2xl" aria-hidden />
 
       {/* Browser frame */}
       <div className="relative bg-card rounded-2xl shadow-card border border-border overflow-hidden">
