@@ -432,7 +432,7 @@ const CommunityQuestion = () => {
                   )}
                   <div>
                     <p className="font-medium">
-                      {question.is_anonymous ? t('communityQuestion.anonymous') : (question.author?.full_name || t('communityQuestion.anonymous'))}
+                      {question.author?.full_name || t('communityQuestion.anonymous')}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(new Date(question.created_at))} · {formatRelative(question.created_at)}
