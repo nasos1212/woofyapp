@@ -2876,11 +2876,13 @@ export type Database = {
           city: string | null
           created_at: string | null
           description: string | null
+          email: string | null
           facebook_url: string | null
           google_maps_url: string | null
           id: string | null
           instagram_url: string | null
           logo_url: string | null
+          phone: string | null
           tiktok_url: string | null
           updated_at: string | null
           verification_status:
@@ -2897,11 +2899,13 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          email?: string | null
           facebook_url?: string | null
           google_maps_url?: string | null
           id?: string | null
           instagram_url?: string | null
           logo_url?: string | null
+          phone?: string | null
           tiktok_url?: string | null
           updated_at?: string | null
           verification_status?:
@@ -2918,11 +2922,13 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          email?: string | null
           facebook_url?: string | null
           google_maps_url?: string | null
           id?: string | null
           instagram_url?: string | null
           logo_url?: string | null
+          phone?: string | null
           tiktok_url?: string | null
           updated_at?: string | null
           verification_status?:
@@ -3110,6 +3116,7 @@ export type Database = {
         Row: {
           address: string | null
           city: string | null
+          contact_name: string | null
           cover_photo_position: number | null
           cover_photo_url: string | null
           created_at: string | null
@@ -3117,6 +3124,7 @@ export type Database = {
           dogs_helped_count: number | null
           dogs_in_care: string | null
           donation_link: string | null
+          email: string | null
           facebook_url: string | null
           id: string | null
           instagram_url: string | null
@@ -3124,6 +3132,7 @@ export type Database = {
           location: string | null
           logo_url: string | null
           mission_statement: string | null
+          phone: string | null
           shelter_name: string | null
           tiktok_url: string | null
           updated_at: string | null
@@ -3138,6 +3147,7 @@ export type Database = {
         Insert: {
           address?: string | null
           city?: string | null
+          contact_name?: string | null
           cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string | null
@@ -3145,6 +3155,7 @@ export type Database = {
           dogs_helped_count?: number | null
           dogs_in_care?: string | null
           donation_link?: string | null
+          email?: string | null
           facebook_url?: string | null
           id?: string | null
           instagram_url?: string | null
@@ -3152,6 +3163,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           mission_statement?: string | null
+          phone?: string | null
           shelter_name?: string | null
           tiktok_url?: string | null
           updated_at?: string | null
@@ -3166,6 +3178,7 @@ export type Database = {
         Update: {
           address?: string | null
           city?: string | null
+          contact_name?: string | null
           cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string | null
@@ -3173,6 +3186,7 @@ export type Database = {
           dogs_helped_count?: number | null
           dogs_in_care?: string | null
           donation_link?: string | null
+          email?: string | null
           facebook_url?: string | null
           id?: string | null
           instagram_url?: string | null
@@ -3180,6 +3194,7 @@ export type Database = {
           location?: string | null
           logo_url?: string | null
           mission_statement?: string | null
+          phone?: string | null
           shelter_name?: string | null
           tiktok_url?: string | null
           updated_at?: string | null
