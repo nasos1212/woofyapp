@@ -104,6 +104,7 @@ const CommunityQuestion = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [loading, setLoading] = useState(true);
   const [answerContent, setAnswerContent] = useState('');
+  const [answerIsAnonymous, setAnswerIsAnonymous] = useState(false);
   const [answerPhotos, setAnswerPhotos] = useState<File[]>([]);
   const [answerPhotoUrls, setAnswerPhotoUrls] = useState<string[]>([]);
   const [showPhotoGallery, setShowPhotoGallery] = useState<string | null>(null);
@@ -237,8 +238,9 @@ const CommunityQuestion = () => {
     if (!answerContent.trim() || !question) return;
 
     try {
-      await createAnswer(question.id, answerContent.trim(), answerPhotos);
+      await createAnswer(question.id, answerContent.trim(), answerPhotos, answerIsAnonymous);
       setAnswerContent('');
+      setAnswerIsAnonymous(false);
       setAnswerPhotos([]);
       setAnswerPhotoUrls([]);
       loadData(); // Reload to show new answer
