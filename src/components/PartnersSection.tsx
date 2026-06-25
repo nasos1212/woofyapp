@@ -115,12 +115,12 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
         </div>
 
         {/* Dashboard body */}
-        <div className="p-5 space-y-4 bg-gradient-to-br from-background to-muted/30 min-h-[380px]">
+        <div className="p-5 space-y-4 bg-gradient-to-b from-primary/10 via-primary/15 to-primary/30 min-h-[380px]">
           {/* Greeting */}
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">{t("partnersSection.preview.welcome")}</p>
-              <p className="font-display font-semibold text-foreground">Bark & Bone Cafe</p>
+              <p className="font-display font-semibold text-foreground">Happy Tails Pet Hotel</p>
             </div>
             <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
