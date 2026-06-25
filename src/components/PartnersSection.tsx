@@ -146,15 +146,15 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
 
           {/* Live redemption toast */}
           <div className="relative h-14">
-            <div className="absolute inset-x-0 bottom-0 bg-card border border-primary/30 rounded-xl p-3 flex items-center gap-3 shadow-soft animate-toast">
-              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                <Check className="w-4 h-4 text-primary" />
+            <div className="absolute inset-x-0 bottom-0 bg-card border border-amber-500/30 rounded-xl p-3 flex items-center gap-3 shadow-soft animate-toast">
+              <div className="w-8 h-8 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground truncate">{t("partnersSection.preview.toastTitle")}</p>
                 <p className="text-[10px] text-muted-foreground truncate">{t("partnersSection.preview.toastBody")}</p>
               </div>
-              <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
             </div>
           </div>
         </div>
