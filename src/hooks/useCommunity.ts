@@ -428,7 +428,8 @@ export const useCommunity = () => {
   const createAnswer = useCallback(async (
     questionId: string,
     content: string,
-    photos?: File[]
+    photos?: File[],
+    isAnonymous: boolean = false
   ): Promise<Answer> => {
     if (!user) throw new Error('Must be logged in');
 
@@ -447,7 +448,8 @@ export const useCommunity = () => {
           question_id: questionId,
           user_id: user.id,
           content,
-          is_verified_pro: expertData?.is_verified_professional || false
+          is_anonymous: isAnonymous,
+          is_verified_pro: isAnonymous ? false : (expertData?.is_verified_professional || false)
         })
         .select()
         .single();
