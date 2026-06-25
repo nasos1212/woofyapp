@@ -42,10 +42,9 @@ const ShelterProfile = () => {
     queryKey: ['shelter', id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('shelters')
+        .from('shelters_public')
         .select('*')
         .eq('id', id)
-        .eq('verification_status', 'approved')
         .single();
       
       if (error) throw error;

@@ -64,7 +64,7 @@ const BlogPostPage = () => {
       // Linked business
       if (p.business_id) {
         const { data: b } = await supabase
-          .from("businesses")
+          .from("businesses_public")
           .select("id, business_name, logo_url, category")
           .eq("id", p.business_id)
           .maybeSingle();

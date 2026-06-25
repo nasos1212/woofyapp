@@ -55,9 +55,8 @@ const MemberPartners = () => {
     const fetchPartners = async () => {
       try {
         const { data, error } = await supabase
-          .from("businesses")
+          .from("businesses_public")
           .select("id, business_name, description, category, categories, city, logo_url, website, instagram_url, facebook_url, tiktok_url")
-          .eq("verification_status", "approved")
           .order("business_name");
 
         if (error) throw error;
