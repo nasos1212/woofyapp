@@ -177,9 +177,9 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
 
 const KpiCard = ({ label, from, to, delay, accent }: { label: string; from: number; to: number; delay: number; accent?: boolean }) => {
   return (
-    <div className={`rounded-xl p-3 border ${accent ? "bg-primary/10 border-primary/30" : "bg-card border-border"}`}>
+    <div className={`rounded-xl p-3 border ${accent ? "bg-amber-500/10 border-amber-500/30" : "bg-card border-border"}`}>
       <p className="text-[10px] text-muted-foreground mb-1 truncate">{label}</p>
-      <p className={`text-lg font-display font-bold tabular-nums ${accent ? "text-primary" : "text-foreground"}`}>
+      <p className={`text-lg font-display font-bold tabular-nums ${accent ? "text-amber-600 dark:text-amber-400" : "text-foreground"}`}>
         <CountUp from={from} to={to} delay={delay} />
       </p>
     </div>
