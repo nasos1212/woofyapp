@@ -3108,11 +3108,13 @@ export type Database = {
       }
       shelters_public: {
         Row: {
+          address: string | null
           city: string | null
           cover_photo_position: number | null
           cover_photo_url: string | null
           created_at: string | null
           description: string | null
+          dogs_helped_count: number | null
           dogs_in_care: string | null
           donation_link: string | null
           facebook_url: string | null
@@ -3131,13 +3133,16 @@ export type Database = {
             | null
           verified_at: string | null
           website: string | null
+          years_operating: string | null
         }
         Insert: {
+          address?: string | null
           city?: string | null
           cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string | null
           description?: string | null
+          dogs_helped_count?: number | null
           dogs_in_care?: string | null
           donation_link?: string | null
           facebook_url?: string | null
@@ -3156,13 +3161,16 @@ export type Database = {
             | null
           verified_at?: string | null
           website?: string | null
+          years_operating?: string | null
         }
         Update: {
+          address?: string | null
           city?: string | null
           cover_photo_position?: number | null
           cover_photo_url?: string | null
           created_at?: string | null
           description?: string | null
+          dogs_helped_count?: number | null
           dogs_in_care?: string | null
           donation_link?: string | null
           facebook_url?: string | null
@@ -3181,6 +3189,7 @@ export type Database = {
             | null
           verified_at?: string | null
           website?: string | null
+          years_operating?: string | null
         }
         Relationships: []
       }
