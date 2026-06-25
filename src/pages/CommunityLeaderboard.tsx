@@ -61,22 +61,32 @@ const CommunityLeaderboard = () => {
     const loadData = async () => {
       if (!user) return;
       try {
-        // Fetch leaderboard with profiles
-        const { data, error } = await supabase
+        // Fetch leaderboard
+        const { data: statsData, error } = await supabase
           .from('community_expert_stats')
-          .select(`
-            *,
-            profile:profiles!community_expert_stats_user_id_fkey(full_name, avatar_url)
-          `)
+          .select('*')
           .order('reputation_score', { ascending: false })
           .limit(50);
 
         if (error) throw error;
 
-        const ranked = (data || []).map((entry, index) => ({
+        // Fetch public profile fields separately (excludes PII)
+        const userIds = [...new Set((statsData || []).map(s => s.user_id))];
+        const { data: profilesData } = userIds.length
+          ? await supabase
+              .from('profiles_public')
+              .select('user_id, full_name, avatar_url')
+              .in('user_id', userIds)
+          : { data: [] as { user_id: string; full_name: string | null; avatar_url: string | null }[] };
+
+        const profileMap = new Map((profilesData || []).map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]));
+
+        const ranked = (statsData || []).map((entry, index) => ({
           ...entry,
+          profile: profileMap.get(entry.user_id) || undefined,
           rank: index + 1
         })) as unknown as LeaderboardEntry[];
+
 
         setLeaderboard(ranked);
 

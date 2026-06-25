@@ -599,16 +599,27 @@ export const useCommunity = () => {
   const fetchLeaderboard = useCallback(async (limit = 10): Promise<ExpertStats[]> => {
     const { data, error } = await supabase
       .from('community_expert_stats')
-      .select(`
-        *,
-        profile:profiles!community_expert_stats_user_id_fkey(full_name, avatar_url)
-      `)
+      .select('*')
       .order('reputation_score', { ascending: false })
       .limit(limit);
 
     if (error) throw error;
-    return data as ExpertStats[];
+    if (!data || data.length === 0) return [];
+
+    const userIds = [...new Set(data.map(d => d.user_id))];
+    const { data: profiles } = await supabase
+      .from('profiles_public')
+      .select('user_id, full_name, avatar_url')
+      .in('user_id', userIds);
+
+    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+
+    return data.map(d => ({
+      ...d,
+      profile: profileMap.get(d.user_id) || null,
+    })) as unknown as ExpertStats[];
   }, []);
+
 
   const fetchMyQuestions = useCallback(async (): Promise<Question[]> => {
     if (!user) return [];

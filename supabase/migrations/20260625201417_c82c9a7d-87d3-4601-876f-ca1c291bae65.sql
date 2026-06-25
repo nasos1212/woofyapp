@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone can view basic profile info for community" ON public.profiles;
