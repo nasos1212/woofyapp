@@ -2657,8 +2657,8 @@
   "partnersSection": {
     "badge": "For Businesses",
     "title": "Grow your business with Wooffy",
-    "description": "Join a curated network of pet-friendly businesses and get in front of engaged pet parents actively looking for trusted services in your area.",
-    "categoriesLabel": "We welcome",
+    "description": "Join a curated network of trusted local businesses and get in front of engaged pet parents actively looking for services in your area.",
+    "categoriesLabel": "Built for",
     "cta": "Become a partner",
     "ctaHelp": "Free to list · No commitment · Reviewed within 48 hours",
     "benefits": {
@@ -2679,6 +2679,16 @@
         "desc": "No setup fees or monthly costs. Create your offers, get listed, and start being discovered."
       }
     },
+    "preview": {
+      "welcome": "Welcome back",
+      "live": "Live",
+      "views": "Profile views",
+      "redemptions": "Redemptions",
+      "newCustomers": "New customers",
+      "weekly": "This week",
+      "toastTitle": "New redemption · €12 off",
+      "toastBody": "Maria just redeemed your birthday offer"
+    },
     "cat": {
       "petShops": "Pet Shops",
       "veterinaries": "Veterinaries",
@@ -2688,6 +2698,7 @@
       "other": "Other"
     }
   },
+
 
   "hubSection": {
     "title": "Your Pet Owner Hub",
