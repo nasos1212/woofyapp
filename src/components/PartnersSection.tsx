@@ -149,7 +149,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
             <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-[8px]">🏢</span>
             </div>
-            <span className="text-[9px] font-medium text-slate-700">Pet Nas</span>
+            <span className="text-[9px] font-medium text-slate-700">Paws Pet Hotel</span>
           </div>
         </div>
 
@@ -157,7 +157,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
         <div className="p-4 space-y-3 bg-slate-50/60 min-h-[380px]">
           {/* Title */}
           <div>
-            <h3 className="font-display font-bold text-slate-900 text-base leading-tight">Pet Nas</h3>
+            <h3 className="font-display font-bold text-slate-900 text-base leading-tight">Paws Pet Hotel</h3>
             <p className="text-[10px] text-slate-500">{t("partnersSection.preview.subtitle")}</p>
           </div>
 
