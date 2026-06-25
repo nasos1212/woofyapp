@@ -1,18 +1,24 @@
-import { Building2, Store, Dumbbell, Home, Stethoscope, Scissors, Users, TrendingUp, BarChart3, Gift, ArrowRight, Sparkles, Check } from "lucide-react";
+import { Building2, Users, TrendingUp, BarChart3, Gift, ArrowRight, Sparkles, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import petShopImg from "@/assets/partners/pet-shop.jpg";
+import vetImg from "@/assets/partners/vet.jpg";
+import trainerImg from "@/assets/partners/trainer.jpg";
+import petHotelImg from "@/assets/partners/pet-hotel.jpg";
+import groomerImg from "@/assets/partners/groomer.jpg";
+import otherImg from "@/assets/partners/other.jpg";
 
 const PartnersSection = () => {
   const { t } = useTranslation();
 
   const categoryConfig = [
-    { icon: Store, name: t("partnersSection.cat.petShops") },
-    { icon: Stethoscope, name: t("partnersSection.cat.veterinaries") },
-    { icon: Dumbbell, name: t("partnersSection.cat.trainers") },
-    { icon: Home, name: t("partnersSection.cat.petHotels") },
-    { icon: Scissors, name: t("partnersSection.cat.groomers") },
-    { icon: Building2, name: t("partnersSection.cat.other") },
+    { image: petShopImg, name: t("partnersSection.cat.petShops") },
+    { image: vetImg, name: t("partnersSection.cat.veterinaries") },
+    { image: trainerImg, name: t("partnersSection.cat.trainers") },
+    { image: petHotelImg, name: t("partnersSection.cat.petHotels") },
+    { image: groomerImg, name: t("partnersSection.cat.groomers") },
+    { image: otherImg, name: t("partnersSection.cat.other") },
   ];
 
   const benefits = [
