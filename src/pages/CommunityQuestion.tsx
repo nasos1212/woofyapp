@@ -780,6 +780,18 @@ const CommunityQuestion = () => {
                     )}
                   </div>
 
+                  {/* Anonymous toggle */}
+                  <div className="p-3 bg-muted/50 rounded-lg border flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <EyeOff className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium">{t('communityQuestion.anonymousAnswer', 'Post anonymously')}</p>
+                        <p className="text-xs text-muted-foreground">{t('communityQuestion.anonymousAnswerHint', 'Your name and avatar will be hidden')}</p>
+                      </div>
+                    </div>
+                    <Switch checked={answerIsAnonymous} onCheckedChange={setAnswerIsAnonymous} />
+                  </div>
+
                   <div className="flex justify-end">
                     <Button type="submit" disabled={!answerContent.trim() || submitting}>
                       {submitting ? t('communityQuestion.posting') : (
