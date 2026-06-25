@@ -23,15 +23,15 @@ const PartnersSection = () => {
   ];
 
   return (
-    <section id="partners" className="py-20 lg:py-28 bg-gradient-to-b from-background to-primary/5 overflow-hidden">
+    <section id="partners" className="py-20 lg:py-28 bg-gradient-to-b from-background via-amber-50/40 to-background dark:via-amber-950/10 overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
-            <Building2 className="w-4 h-4 text-primary" />
+            <Building2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             <span className="text-sm font-medium text-muted-foreground">{t("partnersSection.badge")}</span>
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
             {t("partnersSection.title")}
           </h2>
           <p className="text-lg text-muted-foreground">{t("partnersSection.description")}</p>
@@ -47,10 +47,10 @@ const PartnersSection = () => {
             {benefits.map((b) => (
               <div
                 key={b.title}
-                className="bg-card rounded-2xl p-5 shadow-soft border border-border hover:shadow-card hover:border-primary/30 transition-all duration-300 flex gap-4"
+                className="bg-card rounded-2xl p-5 shadow-soft border border-border hover:shadow-card hover:border-amber-500/30 transition-all duration-300 flex gap-4"
               >
-                <div className="w-11 h-11 shrink-0 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <b.icon className="w-5 h-5 text-primary" />
+                <div className="w-11 h-11 shrink-0 bg-amber-500/10 rounded-xl flex items-center justify-center">
+                  <b.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
                   <h3 className="font-display font-semibold text-foreground mb-1">{b.title}</h3>
@@ -69,10 +69,10 @@ const PartnersSection = () => {
           {categoryConfig.map((category) => (
             <div
               key={category.name}
-              className="bg-card rounded-xl p-3 text-center shadow-soft border border-border hover:border-primary/20 transition-all duration-300"
+              className="bg-card rounded-xl p-3 text-center shadow-soft border border-border hover:border-amber-500/30 transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <category.icon className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 bg-foreground/5 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <category.icon className="w-5 h-5 text-foreground/70" />
               </div>
               <p className="text-xs font-medium text-foreground">{category.name}</p>
             </div>
@@ -81,7 +81,7 @@ const PartnersSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <Button asChild size="lg" className="rounded-full px-8">
+          <Button asChild size="lg" className="rounded-full px-8 bg-amber-500 hover:bg-amber-600 text-white">
             <Link to="/partner-register">
               {t("partnersSection.cta")}
               <ArrowRight className="w-4 h-4 ml-2" />
