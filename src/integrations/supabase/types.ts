@@ -66,6 +66,13 @@ export type Database = {
             referencedRelation: "shelters"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "adoption_inquiries_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       affiliate_inquiries: {
@@ -343,6 +350,13 @@ export type Database = {
             columns: ["shelter_id"]
             isOneToOne: false
             referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_public"
             referencedColumns: ["id"]
           },
         ]
@@ -678,6 +692,13 @@ export type Database = {
             columns: ["answer_id"]
             isOneToOne: false
             referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_answer_photos_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -1070,6 +1091,13 @@ export type Database = {
             columns: ["answer_id"]
             isOneToOne: false
             referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_votes_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2425,6 +2453,13 @@ export type Database = {
             referencedRelation: "shelters"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "shelter_adoptable_pets_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       shelter_photos: {
@@ -2458,6 +2493,13 @@ export type Database = {
             columns: ["shelter_id"]
             isOneToOne: false
             referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shelter_photos_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2891,6 +2933,32 @@ export type Database = {
         }
         Relationships: []
       }
+      community_answers_public: {
+        Row: {
+          author_avatar_url: string | null
+          author_is_verified_professional: boolean | null
+          author_name: string | null
+          author_professional_title: string | null
+          content: string | null
+          created_at: string | null
+          downvotes: number | null
+          id: string | null
+          is_accepted: boolean | null
+          is_verified_pro: boolean | null
+          question_id: string | null
+          updated_at: string | null
+          upvotes: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "community_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lost_pet_alerts_public: {
         Row: {
           additional_info: string | null
@@ -2974,6 +3042,28 @@ export type Database = {
           },
         ]
       }
+      pet_friendly_place_ratings_public: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          photo_url: string | null
+          photo_url_2: string | null
+          place_id: string | null
+          rating: number | null
+          review_text: string | null
+          reviewer_name: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_friendly_place_ratings_place_id_fkey"
+            columns: ["place_id"]
+            isOneToOne: false
+            referencedRelation: "pet_friendly_places"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles_limited: {
         Row: {
           avatar_url: string | null
@@ -3013,6 +3103,93 @@ export type Database = {
           full_name?: string | null
           preferred_city?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      shelters_public: {
+        Row: {
+          address: string | null
+          city: string | null
+          cover_photo_position: number | null
+          cover_photo_url: string | null
+          created_at: string | null
+          description: string | null
+          dogs_helped_count: number | null
+          dogs_in_care: string | null
+          donation_link: string | null
+          facebook_url: string | null
+          id: string | null
+          instagram_url: string | null
+          is_hidden: boolean | null
+          location: string | null
+          logo_url: string | null
+          mission_statement: string | null
+          shelter_name: string | null
+          tiktok_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at: string | null
+          website: string | null
+          years_operating: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          cover_photo_position?: number | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          facebook_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          is_hidden?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          mission_statement?: string | null
+          shelter_name?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          cover_photo_position?: number | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          facebook_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          is_hidden?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          mission_statement?: string | null
+          shelter_name?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
         }
         Relationships: []
       }

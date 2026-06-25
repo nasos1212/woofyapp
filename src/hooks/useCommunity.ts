@@ -258,7 +258,7 @@ export const useCommunity = () => {
           .eq('question_id', id)
           .maybeSingle(),
         supabase
-          .from('community_answers')
+          .from('community_answers_public' as any)
           .select('id', { count: 'exact' })
           .eq('question_id', id)
       ]);
@@ -341,59 +341,56 @@ export const useCommunity = () => {
   }, [user, toast]);
 
   const fetchAnswers = useCallback(async (questionId: string): Promise<Answer[]> => {
+    // Use the public view that masks raw user_id and embeds author display info
     const { data, error } = await supabase
-      .from('community_answers')
-      .select(`
-        *,
-        photos:community_answer_photos(*)
-      `)
+      .from('community_answers_public' as any)
+      .select('*')
       .eq('question_id', questionId)
       .order('is_accepted', { ascending: false })
       .order('upvotes', { ascending: false })
       .order('created_at', { ascending: true });
 
     if (error) throw error;
-    if (!data || data.length === 0) return [];
+    const rows = (data as any[]) || [];
+    if (rows.length === 0) return [];
 
-    // Fetch author profiles from public view (excludes sensitive data)
-    const userIds = [...new Set(data.map(a => a.user_id))];
-    const [profilesRes, expertStatsRes] = await Promise.all([
-      supabase
-        .from('profiles_public')
-        .select('user_id, full_name, avatar_url')
-        .in('user_id', userIds),
-      supabase
-        .from('community_expert_stats')
-        .select('user_id, total_answers, accepted_answers, total_upvotes, reputation_score')
-        .in('user_id', userIds)
-    ]);
+    // Fetch photos separately keyed by answer id
+    const answerIds = rows.map((a) => a.id);
+    const { data: photos } = await supabase
+      .from('community_answer_photos')
+      .select('*')
+      .in('answer_id', answerIds);
+    const photosByAnswer = new Map<string, any[]>();
+    (photos || []).forEach((p: any) => {
+      const list = photosByAnswer.get(p.answer_id) || [];
+      list.push(p);
+      photosByAnswer.set(p.answer_id, list);
+    });
 
-    const profileMap = new Map(profilesRes.data?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
-    const expertStatsMap = new Map(expertStatsRes.data?.map(e => [e.user_id, e]) || []);
-
-    // Get user votes
+    // Optional: current user's own votes
+    let voteMap = new Map<string, 'up' | 'down'>();
     if (user) {
-      const answerIds = data.map(a => a.id);
       const { data: votes } = await supabase
         .from('community_votes')
         .select('answer_id, vote_type')
         .eq('user_id', user.id)
         .in('answer_id', answerIds);
-
-      const voteMap = new Map(votes?.map(v => [v.answer_id, v.vote_type]) || []);
-
-      return data.map(a => ({
-        ...a,
-        author: profileMap.get(a.user_id) || null,
-        expert_stats: expertStatsMap.get(a.user_id) || null,
-        user_vote: voteMap.get(a.id) as 'up' | 'down' | null
-      })) as unknown as Answer[];
+      voteMap = new Map((votes || []).map((v: any) => [v.answer_id, v.vote_type as 'up' | 'down']));
     }
 
-    return data.map(a => ({
+    return rows.map((a) => ({
       ...a,
-      author: profileMap.get(a.user_id) || null,
-      expert_stats: expertStatsMap.get(a.user_id) || null
+      photos: photosByAnswer.get(a.id) || [],
+      author: a.author_name || a.author_avatar_url
+        ? { full_name: a.author_name, avatar_url: a.author_avatar_url }
+        : null,
+      expert_stats: a.author_is_verified_professional
+        ? {
+            is_verified_professional: a.author_is_verified_professional,
+            professional_title: a.author_professional_title,
+          }
+        : null,
+      user_vote: voteMap.get(a.id) ?? null,
     })) as unknown as Answer[];
   }, [user]);
 

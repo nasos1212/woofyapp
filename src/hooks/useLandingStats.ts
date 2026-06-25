@@ -38,12 +38,10 @@ export const useLandingStats = (): LandingStats => {
             .from("user_roles")
             .select("*", { count: "exact", head: true })
             .eq("role", "member"),
-          // Count approved, non-hidden shelters
+          // Count approved, non-hidden shelters (view already filters)
           supabase
-            .from("shelters")
-            .select("*", { count: "exact", head: true })
-            .eq("verification_status", "approved")
-            .eq("is_hidden", false),
+            .from("shelters_public")
+            .select("*", { count: "exact", head: true }),
         ]);
 
         // Use actual counts if available, otherwise use fallbacks

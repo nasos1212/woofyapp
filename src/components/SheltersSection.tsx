@@ -43,9 +43,8 @@ const SheltersSection = () => {
   useEffect(() => {
     const fetchShelters = async () => {
       const { data, error } = await supabase
-        .from("shelters")
+        .from("shelters_public")
         .select("id, shelter_name, location")
-        .eq("verification_status", "approved")
         .order("shelter_name");
 
       if (!error && data) {
