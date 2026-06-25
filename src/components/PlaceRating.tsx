@@ -155,7 +155,7 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
                   />
                 ))}
                 <span className="ml-1 font-medium text-foreground">
-                  {review.user_id === user?.id
+                  {review.is_mine
                     ? t("placeRating.you")
                     : review.reviewer_name || t("placeRating.anonymous")}
                 </span>
