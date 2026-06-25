@@ -149,7 +149,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
             <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
               <span className="text-[8px]">🏢</span>
             </div>
-            <span className="text-[9px] font-medium text-slate-700">Pet Nas</span>
+            <span className="text-[9px] font-medium text-slate-700">Paws Pet Hotel</span>
           </div>
         </div>
 
