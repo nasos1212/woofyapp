@@ -427,12 +427,6 @@ const Header = () => {
                   {t("common.joinNow")}
                 </Button>
               </Link>
-              <Link to="/partner-register" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" size="default" className="w-full gap-2">
-                  <Building2 className="w-4 h-4" />
-                  {t("partnersSection.cta")}
-                </Button>
-              </Link>
             </div>
           </div>
         )}
