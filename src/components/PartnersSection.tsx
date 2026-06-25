@@ -75,15 +75,24 @@ const PartnersSection = () => {
           {categoryConfig.map((category) => (
             <div
               key={category.name}
-              className="bg-wooffy-blue/10 rounded-xl p-3 text-center border border-wooffy-blue/30 hover:border-wooffy-sky/50 transition-all duration-300"
+              className="group relative aspect-square rounded-xl overflow-hidden border border-wooffy-blue/30 hover:border-wooffy-sky/60 transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-wooffy-sky/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <category.icon className="w-5 h-5 text-wooffy-sky" />
-              </div>
-              <p className="text-xs font-medium text-wooffy-light/90">{category.name}</p>
+              <img
+                src={category.image}
+                alt={category.name}
+                loading="lazy"
+                width={512}
+                height={512}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-wooffy-dark via-wooffy-dark/40 to-transparent" />
+              <p className="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold text-white px-2">
+                {category.name}
+              </p>
             </div>
           ))}
         </div>
+
 
         {/* CTA */}
         <div className="text-center">
