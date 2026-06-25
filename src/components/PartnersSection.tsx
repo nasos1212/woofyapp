@@ -116,60 +116,82 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
       <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-3xl blur-2xl" aria-hidden />
 
       {/* Browser frame */}
-      <div className="relative bg-card rounded-2xl shadow-card border border-border overflow-hidden">
+      <div className="relative bg-white rounded-2xl shadow-card border border-border overflow-hidden text-slate-800">
         {/* Title bar */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-muted/40">
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-200 bg-slate-50">
           <div className="flex gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-400/70" />
             <span className="w-2.5 h-2.5 rounded-full bg-green-400/70" />
           </div>
-          <div className="ml-3 flex-1 text-[11px] text-muted-foreground font-mono truncate">
+          <div className="ml-3 flex-1 text-[10px] text-slate-400 font-mono truncate">
             wooffy.app/business
           </div>
         </div>
 
-        {/* Dashboard body */}
-        <div className="p-5 space-y-4 bg-gradient-to-br from-background to-muted/30 min-h-[380px]">
-          {/* Greeting */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground">{t("partnersSection.preview.welcome")}</p>
-              <p className="font-display font-semibold text-foreground">Happy Tails Pet Hotel</p>
+        {/* App header (mimics partner portal) */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-200 bg-white">
+          <div className="flex items-center gap-1.5">
+            <div className="w-6 h-6 rounded-full bg-wooffy-sky/20 flex items-center justify-center">
+              <span className="text-[10px]">🐾</span>
             </div>
-            <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              {t("partnersSection.preview.live")}
-            </span>
+            <div className="leading-tight">
+              <p className="text-[10px] font-display font-bold text-slate-900">Wooffy</p>
+              <p className="text-[7px] text-slate-400 -mt-0.5">Partner Portal</p>
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-3 text-[9px] font-medium">
+            <span className="text-wooffy-sky">▦ Dashboard</span>
+            <span className="text-slate-400">◷ Offers</span>
+            <span className="text-slate-400">▥ Analytics</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
+              <span className="text-[8px]">🏢</span>
+            </div>
+            <span className="text-[9px] font-medium text-slate-700">Pet Nas</span>
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="p-4 space-y-3 bg-slate-50/60 min-h-[380px]">
+          {/* Title */}
+          <div>
+            <h3 className="font-display font-bold text-slate-900 text-base leading-tight">Pet Nas</h3>
+            <p className="text-[10px] text-slate-500">{t("partnersSection.preview.subtitle")}</p>
           </div>
 
-          {/* KPI cards */}
-          <div className="grid grid-cols-3 gap-2">
-            <KpiCard label={t("partnersSection.preview.views")} from={120} to={847} delay={0} />
-            <KpiCard label={t("partnersSection.preview.redemptions")} from={4} to={32} delay={400} accent />
-            <KpiCard label={t("partnersSection.preview.newCustomers")} from={2} to={18} delay={800} />
+          {/* Tile grid */}
+          <div className="grid grid-cols-2 gap-2">
+            <Tile icon="🏷️" iconBg="bg-blue-100" title={t("partnersSection.preview.tiles.offers")} sub={t("partnersSection.preview.tiles.offersSub")} />
+            <Tile icon="⏱️" iconBg="bg-green-100" title={t("partnersSection.preview.tiles.redemptions")} sub={t("partnersSection.preview.tiles.redemptionsSub")} />
+            <Tile icon="📊" iconBg="bg-sky-100" title={t("partnersSection.preview.tiles.analytics")} sub={t("partnersSection.preview.tiles.analyticsSub")} />
+            <Tile icon="🎂" iconBg="bg-pink-100" title={t("partnersSection.preview.tiles.birthdays")} sub={t("partnersSection.preview.tiles.birthdaysSub")} />
           </div>
 
-          {/* Chart */}
-          <div className="bg-card border border-border rounded-xl p-3">
+          {/* This month stats */}
+          <div className="bg-white border border-slate-200 rounded-xl p-3">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-medium text-foreground">{t("partnersSection.preview.weekly")}</p>
-              <span className="text-[10px] text-green-600 dark:text-green-400 font-semibold">+24%</span>
+              <p className="text-[10px] font-semibold text-slate-900">{t("partnersSection.preview.thisMonth")}</p>
+              <span className="text-[9px] text-wooffy-sky font-medium">{t("partnersSection.preview.viewDetails")} →</span>
             </div>
-            <Sparkline />
+            <div className="grid grid-cols-2 gap-2">
+              <StatRow icon="👥" iconBg="bg-blue-50" label={t("partnersSection.preview.redemptions")} from={4} to={32} delay={0} />
+              <StatRow icon="📈" iconBg="bg-green-50" label={t("partnersSection.preview.newCustomers")} from={2} to={18} delay={400} />
+            </div>
           </div>
 
           {/* Live redemption toast */}
-          <div className="relative h-14">
-            <div className="absolute inset-x-0 bottom-0 bg-card border border-primary/30 rounded-xl p-3 flex items-center gap-3 shadow-soft animate-toast">
-              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                <Check className="w-4 h-4 text-primary" />
+          <div className="relative h-12">
+            <div className="absolute inset-x-0 bottom-0 bg-white border border-wooffy-sky/40 rounded-xl p-2.5 flex items-center gap-2 shadow-soft animate-toast">
+              <div className="w-7 h-7 rounded-full bg-wooffy-sky/15 flex items-center justify-center shrink-0">
+                <Check className="w-3.5 h-3.5 text-wooffy-sky" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-foreground truncate">{t("partnersSection.preview.toastTitle")}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{t("partnersSection.preview.toastBody")}</p>
+                <p className="text-[10px] font-semibold text-slate-900 truncate">{t("partnersSection.preview.toastTitle")}</p>
+                <p className="text-[9px] text-slate-500 truncate">{t("partnersSection.preview.toastBody")}</p>
               </div>
-              <Sparkles className="w-4 h-4 text-primary shrink-0" />
+              <Sparkles className="w-3.5 h-3.5 text-wooffy-sky shrink-0" />
             </div>
           </div>
         </div>
@@ -182,29 +204,34 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
           55% { opacity: 0; transform: translateY(-8px); }
         }
         .animate-toast { animation: toastLoop 6s ease-in-out infinite; }
-        @keyframes countUp { from { --num: var(--from); } to { --num: var(--to); } }
-        @keyframes barRise { from { transform: scaleY(0.1); } to { transform: scaleY(1); } }
-        .bar { transform-origin: bottom; animation: barRise 1.2s cubic-bezier(.2,.8,.2,1) both; }
       `}</style>
     </div>
   );
 };
 
-const KpiCard = ({ label, from, to, delay, accent }: { label: string; from: number; to: number; delay: number; accent?: boolean }) => {
-  return (
-    <div className={`rounded-xl p-3 border ${accent ? "bg-primary/10 border-primary/30" : "bg-card border-border"}`}>
-      <p className="text-[10px] text-muted-foreground mb-1 truncate">{label}</p>
-      <p className={`text-lg font-display font-bold tabular-nums ${accent ? "text-primary" : "text-foreground"}`}>
+const Tile = ({ icon, iconBg, title, sub }: { icon: string; iconBg: string; title: string; sub: string }) => (
+  <div className="bg-white border border-slate-200 rounded-xl p-2.5 flex items-center gap-2">
+    <div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shrink-0 text-sm`}>{icon}</div>
+    <div className="min-w-0">
+      <p className="text-[11px] font-semibold text-slate-900 leading-tight truncate">{title}</p>
+      <p className="text-[9px] text-slate-500 truncate">{sub}</p>
+    </div>
+  </div>
+);
+
+const StatRow = ({ icon, iconBg, label, from, to, delay }: { icon: string; iconBg: string; label: string; from: number; to: number; delay: number }) => (
+  <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-2">
+    <div className={`w-7 h-7 rounded-full ${iconBg} flex items-center justify-center text-xs shrink-0`}>{icon}</div>
+    <div className="flex-1 min-w-0">
+      <p className="text-[9px] text-slate-500 truncate">{label}</p>
+      <p className="text-sm font-display font-bold tabular-nums text-slate-900">
         <CountUp from={from} to={to} delay={delay} />
       </p>
     </div>
-  );
-};
+  </div>
+);
 
 const CountUp = ({ from, to, delay }: { from: number; to: number; delay: number }) => {
-  // Pure CSS-keyframe-driven count using a CSS variable trick via animationFillMode
-  // Fallback to plain JS interval for cross-browser support
-  const id = `cu-${from}-${to}-${delay}`;
   return (
     <span
       ref={(el) => {
@@ -225,25 +252,9 @@ const CountUp = ({ from, to, delay }: { from: number; to: number; delay: number 
         el.textContent = from.toString();
         animate();
       }}
-      data-id={id}
     >
       {from}
     </span>
-  );
-};
-
-const Sparkline = () => {
-  const bars = [30, 42, 38, 55, 48, 70, 92];
-  return (
-    <div className="flex items-end gap-1.5 h-14">
-      {bars.map((h, i) => (
-        <div
-          key={i}
-          className="flex-1 bar rounded-t-md bg-gradient-to-t from-primary/40 to-primary"
-          style={{ height: `${h}%`, animationDelay: `${i * 120}ms` }}
-        />
-      ))}
-    </div>
   );
 };
 
