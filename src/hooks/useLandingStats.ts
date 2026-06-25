@@ -30,7 +30,7 @@ export const useLandingStats = (): LandingStats => {
         const [businessesResult, membersResult, sheltersResult] = await Promise.all([
           // Count approved, non-hidden businesses (the view itself excludes hidden ones)
           supabase
-            .from("businesses_public")
+            .from("businesses_directory")
             .select("*", { count: "exact", head: true })
             .eq("verification_status", "approved"),
           // Count all members (users with member role - both freemium and paid)
@@ -40,7 +40,7 @@ export const useLandingStats = (): LandingStats => {
             .eq("role", "member"),
           // Count approved, non-hidden shelters (view already filters)
           supabase
-            .from("shelters_public")
+            .from("shelters_directory")
             .select("*", { count: "exact", head: true }),
         ]);
 
