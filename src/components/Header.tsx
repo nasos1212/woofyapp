@@ -421,11 +421,15 @@ const Header = () => {
               )
             ))}
             <div className="px-4 pt-2 space-y-2">
-
-
               <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="hero" size="default" className="w-full">
                   {t("common.joinNow")}
+                </Button>
+              </Link>
+              <Link to="/partner-register" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" size="default" className="w-full gap-2">
+                  <Building2 className="w-4 h-4" />
+                  {t("partnersSection.cta")}
                 </Button>
               </Link>
             </div>
