@@ -2686,6 +2686,19 @@
       "redemptions": "Redemptions",
       "newCustomers": "New customers",
       "weekly": "This week",
+      "subtitle": "Verify members and track your Wooffy redemptions",
+      "thisMonth": "This Month",
+      "viewDetails": "View details",
+      "tiles": {
+        "offers": "Offers",
+        "offersSub": "1 active",
+        "redemptions": "Redemptions",
+        "redemptionsSub": "View history",
+        "analytics": "Analytics",
+        "analyticsSub": "Insights",
+        "birthdays": "Birthdays",
+        "birthdaysSub": "Celebrate"
+      },
       "toastTitle": "New redemption · €12 off",
       "toastBody": "Maria just redeemed your birthday offer"
     },
