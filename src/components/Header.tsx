@@ -143,6 +143,7 @@ const Header = () => {
     { name: t("header.benefits"), href: "#benefits" },
     { name: t("header.dogFriendlyPlaces"), href: "#get-listed" },
     { name: t("header.shelters"), href: "#shelters" },
+    { name: t("partnersSection.badge"), href: "#partners" },
     { name: t("header.pricing"), href: "#freemium" },
     { name: t("header.blog"), href: "/blog", isRoute: true },
   ];
@@ -424,12 +425,6 @@ const Header = () => {
               <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="hero" size="default" className="w-full">
                   {t("common.joinNow")}
-                </Button>
-              </Link>
-              <Link to="/partner-register" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" size="default" className="w-full gap-2">
-                  <Building2 className="w-4 h-4" />
-                  {t("partnersSection.cta")}
                 </Button>
               </Link>
             </div>
