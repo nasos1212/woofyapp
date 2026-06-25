@@ -23,15 +23,15 @@ const PartnersSection = () => {
   ];
 
   return (
-    <section id="partners" className="py-20 lg:py-28 bg-gradient-to-b from-background via-amber-50/40 to-background dark:via-amber-950/10 overflow-hidden">
+    <section id="partners" className="py-20 lg:py-28 bg-gradient-to-b from-background to-primary/5 overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
-            <Building2 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <Building2 className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium text-muted-foreground">{t("partnersSection.badge")}</span>
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
             {t("partnersSection.title")}
           </h2>
           <p className="text-lg text-muted-foreground">{t("partnersSection.description")}</p>
@@ -47,10 +47,10 @@ const PartnersSection = () => {
             {benefits.map((b) => (
               <div
                 key={b.title}
-                className="bg-card rounded-2xl p-5 shadow-soft border border-border hover:shadow-card hover:border-amber-500/30 transition-all duration-300 flex gap-4"
+                className="bg-card rounded-2xl p-5 shadow-soft border border-border hover:shadow-card hover:border-primary/30 transition-all duration-300 flex gap-4"
               >
-                <div className="w-11 h-11 shrink-0 bg-amber-500/10 rounded-xl flex items-center justify-center">
-                  <b.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <div className="w-11 h-11 shrink-0 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <b.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
                   <h3 className="font-display font-semibold text-foreground mb-1">{b.title}</h3>
@@ -69,10 +69,10 @@ const PartnersSection = () => {
           {categoryConfig.map((category) => (
             <div
               key={category.name}
-              className="bg-card rounded-xl p-3 text-center shadow-soft border border-border hover:border-amber-500/30 transition-all duration-300"
+              className="bg-card rounded-xl p-3 text-center shadow-soft border border-border hover:border-primary/20 transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-foreground/5 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <category.icon className="w-5 h-5 text-foreground/70" />
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <category.icon className="w-5 h-5 text-primary" />
               </div>
               <p className="text-xs font-medium text-foreground">{category.name}</p>
             </div>
@@ -81,7 +81,7 @@ const PartnersSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <Button asChild size="lg" className="rounded-full px-8 bg-amber-500 hover:bg-amber-600 text-white">
+          <Button asChild size="lg" className="rounded-full px-8">
             <Link to="/partner-register">
               {t("partnersSection.cta")}
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -98,7 +98,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
   return (
     <div className="relative">
       {/* Soft glow */}
-      <div className="absolute -inset-4 bg-gradient-to-br from-amber-300/30 via-amber-200/10 to-transparent rounded-3xl blur-2xl" aria-hidden />
+      <div className="absolute -inset-4 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-3xl blur-2xl" aria-hidden />
 
       {/* Browser frame */}
       <div className="relative bg-card rounded-2xl shadow-card border border-border overflow-hidden">
@@ -146,15 +146,15 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
 
           {/* Live redemption toast */}
           <div className="relative h-14">
-            <div className="absolute inset-x-0 bottom-0 bg-card border border-amber-500/30 rounded-xl p-3 flex items-center gap-3 shadow-soft animate-toast">
-              <div className="w-8 h-8 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0">
-                <Check className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="absolute inset-x-0 bottom-0 bg-card border border-primary/30 rounded-xl p-3 flex items-center gap-3 shadow-soft animate-toast">
+              <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-foreground truncate">{t("partnersSection.preview.toastTitle")}</p>
                 <p className="text-[10px] text-muted-foreground truncate">{t("partnersSection.preview.toastBody")}</p>
               </div>
-              <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+              <Sparkles className="w-4 h-4 text-primary shrink-0" />
             </div>
           </div>
         </div>
@@ -177,9 +177,9 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
 
 const KpiCard = ({ label, from, to, delay, accent }: { label: string; from: number; to: number; delay: number; accent?: boolean }) => {
   return (
-    <div className={`rounded-xl p-3 border ${accent ? "bg-amber-500/10 border-amber-500/30" : "bg-card border-border"}`}>
+    <div className={`rounded-xl p-3 border ${accent ? "bg-primary/10 border-primary/30" : "bg-card border-border"}`}>
       <p className="text-[10px] text-muted-foreground mb-1 truncate">{label}</p>
-      <p className={`text-lg font-display font-bold tabular-nums ${accent ? "text-amber-600 dark:text-amber-400" : "text-foreground"}`}>
+      <p className={`text-lg font-display font-bold tabular-nums ${accent ? "text-primary" : "text-foreground"}`}>
         <CountUp from={from} to={to} delay={delay} />
       </p>
     </div>
@@ -224,7 +224,7 @@ const Sparkline = () => {
       {bars.map((h, i) => (
         <div
           key={i}
-          className="flex-1 bar rounded-t-md bg-gradient-to-t from-amber-300 to-amber-500"
+          className="flex-1 bar rounded-t-md bg-gradient-to-t from-primary/40 to-primary"
           style={{ height: `${h}%`, animationDelay: `${i * 120}ms` }}
         />
       ))}
