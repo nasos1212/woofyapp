@@ -2657,26 +2657,26 @@
   "partnersSection": {
     "badge": "For Businesses",
     "title": "Grow your business with Wooffy",
-    "description": "Join a curated network of trusted local businesses and get in front of engaged pet parents actively looking for services in your area.",
+    "description": "Get in front of engaged pet parents in your area.",
     "categoriesLabel": "Built for",
     "cta": "Become a partner",
-    "ctaHelp": "Free to list · No commitment · Reviewed within 48 hours",
+    "ctaHelp": "Free to list · No commitment",
     "benefits": {
       "reach": {
-        "title": "Reach engaged pet owners",
-        "desc": "Get featured in front of Wooffy members who are ready to spend on their pets every month."
+        "title": "Reach pet owners",
+        "desc": "Be discovered by members ready to spend on their pets."
       },
       "traffic": {
-        "title": "Drive real foot traffic",
-        "desc": "Members scan their card to redeem your offers in-store, so you see the impact instantly."
+        "title": "Drive foot traffic",
+        "desc": "Members scan in-store to redeem — see the impact instantly."
       },
       "insights": {
         "title": "Know your customers",
-        "desc": "Track redemptions, customer visits and birthdays from a simple business dashboard."
+        "desc": "Track redemptions and visits from a simple dashboard."
       },
       "free": {
         "title": "Start free",
-        "desc": "No setup fees or monthly costs. Create your offers, get listed, and start being discovered."
+        "desc": "No setup fees. List, create offers, get discovered."
       }
     },
     "preview": {
