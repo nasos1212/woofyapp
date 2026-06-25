@@ -21,9 +21,9 @@ interface ReviewData {
   review_text: string | null;
   photo_url: string | null;
   photo_url_2: string | null;
-  user_id: string;
   created_at: string;
   reviewer_name?: string | null;
+  is_mine?: boolean;
 }
 
 const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size = "md" }: PlaceRatingProps) => {
@@ -41,34 +41,36 @@ const PlaceRating = ({ placeId, placeName, currentRating, onRatingChange, size =
   }, [user, placeId]);
 
   const fetchReviews = async () => {
+    // Public reviews (without rater identity) come from the masked view
     const { data } = await supabase
-      .from("pet_friendly_place_ratings")
-      .select("rating, review_text, photo_url, photo_url_2, user_id, created_at")
+      .from("pet_friendly_place_ratings_public" as any)
+      .select("rating, review_text, photo_url, photo_url_2, created_at, reviewer_name")
       .eq("place_id", placeId)
       .order("created_at", { ascending: false });
 
-    if (data) {
-      const userIds = [...new Set(data.map((r) => r.user_id))];
-      const { data: profiles } = await supabase
-        .from("profiles_limited")
-        .select("user_id, full_name")
-        .in("user_id", userIds);
+    const list = ((data as any[]) || []).map((r) => ({
+      rating: r.rating,
+      review_text: r.review_text,
+      photo_url: r.photo_url,
+      photo_url_2: r.photo_url_2,
+      created_at: r.created_at,
+      reviewer_name: r.reviewer_name,
+    })) as ReviewData[];
 
-      const profileMap = new Map(
-        (profiles || []).map((p) => [p.user_id, p.full_name])
-      );
+    setReviews(list);
+    setRatingCount(list.length);
 
-      const enriched = data.map((r) => ({
-        ...r,
-        reviewer_name: profileMap.get(r.user_id) || null,
-      }));
-
-      setReviews(enriched);
-      setRatingCount(enriched.length);
-      if (user) {
-        const mine = enriched.find((r) => r.user_id === user.id);
-        setUserReview(mine || null);
-      }
+    // The current user's own rating is fetched separately from the base table (RLS allows owner read)
+    if (user) {
+      const { data: mine } = await supabase
+        .from("pet_friendly_place_ratings")
+        .select("rating, review_text, photo_url, photo_url_2, created_at")
+        .eq("place_id", placeId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setUserReview(mine ? ({ ...mine, is_mine: true } as ReviewData) : null);
+    } else {
+      setUserReview(null);
     }
   };
 
