@@ -224,7 +224,7 @@ const Sparkline = () => {
       {bars.map((h, i) => (
         <div
           key={i}
-          className="flex-1 bar rounded-t-md bg-gradient-to-t from-primary/40 to-primary"
+          className="flex-1 bar rounded-t-md bg-gradient-to-t from-amber-300 to-amber-500"
           style={{ height: `${h}%`, animationDelay: `${i * 120}ms` }}
         />
       ))}
