@@ -115,7 +115,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
         </div>
 
         {/* Dashboard body */}
-        <div className="p-5 space-y-4 bg-gradient-to-b from-primary/10 via-primary/15 to-primary/30 min-h-[380px]">
+        <div className="p-5 space-y-4 bg-gradient-to-b from-primary/5 via-primary/15 to-[hsl(210,25%,22%)] min-h-[380px]">
           {/* Greeting */}
           <div className="flex items-center justify-between">
             <div>
