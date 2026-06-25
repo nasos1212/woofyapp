@@ -1,18 +1,24 @@
-import { Building2, Store, Dumbbell, Home, Stethoscope, Scissors, Users, TrendingUp, BarChart3, Gift, ArrowRight, Sparkles, Check } from "lucide-react";
+import { Building2, Users, TrendingUp, BarChart3, Gift, ArrowRight, Sparkles, Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import petShopImg from "@/assets/partners/pet-shop.jpg";
+import vetImg from "@/assets/partners/vet.jpg";
+import trainerImg from "@/assets/partners/trainer.jpg";
+import petHotelImg from "@/assets/partners/pet-hotel.jpg";
+import groomerImg from "@/assets/partners/groomer.jpg";
+import otherImg from "@/assets/partners/other.jpg";
 
 const PartnersSection = () => {
   const { t } = useTranslation();
 
   const categoryConfig = [
-    { icon: Store, name: t("partnersSection.cat.petShops") },
-    { icon: Stethoscope, name: t("partnersSection.cat.veterinaries") },
-    { icon: Dumbbell, name: t("partnersSection.cat.trainers") },
-    { icon: Home, name: t("partnersSection.cat.petHotels") },
-    { icon: Scissors, name: t("partnersSection.cat.groomers") },
-    { icon: Building2, name: t("partnersSection.cat.other") },
+    { image: petShopImg, name: t("partnersSection.cat.petShops") },
+    { image: vetImg, name: t("partnersSection.cat.veterinaries") },
+    { image: trainerImg, name: t("partnersSection.cat.trainers") },
+    { image: petHotelImg, name: t("partnersSection.cat.petHotels") },
+    { image: groomerImg, name: t("partnersSection.cat.groomers") },
+    { image: otherImg, name: t("partnersSection.cat.other") },
   ];
 
   const benefits = [
@@ -69,15 +75,24 @@ const PartnersSection = () => {
           {categoryConfig.map((category) => (
             <div
               key={category.name}
-              className="bg-wooffy-blue/10 rounded-xl p-3 text-center border border-wooffy-blue/30 hover:border-wooffy-sky/50 transition-all duration-300"
+              className="group relative aspect-square rounded-xl overflow-hidden border border-wooffy-blue/30 hover:border-wooffy-sky/60 transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-wooffy-sky/20 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <category.icon className="w-5 h-5 text-wooffy-sky" />
-              </div>
-              <p className="text-xs font-medium text-wooffy-light/90">{category.name}</p>
+              <img
+                src={category.image}
+                alt={category.name}
+                loading="lazy"
+                width={512}
+                height={512}
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-wooffy-dark via-wooffy-dark/40 to-transparent" />
+              <p className="absolute bottom-2 left-0 right-0 text-center text-xs font-semibold text-white px-2">
+                {category.name}
+              </p>
             </div>
           ))}
         </div>
+
 
         {/* CTA */}
         <div className="text-center">
