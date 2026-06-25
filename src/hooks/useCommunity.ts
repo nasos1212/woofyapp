@@ -253,9 +253,17 @@ export const useCommunity = () => {
     // Fetch author profile from public view (excludes sensitive data)
     const { data: authorProfile } = await supabase
       .from('profiles_public')
-      .select('full_name, avatar_url')
+      .select('full_name, avatar_url, anonymous_handle')
       .eq('user_id', data.user_id)
       .maybeSingle();
+
+    const isAnon = (data as any).is_anonymous === true;
+    const authorDisplay = isAnon
+      ? { full_name: authorProfile?.anonymous_handle || 'Anonymous', avatar_url: null }
+      : authorProfile
+        ? { full_name: authorProfile.full_name, avatar_url: authorProfile.avatar_url }
+        : null;
+    const exposedUserId = isAnon ? null : data.user_id;
 
     // Increment view count
     await supabase
@@ -286,7 +294,8 @@ export const useCommunity = () => {
 
       return {
         ...data,
-        author: authorProfile || null,
+        user_id: exposedUserId,
+        author: authorDisplay,
         is_saved: !!savedRes.data,
         is_following: !!followingRes.data,
         answer_count: answersRes.count || 0
@@ -295,7 +304,8 @@ export const useCommunity = () => {
 
     return {
       ...data,
-      author: authorProfile || null
+      user_id: exposedUserId,
+      author: authorDisplay
     } as unknown as Question;
   }, [user]);
 
