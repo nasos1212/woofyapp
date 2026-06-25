@@ -2823,6 +2823,8 @@
   },
   "communityQuestion": {
     "notFound": "Question not found",
+    "anonymousAnswer": "Post anonymously",
+    "anonymousAnswerHint": "Your name and avatar will be hidden",
     "backToCommunity": "Back to Community",
     "thisHelpedMe": "This helped me",
     "helped": "Helped",
