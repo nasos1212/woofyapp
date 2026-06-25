@@ -766,6 +766,7 @@ export type Database = {
           downvotes: number | null
           id: string
           is_accepted: boolean | null
+          is_anonymous: boolean
           is_verified_pro: boolean | null
           question_id: string
           updated_at: string
@@ -778,6 +779,7 @@ export type Database = {
           downvotes?: number | null
           id?: string
           is_accepted?: boolean | null
+          is_anonymous?: boolean
           is_verified_pro?: boolean | null
           question_id: string
           updated_at?: string
@@ -790,6 +792,7 @@ export type Database = {
           downvotes?: number | null
           id?: string
           is_accepted?: boolean | null
+          is_anonymous?: boolean
           is_verified_pro?: boolean | null
           question_id?: string
           updated_at?: string
@@ -2112,6 +2115,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          anonymous_handle: string | null
           avatar_url: string | null
           created_at: string
           deletion_requested_at: string | null
@@ -2129,6 +2133,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          anonymous_handle?: string | null
           avatar_url?: string | null
           created_at?: string
           deletion_requested_at?: string | null
@@ -2146,6 +2151,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          anonymous_handle?: string | null
           avatar_url?: string | null
           created_at?: string
           deletion_requested_at?: string | null
@@ -3135,6 +3141,7 @@ export type Database = {
           downvotes: number | null
           id: string | null
           is_accepted: boolean | null
+          is_anonymous: boolean | null
           is_verified_pro: boolean | null
           question_id: string | null
           updated_at: string | null
@@ -3278,18 +3285,21 @@ export type Database = {
       }
       profiles_public: {
         Row: {
+          anonymous_handle: string | null
           avatar_url: string | null
           full_name: string | null
           preferred_city: string | null
           user_id: string | null
         }
         Insert: {
+          anonymous_handle?: string | null
           avatar_url?: string | null
           full_name?: string | null
           preferred_city?: string | null
           user_id?: string | null
         }
         Update: {
+          anonymous_handle?: string | null
           avatar_url?: string | null
           full_name?: string | null
           preferred_city?: string | null

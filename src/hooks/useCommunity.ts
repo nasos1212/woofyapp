@@ -56,10 +56,11 @@ export interface QuestionPhoto {
 export interface Answer {
   id: string;
   question_id: string;
-  user_id: string;
+  user_id: string | null;
   content: string;
   is_accepted: boolean;
   is_verified_pro: boolean;
+  is_anonymous: boolean;
   upvotes: number;
   downvotes: number;
   created_at: string;
@@ -175,10 +176,24 @@ export const useCommunity = () => {
     const userIds = [...new Set(data.map(q => q.user_id))];
     const { data: profiles } = await supabase
       .from('profiles_public')
-      .select('user_id, full_name, avatar_url')
+      .select('user_id, full_name, avatar_url, anonymous_handle')
       .in('user_id', userIds);
 
-    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
+    const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+
+    const resolveAuthor = (q: any) => {
+      const p = profileMap.get(q.user_id);
+      if (q.is_anonymous) {
+        return {
+          author: { full_name: p?.anonymous_handle || 'Anonymous', avatar_url: null },
+          user_id: null as string | null,
+        };
+      }
+      return {
+        author: p ? { full_name: p.full_name, avatar_url: p.avatar_url } : null,
+        user_id: q.user_id as string | null,
+      };
+    };
 
     // Get saved and following status for current user
     if (user) {
@@ -200,20 +215,26 @@ export const useCommunity = () => {
       const savedIds = new Set(savedRes.data?.map(s => s.question_id) || []);
       const followingIds = new Set(followingRes.data?.map(f => f.question_id) || []);
 
-      return data.map(q => ({
-        ...q,
-        author: profileMap.get(q.user_id) || null,
-        answer_count: 0,
-        is_saved: savedIds.has(q.id),
-        is_following: followingIds.has(q.id)
-      })) as unknown as Question[];
+      return data.map(q => {
+        const resolved = resolveAuthor(q);
+        return {
+          ...q,
+          ...resolved,
+          answer_count: 0,
+          is_saved: savedIds.has(q.id),
+          is_following: followingIds.has(q.id)
+        };
+      }) as unknown as Question[];
     }
 
-    return data.map(q => ({
-      ...q,
-      author: profileMap.get(q.user_id) || null,
-      answer_count: 0
-    })) as unknown as Question[];
+    return data.map(q => {
+      const resolved = resolveAuthor(q);
+      return {
+        ...q,
+        ...resolved,
+        answer_count: 0
+      };
+    }) as unknown as Question[];
   }, [user]);
 
   const fetchQuestion = useCallback(async (id: string): Promise<Question | null> => {
@@ -232,9 +253,17 @@ export const useCommunity = () => {
     // Fetch author profile from public view (excludes sensitive data)
     const { data: authorProfile } = await supabase
       .from('profiles_public')
-      .select('full_name, avatar_url')
+      .select('full_name, avatar_url, anonymous_handle')
       .eq('user_id', data.user_id)
       .maybeSingle();
+
+    const isAnon = (data as any).is_anonymous === true;
+    const authorDisplay = isAnon
+      ? { full_name: authorProfile?.anonymous_handle || 'Anonymous', avatar_url: null }
+      : authorProfile
+        ? { full_name: authorProfile.full_name, avatar_url: authorProfile.avatar_url }
+        : null;
+    const exposedUserId = isAnon ? null : data.user_id;
 
     // Increment view count
     await supabase
@@ -265,7 +294,8 @@ export const useCommunity = () => {
 
       return {
         ...data,
-        author: authorProfile || null,
+        user_id: exposedUserId,
+        author: authorDisplay,
         is_saved: !!savedRes.data,
         is_following: !!followingRes.data,
         answer_count: answersRes.count || 0
@@ -274,7 +304,8 @@ export const useCommunity = () => {
 
     return {
       ...data,
-      author: authorProfile || null
+      user_id: exposedUserId,
+      author: authorDisplay
     } as unknown as Question;
   }, [user]);
 
@@ -397,7 +428,8 @@ export const useCommunity = () => {
   const createAnswer = useCallback(async (
     questionId: string,
     content: string,
-    photos?: File[]
+    photos?: File[],
+    isAnonymous: boolean = false
   ): Promise<Answer> => {
     if (!user) throw new Error('Must be logged in');
 
@@ -416,7 +448,8 @@ export const useCommunity = () => {
           question_id: questionId,
           user_id: user.id,
           content,
-          is_verified_pro: expertData?.is_verified_professional || false
+          is_anonymous: isAnonymous,
+          is_verified_pro: isAnonymous ? false : (expertData?.is_verified_professional || false)
         })
         .select()
         .single();

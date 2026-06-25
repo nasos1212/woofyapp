@@ -2823,6 +2823,8 @@
   },
   "communityQuestion": {
     "notFound": "Η ερώτηση δεν βρέθηκε",
+    "anonymousAnswer": "Δημοσίευση ανώνυμα",
+    "anonymousAnswerHint": "Το όνομα και η εικόνα σας θα αποκρυφτούν",
     "backToCommunity": "Πίσω στην Κοινότητα",
     "thisHelpedMe": "Αυτό με βοήθησε",
     "helped": "Βοήθησε",

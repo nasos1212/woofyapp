@@ -59,10 +59,12 @@ import {
   Flag,
   MoreVertical,
   ChevronLeft,
-  Trash2
+  Trash2,
+  EyeOff
 } from 'lucide-react';
 import { formatRelative } from '@/lib/relativeTime';
 import { formatDate } from "@/lib/utils";
+import { Switch } from '@/components/ui/switch';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -104,6 +106,7 @@ const CommunityQuestion = () => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [loading, setLoading] = useState(true);
   const [answerContent, setAnswerContent] = useState('');
+  const [answerIsAnonymous, setAnswerIsAnonymous] = useState(false);
   const [answerPhotos, setAnswerPhotos] = useState<File[]>([]);
   const [answerPhotoUrls, setAnswerPhotoUrls] = useState<string[]>([]);
   const [showPhotoGallery, setShowPhotoGallery] = useState<string | null>(null);
@@ -237,8 +240,9 @@ const CommunityQuestion = () => {
     if (!answerContent.trim() || !question) return;
 
     try {
-      await createAnswer(question.id, answerContent.trim(), answerPhotos);
+      await createAnswer(question.id, answerContent.trim(), answerPhotos, answerIsAnonymous);
       setAnswerContent('');
+      setAnswerIsAnonymous(false);
       setAnswerPhotos([]);
       setAnswerPhotoUrls([]);
       loadData(); // Reload to show new answer
@@ -428,7 +432,7 @@ const CommunityQuestion = () => {
                   )}
                   <div>
                     <p className="font-medium">
-                      {question.is_anonymous ? t('communityQuestion.anonymous') : (question.author?.full_name || t('communityQuestion.anonymous'))}
+                      {question.author?.full_name || t('communityQuestion.anonymous')}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(new Date(question.created_at))} · {formatRelative(question.created_at)}
@@ -626,12 +630,18 @@ const CommunityQuestion = () => {
                           {/* Author */}
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage src={answer.author?.avatar_url || ''} />
-                                <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                                  {answer.author?.full_name?.charAt(0) || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
+                              {answer.is_anonymous ? (
+                                <div className="h-8 w-8 flex items-center justify-center bg-muted rounded-full">
+                                  <span className="text-muted-foreground text-sm">?</span>
+                                </div>
+                              ) : (
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={answer.author?.avatar_url || ''} />
+                                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                                    {answer.author?.full_name?.charAt(0) || 'U'}
+                                  </AvatarFallback>
+                                </Avatar>
+                              )}
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span className="font-medium text-sm">
@@ -770,6 +780,18 @@ const CommunityQuestion = () => {
                         />
                       </label>
                     )}
+                  </div>
+
+                  {/* Anonymous toggle */}
+                  <div className="p-3 bg-muted/50 rounded-lg border flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <EyeOff className="w-4 h-4 text-muted-foreground shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium">{t('communityQuestion.anonymousAnswer', 'Post anonymously')}</p>
+                        <p className="text-xs text-muted-foreground">{t('communityQuestion.anonymousAnswerHint', 'Your name and avatar will be hidden')}</p>
+                      </div>
+                    </div>
+                    <Switch checked={answerIsAnonymous} onCheckedChange={setAnswerIsAnonymous} />
                   </div>
 
                   <div className="flex justify-end">
