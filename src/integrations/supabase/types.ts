@@ -70,6 +70,13 @@ export type Database = {
             foreignKeyName: "adoption_inquiries_shelter_id_fkey"
             columns: ["shelter_id"]
             isOneToOne: false
+            referencedRelation: "shelters_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "adoption_inquiries_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
             referencedRelation: "shelters_public"
             referencedColumns: ["id"]
           },
@@ -342,6 +349,13 @@ export type Database = {
             foreignKeyName: "blog_posts_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -350,6 +364,13 @@ export type Database = {
             columns: ["shelter_id"]
             isOneToOne: false
             referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blog_posts_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_directory"
             referencedColumns: ["id"]
           },
           {
@@ -395,6 +416,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: true
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_birthday_settings_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: true
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -449,6 +477,13 @@ export type Database = {
             foreignKeyName: "business_hours_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_hours_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -497,6 +532,13 @@ export type Database = {
             foreignKeyName: "business_locations_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_locations_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -533,6 +575,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_photos_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -578,6 +627,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_reviews_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -1570,6 +1626,13 @@ export type Database = {
             foreignKeyName: "offer_redemptions_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offer_redemptions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -1675,6 +1738,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -1895,6 +1965,13 @@ export type Database = {
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_friendly_places_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -2223,6 +2300,13 @@ export type Database = {
             foreignKeyName: "rating_prompts_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rating_prompts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -2344,6 +2428,13 @@ export type Database = {
             foreignKeyName: "sent_birthday_offers_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -2359,6 +2450,13 @@ export type Database = {
             columns: ["redeemed_by_business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sent_birthday_offers_redeemed_by_business_id_fkey"
+            columns: ["redeemed_by_business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses_directory"
             referencedColumns: ["id"]
           },
           {
@@ -2457,6 +2555,13 @@ export type Database = {
             foreignKeyName: "shelter_adoptable_pets_shelter_id_fkey"
             columns: ["shelter_id"]
             isOneToOne: false
+            referencedRelation: "shelters_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shelter_adoptable_pets_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
             referencedRelation: "shelters_public"
             referencedColumns: ["id"]
           },
@@ -2493,6 +2598,13 @@ export type Database = {
             columns: ["shelter_id"]
             isOneToOne: false
             referencedRelation: "shelters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shelter_photos_shelter_id_fkey"
+            columns: ["shelter_id"]
+            isOneToOne: false
+            referencedRelation: "shelters_directory"
             referencedColumns: ["id"]
           },
           {
@@ -2860,6 +2972,13 @@ export type Database = {
             foreignKeyName: "verification_attempts_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
+            referencedRelation: "businesses_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_attempts_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
             referencedRelation: "businesses_public"
             referencedColumns: ["id"]
           },
@@ -2867,6 +2986,72 @@ export type Database = {
       }
     }
     Views: {
+      businesses_directory: {
+        Row: {
+          address: string | null
+          business_name: string | null
+          categories: string[] | null
+          category: Database["public"]["Enums"]["business_category"] | null
+          city: string | null
+          created_at: string | null
+          description: string | null
+          facebook_url: string | null
+          google_maps_url: string | null
+          id: string | null
+          instagram_url: string | null
+          logo_url: string | null
+          tiktok_url: string | null
+          updated_at: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_name?: string | null
+          categories?: string[] | null
+          category?: Database["public"]["Enums"]["business_category"] | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          logo_url?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_name?: string | null
+          categories?: string[] | null
+          category?: Database["public"]["Enums"]["business_category"] | null
+          city?: string | null
+          created_at?: string | null
+          description?: string | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          logo_url?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       businesses_public: {
         Row: {
           address: string | null
@@ -3109,6 +3294,90 @@ export type Database = {
           full_name?: string | null
           preferred_city?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      shelters_directory: {
+        Row: {
+          address: string | null
+          city: string | null
+          cover_photo_position: number | null
+          cover_photo_url: string | null
+          created_at: string | null
+          description: string | null
+          dogs_helped_count: number | null
+          dogs_in_care: string | null
+          donation_link: string | null
+          facebook_url: string | null
+          id: string | null
+          instagram_url: string | null
+          is_hidden: boolean | null
+          location: string | null
+          logo_url: string | null
+          mission_statement: string | null
+          shelter_name: string | null
+          tiktok_url: string | null
+          updated_at: string | null
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at: string | null
+          website: string | null
+          years_operating: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          cover_photo_position?: number | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          facebook_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          is_hidden?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          mission_statement?: string | null
+          shelter_name?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          cover_photo_position?: number | null
+          cover_photo_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          dogs_helped_count?: number | null
+          dogs_in_care?: string | null
+          donation_link?: string | null
+          facebook_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          is_hidden?: boolean | null
+          location?: string | null
+          logo_url?: string | null
+          mission_statement?: string | null
+          shelter_name?: string | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          verified_at?: string | null
+          website?: string | null
+          years_operating?: string | null
         }
         Relationships: []
       }
