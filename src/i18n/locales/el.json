@@ -2686,6 +2686,19 @@
       "redemptions": "Εξαργυρώσεις",
       "newCustomers": "Νέοι πελάτες",
       "weekly": "Αυτή την εβδομάδα",
+      "subtitle": "Επαλήθευσε μέλη και παρακολούθησε τις εξαργυρώσεις σου",
+      "thisMonth": "Αυτόν τον μήνα",
+      "viewDetails": "Λεπτομέρειες",
+      "tiles": {
+        "offers": "Προσφορές",
+        "offersSub": "1 ενεργή",
+        "redemptions": "Εξαργυρώσεις",
+        "redemptionsSub": "Ιστορικό",
+        "analytics": "Στατιστικά",
+        "analyticsSub": "Insights",
+        "birthdays": "Γενέθλια",
+        "birthdaysSub": "Γιόρτασε"
+      },
       "toastTitle": "Νέα εξαργύρωση · −€12",
       "toastBody": "Η Μαρία μόλις εξαργύρωσε την προσφορά γενεθλίων"
     },
