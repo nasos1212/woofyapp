@@ -157,7 +157,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
         <div className="p-4 space-y-3 bg-slate-50/60 min-h-[380px]">
           {/* Title */}
           <div>
-            <h3 className="font-display font-bold text-slate-900 text-base leading-tight">Pet Nas</h3>
+            <h3 className="font-display font-bold text-slate-900 text-base leading-tight">Paws Pet Hotel</h3>
             <p className="text-[10px] text-slate-500">{t("partnersSection.preview.subtitle")}</p>
           </div>
 
