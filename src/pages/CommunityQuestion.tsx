@@ -628,12 +628,18 @@ const CommunityQuestion = () => {
                           {/* Author */}
                           <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-2">
-                              <Avatar className="h-8 w-8">
-                                <AvatarImage src={answer.author?.avatar_url || ''} />
-                                <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                                  {answer.author?.full_name?.charAt(0) || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
+                              {answer.is_anonymous ? (
+                                <div className="h-8 w-8 flex items-center justify-center bg-muted rounded-full">
+                                  <span className="text-muted-foreground text-sm">?</span>
+                                </div>
+                              ) : (
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={answer.author?.avatar_url || ''} />
+                                  <AvatarFallback className="bg-primary/10 text-primary text-sm">
+                                    {answer.author?.full_name?.charAt(0) || 'U'}
+                                  </AvatarFallback>
+                                </Avatar>
+                              )}
                               <div>
                                 <div className="flex items-center gap-2">
                                   <span className="font-medium text-sm">
