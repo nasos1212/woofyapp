@@ -23,18 +23,18 @@ const PartnersSection = () => {
   ];
 
   return (
-    <section id="partners" className="py-20 lg:py-28 bg-gradient-to-b from-background to-primary/5 overflow-hidden">
+    <section id="partners" className="py-20 lg:py-28 bg-wooffy-dark text-white overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
-            <Building2 className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">{t("partnersSection.badge")}</span>
+          <span className="inline-flex items-center gap-2 bg-wooffy-blue/20 rounded-full px-4 py-2 border border-wooffy-blue/30 mb-6">
+            <Building2 className="w-4 h-4 text-wooffy-sky" />
+            <span className="text-sm font-medium text-wooffy-light/80">{t("partnersSection.badge")}</span>
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-6">
             {t("partnersSection.title")}
           </h2>
-          <p className="text-lg text-muted-foreground">{t("partnersSection.description")}</p>
+          <p className="text-lg text-wooffy-light/70">{t("partnersSection.description")}</p>
         </div>
 
         {/* Split: dashboard preview + benefits */}
@@ -47,14 +47,14 @@ const PartnersSection = () => {
             {benefits.map((b) => (
               <div
                 key={b.title}
-                className="bg-card rounded-2xl p-5 shadow-soft border border-border hover:shadow-card hover:border-primary/30 transition-all duration-300 flex gap-4"
+                className="bg-wooffy-blue/10 rounded-2xl p-5 border border-wooffy-blue/30 hover:border-wooffy-sky/50 transition-all duration-300 flex gap-4"
               >
-                <div className="w-11 h-11 shrink-0 bg-primary/10 rounded-xl flex items-center justify-center">
-                  <b.icon className="w-5 h-5 text-primary" />
+                <div className="w-11 h-11 shrink-0 bg-wooffy-sky/20 rounded-xl flex items-center justify-center">
+                  <b.icon className="w-5 h-5 text-wooffy-sky" />
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-foreground mb-1">{b.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+                  <h3 className="font-display font-semibold text-white mb-1">{b.title}</h3>
+                  <p className="text-sm text-wooffy-light/70 leading-relaxed">{b.desc}</p>
                 </div>
               </div>
             ))}
@@ -62,32 +62,32 @@ const PartnersSection = () => {
         </div>
 
         {/* Categories */}
-        <p className="text-center text-sm font-medium text-muted-foreground uppercase tracking-wider mb-5">
+        <p className="text-center text-sm font-medium text-wooffy-light/60 uppercase tracking-wider mb-5">
           {t("partnersSection.categoriesLabel")}
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-10 max-w-5xl mx-auto">
           {categoryConfig.map((category) => (
             <div
               key={category.name}
-              className="bg-card rounded-xl p-3 text-center shadow-soft border border-border hover:border-primary/20 transition-all duration-300"
+              className="bg-wooffy-blue/10 rounded-xl p-3 text-center border border-wooffy-blue/30 hover:border-wooffy-sky/50 transition-all duration-300"
             >
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <category.icon className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 bg-wooffy-sky/20 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <category.icon className="w-5 h-5 text-wooffy-sky" />
               </div>
-              <p className="text-xs font-medium text-foreground">{category.name}</p>
+              <p className="text-xs font-medium text-wooffy-light/90">{category.name}</p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center">
-          <Button asChild size="lg" className="rounded-full px-8">
+          <Button asChild size="lg" className="rounded-full px-8 bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-sky/90">
             <Link to="/partner-register">
               {t("partnersSection.cta")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </Button>
-          <p className="text-xs text-muted-foreground mt-3">{t("partnersSection.ctaHelp")}</p>
+          <p className="text-xs text-wooffy-light/60 mt-3">{t("partnersSection.ctaHelp")}</p>
         </div>
       </div>
     </section>
