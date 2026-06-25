@@ -120,7 +120,7 @@ const DashboardPreview = ({ t }: { t: (k: string) => string }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground">{t("partnersSection.preview.welcome")}</p>
-              <p className="font-display font-semibold text-foreground">Bark & Bone Cafe</p>
+              <p className="font-display font-semibold text-foreground">Happy Tails Pet Hotel</p>
             </div>
             <span className="inline-flex items-center gap-1 text-[10px] font-medium bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-1 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
