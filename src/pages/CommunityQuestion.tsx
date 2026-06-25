@@ -59,10 +59,12 @@ import {
   Flag,
   MoreVertical,
   ChevronLeft,
-  Trash2
+  Trash2,
+  EyeOff
 } from 'lucide-react';
 import { formatRelative } from '@/lib/relativeTime';
 import { formatDate } from "@/lib/utils";
+import { Switch } from '@/components/ui/switch';
 import {
   DropdownMenu,
   DropdownMenuContent,
