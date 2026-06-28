@@ -158,7 +158,7 @@ const SheltersSection = () => {
             <Heart className="w-4 h-4 text-wooffy-sky fill-wooffy-sky" />
             <span className="text-sm font-medium text-wooffy-light/80">{t("shelters.badge")}</span>
           </span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
             {t("shelters.titlePart")} <span className="text-wooffy-sky">{t("shelters.titleHighlight")}</span>
           </h2>
           <p className="text-wooffy-light/70 text-lg max-w-2xl mx-auto">
