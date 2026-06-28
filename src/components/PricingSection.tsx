@@ -135,11 +135,11 @@ const PricingSection = () => {
           </div>
         </div>
 
-        <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center border border-wooffy-blue/30">
-          <p className="font-display font-semibold text-lg text-wooffy-sky mb-2">
+        <div className="max-w-lg mx-auto bg-card rounded-2xl p-6 text-center border border-border">
+          <p className="font-display font-semibold text-lg text-wooffy-blue mb-2">
             {t("pricing.savings")}
           </p>
-          <p className="text-sm text-wooffy-light/70">
+          <p className="text-sm text-muted-foreground">
             {t("pricing.savingsSub")}
           </p>
         </div>
