@@ -73,6 +73,15 @@ export default {
           accent: "hsl(var(--wooffy-accent))",
           soft: "hsl(var(--wooffy-soft))",
         },
+        warm: {
+          cream: "hsl(var(--warm-cream))",
+          terracotta: "hsl(var(--warm-terracotta))",
+          sage: "hsl(var(--warm-sage))",
+          navy: "hsl(var(--warm-navy))",
+          honey: "hsl(var(--warm-honey))",
+          blush: "hsl(var(--warm-blush))",
+          stone: "hsl(var(--warm-stone))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
