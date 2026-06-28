@@ -191,29 +191,29 @@ const SheltersSection = () => {
                 <Link 
                   key={shelter.id}
                   to={`/shelter/${shelter.id}`}
-                  className="bg-wooffy-blue/10 rounded-2xl p-6 border border-wooffy-blue/30 hover:border-wooffy-sky/60 transition-all duration-300 group cursor-pointer"
+                  className="bg-card rounded-2xl p-6 border border-border hover:border-wooffy-sky/60 transition-all duration-300 group cursor-pointer"
                 >
                   <div className="w-14 h-14 bg-wooffy-sky/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Home className="w-7 h-7 text-wooffy-sky" />
+                    <Home className="w-7 h-7 text-wooffy-blue" />
                   </div>
-                  <h4 className="font-display font-semibold text-white mb-1">{shelter.shelter_name}</h4>
-                  <p className="text-wooffy-light/60 text-sm">{shelter.location}</p>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
+                  <p className="text-muted-foreground text-sm">{shelter.location}</p>
                 </Link>
               ))
             ) : (
               [...Array(2)].map((_, index) => (
                 <div 
                   key={index}
-                  className="bg-wooffy-blue/10 rounded-2xl p-6 border border-wooffy-blue/30"
+                  className="bg-card rounded-2xl p-6 border border-border"
                 >
                   <div className="w-14 h-14 bg-wooffy-sky/20 rounded-xl flex items-center justify-center mb-4">
-                    <Home className="w-7 h-7 text-wooffy-sky" />
+                    <Home className="w-7 h-7 text-wooffy-blue" />
                   </div>
-                  <h4 className="font-display font-semibold text-white mb-1">{t("shelters.comingSoon")}</h4>
-                  <p className="text-wooffy-light/60 text-sm mb-3">Cyprus</p>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
+                  <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Heart className="w-4 h-4 text-wooffy-sky" />
-                    <span className="text-wooffy-light font-medium">{t("shelters.joinUs")}</span>
+                    <Heart className="w-4 h-4 text-wooffy-blue" />
+                    <span className="text-muted-foreground font-medium">{t("shelters.joinUs")}</span>
                   </div>
                 </div>
               ))
