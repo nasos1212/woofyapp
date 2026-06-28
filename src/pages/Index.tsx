@@ -105,13 +105,12 @@ const Index = () => {
           <FounderSection />
           <BenefitsSection />
           <PartnersSection />
+          <OffersSection />
+          <SheltersSection />
+          <PricingSection />
           <div id="get-listed">
             <GetListedSection />
           </div>
-
-          <SheltersSection />
-          <OffersSection />
-          <PricingSection />
           <LatestFromBlog />
           <CTASection />
         </main>
