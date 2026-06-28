@@ -377,7 +377,7 @@ const SheltersSection = () => {
               />
             </div>
 
-            <div className="bg-rose-50 rounded-lg p-4 text-sm text-rose-700">
+            <div className="bg-wooffy-sky/10 rounded-lg p-4 text-sm text-wooffy-dark border border-wooffy-sky/30">
               <strong>{t("shelterApply.whatHappensNext")}</strong>
               <ul className="list-disc list-inside mt-2 space-y-1">
                 <li>{t("shelterApply.next1")}</li>
@@ -390,7 +390,7 @@ const SheltersSection = () => {
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 {t("shelterApply.cancel")}
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="bg-rose-500 hover:bg-rose-600">
+              <Button type="submit" disabled={isSubmitting} className="bg-wooffy-dark text-white hover:bg-wooffy-dark/90 rounded-full">
                 {isSubmitting ? t("shelterApply.submitting") : t("shelterApply.submit")}
               </Button>
             </div>
