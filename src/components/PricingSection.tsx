@@ -15,14 +15,6 @@ const PricingSection = () => {
     t("benefits.free.community.title"),
   ];
 
-  const sharedBenefits = [
-    t("pricing.shared.discounts"),
-    t("pricing.shared.ai"),
-    t("pricing.shared.vaccination"),
-    t("pricing.shared.community"),
-    t("pricing.shared.support"),
-  ];
-
   const plans = [
     { id: "solo", pets: 1, price: 29, popular: false, icon: Dog },
     { id: "duo", pets: 2, price: 49, popular: true, icon: Users },
@@ -133,18 +125,6 @@ const PricingSection = () => {
               </div>
             );
           })}
-        </div>
-
-        <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border mb-8">
-          <h3 className="font-display font-semibold text-lg text-center mb-4">{t("pricing.allPlansInclude")}</h3>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {sharedBenefits.map((benefit, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-500 shrink-0" />
-                <span className="text-sm text-foreground">{benefit}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center mb-8">
