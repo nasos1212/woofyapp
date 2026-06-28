@@ -150,16 +150,16 @@ const SheltersSection = () => {
 
 
   return (
-    <section id="shelters" className="py-20 bg-gradient-to-b from-wooffy-soft to-background">
+    <section id="shelters" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-rose-100 text-rose-600 px-4 py-2 rounded-full mb-6">
-            <Heart className="w-4 h-4 fill-current" />
-            <span className="text-sm font-medium">{t("shelters.badge")}</span>
+          <div className="inline-flex items-center gap-2 bg-card px-4 py-2 rounded-full mb-6 border border-border">
+            <Heart className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">{t("shelters.badge")}</span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            {t("shelters.titlePart")} <span className="text-rose-500">{t("shelters.titleHighlight")}</span>
+            {t("shelters.titlePart")} <span className="text-foreground">{t("shelters.titleHighlight")}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             {t("shelters.subtitle")}
@@ -168,14 +168,14 @@ const SheltersSection = () => {
 
         {/* Impact Stats */}
         <div className="grid grid-cols-2 gap-6 max-w-md mx-auto mb-16">
-          <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-yellow-500 mb-2">
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
               {shelters.length > 0 ? shelters.length : "—"}
             </div>
             <p className="text-muted-foreground text-sm">{t("shelters.partnerShelters")}</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 text-center shadow-soft">
-            <div className="text-3xl md:text-4xl font-display font-bold text-green-500 mb-2">100%</div>
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">100%</div>
             <p className="text-muted-foreground text-sm">{t("shelters.transparent")}</p>
           </div>
         </div>
@@ -191,10 +191,10 @@ const SheltersSection = () => {
                 <Link 
                   key={shelter.id}
                   to={`/shelter/${shelter.id}`}
-                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group cursor-pointer"
+                  className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all duration-300 group cursor-pointer"
                 >
-                  <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Home className="w-8 h-8 text-rose-500" />
+                  <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
+                    <Home className="w-8 h-8 text-muted-foreground" />
                   </div>
                   <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
                   <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
@@ -205,15 +205,15 @@ const SheltersSection = () => {
               [...Array(2)].map((_, index) => (
                 <div 
                   key={index}
-                  className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group"
+                  className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all duration-300 group"
                 >
-                  <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Home className="w-8 h-8 text-rose-500" />
+                  <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
+                    <Home className="w-8 h-8 text-muted-foreground" />
                   </div>
                   <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
                   <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Heart className="w-4 h-4 text-primary" />
+                    <Heart className="w-4 h-4 text-muted-foreground" />
                     <span className="text-foreground font-medium">{t("shelters.joinUs")}</span>
                   </div>
                 </div>
@@ -239,7 +239,7 @@ const SheltersSection = () => {
           ) : (
             <button 
               onClick={handleApplyClick}
-              className="text-rose-500 font-medium hover:underline inline-flex items-center gap-2"
+              className="text-foreground font-medium hover:underline inline-flex items-center gap-2"
             >
               {user ? t("shelters.applyAuth") : t("shelters.loginApply")}
               {user ? <span>→</span> : <LogIn className="w-4 h-4" />}
@@ -378,8 +378,8 @@ const SheltersSection = () => {
               />
             </div>
 
-            <div className="bg-rose-50 rounded-lg p-4 text-sm text-rose-700">
-              <strong>{t("shelterApply.whatHappensNext")}</strong>
+            <div className="bg-muted rounded-lg p-4 text-sm text-muted-foreground">
+              <strong className="text-foreground">{t("shelterApply.whatHappensNext")}</strong>
               <ul className="list-disc list-inside mt-2 space-y-1">
                 <li>{t("shelterApply.next1")}</li>
                 <li>{t("shelterApply.next2")}</li>
@@ -391,7 +391,7 @@ const SheltersSection = () => {
               <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                 {t("shelterApply.cancel")}
               </Button>
-              <Button type="submit" disabled={isSubmitting} className="bg-rose-500 hover:bg-rose-600">
+              <Button type="submit" disabled={isSubmitting} className="bg-foreground hover:bg-foreground/90">
                 {isSubmitting ? t("shelterApply.submitting") : t("shelterApply.submit")}
               </Button>
             </div>
