@@ -150,39 +150,39 @@ const SheltersSection = () => {
 
 
   return (
-    <section id="shelters" className="py-20 lg:py-28 bg-wooffy-dark text-white overflow-hidden">
+    <section id="shelters" className="py-20 lg:py-28 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-14">
           <span className="inline-flex items-center gap-2 bg-wooffy-blue/20 rounded-full px-4 py-2 border border-wooffy-blue/30 mb-6">
             <Heart className="w-4 h-4 text-wooffy-sky fill-wooffy-sky" />
-            <span className="text-sm font-medium text-wooffy-light/80">{t("shelters.badge")}</span>
+            <span className="text-sm font-medium text-wooffy-dark">{t("shelters.badge")}</span>
           </span>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
             {t("shelters.titlePart")} <span className="text-wooffy-sky">{t("shelters.titleHighlight")}</span>
           </h2>
-          <p className="text-wooffy-light/70 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             {t("shelters.subtitle")}
           </p>
         </div>
 
         {/* Impact Stats */}
         <div className="grid grid-cols-2 gap-6 max-w-md mx-auto mb-14">
-          <div className="bg-wooffy-blue/10 rounded-2xl p-6 text-center border border-wooffy-blue/30">
-            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-sky mb-2">
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-blue mb-2">
               {shelters.length > 0 ? shelters.length : "—"}
             </div>
-            <p className="text-wooffy-light/70 text-sm">{t("shelters.partnerShelters")}</p>
+            <p className="text-muted-foreground text-sm">{t("shelters.partnerShelters")}</p>
           </div>
-          <div className="bg-wooffy-blue/10 rounded-2xl p-6 text-center border border-wooffy-blue/30">
-            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-sky mb-2">100%</div>
-            <p className="text-wooffy-light/70 text-sm">{t("shelters.transparent")}</p>
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-blue mb-2">100%</div>
+            <p className="text-muted-foreground text-sm">{t("shelters.transparent")}</p>
           </div>
         </div>
 
         {/* Whitelisted Shelters */}
         <div className="mb-12">
-          <h3 className="font-display text-xl font-semibold text-white mb-6 text-center">
+          <h3 className="font-display text-xl font-semibold text-foreground mb-6 text-center">
             {t("shelters.ourPartners")}
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -191,29 +191,29 @@ const SheltersSection = () => {
                 <Link 
                   key={shelter.id}
                   to={`/shelter/${shelter.id}`}
-                  className="bg-wooffy-blue/10 rounded-2xl p-6 border border-wooffy-blue/30 hover:border-wooffy-sky/60 transition-all duration-300 group cursor-pointer"
+                  className="bg-card rounded-2xl p-6 border border-border hover:border-wooffy-sky/60 transition-all duration-300 group cursor-pointer"
                 >
                   <div className="w-14 h-14 bg-wooffy-sky/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Home className="w-7 h-7 text-wooffy-sky" />
+                    <Home className="w-7 h-7 text-wooffy-blue" />
                   </div>
-                  <h4 className="font-display font-semibold text-white mb-1">{shelter.shelter_name}</h4>
-                  <p className="text-wooffy-light/60 text-sm">{shelter.location}</p>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
+                  <p className="text-muted-foreground text-sm">{shelter.location}</p>
                 </Link>
               ))
             ) : (
               [...Array(2)].map((_, index) => (
                 <div 
                   key={index}
-                  className="bg-wooffy-blue/10 rounded-2xl p-6 border border-wooffy-blue/30"
+                  className="bg-card rounded-2xl p-6 border border-border"
                 >
                   <div className="w-14 h-14 bg-wooffy-sky/20 rounded-xl flex items-center justify-center mb-4">
-                    <Home className="w-7 h-7 text-wooffy-sky" />
+                    <Home className="w-7 h-7 text-wooffy-blue" />
                   </div>
-                  <h4 className="font-display font-semibold text-white mb-1">{t("shelters.comingSoon")}</h4>
-                  <p className="text-wooffy-light/60 text-sm mb-3">Cyprus</p>
+                  <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
+                  <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
                   <div className="flex items-center gap-2 text-sm">
-                    <Heart className="w-4 h-4 text-wooffy-sky" />
-                    <span className="text-wooffy-light font-medium">{t("shelters.joinUs")}</span>
+                    <Heart className="w-4 h-4 text-wooffy-blue" />
+                    <span className="text-muted-foreground font-medium">{t("shelters.joinUs")}</span>
                   </div>
                 </div>
               ))
@@ -223,7 +223,7 @@ const SheltersSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-wooffy-light/70 mb-4">
+          <p className="text-muted-foreground mb-4">
             {t("shelters.areYou")}
           </p>
           {existingShelter ? (
