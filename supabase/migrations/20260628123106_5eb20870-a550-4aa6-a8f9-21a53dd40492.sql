@@ -1,1 +1,0 @@
-GRANT SELECT ON public.shelters_directory TO anon, authenticated;
