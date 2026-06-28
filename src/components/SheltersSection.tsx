@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, Home, LogIn } from "lucide-react";
+import { Heart, Home, LogIn, ArrowRight } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,13 @@ interface Shelter {
   shelter_name: string;
   location: string;
 }
+
+const shelterAccent = [
+  { bg: "bg-warm-terracotta/10", text: "text-warm-terracotta", border: "border-warm-terracotta/15" },
+  { bg: "bg-warm-sage/10", text: "text-warm-sage", border: "border-warm-sage/15" },
+  { bg: "bg-warm-honey/15", text: "text-amber-700", border: "border-warm-honey/20" },
+  { bg: "bg-warm-navy/10", text: "text-warm-navy", border: "border-warm-navy/15" },
+];
 
 const SheltersSection = () => {
   const { user } = useAuth();
@@ -39,7 +46,6 @@ const SheltersSection = () => {
     description: "",
   });
 
-  // Fetch approved shelters from database
   useEffect(() => {
     const fetchShelters = async () => {
       const { data, error } = await supabase
@@ -55,7 +61,6 @@ const SheltersSection = () => {
     fetchShelters();
   }, []);
 
-  // Check if user already has a shelter application
   useEffect(() => {
     const checkExistingShelter = async () => {
       if (!user) {
@@ -79,13 +84,11 @@ const SheltersSection = () => {
 
   const handleApplyClick = () => {
     if (!user) {
-      // Redirect to auth with return URL
       navigate('/auth?redirect=/#shelters&action=shelter-apply');
       return;
     }
 
     if (existingShelter) {
-      // User already has a shelter, redirect to dashboard
       navigate('/shelter-dashboard');
       return;
     }
@@ -116,7 +119,7 @@ const SheltersSection = () => {
           dogs_in_care: formData.dogsCount,
           years_operating: formData.yearsOperating,
           description: formData.description,
-          user_id: user.id, // Link to user account
+          user_id: user.id,
         });
 
       if (error) {
@@ -138,7 +141,6 @@ const SheltersSection = () => {
         yearsOperating: "",
         description: "",
       });
-      // Redirect to shelter dashboard
       navigate('/shelter-dashboard');
     } catch (err) {
       console.error("Error:", err);
@@ -148,18 +150,20 @@ const SheltersSection = () => {
     }
   };
 
-
   return (
-    <section id="shelters" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section id="shelters" className="py-20 lg:py-32 bg-warm-stone/50 relative overflow-hidden">
+      {/* Decorative blobs */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-warm-sage/5 rounded-full blur-3xl" />
+
+      <div className="container mx-auto px-4 relative">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 bg-card px-4 py-2 rounded-full mb-6 border border-border">
-            <Heart className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">{t("shelters.badge")}</span>
+          <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full mb-6 border border-warm-stone shadow-sm">
+            <Heart className="w-4 h-4 text-warm-terracotta" />
+            <span className="text-sm font-medium text-warm-navy">{t("shelters.badge")}</span>
           </div>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
-            {t("shelters.titlePart")} <span className="text-foreground">{t("shelters.titleHighlight")}</span>
+            {t("shelters.titlePart")} <span className="text-warm-terracotta">{t("shelters.titleHighlight")}</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             {t("shelters.subtitle")}
@@ -168,14 +172,14 @@ const SheltersSection = () => {
 
         {/* Impact Stats */}
         <div className="grid grid-cols-2 gap-6 max-w-md mx-auto mb-16">
-          <div className="bg-card rounded-2xl p-6 text-center border border-border">
-            <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">
+          <div className="bg-white rounded-2xl p-6 text-center border border-warm-stone shadow-sm">
+            <div className="text-3xl md:text-4xl font-display font-bold text-warm-terracotta mb-2">
               {shelters.length > 0 ? shelters.length : "—"}
             </div>
             <p className="text-muted-foreground text-sm">{t("shelters.partnerShelters")}</p>
           </div>
-          <div className="bg-card rounded-2xl p-6 text-center border border-border">
-            <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-2">100%</div>
+          <div className="bg-white rounded-2xl p-6 text-center border border-warm-stone shadow-sm">
+            <div className="text-3xl md:text-4xl font-display font-bold text-warm-sage mb-2">100%</div>
             <p className="text-muted-foreground text-sm">{t("shelters.transparent")}</p>
           </div>
         </div>
@@ -187,37 +191,46 @@ const SheltersSection = () => {
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {shelters.length > 0 ? (
-              shelters.map((shelter) => (
-                <Link 
-                  key={shelter.id}
-                  to={`/shelter/${shelter.id}`}
-                  className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
-                    <Home className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
-                  <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
-                </Link>
-              ))
+              shelters.map((shelter, index) => {
+                const accent = shelterAccent[index % shelterAccent.length];
+                return (
+                  <Link 
+                    key={shelter.id}
+                    to={`/shelter/${shelter.id}`}
+                    className="bg-white rounded-2xl p-6 border border-warm-stone hover:border-warm-sage/30 hover:shadow-warm transition-all duration-300 group cursor-pointer"
+                  >
+                    <div className={`w-14 h-14 ${accent.bg} ${accent.border} border rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110`}>
+                      <Home className={`w-7 h-7 ${accent.text}`} />
+                    </div>
+                    <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
+                    <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
+                    <div className="flex items-center gap-1 text-sm text-warm-terracotta font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span>View</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </Link>
+                );
+              })
             ) : (
-              // Show placeholder cards if no shelters yet
-              [...Array(2)].map((_, index) => (
-                <div 
-                  key={index}
-                  className="bg-card rounded-2xl p-6 border border-border hover:shadow-md transition-all duration-300 group"
-                >
-                  <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
-                    <Home className="w-8 h-8 text-muted-foreground" />
+              [...Array(2)].map((_, index) => {
+                const accent = shelterAccent[index % shelterAccent.length];
+                return (
+                  <div 
+                    key={index}
+                    className="bg-white rounded-2xl p-6 border border-warm-stone hover:shadow-warm transition-all duration-300 group"
+                  >
+                    <div className={`w-14 h-14 ${accent.bg} ${accent.border} border rounded-2xl flex items-center justify-center mb-4`}>
+                      <Home className={`w-7 h-7 ${accent.text}`} />
+                    </div>
+                    <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
+                    <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
+                    <div className="flex items-center gap-2 text-sm">
+                      <Heart className="w-4 h-4 text-warm-terracotta" />
+                      <span className="text-foreground font-medium">{t("shelters.joinUs")}</span>
+                    </div>
                   </div>
-                  <h4 className="font-display font-semibold text-foreground mb-1">{t("shelters.comingSoon")}</h4>
-                  <p className="text-muted-foreground text-sm mb-3">Cyprus</p>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Heart className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-foreground font-medium">{t("shelters.joinUs")}</span>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </div>
@@ -231,7 +244,7 @@ const SheltersSection = () => {
             <Button 
               onClick={() => navigate('/shelter-dashboard')}
               variant="outline"
-              className="gap-2"
+              className="gap-2 border-warm-stone hover:bg-warm-cream"
             >
               <Home className="w-4 h-4" />
               {t("shelters.goDashboard")}
@@ -239,10 +252,10 @@ const SheltersSection = () => {
           ) : (
             <button 
               onClick={handleApplyClick}
-              className="text-foreground font-medium hover:underline inline-flex items-center gap-2"
+              className="text-warm-terracotta font-medium hover:underline inline-flex items-center gap-2"
             >
               {user ? t("shelters.applyAuth") : t("shelters.loginApply")}
-              {user ? <span>→</span> : <LogIn className="w-4 h-4" />}
+              {user ? <ArrowRight className="w-4 h-4" /> : <LogIn className="w-4 h-4" />}
             </button>
           )}
         </div>
@@ -378,7 +391,7 @@ const SheltersSection = () => {
               />
             </div>
 
-            <div className="bg-muted rounded-lg p-4 text-sm text-muted-foreground">
+            <div className="bg-warm-cream rounded-lg p-4 text-sm text-muted-foreground border border-warm-stone">
               <strong className="text-foreground">{t("shelterApply.whatHappensNext")}</strong>
               <ul className="list-disc list-inside mt-2 space-y-1">
                 <li>{t("shelterApply.next1")}</li>
