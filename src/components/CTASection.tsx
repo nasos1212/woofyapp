@@ -8,7 +8,7 @@ const CTASection = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-20 lg:py-32 bg-wooffy-dark relative overflow-hidden">
+    <section className="py-20 lg:py-32 bg-background relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-wooffy-blue/20 rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-wooffy-blue/20 rounded-full translate-y-1/2 -translate-x-1/2" />
 
