@@ -31,7 +31,7 @@ const CTASection = () => {
             <ArrowRight className="w-5 h-5 flex-shrink-0 group-hover:translate-x-1 transition-transform" />
           </Button>
 
-          <p className="text-sm text-wooffy-light/60 mt-4">
+          <p className="text-sm text-muted-foreground mt-4">
             {t("cta.lessThan")}
           </p>
         </div>
