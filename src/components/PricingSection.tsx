@@ -135,18 +135,6 @@ const PricingSection = () => {
           })}
         </div>
 
-        <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border mb-8">
-          <h3 className="font-display font-semibold text-lg text-center mb-4">{t("pricing.allPlansInclude")}</h3>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {sharedBenefits.map((benefit, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-green-500 shrink-0" />
-                <span className="text-sm text-foreground">{benefit}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center mb-8">
           <p className="font-display font-semibold text-lg text-wooffy-sky mb-2">
             {t("pricing.savings")}
