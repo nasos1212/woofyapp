@@ -1,4 +1,4 @@
-import { Star, Zap, Dog, Users, Crown, Check } from "lucide-react";
+import { Star, Zap, Dog, Users, Crown, Check, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -35,11 +35,45 @@ const PricingSection = () => {
           </h2>
 
           <p className="text-lg text-muted-foreground">
-            {t("pricing.subtitle")}
+            {t("freemium.subtitle")}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto mb-12 items-stretch">
+          {/* Free tier */}
+          <div className="relative">
+            <div className="bg-card rounded-3xl p-6 lg:p-8 h-full flex flex-col border border-border hover:border-wooffy-sky/50 transition-all duration-300 hover:-translate-y-1">
+              <div className="text-center mb-4">
+                <div className="w-14 h-14 bg-wooffy-sky/15 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-7 h-7 text-wooffy-blue" />
+                </div>
+                <h3 className="font-display font-bold text-xl text-foreground">
+                  {t("freemium.freeMember")}
+                </h3>
+                <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">
+                  {t("freemium.noCard")}
+                </p>
+              </div>
+
+              <div className="text-center mb-6">
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="font-display font-bold text-4xl text-wooffy-dark">€0</span>
+                  <span className="text-muted-foreground">{t("freemium.forever")}</span>
+                </div>
+              </div>
+
+              <div className="flex-1" />
+
+              <Button
+                variant="outline"
+                className="w-full rounded-full border-border hover:bg-muted"
+                onClick={() => navigate("/auth")}
+              >
+                {t("freemium.signUpFree")}
+              </Button>
+            </div>
+          </div>
+
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
@@ -88,7 +122,7 @@ const PricingSection = () => {
         </div>
 
         <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 border border-border mb-8">
-          <h3 className="font-display font-semibold text-lg text-center text-foreground mb-4">{t("pricing.allPlansInclude")}</h3>
+          <h3 className="font-display font-semibold text-lg text-center text-foreground mb-4">{t("pricing.allPaidPlansInclude") !== "pricing.allPaidPlansInclude" ? t("pricing.allPaidPlansInclude") : t("pricing.allPlansInclude")}</h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {sharedBenefits.map((benefit, i) => (
               <div key={i} className="flex items-center gap-2">
