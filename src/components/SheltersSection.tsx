@@ -156,7 +156,7 @@ const SheltersSection = () => {
         <div className="text-center mb-14">
           <span className="inline-flex items-center gap-2 bg-wooffy-blue/20 rounded-full px-4 py-2 border border-wooffy-blue/30 mb-6">
             <Heart className="w-4 h-4 text-wooffy-sky fill-wooffy-sky" />
-            <span className="text-sm font-medium text-wooffy-light/80">{t("shelters.badge")}</span>
+            <span className="text-sm font-medium text-wooffy-dark">{t("shelters.badge")}</span>
           </span>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
             {t("shelters.titlePart")} <span className="text-wooffy-sky">{t("shelters.titleHighlight")}</span>
