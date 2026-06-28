@@ -223,7 +223,7 @@ const SheltersSection = () => {
 
         {/* CTA */}
         <div className="text-center">
-          <p className="text-wooffy-light/70 mb-4">
+          <p className="text-muted-foreground mb-4">
             {t("shelters.areYou")}
           </p>
           {existingShelter ? (
