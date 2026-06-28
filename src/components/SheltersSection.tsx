@@ -161,7 +161,7 @@ const SheltersSection = () => {
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-4">
             {t("shelters.titlePart")} <span className="text-wooffy-sky">{t("shelters.titleHighlight")}</span>
           </h2>
-          <p className="text-wooffy-light/70 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             {t("shelters.subtitle")}
           </p>
         </div>
