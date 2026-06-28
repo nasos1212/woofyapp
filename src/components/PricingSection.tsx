@@ -1,4 +1,4 @@
-import { Star, Gift, Dog, Users, Crown, Check, Sparkles } from "lucide-react";
+import { Star, Gift, Dog, Users, Crown, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
