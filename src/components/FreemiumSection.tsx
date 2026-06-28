@@ -21,101 +21,102 @@ const FreemiumSection = () => {
   ];
 
   return (
-    <section id="freemium" className="py-20 lg:py-28 bg-gradient-warm">
+    <section id="freemium" className="py-20 lg:py-28 bg-wooffy-dark text-white overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <span className="inline-flex items-center gap-2 bg-card rounded-full px-4 py-2 shadow-soft border border-border mb-6">
-            <Gift className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-muted-foreground">{t("freemium.badge")}</span>
+          <span className="inline-flex items-center gap-2 bg-wooffy-blue/20 rounded-full px-4 py-2 border border-wooffy-blue/30 mb-6">
+            <Gift className="w-4 h-4 text-wooffy-sky" />
+            <span className="text-sm font-medium text-wooffy-light/80">{t("freemium.badge")}</span>
           </span>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-6">
             {t("freemium.title")}
           </h2>
 
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-wooffy-light/70 max-w-2xl mx-auto">
             {t("freemium.subtitle")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <div className="bg-card rounded-3xl p-6 lg:p-8 shadow-card border border-border">
+          {/* Free */}
+          <div className="bg-wooffy-blue/10 rounded-3xl p-6 lg:p-8 border border-wooffy-blue/30">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-muted-foreground" />
+              <div className="w-12 h-12 bg-wooffy-blue/20 rounded-full flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-wooffy-light/70" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl text-foreground">{t("freemium.freeMember")}</h3>
-                <p className="text-sm text-muted-foreground">{t("freemium.noCard")}</p>
+                <h3 className="font-display font-bold text-xl text-white">{t("freemium.freeMember")}</h3>
+                <p className="text-sm text-wooffy-light/70">{t("freemium.noCard")}</p>
               </div>
             </div>
 
-            <div className="text-center mb-6 py-4 bg-muted/50 rounded-xl">
-              <span className="font-display font-bold text-3xl text-foreground">€0</span>
-              <span className="text-muted-foreground ml-1">{t("freemium.forever")}</span>
+            <div className="text-center mb-6 py-4 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
+              <span className="font-display font-bold text-3xl text-white">€0</span>
+              <span className="text-wooffy-light/70 ml-1">{t("freemium.forever")}</span>
             </div>
 
             <ul className="space-y-3 mb-6">
               {freeFeatures.map((feature, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-                    <Check className="w-3 h-3 text-accent" />
+                  <div className="w-5 h-5 rounded-full bg-wooffy-sky/20 flex items-center justify-center shrink-0">
+                    <Check className="w-3 h-3 text-wooffy-sky" />
                   </div>
-                  <span className="text-foreground">{feature}</span>
+                  <span className="text-wooffy-light/90">{feature}</span>
                 </li>
               ))}
             </ul>
 
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full rounded-full bg-transparent border-wooffy-blue/40 text-white hover:bg-wooffy-blue/20 hover:text-white"
               onClick={() => navigate("/auth")}
             >
               {t("freemium.signUpFree")}
             </Button>
           </div>
 
-          <div className="bg-card rounded-3xl p-6 lg:p-8 shadow-card border-2 border-primary/30 ring-2 ring-primary/10 relative">
+          {/* Paid */}
+          <div className="bg-wooffy-blue/15 rounded-3xl p-6 lg:p-8 border-2 border-wooffy-sky/50 relative">
             <div className="absolute -top-3 right-6">
-              <div className="bg-gradient-hero text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold shadow-glow">
+              <div className="bg-wooffy-sky text-wooffy-dark px-3 py-1 rounded-full text-xs font-semibold">
                 {t("freemium.bestValue")}
               </div>
             </div>
 
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                <Lock className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-wooffy-sky/20 rounded-full flex items-center justify-center">
+                <Lock className="w-6 h-6 text-wooffy-sky" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl text-foreground">{t("freemium.paidMember")}</h3>
-                <p className="text-sm text-muted-foreground">{t("freemium.unlock")}</p>
+                <h3 className="font-display font-bold text-xl text-white">{t("freemium.paidMember")}</h3>
+                <p className="text-sm text-wooffy-light/70">{t("freemium.unlock")}</p>
               </div>
             </div>
 
-            <div className="text-center mb-6 py-4 bg-primary/5 rounded-xl">
-              <span className="text-muted-foreground mr-1">{t("freemium.from")}</span>
-              <span className="font-display font-bold text-3xl text-gradient">€29</span>
-              <span className="text-muted-foreground ml-1">{t("freemium.perYear")}</span>
+            <div className="text-center mb-6 py-4 bg-wooffy-sky/10 rounded-xl border border-wooffy-sky/20">
+              <span className="text-wooffy-light/70 mr-1">{t("freemium.from")}</span>
+              <span className="font-display font-bold text-3xl text-wooffy-sky">€29</span>
+              <span className="text-wooffy-light/70 ml-1">{t("freemium.perYear")}</span>
             </div>
 
             <ul className="space-y-3 mb-2">
-              <li className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">
+              <li className="text-xs text-wooffy-light/60 uppercase tracking-wide font-medium mb-2">
                 {t("freemium.everythingPlus")}
               </li>
               {premiumFeatures.map((feature, i) => (
                 <li key={i} className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                    <Check className="w-3 h-3 text-primary" />
+                  <div className="w-5 h-5 rounded-full bg-wooffy-sky/20 flex items-center justify-center shrink-0">
+                    <Check className="w-3 h-3 text-wooffy-sky" />
                   </div>
-                  <span className="text-foreground">{feature}</span>
+                  <span className="text-wooffy-light/90">{feature}</span>
                 </li>
               ))}
             </ul>
 
             <div className="mt-6">
               <Button
-                variant="hero"
-                className="w-full"
+                className="w-full rounded-full bg-wooffy-sky text-wooffy-dark hover:bg-wooffy-sky/90"
                 onClick={() => navigate("/auth")}
               >
                 {t("freemium.getStarted")}
@@ -124,7 +125,7 @@ const FreemiumSection = () => {
           </div>
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-8 max-w-lg mx-auto">
+        <p className="text-center text-sm text-wooffy-light/60 mt-8 max-w-lg mx-auto">
           {t("freemium.bottomNote")}
         </p>
       </div>
