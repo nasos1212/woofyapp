@@ -51,27 +51,15 @@ html, body {
     --wooffy-accent: 185 80% 45%;
     --wooffy-soft: 200 40% 95%;
 
-    /* Warm & Organic palette */
-    --warm-cream: 30 33% 95%;
-    --warm-terracotta: 14 62% 62%;
-    --warm-sage: 135 22% 60%;
-    --warm-navy: 230 18% 30%;
-    --warm-honey: 38 78% 72%;
-    --warm-blush: 14 62% 95%;
-    --warm-stone: 30 10% 92%;
-
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(200 85% 50%) 0%, hsl(195 90% 60%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(200 30% 98%) 100%);
-    --gradient-warm: linear-gradient(135deg, hsl(30 33% 95%) 0%, hsl(30 25% 92%) 100%);
-    --gradient-terracotta: linear-gradient(135deg, hsl(14 62% 62%) 0%, hsl(14 55% 55%) 100%);
-    --gradient-sage: linear-gradient(135deg, hsl(135 22% 60%) 0%, hsl(135 18% 52%) 100%);
+    --gradient-warm: linear-gradient(135deg, hsl(200 30% 97%) 0%, hsl(195 40% 95%) 100%);
 
     /* Shadows */
     --shadow-soft: 0 4px 20px -4px hsl(200 85% 50% / 0.15);
     --shadow-card: 0 8px 30px -8px hsl(210 20% 15% / 0.1);
     --shadow-glow: 0 0 40px hsl(200 85% 50% / 0.3);
-    --shadow-warm: 0 8px 30px -8px hsl(14 62% 62% / 0.15);
 
     --sidebar-background: 200 30% 98%;
     --sidebar-foreground: 210 20% 25%;

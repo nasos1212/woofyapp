@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/the-story-of-may-they-told-us-he-was-nobodys-dog</loc>
-    <lastmod>2026-06-26</lastmod>
+    <lastmod>2026-06-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -40,7 +40,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/looking-for-their-forever-home-lazaros-and-nasos</loc>
-    <lastmod>2026-06-27</lastmod>
+    <lastmod>2026-06-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -63,12 +63,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/bark-master-k9-building-a-better-life-through-understanding</loc>
-    <lastmod>2026-06-26</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://wooffy.app/blog/never-leave-a-dog-in-a-hot-car-this-summer</loc>
     <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
@@ -87,6 +81,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wooffy.app/blog/bark-master-k9-building-a-better-life-through-understanding</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wooffy.app/blog/pet-haus-small-changes-big-differences-in-pet-nutrition</loc>
     <lastmod>2026-06-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -99,14 +99,14 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/my-dog-kobe</loc>
-    <lastmod>2026-06-23</lastmod>
+    <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
+    <lastmod>2026-06-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
-    <lastmod>2026-06-26</lastmod>
+    <loc>https://wooffy.app/blog/my-dog-kobe</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
