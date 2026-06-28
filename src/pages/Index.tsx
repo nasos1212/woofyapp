@@ -9,7 +9,6 @@ import PartnersSection from "@/components/PartnersSection";
 import SheltersSection from "@/components/SheltersSection";
 
 
-import FreemiumSection from "@/components/FreemiumSection";
 import GetListedSection from "@/components/GetListedSection";
 import PricingSection from "@/components/PricingSection";
 import CTASection from "@/components/CTASection";
