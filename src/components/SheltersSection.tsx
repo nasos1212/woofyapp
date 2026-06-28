@@ -150,7 +150,7 @@ const SheltersSection = () => {
 
 
   return (
-    <section id="shelters" className="py-20 lg:py-28 bg-wooffy-dark text-white overflow-hidden">
+    <section id="shelters" className="py-20 lg:py-28 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-14">
