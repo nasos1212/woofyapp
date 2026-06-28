@@ -14,11 +14,11 @@ const CTASection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-wooffy-sky mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">
             {t("cta.title")}
           </h2>
 
-          <p className="text-xl text-wooffy-light/80 mb-10 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
             {t("cta.subtitle")}
           </p>
 
