@@ -155,11 +155,14 @@ const OffersSection = () => {
 
   if (loading) {
     return (
-      <section className="py-20 px-4 bg-muted/30">
+      <section className="py-20 px-4 bg-background">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("offers.title")}</h2>
+            <span className="inline-flex items-center gap-2 bg-wooffy-sky/15 rounded-full px-4 py-2 border border-wooffy-sky/30 mb-6">
+              <Tag className="w-4 h-4 text-wooffy-blue" />
+              <span className="text-sm font-medium text-wooffy-dark">{t("offers.title")}</span>
+            </span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">{t("offers.title")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">{t("offers.loading")}</p>
           </div>
         </div>
@@ -172,45 +175,46 @@ const OffersSection = () => {
   }
 
   return (
-    <section className="py-20 px-4 bg-muted/30">
+    <section className="py-20 lg:py-28 px-4 bg-background">
       <div className="container mx-auto">
-        <div className="text-center mb-12">
-          <Tag className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("offers.title")}</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <span className="inline-flex items-center gap-2 bg-wooffy-sky/15 rounded-full px-4 py-2 border border-wooffy-sky/30 mb-6">
+            <Tag className="w-4 h-4 text-wooffy-blue" />
+            <span className="text-sm font-medium text-wooffy-dark">{t("offers.title")}</span>
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-foreground mb-6">{t("offers.title")}</h2>
+          <p className="text-lg text-muted-foreground">
             {t("offers.subtitle")}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10 max-w-6xl mx-auto">
           {offers.map((offer) => {
             const timeIndicator = getTimeIndicator(offer);
             
             return (
               <Card
                 key={offer.id}
-                className="border-border/50 hover:border-primary/50 transition-all duration-300 cursor-pointer group"
+                className="rounded-2xl border border-border hover:border-wooffy-sky/60 hover:-translate-y-1 transition-all duration-300 cursor-pointer group"
                 onClick={() => handleOfferClick(offer)}
               >
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <Badge className="bg-primary/20 text-primary border-primary/30">
+                    <Badge className="bg-wooffy-sky/15 text-wooffy-blue border-wooffy-sky/30 rounded-full">
                       <Percent className="w-3 h-3 mr-1" />
                       {getDiscountDisplay(offer.discount_type, offer.discount_value)}
                     </Badge>
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs rounded-full">
                       {getCategoryLabel(offer.business.category)}
                     </Badge>
                   </div>
 
-                  {/* Time indicator */}
                   {timeIndicator && (
-                    <Badge 
-                      variant={timeIndicator.type === "expiring" ? "destructive" : "secondary"}
-                      className={`mb-3 gap-1 ${
-                        timeIndicator.type === "expiring" 
-                          ? "bg-orange-100 text-orange-700 border-orange-200" 
-                          : "bg-rose-100 text-rose-700 border-rose-200"
+                    <Badge
+                      className={`mb-3 gap-1 rounded-full ${
+                        timeIndicator.type === "expiring"
+                          ? "bg-orange-100 text-orange-700 border-orange-200"
+                          : "bg-wooffy-blue/10 text-wooffy-blue border-wooffy-blue/30"
                       }`}
                     >
                       {timeIndicator.type === "expiring" ? (
@@ -222,7 +226,7 @@ const OffersSection = () => {
                     </Badge>
                   )}
 
-                  <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
+                  <h3 className="font-display text-lg font-semibold mb-2 text-foreground group-hover:text-wooffy-blue transition-colors">
                     {offer.title}
                   </h3>
 
@@ -254,7 +258,7 @@ const OffersSection = () => {
           <Button
             size="lg"
             onClick={() => navigate("/member/offers")}
-            className="gap-2"
+            className="gap-2 rounded-full bg-wooffy-dark text-white hover:bg-wooffy-dark/90"
           >
             {t("offers.viewAll")}
             <ArrowRight className="w-4 h-4" />
@@ -262,7 +266,6 @@ const OffersSection = () => {
         </div>
       </div>
 
-      {/* Offer Detail Dialog */}
       <OfferDetailDialog
         offer={selectedOffer}
         onClose={() => setSelectedOffer(null)}
