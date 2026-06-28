@@ -168,15 +168,15 @@ const SheltersSection = () => {
 
         {/* Impact Stats */}
         <div className="grid grid-cols-2 gap-6 max-w-md mx-auto mb-14">
-          <div className="bg-wooffy-blue/10 rounded-2xl p-6 text-center border border-wooffy-blue/30">
-            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-sky mb-2">
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-blue mb-2">
               {shelters.length > 0 ? shelters.length : "—"}
             </div>
-            <p className="text-wooffy-light/70 text-sm">{t("shelters.partnerShelters")}</p>
+            <p className="text-muted-foreground text-sm">{t("shelters.partnerShelters")}</p>
           </div>
-          <div className="bg-wooffy-blue/10 rounded-2xl p-6 text-center border border-wooffy-blue/30">
-            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-sky mb-2">100%</div>
-            <p className="text-wooffy-light/70 text-sm">{t("shelters.transparent")}</p>
+          <div className="bg-card rounded-2xl p-6 text-center border border-border">
+            <div className="text-3xl md:text-4xl font-display font-bold text-wooffy-blue mb-2">100%</div>
+            <p className="text-muted-foreground text-sm">{t("shelters.transparent")}</p>
           </div>
         </div>
 
