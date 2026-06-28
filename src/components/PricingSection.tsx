@@ -15,14 +15,6 @@ const PricingSection = () => {
     t("benefits.free.community.title"),
   ];
 
-  const sharedBenefits = [
-    t("pricing.shared.discounts"),
-    t("pricing.shared.ai"),
-    t("pricing.shared.vaccination"),
-    t("pricing.shared.community"),
-    t("pricing.shared.support"),
-  ];
-
   const plans = [
     { id: "solo", pets: 1, price: 29, popular: false, icon: Dog },
     { id: "duo", pets: 2, price: 49, popular: true, icon: Users },
