@@ -200,6 +200,15 @@ const FreeMemberDashboard = () => {
     return () => clearInterval(interval);
   }, [recentQuestions.length]);
 
+  // Auto-advance blog carousel every 6 seconds
+  useEffect(() => {
+    if (!blogCarouselApi) return;
+    const interval = setInterval(() => {
+      blogCarouselApi.scrollNext();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [blogCarouselApi]);
+
   // Fetch latest blog posts
   useEffect(() => {
     const load = async () => {
