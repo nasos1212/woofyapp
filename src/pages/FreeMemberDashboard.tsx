@@ -78,6 +78,8 @@ const FreeMemberDashboard = () => {
   const [recentQuestions, setRecentQuestions] = useState<RecentQuestion[]>([]);
   const [showAllServices, setShowAllServices] = useState(false);
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
