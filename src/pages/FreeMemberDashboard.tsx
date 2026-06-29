@@ -244,9 +244,6 @@ const FreeMemberDashboard = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
               {t("freeMember.hello", { name: profileName || t("freeMember.friend") })}
             </h1>
-            <p className="text-muted-foreground">
-              {t("freeMember.subtitle")}
-            </p>
           </div>
 
           {/* My Pets Section - FIRST */}
