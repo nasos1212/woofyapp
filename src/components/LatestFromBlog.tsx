@@ -97,7 +97,7 @@ const LatestFromBlog = () => {
         >
           <div className="flex flex-col md:flex-row">
             {/* Image */}
-            <div className=""md:w-3/5 aspect-[16/10] md:aspect-auto md:min-h-[340px] overflow-hidden relative">
+            <div className="md:w-3/5 aspect-[16/10] md:aspect-auto md:min-h-[340px] overflow-hidden relative">
               {post.cover_image_url ? (
                 <img
                   key={post.id}
