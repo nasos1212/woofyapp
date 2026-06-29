@@ -17,6 +17,7 @@ interface Shelter {
   id: string;
   shelter_name: string;
   location: string;
+  logo_url: string | null;
 }
 
 const SheltersSection = () => {
@@ -44,7 +45,7 @@ const SheltersSection = () => {
     const fetchShelters = async () => {
       const { data, error } = await supabase
         .from("shelters_directory")
-        .select("id, shelter_name, location")
+        .select("id, shelter_name, location, logo_url")
         .order("shelter_name");
 
       if (!error && data) {
@@ -193,9 +194,20 @@ const SheltersSection = () => {
                   to={`/shelter/${shelter.id}`}
                   className="bg-white rounded-2xl p-6 shadow-soft hover:shadow-card transition-all duration-300 group cursor-pointer"
                 >
-                  <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Home className="w-8 h-8 text-rose-500" />
-                  </div>
+                  {shelter.logo_url ? (
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden mb-4 group-hover:scale-110 transition-transform bg-white border border-border">
+                      <img 
+                        src={shelter.logo_url} 
+                        alt={`${shelter.shelter_name} logo`}
+                        className="w-full h-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                      <Home className="w-8 h-8 text-rose-500" />
+                    </div>
+                  )}
                   <h4 className="font-display font-semibold text-foreground mb-1">{shelter.shelter_name}</h4>
                   <p className="text-muted-foreground text-sm mb-3">{shelter.location}</p>
                 </Link>
