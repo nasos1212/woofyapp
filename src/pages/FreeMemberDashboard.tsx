@@ -673,26 +673,6 @@ const FreeMemberDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Minimal Upgrade Banner */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-center sm:text-left">
-                <Crown className="w-5 h-5 text-primary hidden sm:block" />
-                <p className="text-sm text-foreground">
-                  <span className="font-medium">{t("freeMember.upgrade.unlock")}</span>
-                  <span className="text-muted-foreground">{t("freeMember.upgrade.unlockDesc")}</span>
-                </p>
-              </div>
-              <Button 
-                size="sm"
-                onClick={() => navigate("/member/upgrade")}
-                className="gap-2 shrink-0"
-              >
-                <Crown className="w-4 h-4" />
-                {t("freeMember.upgrade.cta")}
-              </Button>
-            </CardContent>
-          </Card>
 
           {/* Membership Benefits Dialog */}
           <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
