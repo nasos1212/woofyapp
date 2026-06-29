@@ -508,7 +508,7 @@
     "benefitsDialog": {
       "title": "Η Συνδρομή σου Wooffy",
       "freeBadge": "✨ Δωρεάν, Δικά σου τώρα",
-      "premiumBadge": "👑 Premium, Σύντομα",
+      "premiumBadge": "👑 Premium, Διαθέσιμο Τώρα",
       "directory": "Dog-Friendly Κατάλογος",
       "directoryDesc": "Βρες dog-friendly καφετέριες, πάρκα και άλλα",
       "lostFound": "Χαμένα & Βρεθέντα",
@@ -526,7 +526,7 @@
       "ai": "Προσφορές Γενεθλίων",
       "aiDesc": "Ειδικές εκπτώσεις γενεθλίων από συνεργαζόμενες επιχειρήσεις",
       "premiumNote": "Premium πλάνα ξεκινούν από ",
-      "premiumNoteEnd": ", θα σε ειδοποιήσουμε όταν κυκλοφορήσουν! 🐾",
+      "premiumNoteEnd": ". Αναβάθμισε σήμερα και ξεκίνα να εξοικονομείς! 🐾",
       "perYear": "€29/έτος",
       "gotIt": "Το κατάλαβα!"
     }
