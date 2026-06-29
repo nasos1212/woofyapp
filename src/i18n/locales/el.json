@@ -497,6 +497,7 @@
     },
     "upgrade": {
       "want": "Θέλεις περισσότερα προνόμια;",
+      "paidBenefitsTitle": "Προνόμια επί πληρωμή",
       "seeBenefits": "Δείτε τα προνόμια μέλους",
       "partnerDiscounts": "Εκπτώσεις Συνεργατών",
       "aiAssistant": "AI Βοηθός",
