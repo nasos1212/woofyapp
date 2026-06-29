@@ -466,31 +466,33 @@ const FreeMemberDashboard = () => {
           </div>
 
 
-          {/* Upgrade CTA above Quick Access */}
-          <Card className="mb-6 border-primary/20 bg-primary/5">
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-center sm:text-left">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Crown className="w-5 h-5 text-primary" />
+          {/* Membership Benefits CTA */}
+          <Card className="mb-8 overflow-hidden border-wooffy-blue/20 bg-wooffy-dark">
+            <CardContent className="p-6 relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+              <div className="relative flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div className="w-12 h-12 rounded-full bg-wooffy-blue/20 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-6 h-6 text-wooffy-sky" />
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {t("freeMember.upgrade.unlock")}
+                <div className="flex-1">
+                  <p className="font-display font-semibold text-wooffy-sky text-base">
+                    {t("freeMember.upgrade.seeBenefits")}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-sm text-wooffy-light/60 mt-0.5">
                     {t("freeMember.upgrade.unlockDesc")}
                   </p>
                 </div>
+                <Button
+                  onClick={() => setShowComingSoon(true)}
+                  className="gap-2 shrink-0"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  {t("freeMember.upgrade.seeBenefits")}
+                </Button>
               </div>
-              <Button
-                onClick={() => navigate("/member/upgrade")}
-                className="gap-2 shrink-0 w-full sm:w-auto"
-              >
-                <Crown className="w-4 h-4" />
-                {t("freeMember.upgrade.cta")}
-              </Button>
             </CardContent>
           </Card>
+
 
           <div className="bg-white rounded-2xl p-6 shadow-soft mb-6">
             <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
