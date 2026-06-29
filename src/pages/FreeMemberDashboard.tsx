@@ -373,9 +373,6 @@ const FreeMemberDashboard = () => {
                       <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                         {t("freeMember.hub.title")}
                       </h2>
-                      <p className="text-muted-foreground text-sm">
-                        {t("freeMember.hub.tagline")}
-                      </p>
                     </div>
                   </div>
                   <Button
