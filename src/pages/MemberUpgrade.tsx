@@ -344,17 +344,17 @@ const MemberUpgrade = () => {
               <Crown className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-              Choose your Wooffy Paid Membership
+              {t("memberUpgrade.heading")}
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed max-w-xl mx-auto">
-              Unlock exclusive partner discounts, AI health support, and priority features for your pets — all year round.
+              {t("memberUpgrade.subheading")}
             </p>
           </div>
 
           {isPaidMember && (
             <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card space-y-3">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">Active membership</p>
+                <p className="text-sm text-muted-foreground">{t("memberUpgrade.active.label")}</p>
                 <p className="font-display font-semibold text-lg text-foreground">
                   {membership?.member_number}
                 </p>
@@ -363,22 +363,19 @@ const MemberUpgrade = () => {
                 <div className="text-center text-sm">
                   {subDetails.cancel_at_period_end ? (
                     <p className="text-amber-600 dark:text-amber-400">
-                      Cancels on{" "}
-                      <strong>
-                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "long", year: "numeric",
-                        })}
-                      </strong>
-                      . You'll keep full access until then.
+                      <Trans
+                        i18nKey="memberUpgrade.active.cancelsOn"
+                        values={{ date: formatDate(subDetails.current_period_end) }}
+                        components={{ 1: <strong /> }}
+                      />
                     </p>
                   ) : (
                     <p className="text-muted-foreground">
-                      Renews automatically on{" "}
-                      <strong className="text-foreground">
-                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "long", year: "numeric",
-                        })}
-                      </strong>
+                      <Trans
+                        i18nKey="memberUpgrade.active.renewsOn"
+                        values={{ date: formatDate(subDetails.current_period_end) }}
+                        components={{ 1: <strong className="text-foreground" /> }}
+                      />
                     </p>
                   )}
                 </div>
@@ -391,7 +388,7 @@ const MemberUpgrade = () => {
                     onClick={handleReactivateSubscription}
                     disabled={reactivateLoading}
                   >
-                    {reactivateLoading ? "Reactivating…" : "Reactivate membership"}
+                    {reactivateLoading ? t("memberUpgrade.active.reactivating") : t("memberUpgrade.active.reactivate")}
                   </Button>
                 ) : (
                   <Button
@@ -399,7 +396,7 @@ const MemberUpgrade = () => {
                     size="sm"
                     onClick={() => setCancelDialogOpen(true)}
                   >
-                    Cancel membership
+                    {t("memberUpgrade.active.cancel")}
                   </Button>
                 )}
               </div>
@@ -409,19 +406,17 @@ const MemberUpgrade = () => {
           {isPaidMember && pendingChange && (() => {
             const pendingPlan = PLANS.find((p) => p.priceId === pendingChange.priceId);
             const whenStr = pendingChange.scheduledFor
-              ? new Date(pendingChange.scheduledFor * 1000).toLocaleDateString("en-GB", {
-                  day: "numeric", month: "long", year: "numeric",
-                })
-              : "your next renewal";
+              ? formatDate(pendingChange.scheduledFor * 1000)
+              : t("memberUpgrade.pending.fallbackDate");
             return (
               <div className="max-w-xl mx-auto mb-8 rounded-2xl p-5 border border-primary/30 bg-primary/5 shadow-card text-center space-y-3">
-                <p className="text-sm text-muted-foreground">Scheduled plan change</p>
+                <p className="text-sm text-muted-foreground">{t("memberUpgrade.pending.label")}</p>
                 <p className="text-base text-foreground">
-                  Switching to{" "}
-                  <strong className="font-display">
-                    {pendingPlan?.name ?? "your new plan"}
-                  </strong>{" "}
-                  on <strong>{whenStr}</strong>. No charge or refund until then — you stay on your current plan.
+                  <Trans
+                    i18nKey="memberUpgrade.pending.body"
+                    values={{ plan: pendingPlan?.name ?? t("memberUpgrade.pending.fallbackPlan"), date: whenStr }}
+                    components={{ 1: <strong className="font-display" />, 3: <strong /> }}
+                  />
                 </p>
                 <Button
                   variant="outline"
@@ -429,7 +424,7 @@ const MemberUpgrade = () => {
                   onClick={handleCancelPendingChange}
                   disabled={cancelPendingLoading}
                 >
-                  {cancelPendingLoading ? "Canceling…" : "Cancel scheduled change"}
+                  {cancelPendingLoading ? t("memberUpgrade.pending.canceling") : t("memberUpgrade.pending.cancel")}
                 </Button>
               </div>
             );
@@ -443,7 +438,7 @@ const MemberUpgrade = () => {
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                       <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
                         <Star className="w-4 h-4 fill-current" />
-                        Most Popular
+                        {t("memberUpgrade.mostPopular")}
                       </div>
                     </div>
                   )}
@@ -467,7 +462,7 @@ const MemberUpgrade = () => {
                       </div>
                       <h3 className="font-display font-bold text-xl text-foreground">{plan.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">
-                        {plan.label}
+                        {planLabel(plan.key)}
                       </p>
                     </div>
                     <div className="text-center mb-6">
@@ -475,7 +470,7 @@ const MemberUpgrade = () => {
                         <span className="font-display font-bold text-4xl text-gradient">
                           €{plan.price}
                         </span>
-                        <span className="text-muted-foreground">/ year</span>
+                        <span className="text-muted-foreground">{t("memberUpgrade.perYear")}</span>
                       </div>
                     </div>
                     <div className="flex-1" />
@@ -488,14 +483,14 @@ const MemberUpgrade = () => {
                       const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
                       const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
-                        ? "Your current plan"
+                        ? t("memberUpgrade.cta.current")
                         : isPending
-                          ? "Scheduled at renewal"
+                          ? t("memberUpgrade.cta.scheduled")
                           : isPaidMember && currentIdx >= 0
                             ? thisIdx > currentIdx
-                              ? `Upgrade to ${plan.name}`
-                              : `Switch to ${plan.name}`
-                            : `Select ${plan.name}`;
+                              ? t("memberUpgrade.cta.upgradeTo", { plan: plan.name })
+                              : t("memberUpgrade.cta.switchTo", { plan: plan.name })
+                            : t("memberUpgrade.cta.select", { plan: plan.name });
                       return (
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
@@ -515,9 +510,9 @@ const MemberUpgrade = () => {
           </div>
 
           <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border">
-            <h3 className="font-display font-semibold text-lg text-center mb-4">All plans include</h3>
+            <h3 className="font-display font-semibold text-lg text-center mb-4">{t("memberUpgrade.benefitsHeading")}</h3>
             <div className="grid sm:grid-cols-2 gap-3">
-              {BENEFITS.map((b, i) => (
+              {(t("memberUpgrade.benefits", { returnObjects: true }) as string[]).map((b, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground">{b}</span>
