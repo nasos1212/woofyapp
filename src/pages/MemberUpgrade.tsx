@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useMembership } from "@/hooks/useMembership";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { isPaymentsConfigured } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -22,45 +22,11 @@ import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import { toast } from "sonner";
 
 const PLANS = [
-  {
-    id: "solo",
-    priceId: "wooffy_solo_yearly",
-    pets: "1",
-    price: 29,
-    image: soloPawImg,
-    popular: false,
-    name: "Solo Paw",
-    label: "For one beloved companion",
-  },
-  {
-    id: "duo",
-    priceId: "wooffy_duo_yearly",
-    pets: "2",
-    price: 49,
-    image: duoImg,
-    popular: true,
-    name: "Dynamic Duo",
-    label: "Perfect for two pets",
-  },
-  {
-    id: "pack",
-    priceId: "wooffy_pack_yearly",
-    pets: "3-5",
-    price: 69,
-    image: packImg,
-    popular: false,
-    name: "Pack Leader",
-    label: "For families with 3 to 5 pets",
-  },
+  { id: "solo", key: "solo", priceId: "wooffy_solo_yearly", pets: "1", price: 29, image: soloPawImg, popular: false, name: "Solo Paw" },
+  { id: "duo", key: "duo", priceId: "wooffy_duo_yearly", pets: "2", price: 49, image: duoImg, popular: true, name: "Dynamic Duo" },
+  { id: "pack", key: "pack", priceId: "wooffy_pack_yearly", pets: "3-5", price: 69, image: packImg, popular: false, name: "Pack Leader" },
 ];
 
-const BENEFITS = [
-  "Exclusive partner discounts at vets, groomers, shops & more",
-  "AI Pet Health Assistant available 24/7",
-  "Vaccination & health reminders for every pet",
-  "Community access — ask vets and other owners",
-  "Priority support",
-];
 
 const PLAN_TYPE_TO_PRICE_ID: Record<string, string> = {
   single: "wooffy_solo_yearly",
@@ -69,7 +35,11 @@ const PLAN_TYPE_TO_PRICE_ID: Record<string, string> = {
 };
 
 const MemberUpgrade = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language?.startsWith("el") ? "el-GR" : "en-GB";
+  const formatDate = (d: Date | string | number) =>
+    new Date(d).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" });
+  const planLabel = (key: string) => t(`memberUpgrade.plans.${key}.label`);
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const { hasMembership, isPaidMember, membership } = useMembership();
