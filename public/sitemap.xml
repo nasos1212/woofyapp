@@ -46,7 +46,13 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/building-better-bonds-artfully-traineds-modern-approach-to-dog-training</loc>
-    <lastmod>2026-06-17</lastmod>
+    <lastmod>2026-06-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooffy.app/blog/pawkkaso-more-than-grooming-its-about-trust</loc>
+    <lastmod>2026-06-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -88,7 +94,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/pet-haus-small-changes-big-differences-in-pet-nutrition</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-06-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
