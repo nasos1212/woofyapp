@@ -494,9 +494,6 @@ const MemberUpgrade = () => {
                           width={112}
                           height={112}
                         />
-                        <span className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-sm border-2 border-card">
-                          {plan.pets}
-                        </span>
                       </div>
                       <h3 className="font-display font-bold text-xl text-foreground">{plan.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">
