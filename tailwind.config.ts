@@ -20,7 +20,6 @@ export default {
         display: ["Plus Jakarta Sans", "sans-serif"],
         logo: ["Fredoka", "sans-serif"],
         body: ["Inter", "sans-serif"],
-        lora: ["Lora", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -73,24 +72,6 @@ export default {
           dark: "hsl(var(--wooffy-dark))",
           accent: "hsl(var(--wooffy-accent))",
           soft: "hsl(var(--wooffy-soft))",
-        },
-        warm: {
-          50: "#FCFAF7",
-          100: "#F8F5F2",
-          200: "#F2EDE7",
-          300: "#E8E2D9",
-          400: "#DED4C8",
-          500: "#CDC0AF",
-          600: "#A69682",
-          700: "#8C7E6A",
-          800: "#6B5E4C",
-          900: "#3C2A14",
-          950: "#2D241A",
-        },
-        terracotta: {
-          DEFAULT: "#D4A373",
-          dark: "#C28F5F",
-          light: "#E8C9A8",
         },
       },
       borderRadius: {
