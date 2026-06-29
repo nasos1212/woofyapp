@@ -727,14 +727,13 @@ const FreeMemberDashboard = () => {
                       { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc"), color: "text-primary bg-primary/10" },
                       { icon: Gift, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc"), color: "text-violet-600 bg-violet-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
-                      <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
+                      <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
                           <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-medium text-foreground">{label}</p>
-                            <Lock className="w-3 h-3 text-muted-foreground" />
                           </div>
                           <p className="text-xs text-muted-foreground">{desc}</p>
                         </div>
