@@ -14,7 +14,7 @@ import {
   MessageSquarePlus,
   Crown,
   HelpCircle,
-  Bookmark,
+  
   MapPin,
   Sparkles,
   Building2,
@@ -460,13 +460,6 @@ const FreeMemberDashboard = () => {
                     <MessageSquarePlus className="w-4 h-4" />
                     {t("freeMember.hub.browse")}
                   </Button>
-                  <button
-                    onClick={() => navigate("/community?tab=saved")}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
-                  >
-                    <Bookmark className="w-4 h-4" />
-                    <span className="font-medium">{t("freeMember.hub.saved")}</span>
-                  </button>
                 </div>
               </CardContent>
             </Card>
