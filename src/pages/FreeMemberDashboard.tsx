@@ -6,7 +6,7 @@ import {
   Users, 
   Gift, 
   Heart, 
-  Bot, 
+  Cake,
   AlertTriangle, 
   Syringe, 
   Lock, 
