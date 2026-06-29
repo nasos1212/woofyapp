@@ -83,6 +83,7 @@ const FreeMemberDashboard = () => {
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
+  const [blogCarouselApi, setBlogCarouselApi] = useState<CarouselApi | null>(null);
 
 
   // Check user roles to ensure only freemium members can access this page
