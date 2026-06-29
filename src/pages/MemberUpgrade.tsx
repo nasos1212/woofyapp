@@ -467,7 +467,6 @@ const MemberUpgrade = () => {
 
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {PLANS.map((plan) => {
-              const Icon = plan.icon;
               return (
                 <div key={plan.id} className="relative">
                   {plan.popular && (
@@ -486,9 +485,16 @@ const MemberUpgrade = () => {
                     }`}
                   >
                     <div className="text-center mb-4">
-                      <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                        <Icon className="w-7 h-7 text-primary" />
-                        <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+                      <div className="relative mx-auto mb-4 w-28 h-28 rounded-2xl overflow-hidden shadow-md">
+                        <img
+                          src={plan.image}
+                          alt={plan.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          width={112}
+                          height={112}
+                        />
+                        <span className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-sm border-2 border-card">
                           {plan.pets}
                         </span>
                       </div>
