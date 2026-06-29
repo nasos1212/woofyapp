@@ -586,7 +586,7 @@ const FreeMemberDashboard = () => {
                     return (
                       <CarouselItem
                         key={post.id}
-                        className="pl-4 basis-[85%] md:basis-1/2 lg:basis-1/3"
+                        className="pl-4 basis-full"
                       >
                         <Link to={`/blog/${post.slug}`} className="group block h-full">
                           <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col border-border/60">
