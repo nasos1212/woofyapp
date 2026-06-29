@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Dog, Users, Check } from "lucide-react";
+import { ArrowLeft, Crown, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import soloPawImg from "@/assets/plan-solo-paw.jpg";
+import duoImg from "@/assets/plan-dynamic-duo.jpg";
+import packImg from "@/assets/plan-pack-leader.jpg";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
