@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Dog, Users, Check } from "lucide-react";
+import { ArrowLeft, Crown, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import soloPawImg from "@/assets/plan-solo-paw.jpg";
+import duoImg from "@/assets/plan-dynamic-duo.jpg";
+import packImg from "@/assets/plan-pack-leader.jpg";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
@@ -24,7 +27,7 @@ const PLANS = [
     priceId: "wooffy_solo_yearly",
     pets: "1",
     price: 29,
-    icon: Dog,
+    image: soloPawImg,
     popular: false,
     name: "Solo Paw",
     label: "For one beloved companion",
@@ -34,7 +37,7 @@ const PLANS = [
     priceId: "wooffy_duo_yearly",
     pets: "2",
     price: 49,
-    icon: Users,
+    image: duoImg,
     popular: true,
     name: "Dynamic Duo",
     label: "Perfect for two pets",
@@ -44,7 +47,7 @@ const PLANS = [
     priceId: "wooffy_pack_yearly",
     pets: "3-5",
     price: 69,
-    icon: Crown,
+    image: packImg,
     popular: false,
     name: "Pack Leader",
     label: "For families with 3 to 5 pets",
@@ -464,7 +467,6 @@ const MemberUpgrade = () => {
 
           <div className="grid md:grid-cols-3 gap-6 mb-10">
             {PLANS.map((plan) => {
-              const Icon = plan.icon;
               return (
                 <div key={plan.id} className="relative">
                   {plan.popular && (
@@ -483,9 +485,16 @@ const MemberUpgrade = () => {
                     }`}
                   >
                     <div className="text-center mb-4">
-                      <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                        <Icon className="w-7 h-7 text-primary" />
-                        <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
+                      <div className="relative mx-auto mb-4 w-28 h-28 rounded-2xl overflow-hidden shadow-md">
+                        <img
+                          src={plan.image}
+                          alt={plan.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          width={112}
+                          height={112}
+                        />
+                        <span className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground text-xs w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-sm border-2 border-card">
                           {plan.pets}
                         </span>
                       </div>
