@@ -476,7 +476,7 @@ const FreeMemberDashboard = () => {
                 </div>
                 <div className="flex-1">
                   <p className="font-display font-semibold text-wooffy-sky text-base">
-                    {t("freeMember.upgrade.seeBenefits")}
+                    {t("freeMember.upgrade.paidBenefitsTitle")}
                   </p>
                   <p className="text-sm text-wooffy-light/60 mt-0.5">
                     {t("freeMember.upgrade.unlockDesc")}
