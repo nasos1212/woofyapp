@@ -2454,20 +2454,78 @@
     "metaTitle": "Upgrade Your Membership | Wooffy",
     "metaDescription": "Unlock exclusive partner discounts, the AI Pet Health Assistant, and premium perks for your pets with a Wooffy Paid Membership.",
     "back": "Back to Dashboard",
-    "title": "Something Exciting is Coming! 🐾",
-    "subtitle": "Premium plans are on their way! We're working hard to bring you exclusive discounts, AI health assistant, pet birthday offers and much more.",
-    "enjoyHeading": "In the meantime, enjoy your free features:",
-    "feature1Title": "Pet Profiles (up to 5)",
-    "feature1Desc": "Create and manage profiles for your pets",
-    "feature2Title": "Pet Health Records",
-    "feature2Desc": "Track vaccinations, vet visits & reminders",
-    "feature3Title": "Lost & Found Alerts",
-    "feature3Desc": "Report and search for lost or found pets",
-    "feature4Title": "Dog-Friendly Places",
-    "feature4Desc": "Discover dog-friendly spots near you",
-    "feature5Title": "Community Q&A",
-    "feature5Desc": "Connect with fellow pet parents",
-    "promise": "We'll notify you as soon as premium plans are available!"
+    "heading": "Choose your Wooffy Paid Membership",
+    "subheading": "Unlock exclusive partner discounts, AI health support, and priority features for your pets — all year round.",
+    "mostPopular": "Most Popular",
+    "perYear": "/ year",
+    "plans": {
+      "solo": {
+        "name": "Solo Paw",
+        "label": "For one beloved companion"
+      },
+      "duo": {
+        "name": "Dynamic Duo",
+        "label": "Perfect for two pets"
+      },
+      "pack": {
+        "name": "Pack Leader",
+        "label": "For families with 3 to 5 pets"
+      }
+    },
+    "active": {
+      "label": "Active membership",
+      "cancelsOn": "Cancels on {{date}}. You'll keep full access until then.",
+      "renewsOn": "Renews automatically on {{date}}",
+      "reactivate": "Reactivate membership",
+      "reactivating": "Reactivating…",
+      "cancel": "Cancel membership"
+    },
+    "pending": {
+      "label": "Scheduled plan change",
+      "body": "Switching to <1>{{plan}}</1> on <3>{{date}}</3>. No charge or refund until then — you stay on your current plan.",
+      "fallbackPlan": "your new plan",
+      "fallbackDate": "your next renewal",
+      "cancel": "Cancel scheduled change",
+      "canceling": "Canceling…"
+    },
+    "cta": {
+      "current": "Your current plan",
+      "scheduled": "Scheduled at renewal",
+      "upgradeTo": "Upgrade to {{plan}}",
+      "switchTo": "Switch to {{plan}}",
+      "select": "Select {{plan}}"
+    },
+    "benefitsHeading": "All plans include",
+    "benefits": [
+      "Exclusive partner discounts at vets, groomers, shops & more",
+      "AI Pet Health Assistant available 24/7",
+      "Vaccination & health reminders for every pet",
+      "Community access — ask vets and other owners",
+      "Priority support"
+    ],
+    "checkout": {
+      "title": "Complete your membership"
+    },
+    "switchDialog": {
+      "title": "Switch to {{plan}}",
+      "upgradeBody": "Upgrade to <1>{{plan}}</1> takes effect immediately. We'll charge the prorated difference to your card on file today, and your renewal date stays the same.",
+      "scheduleBody": "Your plan will switch to <1>{{plan}}</1> automatically on your next renewal. No charge or refund happens today — you keep your current plan and benefits until then.",
+      "dueToday": "Due today",
+      "takesEffectOn": "Takes effect on",
+      "cancel": "Cancel",
+      "payUpgrade": "Pay & upgrade now",
+      "schedule": "Schedule change",
+      "charging": "Charging…",
+      "scheduling": "Scheduling…"
+    },
+    "cancelDialog": {
+      "title": "Cancel your membership?",
+      "body": "You'll keep all your paid member benefits until <1>{{date}}</1>. After that your membership will end and you won't be charged again. You can reactivate any time before then.",
+      "fallbackDate": "your renewal date",
+      "keep": "Keep membership",
+      "confirm": "Confirm cancellation",
+      "canceling": "Canceling…"
+    }
   },
   "redemptionHistory": {
     "metaTitle": "Redemption History | Wooffy",
@@ -2712,8 +2770,6 @@
       "other": "Other"
     }
   },
-
-
   "hubSection": {
     "title": "Your Pet Owner Hub",
     "description": "More than just discounts. Wooffy is your all-in-one companion for pet parenthood. Connect, discover, and make every moment with your pet count.",

@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useMembership } from "@/hooks/useMembership";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { isPaymentsConfigured } from "@/lib/stripe";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
@@ -22,45 +22,11 @@ import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import { toast } from "sonner";
 
 const PLANS = [
-  {
-    id: "solo",
-    priceId: "wooffy_solo_yearly",
-    pets: "1",
-    price: 29,
-    image: soloPawImg,
-    popular: false,
-    name: "Solo Paw",
-    label: "For one beloved companion",
-  },
-  {
-    id: "duo",
-    priceId: "wooffy_duo_yearly",
-    pets: "2",
-    price: 49,
-    image: duoImg,
-    popular: true,
-    name: "Dynamic Duo",
-    label: "Perfect for two pets",
-  },
-  {
-    id: "pack",
-    priceId: "wooffy_pack_yearly",
-    pets: "3-5",
-    price: 69,
-    image: packImg,
-    popular: false,
-    name: "Pack Leader",
-    label: "For families with 3 to 5 pets",
-  },
+  { id: "solo", key: "solo", priceId: "wooffy_solo_yearly", pets: "1", price: 29, image: soloPawImg, popular: false, name: "Solo Paw" },
+  { id: "duo", key: "duo", priceId: "wooffy_duo_yearly", pets: "2", price: 49, image: duoImg, popular: true, name: "Dynamic Duo" },
+  { id: "pack", key: "pack", priceId: "wooffy_pack_yearly", pets: "3-5", price: 69, image: packImg, popular: false, name: "Pack Leader" },
 ];
 
-const BENEFITS = [
-  "Exclusive partner discounts at vets, groomers, shops & more",
-  "AI Pet Health Assistant available 24/7",
-  "Vaccination & health reminders for every pet",
-  "Community access — ask vets and other owners",
-  "Priority support",
-];
 
 const PLAN_TYPE_TO_PRICE_ID: Record<string, string> = {
   single: "wooffy_solo_yearly",
@@ -69,7 +35,11 @@ const PLAN_TYPE_TO_PRICE_ID: Record<string, string> = {
 };
 
 const MemberUpgrade = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language?.startsWith("el") ? "el-GR" : "en-GB";
+  const formatDate = (d: Date | string | number) =>
+    new Date(d).toLocaleDateString(dateLocale, { day: "numeric", month: "long", year: "numeric" });
+  const planLabel = (key: string) => t(`memberUpgrade.plans.${key}.label`);
   const { user, loading } = useAuth();
   const { isBusiness, loading: accountTypeLoading } = useAccountType();
   const { hasMembership, isPaidMember, membership } = useMembership();
@@ -374,17 +344,17 @@ const MemberUpgrade = () => {
               <Crown className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground">
-              Choose your Wooffy Paid Membership
+              {t("memberUpgrade.heading")}
             </h1>
             <p className="text-muted-foreground text-base leading-relaxed max-w-xl mx-auto">
-              Unlock exclusive partner discounts, AI health support, and priority features for your pets — all year round.
+              {t("memberUpgrade.subheading")}
             </p>
           </div>
 
           {isPaidMember && (
             <div className="max-w-xl mx-auto mb-8 bg-card rounded-2xl p-5 border border-border shadow-card space-y-3">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground">Active membership</p>
+                <p className="text-sm text-muted-foreground">{t("memberUpgrade.active.label")}</p>
                 <p className="font-display font-semibold text-lg text-foreground">
                   {membership?.member_number}
                 </p>
@@ -393,22 +363,19 @@ const MemberUpgrade = () => {
                 <div className="text-center text-sm">
                   {subDetails.cancel_at_period_end ? (
                     <p className="text-amber-600 dark:text-amber-400">
-                      Cancels on{" "}
-                      <strong>
-                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "long", year: "numeric",
-                        })}
-                      </strong>
-                      . You'll keep full access until then.
+                      <Trans
+                        i18nKey="memberUpgrade.active.cancelsOn"
+                        values={{ date: formatDate(subDetails.current_period_end) }}
+                        components={{ 1: <strong /> }}
+                      />
                     </p>
                   ) : (
                     <p className="text-muted-foreground">
-                      Renews automatically on{" "}
-                      <strong className="text-foreground">
-                        {new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "long", year: "numeric",
-                        })}
-                      </strong>
+                      <Trans
+                        i18nKey="memberUpgrade.active.renewsOn"
+                        values={{ date: formatDate(subDetails.current_period_end) }}
+                        components={{ 1: <strong className="text-foreground" /> }}
+                      />
                     </p>
                   )}
                 </div>
@@ -421,7 +388,7 @@ const MemberUpgrade = () => {
                     onClick={handleReactivateSubscription}
                     disabled={reactivateLoading}
                   >
-                    {reactivateLoading ? "Reactivating…" : "Reactivate membership"}
+                    {reactivateLoading ? t("memberUpgrade.active.reactivating") : t("memberUpgrade.active.reactivate")}
                   </Button>
                 ) : (
                   <Button
@@ -429,7 +396,7 @@ const MemberUpgrade = () => {
                     size="sm"
                     onClick={() => setCancelDialogOpen(true)}
                   >
-                    Cancel membership
+                    {t("memberUpgrade.active.cancel")}
                   </Button>
                 )}
               </div>
@@ -439,19 +406,17 @@ const MemberUpgrade = () => {
           {isPaidMember && pendingChange && (() => {
             const pendingPlan = PLANS.find((p) => p.priceId === pendingChange.priceId);
             const whenStr = pendingChange.scheduledFor
-              ? new Date(pendingChange.scheduledFor * 1000).toLocaleDateString("en-GB", {
-                  day: "numeric", month: "long", year: "numeric",
-                })
-              : "your next renewal";
+              ? formatDate(pendingChange.scheduledFor * 1000)
+              : t("memberUpgrade.pending.fallbackDate");
             return (
               <div className="max-w-xl mx-auto mb-8 rounded-2xl p-5 border border-primary/30 bg-primary/5 shadow-card text-center space-y-3">
-                <p className="text-sm text-muted-foreground">Scheduled plan change</p>
+                <p className="text-sm text-muted-foreground">{t("memberUpgrade.pending.label")}</p>
                 <p className="text-base text-foreground">
-                  Switching to{" "}
-                  <strong className="font-display">
-                    {pendingPlan?.name ?? "your new plan"}
-                  </strong>{" "}
-                  on <strong>{whenStr}</strong>. No charge or refund until then — you stay on your current plan.
+                  <Trans
+                    i18nKey="memberUpgrade.pending.body"
+                    values={{ plan: pendingPlan?.name ?? t("memberUpgrade.pending.fallbackPlan"), date: whenStr }}
+                    components={{ 1: <strong className="font-display" />, 3: <strong /> }}
+                  />
                 </p>
                 <Button
                   variant="outline"
@@ -459,7 +424,7 @@ const MemberUpgrade = () => {
                   onClick={handleCancelPendingChange}
                   disabled={cancelPendingLoading}
                 >
-                  {cancelPendingLoading ? "Canceling…" : "Cancel scheduled change"}
+                  {cancelPendingLoading ? t("memberUpgrade.pending.canceling") : t("memberUpgrade.pending.cancel")}
                 </Button>
               </div>
             );
@@ -473,7 +438,7 @@ const MemberUpgrade = () => {
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                       <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
                         <Star className="w-4 h-4 fill-current" />
-                        Most Popular
+                        {t("memberUpgrade.mostPopular")}
                       </div>
                     </div>
                   )}
@@ -497,7 +462,7 @@ const MemberUpgrade = () => {
                       </div>
                       <h3 className="font-display font-bold text-xl text-foreground">{plan.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">
-                        {plan.label}
+                        {planLabel(plan.key)}
                       </p>
                     </div>
                     <div className="text-center mb-6">
@@ -505,7 +470,7 @@ const MemberUpgrade = () => {
                         <span className="font-display font-bold text-4xl text-gradient">
                           €{plan.price}
                         </span>
-                        <span className="text-muted-foreground">/ year</span>
+                        <span className="text-muted-foreground">{t("memberUpgrade.perYear")}</span>
                       </div>
                     </div>
                     <div className="flex-1" />
@@ -518,14 +483,14 @@ const MemberUpgrade = () => {
                       const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
                       const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
-                        ? "Your current plan"
+                        ? t("memberUpgrade.cta.current")
                         : isPending
-                          ? "Scheduled at renewal"
+                          ? t("memberUpgrade.cta.scheduled")
                           : isPaidMember && currentIdx >= 0
                             ? thisIdx > currentIdx
-                              ? `Upgrade to ${plan.name}`
-                              : `Switch to ${plan.name}`
-                            : `Select ${plan.name}`;
+                              ? t("memberUpgrade.cta.upgradeTo", { plan: plan.name })
+                              : t("memberUpgrade.cta.switchTo", { plan: plan.name })
+                            : t("memberUpgrade.cta.select", { plan: plan.name });
                       return (
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
@@ -545,9 +510,9 @@ const MemberUpgrade = () => {
           </div>
 
           <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border">
-            <h3 className="font-display font-semibold text-lg text-center mb-4">All plans include</h3>
+            <h3 className="font-display font-semibold text-lg text-center mb-4">{t("memberUpgrade.benefitsHeading")}</h3>
             <div className="grid sm:grid-cols-2 gap-3">
-              {BENEFITS.map((b, i) => (
+              {(t("memberUpgrade.benefits", { returnObjects: true }) as string[]).map((b, i) => (
                 <div key={i} className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground">{b}</span>
@@ -560,7 +525,7 @@ const MemberUpgrade = () => {
         <Dialog open={isOpen} onOpenChange={(open) => !open && closeCheckout()}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
             <DialogHeader className="px-6 pt-6">
-              <DialogTitle>Complete your membership</DialogTitle>
+              <DialogTitle>{t("memberUpgrade.checkout.title")}</DialogTitle>
             </DialogHeader>
             <div className="px-2 sm:px-4 pb-4">{checkoutElement}</div>
           </DialogContent>
@@ -569,7 +534,7 @@ const MemberUpgrade = () => {
         <Dialog open={!!changePlan} onOpenChange={(open) => !open && !confirmLoading && setChangePlan(null)}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Switch to {changePlan?.name}</DialogTitle>
+              <DialogTitle>{t("memberUpgrade.switchDialog.title", { plan: changePlan?.name ?? "" })}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-2">
               {previewLoading ? (
@@ -579,15 +544,19 @@ const MemberUpgrade = () => {
                   {previewIsUpgrade ? (
                     <>
                       <p className="text-sm text-muted-foreground">
-                        Upgrade to <strong>{changePlan?.name}</strong> takes effect immediately. We'll charge the prorated difference to your card on file today, and your renewal date stays the same.
+                        <Trans
+                          i18nKey="memberUpgrade.switchDialog.upgradeBody"
+                          values={{ plan: changePlan?.name ?? "" }}
+                          components={{ 1: <strong /> }}
+                        />
                       </p>
                       {typeof previewAmountDue === "number" && previewAmountDue > 0 && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
                           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            Due today
+                            {t("memberUpgrade.switchDialog.dueToday")}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
-                            {new Intl.NumberFormat("en-GB", {
+                            {new Intl.NumberFormat(dateLocale, {
                               style: "currency",
                               currency: (previewCurrency || "eur").toUpperCase(),
                             }).format(previewAmountDue / 100)}
@@ -598,19 +567,19 @@ const MemberUpgrade = () => {
                   ) : (
                     <>
                       <p className="text-sm text-muted-foreground">
-                        Your plan will switch to <strong>{changePlan?.name}</strong> automatically on your next renewal. No charge or refund happens today — you keep your current plan and benefits until then.
+                        <Trans
+                          i18nKey="memberUpgrade.switchDialog.scheduleBody"
+                          values={{ plan: changePlan?.name ?? "" }}
+                          components={{ 1: <strong /> }}
+                        />
                       </p>
                       {scheduledFor && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
                           <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            Takes effect on
+                            {t("memberUpgrade.switchDialog.takesEffectOn")}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
-                            {new Date(scheduledFor * 1000).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
+                            {formatDate(scheduledFor * 1000)}
                           </p>
                         </div>
                       )}
@@ -622,7 +591,7 @@ const MemberUpgrade = () => {
                       onClick={() => setChangePlan(null)}
                       disabled={confirmLoading}
                     >
-                      Cancel
+                      {t("memberUpgrade.switchDialog.cancel")}
                     </Button>
                     <Button
                       variant="hero"
@@ -630,8 +599,8 @@ const MemberUpgrade = () => {
                       disabled={confirmLoading}
                     >
                       {confirmLoading
-                        ? previewIsUpgrade ? "Charging…" : "Scheduling…"
-                        : previewIsUpgrade ? "Pay & upgrade now" : "Schedule change"}
+                        ? previewIsUpgrade ? t("memberUpgrade.switchDialog.charging") : t("memberUpgrade.switchDialog.scheduling")
+                        : previewIsUpgrade ? t("memberUpgrade.switchDialog.payUpgrade") : t("memberUpgrade.switchDialog.schedule")}
                     </Button>
                   </div>
                 </>
@@ -643,19 +612,19 @@ const MemberUpgrade = () => {
         <Dialog open={cancelDialogOpen} onOpenChange={(open) => !open && !cancelLoading && setCancelDialogOpen(false)}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Cancel your membership?</DialogTitle>
+              <DialogTitle>{t("memberUpgrade.cancelDialog.title")}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <p className="text-sm text-muted-foreground">
-                You'll keep all your paid member benefits until{" "}
-                <strong className="text-foreground">
-                  {subDetails?.current_period_end
-                    ? new Date(subDetails.current_period_end).toLocaleDateString("en-GB", {
-                        day: "numeric", month: "long", year: "numeric",
-                      })
-                    : "your renewal date"}
-                </strong>
-                . After that your membership will end and you won't be charged again. You can reactivate any time before then.
+                <Trans
+                  i18nKey="memberUpgrade.cancelDialog.body"
+                  values={{
+                    date: subDetails?.current_period_end
+                      ? formatDate(subDetails.current_period_end)
+                      : t("memberUpgrade.cancelDialog.fallbackDate"),
+                  }}
+                  components={{ 1: <strong className="text-foreground" /> }}
+                />
               </p>
               <div className="flex gap-2 justify-end pt-2">
                 <Button
@@ -663,14 +632,14 @@ const MemberUpgrade = () => {
                   onClick={() => setCancelDialogOpen(false)}
                   disabled={cancelLoading}
                 >
-                  Keep membership
+                  {t("memberUpgrade.cancelDialog.keep")}
                 </Button>
                 <Button
                   variant="destructive"
                   onClick={handleCancelSubscription}
                   disabled={cancelLoading}
                 >
-                  {cancelLoading ? "Canceling…" : "Confirm cancellation"}
+                  {cancelLoading ? t("memberUpgrade.cancelDialog.canceling") : t("memberUpgrade.cancelDialog.confirm")}
                 </Button>
               </div>
             </div>
