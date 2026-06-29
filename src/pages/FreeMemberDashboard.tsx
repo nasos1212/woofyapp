@@ -586,7 +586,8 @@ const FreeMemberDashboard = () => {
               </Card>
             ) : (
               <Carousel
-                opts={{ align: "start", loop: false }}
+                opts={{ align: "start", loop: true }}
+                setApi={setBlogCarouselApi}
                 className="w-full"
               >
                 <CarouselContent className="-ml-4">
