@@ -2,14 +2,12 @@ import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { 
-  Users, 
-  Gift, 
-  Heart, 
-  Bot, 
-  AlertTriangle, 
-  Syringe, 
-  Lock, 
+import {
+  Users,
+  Gift,
+  Heart,
+  Bot,
+  Lock,
   ArrowRight,
   MessageSquarePlus,
   Crown,
@@ -22,11 +20,19 @@ import {
   Cat,
   PlusCircle,
   FileText,
-  BookOpen
+  BookOpen,
+  AlertTriangle,
+  Syringe,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import DogLoader from "@/components/DogLoader";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,7 +58,6 @@ interface RecentQuestion {
   created_at: string;
 }
 
-
 const FreeMemberDashboard = () => {
   const { t } = useTranslation();
   const { user, loading: authLoading } = useAuth();
@@ -71,7 +76,6 @@ const FreeMemberDashboard = () => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
 
-
   // Check user roles to ensure only freemium members can access this page
   useEffect(() => {
     const checkUserRoles = async () => {
@@ -81,7 +85,6 @@ const FreeMemberDashboard = () => {
       }
 
       try {
-        // Check for shelter record, shelter role, and business in parallel
         const [shelterResult, shelterRoleResult, businessResult, businessRoleResult] = await Promise.all([
           supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
           supabase.rpc("has_role", { _user_id: user.id, _role: "shelter" }),
@@ -89,25 +92,21 @@ const FreeMemberDashboard = () => {
           supabase.rpc("has_role", { _user_id: user.id, _role: "business" }),
         ]);
 
-        // Redirect shelters to their dashboard or onboarding
         if (shelterResult.data) {
           setRedirectPath("/shelter-dashboard");
           return;
         }
-        
-        // Shelter role but no record = incomplete onboarding
+
         if (shelterRoleResult.data) {
           setRedirectPath("/shelter-onboarding");
           return;
         }
 
-        // Redirect businesses to their dashboard or registration
         if (businessResult.data) {
           setRedirectPath("/business");
           return;
         }
-        
-        // Business role but no record = incomplete registration
+
         if (businessRoleResult.data) {
           setRedirectPath("/partner-register");
           return;
@@ -186,12 +185,9 @@ const FreeMemberDashboard = () => {
     return () => clearInterval(interval);
   }, [recentQuestions.length]);
 
-
-
-
   if (authLoading || membershipLoading || checkingRoles) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-warm-100">
         <DogLoader size="lg" />
       </div>
     );
@@ -201,15 +197,25 @@ const FreeMemberDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // Redirect shelters and businesses to their proper dashboards
   if (redirectPath) {
     return <Navigate to={redirectPath} replace />;
   }
 
-  // Redirect paid members to member dashboard
   if (isPaidMember) {
     return <Navigate to="/member" replace />;
   }
+
+  const mainServices = [
+    { icon: Building2, label: t("freeMember.cards.partners"), path: "/member/partners" },
+    { icon: AlertTriangle, label: t("freeMember.cards.lostFound"), path: "/member/lost-found" },
+    { icon: MapPin, label: t("freeMember.cards.places"), path: "/member/pet-friendly-places" },
+    { icon: Gift, label: t("freeMember.cards.browseOffers"), path: "/member/offers" },
+  ];
+
+  const extraServices = [
+    { icon: Heart, label: t("freeMember.cards.shelters"), path: "/member/shelters" },
+    { icon: Syringe, label: t("freeMember.cards.health"), path: "/member/health-records" },
+  ];
 
   return (
     <>
@@ -218,12 +224,11 @@ const FreeMemberDashboard = () => {
         <meta name="description" content={t("freeMember.pageDescription")} />
       </Helmet>
 
-      <div className="min-h-screen bg-background overflow-x-hidden">
+      <div className="min-h-screen bg-warm-100 overflow-x-hidden">
         <Header />
         <FreemiumOnboardingTour />
 
-        <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
-
+        <main className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
           {/* One-time city prompt for existing users */}
           {user && !preferredCity && !cityPromptDismissed && (
             <CityPromptBanner
@@ -239,127 +244,125 @@ const FreeMemberDashboard = () => {
             />
           )}
 
-          {/* Welcome Header - Simple & Clean */}
-          <div className="mb-8">
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-1">
-              {t("freeMember.hello", { name: profileName || t("freeMember.friend") })}
-            </h1>
-            <p className="text-muted-foreground">
-              {t("freeMember.subtitle")}
-            </p>
-          </div>
-
-          {/* My Pets Section - FIRST */}
-          <Card className="relative mb-8 overflow-hidden border-primary/15 shadow-soft bg-gradient-warm">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-36 h-36 bg-accent/5 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-            <CardContent className="relative p-6 md:p-8">
-              <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
-                <h2 className="font-display text-lg md:text-xl font-bold text-foreground flex items-center gap-2">
-                  <Dog className="w-5 h-5 text-primary" />
-                  {t("freeMember.pets.title")}
-                </h2>
+          {/* Top Section: My Pets */}
+          <div className="bg-warm-50 rounded-[2rem] sm:rounded-[2.5rem] border border-warm-300 shadow-[0_32px_64px_-16px_rgba(60,40,20,0.06)] overflow-hidden mb-6">
+            <div className="p-6 sm:p-10 pb-6">
+              <div className="flex items-end justify-between mb-8 gap-3 flex-wrap">
+                <div>
+                  <h2 className="font-lora text-2xl sm:text-3xl font-bold text-warm-900 tracking-tight">
+                    {t("freeMember.pets.title")}
+                  </h2>
+                  <p className="text-warm-600 text-sm mt-1">
+                    {pets.length === 0
+                      ? t("freeMember.pets.emptyDesc")
+                      : t("freeMember.subtitle")}
+                  </p>
+                </div>
                 {pets.length > 0 && (
-                  <Button
-                    size="sm"
+                  <button
                     onClick={() => navigate("/member/add-pet")}
-                    className="gap-1"
+                    className="px-5 py-2 text-sm font-semibold bg-warm-200 text-warm-800 rounded-full hover:bg-warm-300 transition-colors border border-warm-400 flex items-center gap-1.5"
                   >
-                    <PlusCircle className="w-4 h-4" />
                     {t("freeMember.pets.addPet")}
-                  </Button>
+                    <PlusCircle className="w-4 h-4" />
+                  </button>
                 )}
               </div>
 
               {pets.length === 0 ? (
-                <div className="rounded-xl border-dashed border-2 border-primary/20 bg-card/60 p-8 text-center">
-                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                    <Dog className="w-7 h-7 text-primary" />
+                <div className="flex flex-col items-center justify-center py-10">
+                  <div className="w-20 h-20 rounded-full bg-warm-200 flex items-center justify-center mb-4">
+                    <Dog className="w-9 h-9 text-warm-600" />
                   </div>
-                  <h3 className="font-display font-semibold text-foreground mb-1 text-lg">{t("freeMember.pets.empty")}</h3>
-                  <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+                  <h3 className="font-lora font-semibold text-warm-900 mb-2 text-lg">
+                    {t("freeMember.pets.empty")}
+                  </h3>
+                  <p className="text-sm text-warm-600 mb-6 max-w-md text-center">
                     {t("freeMember.pets.emptyDesc")}
                   </p>
-                  <Button onClick={() => navigate("/member/add-pet")} size="lg" className="gap-2">
+                  <button
+                    onClick={() => navigate("/member/add-pet")}
+                    className="px-6 py-3 bg-terracotta text-warm-950 rounded-xl text-sm font-bold hover:bg-terracotta-dark transition-colors flex items-center gap-2"
+                  >
                     <PlusCircle className="w-5 h-5" />
                     {t("freeMember.pets.addFirst")}
-                  </Button>
+                  </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {pets.map((pet) => (
-                    <button
+                <div className="flex gap-5 sm:gap-8 overflow-x-auto pb-4 scrollbar-hide">
+                  {pets.map((pet, idx) => (
+                    <div
                       key={pet.id}
+                      className="flex-shrink-0 group cursor-pointer"
                       onClick={() => navigate(`/member/pet/${pet.id}`)}
-                      className="text-left rounded-xl border border-border bg-card hover:bg-muted/60 hover:shadow-md hover:border-primary/30 transition-all p-4 flex items-center gap-4"
                     >
-                      {pet.photo_url ? (
-                        <img
-                          src={pet.photo_url}
-                          alt={pet.pet_name}
-                          className="w-14 h-14 rounded-full object-cover border-2 border-primary/20"
-                        />
-                      ) : (
-                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/15">
-                          {pet.pet_type === 'cat' ? (
-                            <Cat className="w-6 h-6 text-primary" />
-                          ) : (
-                            <Dog className="w-6 h-6 text-primary" />
-                          )}
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground truncate">{pet.pet_name}</h3>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {pet.pet_breed || (pet.pet_type === 'cat' ? t("freeMember.pets.cat") : t("freeMember.pets.dog"))}
-                        </p>
+                      <div
+                        className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full p-1.5 border-2 transition-all ${
+                          idx === 0
+                            ? "border-terracotta ring-4 ring-terracotta/10"
+                            : "border-transparent group-hover:border-warm-300"
+                        }`}
+                      >
+                        {pet.photo_url ? (
+                          <img
+                            src={pet.photo_url}
+                            alt={pet.pet_name}
+                            className="w-full h-full rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full rounded-full bg-warm-200 flex items-center justify-center">
+                            {pet.pet_type === 'cat' ? (
+                              <Cat className="w-7 h-7 sm:w-8 sm:h-8 text-warm-600" />
+                            ) : (
+                              <Dog className="w-7 h-7 sm:w-8 sm:h-8 text-warm-600" />
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-
-
-
-          {/* Community Hub Section - One question at a time */}
-          <div className="mb-8">
-            <Card className="border-border shadow-soft overflow-hidden">
-              <CardContent className="p-6 md:p-8">
-                <div className="flex items-start justify-between gap-4 mb-5 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 bg-primary/10 rounded-xl flex items-center justify-center">
-                      <Users className="w-5 h-5 text-primary" />
-                    </div>
-                    <div>
-                      <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
-                        {t("freeMember.hub.title")}
-                      </h2>
-                      <p className="text-muted-foreground text-sm">
-                        {t("freeMember.hub.tagline")}
+                      <p
+                        className={`text-center mt-2 sm:mt-3 text-sm font-semibold truncate max-w-[5.5rem] sm:max-w-[6rem] mx-auto ${
+                          idx === 0 ? "text-warm-900" : "text-warm-600 group-hover:text-warm-900"
+                        }`}
+                      >
+                        {pet.pet_name}
                       </p>
                     </div>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => navigate("/community/ask")}
-                    className="gap-2"
+                  ))}
+                  <div
+                    className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer"
+                    onClick={() => navigate("/member/add-pet")}
                   >
-                    <HelpCircle className="w-4 h-4" />
-                    {t("freeMember.hub.ask")}
-                  </Button>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-warm-200 border-2 border-dashed border-warm-400 flex items-center justify-center text-warm-500 hover:bg-warm-300 hover:border-warm-500 transition-all">
+                      <span className="text-3xl font-light">+</span>
+                    </div>
+                    <p className="text-center mt-2 sm:mt-3 font-medium text-sm text-warm-500">
+                      {t("freeMember.pets.addPet")}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Community Hub + Quick Access Grid */}
+            <div className="grid lg:grid-cols-3 gap-0 border-t border-warm-300">
+              {/* Community Hub */}
+              <div className="lg:col-span-2 p-6 sm:p-10 border-b lg:border-b-0 lg:border-r border-warm-300 bg-white/40">
+                <div className="flex items-center justify-between mb-6 sm:mb-8 gap-3 flex-wrap">
+                  <h3 className="font-lora text-xl font-bold text-warm-900">
+                    {t("freeMember.hub.title")}
+                  </h3>
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full uppercase tracking-widest">
+                    Active Now
+                  </span>
                 </div>
 
                 {recentQuestions.length === 0 ? (
-                  <div className="text-center py-6 text-muted-foreground text-sm">
+                  <div className="text-center py-8 text-warm-600 text-sm">
                     {t("freeMember.hub.description")}
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4">
-                    <div className="overflow-hidden">
+                  <div className="space-y-5">
+                    <div className="relative overflow-hidden rounded-2xl border border-warm-300 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
                       <div
                         className="flex transition-transform duration-500 ease-in-out"
                         style={{ transform: `translateX(-${currentQuestionIdx * 100}%)` }}
@@ -368,312 +371,240 @@ const FreeMemberDashboard = () => {
                           <button
                             key={q.id}
                             onClick={() => navigate(`/community/question/${q.id}`)}
-                            className="w-full shrink-0 text-left flex items-center justify-between gap-3 hover:opacity-80 transition-opacity pr-2"
+                            className="w-full shrink-0 text-left p-5 sm:p-6 hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all"
                           >
-                            <div className="min-w-0 flex-1">
-                              <p className="font-medium text-foreground truncate">{q.title}</p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {q.helped_count > 0
-                                  ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
-                                  : "Be the first to help"}
-                              </p>
+                            <div className="flex gap-4 sm:gap-5">
+                              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-warm-100 overflow-hidden flex-shrink-0 border border-warm-300 flex items-center justify-center">
+                                <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-warm-600" />
+                              </div>
+                              <div className="min-w-0">
+                                <h4 className="text-sm font-bold text-warm-900 leading-snug">
+                                  {q.title}
+                                </h4>
+                                <p className="text-xs sm:text-sm text-warm-600 mt-2 leading-relaxed line-clamp-2">
+                                  {q.helped_count > 0
+                                    ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
+                                    : "Be the first to help"}
+                                </p>
+                                <div className="flex items-center gap-4 mt-3 text-[11px] font-semibold text-warm-500 uppercase tracking-wider">
+                                  <span>{new Date(q.created_at).toLocaleDateString()}</span>
+                                </div>
+                              </div>
                             </div>
-                            <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
                           </button>
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/60">
-                      <Button
-                        variant="ghost"
-                        size="sm"
+
+                    <div className="flex items-center justify-between gap-2">
+                      <button
                         onClick={() => setCurrentQuestionIdx((i) => (i - 1 + recentQuestions.length) % recentQuestions.length)}
                         disabled={recentQuestions.length < 2}
+                        className="p-2 rounded-xl bg-warm-200 text-warm-700 hover:bg-warm-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        ← Previous
-                      </Button>
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
                       <div className="flex items-center gap-1.5">
                         {recentQuestions.map((_, i) => (
                           <span
                             key={i}
                             className={`h-1.5 rounded-full transition-all duration-300 ${
-                              i === currentQuestionIdx ? "w-5 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                              i === currentQuestionIdx ? "w-5 bg-terracotta" : "w-1.5 bg-warm-400"
                             }`}
                           />
                         ))}
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
+                      <button
                         onClick={() => setCurrentQuestionIdx((i) => (i + 1) % recentQuestions.length)}
                         disabled={recentQuestions.length < 2}
+                        className="p-2 rounded-xl bg-warm-200 text-warm-700 hover:bg-warm-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       >
-                        Next →
-                      </Button>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 )}
 
-
                 <div className="mt-5 flex items-center justify-between gap-3 flex-wrap">
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() => navigate("/community")}
-                    className="gap-2"
+                    className="flex items-center gap-2 text-warm-700 hover:text-warm-900 transition-colors text-sm font-medium"
                   >
                     <MessageSquarePlus className="w-4 h-4" />
                     {t("freeMember.hub.browse")}
-                  </Button>
+                  </button>
                   <button
                     onClick={() => navigate("/community?tab=saved")}
-                    className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
+                    className="flex items-center gap-2 text-warm-500 hover:text-warm-700 transition-colors text-sm"
                   >
                     <Bookmark className="w-4 h-4" />
                     <span className="font-medium">{t("freeMember.hub.saved")}</span>
                   </button>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-
-          {/* Upgrade CTA above Quick Access */}
-          <Card className="mb-6 border-primary/20 bg-primary/5">
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-center sm:text-left">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Crown className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {t("freeMember.upgrade.unlock")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {t("freeMember.upgrade.unlockDesc")}
-                  </p>
-                </div>
               </div>
-              <Button
-                onClick={() => navigate("/member/upgrade")}
-                className="gap-2 shrink-0 w-full sm:w-auto"
-              >
-                <Crown className="w-4 h-4" />
-                {t("freeMember.upgrade.cta")}
-              </Button>
-            </CardContent>
-          </Card>
 
-          <div className="bg-white rounded-2xl p-6 shadow-soft mb-6">
-            <h3 className="font-display font-semibold text-foreground mb-4">{t("memberDashboard.quickAccess.title")}</h3>
-            <div className="space-y-2">
-              <button onClick={() => navigate("/member/partners")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-sky-100 rounded-full flex items-center justify-center">
-                  <Building2 className="w-5 h-5 text-sky-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.partners")}</p>
-              </button>
-              <button onClick={() => navigate("/member/lost-found")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-amber-100 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="w-5 h-5 text-amber-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.lostFound")}</p>
-              </button>
-              <button onClick={() => navigate("/member/pet-friendly-places")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-teal-100 rounded-full flex items-center justify-center">
-                  <MapPin className="w-5 h-5 text-teal-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.places")}</p>
-              </button>
-              <button onClick={() => navigate("/member/offers")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                <div className="w-10 h-10 flex-shrink-0 bg-purple-100 rounded-full flex items-center justify-center">
-                  <Gift className="w-5 h-5 text-purple-600" />
-                </div>
-                <p className="font-medium text-foreground text-sm">{t("freeMember.cards.browseOffers")}</p>
-              </button>
-
-              {showAllServices && (
-                <>
-                  <button onClick={() => navigate("/member/shelters")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-rose-100 rounded-full flex items-center justify-center">
-                      <Heart className="w-5 h-5 text-rose-600" />
-                    </div>
-                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.shelters")}</p>
+              {/* Quick Access & Upgrade */}
+              <div className="bg-warm-200/50 p-6 sm:p-10 flex flex-col">
+                <div className="mb-8 sm:mb-10">
+                  <h3 className="text-[11px] font-black text-warm-600 uppercase tracking-[0.2em] mb-6">
+                    Quick Access
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    {mainServices.map(({ icon: Icon, label, path }) => (
+                      <button
+                        key={path}
+                        onClick={() => navigate(path)}
+                        className="aspect-square flex flex-col items-center justify-center p-3 sm:p-4 bg-white rounded-2xl border border-warm-300 hover:border-terracotta hover:shadow-lg hover:shadow-terracotta/5 transition-all group"
+                      >
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-warm-100 flex items-center justify-center mb-2 group-hover:bg-terracotta/10 transition-colors">
+                          <Icon className="w-5 h-5 text-warm-700 group-hover:text-terracotta transition-colors" />
+                        </div>
+                        <span className="text-[10px] sm:text-[11px] font-bold text-warm-900 uppercase tracking-wider text-center leading-tight">
+                          {label}
+                        </span>
+                      </button>
+                    ))}
+                    {showAllServices &&
+                      extraServices.map(({ icon: Icon, label, path }) => (
+                        <button
+                          key={path}
+                          onClick={() => navigate(path)}
+                          className="aspect-square flex flex-col items-center justify-center p-3 sm:p-4 bg-white rounded-2xl border border-warm-300 hover:border-terracotta hover:shadow-lg hover:shadow-terracotta/5 transition-all group"
+                        >
+                          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-warm-100 flex items-center justify-center mb-2 group-hover:bg-terracotta/10 transition-colors">
+                            <Icon className="w-5 h-5 text-warm-700 group-hover:text-terracotta transition-colors" />
+                          </div>
+                          <span className="text-[10px] sm:text-[11px] font-bold text-warm-900 uppercase tracking-wider text-center leading-tight">
+                            {label}
+                          </span>
+                        </button>
+                      ))}
+                  </div>
+                  <button
+                    onClick={() => setShowAllServices((v) => !v)}
+                    className="mt-4 w-full text-xs text-terracotta hover:text-terracotta-dark font-semibold transition-colors"
+                  >
+                    {showAllServices ? "Show less" : "See more services"}
                   </button>
-                  <button onClick={() => navigate("/member/health-records")} className="w-full text-left flex items-center gap-3 p-3 bg-muted/40 rounded-xl hover:bg-muted transition-colors">
-                    <div className="w-10 h-10 flex-shrink-0 bg-emerald-100 rounded-full flex items-center justify-center">
-                      <Syringe className="w-5 h-5 text-emerald-600" />
-                    </div>
-                    <p className="font-medium text-foreground text-sm">{t("freeMember.cards.health")}</p>
-                  </button>
-                </>
-              )}
-            </div>
-            <button
-              onClick={() => setShowAllServices((v) => !v)}
-              className="mt-3 w-full text-sm text-primary hover:underline font-medium"
-            >
-              {showAllServices ? "Show less" : "See more services"}
-            </button>
-          </div>
+                </div>
 
-          {/* Blog - Standalone Card */}
-          <button
-            onClick={() => navigate("/blog")}
-            className="w-full text-left bg-white rounded-2xl p-5 shadow-soft hover:shadow-md transition-all mb-8 flex items-center gap-4 group"
-          >
-            <div className="w-12 h-12 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-cyan-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-display font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
-              <p className="text-sm text-muted-foreground">{t("blog.discoverCardSubtitle", { defaultValue: "Tips, guides and stories for pet parents" })}</p>
-            </div>
-            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-          </button>
-
-
-
-
-
-          {/* Subtle Upgrade Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-muted-foreground">
-                {t("freeMember.upgrade.want")}
-              </p>
-              <Button 
-                variant="link" 
-                size="sm" 
-                className="text-primary gap-1 p-0 h-auto"
-                onClick={() => setShowComingSoon(true)}
-              >
-                {t("freeMember.upgrade.seeBenefits")}
-                <ArrowRight className="w-3 h-3" />
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { icon: Gift, label: t("freeMember.upgrade.partnerDiscounts"), color: "text-primary" },
-                { icon: Bot, label: t("freeMember.upgrade.aiAssistant"), color: "text-violet-500" },
-              ].map(({ icon: Icon, label, color }) => (
-                <div
-                  key={label}
-                  className="p-3 rounded-xl bg-muted/50 border border-transparent text-center"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative">
-                      <Icon className={`w-5 h-5 ${color} opacity-60`} />
-                      <Lock className="w-3 h-3 text-muted-foreground absolute -bottom-1 -right-1" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {label}
-                    </span>
+                {/* Upgrade CTA */}
+                <div className="mt-auto p-6 sm:p-8 bg-warm-950 rounded-[2rem] text-white relative overflow-hidden">
+                  <div className="absolute -top-12 -right-12 w-32 h-32 bg-terracotta/20 rounded-full blur-3xl" />
+                  <div className="relative z-10">
+                    <h4 className="font-lora text-xl font-bold mb-2">
+                      {t("freeMember.upgrade.unlock")}
+                    </h4>
+                    <p className="text-warm-500 text-xs leading-relaxed mb-5 font-medium">
+                      {t("freeMember.upgrade.unlockDesc")}
+                    </p>
+                    <button
+                      onClick={() => navigate("/member/upgrade")}
+                      className="w-full py-3.5 bg-terracotta hover:bg-terracotta-dark text-warm-950 rounded-xl text-xs font-black uppercase tracking-[0.15em] transition-all active:scale-[0.98] shadow-xl shadow-terracotta/10 flex items-center justify-center gap-2"
+                    >
+                      <Crown className="w-4 h-4" />
+                      {t("freeMember.upgrade.cta")}
+                    </button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 
-          {/* Minimal Upgrade Banner */}
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-center sm:text-left">
-                <Crown className="w-5 h-5 text-primary hidden sm:block" />
-                <p className="text-sm text-foreground">
-                  <span className="font-medium">{t("freeMember.upgrade.unlock")}</span>
-                  <span className="text-muted-foreground">{t("freeMember.upgrade.unlockDesc")}</span>
-                </p>
-              </div>
-              <Button 
-                size="sm"
-                onClick={() => navigate("/member/upgrade")}
-                className="gap-2 shrink-0"
-              >
-                <Crown className="w-4 h-4" />
-                {t("freeMember.upgrade.cta")}
-              </Button>
-            </CardContent>
-          </Card>
+          {/* Blog Card */}
+          <button
+            onClick={() => navigate("/blog")}
+            className="w-full text-left bg-warm-50 rounded-2xl sm:rounded-3xl p-5 sm:p-6 border border-warm-300 shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-all mb-6 flex items-center gap-4 group"
+          >
+            <div className="w-12 h-12 flex-shrink-0 bg-warm-200 rounded-full flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-warm-700" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-lora font-semibold text-warm-900">{t("header.blog")}</h3>
+              <p className="text-sm text-warm-600">{t("blog.discoverCardSubtitle", { defaultValue: "Tips, guides and stories for pet parents" })}</p>
+            </div>
+            <ArrowRight className="w-5 h-5 text-warm-500 group-hover:text-warm-900 group-hover:translate-x-1 transition-all shrink-0" />
+          </button>
 
-          {/* Membership Benefits Dialog */}
+          {/* Benefits Dialog */}
           <Dialog open={showComingSoon} onOpenChange={setShowComingSoon}>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent className="sm:max-w-lg bg-warm-50 border-warm-300">
               <DialogHeader className="items-center text-center">
-                <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Sparkles className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 bg-terracotta/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Sparkles className="w-7 h-7 text-terracotta" />
                 </div>
-                <DialogTitle className="font-display text-xl">{t("freeMember.benefitsDialog.title")}</DialogTitle>
+                <DialogTitle className="font-lora text-xl text-warm-900">
+                  {t("freeMember.benefitsDialog.title")}
+                </DialogTitle>
               </DialogHeader>
 
-              {/* Free Features */}
               <div className="space-y-4">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-700 rounded-full px-3 py-1 text-xs font-bold">
+                    <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 rounded-full px-3 py-1 text-xs font-bold">
                       {t("freeMember.benefitsDialog.freeBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: MapPin, label: t("freeMember.benefitsDialog.directory"), desc: t("freeMember.benefitsDialog.directoryDesc"), color: "text-teal-600 bg-teal-100" },
-                      { icon: AlertTriangle, label: t("freeMember.benefitsDialog.lostFound"), desc: t("freeMember.benefitsDialog.lostFoundDesc"), color: "text-amber-600 bg-amber-100" },
-                      { icon: Users, label: t("freeMember.benefitsDialog.qa"), desc: t("freeMember.benefitsDialog.qaDesc"), color: "text-indigo-600 bg-indigo-100" },
-                      { icon: Gift, label: t("freeMember.benefitsDialog.browseOffers"), desc: t("freeMember.benefitsDialog.browseOffersDesc"), color: "text-purple-600 bg-purple-100" },
-                      { icon: Heart, label: t("freeMember.benefitsDialog.petProfiles"), desc: t("freeMember.benefitsDialog.petProfilesDesc"), color: "text-rose-600 bg-rose-100" },
-                      { icon: Syringe, label: t("freeMember.benefitsDialog.petHealth"), desc: t("freeMember.benefitsDialog.petHealthDesc"), color: "text-blue-600 bg-blue-100" },
-                    ].map(({ icon: Icon, label, desc, color }) => (
+                      { icon: MapPin, label: t("freeMember.benefitsDialog.directory"), desc: t("freeMember.benefitsDialog.directoryDesc") },
+                      { icon: AlertTriangle, label: t("freeMember.benefitsDialog.lostFound"), desc: t("freeMember.benefitsDialog.lostFoundDesc") },
+                      { icon: Users, label: t("freeMember.benefitsDialog.qa"), desc: t("freeMember.benefitsDialog.qaDesc") },
+                      { icon: Gift, label: t("freeMember.benefitsDialog.browseOffers"), desc: t("freeMember.benefitsDialog.browseOffersDesc") },
+                      { icon: Heart, label: t("freeMember.benefitsDialog.petProfiles"), desc: t("freeMember.benefitsDialog.petProfilesDesc") },
+                      { icon: Syringe, label: t("freeMember.benefitsDialog.petHealth"), desc: t("freeMember.benefitsDialog.petHealthDesc") },
+                    ].map(({ icon: Icon, label, desc }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
-                          <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-warm-200">
+                          <Icon className="w-4 h-4 text-warm-700" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-foreground">{label}</p>
-                          <p className="text-xs text-muted-foreground">{desc}</p>
+                          <p className="text-sm font-medium text-warm-900">{label}</p>
+                          <p className="text-xs text-warm-600">{desc}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Premium Features */}
                 <div>
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-bold">
+                    <span className="inline-flex items-center gap-1.5 bg-terracotta/10 text-terracotta rounded-full px-3 py-1 text-xs font-bold">
                       {t("freeMember.benefitsDialog.premiumBadge")}
                     </span>
                   </div>
                   <div className="space-y-2.5">
                     {[
-                      { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc"), color: "text-primary bg-primary/10" },
-                      { icon: Bot, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc"), color: "text-violet-600 bg-violet-100" },
-                    ].map(({ icon: Icon, label, desc, color }) => (
+                      { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc") },
+                      { icon: Bot, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc") },
+                    ].map(({ icon: Icon, label, desc }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
-                          <Icon className={`w-4 h-4 ${color.split(' ')[0]}`} />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-warm-200">
+                          <Icon className="w-4 h-4 text-warm-700" />
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium text-foreground">{label}</p>
-                            <Lock className="w-3 h-3 text-muted-foreground" />
+                            <p className="text-sm font-medium text-warm-900">{label}</p>
+                            <Lock className="w-3 h-3 text-warm-500" />
                           </div>
-                          <p className="text-xs text-muted-foreground">{desc}</p>
+                          <p className="text-xs text-warm-600">{desc}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-primary/5 rounded-xl p-3 border border-primary/20 text-center">
-                  <p className="text-xs text-muted-foreground">
-                    {t("freeMember.benefitsDialog.premiumNote")}<span className="font-bold text-primary">{t("freeMember.benefitsDialog.perYear")}</span>{t("freeMember.benefitsDialog.premiumNoteEnd")}
+                <div className="bg-warm-200 rounded-xl p-3 border border-warm-300 text-center">
+                  <p className="text-xs text-warm-600">
+                    {t("freeMember.benefitsDialog.premiumNote")}
+                    <span className="font-bold text-terracotta">{t("freeMember.benefitsDialog.perYear")}</span>
+                    {t("freeMember.benefitsDialog.premiumNoteEnd")}
                   </p>
                 </div>
               </div>
 
-              <Button 
-                className="w-full mt-1 gap-2" 
+              <Button
+                className="w-full mt-1 gap-2 bg-terracotta hover:bg-terracotta-dark text-warm-950"
                 onClick={() => { setShowComingSoon(false); navigate("/member/upgrade"); }}
               >
                 <Crown className="w-4 h-4" />
