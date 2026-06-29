@@ -487,7 +487,7 @@ const FreeMemberDashboard = () => {
                   className="gap-2 shrink-0"
                 >
                   <ArrowRight className="w-4 h-4" />
-                  {t("freeMember.upgrade.seeBenefits")}
+                  {t("freeMember.upgrade.seeBtn")}
                 </Button>
               </div>
             </CardContent>
