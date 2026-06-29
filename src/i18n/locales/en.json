@@ -508,7 +508,7 @@
     "benefitsDialog": {
       "title": "Your Wooffy Membership",
       "freeBadge": "✨ Free, Yours Now",
-      "premiumBadge": "👑 Premium, Coming Soon",
+      "premiumBadge": "👑 Premium, Available Now",
       "directory": "Dog-Friendly Directory",
       "directoryDesc": "Find dog-friendly cafés, parks and more",
       "lostFound": "Lost & Found Alerts",
@@ -526,7 +526,7 @@
       "ai": "Pet Birthday Offers",
       "aiDesc": "Special birthday discounts from partner businesses",
       "premiumNote": "Premium plans starting at ",
-      "premiumNoteEnd": ", we'll notify you when they launch! 🐾",
+      "premiumNoteEnd": ". Upgrade today and start saving! 🐾",
       "perYear": "€29/year",
       "gotIt": "Got it!"
     }
