@@ -45,7 +45,7 @@ const SheltersSection = () => {
     const fetchShelters = async () => {
       const { data, error } = await supabase
         .from("shelters_directory")
-        .select("id, shelter_name, location")
+        .select("id, shelter_name, location, logo_url")
         .order("shelter_name");
 
       if (!error && data) {
