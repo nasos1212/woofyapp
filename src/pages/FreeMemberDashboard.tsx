@@ -6,7 +6,7 @@ import {
   Users, 
   Gift, 
   Heart, 
-  Cake,
+  Bot, 
   AlertTriangle, 
   Syringe, 
   Lock, 
@@ -487,7 +487,7 @@ const FreeMemberDashboard = () => {
                   className="gap-2 shrink-0"
                 >
                   <ArrowRight className="w-4 h-4" />
-                  {t("freeMember.upgrade.seeBtn")}
+                  {t("freeMember.upgrade.seeBenefits")}
                 </Button>
               </div>
             </CardContent>
@@ -725,7 +725,7 @@ const FreeMemberDashboard = () => {
                   <div className="space-y-2.5">
                     {[
                       { icon: Gift, label: t("freeMember.benefitsDialog.exclusive"), desc: t("freeMember.benefitsDialog.exclusiveDesc"), color: "text-primary bg-primary/10" },
-                      { icon: Cake, label: t("freeMember.benefitsDialog.birthday"), desc: t("freeMember.benefitsDialog.birthdayDesc"), color: "text-rose-600 bg-rose-100" },
+                      { icon: Bot, label: t("freeMember.benefitsDialog.ai"), desc: t("freeMember.benefitsDialog.aiDesc"), color: "text-violet-600 bg-violet-100" },
                     ].map(({ icon: Icon, label, desc, color }) => (
                       <div key={label} className="flex items-center gap-3 p-2 rounded-lg opacity-75">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${color.split(' ')[1]}`}>
