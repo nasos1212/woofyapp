@@ -93,14 +93,18 @@ Deno.serve(async (req) => {
     }
 
     if (!sub?.stripe_subscription_id) {
+      // Returned with 200 so supabase.functions.invoke surfaces the payload
+      // instead of throwing a generic "non-2xx" error. The client uses
+      // `noActiveSubscription` to fall back to a fresh checkout flow.
       return new Response(
-        JSON.stringify({ error: "No active subscription found" }),
+        JSON.stringify({ noActiveSubscription: true, pending: null }),
         {
-          status: 404,
+          status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         },
       );
     }
+
 
     // Always use the subscription's actual environment for Stripe calls —
     // otherwise we'd try to look up a sandbox subscription on the live key.
