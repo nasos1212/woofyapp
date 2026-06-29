@@ -205,7 +205,7 @@ const MemberUpgrade = () => {
           },
         });
         const errMsg = error?.message || data?.error;
-        if (errMsg && /no active subscription/i.test(errMsg)) {
+        if (data?.noActiveSubscription || (errMsg && /no active subscription/i.test(errMsg))) {
           // User is marked as paid in our DB but has no Stripe subscription
           // (legacy / manually-set plan). Treat as a new subscriber.
           setChangePlan(null);
@@ -220,6 +220,7 @@ const MemberUpgrade = () => {
         }
         if (error || !data) throw new Error(error?.message || "Failed to preview plan change");
         if (data.error) throw new Error(data.error);
+
         setScheduledFor(data.scheduledFor ?? null);
         setPreviewIsUpgrade(!!data.isUpgrade);
         setPreviewAmountDue(typeof data.amountDueNow === "number" ? data.amountDueNow : null);
