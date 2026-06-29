@@ -498,6 +498,7 @@
     "upgrade": {
       "want": "Want more features?",
       "seeBenefits": "Paid membership benefits",
+      "seeBtn": "See",
       "partnerDiscounts": "Partner Discounts",
       "aiAssistant": "AI Assistant",
       "unlock": "Upgrade to unlock",
