@@ -646,45 +646,32 @@ const FreeMemberDashboard = () => {
 
 
 
-          {/* Subtle Upgrade Section */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-muted-foreground">
-                {t("freeMember.upgrade.want")}
-              </p>
-              <Button 
-                variant="link" 
-                size="sm" 
-                className="text-primary gap-1 p-0 h-auto"
-                onClick={() => setShowComingSoon(true)}
-              >
-                {t("freeMember.upgrade.seeBenefits")}
-                <ArrowRight className="w-3 h-3" />
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { icon: Gift, label: t("freeMember.upgrade.partnerDiscounts"), color: "text-primary" },
-                { icon: Bot, label: t("freeMember.upgrade.aiAssistant"), color: "text-violet-500" },
-              ].map(({ icon: Icon, label, color }) => (
-                <div
-                  key={label}
-                  className="p-3 rounded-xl bg-muted/50 border border-transparent text-center"
-                >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="relative">
-                      <Icon className={`w-5 h-5 ${color} opacity-60`} />
-                      <Lock className="w-3 h-3 text-muted-foreground absolute -bottom-1 -right-1" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {label}
-                    </span>
-                  </div>
+          {/* Membership Benefits CTA */}
+          <Card className="mb-8 overflow-hidden border-wooffy-blue/20 bg-wooffy-dark">
+            <CardContent className="p-6 relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+              <div className="relative flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div className="w-12 h-12 rounded-full bg-wooffy-blue/20 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-6 h-6 text-wooffy-sky" />
                 </div>
-              ))}
-            </div>
-          </div>
+                <div className="flex-1">
+                  <p className="font-display font-semibold text-wooffy-sky text-base">
+                    {t("freeMember.upgrade.seeBenefits")}
+                  </p>
+                  <p className="text-sm text-wooffy-light/60 mt-0.5">
+                    {t("freeMember.upgrade.unlockDesc")}
+                  </p>
+                </div>
+                <Button
+                  onClick={() => setShowComingSoon(true)}
+                  className="gap-2 shrink-0"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  {t("freeMember.upgrade.seeBenefits")}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Minimal Upgrade Banner */}
           <Card className="border-primary/20 bg-primary/5">
