@@ -255,8 +255,7 @@ const FreeMemberDashboard = () => {
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
             <CardContent className="relative p-6 md:p-8">
               <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
-                <h2 className="font-display text-lg md:text-xl font-bold text-wooffy-sky flex items-center gap-2">
-                  <Dog className="w-5 h-5 text-wooffy-sky" />
+                <h2 className="font-display text-lg md:text-xl font-bold text-wooffy-sky">
                   {t("freeMember.pets.title")}
                 </h2>
                 {pets.length > 0 && (
