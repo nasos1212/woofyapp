@@ -199,6 +199,22 @@ const FreeMemberDashboard = () => {
     return () => clearInterval(interval);
   }, [recentQuestions.length]);
 
+  // Fetch latest blog posts
+  useEffect(() => {
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("status", "published")
+        .lte("published_at", new Date().toISOString())
+        .order("published_at", { ascending: false })
+        .limit(5);
+      if (!error && data) setBlogPosts(data as unknown as BlogPost[]);
+      setBlogLoading(false);
+    };
+    load();
+  }, []);
+
 
 
 
