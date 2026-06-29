@@ -83,6 +83,7 @@ const FreeMemberDashboard = () => {
   const [cityPromptDismissed, setCityPromptDismissed] = useState(() => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed_free') === 'true';
   });
+  const [blogCarouselApi, setBlogCarouselApi] = useState<CarouselApi | null>(null);
 
 
   // Check user roles to ensure only freemium members can access this page
@@ -198,6 +199,15 @@ const FreeMemberDashboard = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [recentQuestions.length]);
+
+  // Auto-advance blog carousel every 6 seconds
+  useEffect(() => {
+    if (!blogCarouselApi) return;
+    const interval = setInterval(() => {
+      blogCarouselApi.scrollNext();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [blogCarouselApi]);
 
   // Fetch latest blog posts
   useEffect(() => {
@@ -576,7 +586,8 @@ const FreeMemberDashboard = () => {
               </Card>
             ) : (
               <Carousel
-                opts={{ align: "start", loop: false }}
+                opts={{ align: "start", loop: true }}
+                setApi={setBlogCarouselApi}
                 className="w-full"
               >
                 <CarouselContent className="-ml-4">
