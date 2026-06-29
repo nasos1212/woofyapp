@@ -497,11 +497,11 @@
     },
     "upgrade": {
       "want": "Want more features?",
-      "seeBenefits": "Paid membership benefits",
+      "seeBenefits": "See membership benefits",
       "partnerDiscounts": "Partner Discounts",
       "aiAssistant": "AI Assistant",
       "unlock": "Upgrade to unlock",
-      "unlockDesc": " exclusive discounts & AI health assistant",
+      "unlockDesc": " exclusive discounts & pet birthday offers",
       "cta": "Upgrade · €29/year"
     },
     "benefitsDialog": {
@@ -522,8 +522,8 @@
       "petHealthDesc": "Track vaccinations, appointments and vet visits",
       "exclusive": "Exclusive Discounts",
       "exclusiveDesc": "Save at pet shops, trainers, groomers, hotels & more",
-      "ai": "AI Health Assistant",
-      "aiDesc": "24/7 AI-powered pet health guidance",
+      "ai": "Pet Birthday Offers",
+      "aiDesc": "Special birthday discounts from partner businesses",
       "premiumNote": "Premium plans starting at ",
       "premiumNoteEnd": ", we'll notify you when they launch! 🐾",
       "perYear": "€29/year",
