@@ -17,6 +17,7 @@ interface Shelter {
   id: string;
   shelter_name: string;
   location: string;
+  logo_url: string | null;
 }
 
 const SheltersSection = () => {
