@@ -52,6 +52,17 @@ const MemberJourneyCarousel = () => {
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
     });
+
+    const interval = setInterval(() => {
+      const next = api.selectedScrollSnap() + 1;
+      if (next < journeySteps.length) {
+        api.scrollTo(next);
+      } else {
+        api.scrollTo(0);
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, [api]);
 
   return (
