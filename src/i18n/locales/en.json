@@ -20,7 +20,9 @@
     "english": "English",
     "greek": "Ελληνικά",
     "save": "Save",
-    "delete": "Delete"
+    "delete": "Delete",
+    "seeMoreServices": "See more services",
+    "showLess": "Show less"
   },
   "header": {
     "benefits": "Benefits",
