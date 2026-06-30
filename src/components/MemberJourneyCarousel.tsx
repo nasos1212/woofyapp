@@ -86,7 +86,7 @@ const MemberJourneyCarousel = () => {
                 <h3 className="font-display font-bold text-base text-foreground mb-1">
                   {step.title}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                <p className="text-sm text-muted-foreground mb-3">
                   {step.description}
                 </p>
                 
