@@ -2497,11 +2497,10 @@
     },
     "benefitsHeading": "All plans include",
     "benefits": [
-      "Exclusive partner discounts at vets, groomers, shops & more",
-      "AI Pet Health Assistant available 24/7",
-      "Vaccination & health reminders for every pet",
-      "Community access — ask vets and other owners",
-      "Priority support"
+      "Exclusive partner discounts at trainers, groomers, pet shops, and more",
+      "Birthday offers from partner businesses",
+      "Personalized AI Pet Health Assistant, powered by your pet's profile and health records",
+      "Priority access to new premium features"
     ],
     "checkout": {
       "title": "Complete your membership"
