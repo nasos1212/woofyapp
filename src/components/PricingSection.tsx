@@ -1,7 +1,10 @@
-import { Star, Gift, Dog, Users, Crown, Check, Sparkles } from "lucide-react";
+import { Star, Gift, Check, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import soloPawImg from "@/assets/plan-solo-paw.jpg";
+import duoImg from "@/assets/plan-dynamic-duo.jpg";
+import packImg from "@/assets/plan-pack-leader.jpg";
 
 const PricingSection = () => {
   const navigate = useNavigate();
@@ -16,9 +19,9 @@ const PricingSection = () => {
   ];
 
   const plans = [
-    { id: "solo", pets: 1, price: 29, popular: false, icon: Dog },
-    { id: "duo", pets: 2, price: 49, popular: true, icon: Users },
-    { id: "pack", pets: "3-5", price: 69, popular: false, icon: Crown },
+    { id: "solo", price: 29, popular: false, image: soloPawImg },
+    { id: "duo", price: 49, popular: true, image: duoImg },
+    { id: "pack", price: 69, popular: false, image: packImg },
   ];
 
   return (
@@ -78,53 +81,49 @@ const PricingSection = () => {
           </div>
 
           {/* Paid plans */}
-          {plans.map((plan) => {
-            const Icon = plan.icon;
-            return (
-              <div key={plan.id} className="relative flex flex-col">
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
-                      <Star className="w-4 h-4 fill-current" />
-                      {t("pricing.mostPopular")}
-                    </div>
+          {plans.map((plan) => (
+            <div key={plan.id} className="relative flex flex-col">
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                  <div className="bg-gradient-hero text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1 shadow-glow">
+                    <Star className="w-4 h-4 fill-current" />
+                    {t("pricing.mostPopular")}
                   </div>
-                )}
-
-                <div className={`bg-card rounded-3xl p-6 lg:p-8 shadow-card h-full flex flex-col ${plan.popular ? "border-2 border-primary/30 ring-2 ring-primary/10" : "border border-border"}`}>
-                  <div className="text-center mb-4">
-                    <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 relative">
-                      <Icon className="w-7 h-7 text-primary" />
-                      <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold">
-                        {plan.pets}
-                      </span>
-                    </div>
-                    <h3 className="font-display font-bold text-xl text-foreground">
-                      {t(`pricing.plans.${plan.id}.name`)}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">{t(`pricing.plans.${plan.id}.label`)}</p>
-                  </div>
-
-                  <div className="text-center mb-6">
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
-                      <span className="text-muted-foreground">{t("pricing.perYear")}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex-1" />
-
-                  <Button
-                    variant={plan.popular ? "hero" : "outline"}
-                    className="w-full"
-                    onClick={() => navigate("/auth")}
-                  >
-                    {t("pricing.getStarted")}
-                  </Button>
                 </div>
+              )}
+
+              <div className={`bg-card rounded-3xl p-6 lg:p-8 shadow-card h-full flex flex-col ${plan.popular ? "border-2 border-primary/30 ring-2 ring-primary/10" : "border border-border"}`}>
+                <div className="text-center mb-4">
+                  <img
+                    src={plan.image}
+                    alt={t(`pricing.plans.${plan.id}.name`)}
+                    className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4"
+                  />
+                  <h3 className="font-display font-bold text-xl text-foreground">
+                    {t(`pricing.plans.${plan.id}.name`)}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mt-1 min-h-[40px] flex items-center justify-center">{t(`pricing.plans.${plan.id}.label`)}</p>
+                </div>
+
+                <div className="text-center mb-6">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="font-display font-bold text-4xl text-gradient">€{plan.price}</span>
+                    <span className="text-muted-foreground">{t("pricing.perYear")}</span>
+                  </div>
+                </div>
+
+                <div className="flex-1" />
+
+                <Button
+                  variant={plan.popular ? "hero" : "outline"}
+                  className="w-full"
+                  onClick={() => navigate("/auth")}
+                >
+                  {t("pricing.getStarted")}
+                </Button>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         <div className="max-w-lg mx-auto bg-wooffy-dark rounded-2xl p-6 text-center mb-8">
