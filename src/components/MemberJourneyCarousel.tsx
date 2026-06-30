@@ -70,7 +70,7 @@ const MemberJourneyCarousel = () => {
       >
         <CarouselContent className="-ml-2">
           {journeySteps.map((step) => (
-            <CarouselItem key={step.id} className="pl-2 basis-1/2">
+            <CarouselItem key={step.id} className="pl-2 basis-full sm:basis-1/2">
               <div className={`relative overflow-hidden ${step.bgColor} rounded-xl p-4 border border-border/50 h-full`}>
                 {/* Step number */}
                 <div className={`absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center`}>
@@ -110,13 +110,13 @@ const MemberJourneyCarousel = () => {
           
           {/* Dots indicator */}
           <div className="flex gap-1.5">
-            {[0, 1].map((idx) => (
+            {journeySteps.map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => api?.scrollTo(idx * 2)}
+                onClick={() => api?.scrollTo(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  Math.floor(current / 2) === idx 
-                    ? "bg-primary w-4" 
+                  current === idx
+                    ? "bg-primary w-4"
                     : "bg-muted-foreground/30 w-1.5"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
