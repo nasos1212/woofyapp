@@ -470,9 +470,9 @@
       "browse": "Browse Questions",
       "ask": "Ask a Question",
       "saved": "Saved Questions",
-      "peopleHelped": "{{count}} people helped",
-      "personHelped": "{{count}} person helped",
-      "beFirst": "Be the first to help"
+      "peopleHelped": "{{count}} people like this",
+      "personHelped": "{{count}} person likes this",
+      "beFirst": "Be the first to like this"
     },
     "pets": {
       "title": "My Pets",
