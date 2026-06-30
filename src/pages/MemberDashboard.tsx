@@ -724,7 +724,7 @@ const MemberDashboard = () => {
                   onClick={() => setShowAllServices((v) => !v)}
                   className="mt-3 w-full text-sm text-primary hover:underline font-medium"
                 >
-                  {showAllServices ? "Show less" : "See more services"}
+                  {showAllServices ? t("common.showLess") : t("common.seeMoreServices")}
                 </button>
               </div>
 
