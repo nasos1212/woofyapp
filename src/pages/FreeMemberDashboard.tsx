@@ -440,7 +440,7 @@ const FreeMemberDashboard = () => {
                         onClick={() => setCurrentQuestionIdx((i) => (i + 1) % recentQuestions.length)}
                         disabled={recentQuestions.length < 2}
                       >
-                        Next →
+                        {t("common.next")} →
                       </Button>
                     </div>
                   </div>
