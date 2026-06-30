@@ -110,13 +110,13 @@ const MemberJourneyCarousel = () => {
           
           {/* Dots indicator */}
           <div className="flex gap-1.5">
-            {[0, 1].map((idx) => (
+            {journeySteps.map((_, idx) => (
               <button
                 key={idx}
-                onClick={() => api?.scrollTo(idx * 2)}
+                onClick={() => api?.scrollTo(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  Math.floor(current / 2) === idx 
-                    ? "bg-primary w-4" 
+                  current === idx
+                    ? "bg-primary w-4"
                     : "bg-muted-foreground/30 w-1.5"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
