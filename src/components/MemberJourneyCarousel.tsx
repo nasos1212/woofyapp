@@ -70,7 +70,7 @@ const MemberJourneyCarousel = () => {
       >
         <CarouselContent className="-ml-2">
           {journeySteps.map((step) => (
-            <CarouselItem key={step.id} className="pl-2 basis-1/2">
+            <CarouselItem key={step.id} className="pl-2 basis-full sm:basis-1/2">
               <div className={`relative overflow-hidden ${step.bgColor} rounded-xl p-4 border border-border/50 h-full`}>
                 {/* Step number */}
                 <div className={`absolute top-2 right-2 w-6 h-6 rounded-full bg-gradient-to-br ${step.color} flex items-center justify-center`}>
