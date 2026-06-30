@@ -422,7 +422,7 @@ const FreeMemberDashboard = () => {
                         onClick={() => setCurrentQuestionIdx((i) => (i - 1 + recentQuestions.length) % recentQuestions.length)}
                         disabled={recentQuestions.length < 2}
                       >
-                        ← Previous
+                        ← {t("blog.prev")}
                       </Button>
                       <div className="flex items-center gap-1.5">
                         {recentQuestions.map((_, i) => (
@@ -440,7 +440,7 @@ const FreeMemberDashboard = () => {
                         onClick={() => setCurrentQuestionIdx((i) => (i + 1) % recentQuestions.length)}
                         disabled={recentQuestions.length < 2}
                       >
-                        Next →
+                        {t("common.next")} →
                       </Button>
                     </div>
                   </div>
