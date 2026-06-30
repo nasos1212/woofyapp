@@ -32,7 +32,7 @@ const MemberJourneyCarousel = () => {
       description: t("journey.step2Desc"),
       color: "from-emerald-500 to-teal-500",
       bgColor: "bg-emerald-50",
-      features: [t("journey.step2Feat1"), t("journey.step2Feat2"), t("journey.step2Feat3"), t("journey.step2Feat4")],
+      features: [t("journey.step2Feat1"), t("journey.step2Feat2"), t("journey.step2Feat3"), t("journey.step2Feat4"), t("journey.step2Feat5"), t("journey.step2Feat6")],
     },
     {
       id: 3,
@@ -41,7 +41,7 @@ const MemberJourneyCarousel = () => {
       description: t("journey.step3Desc"),
       color: "from-primary to-purple-500",
       bgColor: "bg-primary/5",
-      features: [t("journey.step3Feat1"), t("journey.step3Feat2"), t("journey.step3Feat3")],
+      features: [t("journey.step3Feat1"), t("journey.step3Feat2"), t("journey.step3Feat3"), t("journey.step3Feat4")],
     },
   ];
 
