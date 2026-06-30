@@ -406,8 +406,8 @@ const FreeMemberDashboard = () => {
                               <p className="font-medium text-foreground truncate">{q.title}</p>
                               <p className="text-xs text-muted-foreground mt-1">
                                 {q.helped_count > 0
-                                  ? `${q.helped_count} ${q.helped_count === 1 ? "person" : "people"} helped`
-                                  : "Be the first to help"}
+                                  ? t("freeMember.hub.peopleHelped", { count: q.helped_count })
+                                  : t("freeMember.hub.beFirst")}
                               </p>
                             </div>
                             <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
