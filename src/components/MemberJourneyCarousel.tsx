@@ -93,8 +93,8 @@ const MemberJourneyCarousel = () => {
                 {/* Features */}
               <ul className="space-y-1.5">
                   {step.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-center gap-2 text-sm text-foreground/80">
-                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${step.color} flex-shrink-0`} />
+                    <li key={idx} className="flex items-start gap-2 text-sm text-foreground/80">
+                      <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${step.color} flex-shrink-0 mt-[5px]`} />
                       <span className="min-w-0 break-words">{feature}</span>
                     </li>
                   ))}
