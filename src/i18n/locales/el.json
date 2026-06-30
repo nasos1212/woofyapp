@@ -20,7 +20,9 @@
     "english": "English",
     "greek": "Ελληνικά",
     "save": "Αποθήκευση",
-    "delete": "Διαγραφή"
+    "delete": "Διαγραφή",
+    "seeMoreServices": "Δείτε περισσότερες υπηρεσίες",
+    "showLess": "Εμφάνιση λιγότερων"
   },
   "header": {
     "benefits": "Προνόμια",
