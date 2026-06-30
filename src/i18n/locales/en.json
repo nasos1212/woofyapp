@@ -467,7 +467,10 @@
       "description": "Get advice from experienced pet owners, share your knowledge, and be part of Cyprus's most helpful pet community.",
       "browse": "Browse Questions",
       "ask": "Ask a Question",
-      "saved": "Saved Questions"
+      "saved": "Saved Questions",
+      "peopleHelped": "{{count}} people helped",
+      "personHelped": "{{count}} person helped",
+      "beFirst": "Be the first to help"
     },
     "pets": {
       "title": "My Pets",
