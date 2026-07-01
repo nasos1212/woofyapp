@@ -141,10 +141,10 @@ const Header = () => {
     { name: t("header.blog"), href: "/blog", isRoute: true },
 ] : [
     { name: t("header.benefits"), href: "#benefits" },
-    { name: t("header.dogFriendlyPlaces"), href: "#get-listed" },
-    { name: t("header.shelters"), href: "#shelters" },
     { name: t("partnersSection.badge"), href: "#partners" },
+    { name: t("header.shelters"), href: "#shelters" },
     { name: t("header.pricing"), href: "#freemium" },
+    { name: t("header.dogFriendlyPlaces"), href: "#get-listed" },
     { name: t("header.blog"), href: "/blog", isRoute: true },
   ];
 
