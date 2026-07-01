@@ -766,19 +766,97 @@ const MemberDashboard = () => {
                 </button>
               </div>
 
-              {/* Blog - Standalone Card */}
-              <Link
-                to="/blog"
-                className="bg-white rounded-2xl p-5 shadow-soft hover:shadow-md transition-all flex items-center gap-4 group"
-              >
-                <div className="w-12 h-12 flex-shrink-0 bg-cyan-100 rounded-full flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-cyan-600" />
+              {/* Blog Carousel */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
+                    {t("blog.discoverCardTitle")}
+                  </h2>
+                  <button
+                    onClick={() => navigate("/blog")}
+                    className="text-sm font-medium text-primary hover:underline flex items-center gap-1"
+                  >
+                    {t("blog.viewAll")}
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-display font-semibold text-foreground">{t("blog.discoverCardTitle")}</h3>
-                  <p className="text-sm text-muted-foreground">{t("blog.discoverCardSubtitle", { defaultValue: "Tips, guides and stories for pet parents" })}</p>
-                </div>
-              </Link>
+
+                {blogLoading ? (
+                  <div className="flex gap-4 overflow-hidden">
+                    <div className="min-w-full rounded-xl border bg-card p-3 animate-pulse">
+                      <div className="aspect-[16/9] bg-muted rounded-lg mb-3" />
+                      <div className="h-4 bg-muted rounded w-1/3 mb-2" />
+                      <div className="h-5 bg-muted rounded w-3/4 mb-2" />
+                      <div className="h-4 bg-muted rounded w-full" />
+                    </div>
+                  </div>
+                ) : blogPosts.length === 0 ? (
+                  <Card className="border-border shadow-soft">
+                    <CardContent className="p-6 text-center text-muted-foreground text-sm">
+                      {t("blog.empty")}
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Carousel
+                    opts={{ align: "start", loop: true }}
+                    setApi={setBlogCarouselApi}
+                    className="w-full"
+                  >
+                    <CarouselContent className="-ml-4">
+                      {blogPosts.map((post) => {
+                        const title = localized(post.title_en, post.title_el);
+                        const excerpt = localized(post.excerpt_en, post.excerpt_el);
+                        return (
+                          <CarouselItem key={post.id} className="pl-4 basis-full">
+                            <Link to={`/blog/${post.slug}`} className="group block h-full">
+                              <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col border-border/60">
+                                {post.cover_image_url ? (
+                                  <div className="aspect-[16/9] overflow-hidden bg-muted">
+                                    <img
+                                      src={post.cover_image_url}
+                                      alt={title}
+                                      loading="lazy"
+                                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="aspect-[16/9] bg-gradient-to-br from-primary/10 to-accent/20" />
+                                )}
+                                <div className="p-4 flex flex-col flex-1">
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <Badge variant="secondary" className="capitalize text-xs">
+                                      {t(`blog.categories.${post.category}`)}
+                                    </Badge>
+                                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      {post.reading_minutes} {t("blog.minRead")}
+                                    </span>
+                                  </div>
+                                  <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                                    {title}
+                                  </h3>
+                                  {excerpt && (
+                                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2 flex-1">
+                                      {excerpt}
+                                    </p>
+                                  )}
+                                  <p className="text-xs text-muted-foreground mt-3">
+                                    {formatBlogDate(post.published_at)}
+                                  </p>
+                                </div>
+                              </Card>
+                            </Link>
+                          </CarouselItem>
+                        );
+                      })}
+                    </CarouselContent>
+                    <div className="flex items-center justify-center gap-3 mt-4">
+                      <CarouselPrevious className="static translate-x-0 translate-y-0 h-7 w-7" />
+                      <CarouselNext className="static translate-x-0 translate-y-0 h-7 w-7" />
+                    </div>
+                  </Carousel>
+                )}
+              </div>
 
 
 
