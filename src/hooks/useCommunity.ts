@@ -620,8 +620,8 @@ export const useCommunity = () => {
         });
 
       toast({
-        title: "Marked as helpful!",
-        description: "Thanks for letting us know this helped you.",
+        title: "Liked!",
+        description: "Thanks for liking this question.",
       });
     }
   }, [user, toast]);

@@ -29,7 +29,7 @@ import {
   Bookmark,
   Eye,
   MessageCircle,
-  CheckCircle2,
+  Heart,
   AlertTriangle,
   AlertCircle,
   Users,
@@ -224,8 +224,8 @@ const Community = () => {
                     {question.answer_count || 0}
                   </span>
                   <span className="flex items-center gap-1 hidden sm:flex">
-                    <CheckCircle2 className="w-4 h-4" />
-                    {question.helped_count} {t('community.helped')}
+                    <Heart className="w-4 h-4" />
+                    {question.helped_count}
                   </span>
                   <span className="hidden xs:inline">
                     {formatRelative(question.created_at)}
