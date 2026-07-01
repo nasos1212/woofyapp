@@ -756,16 +756,15 @@ const BusinessSettings = () => {
           {/* Close account */}
           <Card className="mt-8 border-destructive/30">
             <CardHeader>
-              <CardTitle className="text-base">Close this business account</CardTitle>
+              <CardTitle className="text-base">{t("businessSettings.closeAccountTitle")}</CardTitle>
               <CardDescription>
-                For partner accounts we close things manually so customer redemptions, active offers and
-                analytics tied to your business are handled correctly. Email us and we'll take care of it.
+                {t("businessSettings.closeAccountDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button asChild variant="outline">
                 <a href="mailto:hello@wooffy.app?subject=Business%20account%20closure%20request">
-                  Contact support
+                  {t("businessSettings.contactSupport")}
                 </a>
               </Button>
             </CardContent>

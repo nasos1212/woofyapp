@@ -1712,7 +1712,10 @@
     "toastLocationsSaved": "Locations saved successfully",
     "toastLocationsSaveFailed": "Failed to save locations",
     "toastLoadFailed": "Failed to load business data",
-    "photoAlt": "Business photo"
+    "photoAlt": "Business photo",
+    "closeAccountTitle": "Close this business account",
+    "closeAccountDesc": "For partner accounts we close things manually so customer redemptions, active offers and analytics tied to your business are handled correctly. Email us and we'll take care of it.",
+    "contactSupport": "Contact support"
   },
   "businessProfile": {
     "pageTitleSuffix": "Wooffy Partner",
