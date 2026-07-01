@@ -33,21 +33,21 @@ const LatestFromBlog = () => {
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-              {t("blog.latest")}
-            </h2>
-            <p className="text-muted-foreground mt-2 max-w-2xl">
-              {t("blog.latestSubtitle")}
-            </p>
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+            {t("blog.latest")}
+          </h2>
+          <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
+            {t("blog.latestSubtitle")}
+          </p>
+          <div className="mt-6">
+            <Link to="/blog">
+              <Button variant="outline" className="gap-2">
+                {t("blog.viewAll")}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
           </div>
-          <Link to="/blog">
-            <Button variant="outline" className="gap-2">
-              {t("blog.viewAll")}
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
