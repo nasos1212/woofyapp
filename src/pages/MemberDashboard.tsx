@@ -545,73 +545,93 @@ const MemberDashboard = () => {
                 </div>
               </div>
 
-              {/* Your Pets - Most Important */}
-              <div className="bg-card rounded-2xl p-4 sm:p-6 lg:p-8 shadow-soft border border-border">
-                <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h3 className="font-display text-lg sm:text-xl font-bold text-foreground flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-lg sm:text-xl">🐾</span>
-                    </div>
-                    {t("memberDashboard.pets.title")}
-                  </h3>
-{membership && pets.length < membership.max_pets && (
-                    <Link to="/member/add-pet">
-                      <Button variant="outline" size="sm" className="gap-1.5">
+              {/* My Pets */}
+              <Card className="relative overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+                <CardContent className="relative p-6 md:p-8">
+                  <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
+                    <h2 className="font-display text-lg md:text-xl font-bold text-wooffy-sky">
+                      {t("memberDashboard.pets.title")}
+                    </h2>
+                    {membership && pets.length < membership.max_pets && (
+                      <Button
+                        size="sm"
+                        onClick={() => navigate("/member/add-pet")}
+                        className="gap-1"
+                      >
                         <PlusCircle className="w-4 h-4" />
-                        <span className="hidden sm:inline">{t("memberDashboard.pets.addPet")}</span>
-                        <span className="sm:hidden">{t("memberDashboard.pets.add")}</span>
+                        {t("memberDashboard.pets.addPet")}
                       </Button>
-                    </Link>
-                  )}
-                </div>
-                {pets.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    {pets.map((pet) => (
-                      <Link key={pet.id} to={`/member/pet/${pet.id}`}>
-                        <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-5 bg-muted/40 rounded-xl hover:shadow-md transition-all cursor-pointer border border-border hover:border-primary/30">
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-full flex items-center justify-center text-2xl sm:text-3xl shrink-0 overflow-hidden">
-                            {pet.photo_url ? (
-                              <img src={pet.photo_url} alt={pet.pet_name} className="w-full h-full object-cover" />
-                            ) : (
-                              getPetTypeEmoji(pet.pet_type)
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-foreground text-base sm:text-lg truncate">{pet.pet_name}</p>
-                            <p className="text-xs sm:text-sm text-muted-foreground truncate">{pet.pet_breed || t("memberDashboard.pets.mixedBreed")}</p>
-                          </div>
-                          <div className="text-muted-foreground text-lg sm:text-xl shrink-0">→</div>
-                        </div>
-                      </Link>
-                    ))}
+                    )}
                   </div>
-                ) : (
-                  <div className="text-center py-6 sm:py-8 bg-muted/40 rounded-xl border border-border">
-                    <div className="text-4xl sm:text-5xl mb-3">🐾</div>
-                    <p className="text-muted-foreground text-base sm:text-lg">{t("memberDashboard.pets.empty")}</p>
-                  </div>
-                )}
-                
-                {/* Upgrade prompt when at max pets but not on highest plan (Pack Leader / family) */}
-                {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
-                  <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-amber-100 rounded-xl border border-primary/20">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center shrink-0">
-                        <Sparkles className="w-5 h-5 text-primary" />
+
+                  {pets.length === 0 ? (
+                    <div className="rounded-xl border border-wooffy-blue/15 py-8 text-center">
+                      <div className="w-14 h-14 rounded-full bg-wooffy-blue/10 flex items-center justify-center mx-auto mb-3">
+                        <Dog className="w-7 h-7 text-wooffy-sky" />
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground text-sm">{t("memberDashboard.pets.anotherFriend")}</p>
-                        <p className="text-xs text-muted-foreground">{t("memberDashboard.pets.upgradePrompt")}</p>
-                      </div>
-                      <Link to="/member/upgrade">
-                        <Button size="sm" variant="hero" className="shrink-0">
-                          {t("memberDashboard.pets.upgrade")}
-                        </Button>
-                      </Link>
+                      <p className="text-sm text-wooffy-light/70 max-w-md mx-auto">
+                        {t("memberDashboard.pets.empty")}
+                      </p>
                     </div>
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {pets.map((pet) => (
+                        <button
+                          key={pet.id}
+                          onClick={() => navigate(`/member/pet/${pet.id}`)}
+                          className="text-left rounded-xl border border-wooffy-blue/20 bg-wooffy-dark/60 hover:bg-wooffy-dark/80 hover:shadow-md hover:border-wooffy-blue/40 transition-all p-4 flex items-center gap-4"
+                        >
+                          {pet.photo_url ? (
+                            <img
+                              src={pet.photo_url}
+                              alt={pet.pet_name}
+                              className="w-14 h-14 rounded-full object-cover border-2 border-wooffy-blue/30"
+                            />
+                          ) : (
+                            <div className="w-14 h-14 rounded-full bg-wooffy-blue/10 flex items-center justify-center border-2 border-wooffy-blue/20">
+                              {pet.pet_type === 'cat' ? (
+                                <Cat className="w-6 h-6 text-wooffy-sky" />
+                              ) : (
+                                <Dog className="w-6 h-6 text-wooffy-sky" />
+                              )}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-wooffy-sky truncate">{pet.pet_name}</h3>
+                            <p className="text-sm text-wooffy-light/70 truncate">
+                              {pet.pet_breed || t("memberDashboard.pets.mixedBreed")}
+                            </p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-wooffy-light/50 shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Upgrade prompt when at max pets but not on highest plan */}
+                  {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
+                    <div className="mt-5 p-4 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <div className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center shrink-0">
+                          <Sparkles className="w-5 h-5 text-wooffy-sky" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-wooffy-sky text-sm">{t("memberDashboard.pets.anotherFriend")}</p>
+                          <p className="text-xs text-wooffy-light/70">{t("memberDashboard.pets.upgradePrompt")}</p>
+                        </div>
+                        <Link to="/member/upgrade">
+                          <Button size="sm" variant="hero" className="shrink-0">
+                            {t("memberDashboard.pets.upgrade")}
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
 
               {/* Nearby Offers */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
