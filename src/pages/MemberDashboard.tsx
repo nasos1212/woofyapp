@@ -704,7 +704,8 @@ const MemberDashboard = () => {
             </div>
 
             {/* Right Column - Quick Access & Activity */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
+
 
               {/* Quick Access - New Features */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
@@ -767,7 +768,8 @@ const MemberDashboard = () => {
               </div>
 
               {/* Blog Carousel */}
-              <div>
+              <div className="min-w-0 overflow-hidden">
+
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                     {t("blog.discoverCardTitle")}
