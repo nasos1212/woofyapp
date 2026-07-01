@@ -768,7 +768,8 @@ const MemberDashboard = () => {
               </div>
 
               {/* Blog Carousel */}
-              <div>
+              <div className="min-w-0 overflow-hidden">
+
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                     {t("blog.discoverCardTitle")}
