@@ -2028,7 +2028,10 @@
     "toasts": {
       "profileUpdated": "Profile updated successfully!",
       "profileUpdateFailed": "Failed to update profile"
-    }
+    },
+    "closeAccountTitle": "Close this shelter account",
+    "closeAccountDesc": "For shelter accounts we close things manually so adoption inquiries and adoptable-pet listings tied to your shelter are handled correctly. Email us and we'll take care of it.",
+    "contactSupport": "Contact support"
   },
   "shelterProfile": {
     "notFound": "Shelter Not Found",
