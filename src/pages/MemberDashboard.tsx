@@ -704,7 +704,8 @@ const MemberDashboard = () => {
             </div>
 
             {/* Right Column - Quick Access & Activity */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
+
 
               {/* Quick Access - New Features */}
               <div className="bg-white rounded-2xl p-6 shadow-soft">
