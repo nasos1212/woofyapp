@@ -380,7 +380,7 @@
     "copyright": "© 2026 Wooffy. Μια προσπάθεια να ενώσουμε τους λάτρεις κατοικιδίων σε όλη την Κύπρο. 💫",
     "emailCopied": "Το email αντιγράφηκε!",
     "country": "Κύπρος",
-    "blog": "Άρθρα"
+    "blog": "Wooffy Blog"
   },
   "auth": {
     "welcomeToastTitle": "Γεια σου, {{name}}! 👋",
@@ -2968,7 +2968,7 @@
     "prev": "Προηγούμενο",
     "next": "Επόμενο",
     "back": "Πίσω",
-    "backToBlog": "Πίσω στο ιστολόγιο",
+    "backToBlog": "Πίσω στο Wooffy Blog",
     "notFound": "Το άρθρο δεν βρέθηκε",
     "share": "Κοινοποίηση",
     "linkCopied": "Ο σύνδεσμος αντιγράφηκε",
@@ -2980,7 +2980,7 @@
     "latest": "Wooffy Blog",
     "latestSubtitle": "Συμβουλές, ιστορίες και συνεντεύξεις από την κοινότητά μας.",
     "viewAll": "Δείτε όλα τα άρθρα",
-    "discoverCardTitle": "Διαβάστε το blog μας",
+    "discoverCardTitle": "Διαβάστε το Wooffy Blog μας",
     "discoverCardSubtitle": "Συμβουλές, ιστορίες και συνεντεύξεις συνεργατών",
     "categories": {
       "all": "Όλα",
@@ -2991,7 +2991,7 @@
     }
   },
   "blogAdmin": {
-    "title": "Άρθρα",
+    "title": "Wooffy Blog",
     "subtitle": "Διαχείριση άρθρων και συνεντεύξεων",
     "newPost": "Νέο άρθρο",
     "editPost": "Επεξεργασία άρθρου",

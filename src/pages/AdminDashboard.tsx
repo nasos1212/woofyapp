@@ -220,7 +220,7 @@ const AdminDashboard = () => {
             </TabsTrigger>
             <TabsTrigger value="blog" className="gap-1">
               <FileText className="w-4 h-4" />
-              Blog
+              Wooffy Blog
             </TabsTrigger>
             <TabsTrigger value="deletions" className="gap-1">
               <Trash2 className="w-4 h-4" />

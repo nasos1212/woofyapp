@@ -380,7 +380,7 @@
     "copyright": "© 2026 Wooffy. An effort to unite pet lovers all over Cyprus. 💫",
     "emailCopied": "Email copied to clipboard!",
     "country": "Cyprus",
-    "blog": "Blog"
+    "blog": "Wooffy Blog"
   },
   "auth": {
     "welcomeToastTitle": "Hello {{name}}! 👋",
@@ -2968,7 +2968,7 @@
     "prev": "Previous",
     "next": "Next",
     "back": "Back",
-    "backToBlog": "Back to blog",
+    "backToBlog": "Back to Wooffy Blog",
     "notFound": "Post not found",
     "share": "Share",
     "linkCopied": "Link copied",
@@ -2980,7 +2980,7 @@
     "latest": "Wooffy Blog",
     "latestSubtitle": "Tips, stories and interviews from our community of pet lovers and partners.",
     "viewAll": "View all articles",
-    "discoverCardTitle": "Read our blog",
+    "discoverCardTitle": "Read our Wooffy Blog",
     "discoverCardSubtitle": "Tips, stories and partner interviews",
     "categories": {
       "all": "All",
@@ -2991,7 +2991,7 @@
     }
   },
   "blogAdmin": {
-    "title": "Blog",
+    "title": "Wooffy Blog",
     "subtitle": "Manage articles and partner interviews",
     "newPost": "New post",
     "editPost": "Edit post",
