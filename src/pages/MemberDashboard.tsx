@@ -112,6 +112,11 @@ const MemberDashboard = () => {
   });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   const [showAllServices, setShowAllServices] = useState(false);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
+  const [blogCarouselApi, setBlogCarouselApi] = useState<CarouselApi | null>(null);
+
+  
 
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
