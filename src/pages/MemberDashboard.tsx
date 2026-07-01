@@ -112,6 +112,33 @@ const MemberDashboard = () => {
   });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
   const [showAllServices, setShowAllServices] = useState(false);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogLoading, setBlogLoading] = useState(true);
+  const [blogCarouselApi, setBlogCarouselApi] = useState<CarouselApi | null>(null);
+
+  // Auto-advance blog carousel every 6 seconds
+  useEffect(() => {
+    if (!blogCarouselApi) return;
+    const interval = setInterval(() => {
+      blogCarouselApi.scrollNext();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [blogCarouselApi]);
+
+  // Fetch latest blog posts
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(5);
+      if (!error && data) setBlogPosts(data as unknown as BlogPost[]);
+      setBlogLoading(false);
+    };
+    fetchBlog();
+  }, []);
 
   
   const { pendingPrompts, dismissPrompt, refetch: refetchPrompts } = useRatingPrompts();
