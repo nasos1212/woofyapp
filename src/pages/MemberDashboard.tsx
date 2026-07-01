@@ -327,6 +327,31 @@ const MemberDashboard = () => {
     fetchNearbyOffers();
   }, [profile?.preferred_city]);
 
+  // Fetch latest blog posts
+  useEffect(() => {
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select("*")
+        .eq("status", "published")
+        .lte("published_at", new Date().toISOString())
+        .order("published_at", { ascending: false })
+        .limit(5);
+      if (!error && data) setBlogPosts(data as unknown as BlogPost[]);
+      setBlogLoading(false);
+    };
+    load();
+  }, []);
+
+  // Auto-advance blog carousel every 6 seconds
+  useEffect(() => {
+    if (!blogCarouselApi) return;
+    const interval = setInterval(() => {
+      blogCarouselApi.scrollNext();
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [blogCarouselApi]);
+
   const handleCityChange = async (city: string) => {
     if (!user) return;
     setIsSavingCity(true);
