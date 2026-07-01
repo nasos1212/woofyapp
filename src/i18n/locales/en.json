@@ -928,7 +928,7 @@
     "premium": "Premium",
     "disclaimer": "Community advice is not a substitute for professional veterinary care. For emergencies, contact your vet immediately.",
     "important": "Important:",
-    "helped": "helped",
+    "helped": "like this",
     "ask": {
       "pageTitle": "Ask the Community | Wooffy",
       "metaDescription": "Ask a question to the Wooffy community of pet owners.",
@@ -2903,7 +2903,7 @@
     "anonymousAnswer": "Post anonymously",
     "anonymousAnswerHint": "Your name and avatar will be hidden",
     "backToCommunity": "Back to Community",
-    "thisHelpedMe": "This helped me",
+    "thisHelpedMe": "Like",
     "helped": "Like",
     "follow": "Follow",
     "unfollow": "Unfollow",
