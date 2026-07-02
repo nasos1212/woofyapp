@@ -1244,16 +1244,16 @@ const PetHealthRecords = () => {
 
               {/* Tabs */}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-4 w-full flex h-auto gap-1 p-1">
-                  <TabsTrigger value="reminders" className="flex-1 text-xs sm:text-sm gap-1">
-                    <Bell className="w-3 h-3" /> {t("petHealth.tabs.reminders")}
+                <TabsList className="mb-4 w-full grid grid-cols-2 sm:grid-cols-4 h-auto gap-1 p-1">
+                  <TabsTrigger value="reminders" className="text-xs sm:text-sm gap-1 whitespace-normal break-words leading-tight py-2 min-w-0">
+                    <Bell className="w-3 h-3 shrink-0" /> <span className="truncate">{t("petHealth.tabs.reminders")}</span>
                     {reminders.length > 0 && (
-                      <Badge variant="secondary" className="ml-1 text-xs">{reminders.length}</Badge>
+                      <Badge variant="secondary" className="ml-1 text-xs shrink-0">{reminders.length}</Badge>
                     )}
                   </TabsTrigger>
-                  <TabsTrigger value="all" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.all")}</TabsTrigger>
-                  <TabsTrigger value="vaccination" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.vaccines")}</TabsTrigger>
-                  <TabsTrigger value="medication" className="flex-1 text-xs sm:text-sm">{t("petHealth.tabs.meds")}</TabsTrigger>
+                  <TabsTrigger value="all" className="text-xs sm:text-sm whitespace-normal break-words leading-tight py-2 min-w-0">{t("petHealth.tabs.all")}</TabsTrigger>
+                  <TabsTrigger value="vaccination" className="text-xs sm:text-sm whitespace-normal break-words leading-tight py-2 min-w-0">{t("petHealth.tabs.vaccines")}</TabsTrigger>
+                  <TabsTrigger value="medication" className="text-xs sm:text-sm whitespace-normal break-words leading-tight py-2 min-w-0">{t("petHealth.tabs.meds")}</TabsTrigger>
                 </TabsList>
 
                 {/* Reminders Tab */}
