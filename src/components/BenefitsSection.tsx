@@ -18,7 +18,7 @@ const BenefitsSection = () => {
 
   const premiumFeatures = [
     { key: "discounts", emoji: "💰" },
-    { key: "ai", emoji: "🤖" },
+    { key: "birthday", emoji: "🎁" },
   ];
 
   return (
