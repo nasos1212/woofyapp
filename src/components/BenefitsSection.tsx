@@ -13,6 +13,7 @@ const BenefitsSection = () => {
     { key: "community", emoji: "💬" },
     { key: "profiles", emoji: "🐾" },
     { key: "health", emoji: "🏥" },
+    { key: "partners", emoji: "🏪" },
   ];
 
   const premiumFeatures = [
