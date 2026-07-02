@@ -16,6 +16,7 @@ const PricingSection = () => {
     t("benefits.free.lostFound.title"),
     t("benefits.free.directory.title"),
     t("benefits.free.community.title"),
+    t("benefits.free.partners.title"),
   ];
 
   const plans = [
