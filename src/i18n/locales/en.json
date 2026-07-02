@@ -102,9 +102,9 @@
         "title": "Exclusive Discounts",
         "desc": "Save at pet shops, trainers, groomers, hotels and more with your membership card."
       },
-      "ai": {
-        "title": "AI Health Assistant",
-        "desc": "Get instant guidance on pet health questions powered by AI, available 24/7."
+      "birthday": {
+        "title": "Pet Birthday Offers",
+        "desc": "Get exclusive birthday treats and discounts from partner businesses for your pet's special day."
       }
     }
   },
