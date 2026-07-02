@@ -91,6 +91,10 @@
       "health": {
         "title": "Pet Health Records",
         "desc": "Track vaccinations, appointments and vet visits with smart reminders."
+      },
+      "partners": {
+        "title": "Trusted Partners",
+        "desc": "Find trusted pet shops, vets, groomers, trainers and more in our partner directory."
       }
     },
     "premium": {
