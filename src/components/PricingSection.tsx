@@ -13,10 +13,10 @@ const PricingSection = () => {
   const freeFeatures = [
     t("benefits.free.profiles.title"),
     t("benefits.free.health.title"),
+    t("benefits.free.partners.title"),
     t("benefits.free.lostFound.title"),
     t("benefits.free.directory.title"),
     t("benefits.free.community.title"),
-    t("benefits.free.partners.title"),
   ];
 
   const plans = [
