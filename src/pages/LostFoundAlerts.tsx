@@ -922,22 +922,17 @@ const LostFoundAlerts = () => {
                         <div className="grid grid-cols-3 gap-3 mb-2">
                           {petPhotoPreviews.map((preview, index) => (
                             <div key={index} className="relative group">
-                              {/* Square photo frame */}
-                              <div 
-                                className="relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 border-border shadow-sm hover:shadow-md transition-shadow bg-muted"
-                                onClick={() => setEditingPhotoIndex(editingPhotoIndex === index ? null : index)}
-                              >
+                              <div className="relative aspect-square rounded-xl overflow-hidden border-2 border-border shadow-sm bg-muted">
                                 <img
                                   src={preview}
                                   alt={`Photo ${index + 1}`}
                                   className="w-full h-full object-cover"
-                                  style={{ objectPosition: `center ${photoPositions[index] ?? 50}%` }}
                                 />
                                 <Button
                                   type="button"
                                   variant="destructive"
                                   size="icon"
-                                  className="absolute top-1.5 right-1.5 h-6 w-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                                  className="absolute top-1.5 right-1.5 h-6 w-6 z-10 shadow-md"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     removePhoto(index);
@@ -950,93 +945,9 @@ const LostFoundAlerts = () => {
                                     {t("lostFound.form.photoMain")}
                                   </span>
                                 )}
-                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                                  <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                    {editingPhotoIndex === index ? t("lostFound.form.photoClose") : t("lostFound.form.photoAdjust")}
-                                  </span>
-                                </div>
                               </div>
                             </div>
                           ))}
-                        </div>
-                      )}
-
-                      {/* Position adjuster - shown below the grid when editing */}
-                      {editingPhotoIndex !== null && petPhotoPreviews[editingPhotoIndex] && (
-                        <div className="p-4 bg-muted/50 border rounded-xl mb-2">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-12 h-12 rounded-lg overflow-hidden border-2 border-primary flex-shrink-0">
-                              <img
-                                src={petPhotoPreviews[editingPhotoIndex]}
-                                alt="Editing"
-                                className="w-full h-full object-cover"
-                                style={{ objectPosition: `center ${photoPositions[editingPhotoIndex] ?? 50}%` }}
-                              />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <Label className="text-sm font-medium">{t("lostFound.form.adjustPhoto", { n: editingPhotoIndex + 1 })}</Label>
-                                <span className="text-xs text-muted-foreground bg-background px-2 py-0.5 rounded">{photoPositions[editingPhotoIndex]}%</span>
-                              </div>
-                              <p className="text-xs text-muted-foreground">{t("lostFound.form.adjustHint")}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => {
-                                setPhotoPositions((prev) => {
-                                  const newPositions = [...prev];
-                                  newPositions[editingPhotoIndex] = Math.max(0, (newPositions[editingPhotoIndex] ?? 50) - 10);
-                                  return newPositions;
-                                });
-                              }}
-                            >
-                              <ChevronUp className="w-4 h-4" />
-                            </Button>
-                            <input
-                              type="range"
-                              min="0"
-                              max="100"
-                              value={photoPositions[editingPhotoIndex] ?? 50}
-                              onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                setPhotoPositions((prev) => {
-                                  const newPositions = [...prev];
-                                  newPositions[editingPhotoIndex] = value;
-                                  return newPositions;
-                                });
-                              }}
-                              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="h-8 w-8"
-                              onClick={() => {
-                                setPhotoPositions((prev) => {
-                                  const newPositions = [...prev];
-                                  newPositions[editingPhotoIndex] = Math.min(100, (newPositions[editingPhotoIndex] ?? 50) + 10);
-                                  return newPositions;
-                                });
-                              }}
-                            >
-                              <ChevronDown className="w-4 h-4" />
-                            </Button>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="w-full mt-3 text-muted-foreground"
-                            onClick={() => setEditingPhotoIndex(null)}
-                          >
-                            {t("lostFound.form.doneAdjusting")}
-                          </Button>
                         </div>
                       )}
 
@@ -1051,12 +962,12 @@ const LostFoundAlerts = () => {
                           <input
                             type="file"
                             accept="image/*"
-                            multiple
                             onChange={handlePhotoSelect}
                             className="hidden"
                           />
                         </label>
                       )}
+
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
