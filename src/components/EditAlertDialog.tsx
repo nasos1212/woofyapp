@@ -375,6 +375,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
               }}
               max={new Date().toISOString().split('T')[0]}
               required
+              className="w-full"
             />
           </div>
 
@@ -472,14 +473,14 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
               <Label>{t("editAlert.contactPhone")}</Label>
-              <Input value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} required />
+              <Input value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} required className="mt-auto" />
             </div>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <Label>{t("editAlert.contactEmail")}</Label>
-              <Input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} />
+              <Input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} className="mt-auto" />
             </div>
           </div>
 
