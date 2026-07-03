@@ -238,54 +238,55 @@ const LostFoundAlerts = () => {
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files) return;
+    if (!files || files.length === 0) return;
 
-    const newFiles: File[] = [];
-    const newPreviews: string[] = [];
-
-    for (let i = 0; i < files.length; i++) {
-      if (petPhotos.length + newFiles.length >= MAX_PHOTOS) {
-        toast.error(t("lostFound.toasts.maxPhotos", { max: MAX_PHOTOS }));
-        break;
-      }
-
-      const file = files[i];
-
-      if (!file.type.startsWith("image/")) {
-        toast.error(t("lostFound.toasts.imagesOnly"));
-        continue;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error(t("lostFound.toasts.tooLarge", { name: file.name }));
-        continue;
-      }
-
-      newFiles.push(file);
-      newPreviews.push(URL.createObjectURL(file));
+    if (petPhotos.length >= MAX_PHOTOS) {
+      toast.error(t("lostFound.toasts.maxPhotos", { max: MAX_PHOTOS }));
+      e.target.value = "";
+      return;
     }
 
-    setPetPhotos((prev) => [...prev, ...newFiles]);
-    setPetPhotoPreviews((prev) => [...prev, ...newPreviews]);
-    setPhotoPositions((prev) => [...prev, ...newFiles.map(() => 50)]);
+    const file = files[0];
+    if (!file.type.startsWith("image/")) {
+      toast.error(t("lostFound.toasts.imagesOnly"));
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error(t("lostFound.toasts.tooLarge", { name: file.name }));
+      e.target.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCropperSrc(reader.result as string);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
     e.target.value = "";
+  };
+
+  const handleCropComplete = (blob: Blob) => {
+    const file = new File([blob], `lost-pet-photo-${Date.now()}.webp`, { type: "image/webp" });
+    const preview = URL.createObjectURL(blob);
+    setPetPhotos((prev) => [...prev, file]);
+    setPetPhotoPreviews((prev) => [...prev, preview]);
+    setCropperSrc(null);
   };
 
   const removePhoto = (index: number) => {
     URL.revokeObjectURL(petPhotoPreviews[index]);
     setPetPhotos((prev) => prev.filter((_, i) => i !== index));
     setPetPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
-    setPhotoPositions((prev) => prev.filter((_, i) => i !== index));
-    if (editingPhotoIndex === index) {
-      setEditingPhotoIndex(null);
-    }
   };
 
   const clearAllPhotos = () => {
     petPhotoPreviews.forEach((preview) => URL.revokeObjectURL(preview));
     setPetPhotos([]);
     setPetPhotoPreviews([]);
-    setPhotoPositions([]);
   };
+
 
   const handleCreateAlert = async (e: React.FormEvent) => {
     e.preventDefault();
