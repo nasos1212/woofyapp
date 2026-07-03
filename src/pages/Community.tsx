@@ -86,7 +86,7 @@ const Community = () => {
             category_id: selectedCategory !== 'all' ? selectedCategory : undefined,
             urgency: selectedUrgency !== 'all' ? selectedUrgency : undefined,
             animal_type: selectedAnimalType !== 'all' ? selectedAnimalType : undefined,
-            search: searchQuery || undefined,
+            
             sort: sortBy
           })
         ]);
