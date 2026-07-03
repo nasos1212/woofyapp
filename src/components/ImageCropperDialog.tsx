@@ -10,6 +10,7 @@ interface ImageCropperDialogProps {
   imageSrc: string;
   onCropComplete: (croppedBlob: Blob) => void;
   aspectRatio?: number; // width/height, default 1 (square)
+  circular?: boolean; // circular mask, default true
 }
 
 export function ImageCropperDialog({
@@ -18,7 +19,9 @@ export function ImageCropperDialog({
   imageSrc,
   onCropComplete,
   aspectRatio = 1,
+  circular = true,
 }: ImageCropperDialogProps) {
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
