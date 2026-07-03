@@ -897,22 +897,23 @@ const LostFoundAlerts = () => {
 
                     <div className="space-y-2">
                       <Label>{alertType === "lost" ? t("lostFound.form.lastSeenDate") : t("lostFound.form.dateFound")}</Label>
-                      <Input
-                        type="date"
-                        value={lastSeenDate}
-                        onChange={(e) => {
-                          const selectedDate = e.target.value;
-                          const today = new Date().toISOString().split('T')[0];
-                          // Prevent future dates
-                          if (selectedDate > today) {
-                            toast.error(t("lostFound.toasts.futureDate"));
-                            return;
-                          }
-                          setLastSeenDate(selectedDate);
-                        }}
-                        max={new Date().toISOString().split('T')[0]}
-                        required
-                      />
+                       <Input
+                         type="date"
+                         value={lastSeenDate}
+                         onChange={(e) => {
+                           const selectedDate = e.target.value;
+                           const today = new Date().toISOString().split('T')[0];
+                           // Prevent future dates
+                           if (selectedDate > today) {
+                             toast.error(t("lostFound.toasts.futureDate"));
+                             return;
+                           }
+                           setLastSeenDate(selectedDate);
+                         }}
+                         max={new Date().toISOString().split('T')[0]}
+                         required
+                         className="h-10 text-left [&::-webkit-date-and-time-value]:text-left [&::-webkit-date-and-time-value]:min-h-0 appearance-none"
+                       />
                     </div>
 
                     <div className="space-y-2">
