@@ -21,7 +21,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   MessageSquarePlus,
-  Search,
   Filter,
   TrendingUp,
   Clock,
