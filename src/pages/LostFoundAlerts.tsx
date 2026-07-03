@@ -1113,15 +1113,15 @@ const LostFoundAlerts = () => {
             <TabsList className="grid w-full grid-cols-3 h-auto">
               <TabsTrigger value="lost" className="gap-1.5 text-xs sm:text-sm px-1 sm:px-3 py-2 whitespace-normal leading-tight">
                 <AlertTriangle className="w-4 h-4 shrink-0 hidden sm:inline-block" />
-                <span className="truncate">{t("lostFound.tabs.lost", { count: lostAlerts.length })}</span>
+                <span className="line-clamp-2">{t("lostFound.tabs.lost", { count: lostAlerts.length })}</span>
               </TabsTrigger>
               <TabsTrigger value="found" className="gap-1.5 text-xs sm:text-sm px-1 sm:px-3 py-2 whitespace-normal leading-tight">
                 <Eye className="w-4 h-4 shrink-0 hidden sm:inline-block" />
-                <span className="truncate">{t("lostFound.tabs.found", { count: foundAlerts.length })}</span>
+                <span className="line-clamp-2">{t("lostFound.tabs.found", { count: foundAlerts.length })}</span>
               </TabsTrigger>
               <TabsTrigger value="reunited" className="gap-1.5 text-xs sm:text-sm px-1 sm:px-3 py-2 whitespace-normal leading-tight">
                 <Heart className="w-4 h-4 shrink-0 hidden sm:inline-block" />
-                <span className="truncate">{t("lostFound.tabs.reunited", { count: reunitedAlerts.length })}</span>
+                <span className="line-clamp-2">{t("lostFound.tabs.reunited", { count: reunitedAlerts.length })}</span>
               </TabsTrigger>
             </TabsList>
 
