@@ -375,6 +375,7 @@ const EditAlertDialog = ({ alert, open, onOpenChange, onSaved }: EditAlertDialog
               }}
               max={new Date().toISOString().split('T')[0]}
               required
+              className="w-full"
             />
           </div>
 
