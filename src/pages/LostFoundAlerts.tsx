@@ -1209,7 +1209,21 @@ const LostFoundAlerts = () => {
         onOpenChange={setShowEditDialog}
         onSaved={fetchAlerts}
       />
+
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) setCropperSrc(null);
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+          circular={false}
+        />
+      )}
     </>
+
   );
 };
 
