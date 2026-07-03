@@ -53,6 +53,7 @@ import { dogBreeds } from '@/data/dogBreeds';
 import { catBreeds } from '@/data/catBreeds';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 
 interface Pet {
   id: string;
