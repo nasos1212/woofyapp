@@ -102,7 +102,7 @@ const Community = () => {
     if (user) {
       loadData();
     }
-  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, selectedAnimalType, searchQuery, sortBy]);
+  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, selectedAnimalType, sortBy]);
 
   const handleSaveToggle = async (question: Question) => {
     try {
@@ -339,18 +339,8 @@ const Community = () => {
             </Select>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder={t('community.searchPlaceholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 mb-6">
               <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
                 <SelectTrigger className="w-full sm:w-40">
                   <Filter className="w-4 h-4 mr-2" />
