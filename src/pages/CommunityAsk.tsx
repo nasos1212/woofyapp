@@ -583,6 +583,21 @@ const CommunityAsk = () => {
           </Card>
         </main>
       </div>
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) {
+              setCropperSrc(null);
+              setPendingFiles([]);
+            }
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+          circular={false}
+        />
+      )}
     </>
   );
 };
