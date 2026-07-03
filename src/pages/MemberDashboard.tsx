@@ -865,6 +865,13 @@ const MemberDashboard = () => {
                         );
                       })}
                     </CarouselContent>
+                    <button
+                      onClick={() => navigate("/blog")}
+                      className="text-sm font-medium text-primary hover:underline flex items-center justify-center gap-1 mt-3 mx-auto"
+                    >
+                      {t("blog.viewAll")}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
                     <div className="flex items-center justify-center gap-3 mt-4">
                       <CarouselPrevious className="static translate-x-0 translate-y-0 h-7 w-7" />
                       <CarouselNext className="static translate-x-0 translate-y-0 h-7 w-7" />
