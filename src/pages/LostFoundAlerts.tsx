@@ -895,7 +895,7 @@ const LostFoundAlerts = () => {
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>{alertType === "lost" ? t("lostFound.form.lastSeenDate") : t("lostFound.form.dateFound")}</Label>
                         <Input
@@ -972,7 +972,7 @@ const LostFoundAlerts = () => {
 
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label>{t("lostFound.form.contactPhone")}</Label>
                         <Input
