@@ -972,22 +972,24 @@ const LostFoundAlerts = () => {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                      <div className="flex flex-col gap-2">
                         <Label>{t("lostFound.form.contactPhone")}</Label>
                         <Input
                           value={contactPhone}
                           onChange={(e) => setContactPhone(e.target.value)}
                           placeholder={t("lostFound.form.phonePlaceholder")}
                           required
+                          className="mt-auto"
                         />
                       </div>
-                      <div className="space-y-2">
+                      <div className="flex flex-col gap-2">
                         <Label>{t("lostFound.form.contactEmail")}</Label>
                         <Input
                           type="email"
                           value={contactEmail}
                           onChange={(e) => setContactEmail(e.target.value)}
                           placeholder={t("lostFound.form.emailPlaceholder")}
+                          className="mt-auto"
                         />
                       </div>
                     </div>
