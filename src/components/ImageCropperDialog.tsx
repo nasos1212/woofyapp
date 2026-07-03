@@ -164,7 +164,7 @@ export function ImageCropperDialog({
           {/* Preview */}
           <div
             ref={containerRef}
-            className="relative rounded-full overflow-hidden border-2 border-primary/30 shadow-lg cursor-grab active:cursor-grabbing"
+            className={`relative ${circular ? "rounded-full" : "rounded-xl"} overflow-hidden border-2 border-primary/30 shadow-lg cursor-grab active:cursor-grabbing`}
             style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
