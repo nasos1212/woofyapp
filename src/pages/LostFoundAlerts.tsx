@@ -121,10 +121,11 @@ const LostFoundAlerts = () => {
   const [microchipStatus, setMicrochipStatus] = useState<string>("unknown");
   const [petPhotos, setPetPhotos] = useState<File[]>([]);
   const [petPhotoPreviews, setPetPhotoPreviews] = useState<string[]>([]);
-  const [photoPositions, setPhotoPositions] = useState<number[]>([]);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [editingPhotoIndex, setEditingPhotoIndex] = useState<number | null>(null);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
   const MAX_PHOTOS = 3;
+
 
   useEffect(() => {
     fetchAlerts();
