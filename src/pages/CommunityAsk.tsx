@@ -518,13 +518,13 @@ const CommunityAsk = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
                     <Button
                       type="button"
                       variant={!isAnonymous ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setIsAnonymous(false)}
-                      className="flex-1"
+                      className="w-full"
                     >
                       {t('community.ask.showName')}
                     </Button>
@@ -533,7 +533,7 @@ const CommunityAsk = () => {
                       variant={isAnonymous ? 'default' : 'outline'}
                       size="sm"
                       onClick={() => setIsAnonymous(true)}
-                      className="flex-1"
+                      className="w-full"
                     >
                       {t('community.ask.postAnon')}
                     </Button>
