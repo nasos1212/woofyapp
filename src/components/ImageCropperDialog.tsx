@@ -75,14 +75,17 @@ export function ImageCropperDialog({
     const x = (size - w) / 2 + offset.x;
     const y = (size - h) / 2 + offset.y;
 
-    // Draw circular clip
+    // Draw with optional circular clip
     ctx.save();
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-    ctx.clip();
+    if (circular) {
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
     ctx.drawImage(img, x, y, w, h);
     ctx.restore();
-  }, [zoom, offset, imageLoaded]);
+  }, [zoom, offset, imageLoaded, circular]);
+
 
   useEffect(() => {
     draw();
