@@ -25,6 +25,8 @@ import { formatLocation, cyprusCitiesWithCoords } from "@/data/cyprusLocations";
 import { format } from "date-fns";
 import { formatRelative } from "@/lib/relativeTime";
 import EditAlertDialog from "@/components/EditAlertDialog";
+import { ImageCropperDialog } from "@/components/ImageCropperDialog";
+
 import { getBreedsByPetType } from "@/data/petBreeds";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName, getLocationDisplayName } from "@/lib/cityDisplay";
