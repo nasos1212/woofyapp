@@ -496,6 +496,7 @@ const CommunityAsk = () => {
                         <span className="text-xs text-muted-foreground mt-1">{t('community.ask.addPhoto')}</span>
                         <input
                           type="file"
+                          ref={fileInputRef}
                           accept="image/*"
                           multiple
                           onChange={handlePhotoAdd}
