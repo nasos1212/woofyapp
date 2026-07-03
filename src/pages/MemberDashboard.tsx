@@ -794,13 +794,6 @@ const MemberDashboard = () => {
                   <h2 className="font-display text-lg md:text-xl font-bold text-foreground">
                     {t("blog.discoverCardTitle")}
                   </h2>
-                  <button
-                    onClick={() => navigate("/blog")}
-                    className="text-sm font-medium text-primary hover:underline flex items-center gap-1"
-                  >
-                    {t("blog.viewAll")}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
                 </div>
 
                 {blogLoading ? (
