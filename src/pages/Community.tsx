@@ -7,7 +7,7 @@ import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -21,7 +21,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   MessageSquarePlus,
-  Search,
   Filter,
   TrendingUp,
   Clock,
@@ -65,7 +64,7 @@ const Community = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
   const [selectedAnimalType, setSelectedAnimalType] = useState<string>('all');
@@ -87,7 +86,7 @@ const Community = () => {
             category_id: selectedCategory !== 'all' ? selectedCategory : undefined,
             urgency: selectedUrgency !== 'all' ? selectedUrgency : undefined,
             animal_type: selectedAnimalType !== 'all' ? selectedAnimalType : undefined,
-            search: searchQuery || undefined,
+            
             sort: sortBy
           })
         ]);
@@ -103,7 +102,7 @@ const Community = () => {
     if (user) {
       loadData();
     }
-  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, selectedAnimalType, searchQuery, sortBy]);
+  }, [user, fetchCategories, fetchQuestions, selectedCategory, selectedUrgency, selectedAnimalType, sortBy]);
 
   const handleSaveToggle = async (question: Question) => {
     try {
@@ -340,18 +339,8 @@ const Community = () => {
             </Select>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder={t('community.searchPlaceholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 mb-6">
               <Select value={selectedUrgency} onValueChange={setSelectedUrgency}>
                 <SelectTrigger className="w-full sm:w-40">
                   <Filter className="w-4 h-4 mr-2" />
@@ -387,7 +376,6 @@ const Community = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             {/* Questions List */}
