@@ -64,7 +64,7 @@ const Community = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
   const [selectedAnimalType, setSelectedAnimalType] = useState<string>('all');
