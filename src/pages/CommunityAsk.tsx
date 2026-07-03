@@ -84,6 +84,11 @@ const CommunityAsk = () => {
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const playWarningSound = useCallback(() => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
