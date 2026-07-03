@@ -166,15 +166,15 @@
     "plans": {
       "solo": {
         "name": "Solo Paw",
-        "label": "For your one & only furball 🐾"
+        "label": "For your one & only furball"
       },
       "duo": {
         "name": "Dynamic Duo",
-        "label": "Because one buddy wasn't enough! 🐶🐱"
+        "label": "Because one buddy wasn't enough!"
       },
       "pack": {
         "name": "Pack Leader",
-        "label": "You run the zoo, we've got you 🦁"
+        "label": "You run the zoo, we've got you"
       }
     },
     "shared": {
