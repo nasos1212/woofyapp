@@ -803,22 +803,22 @@ const PetHealthAssistant = () => {
             {t("petHealthAssistantUI.back")}
           </Button>
 
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
+          <div className="mb-8">
+            <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center shrink-0">
                   <Bot className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h1 className="font-display text-xl font-bold text-foreground">
                     {t("petHealthAssistantUI.title")}
                   </h1>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground max-w-lg leading-relaxed mt-1">
                     {t("petHealthAssistantUI.subtitle")}
                   </p>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 {user && (
                   <LanguageSelector
                     currentLanguage={preferredLanguage}
@@ -838,7 +838,7 @@ const PetHealthAssistant = () => {
             </div>
 
             {pets.length > 1 && (
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-2 mt-6">
                 {pets.map((pet) => (
                   <button
                     key={pet.id}
