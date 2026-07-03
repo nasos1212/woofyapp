@@ -378,7 +378,7 @@ const LostFoundAlerts = () => {
           alert_id: alertData.id,
           photo_url: url,
           display_order: index,
-          photo_position: photoPositions[index] ?? 50,
+          photo_position: 50,
         }));
 
         await supabase.from("lost_pet_alert_photos").insert(photoInserts);
