@@ -133,10 +133,13 @@ export function ImageCropperDialog({
     const x = (outputSize - w) / 2 + offset.x * ratio;
     const y = (outputSize - h) / 2 + offset.y * ratio;
 
-    ctx.beginPath();
-    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
-    ctx.clip();
+    if (circular) {
+      ctx.beginPath();
+      ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
     ctx.drawImage(img, x, y, w, h);
+
 
     outputCanvas.toBlob(
       (blob) => {
