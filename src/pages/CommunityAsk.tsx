@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
@@ -53,6 +53,7 @@ import { dogBreeds } from '@/data/dogBreeds';
 import { catBreeds } from '@/data/catBreeds';
 import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { ImageCropperDialog } from '@/components/ImageCropperDialog';
 
 interface Pet {
   id: string;
@@ -82,6 +83,11 @@ const CommunityAsk = () => {
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
   const [isAnonymous, setIsAnonymous] = useState(false);
+
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const playWarningSound = useCallback(() => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -134,29 +140,63 @@ const CommunityAsk = () => {
     const files = Array.from(e.target.files || []);
     
     // Validate each file before adding
+    const validFiles: File[] = [];
     for (const file of files) {
       const validation = validateImageFile(file);
       if (!validation.valid) {
         toast.error(validation.error || t('community.ask.invalidFile'));
-        return;
+        continue;
       }
+      validFiles.push(file);
     }
     
-    if (photos.length + files.length > 5) {
+    if (validFiles.length === 0) {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+    
+    if (photos.length + validFiles.length > 5) {
       toast.error(t('community.ask.maxPhotos'));
+      if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
 
-    const newPhotos = [...photos, ...files].slice(0, 5);
-    setPhotos(newPhotos);
+    // Queue valid files and start processing the first one through the cropper
+    setPendingFiles(validFiles);
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCropperSrc(reader.result as string);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(validFiles[0]);
+    
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, [photos, t]);
 
-    // Create preview URLs
-    const newUrls = newPhotos.map(file => URL.createObjectURL(file));
-    setPhotoPreviewUrls(prev => {
-      prev.forEach(url => URL.revokeObjectURL(url));
-      return newUrls;
+  const handleCropComplete = useCallback((blob: Blob) => {
+    const timestamp = Date.now();
+    const file = new File([blob], `question-photo-${timestamp}.webp`, { type: 'image/webp' });
+    const previewUrl = URL.createObjectURL(blob);
+    
+    setPhotos(prev => [...prev, file]);
+    setPhotoPreviewUrls(prev => [...prev, previewUrl]);
+    
+    setPendingFiles(prev => {
+      const remaining = prev.slice(1);
+      if (remaining.length > 0) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setCropperSrc(reader.result as string);
+          setShowCropper(true);
+        };
+        reader.readAsDataURL(remaining[0]);
+      } else {
+        setCropperSrc(null);
+      }
+      return remaining;
     });
-  }, [photos]);
+  }, []);
 
   const handlePhotoRemove = useCallback((index: number) => {
     const newPhotos = photos.filter((_, i) => i !== index);
@@ -456,6 +496,7 @@ const CommunityAsk = () => {
                         <span className="text-xs text-muted-foreground mt-1">{t('community.ask.addPhoto')}</span>
                         <input
                           type="file"
+                          ref={fileInputRef}
                           accept="image/*"
                           multiple
                           onChange={handlePhotoAdd}
@@ -542,6 +583,21 @@ const CommunityAsk = () => {
           </Card>
         </main>
       </div>
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) {
+              setCropperSrc(null);
+              setPendingFiles([]);
+            }
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+          circular={false}
+        />
+      )}
     </>
   );
 };
