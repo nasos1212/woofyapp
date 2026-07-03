@@ -320,27 +320,27 @@ const Community = () => {
             </Button>
           </div>
 
-          {/* Category Pills */}
-          <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-            <Button
-              variant={selectedCategory === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedCategory('all')}
-              className="shrink-0"
-            >
-              {t('community.allCategories')}
-            </Button>
-            {categories.map(cat => (
-              <Button
-                key={cat.id}
-                variant={selectedCategory === cat.id ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedCategory(cat.id)}
-                className="shrink-0"
-              >
-                {cat.icon} {t(`community.categories.${cat.slug}`, cat.name)}
-              </Button>
-            ))}
+          {/* Category Dropdown */}
+          <div className="mb-6">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-full">
+                <Filter className="w-4 h-4 mr-2 shrink-0 text-muted-foreground" />
+                <SelectValue placeholder={t('community.allCategories')} />
+              </SelectTrigger>
+              <SelectContent className="max-h-[60vh]">
+                <SelectItem value="all">
+                  {t('community.allCategories')}
+                </SelectItem>
+                {categories.map(cat => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    <span className="flex items-center gap-2">
+                      <span>{cat.icon}</span>
+                      {t(`community.categories.${cat.slug}`, cat.name)}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Search and Filters */}
