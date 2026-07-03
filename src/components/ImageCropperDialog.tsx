@@ -10,6 +10,7 @@ interface ImageCropperDialogProps {
   imageSrc: string;
   onCropComplete: (croppedBlob: Blob) => void;
   aspectRatio?: number; // width/height, default 1 (square)
+  circular?: boolean; // circular mask, default true
 }
 
 export function ImageCropperDialog({
@@ -18,7 +19,9 @@ export function ImageCropperDialog({
   imageSrc,
   onCropComplete,
   aspectRatio = 1,
+  circular = true,
 }: ImageCropperDialogProps) {
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -72,14 +75,17 @@ export function ImageCropperDialog({
     const x = (size - w) / 2 + offset.x;
     const y = (size - h) / 2 + offset.y;
 
-    // Draw circular clip
+    // Draw with optional circular clip
     ctx.save();
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-    ctx.clip();
+    if (circular) {
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
     ctx.drawImage(img, x, y, w, h);
     ctx.restore();
-  }, [zoom, offset, imageLoaded]);
+  }, [zoom, offset, imageLoaded, circular]);
+
 
   useEffect(() => {
     draw();
@@ -127,10 +133,13 @@ export function ImageCropperDialog({
     const x = (outputSize - w) / 2 + offset.x * ratio;
     const y = (outputSize - h) / 2 + offset.y * ratio;
 
-    ctx.beginPath();
-    ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
-    ctx.clip();
+    if (circular) {
+      ctx.beginPath();
+      ctx.arc(outputSize / 2, outputSize / 2, outputSize / 2, 0, Math.PI * 2);
+      ctx.clip();
+    }
     ctx.drawImage(img, x, y, w, h);
+
 
     outputCanvas.toBlob(
       (blob) => {
@@ -155,7 +164,7 @@ export function ImageCropperDialog({
           {/* Preview */}
           <div
             ref={containerRef}
-            className="relative rounded-full overflow-hidden border-2 border-primary/30 shadow-lg cursor-grab active:cursor-grabbing"
+            className={`relative ${circular ? "rounded-full" : "rounded-xl"} overflow-hidden border-2 border-primary/30 shadow-lg cursor-grab active:cursor-grabbing`}
             style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
