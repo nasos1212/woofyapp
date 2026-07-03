@@ -333,10 +333,7 @@ const Community = () => {
                 </SelectItem>
                 {categories.map(cat => (
                   <SelectItem key={cat.id} value={cat.id}>
-                    <span className="flex items-center gap-2">
-                      <span>{cat.icon}</span>
-                      {t(`community.categories.${cat.slug}`, cat.name)}
-                    </span>
+                    {`${cat.icon ?? ''} ${t(`community.categories.${cat.slug}`, cat.name)}`.trim()}
                   </SelectItem>
                 ))}
               </SelectContent>
