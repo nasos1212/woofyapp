@@ -417,7 +417,9 @@ const LostFoundAlerts = () => {
     setContactEmail("");
     setRewardOffered("");
     setMicrochipStatus("unknown");
-    setEditingPhotoIndex(null);
+    setCropperSrc(null);
+    setShowCropper(false);
+
     clearAllPhotos();
   };
 
