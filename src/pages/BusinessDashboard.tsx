@@ -1147,7 +1147,7 @@ const BusinessDashboard = () => {
                   </Link>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[520px]">
                     <thead>
                       <tr className="border-b border-slate-200">
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.customer")}</th>
