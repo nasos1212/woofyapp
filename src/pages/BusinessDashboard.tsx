@@ -1146,50 +1146,45 @@ const BusinessDashboard = () => {
                     {t("businessDashboard.recent.viewAll")}
                   </Link>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[520px]">
-                    <thead>
-                      <tr className="border-b border-slate-200">
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.customer")}</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.pet")}</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.offer")}</th>
-                        <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.time")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {recentRedemptions.length === 0 ? (
-                        <tr>
-                          <td colSpan={4} className="py-8 text-center text-slate-500">
-                            {t("businessDashboard.recent.empty")}
-                          </td>
-                        </tr>
-                      ) : (
-                        recentRedemptions.map((redemption) => (
-                          <tr key={redemption.id} className="border-b border-slate-100 last:border-0">
-                            <td className="py-3 px-2">
-                              <div>
-                                <p className="font-medium text-slate-900">
-                                  {redemption.member_name || t("businessDashboard.recent.customerFallback")}
-                                </p>
-                                <p className="text-xs text-slate-500 font-mono">
-                                  {redemption.member_number || (redemption.isBirthday ? t("businessDashboard.recent.birthdayLabel") : t("businessDashboard.recent.na"))}
-                                </p>
-                              </div>
-                            </td>
-                            <td className="py-3 px-2 text-slate-600">
-                              {redemption.pet_names || t("businessDashboard.recent.na")}
-                            </td>
-                            <td className="py-3 px-2 text-slate-600">
-                              {redemption.offer?.title || t("businessDashboard.recent.na")}
-                            </td>
-                            <td className="py-3 px-2 text-slate-500 text-sm">
-                              {formatTimeAgo(redemption.redeemed_at)}
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
+                <div className="space-y-3">
+                  {recentRedemptions.length === 0 ? (
+                    <div className="py-8 text-center text-slate-500">
+                      {t("businessDashboard.recent.empty")}
+                    </div>
+                  ) : (
+                    recentRedemptions.map((redemption) => (
+                      <div key={redemption.id} className="flex flex-col gap-1 py-3 px-1 border-b border-slate-100 last:border-0">
+                        {/* Line 1: Customer + Member number | Time */}
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-semibold text-slate-900 text-sm truncate">
+                              {redemption.member_name || t("businessDashboard.recent.customerFallback")}
+                            </span>
+                            <span className="text-xs text-slate-400 font-mono shrink-0">
+                              {redemption.member_number || (redemption.isBirthday ? t("businessDashboard.recent.birthdayLabel") : t("businessDashboard.recent.na"))}
+                            </span>
+                          </div>
+                          <span className="text-xs text-slate-400 shrink-0">
+                            {formatTimeAgo(redemption.redeemed_at)}
+                          </span>
+                        </div>
+                        {/* Line 2: Offer + Pet */}
+                        <div className="flex items-center gap-1.5 text-sm text-slate-600 min-w-0">
+                          <span className="truncate">
+                            {redemption.offer?.title || t("businessDashboard.recent.na")}
+                          </span>
+                          {redemption.pet_names && (
+                            <>
+                              <span className="text-slate-300 shrink-0">·</span>
+                              <span className="text-slate-500 truncate shrink-1">
+                                {redemption.pet_names}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
