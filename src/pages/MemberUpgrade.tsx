@@ -16,6 +16,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { Trans, useTranslation } from "react-i18next";
 import { isPaymentsConfigured } from "@/lib/stripe";
+import { toUpperNoTonos } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
@@ -568,8 +569,8 @@ const MemberUpgrade = () => {
                       </p>
                       {typeof previewAmountDue === "number" && previewAmountDue > 0 && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            {t("memberUpgrade.switchDialog.dueToday")}
+                          <p className="text-xs text-muted-foreground tracking-wide mb-1">
+                            {toUpperNoTonos(t("memberUpgrade.switchDialog.dueToday"))}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
                             {new Intl.NumberFormat(dateLocale, {
@@ -591,8 +592,8 @@ const MemberUpgrade = () => {
                       </p>
                       {scheduledFor && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            {t("memberUpgrade.switchDialog.takesEffectOn")}
+                          <p className="text-xs text-muted-foreground tracking-wide mb-1">
+                            {toUpperNoTonos(t("memberUpgrade.switchDialog.takesEffectOn"))}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
                             {formatDate(scheduledFor * 1000)}
