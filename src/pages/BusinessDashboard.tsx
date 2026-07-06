@@ -1195,7 +1195,7 @@ const BusinessDashboard = () => {
             </div>
 
             {/* Right Column - Stats */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
               {/* Quick Stats */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
