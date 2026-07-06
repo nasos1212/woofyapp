@@ -645,7 +645,7 @@ const BusinessDashboard = () => {
         <BusinessHeader />
         <BusinessOnboardingTour />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] overflow-x-hidden">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
           {/* Pending Approval Banner */}
           <PendingApprovalBanner status={verificationStatus} />
 
