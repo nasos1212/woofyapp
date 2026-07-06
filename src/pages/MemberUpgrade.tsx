@@ -16,6 +16,7 @@ import { useMembership } from "@/hooks/useMembership";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { Trans, useTranslation } from "react-i18next";
 import { isPaymentsConfigured } from "@/lib/stripe";
+import { toUpperNoTonos } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
