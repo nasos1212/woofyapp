@@ -645,7 +645,7 @@ const BusinessDashboard = () => {
         <BusinessHeader />
         <BusinessOnboardingTour />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] overflow-x-hidden">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
           {/* Pending Approval Banner */}
           <PendingApprovalBanner status={verificationStatus} />
 
@@ -1147,7 +1147,7 @@ const BusinessDashboard = () => {
                   </Link>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[520px]">
                     <thead>
                       <tr className="border-b border-slate-200">
                         <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">{t("businessDashboard.recent.customer")}</th>
