@@ -1374,7 +1374,7 @@
       "memberId": "ID Μέλους",
       "memberIdPlaceholder": "π.χ., WF-2026-123456",
       "verificationType": "Έλεγχος Προσφορών",
-      "birthdayVerification": "🎂 Έλεγχος για Προσφορά Γενεθλίων",
+      "birthdayVerification": "🎂 Προσφορά Γενεθλίων",
       "offerOption": "{{title}} ({{value}}{{symbol}} έκπτωση)",
       "verifyBtn": "Έλεγχος Μέλους",
       "verifying": "Επαλήθευση...",
