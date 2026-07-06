@@ -1141,7 +1141,7 @@ const BusinessDashboard = () => {
                   </h3>
                   <Link 
                     to="/business/history" 
-                    className="text-sm text-primary hover:underline"
+                    className="text-sm text-primary hover:underline whitespace-nowrap"
                   >
                     {t("businessDashboard.recent.viewAll")}
                   </Link>
