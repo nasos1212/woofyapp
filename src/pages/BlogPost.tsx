@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { BlogPost, formatDate, isGreek, localized } from "@/lib/blog";
 import { toast } from "@/hooks/use-toast";
+import { toUpperNoTonos } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
 interface BusinessLite {
