@@ -702,17 +702,17 @@ const BusinessAnalytics = () => {
                 <table className="w-full">
                   <thead className="bg-slate-50">
                      <tr>
-                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        {t("businessAnalytics.colCustomer")}
+                      <th className="text-left text-xs font-medium text-slate-500 px-3 sm:px-6 py-3">
+                        {toUpperNoTonos(t("businessAnalytics.colCustomer"))}
                       </th>
-                      <th className="text-left text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3 hidden sm:table-cell">
-                        {t("businessAnalytics.colPets")}
+                      <th className="text-left text-xs font-medium text-slate-500 px-3 sm:px-6 py-3 hidden sm:table-cell">
+                        {toUpperNoTonos(t("businessAnalytics.colPets"))}
                       </th>
-                      <th className="text-center text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        {t("businessAnalytics.colRedemptions")}
+                      <th className="text-center text-xs font-medium text-slate-500 px-3 sm:px-6 py-3">
+                        {toUpperNoTonos(t("businessAnalytics.colRedemptions"))}
                       </th>
-                      <th className="text-right text-xs font-medium text-slate-500 uppercase px-3 sm:px-6 py-3">
-                        {t("businessAnalytics.colLastVisit")}
+                      <th className="text-right text-xs font-medium text-slate-500 px-3 sm:px-6 py-3">
+                        {toUpperNoTonos(t("businessAnalytics.colLastVisit"))}
                       </th>
                     </tr>
                   </thead>
