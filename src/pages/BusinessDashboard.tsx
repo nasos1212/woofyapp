@@ -1195,7 +1195,7 @@ const BusinessDashboard = () => {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.stats.thisMonth")}</h3>
-                  <Link to="/business/analytics" className="text-xs text-primary hover:underline">
+                  <Link to="/business/analytics" className="text-sm text-primary hover:underline">
                     {t("businessDashboard.stats.viewDetails")}
                   </Link>
                 </div>
@@ -1206,8 +1206,8 @@ const BusinessDashboard = () => {
                         <Users className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <span className="text-slate-600">{t("businessDashboard.stats.redemptions")}</span>
-                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.totalThisMonth")}</p>
+                        <span className="text-sm text-slate-600">{t("businessDashboard.stats.redemptions")}</span>
+                        <p className="text-sm text-slate-400">{t("businessDashboard.stats.totalThisMonth")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.redemptions}</span>
@@ -1218,8 +1218,8 @@ const BusinessDashboard = () => {
                         <TrendingUp className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
-                        <span className="text-slate-600">{t("businessDashboard.stats.newCustomers")}</span>
-                        <p className="text-xs text-slate-400">{t("businessDashboard.stats.firstTime")}</p>
+                        <span className="text-sm text-slate-600">{t("businessDashboard.stats.newCustomers")}</span>
+                        <p className="text-sm text-slate-400">{t("businessDashboard.stats.firstTime")}</p>
                       </div>
                     </div>
                     <span className="font-display font-bold text-xl text-slate-900">{stats.newCustomers}</span>

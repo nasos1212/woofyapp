@@ -104,24 +104,24 @@ const MemberShelters = () => {
           {/* Stats Bar */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <Card className="bg-gradient-to-br from-primary to-teal-600 border-0 text-white">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <Heart className="w-6 h-6" />
+              <CardContent className="p-5 flex items-start gap-4 h-full">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                  <Heart className="w-6 h-6" strokeWidth={2} />
                 </div>
-                <div>
-                  <p className="text-white/80 text-sm">{t("shelters.partnerShelters")}</p>
-                  <p className="text-2xl md:text-3xl font-bold">{shelters.length}</p>
+                <div className="min-w-0">
+                  <p className="text-white/80 text-sm leading-tight">{t("shelters.partnerShelters")}</p>
+                  <p className="text-2xl md:text-3xl font-bold mt-1">{shelters.length}</p>
                 </div>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-teal-500 to-cyan-600 border-0 text-white">
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <Euro className="w-6 h-6" />
+              <CardContent className="p-5 flex items-start gap-4 h-full">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
+                  <Euro className="w-6 h-6" strokeWidth={2} />
                 </div>
-                <div>
-                  <p className="text-white/80 text-sm">{t("shelters.targetDonation")}</p>
-                  <p className="text-2xl md:text-3xl font-bold">€1,000</p>
+                <div className="min-w-0">
+                  <p className="text-white/80 text-sm leading-tight">{t("shelters.targetDonation")}</p>
+                  <p className="text-2xl md:text-3xl font-bold mt-1">€1,000</p>
                 </div>
               </CardContent>
             </Card>
