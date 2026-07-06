@@ -61,3 +61,22 @@ export function normalizeUrlInput(url: string): string {
   }
   return trimmed;
 }
+
+/**
+ * Uppercase a string and strip Greek tonos/dialytika from capital letters.
+ * Greek typographic convention: capital letters do not carry tonos.
+ */
+export function toUpperNoTonos(input: string | null | undefined): string {
+  if (!input) return "";
+  const upper = input.toLocaleUpperCase("el-GR");
+  return upper
+    .replace(/Ά/g, "Α")
+    .replace(/Έ/g, "Ε")
+    .replace(/Ή/g, "Η")
+    .replace(/Ί/g, "Ι")
+    .replace(/Ό/g, "Ο")
+    .replace(/Ύ/g, "Υ")
+    .replace(/Ώ/g, "Ω")
+    .replace(/Ϊ/g, "Ι")
+    .replace(/Ϋ/g, "Υ");
+}
