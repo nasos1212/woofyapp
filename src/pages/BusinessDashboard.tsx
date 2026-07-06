@@ -645,7 +645,7 @@ const BusinessDashboard = () => {
         <BusinessHeader />
         <BusinessOnboardingTour />
 
-        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))]">
+        <main className="container mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] md:pt-[calc(7rem+env(safe-area-inset-top))] overflow-x-hidden">
           {/* Pending Approval Banner */}
           <PendingApprovalBanner status={verificationStatus} />
 
@@ -773,7 +773,7 @@ const BusinessDashboard = () => {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Scanner */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-8 min-w-0">
               {/* Member Verification */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <h2 className="font-display text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
@@ -1195,7 +1195,7 @@ const BusinessDashboard = () => {
             </div>
 
             {/* Right Column - Stats */}
-            <div className="space-y-6">
+            <div className="space-y-6 min-w-0">
               {/* Quick Stats */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
