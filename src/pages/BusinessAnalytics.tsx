@@ -29,7 +29,7 @@ import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format, subDays, startOfMonth, endOfMonth, eachDayOfInterval } from "date-fns";
-import { formatDate } from "@/lib/utils";
+import { formatDate, toUpperNoTonos } from "@/lib/utils";
 
 interface DailyData {
   date: string;
