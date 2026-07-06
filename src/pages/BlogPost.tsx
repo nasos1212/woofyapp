@@ -276,8 +276,8 @@ const BlogPostPage = () => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                    {t("blog.meetThePartner")}
+                  <p className="text-xs tracking-wide text-muted-foreground mb-1">
+                    {toUpperNoTonos(t("blog.meetThePartner"))}
                   </p>
                   <h3 className="font-semibold break-words">{business.business_name}</h3>
                 </div>
