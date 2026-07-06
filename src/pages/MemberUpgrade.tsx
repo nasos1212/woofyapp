@@ -592,8 +592,8 @@ const MemberUpgrade = () => {
                       </p>
                       {scheduledFor && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            {t("memberUpgrade.switchDialog.takesEffectOn")}
+                          <p className="text-xs text-muted-foreground tracking-wide mb-1">
+                            {toUpperNoTonos(t("memberUpgrade.switchDialog.takesEffectOn"))}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
                             {formatDate(scheduledFor * 1000)}
