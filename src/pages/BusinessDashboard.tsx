@@ -17,7 +17,7 @@ import BusinessHeader from "@/components/BusinessHeader";
 import { useBusinessVerification } from "@/hooks/useBusinessVerification";
 import PendingApprovalBanner from "@/components/PendingApprovalBanner";
 import ContactPopover from "@/components/ContactPopover";
-import { formatDate } from "@/lib/utils";
+import { formatDate, toUpperNoTonos } from "@/lib/utils";
 import BusinessOnboardingTour from "@/components/BusinessOnboardingTour";
 
 interface AvailablePet {
