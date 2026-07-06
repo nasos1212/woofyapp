@@ -601,7 +601,7 @@ const MemberUpgrade = () => {
                       )}
                     </>
                   )}
-                  <div className="flex gap-2 justify-end pt-2">
+                  <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2">
                     <Button
                       variant="outline"
                       onClick={() => setChangePlan(null)}
@@ -642,7 +642,7 @@ const MemberUpgrade = () => {
                   components={{ 1: <strong className="text-foreground" /> }}
                 />
               </p>
-              <div className="flex gap-2 justify-end pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-2">
                 <Button
                   variant="outline"
                   onClick={() => setCancelDialogOpen(false)}
