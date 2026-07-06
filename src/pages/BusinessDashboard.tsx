@@ -773,7 +773,7 @@ const BusinessDashboard = () => {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Scanner */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-8 min-w-0">
               {/* Member Verification */}
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <h2 className="font-display text-lg font-semibold text-slate-900 mb-2 flex items-center gap-2">
