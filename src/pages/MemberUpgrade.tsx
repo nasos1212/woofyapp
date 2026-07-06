@@ -569,8 +569,8 @@ const MemberUpgrade = () => {
                       </p>
                       {typeof previewAmountDue === "number" && previewAmountDue > 0 && (
                         <div className="bg-muted/50 rounded-xl p-4 text-center">
-                          <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-                            {t("memberUpgrade.switchDialog.dueToday")}
+                          <p className="text-xs text-muted-foreground tracking-wide mb-1">
+                            {toUpperNoTonos(t("memberUpgrade.switchDialog.dueToday"))}
                           </p>
                           <p className="font-display font-bold text-2xl text-foreground">
                             {new Intl.NumberFormat(dateLocale, {
