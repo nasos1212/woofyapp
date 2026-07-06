@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 
 // Allowed image types - explicitly exclude SVG for security (can contain scripts)
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
@@ -18,7 +19,9 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,18 +42,29 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
       return;
     }
 
-    // Validate file size (max 5MB)
+    // Validate file size (max 8MB)
     if (file.size > MAX_FILE_SIZE) {
       toast.error(t("photoUpload.tooLarge"));
       return;
     }
 
-    setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setCropperSrc(reader.result as string);
+      setShowCropper(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = (blob: Blob) => {
+    setCroppedBlob(blob);
+    setPreview(URL.createObjectURL(blob));
+    setShowCropper(false);
+    setCropperSrc(null);
   };
 
   const clearSelection = () => {
-    setSelectedFile(null);
+    setCroppedBlob(null);
     setPreview(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -58,7 +72,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
   };
 
   const handleUpload = async () => {
-    if (!selectedFile) return;
+    if (!croppedBlob) return;
 
     setUploading(true);
     try {
@@ -69,13 +83,12 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
       }
 
       // Create unique file path
-      const fileExt = selectedFile.name.split(".").pop();
-      const fileName = `${user.id}/${businessId}/${Date.now()}.${fileExt}`;
+      const fileName = `${user.id}/${businessId}/${Date.now()}.webp`;
 
       // Upload to storage
       const { error: uploadError } = await supabase.storage
         .from("business-photos")
-        .upload(fileName, selectedFile);
+        .upload(fileName, croppedBlob, { contentType: "image/webp" });
 
       if (uploadError) throw uploadError;
 
@@ -173,6 +186,21 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
             )}
           </Button>
         </div>
+      )}
+
+      {cropperSrc && (
+        <ImageCropperDialog
+          open={showCropper}
+          onOpenChange={(open) => {
+            setShowCropper(open);
+            if (!open) {
+              setCropperSrc(null);
+              if (fileInputRef.current) fileInputRef.current.value = "";
+            }
+          }}
+          imageSrc={cropperSrc}
+          onCropComplete={handleCropComplete}
+        />
       )}
     </div>
   );
