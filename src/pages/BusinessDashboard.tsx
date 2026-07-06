@@ -1195,7 +1195,7 @@ const BusinessDashboard = () => {
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-display font-semibold text-slate-900">{t("businessDashboard.stats.thisMonth")}</h3>
-                  <Link to="/business/analytics" className="text-sm text-primary hover:underline">
+                  <Link to="/business/analytics" className="text-sm text-primary hover:underline whitespace-nowrap">
                     {t("businessDashboard.stats.viewDetails")}
                   </Link>
                 </div>
