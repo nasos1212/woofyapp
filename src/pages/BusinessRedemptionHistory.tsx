@@ -483,50 +483,42 @@ const BusinessRedemptionHistory = () => {
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-50 border-b border-slate-200">
-                    <tr>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colDateTime")}</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colCustomer")}</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colPet")}</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colOffer")}</th>
-                      <th className="text-left py-4 px-4 text-sm font-medium text-slate-500">{t("businessRedemptions.colDiscount")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredRedemptions.map((redemption) => (
-                      <tr key={redemption.id} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
-                        <td className="py-4 px-4">
-                          <p className="text-slate-900 text-sm">{formatDateLocal(redemption.redeemed_at)}</p>
-                        </td>
-                        <td className="py-4 px-4">
-                          <div>
-                            <p className="font-medium text-slate-900">
-                              {redemption.member_name || t("businessRedemptions.member")}
-                            </p>
-                            <p className="text-xs text-slate-500">
-                              {redemption.member_number || t("businessRedemptions.notAvailable")}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-slate-600">
-                          {redemption.pet_names || t("businessRedemptions.notAvailable")}
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                            {redemption.offer?.title || t("businessRedemptions.notAvailable")}
+              <div className="divide-y divide-slate-100">
+                {filteredRedemptions.map((redemption) => (
+                  <div key={redemption.id} className="flex flex-col gap-1 py-4 px-4 hover:bg-slate-50 transition-colors">
+                    {/* Line 1: Customer + Member number | Date */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-semibold text-slate-900 text-sm truncate">
+                          {redemption.member_name || t("businessRedemptions.member")}
+                        </span>
+                        <span className="text-xs text-slate-400 font-mono shrink-0">
+                          {redemption.member_number || t("businessRedemptions.notAvailable")}
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-400 shrink-0">
+                        {formatDateLocal(redemption.redeemed_at)}
+                      </span>
+                    </div>
+                    {/* Line 2: Offer + Pet + Discount */}
+                    <div className="flex items-center gap-1.5 text-sm text-slate-600 min-w-0">
+                      <span className="truncate">
+                        {redemption.offer?.title || t("businessRedemptions.notAvailable")}
+                      </span>
+                      {redemption.pet_names && (
+                        <>
+                          <span className="text-slate-300 shrink-0">·</span>
+                          <span className="text-slate-500 truncate shrink-1">
+                            {redemption.pet_names}
                           </span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="font-semibold text-green-600">
-                            {formatDiscount(redemption.offer?.discount_value || 0, redemption.offer?.discount_type || 'fixed')}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </>
+                      )}
+                      <span className="ml-auto font-semibold text-green-600 shrink-0">
+                        {formatDiscount(redemption.offer?.discount_value || 0, redemption.offer?.discount_type || 'fixed')}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
