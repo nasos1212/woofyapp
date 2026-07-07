@@ -117,7 +117,7 @@ const RatingPromptDialog = ({
                 <Star
                   className={`w-10 h-10 transition-colors ${
                     star <= (hoverRating || rating)
-                      ? "fill-paw-gold text-paw-gold"
+                      ? "fill-amber-500 text-amber-500"
                       : "text-muted-foreground"
                   }`}
                 />
