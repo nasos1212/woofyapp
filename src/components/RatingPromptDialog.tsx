@@ -87,9 +87,9 @@ const RatingPromptDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] sm:w-full sm:max-w-md p-4 pt-9 sm:p-6 sm:pt-10">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl flex items-center gap-2">
+          <DialogTitle className="font-display text-lg sm:text-xl flex items-center gap-2">
             <span className="text-2xl">⭐</span>
             {t("ratingPrompt.title")}
           </DialogTitle>
@@ -104,7 +104,7 @@ const RatingPromptDialog = ({
 
         <div className="space-y-4 py-4">
           {/* Star Rating */}
-          <div className="flex justify-center gap-2">
+          <div className="flex justify-center gap-1.5 sm:gap-2">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
@@ -115,7 +115,7 @@ const RatingPromptDialog = ({
                 className="p-1 transition-transform hover:scale-110"
               >
                 <Star
-                  className={`w-10 h-10 transition-colors ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 transition-colors ${
                     star <= (hoverRating || rating)
                       ? "fill-amber-500 text-amber-500"
                       : "text-muted-foreground"
@@ -124,6 +124,7 @@ const RatingPromptDialog = ({
               </button>
             ))}
           </div>
+
 
           {rating > 0 && (
             <p className="text-center text-sm text-muted-foreground">
@@ -151,7 +152,7 @@ const RatingPromptDialog = ({
             >
               {isSubmitting ? t("ratingPrompt.submitting") : t("ratingPrompt.submit")}
             </Button>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
                 onClick={handleLater}
