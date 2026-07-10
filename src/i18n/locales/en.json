@@ -389,6 +389,7 @@
     "blog": "Wooffy Blog"
   },
   "auth": {
+    "or": "or",
     "welcomeToastTitle": "Hello {{name}}! 👋",
     "welcomeToastDescription": "Great to have you here!",
     "welcomeToastFallbackName": "there",
