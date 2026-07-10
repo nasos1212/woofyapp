@@ -391,6 +391,7 @@ const AddPet = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="pet-breed">{t("addPet.breed")}</Label>
+
                   <Popover open={breedPopoverOpen} onOpenChange={setBreedPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
