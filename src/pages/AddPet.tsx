@@ -569,7 +569,7 @@ const AddPet = () => {
                   variant="hero"
                   size="lg"
                   className="w-full"
-                  disabled={isSubmitting || isUploadingPhoto || !petName.trim()}
+                  disabled={isSubmitting || isUploadingPhoto || !petName.trim() || !petBreed.trim()}
                 >
                   {isSubmitting || isUploadingPhoto ? (
                     isUploadingPhoto ? t("addPet.uploading") : t("addPet.adding")
