@@ -152,7 +152,7 @@ const RatingPromptDialog = ({
             >
               {isSubmitting ? t("ratingPrompt.submitting") : t("ratingPrompt.submit")}
             </Button>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
                 onClick={handleLater}
