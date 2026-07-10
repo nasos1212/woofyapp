@@ -569,7 +569,7 @@
     "cat": "Cat",
     "petName": "Pet Name *",
     "petNamePlaceholder": "e.g., Max, Bella, Charlie...",
-    "breed": "Breed (optional)",
+    "breed": "Breed *",
     "selectBreed": "Select or type breed...",
     "searchBreed": "Search or type breed...",
     "noBreed": "No breed found. Your input will be used.",
@@ -594,7 +594,9 @@
       "generic": "Something went wrong",
       "noName": "Please enter a pet name",
       "futureDate": "Birthday cannot be a future date",
+      "noBreed": "Please select or type your pet's breed",
       "addFailed": "Failed to add pet"
+
     },
     "success": "{{name}} has been added! 🐾"
   },
@@ -1207,6 +1209,9 @@
     "photoRemoveFailed": "Failed to remove photo",
     "profileUpdated": "Pet profile updated!",
     "updateFailed": "Failed to update pet profile",
+    "nameRequired": "Please enter a pet name",
+    "breedRequired": "Please enter your pet's breed",
+
     "loadFailed": "Failed to load pet profile",
     "birthday": "Birthday",
     "notSet": "Not set",

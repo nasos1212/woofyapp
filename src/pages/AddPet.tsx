@@ -186,6 +186,13 @@ const AddPet = () => {
       return;
     }
 
+    if (!petBreed.trim()) {
+      toast.error(t("addPet.errors.noBreed"));
+      return;
+    }
+
+
+
     if (knowsBirthday && petBirthday && petBirthday > new Date().toISOString().split('T')[0]) {
       toast.error(t("addPet.errors.futureDate"));
       return;
@@ -384,6 +391,7 @@ const AddPet = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="pet-breed">{t("addPet.breed")}</Label>
+
                   <Popover open={breedPopoverOpen} onOpenChange={setBreedPopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
@@ -561,7 +569,7 @@ const AddPet = () => {
                   variant="hero"
                   size="lg"
                   className="w-full"
-                  disabled={isSubmitting || isUploadingPhoto || !petName.trim()}
+                  disabled={isSubmitting || isUploadingPhoto || !petName.trim() || !petBreed.trim()}
                 >
                   {isSubmitting || isUploadingPhoto ? (
                     isUploadingPhoto ? t("addPet.uploading") : t("addPet.adding")

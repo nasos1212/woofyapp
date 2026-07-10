@@ -1,31 +1,29 @@
-## Problem
+## Make breed required when adding a pet
 
-On small screens the "How was your experience?" rating prompt dialog stretches to the full viewport width with no gutter — it visually touches (or overflows) the screen edges. On desktop it's fine because `sm:max-w-md` kicks in and the dialog centers with breathing room.
+### Goal
+Prevent pets from being saved with no breed (which the app currently displays as "Mixed breed"), so admin analytics and breed insights reflect real data.
 
-Root cause: the base `DialogContent` primitive is `w-full max-w-lg` with `p-6`, and the RatingPromptDialog doesn't override for the mobile range. Combined with the inner star row and two side-by-side action buttons whose Greek labels are long, the content pushes right to the edges.
+### Changes (frontend only)
 
-## Fix (scoped to `src/components/RatingPromptDialog.tsx` only)
+**`src/pages/AddPet.tsx`**
+- Add validation in `handleSubmit`: if `petBreed.trim()` is empty, show a toast error (`t("addPet.errors.noBreed")`) and abort.
+- Add `disabled` to the submit button when `!petBreed.trim()` (alongside the existing `!petName.trim()` check).
+- Mark the Breed label as required with a visual asterisk, matching how required fields are typically indicated on the form.
+- Keep the searchable combobox as-is so users can type a custom breed if theirs isn't listed (e.g. "Mixed breed", "Unknown"), preserving flexibility while forcing a conscious choice.
 
-Keep the desktop look identical. Adjust the mobile presentation:
+**`src/pages/PetProfile.tsx`** (edit flow, if it allows clearing breed)
+- Mirror the same required rule when editing an existing pet so users can't blank it out.
 
-1. **Add a horizontal gutter on mobile.**
-   Change `DialogContent` className from `sm:max-w-md` to `w-[calc(100vw-2rem)] max-w-[calc(100vw-2rem)] sm:w-full sm:max-w-md` so the dialog always leaves ~16px of space on each side of the phone screen.
+**`src/i18n/locales/en.json`** (and any other locale files present)
+- Add `addPet.errors.noBreed` — e.g. "Please select or type your pet's breed."
+- Update `addPet.breed` label to include the required indicator, or add a helper string.
 
-2. **Reduce inner padding on mobile.**
-   Override the primitive's `p-6 pt-10` with `p-4 pt-9 sm:p-6 sm:pt-10` on `DialogContent` so text and stars aren't pressed against the dialog edges once the outer gutter is added.
+### Not in scope
+- No database migration. Existing pets with `pet_breed = null` stay as-is; only new/edited pets are affected.
+- No change to the "Mixed breed" fallback display for legacy records (separate cleanup if you want it later).
+- No change to admin analytics logic.
 
-3. **Tighten the star row so it never overflows.**
-   Change the star buttons from `w-10 h-10` fixed size + `gap-2` to `w-8 h-8 sm:w-10 sm:h-10` and `gap-1.5 sm:gap-2`. On a 320–360px viewport the current 5×40px stars + gaps + padding are what force the dialog to feel oversized.
-
-4. **Stack the two secondary actions on very small screens.**
-   Change the "Remind me later / Don't ask again" row from `flex gap-2` (always side-by-side) to `flex flex-col sm:flex-row gap-2`. The Greek copy ("Υπενθύμισέ μου αργότερα", "Μη με ξαναρωτήσεις") is long enough to wrap awkwardly at ~320px and contributes to the "takes up the whole screen and more" feeling. Primary submit button stays full-width as today.
-
-5. **Constrain title size on mobile** so the star emoji + long title don't force horizontal growth: `text-lg sm:text-xl` on `DialogTitle`.
-
-No other files, no logic changes, no copy changes, no i18n changes.
-
-## Verification
-
-- Preview at 360px width: dialog has visible background gutter on both sides, stars fit comfortably, action buttons stack cleanly.
-- Preview at 768px+: dialog looks identical to today (max-w-md, side-by-side secondary actions, w-10 stars).
-- No changes to `src/components/ui/dialog.tsx` — global dialog behavior stays untouched.
+### Verification
+- Try to submit AddPet with breed empty → button disabled + error toast if bypassed.
+- Submit with a typed custom breed (e.g. "Mixed breed") → succeeds.
+- Edit an existing pet, clear the breed → blocked.
