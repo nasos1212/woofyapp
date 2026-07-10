@@ -186,6 +186,13 @@ const AddPet = () => {
       return;
     }
 
+    if (!petBreed.trim()) {
+      toast.error(t("addPet.errors.noBreed"));
+      return;
+    }
+
+
+
     if (knowsBirthday && petBirthday && petBirthday > new Date().toISOString().split('T')[0]) {
       toast.error(t("addPet.errors.futureDate"));
       return;
