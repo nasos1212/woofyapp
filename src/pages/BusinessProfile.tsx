@@ -194,7 +194,7 @@ export default function BusinessProfile() {
         .eq("business_id", id)
         .eq("is_active", true);
 
-      setOffers(offersData || []);
+      setOffers((offersData as Offer[]) || []);
 
       // Fetch reviews with user profiles
       const { data: reviewsData } = await supabase
