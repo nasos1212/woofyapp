@@ -638,9 +638,25 @@ export default function BusinessProfile() {
               <CardContent>
                 <div className="space-y-3">
                   {offers.map((offer) => (
-                    <div 
+                    <button
                       key={offer.id}
-                      className="p-4 bg-primary/5 rounded-xl border border-primary/20"
+                      type="button"
+                      onClick={() => {
+                        if (!business) return;
+                        setSelectedOffer({
+                          ...offer,
+                          redemption_scope: offer.redemption_scope ?? undefined,
+                          redemption_frequency: offer.redemption_frequency ?? undefined,
+                          is_limited_time: offer.is_limited_time ?? undefined,
+                          business: {
+                            id: business.id,
+                            business_name: business.business_name,
+                            category: business.category,
+                            city: business.city,
+                          },
+                        });
+                      }}
+                      className="w-full text-left p-4 bg-primary/5 rounded-xl border border-primary/20 hover:bg-primary/10 hover:border-primary/40 transition-colors cursor-pointer"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -660,8 +676,9 @@ export default function BusinessProfile() {
                           {formatDiscount(offer)}
                         </Badge>
                       </div>
-                    </div>
+                    </button>
                   ))}
+
                 </div>
               </CardContent>
             </Card>
