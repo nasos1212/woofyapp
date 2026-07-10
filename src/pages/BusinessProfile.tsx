@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import OfferDetailDialog, { type OfferWithDetails } from "@/components/OfferDetailDialog";
+
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
@@ -43,9 +45,18 @@ interface Offer {
   discount_type: string;
   discount_value: number | null;
   terms: string | null;
-  pet_type: string | null;
-  redemption_scope?: string | null;
+  pet_type: 'dog' | 'cat' | null;
+  redemption_scope?: 'per_member' | 'per_pet' | null;
+  redemption_frequency?: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited' | null;
+  valid_from?: string | null;
+  valid_until?: string | null;
+  is_limited_time?: boolean | null;
+  limited_time_label?: string | null;
+  valid_days?: number[] | null;
+  valid_hours_start?: string | null;
+  valid_hours_end?: string | null;
 }
+
 
 interface Review {
   id: string;
@@ -91,6 +102,8 @@ export default function BusinessProfile() {
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [locations, setLocations] = useState<BusinessLocation[]>([]);
@@ -181,7 +194,7 @@ export default function BusinessProfile() {
         .eq("business_id", id)
         .eq("is_active", true);
 
-      setOffers(offersData || []);
+      setOffers((offersData as Offer[]) || []);
 
       // Fetch reviews with user profiles
       const { data: reviewsData } = await supabase
@@ -625,9 +638,25 @@ export default function BusinessProfile() {
               <CardContent>
                 <div className="space-y-3">
                   {offers.map((offer) => (
-                    <div 
+                    <button
                       key={offer.id}
-                      className="p-4 bg-primary/5 rounded-xl border border-primary/20"
+                      type="button"
+                      onClick={() => {
+                        if (!business) return;
+                        setSelectedOffer({
+                          ...offer,
+                          redemption_scope: offer.redemption_scope ?? undefined,
+                          redemption_frequency: offer.redemption_frequency ?? undefined,
+                          is_limited_time: offer.is_limited_time ?? undefined,
+                          business: {
+                            id: business.id,
+                            business_name: business.business_name,
+                            category: business.category,
+                            city: business.city,
+                          },
+                        });
+                      }}
+                      className="w-full text-left p-4 bg-primary/5 rounded-xl border border-primary/20 hover:bg-primary/10 hover:border-primary/40 transition-colors cursor-pointer"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -647,8 +676,9 @@ export default function BusinessProfile() {
                           {formatDiscount(offer)}
                         </Badge>
                       </div>
-                    </div>
+                    </button>
                   ))}
+
                 </div>
               </CardContent>
             </Card>
@@ -823,6 +853,13 @@ export default function BusinessProfile() {
           onSave={fetchBusinessData}
         />
       )}
+
+      <OfferDetailDialog
+        offer={selectedOffer}
+        onClose={() => setSelectedOffer(null)}
+        showRedemptionStatus={false}
+      />
+
     </>
   );
 }
