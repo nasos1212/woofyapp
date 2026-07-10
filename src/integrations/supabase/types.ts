@@ -3493,6 +3493,10 @@ export type Database = {
         Args: { _business_user_id: string; _membership_id: string }
         Returns: boolean
       }
+      business_can_view_pet: {
+        Args: { _business_user_id: string; _pet_id: string }
+        Returns: boolean
+      }
       can_edit_pet_birthday: { Args: { _pet_id: string }; Returns: boolean }
       can_view_lost_pet_contact: {
         Args: { alert_id: string; alert_owner_id: string }
@@ -3541,6 +3545,10 @@ export type Database = {
         Returns: boolean
       }
       user_owns_membership: { Args: { _user_id: string }; Returns: boolean }
+      user_redeemed_at_business: {
+        Args: { _business_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "member" | "business" | "admin" | "shelter"
