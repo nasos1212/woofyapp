@@ -853,6 +853,13 @@ export default function BusinessProfile() {
           onSave={fetchBusinessData}
         />
       )}
+
+      <OfferDetailDialog
+        offer={selectedOffer}
+        onClose={() => setSelectedOffer(null)}
+        showRedemptionStatus={false}
+      />
+
     </>
   );
 }
