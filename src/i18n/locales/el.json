@@ -389,6 +389,7 @@
     "blog": "Wooffy Blog"
   },
   "auth": {
+    "or": "Η",
     "welcomeToastTitle": "Γεια σου, {{name}}! 👋",
     "welcomeToastDescription": "Χαιρόμαστε που είσαι εδώ!",
     "welcomeToastFallbackName": "φίλε",
