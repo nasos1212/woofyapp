@@ -1,9 +1,16 @@
-## No additional work needed
+Update the subtitle text in the unified pricing/freemium section on the landing page.
 
-The previous fix already resolved the issue:
+**File:** `src/i18n/locales/en.json`
+**Key:** `freemium.subtitle`
 
-- Members can now see the basic details (name, logo) of any business where they redeemed an offer, even if that business is currently hidden from the public directory.
-- Next time Aris opens his dashboard, the rating popup will correctly say *"How was your experience at Pet Nas?"* instead of *"this business"*.
-- Pet Nas remains hidden from the public directory and search — only members with a real redemption history at that business gain visibility into its name.
+**Current:**
+```
+Create your account for free and enjoy essential pet community features. When you're ready for exclusive discounts and premium benefits, upgrade to a paid plan!
+```
 
-Nothing to implement in this round.
+**New:**
+```
+Create your free Wooffy account and enjoy the essential pet community features. When you're ready, upgrade to a paid membership to unlock exclusive partner discounts, birthday offers from partner businesses, and priority features for your pets all year round.
+```
+
+**Open question:** Should the corresponding Greek translation in `src/i18n/locales/el.json` also be updated? If yes, please provide the Greek text.
