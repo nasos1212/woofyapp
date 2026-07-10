@@ -197,7 +197,19 @@ const PetProfile = () => {
 
   const handleSave = async () => {
     if (!pet) return;
+
+    if (!editedName.trim()) {
+      toast.error(t("petProfile.nameRequired"));
+      return;
+    }
+
+    if (!editedBreed.trim()) {
+      toast.error(t("petProfile.breedRequired"));
+      return;
+    }
+
     setIsSaving(true);
+
 
     try {
       // If birthday is locked, don't allow birthday changes
