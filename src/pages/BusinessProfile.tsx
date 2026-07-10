@@ -14,6 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import OfferDetailDialog, { type OfferWithDetails } from "@/components/OfferDetailDialog";
+
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DogLoader from "@/components/DogLoader";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
@@ -43,9 +45,18 @@ interface Offer {
   discount_type: string;
   discount_value: number | null;
   terms: string | null;
-  pet_type: string | null;
-  redemption_scope?: string | null;
+  pet_type: 'dog' | 'cat' | null;
+  redemption_scope?: 'per_member' | 'per_pet' | null;
+  redemption_frequency?: 'one_time' | 'daily' | 'weekly' | 'monthly' | 'unlimited' | null;
+  valid_from?: string | null;
+  valid_until?: string | null;
+  is_limited_time?: boolean | null;
+  limited_time_label?: string | null;
+  valid_days?: number[] | null;
+  valid_hours_start?: string | null;
+  valid_hours_end?: string | null;
 }
+
 
 interface Review {
   id: string;
@@ -91,6 +102,8 @@ export default function BusinessProfile() {
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [business, setBusiness] = useState<Business | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [selectedOffer, setSelectedOffer] = useState<OfferWithDetails | null>(null);
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [locations, setLocations] = useState<BusinessLocation[]>([]);
