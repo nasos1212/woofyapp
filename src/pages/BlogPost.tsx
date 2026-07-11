@@ -191,7 +191,7 @@ const BlogPostPage = () => {
 
           <div className="mb-6">
             <Badge className="mb-4">{t(`blog.categories.${post.category}`)}</Badge>
-            <h1 className="text-3xl md:text-5xl font-display font-bold mb-4 leading-tight">{title}</h1>
+            <h1 className="text-3xl md:text-5xl font-display font-bold mb-4 leading-tight text-center">{title}</h1>
             {excerpt && <p className="text-lg text-muted-foreground mb-4">{excerpt}</p>}
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm text-muted-foreground">
               {post.author_name && (
