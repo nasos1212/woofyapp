@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { MapPin, Plus } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -27,7 +27,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 import { useTranslation } from "react-i18next";
-import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
+import { petFriendlyPlaceTypes, sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 
 const placeTypes = petFriendlyPlaceTypes;
 
@@ -55,6 +55,15 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
   });
 
   const availableAreas = formData.city ? getAreasForCity(formData.city) : [];
+
+  const sortedPlaceTypes = useMemo(() => {
+    const values = sortPetFriendlyPlaceTypesByLabel(
+      placeTypes.map((pt) => pt.value),
+      (value) => t(`getListed.dialog.types.${value}`, placeTypes.find((pt) => pt.value === value)?.label || value),
+      i18n.language
+    );
+    return values.map((value) => placeTypes.find((pt) => pt.value === value)!).filter(Boolean);
+  }, [i18n.language, t]);
 
   const isValidMapsLink = (url: string): boolean => {
     return url.includes("google.com/maps") ||
@@ -196,7 +205,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
                 <SelectValue placeholder={t("suggestPlace.typePh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
-                {placeTypes.map((type) => (
+                {sortedPlaceTypes.map((type) => (
                   <SelectItem key={type.value} value={type.value}>
                     {t(`getListed.dialog.types.${type.value}`, type.label)}
                   </SelectItem>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +21,7 @@ import { z } from "zod";
 import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
-import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
+import { petFriendlyPlaceTypes, sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 
 const placeTypes = petFriendlyPlaceTypes;
 
@@ -52,6 +52,15 @@ const PetFriendlyPlaceRequestDialog = () => {
   const { toast } = useToast();
 
   const availableAreas = city ? getAreasForCity(city) : [];
+
+  const sortedPlaceTypes = useMemo(() => {
+    const values = sortPetFriendlyPlaceTypesByLabel(
+      placeTypes.map((pt) => pt.value),
+      (value) => t(`getListed.dialog.types.${value}`, placeTypes.find((pt) => pt.value === value)?.label || value),
+      i18n.language
+    );
+    return values.map((value) => placeTypes.find((pt) => pt.value === value)!).filter(Boolean);
+  }, [i18n.language, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,7 +160,7 @@ const PetFriendlyPlaceRequestDialog = () => {
                 <SelectValue placeholder={t("getListed.dialog.typePh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
-                {placeTypes.map((pt) => (
+                {sortedPlaceTypes.map((pt) => (
                   <SelectItem key={pt.value} value={pt.value}>
                     {t(`getListed.dialog.types.${pt.value}`, pt.label)}
                   </SelectItem>
