@@ -129,12 +129,14 @@ const ChatHistoryPanel = ({
     <div className="mb-4 bg-white rounded-xl shadow-soft border border-border/50 overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b border-border/50 bg-muted/30">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-sm flex items-center gap-2">
-            <MessageSquare className="w-4 h-4" />
-            {t("chatHistory.title")}
-            <span className="text-xs text-muted-foreground font-normal">
-              ({t(totalSessions === 1 ? "chatHistory.conversationsOne" : "chatHistory.conversationsOther", { count: totalSessions })})
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+          <h3 className="font-semibold text-sm flex items-start gap-2">
+            <MessageSquare className="w-4 h-4 mt-0.5 shrink-0" />
+            <span>
+              {t("chatHistory.title")}
+              <span className="text-xs text-muted-foreground font-normal ml-1">
+                ({t(totalSessions === 1 ? "chatHistory.conversationsOne" : "chatHistory.conversationsOther", { count: totalSessions })})
+              </span>
             </span>
           </h3>
           <Button
@@ -144,7 +146,7 @@ const ChatHistoryPanel = ({
               onStartNewChat();
               onClose();
             }}
-            className="h-8"
+            className="h-8 self-start sm:self-center"
           >
             <Plus className="w-3 h-3 mr-1" />
             {t("chatHistory.newChat")}
