@@ -586,7 +586,7 @@ const LostFoundAlerts = () => {
                 )}
               </div>
               {alert.owner_user_id === user?.id && alert.status === "active" && (
-                <div className="flex gap-2 mt-2">
+                <div className="flex flex-col sm:flex-row gap-2 mt-2">
                   <Button
                     variant="outline"
                     size="sm"
