@@ -19,7 +19,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
-import { businessCategories } from "@/data/businessCategories";
+import { businessCategories, sortBusinessCategoriesByLabel } from "@/data/businessCategories";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
@@ -165,16 +165,11 @@ const MemberPartners = () => {
                   <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                     {t("partners.allCategories")}
                   </DropdownMenuItem>
-                  {businessCategories
-                    .slice()
-                    .sort((a, b) =>
-                      getCategoryLabel(a.value).localeCompare(getCategoryLabel(b.value), i18n.language)
-                    )
-                    .map((cat) => (
-                      <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                        {getCategoryLabel(cat.value)}
-                      </DropdownMenuItem>
-                    ))}
+                  {sortBusinessCategoriesByLabel(businessCategories, getCategoryLabel, i18n.language).map((cat) => (
+                    <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
+                      {getCategoryLabel(cat.value)}
+                    </DropdownMenuItem>
+                  ))}
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
