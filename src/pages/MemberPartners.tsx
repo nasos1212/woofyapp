@@ -72,9 +72,7 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
-  const uniqueCities = Array.from(
-    new Set(partners.map((p) => p.city).filter(Boolean) as string[])
-  ).sort();
+  const cityOptions = cyprusCityNames;
 
   const filtered = partners.filter((p) => {
     const matchesSearch =
