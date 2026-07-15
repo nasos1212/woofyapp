@@ -165,11 +165,16 @@ const MemberPartners = () => {
                   <DropdownMenuItem onClick={() => setCategoryFilter(null)}>
                     {t("partners.allCategories")}
                   </DropdownMenuItem>
-                  {businessCategories.map((cat) => (
-                    <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
-                      {getCategoryLabel(cat.value)}
-                    </DropdownMenuItem>
-                  ))}
+                  {businessCategories
+                    .slice()
+                    .sort((a, b) =>
+                      getCategoryLabel(a.value).localeCompare(getCategoryLabel(b.value), i18n.language)
+                    )
+                    .map((cat) => (
+                      <DropdownMenuItem key={cat.value} onClick={() => setCategoryFilter(cat.value)}>
+                        {getCategoryLabel(cat.value)}
+                      </DropdownMenuItem>
+                    ))}
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
