@@ -21,7 +21,7 @@ import { z } from "zod";
 import { cyprusCityNames, getAreasForCity } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
-import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
+import { petFriendlyPlaceTypes, sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 
 const placeTypes = petFriendlyPlaceTypes;
 
