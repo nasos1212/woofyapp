@@ -41,6 +41,7 @@ import PlaceRating from "@/components/PlaceRating";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 
@@ -126,8 +127,12 @@ const PetFriendlyPlaces = () => {
     return matchesSearch && matchesType && matchesCity;
   });
 
-  // Show all defined place types in the filter dropdown
-  const availableTypes = Object.keys(placeTypeConfig);
+  // Show all defined place types in the filter dropdown, sorted alphabetically by translated label
+  const availableTypes = sortPetFriendlyPlaceTypesByLabel(
+    Object.keys(placeTypeConfig),
+    (type) => t(`petFriendlyPlaces.types.${type}`),
+    i18n.language
+  );
 
   if (loading) {
     return (
