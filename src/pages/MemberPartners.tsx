@@ -74,11 +74,6 @@ const MemberPartners = () => {
 
   const cityOptions = cyprusCityNames;
 
-  const sortedCategories = useMemo(
-    () => [...businessCategories].sort((a, b) => getCategoryLabel(a.value).localeCompare(getCategoryLabel(b.value), i18n.language)),
-    [getCategoryLabel, i18n.language]
-  );
-
   const filtered = partners.filter((p) => {
     const matchesSearch =
       !search ||
