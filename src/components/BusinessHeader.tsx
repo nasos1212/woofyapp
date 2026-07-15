@@ -93,7 +93,6 @@ const BusinessHeader = () => {
   const navLinks = [
     { name: t("businessNav.dashboard"), href: "/business", icon: LayoutDashboard },
     { name: t("businessNav.offers"), href: "/business/offers", icon: Tag },
-    { name: t("businessNav.analytics"), href: "/business/analytics", icon: BarChart3 },
     { name: t("businessNav.community"), href: "/community", icon: MessageCircle },
   ];
 
