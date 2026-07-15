@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Dog, Menu, X, Building2, Eye, Tag, Shield, LogOut, BarChart3, LayoutDashboard, Settings } from "lucide-react";
+import { Dog, Menu, X, Building2, Eye, Tag, Shield, LogOut, BarChart3, LayoutDashboard, Settings, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -94,6 +94,7 @@ const BusinessHeader = () => {
     { name: t("businessNav.dashboard"), href: "/business", icon: LayoutDashboard },
     { name: t("businessNav.offers"), href: "/business/offers", icon: Tag },
     { name: t("businessNav.analytics"), href: "/business/analytics", icon: BarChart3 },
+    { name: t("businessNav.community"), href: "/community", icon: MessageCircle },
   ];
 
   const isActive = (href: string) => location.pathname === href;
