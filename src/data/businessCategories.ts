@@ -38,3 +38,17 @@ export const getCategoriesLabel = (categories: string[]): string => {
   if (!categories || categories.length === 0) return "N/A";
   return categories.map(getCategoryLabel).join(", ");
 };
+
+export const sortBusinessCategoriesByLabel = (
+  categories: BusinessCategoryOption[],
+  getLabel: (value: string) => string,
+  language: string
+): BusinessCategoryOption[] => {
+  return [...categories].sort((a, b) => {
+    const aIsOther = a.value === "other";
+    const bIsOther = b.value === "other";
+    if (aIsOther && !bIsOther) return 1;
+    if (!aIsOther && bIsOther) return -1;
+    return getLabel(a.value).localeCompare(getLabel(b.value), language);
+  });
+};
