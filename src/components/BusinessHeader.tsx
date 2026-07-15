@@ -168,6 +168,10 @@ const BusinessHeader = () => {
                   <BarChart3 className="mr-2 h-4 w-4" />
                   {t("businessNav.analytics")}
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/community")}>
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  {t("businessNav.community")}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/business/settings")}>
                   <Settings className="mr-2 h-4 w-4" />
                   {t("businessNav.settings")}

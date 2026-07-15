@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Tag, BarChart3, Settings } from "lucide-react";
+import { LayoutDashboard, Tag, BarChart3, Settings, MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +12,7 @@ const BusinessMobileNav = () => {
     { path: "/business", icon: LayoutDashboard, label: t("businessNav.dashboard") },
     { path: "/business/offers", icon: Tag, label: t("businessNav.offers") },
     { path: "/business/analytics", icon: BarChart3, label: t("businessNav.analytics") },
+    { path: "/community", icon: MessageCircle, label: t("businessNav.community") },
     { path: "/business/settings", icon: Settings, label: t("businessNav.settings") },
   ];
 
