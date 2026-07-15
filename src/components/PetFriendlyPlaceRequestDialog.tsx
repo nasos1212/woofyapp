@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Textarea } from "@/components/ui/textarea";
