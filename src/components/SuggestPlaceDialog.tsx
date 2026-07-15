@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SearchableAreaSelect from "@/components/SearchableAreaSelect";
 import { MapPin, Plus } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
