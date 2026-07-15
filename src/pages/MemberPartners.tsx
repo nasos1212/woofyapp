@@ -186,7 +186,7 @@ const MemberPartners = () => {
                   <DropdownMenuItem onClick={() => setCityFilter(null)}>
                     {t("partners.allCities")}
                   </DropdownMenuItem>
-                  {uniqueCities.map((city) => (
+                  {cityOptions.map((city) => (
                     <DropdownMenuItem key={city} onClick={() => setCityFilter(city)}>
                       {getCityDisplayName(city, i18n.language)}
                     </DropdownMenuItem>
