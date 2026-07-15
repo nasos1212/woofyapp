@@ -53,6 +53,15 @@ const PetFriendlyPlaceRequestDialog = () => {
 
   const availableAreas = city ? getAreasForCity(city) : [];
 
+  const sortedPlaceTypes = useMemo(() => {
+    const values = sortPetFriendlyPlaceTypesByLabel(
+      placeTypes.map((pt) => pt.value),
+      (value) => t(`getListed.dialog.types.${value}`, placeTypes.find((pt) => pt.value === value)?.label || value),
+      i18n.language
+    );
+    return values.map((value) => placeTypes.find((pt) => pt.value === value)!).filter(Boolean);
+  }, [i18n.language, t]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
