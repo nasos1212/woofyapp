@@ -56,6 +56,15 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
 
   const availableAreas = formData.city ? getAreasForCity(formData.city) : [];
 
+  const sortedPlaceTypes = useMemo(() => {
+    const values = sortPetFriendlyPlaceTypesByLabel(
+      placeTypes.map((pt) => pt.value),
+      (value) => t(`getListed.dialog.types.${value}`, placeTypes.find((pt) => pt.value === value)?.label || value),
+      i18n.language
+    );
+    return values.map((value) => placeTypes.find((pt) => pt.value === value)!).filter(Boolean);
+  }, [i18n.language, t]);
+
   const isValidMapsLink = (url: string): boolean => {
     return url.includes("google.com/maps") ||
            url.includes("goo.gl/maps") ||
