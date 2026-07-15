@@ -32,6 +32,6 @@ export const sortPetFriendlyPlaceTypesByLabel = (
     const bIsOther = b === "other";
     if (aIsOther && !bIsOther) return 1;
     if (!aIsOther && bIsOther) return -1;
-    return getLabel the label(a).localeCompare(getLabel(b), language);
+    return getLabel(a).localeCompare(getLabel(b), language);
   });
 };
