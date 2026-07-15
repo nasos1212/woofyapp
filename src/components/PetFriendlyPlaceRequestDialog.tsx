@@ -160,7 +160,7 @@ const PetFriendlyPlaceRequestDialog = () => {
                 <SelectValue placeholder={t("getListed.dialog.typePh")} />
               </SelectTrigger>
               <SelectContent position="popper" className="max-h-[40vh]">
-                {placeTypes.map((pt) => (
+                {sortedPlaceTypes.map((pt) => (
                   <SelectItem key={pt.value} value={pt.value}>
                     {t(`getListed.dialog.types.${pt.value}`, pt.label)}
                   </SelectItem>
