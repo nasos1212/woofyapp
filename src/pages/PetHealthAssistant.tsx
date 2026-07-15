@@ -804,7 +804,7 @@ const PetHealthAssistant = () => {
           </Button>
 
           <div className="mb-8">
-            <div className="flex items-start justify-between mb-3">
+            <div className="flex flex-col sm:flex-row items-start justify-between mb-3 gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-hero rounded-xl flex items-center justify-center shrink-0">
                   <Bot className="w-6 h-6 text-white" />
