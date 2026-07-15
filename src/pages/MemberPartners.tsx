@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { businessCategories } from "@/data/businessCategories";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
