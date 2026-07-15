@@ -27,7 +27,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cyprusCityNames, getAreasForCity, getCoordinatesForLocation } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 import { useTranslation } from "react-i18next";
-import { petFriendlyPlaceTypes } from "@/data/petFriendlyPlaceTypes";
+import { petFriendlyPlaceTypes, sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 
 const placeTypes = petFriendlyPlaceTypes;
 
