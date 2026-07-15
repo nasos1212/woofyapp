@@ -26,7 +26,7 @@ import { useFavoriteOffers } from "@/hooks/useFavoriteOffers";
 import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { PetType } from "@/data/petBreeds";
-import { businessCategories } from "@/data/businessCategories";
+import { businessCategories, sortBusinessCategoriesByLabel } from "@/data/businessCategories";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
@@ -69,7 +69,10 @@ const MemberOffers = () => {
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const categories = [
     { id: "all", label: t("offers.allCategoriesShort") },
-    ...businessCategories.map((cat) => ({ id: cat.value, label: getCategoryLabel(cat.value) })),
+    ...sortBusinessCategoriesByLabel(businessCategories, getCategoryLabel, i18n.language).map((cat) => ({
+      id: cat.value,
+      label: getCategoryLabel(cat.value),
+    })),
   ];
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
   const { isBusiness, isShelter, loading: accountTypeLoading } = useAccountType();
