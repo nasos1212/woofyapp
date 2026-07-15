@@ -1,4 +1,9 @@
-export const petFriendlyPlaceTypes = [
+export interface PetFriendlyPlaceTypeOption {
+  value: string;
+  label: string;
+}
+
+export const petFriendlyPlaceTypes: PetFriendlyPlaceTypeOption[] = [
   { value: "beach", label: "Beach" },
   { value: "cafe", label: "Café" },
   { value: "restaurant", label: "Restaurant" },
@@ -11,8 +16,22 @@ export const petFriendlyPlaceTypes = [
   { value: "store", label: "Retail Store" },
   { value: "office", label: "Office" },
   { value: "other", label: "Other" },
-] as const;
+];
 
 export const petFriendlyPlaceTypeLabels: Record<string, string> = Object.fromEntries(
   petFriendlyPlaceTypes.map(({ value, label }) => [value, label])
 );
+
+export const sortPetFriendlyPlaceTypesByLabel = (
+  types: string[],
+  getLabel: (value: string) => string,
+  language: string
+): string[] => {
+  return [...types].sort((a, b) => {
+    const aIsOther = a === "other";
+    const bIsOther = b === "other";
+    if (aIsOther && !bIsOther) return 1;
+    if (!aIsOther && bIsOther) return -1;
+    return getLabel the label(a).localeCompare(getLabel(b), language);
+  });
+};
