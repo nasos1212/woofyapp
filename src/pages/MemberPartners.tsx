@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ensureHttps } from "@/lib/utils";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import { businessCategories } from "@/data/businessCategories";
+import { cyprusCityNames } from "@/data/cyprusLocations";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
@@ -71,9 +72,7 @@ const MemberPartners = () => {
     if (user) fetchPartners();
   }, [user]);
 
-  const uniqueCities = Array.from(
-    new Set(partners.map((p) => p.city).filter(Boolean) as string[])
-  ).sort();
+  const cityOptions = cyprusCityNames;
 
   const filtered = partners.filter((p) => {
     const matchesSearch =
@@ -187,7 +186,7 @@ const MemberPartners = () => {
                   <DropdownMenuItem onClick={() => setCityFilter(null)}>
                     {t("partners.allCities")}
                   </DropdownMenuItem>
-                  {uniqueCities.map((city) => (
+                  {cityOptions.map((city) => (
                     <DropdownMenuItem key={city} onClick={() => setCityFilter(city)}>
                       {getCityDisplayName(city, i18n.language)}
                     </DropdownMenuItem>
