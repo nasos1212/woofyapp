@@ -41,6 +41,7 @@ import PlaceRating from "@/components/PlaceRating";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { cyprusCityNames } from "@/data/cyprusLocations";
+import { sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 
