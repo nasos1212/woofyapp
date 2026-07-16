@@ -481,10 +481,10 @@ const PetProfile = () => {
           <Card className="relative mb-6 overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
             <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-            <div className="relative p-6">
-              <div className="flex items-center gap-4">
+            <div className="relative p-4 sm:p-6">
+              <div className="flex items-start gap-3 sm:gap-4">
                 {/* Pet Photo with Upload */}
-                <div className="relative">
+                <div className="relative shrink-0">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -497,8 +497,8 @@ const PetProfile = () => {
                     {isUploadingPhoto ? (
                       <Loader2 className="w-8 h-8 animate-spin text-wooffy-sky" />
                     ) : pet.photo_url ? (
-                      <img 
-                        src={pet.photo_url} 
+                      <img
+                        src={pet.photo_url}
                         alt={pet.pet_name}
                         className="w-full h-full object-cover"
                       />
@@ -550,59 +550,62 @@ const PetProfile = () => {
                     </AlertDialog>
                   )}
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   {isEditing ? (
-                    <Input
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)}
-                      className="text-2xl font-display font-bold bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50 mb-2"
-                    />
+                    <div className="space-y-2">
+                      <Input
+                        value={editedName}
+                        onChange={(e) => setEditedName(e.target.value)}
+                        placeholder={t("petProfile.name" as any) as string}
+                        className="text-lg font-display font-bold bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50"
+                      />
+                      <Input
+                        value={editedBreed}
+                        onChange={(e) => setEditedBreed(e.target.value)}
+                        placeholder={t("petProfile.breed")}
+                        className="bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50"
+                      />
+                    </div>
                   ) : (
-                    <h1 className="text-2xl font-display font-bold text-wooffy-sky">{pet.pet_name}</h1>
-                  )}
-                  {isEditing ? (
-                    <Input
-                      value={editedBreed}
-                      onChange={(e) => setEditedBreed(e.target.value)}
-                      placeholder={t("petProfile.breed")}
-                      className="bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50"
-                    />
-                  ) : (
-                    <p className="text-wooffy-light/80">{pet.pet_breed || t("petProfile.breedNotSpecified")}</p>
+                    <>
+                      <h1 className="text-2xl font-display font-bold text-wooffy-sky truncate">{pet.pet_name}</h1>
+                      <p className="text-wooffy-light/80 truncate">{pet.pet_breed || t("petProfile.breedNotSpecified")}</p>
+                    </>
                   )}
                 </div>
-                {isEditing ? (
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      onClick={handleSave}
-                      disabled={isSaving}
-                      className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
-                    >
-                      {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
-                      {t("petProfile.save")}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={handleCancel}
-                      className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
-                    >
-                      <X className="w-4 h-4" />
-                      {t("petProfile.cancel")}
-                    </Button>
-                  </div>
-                ) : (
+                {!isEditing && (
                   <Button
                     variant="secondary"
                     size="icon"
                     onClick={() => setIsEditing(true)}
-                    className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky"
+                    className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky shrink-0"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
                 )}
               </div>
+              {isEditing && (
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    size="sm"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                  >
+                    {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
+                    {t("petProfile.save")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleCancel}
+                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                  >
+                    <X className="w-4 h-4" />
+                    {t("petProfile.cancel")}
+                  </Button>
+                </div>
+              )}
             </div>
           </Card>
 
