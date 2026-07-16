@@ -478,8 +478,10 @@ const PetProfile = () => {
           </Button>
 
           {/* Pet Header Card */}
-          <Card className="mb-6 overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
-            <div className="p-6 text-white">
+          <Card className="relative mb-6 overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-wooffy-blue/10 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-wooffy-blue/10 rounded-full translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+            <div className="relative p-6">
               <div className="flex items-center gap-4">
                 {/* Pet Photo with Upload */}
                 <div className="relative">
@@ -491,9 +493,9 @@ const PetProfile = () => {
                     className="hidden"
                     id="pet-photo-upload"
                   />
-                  <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-20 h-20 bg-wooffy-blue/10 rounded-full flex items-center justify-center overflow-hidden border-2 border-wooffy-blue/20">
                     {isUploadingPhoto ? (
-                      <Loader2 className="w-8 h-8 animate-spin" />
+                      <Loader2 className="w-8 h-8 animate-spin text-wooffy-sky" />
                     ) : pet.photo_url ? (
                       <img 
                         src={pet.photo_url} 
@@ -501,18 +503,18 @@ const PetProfile = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : pet.pet_type === "cat" ? (
-                      <Cat className="w-10 h-10" />
+                      <Cat className="w-10 h-10 text-wooffy-sky" />
                     ) : (
-                      <Dog className="w-10 h-10" />
+                      <Dog className="w-10 h-10 text-wooffy-sky" />
                     )}
                   </div>
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploadingPhoto}
-                    className="absolute -bottom-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-100 transition-colors disabled:opacity-50"
+                    className="absolute -bottom-1 -right-1 w-7 h-7 bg-wooffy-light rounded-full flex items-center justify-center shadow-md hover:bg-wooffy-light/90 transition-colors disabled:opacity-50"
                     title={t("petProfile.changePhoto")}
                   >
-                    <Camera className="w-4 h-4 text-gray-700" />
+                    <Camera className="w-4 h-4 text-wooffy-dark" />
                   </button>
                   {pet.photo_url && (
                     <AlertDialog open={showPhotoRemoveDialog} onOpenChange={setShowPhotoRemoveDialog}>
@@ -553,20 +555,20 @@ const PetProfile = () => {
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
-                      className="text-2xl font-display font-bold bg-white/20 border-white/30 text-white placeholder:text-white/50 mb-2"
+                      className="text-2xl font-display font-bold bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50 mb-2"
                     />
                   ) : (
-                    <h1 className="text-2xl font-display font-bold">{pet.pet_name}</h1>
+                    <h1 className="text-2xl font-display font-bold text-wooffy-sky">{pet.pet_name}</h1>
                   )}
                   {isEditing ? (
                     <Input
                       value={editedBreed}
                       onChange={(e) => setEditedBreed(e.target.value)}
                       placeholder={t("petProfile.breed")}
-                      className="bg-white/20 border-white/30 text-white placeholder:text-white/50"
+                      className="bg-wooffy-blue/10 border-wooffy-blue/30 text-wooffy-sky placeholder:text-wooffy-sky/50"
                     />
                   ) : (
-                    <p className="text-white/80">{pet.pet_breed || t("petProfile.breedNotSpecified")}</p>
+                    <p className="text-wooffy-light/80">{pet.pet_breed || t("petProfile.breedNotSpecified")}</p>
                   )}
                 </div>
                 {isEditing ? (
