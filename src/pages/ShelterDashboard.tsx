@@ -490,21 +490,42 @@ const ShelterDashboard = () => {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="location">{t("shelter.fields.location")}</Label>
-                        <Input
-                          id="location"
+                        <Select
                           value={formData.location}
-                          onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                        />
+                          onValueChange={(value) => setFormData(prev => ({ ...prev, location: value }))}
+                        >
+                          <SelectTrigger id="location">
+                            <SelectValue>
+                              {formData.location ? getCityDisplayName(formData.location, i18n.language) : ""}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cyprusCityNames.map((c) => (
+                              <SelectItem key={c} value={c}>{getCityDisplayName(c, i18n.language)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="city">{t("shelter.fields.city")}</Label>
-                        <Input
-                          id="city"
+                        <Select
                           value={formData.city}
-                          onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                        />
+                          onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                        >
+                          <SelectTrigger id="city">
+                            <SelectValue>
+                              {formData.city ? getCityDisplayName(formData.city, i18n.language) : ""}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cyprusCityNames.map((c) => (
+                              <SelectItem key={c} value={c}>{getCityDisplayName(c, i18n.language)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
+
 
                     <div className="space-y-2">
                       <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
