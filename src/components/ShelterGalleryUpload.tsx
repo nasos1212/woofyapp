@@ -169,11 +169,11 @@ const ShelterGalleryUpload = ({ shelterId }: ShelterGalleryUploadProps) => {
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground px-4 text-center">
               <Upload className="w-5 h-5" />
               <span className="text-sm font-medium">{t("shelterGallery.clickToAdd")}</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{t("shelterGallery.fileHint")}</p>
+            <p className="text-xs text-muted-foreground mt-1 px-4 text-center">{t("shelterGallery.fileHint")}</p>
             <input type="file" className="hidden" accept="image/jpeg,image/png,image/webp" multiple onChange={handleFileSelect} />
           </label>
 
