@@ -344,7 +344,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
               {t("adoptablePets.addPet")}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overscroll-contain [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
             <DialogHeader>
               <DialogTitle>
                 {editingPet ? t("adoptablePets.editPet") : t("adoptablePets.addNewPet")}
