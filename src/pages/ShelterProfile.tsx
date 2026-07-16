@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import AdoptionInquiryDialog from "@/components/AdoptionInquiryDialog";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
+import LanguageToggle from "@/components/LanguageToggle";
 import { 
   ArrowLeft, 
   Heart, 
@@ -174,6 +175,11 @@ const ShelterProfile = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
+
+          {/* Language Toggle */}
+          <div className="absolute top-4 right-4">
+            <LanguageToggle className="bg-white/90 hover:bg-white border-0" />
+          </div>
         </div>
 
         {/* Main Content */}

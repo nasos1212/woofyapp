@@ -29,6 +29,7 @@ import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
 import NotificationBell from "@/components/NotificationBell";
+import LanguageToggle from "@/components/LanguageToggle";
 import { 
   Home, 
   Clock, 
@@ -285,6 +286,7 @@ const ShelterDashboard = () => {
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 {getStatusBadge()}
+                <LanguageToggle />
                 <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
