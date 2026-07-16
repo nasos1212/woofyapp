@@ -342,7 +342,7 @@ const ShelterDashboard = () => {
           </div>
         </header>
 
-        <main className="w-full max-w-4xl mx-auto px-4 py-8 box-border">
+        <main className="w-full max-w-4xl mx-auto px-4 py-8 pb-32 md:pb-12 box-border">
           {/* Status Card */}
           {!isApproved && (
             <Card className="mb-6 border-yellow-200 bg-yellow-50">
