@@ -444,13 +444,9 @@ const ShelterDashboard = () => {
                     </TabsList>
                   </div>
                   {/* Left fade gradient */}
-                  <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
-                  {/* Right fade gradient with subtle arrow */}
-                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-0.5">
-                    <div className="bg-primary/90 rounded-full p-0.5">
-                      <ChevronRight className="h-3 w-3 text-primary-foreground" />
-                    </div>
-                  </div>
+                  <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden rounded-l-md" />
+                  {/* Right fade gradient */}
+                  <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden rounded-r-md" />
                 </div>
 
                 <form onSubmit={handleSubmit}>
