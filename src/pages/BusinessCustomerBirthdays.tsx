@@ -517,8 +517,7 @@ const BusinessCustomerBirthdays = () => {
                   <Card>
                     <CardContent className="py-12 text-center">
                       <Cake className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">{t("businessBirthdays.noBirthdaysTitle", { label: filterLabel.toLowerCase() })}</h3>
-                      <p className="text-muted-foreground">
+                      <p className="text-muted-foreground font-bold">
                         {customerPets.length === 0 
                           ? t("businessBirthdays.noBirthdaysEmpty")
                           : birthdayFilter === "week" 
