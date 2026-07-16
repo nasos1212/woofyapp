@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cyprusCityNames } from "@/data/cyprusLocations";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -54,7 +57,7 @@ const ShelterDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState({
     shelter_name: "",
@@ -484,13 +487,33 @@ const ShelterDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
-                      <Input
-                        id="address"
-                        value={formData.address}
-                        onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
+                        <Input
+                          id="address"
+                          value={formData.address}
+                          onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="city">{t("shelter.fields.city")}</Label>
+                        <Select
+                          value={formData.city}
+                          onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                        >
+                          <SelectTrigger id="city">
+                            <SelectValue placeholder={t("shelter.fields.selectCity")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cyprusCityNames.map((c) => (
+                              <SelectItem key={c} value={c}>
+                                {getCityDisplayName(c, i18n.language)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </TabsContent>
 

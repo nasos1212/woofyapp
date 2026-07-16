@@ -2010,6 +2010,7 @@
       "phone": "Phone",
       "location": "Location",
       "city": "City",
+      "selectCity": "Select City",
       "fullAddress": "Full Address",
       "aboutShelter": "About Your Shelter",
       "aboutPlaceholder": "Tell visitors about your shelter, history, and what makes you special...",
