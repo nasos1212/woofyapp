@@ -528,9 +528,9 @@ const BusinessOfferManagement = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[95vw] sm:w-full">
+        <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[calc(100vw-1rem)] sm:w-full p-4 sm:p-6">
           <DialogHeader className="flex-shrink-0 pb-2">
-            <DialogTitle>
+            <DialogTitle className="pr-6">
               {editingOffer ? t("businessOffers.dialogEditTitle") : t("businessOffers.dialogCreateTitle")}
             </DialogTitle>
             <DialogDescription>
@@ -540,7 +540,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-1 -mx-1">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-0">
             <div className="space-y-2">
               <Label htmlFor="title">{t("businessOffers.fieldTitle")} <span className="text-destructive">*</span></Label>
               <Input
@@ -567,9 +567,9 @@ const BusinessOfferManagement = () => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="discount_value">{t("businessOffers.fieldDiscountValue")} <span className="text-destructive">*</span></Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="discount_value" className="whitespace-normal break-words">{t("businessOffers.fieldDiscountValue")} <span className="text-destructive">*</span></Label>
                 <Input
                   id="discount_value"
                   type="number"
@@ -600,8 +600,8 @@ const BusinessOfferManagement = () => {
                   <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueOver100")}</p>
                 ) : null}
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="discount_type">{t("businessOffers.fieldDiscountType")}</Label>
+              <div className="space-y-2 min-w-0">
+                <Label htmlFor="discount_type" className="whitespace-normal break-words">{t("businessOffers.fieldDiscountType")}</Label>
                 <select
                   id="discount_type"
                   value={formData.discount_type}
@@ -746,20 +746,24 @@ const BusinessOfferManagement = () => {
               
               <div className="space-y-4">
                 {/* Date Range */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>{t("businessOffers.startDate")}</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2 min-w-0">
+                    <Label className="whitespace-normal break-words">{t("businessOffers.startDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal px-2 sm:px-3",
                             !formData.valid_from && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_from ? formatDate(formData.valid_from) : <span>{t("businessOffers.pickDate")}</span>}
+                          <CalendarIcon className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
+                          {formData.valid_from ? (
+                            <span className="truncate">{formatDate(formData.valid_from)}</span>
+                          ) : (
+                            <span className="truncate text-xs sm:text-sm">{t("businessOffers.pickDate")}</span>
+                          )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -773,19 +777,23 @@ const BusinessOfferManagement = () => {
                       </PopoverContent>
                     </Popover>
                   </div>
-                  <div className="space-y-2">
-                    <Label>{t("businessOffers.endDate")}</Label>
+                  <div className="space-y-2 min-w-0">
+                    <Label className="whitespace-normal break-words">{t("businessOffers.endDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal px-2 sm:px-3",
                             !formData.valid_until && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.valid_until ? formatDate(formData.valid_until) : <span>{t("businessOffers.pickDate")}</span>}
+                          <CalendarIcon className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
+                          {formData.valid_until ? (
+                            <span className="truncate">{formatDate(formData.valid_until)}</span>
+                          ) : (
+                            <span className="truncate text-xs sm:text-sm">{t("businessOffers.pickDate")}</span>
+                          )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
