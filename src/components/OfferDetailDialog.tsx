@@ -41,6 +41,7 @@ export interface OfferWithDetails {
     business_name: string;
     category: string;
     city: string | null;
+    logo_url?: string | null;
   };
   isRedeemed?: boolean;
 }
