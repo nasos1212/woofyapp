@@ -478,8 +478,8 @@ const PetProfile = () => {
           </Button>
 
           {/* Pet Header Card */}
-          <Card className="mb-6 overflow-hidden">
-            <div className="bg-gradient-hero p-6 text-white">
+          <Card className="mb-6 overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
+            <div className="p-6 text-white">
               <div className="flex items-center gap-4">
                 {/* Pet Photo with Upload */}
                 <div className="relative">
