@@ -284,11 +284,11 @@ const ShelterDashboard = () => {
                 </div>
                 <div className="min-w-0">
                   <h1 className="font-semibold text-foreground truncate">{shelter.shelter_name}</h1>
-                  <p className="text-sm text-muted-foreground">{t("shelter.dashboard")}</p>
+                  <p className="text-sm text-muted-foreground truncate">{t("shelter.dashboard")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                {getStatusBadge()}
+                <div className="hidden sm:block">{getStatusBadge()}</div>
                 <LanguageToggle />
                 <NotificationBell />
                 <DropdownMenu>
