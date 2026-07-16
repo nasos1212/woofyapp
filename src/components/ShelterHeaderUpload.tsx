@@ -198,16 +198,16 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
         <CardContent>
           <div className="flex items-start gap-4">
             {logoPreview ? (
-              <div className="relative shrink-0">
+              <div className="relative">
                 <img src={logoPreview} alt={t("shelterHeader.logoTitle")} className="w-24 h-24 object-cover rounded-lg border" />
                 <Button variant="destructive" size="icon" className="absolute -top-2 -right-2 h-6 w-6" onClick={() => clearSelection('logo')}>
                   <X className="h-3 w-3" />
                 </Button>
               </div>
             ) : currentLogoUrl ? (
-              <img src={currentLogoUrl} alt={t("shelterHeader.logoTitle")} className="w-24 h-24 object-cover rounded-lg border shrink-0" />
+              <img src={currentLogoUrl} alt={t("shelterHeader.logoTitle")} className="w-24 h-24 object-cover rounded-lg border" />
             ) : (
-              <div className="w-24 h-24 shrink-0 rounded-lg border-2 border-dashed flex items-center justify-center bg-muted/30">
+              <div className="w-24 h-24 rounded-lg border-2 border-dashed flex items-center justify-center bg-muted/30">
                 <User className="h-8 w-8 text-muted-foreground" />
               </div>
             )}

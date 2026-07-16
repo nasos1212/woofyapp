@@ -642,8 +642,21 @@ const ShelterDashboard = () => {
                 </form>
 
                   <TabsContent value="branding" className="space-y-6">
-                    <ShelterHeaderUpload shelterId={shelter.id} currentLogoUrl={shelter.logo_url} currentCoverUrl={shelter.cover_photo_url} currentCoverPosition={shelter.cover_photo_position} />
-                    <ShelterGalleryUpload shelterId={shelter.id} />
+                    <div>
+                      <h3 className="text-lg font-medium mb-1">{t("shelter.branding.coverPhoto")}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {t("shelter.branding.coverPhotoDesc")}
+                      </p>
+                      <ShelterHeaderUpload shelterId={shelter.id} currentLogoUrl={shelter.logo_url} currentCoverUrl={shelter.cover_photo_url} currentCoverPosition={shelter.cover_photo_position} />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-medium mb-1">{t("shelter.branding.photoGallery")}</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {t("shelter.branding.photoGalleryDesc")}
+                      </p>
+                      <ShelterGalleryUpload shelterId={shelter.id} />
+                    </div>
                   </TabsContent>
 
                   <TabsContent value="adoptable-pets">
