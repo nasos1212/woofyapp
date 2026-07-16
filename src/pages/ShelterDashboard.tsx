@@ -487,13 +487,33 @@ const ShelterDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
-                      <Input
-                        id="address"
-                        value={formData.address}
-                        onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="address">{t("shelter.fields.fullAddress")}</Label>
+                        <Input
+                          id="address"
+                          value={formData.address}
+                          onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="city">{t("shelter.fields.city")}</Label>
+                        <Select
+                          value={formData.city}
+                          onValueChange={(value) => setFormData(prev => ({ ...prev, city: value }))}
+                        >
+                          <SelectTrigger id="city">
+                            <SelectValue placeholder={t("shelter.fields.selectCity")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {cyprusCityNames.map((c) => (
+                              <SelectItem key={c} value={c}>
+                                {getCityDisplayName(c, i18n.language)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </TabsContent>
 
