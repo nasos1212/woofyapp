@@ -528,7 +528,7 @@ const BusinessOfferManagement = () => {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[calc(100vw-1rem)] sm:w-full p-4 sm:p-6">
+        <DialogContent className="sm:max-w-lg max-h-[85vh] md:max-h-[90vh] flex flex-col overflow-hidden w-[calc(100vw-0.5rem)] sm:w-full p-4 sm:p-6">
           <DialogHeader className="flex-shrink-0 pb-2">
             <DialogTitle className="pr-6">
               {editingOffer ? t("businessOffers.dialogEditTitle") : t("businessOffers.dialogCreateTitle")}
@@ -540,7 +540,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 px-0">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 pl-3 pr-5 [scrollbar-gutter:stable]">
             <div className="space-y-2">
               <Label htmlFor="title">{t("businessOffers.fieldTitle")} <span className="text-destructive">*</span></Label>
               <Input
@@ -549,7 +549,7 @@ const BusinessOfferManagement = () => {
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
-                className="text-base"
+                className="text-base focus-visible:ring-offset-0"
               />
               {!formData.title.trim() && (
                 <p className="text-xs text-destructive">{t("businessOffers.fieldTitleRequired")}</p>
@@ -564,6 +564,7 @@ const BusinessOfferManagement = () => {
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 rows={3}
+                className="focus-visible:ring-offset-0"
               />
             </div>
 
@@ -593,6 +594,7 @@ const BusinessOfferManagement = () => {
                     }
                   }}
                   required
+                  className="focus-visible:ring-offset-0"
                 />
                 {(!formData.discount_value || parseFloat(formData.discount_value) <= 0) ? (
                   <p className="text-xs text-destructive">{t("businessOffers.fieldDiscountValueInvalid")}</p>
