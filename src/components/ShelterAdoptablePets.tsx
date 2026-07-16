@@ -583,10 +583,10 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                 <CardContent className="p-3 sm:p-4">
                   <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                     {/* Photos */}
-                    <div className="flex gap-1 flex-shrink-0">
+                    <div className="flex gap-1 flex-shrink-0 h-16 sm:h-20">
                       {displayPhotos.length > 0 ? (
                         <>
-                          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted overflow-hidden">
+                          <div className="h-full aspect-square rounded-lg bg-muted overflow-hidden">
                             <img 
                               src={displayPhotos[0].photo_url} 
                               alt={pet.name}
@@ -594,9 +594,9 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             />
                           </div>
                           {displayPhotos.length > 1 && (
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1 h-full">
                               {displayPhotos.slice(1, 3).map((photo, idx) => (
-                                <div key={idx} className="w-7 h-7 sm:w-9 sm:h-9 rounded bg-muted overflow-hidden">
+                                <div key={idx} className="w-7 sm:w-9 flex-1 rounded bg-muted overflow-hidden min-h-0">
                                   <img 
                                     src={photo.photo_url} 
                                     alt={`${pet.name} ${idx + 2}`}
@@ -608,7 +608,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                           )}
                         </>
                       ) : (
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-muted flex items-center justify-center">
+                        <div className="h-full aspect-square rounded-lg bg-muted flex items-center justify-center">
                           <PawPrint className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
                         </div>
                       )}
