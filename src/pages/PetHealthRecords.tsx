@@ -169,7 +169,7 @@ const PetHealthRecords = () => {
   };
 
   const REMINDER_OPTIONS = [
-    
+    { value: 3, label: t("petHealth.reminderOptions.threeDays") },
     { value: 1, label: t("petHealth.reminderOptions.oneDay") },
     { value: 0, label: t("petHealth.reminderOptions.onTheDay") },
   ];

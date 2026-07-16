@@ -1157,6 +1157,7 @@
       "documentLabel": "Document {{n}}"
     },
     "reminderOptions": {
+      "threeDays": "3 days before",
       "oneDay": "1 day before",
       "onTheDay": "On the day"
     },
