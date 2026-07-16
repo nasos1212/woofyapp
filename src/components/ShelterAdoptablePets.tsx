@@ -688,15 +688,15 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
         </div>
       ) : (
         <Card>
-          <CardContent className="py-8 text-center">
+          <CardContent className="py-8 px-4 text-center">
             <PawPrint className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
             <h4 className="font-medium mb-1">{t("adoptablePets.noPets")}</h4>
             <p className="text-sm text-muted-foreground mb-4">
               {t("adoptablePets.noPetsDesc")}
             </p>
-            <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              {t("adoptablePets.addFirst")}
+            <Button variant="outline" onClick={() => setIsDialogOpen(true)} className="w-full sm:w-auto max-w-full h-auto py-2 whitespace-normal text-center">
+              <Plus className="h-4 w-4 mr-2 shrink-0" />
+              <span className="break-words">{t("adoptablePets.addFirst")}</span>
             </Button>
           </CardContent>
         </Card>
