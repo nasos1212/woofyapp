@@ -540,7 +540,7 @@ const BusinessOfferManagement = () => {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 pl-3 pr-5 [scrollbar-gutter:stable]">
+          <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0 pr-5 [scrollbar-gutter:stable]">
             <div className="space-y-2">
               <Label htmlFor="title">{t("businessOffers.fieldTitle")} <span className="text-destructive">*</span></Label>
               <Input
