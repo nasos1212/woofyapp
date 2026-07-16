@@ -577,7 +577,7 @@ const PetProfile = () => {
                       size="sm"
                       onClick={handleSave}
                       disabled={isSaving}
-                      className="bg-white/20 hover:bg-white/30 text-white gap-1"
+                      className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                     >
                       {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
                       {t("petProfile.save")}
@@ -586,7 +586,7 @@ const PetProfile = () => {
                       size="sm"
                       variant="secondary"
                       onClick={handleCancel}
-                      className="bg-white/20 hover:bg-white/30 text-white gap-1"
+                      className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                     >
                       <X className="w-4 h-4" />
                       {t("petProfile.cancel")}
@@ -597,7 +597,7 @@ const PetProfile = () => {
                     variant="secondary"
                     size="icon"
                     onClick={() => setIsEditing(true)}
-                    className="bg-white/20 hover:bg-white/30 text-white"
+                    className="bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky"
                   >
                     <Edit2 className="w-4 h-4" />
                   </Button>
