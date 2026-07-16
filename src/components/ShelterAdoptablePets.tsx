@@ -327,8 +327,8 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <h3 className="font-semibold">{t("adoptablePets.title")}</h3>
           <p className="text-sm text-muted-foreground">
             {t("adoptablePets.subtitle")}
@@ -339,7 +339,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
           if (!open) resetForm();
         }}>
           <DialogTrigger asChild>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2 self-start sm:self-center shrink-0">
               <Plus className="h-4 w-4" />
               {t("adoptablePets.addPet")}
             </Button>
