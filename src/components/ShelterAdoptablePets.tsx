@@ -457,7 +457,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                         <CommandInput placeholder={t("shelterPetForm.searchBreed")} />
                         <CommandList 
                           ref={breedListRef}
-                          className="max-h-[220px] overflow-y-scroll [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background"
+                          className="max-h-[220px] overflow-y-auto overscroll-contain [touch-action:pan-y] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:w-3 [&::-webkit-scrollbar-track]:bg-muted/30 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-primary [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-background"
                         >
                           <CommandEmpty>{t("shelterPetForm.noBreedFound")}</CommandEmpty>
                           <CommandGroup>
