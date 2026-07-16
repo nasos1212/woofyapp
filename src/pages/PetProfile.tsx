@@ -615,8 +615,8 @@ const PetProfile = () => {
             {(isEditing || pet.birthday) && (
               <Card>
                 <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -628,14 +628,14 @@ const PetProfile = () => {
                       </div>
                       {isEditing ? (
                         canEditBirthday ? (
-                          <div className="mt-1 space-y-2">
-                            <div className="flex gap-1">
+                          <div className="mt-2 space-y-2">
+                            <div className="inline-flex rounded-md bg-muted p-0.5">
                               <button
                                 type="button"
                                 onClick={() => setKnowsBirthday(true)}
                                 className={cn(
-                                  "text-xs px-2 py-1 rounded",
-                                  knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                                  "text-xs px-2.5 py-1 rounded-sm transition-colors",
+                                  knowsBirthday ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                               >
                                 {t("petProfile.date")}
@@ -644,8 +644,8 @@ const PetProfile = () => {
                                 type="button"
                                 onClick={() => setKnowsBirthday(false)}
                                 className={cn(
-                                  "text-xs px-2 py-1 rounded",
-                                  !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
+                                  "text-xs px-2.5 py-1 rounded-sm transition-colors",
+                                  !knowsBirthday ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                                 )}
                               >
                                 {t("petProfile.age")}
@@ -656,28 +656,28 @@ const PetProfile = () => {
                                 type="date"
                                 value={editedBirthday}
                                 onChange={(e) => setEditedBirthday(e.target.value)}
-                                className="text-sm h-8"
+                                className="text-sm h-9"
                                 max={new Date().toISOString().split('T')[0]}
                                 min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                               />
                             ) : (
-                              <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-2">
                                 <Input
                                   type="number"
                                   min="0"
                                   max="30"
                                   value={editedAgeYears}
                                   onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
-                                  className="text-sm h-8 w-16"
+                                  className="text-sm h-9 w-20"
                                   placeholder={t("petProfile.ageInput")}
                                 />
-                                <span className="text-xs text-muted-foreground">{t("petProfile.ageYrs")}</span>
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">{t("petProfile.ageYrs")}</span>
                               </div>
                             )}
                             {canEditBirthday && birthdayLockReason && (
-                              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {birthdayLockReason}
+                              <p className="text-xs text-muted-foreground flex items-start gap-1">
+                                <Clock className="w-3 h-3 shrink-0 mt-0.5" />
+                                <span className="line-clamp-2">{birthdayLockReason}</span>
                               </p>
                             )}
                           </div>
@@ -688,9 +688,9 @@ const PetProfile = () => {
                                 ? formatDate(new Date(pet.birthday)) 
                                 : t("petProfile.notSet")}
                             </p>
-                            <p className="text-xs text-amber-600 flex items-center gap-1 mt-1">
-                              <Lock className="w-3 h-3" />
-                              {birthdayLockReason}
+                            <p className="text-xs text-amber-600 flex items-start gap-1 mt-1">
+                              <Lock className="w-3 h-3 shrink-0 mt-0.5" />
+                              <span className="line-clamp-2">{birthdayLockReason}</span>
                             </p>
                           </div>
                         )
