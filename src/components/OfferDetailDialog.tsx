@@ -158,8 +158,16 @@ const OfferDetailDialog = ({ offer, onClose, showRedemptionStatus = true }: Offe
 
           {/* Business Info */}
           <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
+              {offer.business.logo_url ? (
+                <img
+                  src={offer.business.logo_url}
+                  alt={offer.business.business_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <Link
