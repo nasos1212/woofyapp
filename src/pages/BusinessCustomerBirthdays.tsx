@@ -90,7 +90,7 @@ const BusinessCustomerBirthdays = () => {
   const [offerModalOpen, setOfferModalOpen] = useState(false);
   const [showSentOffers, setShowSentOffers] = useState(false);
   const [selectedSentOffer, setSelectedSentOffer] = useState<SentBirthdayOffer | null>(null);
-  const [birthdayFilter, setBirthdayFilter] = useState<"all" | "week" | "month">("all");
+  const [birthdayFilter, setBirthdayFilter] = useState<"week" | "month">("month");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -442,21 +442,7 @@ const BusinessCustomerBirthdays = () => {
           )}
 
           {/* Stats / Filter Tabs */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 sm:mb-8">
-            <Card 
-              className={`cursor-pointer transition-all hover:shadow-md ${birthdayFilter === "all" ? "ring-2 ring-primary border-primary" : ""}`}
-              onClick={() => setBirthdayFilter("all")}
-            >
-              <CardContent className="p-3 sm:pt-6 sm:p-6">
-                <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
-                  <Users className={`h-6 w-6 sm:h-8 sm:w-8 ${birthdayFilter === "all" ? "text-primary" : "text-muted-foreground"}`} />
-                  <div>
-                    <p className="text-lg sm:text-2xl font-bold">{customerPets.filter(p => p.birthday).length}</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground">{t("businessBirthdays.statAllPets")}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-6 sm:mb-8">
             <Card 
               className={`cursor-pointer transition-all hover:shadow-md ${birthdayFilter === "week" ? "ring-2 ring-pink-500 border-pink-500" : upcomingBirthdays.filter(b => b.daysUntil <= 7).length > 0 ? "border-pink-500" : ""}`}
               onClick={() => setBirthdayFilter("week")}
@@ -491,11 +477,9 @@ const BusinessCustomerBirthdays = () => {
           {(() => {
             const filteredBirthdays = birthdayFilter === "week" 
               ? upcomingBirthdays.filter(b => b.daysUntil <= 7)
-              : birthdayFilter === "month"
-              ? upcomingBirthdays
-              : upcomingBirthdays; // "all" shows upcoming (within 30 days)
+              : upcomingBirthdays;
 
-            const filterLabel = birthdayFilter === "week" ? t("businessBirthdays.statThisWeek") : birthdayFilter === "month" ? t("businessBirthdays.statThisMonth") : t("businessBirthdays.upcoming");
+            const filterLabel = birthdayFilter === "week" ? t("businessBirthdays.statThisWeek") : t("businessBirthdays.statThisMonth");
 
             return (
               <>
