@@ -30,9 +30,6 @@ import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
 import NotificationBell from "@/components/NotificationBell";
 import LanguageToggle from "@/components/LanguageToggle";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cyprusCityNames } from "@/data/cyprusLocations";
-import { getCityDisplayName } from "@/lib/cityDisplay";
 import { 
   Home, 
   Clock, 
