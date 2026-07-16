@@ -15,6 +15,7 @@ import { cyprusCityNames } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
 import { Dog, Loader2 as LoaderIcon } from "lucide-react";
 import { ensureHttps } from "@/lib/utils";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const ShelterOnboarding = () => {
   const navigate = useNavigate();
@@ -221,6 +222,9 @@ const ShelterOnboarding = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           {t("shelterOnboarding.back")}
         </Button>
+        <div className="absolute top-4 right-4">
+          <LanguageToggle className="bg-white/90 hover:bg-white border-0" />
+        </div>
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Home className="w-8 h-8" />
