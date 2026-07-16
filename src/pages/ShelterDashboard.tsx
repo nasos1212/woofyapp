@@ -338,6 +338,7 @@ const ShelterDashboard = () => {
                 </DropdownMenu>
               </div>
             </div>
+            <div className="sm:hidden mt-2 flex">{getStatusBadge()}</div>
           </div>
         </header>
 
