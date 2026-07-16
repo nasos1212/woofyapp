@@ -214,7 +214,7 @@ const ShelterProfile = () => {
                       </h1>
                       <div className="flex flex-wrap items-center gap-2 text-muted-foreground mb-3">
                         <MapPin className="h-4 w-4" />
-                        <span>{shelter.city || shelter.location}</span>
+                        <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                         {shelter.years_operating && (
                           <>
                             <span>•</span>
