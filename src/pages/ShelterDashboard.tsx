@@ -414,28 +414,26 @@ const ShelterDashboard = () => {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="basic" onValueChange={setActiveTab}>
-                <div className="relative mb-6">
-                  {/* Left fade gradient */}
-                  <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
-                  {/* Right fade gradient with blue arrow */}
-                  <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-1">
-                    <div className="bg-primary rounded-full p-0.5 animate-pulse">
-                      <ChevronRight className="h-4 w-4 text-primary-foreground" />
-                    </div>
-                  </div>
-                  <div className="overflow-x-auto -mx-4 px-4 scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="relative mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+                  <div className="overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
                     <TabsList className="inline-flex w-max gap-1">
-                      <TabsTrigger value="basic">{t("shelter.tabs.basic")}</TabsTrigger>
-                      <TabsTrigger value="about">{t("shelter.tabs.about")}</TabsTrigger>
-                      <TabsTrigger value="social">{t("shelter.tabs.social")}</TabsTrigger>
-                      <TabsTrigger value="branding" className="gap-1">
-                        <ImageIcon className="h-3 w-3" />
+                      <TabsTrigger value="basic" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
+                        {t("shelter.tabs.basic")}
+                      </TabsTrigger>
+                      <TabsTrigger value="about" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
+                        {t("shelter.tabs.about")}
+                      </TabsTrigger>
+                      <TabsTrigger value="social" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
+                        {t("shelter.tabs.social")}
+                      </TabsTrigger>
+                      <TabsTrigger value="branding" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap gap-1">
+                        <ImageIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                         {t("shelter.tabs.branding")}
                       </TabsTrigger>
-                      <TabsTrigger value="adoptable-pets">
+                      <TabsTrigger value="adoptable-pets" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
                         {t("shelter.tabs.pets")}
                       </TabsTrigger>
-                      <TabsTrigger value="inquiries" className="relative">
+                      <TabsTrigger value="inquiries" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap relative">
                         {t("shelter.tabs.inquiries")}
                         {pendingInquiryCount > 0 && (
                           <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
@@ -444,6 +442,14 @@ const ShelterDashboard = () => {
                         )}
                       </TabsTrigger>
                     </TabsList>
+                  </div>
+                  {/* Left fade gradient */}
+                  <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-card to-transparent z-10 pointer-events-none sm:hidden" />
+                  {/* Right fade gradient with subtle arrow */}
+                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden flex items-center justify-end pr-0.5">
+                    <div className="bg-primary/90 rounded-full p-0.5">
+                      <ChevronRight className="h-3 w-3 text-primary-foreground" />
+                    </div>
                   </div>
                 </div>
 
