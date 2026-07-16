@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Helmet } from "react-helmet-async";
 import { ensureHttps } from "@/lib/utils";
+import { getCityDisplayName } from "@/lib/cityDisplay";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -33,7 +34,7 @@ import {
 
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -214,7 +215,7 @@ const ShelterProfile = () => {
                       </h1>
                       <div className="flex flex-wrap items-center gap-2 text-muted-foreground mb-3">
                         <MapPin className="h-4 w-4" />
-                        <span>{shelter.city || shelter.location}</span>
+                        <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                         {shelter.years_operating && (
                           <>
                             <span>•</span>
