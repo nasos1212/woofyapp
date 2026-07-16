@@ -1796,7 +1796,7 @@
     "todayBadge": "Today!",
     "weekBadge": "This Week",
     "daysBadge": "In {{days}} days",
-    "birthdaysHeader": "{{label}} Birthdays",
+    "birthdaysHeader": "Birthdays {{label}}",
     "noBirthdaysTitle": "No birthdays {{label}}",
     "noBirthdaysEmpty": "You don't have any customer interactions yet. Birthdays will appear here once customers redeem offers.",
     "noBirthdaysWeek": "No pet birthdays in the next 7 days.",
