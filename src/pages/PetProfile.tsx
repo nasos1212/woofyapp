@@ -716,54 +716,14 @@ const PetProfile = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.age")}</p>
-                    {/* Show age input when editing and user chose age instead of birthday */}
-                    {isEditing && !knowsBirthday && !pet.birthday ? (
-                      <div className="mt-1 space-y-2">
-                        <div className="flex gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setKnowsBirthday(true)}
-                            className={cn(
-                              "text-xs px-2 py-1 rounded",
-                              knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
-                            )}
-                          >
-                            {t("petProfile.date")}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setKnowsBirthday(false)}
-                            className={cn(
-                              "text-xs px-2 py-1 rounded",
-                              !knowsBirthday ? "bg-primary text-primary-foreground" : "bg-muted"
-                            )}
-                          >
-                            {t("petProfile.age")}
-                          </button>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Input
-                            type="number"
-                            min="0"
-                            max="30"
-                            value={editedAgeYears}
-                            onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
-                            className="text-sm h-8 w-16"
-                            placeholder={t("petProfile.ageInput")}
-                          />
-                          <span className="text-xs text-muted-foreground">{t("petProfile.ageYrs")}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="font-medium text-sm sm:text-base truncate">
-                        {isEditing 
-                          ? (knowsBirthday 
-                              ? (editedBirthday ? calculateAge(editedBirthday, null) : t("petProfile.setBirthday")) 
-                              : (editedAgeYears !== "" ? t("petProfile.approxYearsOld", { years: editedAgeYears }) : t("petProfile.setAge")))
-                          : calculateAge(pet.birthday, pet.age_years)
-                        }
-                      </p>
-                    )}
+                    <p className="font-medium text-sm sm:text-base truncate">
+                      {isEditing 
+                        ? (knowsBirthday 
+                            ? (editedBirthday ? calculateAge(editedBirthday, null) : t("petProfile.setBirthday")) 
+                            : (editedAgeYears !== "" ? t("petProfile.approxYearsOld", { years: editedAgeYears }) : t("petProfile.setAge")))
+                        : calculateAge(pet.birthday, pet.age_years)
+                      }
+                    </p>
                   </div>
                 </div>
               </CardContent>
