@@ -57,7 +57,7 @@ const ShelterDashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState("basic");
   const [formData, setFormData] = useState({
     shelter_name: "",
