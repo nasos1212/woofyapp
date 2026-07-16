@@ -1585,7 +1585,7 @@
     "timeRestrictions": "Χρονικοί Περιορισμοί (Προαιρετικό)",
     "startDate": "Ημ/νία Εναρξης",
     "endDate": "Ημ/νία Λήξης",
-    "pickDate": "Επιλέξτε ημερομηνία",
+    "pickDate": "Επιλέξτε ημ/νία",
     "validRange": "📅 Ισχύει από {{from}} έως {{to}}",
     "validStarts": "📅 Ξεκινά {{date}}",
     "validEnds": "📅 Λήγει {{date}}",
