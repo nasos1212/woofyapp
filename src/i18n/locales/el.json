@@ -1157,8 +1157,7 @@
       "documentLabel": "Εγγραφο {{n}}"
     },
     "reminderOptions": {
-      "threeDays": "3 ημέρες πριν",
-      "oneDay": "1 ημέρα πριν",
+      `     "oneDay": "1 ημέρα πριν",
       "onTheDay": "Την ημέρα"
     },
     "toasts": {
