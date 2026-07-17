@@ -174,8 +174,7 @@ const PetProfile = () => {
             setBirthdayLockReason(t("petProfile.birthdayLockedAfterOffer"));
           } else if (daysSinceCreation > 14) {
             setCanEditBirthday(false);
-            const daysAgo = daysSinceCreation - 14;
-            setBirthdayLockReason(t("petProfile.editWindowPassed", { count: daysAgo, days: daysAgo }));
+            setBirthdayLockReason(t("petProfile.editWindowPassed"));
           } else {
             setCanEditBirthday(true);
             const daysRemaining = 14 - daysSinceCreation;
