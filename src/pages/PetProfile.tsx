@@ -197,6 +197,19 @@ const PetProfile = () => {
     }
   }, [user, id, authLoading, hasMembership, membershipLoading]);
 
+  useEffect(() => {
+    if (!birthdayLockInfo) {
+      setBirthdayLockReason(null);
+      return;
+    }
+    setBirthdayLockReason(
+      birthdayLockInfo.count !== undefined
+        ? t(birthdayLockInfo.key, { count: birthdayLockInfo.count })
+        : t(birthdayLockInfo.key)
+    );
+  }, [birthdayLockInfo, i18n.language, t]);
+
+
   const handleSave = async () => {
     if (!pet) return;
 
