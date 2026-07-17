@@ -69,7 +69,7 @@ interface Pet {
 
 
 const PetProfile = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, membership, loading: membershipLoading } = useMembership();
@@ -92,6 +92,7 @@ const PetProfile = () => {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [canEditBirthday, setCanEditBirthday] = useState(true);
   const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
+  const [birthdayLockInfo, setBirthdayLockInfo] = useState<{ key: string; count?: number } | null>(null);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
@@ -170,17 +171,17 @@ const PetProfile = () => {
           
           if (isLocked) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.birthdayLocked"));
+            setBirthdayLockInfo({ key: "petProfile.birthdayLocked" });
           } else if (hasReceivedOffer) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.birthdayLockedAfterOffer"));
+            setBirthdayLockInfo({ key: "petProfile.birthdayLockedAfterOffer" });
           } else if (daysSinceCreation > 14) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.editWindowPassed"));
+            setBirthdayLockInfo({ key: "petProfile.editWindowPassed" });
           } else {
             setCanEditBirthday(true);
             const daysRemaining = 14 - daysSinceCreation;
-            setBirthdayLockReason(t("petProfile.daysLeftToEdit", { count: daysRemaining }));
+            setBirthdayLockInfo({ key: "petProfile.daysLeftToEdit", count: daysRemaining });
           }
         }
       } catch (error) {
@@ -195,6 +196,19 @@ const PetProfile = () => {
       fetchPet();
     }
   }, [user, id, authLoading, hasMembership, membershipLoading]);
+
+  useEffect(() => {
+    if (!birthdayLockInfo) {
+      setBirthdayLockReason(null);
+      return;
+    }
+    setBirthdayLockReason(
+      birthdayLockInfo.count !== undefined
+        ? t(birthdayLockInfo.key, { count: birthdayLockInfo.count })
+        : t(birthdayLockInfo.key)
+    );
+  }, [birthdayLockInfo, i18n.language, t]);
+
 
   const handleSave = async () => {
     if (!pet) return;
