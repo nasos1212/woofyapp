@@ -95,13 +95,17 @@ const FreeMemberDashboard = () => {
       }
 
       try {
-        // Check for shelter record, shelter role, and business in parallel
-        const [shelterResult, shelterRoleResult, businessResult, businessRoleResult] = await Promise.all([
+        // Check partner records, roles, and membership in parallel. A stray business role must
+        // not push an actual pet owner into partner registration.
+        const [shelterResult, shelterRoleResult, businessResult, businessRoleResult, membershipResult] = await Promise.all([
           supabase.from("shelters").select("id, verification_status").eq("user_id", user.id).maybeSingle(),
           supabase.rpc("has_role", { _user_id: user.id, _role: "shelter" }),
           supabase.from("businesses").select("id").eq("user_id", user.id).maybeSingle(),
           supabase.rpc("has_role", { _user_id: user.id, _role: "business" }),
+          supabase.from("memberships").select("id, is_active").eq("user_id", user.id).maybeSingle(),
         ]);
+
+        const hasActiveMembership = membershipResult.data?.is_active === true;
 
         // Redirect shelters to their dashboard or onboarding
         if (shelterResult.data) {
@@ -110,7 +114,7 @@ const FreeMemberDashboard = () => {
         }
         
         // Shelter role but no record = incomplete onboarding
-        if (shelterRoleResult.data) {
+        if (shelterRoleResult.data && !hasActiveMembership) {
           setRedirectPath("/shelter-onboarding");
           return;
         }
@@ -122,7 +126,7 @@ const FreeMemberDashboard = () => {
         }
         
         // Business role but no record = incomplete registration
-        if (businessRoleResult.data) {
+        if (businessRoleResult.data && !hasActiveMembership) {
           setRedirectPath("/partner-register");
           return;
         }
