@@ -186,16 +186,18 @@ const Auth = () => {
         return;
       }
       
-      // CASE 2: User has business role OR business account - redirect to business
-      // This catches users who started business registration but didn't complete it
-      if (hasBusinessRole || hasBusiness) {
-        if (!hasBusiness) {
-          const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
-          navigate(`/partner-register${nameParam}`);
-        } else {
-          showWelcomeToast();
-          navigate("/business");
-        }
+      // CASE 2: User has an actual business account - redirect to business dashboard
+      if (hasBusiness) {
+        showWelcomeToast();
+        navigate("/business");
+        return;
+      }
+
+      // User has business role but no business record - only send to partner registration
+      // if they don't also have a membership (i.e. they aren't primarily a pet owner)
+      if (hasBusinessRole && !membership) {
+        const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
+        navigate(`/partner-register${nameParam}`);
         return;
       }
       
