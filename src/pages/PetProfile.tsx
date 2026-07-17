@@ -628,28 +628,33 @@ const PetProfile = () => {
           <div className={`grid gap-3 sm:gap-4 mb-4 ${isEditing || pet.birthday ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
             {/* Birthday Card - only show if editing OR if pet has a birthday */}
             {(isEditing || pet.birthday) && (
-              <Card>
-                <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
-                  <div className="flex items-start gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0 mt-0.5">
-                      <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1">
-                        <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.birthday")}</p>
-                        {!canEditBirthday && (
-                          <Lock className="w-3 h-3 text-muted-foreground" />
-                        )}
+              <Card className="overflow-hidden">
+                <CardContent className="p-3 sm:p-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-100 rounded-full flex items-center justify-center shrink-0">
+                        <Cake className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
                       </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1">
+                          <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.birthday")}</p>
+                          {!canEditBirthday && (
+                            <Lock className="w-3 h-3 text-muted-foreground" />
+                          )}
+                        </div>
+                        <p className="font-medium text-sm sm:text-base truncate">
+                          {pet.birthday
+                            ? formatDate(new Date(pet.birthday))
+                            : t("petProfile.notSet")}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="min-w-0 w-full">
                       {isEditing ? (
                         canEditBirthday ? (
-                          <div className="mt-1 space-y-2 min-w-0">
-                            <p className="font-medium text-sm sm:text-base truncate">
-                              {pet.birthday
-                                ? formatDate(new Date(pet.birthday))
-                                : t("petProfile.notSet")}
-                            </p>
-                            <div className="inline-flex rounded-md bg-muted p-0.5">
+                          <div className="space-y-2 min-w-0 w-full">
+                            <div className="inline-flex max-w-full rounded-md bg-muted p-0.5">
                               <button
                                 type="button"
                                 onClick={() => setKnowsBirthday(true)}
@@ -688,7 +693,12 @@ const PetProfile = () => {
                                     </span>
                                   </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-[min(calc(100vw-2rem),21rem)] p-0" align="start" sideOffset={6}>
+                                <PopoverContent
+                                  className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-0"
+                                  align="start"
+                                  side="bottom"
+                                  sideOffset={6}
+                                >
                                   <Calendar
                                     mode="single"
                                     captionLayout="dropdown-buttons"
@@ -699,58 +709,44 @@ const PetProfile = () => {
                                     fromDate={new Date(new Date().setFullYear(new Date().getFullYear() - 25))}
                                     toDate={new Date()}
                                     initialFocus
-                                    className={cn("p-3 pointer-events-auto")}
+                                    className={cn("p-2 pointer-events-auto")}
                                   />
                                 </PopoverContent>
                               </Popover>
                             ) : (
-                              <div className="flex items-center gap-2">
+                              <div className="flex min-w-0 items-center gap-2">
                                 <Input
                                   type="number"
                                   min="0"
                                   max="30"
                                   value={editedAgeYears}
                                   onChange={(e) => setEditedAgeYears(e.target.value ? parseInt(e.target.value) : "")}
-                                  className="text-sm h-9 w-20"
+                                  className="text-sm h-9 w-20 shrink-0"
                                   placeholder={t("petProfile.ageInput")}
                                 />
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">{t("petProfile.ageYrs")}</span>
+                                <span className="min-w-0 text-xs text-muted-foreground">{t("petProfile.ageYrs")}</span>
                               </div>
                             )}
                             {birthdayLockReason && (
                               <p className="text-xs text-amber-600 flex items-start gap-1 mt-1">
                                 <Lock className="w-3 h-3 shrink-0 mt-0.5" />
-                                <span className="line-clamp-2">{birthdayLockReason}</span>
+                                <span>{birthdayLockReason}</span>
                               </p>
                             )}
                           </div>
                         ) : (
-                          <div className="mt-1">
-                            <p className="font-medium text-sm sm:text-base truncate">
-                              {pet.birthday 
-                                ? formatDate(new Date(pet.birthday)) 
-                                : t("petProfile.notSet")}
-                            </p>
-                            <p className="text-xs text-amber-600 flex items-start gap-1 mt-1">
-                              <Lock className="w-3 h-3 shrink-0 mt-0.5" />
-                              <span className="line-clamp-2">{birthdayLockReason}</span>
-                            </p>
-                          </div>
+                          <p className="text-xs text-amber-600 flex items-start gap-1">
+                            <Lock className="w-3 h-3 shrink-0 mt-0.5" />
+                            <span>{birthdayLockReason}</span>
+                          </p>
                         )
                       ) : (
-                        <div>
-                          <p className="font-medium text-sm sm:text-base truncate">
-                            {pet.birthday 
-                              ? formatDate(new Date(pet.birthday)) 
-                              : t("petProfile.notSet")}
+                        !canEditBirthday && birthdayLockReason && (
+                          <p className="text-xs text-amber-600 flex items-start gap-1">
+                            <Lock className="w-3 h-3 shrink-0 mt-0.5" />
+                            <span>{birthdayLockReason}</span>
                           </p>
-                          {!canEditBirthday && birthdayLockReason && (
-                            <p className="text-xs text-amber-600 flex items-start gap-1 mt-1">
-                              <Lock className="w-3 h-3 shrink-0 mt-0.5" />
-                              <span className="line-clamp-2">{birthdayLockReason}</span>
-                            </p>
-                          )}
-                        </div>
+                        )
                       )}
                     </div>
                   </div>
