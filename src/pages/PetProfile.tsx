@@ -171,17 +171,17 @@ const PetProfile = () => {
           
           if (isLocked) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.birthdayLocked"));
+            setBirthdayLockInfo({ key: "petProfile.birthdayLocked" });
           } else if (hasReceivedOffer) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.birthdayLockedAfterOffer"));
+            setBirthdayLockInfo({ key: "petProfile.birthdayLockedAfterOffer" });
           } else if (daysSinceCreation > 14) {
             setCanEditBirthday(false);
-            setBirthdayLockReason(t("petProfile.editWindowPassed"));
+            setBirthdayLockInfo({ key: "petProfile.editWindowPassed" });
           } else {
             setCanEditBirthday(true);
             const daysRemaining = 14 - daysSinceCreation;
-            setBirthdayLockReason(t("petProfile.daysLeftToEdit", { count: daysRemaining }));
+            setBirthdayLockInfo({ key: "petProfile.daysLeftToEdit", count: daysRemaining });
           }
         }
       } catch (error) {
