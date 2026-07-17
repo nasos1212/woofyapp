@@ -756,19 +756,17 @@ const BusinessOfferManagement = () => {
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal px-2 sm:px-3",
+                            "w-full min-w-0 justify-start text-left font-normal px-2 text-xs sm:text-sm",
                             !formData.valid_from && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
-                          {formData.valid_from ? (
-                            <span className="truncate">{formatDate(formData.valid_from)}</span>
-                          ) : (
-                            <span className="truncate text-xs sm:text-sm">{t("businessOffers.pickDate")}</span>
-                          )}
+                          <CalendarIcon className="mr-1.5 h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {formData.valid_from ? formatDate(formData.valid_from) : t("businessOffers.pickDate")}
+                          </span>
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto p-0" align="start" collisionPadding={12}>
                         <Calendar
                           mode="single"
                           selected={formData.valid_from}
@@ -786,19 +784,17 @@ const BusinessOfferManagement = () => {
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal px-2 sm:px-3",
+                            "w-full min-w-0 justify-start text-left font-normal px-2 text-xs sm:text-sm",
                             !formData.valid_until && "text-muted-foreground"
                           )}
                         >
-                          <CalendarIcon className="mr-1.5 sm:mr-2 h-4 w-4 shrink-0" />
-                          {formData.valid_until ? (
-                            <span className="truncate">{formatDate(formData.valid_until)}</span>
-                          ) : (
-                            <span className="truncate text-xs sm:text-sm">{t("businessOffers.pickDate")}</span>
-                          )}
+                          <CalendarIcon className="mr-1.5 h-4 w-4 shrink-0" />
+                          <span className="truncate">
+                            {formData.valid_until ? formatDate(formData.valid_until) : t("businessOffers.pickDate")}
+                          </span>
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-auto p-0" align="start" collisionPadding={12}>
                         <Calendar
                           mode="single"
                           selected={formData.valid_until}
