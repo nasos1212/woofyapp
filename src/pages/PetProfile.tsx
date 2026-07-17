@@ -89,7 +89,17 @@ const PetProfile = () => {
   const [knowsBirthday, setKnowsBirthday] = useState(true);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [canEditBirthday, setCanEditBirthday] = useState(true);
-  const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
+  const [birthdayLockKind, setBirthdayLockKind] = useState<"locked" | "afterOffer" | "windowPassed" | "daysLeft" | null>(null);
+  const [birthdayDaysRemaining, setBirthdayDaysRemaining] = useState<number>(0);
+  const birthdayLockReason = (() => {
+    switch (birthdayLockKind) {
+      case "locked": return t("petProfile.birthdayLocked");
+      case "afterOffer": return t("petProfile.birthdayLockedAfterOffer");
+      case "windowPassed": return t("petProfile.editWindowPassed");
+      case "daysLeft": return t("petProfile.daysLeftToEdit", { count: birthdayDaysRemaining });
+      default: return null;
+    }
+  })();
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
