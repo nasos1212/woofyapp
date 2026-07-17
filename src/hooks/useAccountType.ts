@@ -18,8 +18,9 @@ export const useAccountType = () => {
       }
 
       try {
-        // Check roles and records in parallel for efficiency
-        const [businessRoleResult, shelterRoleResult, shelterRecordResult] = await Promise.all([
+        // Check records, roles, and membership in parallel. Actual partner records take priority;
+        // stray partner roles should not override a real pet-owner membership.
+        const [businessRoleResult, shelterRoleResult, businessRecordResult, shelterRecordResult, membershipResult] = await Promise.all([
           supabase
             .from("user_roles")
             .select("id")
@@ -33,16 +34,31 @@ export const useAccountType = () => {
             .eq("role", "shelter")
             .maybeSingle(),
           supabase
+            .from("businesses")
+            .select("id")
+            .eq("user_id", user.id)
+            .maybeSingle(),
+          supabase
             .from("shelters")
             .select("id")
             .eq("user_id", user.id)
             .maybeSingle(),
+          supabase
+            .from("memberships")
+            .select("id, is_active")
+            .eq("user_id", user.id)
+            .maybeSingle(),
         ]);
 
-        // Shelter takes priority (check both role AND record)
-        if (shelterRoleResult.data || shelterRecordResult.data) {
+        const hasActiveMembership = membershipResult.data?.is_active === true;
+
+        if (shelterRecordResult.data) {
           setAccountType("shelter");
-        } else if (businessRoleResult.data) {
+        } else if (businessRecordResult.data) {
+          setAccountType("business");
+        } else if (shelterRoleResult.data && !hasActiveMembership) {
+          setAccountType("shelter");
+        } else if (businessRoleResult.data && !hasActiveMembership) {
           setAccountType("business");
         } else {
           setAccountType("member");

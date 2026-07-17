@@ -116,8 +116,18 @@ const BusinessDashboard = () => {
       .maybeSingle();
 
     if (!businessData) {
-      // User doesn't have a business - redirect to registration
-      navigate("/partner-register");
+      // User doesn't have a business record. If they are a pet owner, keep them in the member flow.
+      const { data: membershipData } = await supabase
+        .from('memberships')
+        .select('plan_type, is_active')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (membershipData?.is_active) {
+        navigate(membershipData.plan_type === 'free' ? "/member/free" : "/member");
+      } else {
+        navigate("/partner-register");
+      }
       return;
     }
     

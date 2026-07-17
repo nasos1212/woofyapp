@@ -33,8 +33,7 @@ const Header = () => {
   const isHomePage = location.pathname === "/";
   const isAdminPage = location.pathname.startsWith("/admin");
   
-  // Determine correct dashboard path based on role and membership status
-  // CRITICAL: Check shelter first, then business, then member
+  // Determine correct dashboard path based on actual partner records and membership status
   const dashboardPath = isShelter 
     ? (hasShelterRecord ? "/shelter-dashboard" : "/shelter-onboarding")
     : isBusiness 
@@ -98,10 +97,11 @@ const Header = () => {
   const checkBusinessStatus = async () => {
     if (!user) return;
     try {
-      const { data } = await supabase.rpc("has_role", {
-        _user_id: user.id,
-        _role: "business",
-      });
+      const { data } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
       setIsBusiness(!!data);
     } catch {
       setIsBusiness(false);
