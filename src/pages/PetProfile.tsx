@@ -627,7 +627,7 @@ const PetProfile = () => {
                       </div>
                       {isEditing ? (
                         canEditBirthday ? (
-                          <div className="mt-2 space-y-2">
+                          <div className="mt-2 space-y-2 min-w-0">
                             <div className="inline-flex rounded-md bg-muted p-0.5">
                               <button
                                 type="button"
@@ -655,7 +655,7 @@ const PetProfile = () => {
                                 type="date"
                                 value={editedBirthday}
                                 onChange={(e) => setEditedBirthday(e.target.value)}
-                                className="text-sm h-9"
+                                className="text-sm h-9 w-full min-w-0 max-w-full"
                                 max={new Date().toISOString().split('T')[0]}
                                 min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
                               />
