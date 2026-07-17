@@ -441,17 +441,64 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                   />
                 ) : (
                   <>
-                    <select
-                      id="breed-select"
-                      value={formData.breed}
-                      onChange={(e) => setFormData(prev => ({ ...prev, breed: e.target.value }))}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">{t("shelterPetForm.selectBreed")}</option>
-                      {breeds.map((breed) => (
-                        <option key={breed} value={breed}>{breed}</option>
-                      ))}
-                    </select>
+                    <Popover open={breedOpen} onOpenChange={setBreedOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={breedOpen}
+                          className="w-full justify-between font-normal"
+                        >
+                          {formData.breed ? (
+                            formData.breed
+                          ) : (
+                            <span className="text-muted-foreground">{t("shelterPetForm.selectBreed")}</span>
+                          )}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[--radix-popover-trigger-width] p-0"
+                        align="start"
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                      >
+                        <Command>
+                          <CommandInput placeholder={t("shelterPetForm.searchBreed")} />
+                          <div
+                            onTouchMove={(e) => e.stopPropagation()}
+                            onWheel={(e) => e.stopPropagation()}
+                          >
+                            <CommandList
+                              ref={breedListRef}
+                              className="max-h-[40vh]"
+                              style={{ touchAction: 'pan-y', overscrollBehavior: 'contain' }}
+                            >
+                              <CommandEmpty>{t("shelterPetForm.noBreedFound")}</CommandEmpty>
+                              <CommandGroup>
+                                {breeds.map((breed) => (
+                                  <CommandItem
+                                    key={breed}
+                                    value={breed}
+                                    onSelect={() => {
+                                      setFormData(prev => ({ ...prev, breed: breed === prev.breed ? "" : breed }));
+                                      setBreedOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        formData.breed === breed ? "opacity-100" : "opacity-0"
+                                      )}
+                                    />
+                                    {breed}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </div>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
                   </>
                 )}
               </div>
