@@ -92,6 +92,7 @@ const PetProfile = () => {
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [canEditBirthday, setCanEditBirthday] = useState(true);
   const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
+  const [birthdayLockInfo, setBirthdayLockInfo] = useState<{ key: string; count?: number } | null>(null);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
