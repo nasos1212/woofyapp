@@ -186,30 +186,27 @@ const Auth = () => {
         return;
       }
       
-      // CASE 2: User has business role OR business account - redirect to business
-      // This catches users who started business registration but didn't complete it
-      if (hasBusinessRole || hasBusiness) {
-        if (!hasBusiness) {
-          const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
-          navigate(`/partner-register${nameParam}`);
-        } else {
-          showWelcomeToast();
-          navigate("/business");
-        }
+      // CASE 2: User has an actual business record - go to business dashboard
+      if (hasBusiness) {
+        showWelcomeToast();
+        navigate("/business");
         return;
       }
-      
-      // CASE 2: User has a membership (pet owner) - redirect to member dashboard
+
+      // CASE 3: User has a membership (pet owner) - redirect to member dashboard
+      // This takes priority over a dangling business role with no business record
+      // (e.g. admin/dual-role users who are actually pet owners).
       if (hasMembership) {
-        if (accountType === "business") {
-          toast({
-            title: "Pet Owner Account Found",
-            description: "You're registered as a pet owner. Redirecting to your dashboard.",
-          });
-        } else {
-          showWelcomeToast();
-        }
+        showWelcomeToast();
         navigate("/member");
+        return;
+      }
+
+      // CASE 4: User has business role but no business record and no membership -
+      // they started business registration but never finished.
+      if (hasBusinessRole) {
+        const nameParam = userName !== "there" ? `?name=${encodeURIComponent(userName)}` : "";
+        navigate(`/partner-register${nameParam}`);
         return;
       }
       
