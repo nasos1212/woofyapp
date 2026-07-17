@@ -69,7 +69,7 @@ interface Pet {
 
 
 const PetProfile = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, membership, loading: membershipLoading } = useMembership();
