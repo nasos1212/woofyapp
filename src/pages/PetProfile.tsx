@@ -89,17 +89,7 @@ const PetProfile = () => {
   const [knowsBirthday, setKnowsBirthday] = useState(true);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [canEditBirthday, setCanEditBirthday] = useState(true);
-  const [birthdayLockKind, setBirthdayLockKind] = useState<"locked" | "afterOffer" | "windowPassed" | "daysLeft" | null>(null);
-  const [birthdayDaysRemaining, setBirthdayDaysRemaining] = useState<number>(0);
-  const birthdayLockReason = (() => {
-    switch (birthdayLockKind) {
-      case "locked": return t("petProfile.birthdayLocked");
-      case "afterOffer": return t("petProfile.birthdayLockedAfterOffer");
-      case "windowPassed": return t("petProfile.editWindowPassed");
-      case "daysLeft": return t("petProfile.daysLeftToEdit", { count: birthdayDaysRemaining });
-      default: return null;
-    }
-  })();
+  const [birthdayLockReason, setBirthdayLockReason] = useState<string | null>(null);
   const [birthdayOffers, setBirthdayOffers] = useState<BirthdayOffer[]>([]);
   const [showPhotoRemoveDialog, setShowPhotoRemoveDialog] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
@@ -178,17 +168,17 @@ const PetProfile = () => {
           
           if (isLocked) {
             setCanEditBirthday(false);
-            setBirthdayLockKind("locked");
+            setBirthdayLockReason(t("petProfile.birthdayLocked"));
           } else if (hasReceivedOffer) {
             setCanEditBirthday(false);
-            setBirthdayLockKind("afterOffer");
+            setBirthdayLockReason(t("petProfile.birthdayLockedAfterOffer"));
           } else if (daysSinceCreation > 14) {
             setCanEditBirthday(false);
-            setBirthdayLockKind("windowPassed");
+            setBirthdayLockReason(t("petProfile.editWindowPassed"));
           } else {
             setCanEditBirthday(true);
-            setBirthdayLockKind("daysLeft");
-            setBirthdayDaysRemaining(14 - daysSinceCreation);
+            const daysRemaining = 14 - daysSinceCreation;
+            setBirthdayLockReason(t("petProfile.daysLeftToEdit", { count: daysRemaining }));
           }
         }
       } catch (error) {
@@ -594,24 +584,24 @@ const PetProfile = () => {
                 )}
               </div>
               {isEditing && (
-                <div className="flex gap-3 mt-4">
+                <div className="flex gap-2 mt-4">
                   <Button
                     size="sm"
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex-1 min-w-0 px-2 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                   >
-                    {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4 shrink-0" />}
-                    <span className="truncate">{t("petProfile.save")}</span>
+                    {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
+                    {t("petProfile.save")}
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={handleCancel}
-                    className="flex-1 min-w-0 px-2 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                   >
-                    <X className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{t("petProfile.cancel")}</span>
+                    <X className="w-4 h-4" />
+                    {t("petProfile.cancel")}
                   </Button>
                 </div>
               )}
