@@ -594,24 +594,24 @@ const PetProfile = () => {
                 )}
               </div>
               {isEditing && (
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-3 mt-4">
                   <Button
                     size="sm"
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                    className="flex-1 min-w-0 px-2 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                   >
-                    {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4" />}
-                    {t("petProfile.save")}
+                    {isSaving ? <DogLoader size="sm" /> : <Save className="w-4 h-4 shrink-0" />}
+                    <span className="truncate">{t("petProfile.save")}</span>
                   </Button>
                   <Button
                     size="sm"
                     variant="secondary"
                     onClick={handleCancel}
-                    className="flex-1 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
+                    className="flex-1 min-w-0 px-2 bg-wooffy-blue/10 hover:bg-wooffy-blue/20 text-wooffy-sky gap-1"
                   >
-                    <X className="w-4 h-4" />
-                    {t("petProfile.cancel")}
+                    <X className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{t("petProfile.cancel")}</span>
                   </Button>
                 </div>
               )}
