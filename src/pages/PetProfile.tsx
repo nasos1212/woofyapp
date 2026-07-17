@@ -694,11 +694,19 @@ const PetProfile = () => {
                           </div>
                         )
                       ) : (
-                        <p className="font-medium text-sm sm:text-base truncate">
-                          {pet.birthday 
-                            ? formatDate(new Date(pet.birthday)) 
-                            : t("petProfile.notSet")}
-                        </p>
+                        <div>
+                          <p className="font-medium text-sm sm:text-base truncate">
+                            {pet.birthday 
+                              ? formatDate(new Date(pet.birthday)) 
+                              : t("petProfile.notSet")}
+                          </p>
+                          {!canEditBirthday && birthdayLockReason && (
+                            <p className="text-xs text-amber-600 flex items-start gap-1 mt-1">
+                              <Lock className="w-3 h-3 shrink-0 mt-0.5" />
+                              <span className="line-clamp-2">{birthdayLockReason}</span>
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
