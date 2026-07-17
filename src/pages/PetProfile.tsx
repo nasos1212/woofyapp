@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import { ImageCropperDialog } from "@/components/ImageCropperDialog";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock, Gift, Building2 } from "lucide-react";
+import { Dog, Cat, ArrowLeft, Cake, Heart, Calendar as CalendarIcon, Edit2, Save, X, FileText, Trash2, Camera, Loader2, Lock, Clock, Gift, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -651,14 +653,37 @@ const PetProfile = () => {
                               </button>
                             </div>
                             {knowsBirthday ? (
-                              <Input
-                                type="date"
-                                value={editedBirthday}
-                                onChange={(e) => setEditedBirthday(e.target.value)}
-                                className="text-sm h-9 w-full min-w-0 max-w-full"
-                                max={new Date().toISOString().split('T')[0]}
-                                min={new Date(new Date().setFullYear(new Date().getFullYear() - 25)).toISOString().split('T')[0]}
-                              />
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    className={cn(
+                                      "h-9 w-full min-w-0 max-w-full justify-start overflow-hidden px-2.5 text-left text-sm font-normal",
+                                      !editedBirthday && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+                                    <span className="min-w-0 flex-1 truncate">
+                                      {editedBirthday ? format(new Date(`${editedBirthday}T00:00:00`), "d MMM yyyy") : t("addPet.pickDate")}
+                                    </span>
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[min(calc(100vw-2rem),21rem)] p-0" align="start" sideOffset={6}>
+                                  <Calendar
+                                    mode="single"
+                                    captionLayout="dropdown-buttons"
+                                    selected={editedBirthday ? new Date(`${editedBirthday}T00:00:00`) : undefined}
+                                    onSelect={(date) => setEditedBirthday(date ? format(date, "yyyy-MM-dd") : "")}
+                                    fromYear={new Date().getFullYear() - 25}
+                                    toYear={new Date().getFullYear()}
+                                    fromDate={new Date(new Date().setFullYear(new Date().getFullYear() - 25))}
+                                    toDate={new Date()}
+                                    initialFocus
+                                    className={cn("p-3 pointer-events-auto")}
+                                  />
+                                </PopoverContent>
+                              </Popover>
                             ) : (
                               <div className="flex items-center gap-2">
                                 <Input
@@ -786,7 +811,7 @@ const PetProfile = () => {
             <CardContent className="pt-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-green-600" />
+                  <CalendarIcon className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">{t("petProfile.memberSince")}</p>
