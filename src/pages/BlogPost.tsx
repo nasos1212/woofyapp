@@ -28,6 +28,12 @@ interface BusinessLite {
   category: string | null;
 }
 
+interface ShelterLite {
+  id: string;
+  shelter_name: string;
+  logo_url: string | null;
+}
+
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
@@ -36,6 +42,7 @@ const BlogPostPage = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState<BusinessLite | null>(null);
+  const [shelter, setShelter] = useState<ShelterLite | null>(null);
   const [related, setRelated] = useState<BlogPost[]>([]);
 
   useEffect(() => {
@@ -70,6 +77,16 @@ const BlogPostPage = () => {
           .eq("id", p.business_id)
           .maybeSingle();
         if (b) setBusiness(b as BusinessLite);
+      }
+
+      // Linked shelter
+      if (p.shelter_id) {
+        const { data: s } = await supabase
+          .from("shelters_public")
+          .select("id, shelter_name, logo_url")
+          .eq("id", p.shelter_id)
+          .maybeSingle();
+        if (s) setShelter(s as ShelterLite);
       }
 
       // Related
@@ -236,6 +253,31 @@ const BlogPostPage = () => {
             </Link>
           )}
 
+          {shelter && (
+            <Link
+              to={`/shelter/${shelter.id}`}
+              className="inline-flex items-center gap-2 mb-6 px-3 py-2 rounded-full bg-muted/60 hover:bg-muted transition-colors text-sm text-muted-foreground hover:text-foreground group"
+            >
+              {shelter.logo_url ? (
+                <img
+                  src={shelter.logo_url}
+                  alt={shelter.shelter_name}
+                  className="w-6 h-6 rounded-full object-cover bg-background"
+                />
+              ) : (
+                <div className="w-6 h-6 rounded-full bg-background flex items-center justify-center">
+                  <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              )}
+              <span>
+                {t("blog.inPartnershipWith")}{" "}
+                <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {shelter.shelter_name}
+                </span>
+              </span>
+            </Link>
+          )}
+
           {post.cover_image_url && (
             <div className="aspect-video bg-muted rounded-xl overflow-hidden mb-8">
               <img src={post.cover_image_url} alt={title} className="w-full h-full object-cover" />
@@ -282,6 +324,34 @@ const BlogPostPage = () => {
                   <h3 className="font-semibold break-words">{business.business_name}</h3>
                 </div>
                 <Button className="w-full sm:w-auto shrink-0" onClick={() => navigate(`/business/${business.id}`)}>
+                  {t("blog.visitProfile")}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Partner card - shelter */}
+          {shelter && post.category === "interview" && (
+            <Card className="mt-10">
+              <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center gap-4 text-center sm:text-left">
+                {shelter.logo_url ? (
+                  <img
+                    src={shelter.logo_url}
+                    alt={shelter.shelter_name}
+                    className="w-16 h-16 rounded-lg object-cover bg-muted mx-auto sm:mx-0 shrink-0"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center mx-auto sm:mx-0 shrink-0">
+                    <Building2 className="w-7 h-7 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs tracking-wide text-muted-foreground mb-1">
+                    {toUpperNoTonos(t("blog.meetThePartner"))}
+                  </p>
+                  <h3 className="font-semibold break-words">{shelter.shelter_name}</h3>
+                </div>
+                <Button className="w-full sm:w-auto shrink-0" onClick={() => navigate(`/shelter/${shelter.id}`)}>
                   {t("blog.visitProfile")}
                 </Button>
               </CardContent>
