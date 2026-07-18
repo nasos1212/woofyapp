@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,6 +34,7 @@ import {
 
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
@@ -170,12 +171,14 @@ const ShelterProfile = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           
           {/* Back Button */}
-          <Link 
-            to="/" 
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
             className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
+            aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
-          </Link>
+          </button>
 
           {/* Language Toggle */}
           <div className="absolute top-4 right-4">
