@@ -1234,7 +1234,7 @@
     "gender": "Gender",
     "male": "♂ Male",
     "female": "♀ Female",
-    "memberSince": "Member Since",
+    "memberSince": "Added On",
     "birthdayLocked": "Birthday has been locked",
     "birthdayLockedAfterOffer": "Birthday cannot be changed after receiving a birthday offer",
     "editWindowPassed": "The 14-day edit window has passed",
