@@ -625,7 +625,8 @@ const PetProfile = () => {
           </Card>
 
           {/* Info Cards */}
-          <div className={`grid gap-3 sm:gap-4 mb-4 ${isEditing || pet.birthday ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+
             {/* Birthday Card - only show if editing OR if pet has a birthday */}
             {(isEditing || pet.birthday) && (
               <Card className="overflow-hidden">
@@ -775,17 +776,17 @@ const PetProfile = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
           {/* Gender Card */}
-          <Card className="mb-6">
+
+          <Card>
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className={cn(
                   "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0",
                   pet.gender === "male" ? "bg-blue-100" : pet.gender === "female" ? "bg-pink-100" : "bg-gray-100"
                 )}>
-                  <span className="text-lg">
+                  <span className="text-base sm:text-lg leading-none">
                     {pet.gender === "male" ? "♂" : pet.gender === "female" ? "♀" : "—"}
                   </span>
                 </div>
@@ -813,7 +814,7 @@ const PetProfile = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className={cn("font-medium text-sm sm:text-base", getGenderDisplay(pet.gender).color.replace("bg-", "text-").replace("-100", "-700"))}>
+                    <p className={cn("font-medium text-sm sm:text-base truncate", getGenderDisplay(pet.gender).color.replace("bg-", "text-").replace("-100", "-700"))}>
                       {getGenderDisplay(pet.gender).label}
                     </p>
                   )}
@@ -822,7 +823,7 @@ const PetProfile = () => {
             </CardContent>
           </Card>
 
-          <Card className="mb-6">
+          <Card>
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
@@ -837,6 +838,8 @@ const PetProfile = () => {
               </div>
             </CardContent>
           </Card>
+          </div>
+
 
 
           {/* Birthday Offers Section */}
