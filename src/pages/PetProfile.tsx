@@ -784,10 +784,10 @@ const PetProfile = () => {
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className={cn(
                   "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0",
-                  pet.gender === "male" ? "bg-blue-100" : pet.gender === "female" ? "bg-pink-100" : "bg-gray-100"
+                  (isEditing ? editedGender : pet.gender) === "male" ? "bg-blue-100" : (isEditing ? editedGender : pet.gender) === "female" ? "bg-pink-100" : "bg-gray-100"
                 )}>
                   <span className="text-base sm:text-lg leading-none">
-                    {pet.gender === "male" ? "♂" : pet.gender === "female" ? "♀" : "—"}
+                    {(isEditing ? editedGender : pet.gender) === "male" ? "♂" : (isEditing ? editedGender : pet.gender) === "female" ? "♀" : "—"}
                   </span>
                 </div>
                 <div className="min-w-0 flex-1">
