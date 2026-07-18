@@ -79,6 +79,16 @@ const BlogPostPage = () => {
         if (b) setBusiness(b as BusinessLite);
       }
 
+      // Linked shelter
+      if (p.shelter_id) {
+        const { data: s } = await supabase
+          .from("shelters_public")
+          .select("id, shelter_name, logo_url")
+          .eq("id", p.shelter_id)
+          .maybeSingle();
+        if (s) setShelter(s as ShelterLite);
+      }
+
       // Related
       const { data: rel } = await supabase
         .from("blog_posts")
