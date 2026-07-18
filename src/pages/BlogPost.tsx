@@ -42,6 +42,7 @@ const BlogPostPage = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState<BusinessLite | null>(null);
+  const [shelter, setShelter] = useState<ShelterLite | null>(null);
   const [related, setRelated] = useState<BlogPost[]>([]);
 
   useEffect(() => {
