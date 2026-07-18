@@ -625,7 +625,8 @@ const PetProfile = () => {
           </Card>
 
           {/* Info Cards */}
-          <div className={`grid gap-3 sm:gap-4 mb-4 ${isEditing || pet.birthday ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+
             {/* Birthday Card - only show if editing OR if pet has a birthday */}
             {(isEditing || pet.birthday) && (
               <Card className="overflow-hidden">
