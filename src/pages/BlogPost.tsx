@@ -28,6 +28,12 @@ interface BusinessLite {
   category: string | null;
 }
 
+interface ShelterLite {
+  id: string;
+  shelter_name: string;
+  logo_url: string | null;
+}
+
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
