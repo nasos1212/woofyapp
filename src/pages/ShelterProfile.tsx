@@ -56,6 +56,11 @@ const ShelterProfile = () => {
     enabled: !!id,
   });
 
+  // Scroll to top when entering shelter profile
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
   // Track shelter view
   useEffect(() => {
     if (shelter && id) {
