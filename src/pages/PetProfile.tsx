@@ -756,7 +756,7 @@ const PetProfile = () => {
 
             {/* Age Card */}
             <Card>
-              <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+              <CardContent className="p-3 sm:p-6">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
@@ -779,7 +779,7 @@ const PetProfile = () => {
 
           {/* Gender Card */}
           <Card className="mb-6">
-            <CardContent className="pt-3 sm:pt-4 px-3 sm:px-6">
+            <CardContent className="p-3 sm:p-6">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className={cn(
                   "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0",
@@ -823,14 +823,14 @@ const PetProfile = () => {
           </Card>
 
           <Card className="mb-6">
-            <CardContent className="pt-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <CalendarIcon className="w-5 h-5 text-green-600" />
+            <CardContent className="p-3 sm:p-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                  <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t("petProfile.memberSince")}</p>
-                  <p className="font-medium">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">{t("petProfile.memberSince")}</p>
+                  <p className="font-medium text-sm sm:text-base truncate">
                     {formatDate(new Date(pet.created_at))}
                   </p>
                 </div>
