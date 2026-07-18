@@ -776,9 +776,9 @@ const PetProfile = () => {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
           {/* Gender Card */}
+
           <Card>
             <CardContent className="p-3 sm:p-6">
               <div className="flex items-center gap-2 sm:gap-3">
