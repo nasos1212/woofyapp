@@ -170,12 +170,14 @@ const ShelterProfile = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           
           {/* Back Button */}
-          <Link 
-            to="/" 
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
             className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
+            aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
-          </Link>
+          </button>
 
           {/* Language Toggle */}
           <div className="absolute top-4 right-4">
