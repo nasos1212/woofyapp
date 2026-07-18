@@ -330,6 +330,34 @@ const BlogPostPage = () => {
             </Card>
           )}
 
+          {/* Partner card - shelter */}
+          {shelter && post.category === "interview" && (
+            <Card className="mt-10">
+              <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center gap-4 text-center sm:text-left">
+                {shelter.logo_url ? (
+                  <img
+                    src={shelter.logo_url}
+                    alt={shelter.shelter_name}
+                    className="w-16 h-16 rounded-lg object-cover bg-muted mx-auto sm:mx-0 shrink-0"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center mx-auto sm:mx-0 shrink-0">
+                    <Building2 className="w-7 h-7 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs tracking-wide text-muted-foreground mb-1">
+                    {toUpperNoTonos(t("blog.meetThePartner"))}
+                  </p>
+                  <h3 className="font-semibold break-words">{shelter.shelter_name}</h3>
+                </div>
+                <Button className="w-full sm:w-auto shrink-0" onClick={() => navigate(`/shelter/${shelter.id}`)}>
+                  {t("blog.visitProfile")}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Share */}
           <div className="mt-10 pt-6 border-t">
             <div className="flex items-center gap-3 flex-wrap">
