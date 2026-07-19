@@ -7,6 +7,7 @@ import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
 import BusinessHeader from '@/components/BusinessHeader';
+import ShelterHeader from '@/components/ShelterHeader';
 import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
@@ -48,7 +49,7 @@ const Community = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
-  const { isBusiness } = useAccountType();
+  const { isBusiness, isShelter } = useAccountType();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
   const { t } = useTranslation();
 
@@ -261,7 +262,7 @@ const Community = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        {isBusiness ? <BusinessHeader /> : <Header />}
+        {isBusiness ? <BusinessHeader /> : isShelter ? <ShelterHeader /> : <Header />}
         <main className={`w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           <Button
             variant="ghost"
