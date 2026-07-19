@@ -181,13 +181,14 @@ const ShelterProfile = () => {
           <button
             type="button"
             onClick={() => {
-              // Use browser history when available; otherwise fall back home.
-              if (window.history.state && window.history.state.idx > 0) {
+              // Go back if we have in-app history; otherwise fall back home.
+              if (location.key !== 'default') {
                 navigate(-1);
               } else {
                 navigate('/');
               }
             }}
+
             className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
             aria-label="Back"
           >
