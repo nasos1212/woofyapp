@@ -403,9 +403,9 @@ const CommunityQuestion = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : <Header />}
         
-        <main className="w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+        <main className={`w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           {/* Back button */}
           <Button
             variant="ghost"
