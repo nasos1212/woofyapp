@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
 import BusinessHeader from '@/components/BusinessHeader';
+import ShelterHeader from '@/components/ShelterHeader';
 import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import ContributorBadges from '@/components/ContributorBadges';
@@ -93,7 +94,7 @@ const CommunityQuestion = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isBusiness } = useAccountType();
+  const { isBusiness, isShelter } = useAccountType();
   const {
     fetchQuestion,
     fetchAnswers,
@@ -394,7 +395,7 @@ const CommunityQuestion = () => {
         <meta property="og:title" content={`${question.title} | Wooffy Community`} />
         <meta property="og:description" content={question.content.slice(0, 160)} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://woofyapp.lovable.app/community/question/${question.id}`} />
+        <meta property="og:url" content={`https://www.wooffy.app/community/question/${question.id}`} />
         <meta property="og:site_name" content="Wooffy" />
         {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary" />
@@ -403,7 +404,7 @@ const CommunityQuestion = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        {isBusiness ? <BusinessHeader /> : <Header />}
+        {isBusiness ? <BusinessHeader /> : isShelter ? <ShelterHeader /> : <Header />}
         
         <main className={`w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           {/* Back button */}
