@@ -1,0 +1,1 @@
+UPDATE public.shelters SET verification_status='approved' WHERE id='6312ea80-1d65-480c-a4ff-6367be535370';
