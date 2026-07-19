@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard } from "lucide-react";
+import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -162,8 +162,12 @@ const ShelterHeader = () => {
                   <MessageCircle className="mr-2 h-4 w-4" />
                   {t("shelterNav.community")}
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/blog")}>
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  {t("shelterNav.blog")}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={() => shelter?.id && navigate(`/shelter/${shelter.id}`)}
                   disabled={!shelter?.id}
                 >
