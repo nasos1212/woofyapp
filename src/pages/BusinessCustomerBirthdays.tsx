@@ -415,7 +415,21 @@ const BusinessCustomerBirthdays = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="days">{t("businessBirthdays.daysLabel")}</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="days">{t("businessBirthdays.daysLabel")}</Label>
+                    <TooltipProvider delayDuration={100}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={t("businessBirthdays.daysTooltip")}>
+                            <HelpCircle className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-[260px] text-center">
+                          <p>{t("businessBirthdays.daysTooltip")}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
                   <Input
                     id="days"
                     type="number"
