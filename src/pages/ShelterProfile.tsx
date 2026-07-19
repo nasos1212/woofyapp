@@ -178,12 +178,20 @@ const ShelterProfile = () => {
           {/* Back Button */}
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              // Use browser history when available; otherwise fall back home.
+              if (window.history.state && window.history.state.idx > 0) {
+                navigate(-1);
+              } else {
+                navigate('/');
+              }
+            }}
             className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
             aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
+
 
           {/* Language Toggle */}
           <div className="absolute top-4 right-4">
