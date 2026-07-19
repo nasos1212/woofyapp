@@ -232,75 +232,9 @@ const ShelterDashboard = () => {
 
       <div className="min-h-screen bg-background overflow-x-hidden">
         <ShelterOnboardingTour />
-        {/* Header */}
-        <header className="border-b bg-card pt-[env(safe-area-inset-top)]">
-          <div className="w-full max-w-4xl mx-auto px-4 py-4 box-border">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-                  <Home className="h-5 w-5 text-rose-500" />
-                </div>
-                <div className="min-w-0">
-                  <h1 className="font-semibold text-foreground truncate">{shelter.shelter_name}</h1>
-                  <p className="text-sm text-muted-foreground truncate">{t("shelter.dashboard")}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="hidden sm:block">{getStatusBadge()}</div>
-                <LanguageToggle />
-                <NotificationBell />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
-                      <Avatar className="h-9 w-9">
-                        <AvatarImage src={profile?.avatar_url || undefined} alt={profile?.full_name || t("shelter.user")} />
-                        <AvatarFallback className="bg-primary text-primary-foreground text-sm font-medium">
-                          {profile?.full_name ? getInitials(profile.full_name) : user?.email?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <div className="px-2 py-1.5">
-                      <p className="text-sm font-medium">{profile?.full_name || t("shelter.user")}</p>
-                      <p className="text-xs text-muted-foreground">{user?.email}</p>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate("/shelter-dashboard")}>
-                      <User className="mr-2 h-4 w-4" />
-                      {t("shelter.myDashboard")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/community")}>
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      {t("shelter.communityHub")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/member/notifications")}>
-                      <Bell className="mr-2 h-4 w-4" />
-                      {t("shelter.notifications")}
-                    </DropdownMenuItem>
-                    {isAdmin && (
-                      <>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate("/admin")} className="text-primary">
-                          <Shield className="mr-2 h-4 w-4" />
-                          {t("shelter.adminDashboard")}
-                        </DropdownMenuItem>
-                      </>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      {t("shelter.signOut")}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-            <div className="sm:hidden mt-2 flex">{getStatusBadge()}</div>
-          </div>
-        </header>
+        <ShelterHeader />
 
-        <main className="w-full max-w-4xl mx-auto px-4 py-8 pb-32 md:pb-12 box-border">
+        <main className="w-full max-w-4xl mx-auto px-4 py-8 pb-32 md:pb-12 box-border pt-[calc(5rem+env(safe-area-inset-top))] md:pt-[calc(6rem+env(safe-area-inset-top))]">
           {/* Status Card */}
           {!isApproved && (
             <Card className="mb-6 border-yellow-200 bg-yellow-50">
