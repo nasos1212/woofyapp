@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard, BookOpen } from "lucide-react";
+import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard, BookOpen, Dog } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -103,8 +103,8 @@ const ShelterHeader = () => {
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
           <Link to="/shelter-dashboard" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 bg-rose-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Home className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-wooffy-dark rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <Dog className="w-6 h-6 text-wooffy-sky" />
             </div>
             <div className="flex flex-col">
               <span className="font-logo font-bold text-xl text-foreground">Wooffy</span>
