@@ -3,11 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
+import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
 import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
+import BusinessHeader from '@/components/BusinessHeader';
+import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import ContributorBadges from '@/components/ContributorBadges';
 import { Button } from '@/components/ui/button';
@@ -90,6 +93,7 @@ const CommunityQuestion = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isBusiness } = useAccountType();
   const {
     fetchQuestion,
     fetchAnswers,
@@ -399,9 +403,9 @@ const CommunityQuestion = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : <Header />}
         
-        <main className="w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+        <main className={`w-full max-w-4xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           {/* Back button */}
           <Button
             variant="ghost"
@@ -927,6 +931,7 @@ const CommunityQuestion = () => {
             </AlertDialogContent>
           </AlertDialog>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
     </>
   );

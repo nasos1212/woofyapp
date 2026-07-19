@@ -3,8 +3,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useMembership } from '@/hooks/useMembership';
+import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
+import BusinessHeader from '@/components/BusinessHeader';
+import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 
@@ -45,6 +48,7 @@ const Community = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
+  const { isBusiness } = useAccountType();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
   const { t } = useTranslation();
 
@@ -257,8 +261,8 @@ const Community = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        <Header />
-        <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+        {isBusiness ? <BusinessHeader /> : <Header />}
+        <main className={`w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           <Button
             variant="ghost"
             size="sm"
@@ -516,6 +520,7 @@ const Community = () => {
             </div>
           </div>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
     </>
   );

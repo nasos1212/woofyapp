@@ -2,11 +2,14 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
+import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Category } from '@/hooks/useCommunity';
 import { supabase } from '@/integrations/supabase/client';
 import { validateImageFile } from '@/lib/fileValidation';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
+import BusinessHeader from '@/components/BusinessHeader';
+import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,6 +67,7 @@ interface Pet {
 const CommunityAsk = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isBusiness } = useAccountType();
   const { fetchCategories, createQuestion, loading: submitting } = useCommunity();
   const { t } = useTranslation();
 
@@ -265,9 +269,9 @@ const CommunityAsk = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : <Header />}
         
-        <main className="w-full max-w-3xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+        <main className={`w-full max-w-3xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           <Button
             variant="ghost"
             size="sm"
@@ -582,6 +586,7 @@ const CommunityAsk = () => {
             </CardContent>
           </Card>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
       {cropperSrc && (
         <ImageCropperDialog
