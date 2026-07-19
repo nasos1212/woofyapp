@@ -1791,7 +1791,7 @@
     "saveSettings": "Save Settings",
     "savingSettings": "Saving...",
     "statThisWeek": "This Week",
-    "statThisMonth": "This Month",
+    "statThisMonth": "Next 30 Days",
     "todayBadge": "Today!",
     "weekBadge": "This Week",
     "daysBadge": "In {{days}} days",
