@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard, BookOpen } from "lucide-react";
+import { Home, Menu, X, Eye, Shield, LogOut, MessageCircle, LayoutDashboard, BookOpen, Dog } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
