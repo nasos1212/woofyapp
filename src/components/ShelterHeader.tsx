@@ -29,7 +29,8 @@ const ShelterHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
-  const [shelter, setShelter] = useState<{ id: string; shelter_name: string } | null>(null);
+  const [shelter, setShelter] = useState<{ id: string; shelter_name: string; verification_status: string } | null>(null);
+  const [showPendingDialog, setShowPendingDialog] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
