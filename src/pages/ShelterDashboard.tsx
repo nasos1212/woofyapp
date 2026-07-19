@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Helmet } from "react-helmet-async";
 import ShelterOnboardingTour from "@/components/ShelterOnboardingTour";
+import ShelterHeader from "@/components/ShelterHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,38 +20,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ensureHttps } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
-import NotificationBell from "@/components/NotificationBell";
-import LanguageToggle from "@/components/LanguageToggle";
 import { 
   Home, 
   Clock, 
   CheckCircle, 
   XCircle, 
   Save, 
-  LogOut, 
   Heart,
   Globe,
   Facebook,
   Instagram,
   ExternalLink,
   ImageIcon,
-  ChevronRight,
-  User,
-  MessageCircle,
-  Bell,
-  Shield
+  ChevronRight
 } from "lucide-react";
 
 const ShelterDashboard = () => {
