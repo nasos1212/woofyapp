@@ -68,7 +68,7 @@ interface Pet {
 const CommunityAsk = () => {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { isBusiness } = useAccountType();
+  const { isBusiness, isShelter } = useAccountType();
   const { fetchCategories, createQuestion, loading: submitting } = useCommunity();
   const { t } = useTranslation();
 
