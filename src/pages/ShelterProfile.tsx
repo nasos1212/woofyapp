@@ -35,6 +35,8 @@ import {
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { t, i18n } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
