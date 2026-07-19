@@ -4,6 +4,9 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Clock, ArrowRight, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
+import BusinessHeader from "@/components/BusinessHeader";
+import ShelterHeader from "@/components/ShelterHeader";
+import { useAccountType } from "@/hooks/useAccountType";
 import Footer from "@/components/Footer";
 import BackToTop from "@/components/BackToTop";
 import DogLoader from "@/components/DogLoader";
@@ -20,6 +23,7 @@ const CATEGORIES: ("all" | BlogCategory)[] = ["all", "interview", "guide", "news
 
 const Blog = () => {
   const { t } = useTranslation();
+  const { isBusiness, isShelter } = useAccountType();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = (searchParams.get("category") as "all" | BlogCategory) || "all";
@@ -128,7 +132,7 @@ const Blog = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : isShelter ? <ShelterHeader /> : <Header />}
         <main className="container mx-auto px-4 pt-[calc(6rem+env(safe-area-inset-top))] pb-16 max-w-6xl">
           <Button
             variant="ghost"
