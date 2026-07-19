@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +35,8 @@ import {
 const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const { t, i18n } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
@@ -178,12 +180,21 @@ const ShelterProfile = () => {
           {/* Back Button */}
           <button
             type="button"
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              // Go back if we have in-app history; otherwise fall back home.
+              if (location.key !== 'default') {
+                navigate(-1);
+              } else {
+                navigate('/');
+              }
+            }}
+
             className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
             aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
+
 
           {/* Language Toggle */}
           <div className="absolute top-4 right-4">
