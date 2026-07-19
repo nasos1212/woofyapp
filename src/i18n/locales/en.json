@@ -1334,6 +1334,18 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
+  "shelterNav": {
+    "dashboard": "Dashboard",
+    "community": "Community",
+    "viewPublicProfile": "View Public Profile",
+    "adminDashboard": "Admin Dashboard",
+    "signOut": "Sign Out",
+    "yourShelter": "Your Shelter",
+    "shelter": "Shelter",
+    "partnerPortal": "Partner Portal",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
   "pendingApproval": {
     "pendingTitle": "Pending Approval",
     "pendingDesc": "Your business is currently under review. Once approved, you'll be able to create offers, verify members, and access all partner features. This usually takes 1-2 business days.",
