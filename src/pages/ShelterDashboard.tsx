@@ -237,7 +237,8 @@ const ShelterDashboard = () => {
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-yellow-600 mt-0.5" />
                   <div>
-                    <h3 className="font-medium text-yellow-800">{t("shelter.underReview")}</h3>
+                    <h3 className="font-medium text-yellow-800">{shelter.shelter_name}</h3>
+                    <p className="text-sm font-medium text-yellow-800 mt-0.5">{t("shelter.underReview")}</p>
                     <p className="text-sm text-yellow-700">
                       {t("shelter.underReviewDesc")}
                     </p>
