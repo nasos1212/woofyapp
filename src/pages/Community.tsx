@@ -520,6 +520,7 @@ const Community = () => {
             </div>
           </div>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
     </>
   );
