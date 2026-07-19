@@ -1346,7 +1346,10 @@
     "shelter": "Shelter",
     "partnerPortal": "Partner Portal",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "pendingProfileTitle": "Profile Under Review",
+    "pendingProfileDesc": "Your shelter application is still being reviewed. Your public profile will be available once your application is approved. We'll notify you as soon as you're live.",
+    "gotIt": "Got it"
   },
   "pendingApproval": {
     "pendingTitle": "Pending Approval",
