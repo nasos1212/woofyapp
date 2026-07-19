@@ -23,6 +23,7 @@ const CATEGORIES: ("all" | BlogCategory)[] = ["all", "interview", "guide", "news
 
 const Blog = () => {
   const { t } = useTranslation();
+  const { isBusiness, isShelter } = useAccountType();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeCategory = (searchParams.get("category") as "all" | BlogCategory) || "all";
