@@ -395,7 +395,7 @@ const CommunityQuestion = () => {
         <meta property="og:title" content={`${question.title} | Wooffy Community`} />
         <meta property="og:description" content={question.content.slice(0, 160)} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://woofyapp.lovable.app/community/question/${question.id}`} />
+        <meta property="og:url" content={`https://www.wooffy.app/community/question/${question.id}`} />
         <meta property="og:site_name" content="Wooffy" />
         {/* Twitter Card tags */}
         <meta name="twitter:card" content="summary" />
