@@ -1785,7 +1785,7 @@
     "settingsDesc": "Configure how you want to be notified about upcoming birthdays",
     "enableLabel": "Enable Birthday Reminders",
     "enableHelp": "Get notified about upcoming pet birthdays",
-    "daysLabel": "Days Before Reminder",
+    "daysLabel": "Days Before Birthday",
     "messageLabel": "Custom Birthday Message (Optional)",
     "messagePlaceholder": "e.g., Happy Birthday! Enjoy 20% off your next visit...",
     "saveSettings": "Save Settings",
