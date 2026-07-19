@@ -11,6 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "./ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import NotificationBell from "./NotificationBell";
@@ -20,7 +29,8 @@ const ShelterHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [profile, setProfile] = useState<{ full_name: string; avatar_url: string | null } | null>(null);
-  const [shelter, setShelter] = useState<{ id: string; shelter_name: string } | null>(null);
+  const [shelter, setShelter] = useState<{ id: string; shelter_name: string; verification_status: string } | null>(null);
+  const [showPendingDialog, setShowPendingDialog] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -69,7 +79,7 @@ const ShelterHeader = () => {
     if (!user) return;
     const { data } = await supabase
       .from("shelters")
-      .select("id, shelter_name")
+      .select("id, shelter_name, verification_status")
       .eq("user_id", user.id)
       .maybeSingle();
     if (data) {
@@ -168,7 +178,14 @@ const ShelterHeader = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => shelter?.id && navigate(`/shelter/${shelter.id}`)}
+                  onClick={() => {
+                    if (!shelter?.id) return;
+                    if (shelter.verification_status !== "approved") {
+                      setShowPendingDialog(true);
+                    } else {
+                      navigate(`/shelter/${shelter.id}`);
+                    }
+                  }}
                   disabled={!shelter?.id}
                 >
                   <Eye className="mr-2 h-4 w-4" />
@@ -244,12 +261,26 @@ const ShelterHeader = () => {
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               {shelter?.id && (
-                <Link to={`/shelter/${shelter.id}`} onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                shelter.verification_status === "approved" ? (
+                  <Link to={`/shelter/${shelter.id}`} onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2">
+                      <Eye className="w-4 h-4" />
+                      {t("shelterNav.viewPublicProfile")}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setShowPendingDialog(true);
+                    }}
+                  >
                     <Eye className="w-4 h-4" />
                     {t("shelterNav.viewPublicProfile")}
                   </Button>
-                </Link>
+                )
               )}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
@@ -267,6 +298,20 @@ const ShelterHeader = () => {
           </nav>
         </div>
       )}
+
+      <AlertDialog open={showPendingDialog} onOpenChange={setShowPendingDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("shelterNav.pendingProfileTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("shelterNav.pendingProfileDesc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>{t("shelterNav.gotIt")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   );
 };
