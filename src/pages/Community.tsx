@@ -48,6 +48,7 @@ const Community = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, loading: authLoading } = useAuth();
   const { hasMembership, isPaidMember, loading: membershipLoading } = useMembership();
+  const { isBusiness } = useAccountType();
   const { fetchCategories, fetchQuestions, toggleSaveQuestion } = useCommunity();
   const { t } = useTranslation();
 
