@@ -586,6 +586,7 @@ const CommunityAsk = () => {
             </CardContent>
           </Card>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
       {cropperSrc && (
         <ImageCropperDialog
