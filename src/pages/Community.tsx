@@ -3,8 +3,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '@/hooks/useAuth';
 import { useMembership } from '@/hooks/useMembership';
+import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Category, Question } from '@/hooks/useCommunity';
 import Header from '@/components/Header';
+import BusinessHeader from '@/components/BusinessHeader';
+import BusinessMobileNav from '@/components/BusinessMobileNav';
 import DogLoader from '@/components/DogLoader';
 import { Button } from '@/components/ui/button';
 
