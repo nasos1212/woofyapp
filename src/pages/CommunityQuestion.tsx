@@ -93,6 +93,7 @@ const CommunityQuestion = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
+  const { isBusiness } = useAccountType();
   const {
     fetchQuestion,
     fetchAnswers,
