@@ -261,12 +261,26 @@ const ShelterHeader = () => {
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               {shelter?.id && (
-                <Link to={`/shelter/${shelter.id}`} onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2">
+                shelter.verification_status === "approved" ? (
+                  <Link to={`/shelter/${shelter.id}`} onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2">
+                      <Eye className="w-4 h-4" />
+                      {t("shelterNav.viewPublicProfile")}
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-2"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setShowPendingDialog(true);
+                    }}
+                  >
                     <Eye className="w-4 h-4" />
                     {t("shelterNav.viewPublicProfile")}
                   </Button>
-                </Link>
+                )
               )}
               {isAdmin && (
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
