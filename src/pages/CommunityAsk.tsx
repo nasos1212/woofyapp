@@ -269,9 +269,9 @@ const CommunityAsk = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background overflow-x-hidden">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : <Header />}
         
-        <main className="w-full max-w-3xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
+        <main className={`w-full max-w-3xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border ${isBusiness ? 'pb-24' : ''}`}>
           <Button
             variant="ghost"
             size="sm"
