@@ -931,6 +931,7 @@ const CommunityQuestion = () => {
             </AlertDialogContent>
           </AlertDialog>
         </main>
+        {isBusiness && <BusinessMobileNav />}
       </div>
     </>
   );
