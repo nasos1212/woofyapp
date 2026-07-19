@@ -171,6 +171,10 @@ const BusinessHeader = () => {
                   <MessageCircle className="mr-2 h-4 w-4" />
                   {t("businessNav.community")}
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/blog")}>
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  {t("businessNav.blog")}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/business/settings")}>
                   <Settings className="mr-2 h-4 w-4" />
                   {t("businessNav.settings")}
@@ -250,6 +254,18 @@ const BusinessHeader = () => {
             >
               <Settings className="w-5 h-5" />
               {t("businessNav.settings")}
+            </Link>
+            <Link
+              to="/blog"
+              className={`font-medium transition-colors py-3 flex items-center gap-3 rounded-lg px-3 ${
+                isActive("/blog")
+                  ? "text-primary bg-primary/10"
+                  : "text-foreground hover:text-primary hover:bg-muted"
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <BookOpen className="w-5 h-5" />
+              {t("businessNav.blog")}
             </Link>
             <div className="flex flex-col gap-2 pt-4 border-t border-border mt-2">
               {business?.id && (
