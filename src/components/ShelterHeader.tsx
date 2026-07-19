@@ -298,6 +298,20 @@ const ShelterHeader = () => {
           </nav>
         </div>
       )}
+
+      <AlertDialog open={showPendingDialog} onOpenChange={setShowPendingDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("shelterNav.pendingProfileTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("shelterNav.pendingProfileDesc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>{t("shelterNav.gotIt")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </header>
   );
 };
