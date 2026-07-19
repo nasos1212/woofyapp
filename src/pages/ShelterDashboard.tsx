@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 
 const ShelterDashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation();
@@ -154,11 +154,6 @@ const ShelterDashboard = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     updateMutation.mutate(formData);
-  };
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate('/');
   };
 
   if (!user) {
