@@ -178,7 +178,14 @@ const ShelterHeader = () => {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={() => shelter?.id && navigate(`/shelter/${shelter.id}`)}
+                  onClick={() => {
+                    if (!shelter?.id) return;
+                    if (shelter.verification_status !== "approved") {
+                      setShowPendingDialog(true);
+                    } else {
+                      navigate(`/shelter/${shelter.id}`);
+                    }
+                  }}
                   disabled={!shelter?.id}
                 >
                   <Eye className="mr-2 h-4 w-4" />
