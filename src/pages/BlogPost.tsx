@@ -122,7 +122,7 @@ const BlogPostPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <HeaderComponent />
         <div className="flex justify-center py-32">
           <DogLoader size="lg" />
         </div>
@@ -133,7 +133,7 @@ const BlogPostPage = () => {
   if (!post) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <HeaderComponent />
         <div className="container mx-auto px-4 pt-32 pb-16 text-center">
           <h1 className="text-2xl font-bold mb-2">{t("blog.notFound")}</h1>
           <Button onClick={() => navigate("/blog")} className="mt-4">
@@ -204,7 +204,7 @@ const BlogPostPage = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <Header />
+        <HeaderComponent />
         <main className="container mx-auto px-4 pt-[calc(5rem+env(safe-area-inset-top))] pb-16 max-w-3xl">
           <Button variant="ghost" size="sm" className="mb-6 gap-1" onClick={() => navigate(-1)}>
             <ArrowLeft className="w-4 h-4" />
