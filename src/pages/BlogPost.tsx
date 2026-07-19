@@ -40,6 +40,8 @@ interface ShelterLite {
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const { t } = useTranslation();
+  const { isBusiness, isShelter } = useAccountType();
+  const HeaderComponent = isBusiness ? BusinessHeader : isShelter ? ShelterHeader : Header;
   const navigate = useNavigate();
   const { user } = useAuth();
   const [post, setPost] = useState<BlogPost | null>(null);
