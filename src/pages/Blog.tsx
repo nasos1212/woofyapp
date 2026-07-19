@@ -132,7 +132,7 @@ const Blog = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
-        <Header />
+        {isBusiness ? <BusinessHeader /> : isShelter ? <ShelterHeader /> : <Header />}
         <main className="container mx-auto px-4 pt-[calc(6rem+env(safe-area-inset-top))] pb-16 max-w-6xl">
           <Button
             variant="ghost"
