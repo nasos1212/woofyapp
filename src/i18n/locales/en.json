@@ -1337,6 +1337,7 @@
   "shelterNav": {
     "dashboard": "Dashboard",
     "community": "Community",
+    "blog": "Wooffy Blog",
     "viewPublicProfile": "View Public Profile",
     "adminDashboard": "Admin Dashboard",
     "signOut": "Sign Out",
