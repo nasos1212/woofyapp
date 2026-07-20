@@ -1,32 +1,21 @@
-Plan: Connect this Lovable project to GitHub and get the repository URL
+Problem
+`npm run build` fails at the `prebuild` step with `sh: bunx: command not found`. The `prebuild` and `predev` scripts in `package.json` call `bunx tsx scripts/generate-sitemap.ts`, but the local machine only has npm, and `tsx` is not declared as a dev dependency.
 
-Goal
-- Enable GitHub two-way sync for the Wooffy project and provide the exact GitHub repository URL.
+Plan
+1. Add `tsx` as a dev dependency so it is installed with `npm install`.
+2. Update the `prebuild` and `predev` scripts in `package.json` from `bunx tsx scripts/generate-sitemap.ts` to `npx tsx scripts/generate-sitemap.ts`.
+3. Run `npm install` to update the lockfile and install `tsx`.
+4. Run `npm run build` to verify the sitemap is generated and Vite completes successfully.
 
-Steps
-1. Open the GitHub connection flow in Lovable
-   - Desktop: click the Plus (+) menu in the chat input → GitHub → Connect project.
-   - Mobile: switch to Chat mode, tap the Plus (+) menu → GitHub.
+What this does not change
+- The sitemap logic in `scripts/generate-sitemap.ts` stays the same.
+- No Capacitor/iOS native code is touched.
 
-2. Authorize the Lovable GitHub App
-   - Sign in to the GitHub account that should own the repo.
-   - Grant the requested repository permissions.
+Next steps after this fix
+Continue with the iOS build checklist:
+- `npx cap add ios` (if not done)
+- `npx cap sync ios`
+- `npx cap open ios`
+- Configure Signing & Associated Domains in Xcode
 
-3. Choose the GitHub account/organization
-   - Select the personal account or organization where the repo should live.
-
-4. Create the repository
-   - Lovable will create a new repo (e.g., `woofy` or `wooffy`) under the selected account.
-   - Initial sync will push the current project code.
-
-5. Retrieve the repo URL
-   - Once created, the repo URL will be `https://github.com/<account>/<repo-name>`.
-   - You can copy it from the success message in Lovable or from GitHub directly.
-
-Outcome
-- The project code will sync bidirectionally between Lovable and GitHub.
-- You will have the GitHub URL to share, clone, or open in Xcode for the iOS build.
-
-Notes
-- This is a Lovable UI action; no code changes are needed in the project itself.
-- If you already have a GitHub account connected, the flow will skip the authorization step and only ask you to pick/create the repo.
+No clarifying questions needed — this is a straightforward environment mismatch.
