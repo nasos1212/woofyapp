@@ -477,8 +477,8 @@
       "browse": "Browse Questions",
       "ask": "Ask a Question",
       "saved": "Saved Questions",
-      "peopleHelped": "{{count}} people like this",
-      "personHelped": "{{count}} person likes this",
+      "peopleHelped_one": "{{count}} person likes this",
+      "peopleHelped_other": "{{count}} people like this",
       "beFirst": "Be the first to like this"
     },
     "pets": {

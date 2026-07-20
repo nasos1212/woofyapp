@@ -477,8 +477,8 @@
       "browse": "Δες Ερωτήσεις",
       "ask": "Κάνε μια Ερώτηση",
       "saved": "Αποθηκευμένες Ερωτήσεις",
-      "peopleHelped": "Αρέσει σε {{count}} άτομα",
-      "personHelped": "Αρέσει σε {{count}} άτομο",
+      "peopleHelped_one": "Αρέσει σε {{count}} άτομο",
+      "peopleHelped_other": "Αρέσει σε {{count}} άτομα",
       "beFirst": "Γίνε ο/η πρώτος/η που θα πατήσει Μου αρέσει"
     },
     "pets": {
