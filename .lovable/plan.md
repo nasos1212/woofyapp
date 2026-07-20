@@ -1,29 +1,75 @@
-## Make breed required when adding a pet
+## Ship Wooffy to iOS via Capacitor
 
-### Goal
-Prevent pets from being saved with no breed (which the app currently displays as "Mixed breed"), so admin analytics and breed insights reflect real data.
+Capacitor is already wired up (`capacitor.config.ts` with `appId: app.lovable.woofyapp`, `appName: Wooffy`, `webDir: dist`). This plan covers the remaining work to get a production-ready iOS build submittable to the App Store.
 
-### Changes (frontend only)
+### 1. Finalize Capacitor config for production
 
-**`src/pages/AddPet.tsx`**
-- Add validation in `handleSubmit`: if `petBreed.trim()` is empty, show a toast error (`t("addPet.errors.noBreed")`) and abort.
-- Add `disabled` to the submit button when `!petBreed.trim()` (alongside the existing `!petName.trim()` check).
-- Mark the Breed label as required with a visual asterisk, matching how required fields are typically indicated on the form.
-- Keep the searchable combobox as-is so users can type a custom breed if theirs isn't listed (e.g. "Mixed breed", "Unknown"), preserving flexibility while forcing a conscious choice.
+- Keep the dev-only `server.url` block commented out (it currently is) so the shipped app loads local `dist/` bundles, not `wooffy.app`.
+- Add `ios` config block: `contentInset: "always"` and `backgroundColor: "#1A1A2E"` to match the brand dark background and avoid white flashes on launch.
+- Confirm `appId` follows reverse-DNS convention — `app.lovable.woofyapp` is fine, but if you'd rather ship under `app.wooffy` we should change it **now** (App Store bundle ID cannot change after first submission).
 
-**`src/pages/PetProfile.tsx`** (edit flow, if it allows clearing breed)
-- Mirror the same required rule when editing an existing pet so users can't blank it out.
+### 2. Install native iOS plugins we actually use
 
-**`src/i18n/locales/en.json`** (and any other locale files present)
-- Add `addPet.errors.noBreed` — e.g. "Please select or type your pet's breed."
-- Update `addPet.breed` label to include the required indicator, or add a helper string.
+Add and configure only what the app already relies on:
+- `@capacitor/status-bar` — force dark status bar to match `#1A1A2E`.
+- `@capacitor/splash-screen` — brand splash while JS bundle boots.
+- `@capacitor/app` — hardware back / deep-link handling.
+- `@capacitor/browser` — open external partner/blog links inside an in-app Safari view (App Store review prefers this over `target="_blank"` for external navigation from a native shell).
+- `@capacitor/keyboard` — proper input handling on iOS.
 
-### Not in scope
-- No database migration. Existing pets with `pet_breed = null` stay as-is; only new/edited pets are affected.
-- No change to the "Mixed breed" fallback display for legacy records (separate cleanup if you want it later).
-- No change to admin analytics logic.
+Wire these in a small `src/lib/native.ts` bootstrap called from `main.tsx`, guarded by `Capacitor.isNativePlatform()` so web behavior is unchanged.
 
-### Verification
-- Try to submit AddPet with breed empty → button disabled + error toast if bypassed.
-- Submit with a typed custom breed (e.g. "Mixed breed") → succeeds.
-- Edit an existing pet, clear the breed → blocked.
+### 3. iOS assets
+
+- App icon: generate 1024×1024 from the existing Wooffy dog-on-dark mark (`public/pwa-512x512.svg`), plus the full iOS icon set.
+- Splash screen: dark `#1A1A2E` with centered Wooffy logo, generated at required sizes.
+- Use `@capacitor/assets` to auto-generate every required icon/splash from a single source PNG.
+
+### 4. Safe-area + PWA cleanup for native shell
+
+- Verify all fixed bottom nav bars (`BusinessMobileNav`, member bottom nav) respect `env(safe-area-inset-bottom)` so they clear the iPhone home indicator.
+- The `index.html` service-worker "force-clear" script and auto-update bundle poller are harmless but redundant inside Capacitor — leave them (they only run in a browser context where SW exists), no code change needed.
+- Hide the Lovable badge in native shell (already handled via `display-mode: standalone` CSS; add a `.capacitor` body class fallback).
+
+### 5. Auth + deep links
+
+- Supabase email verification / password reset / OAuth currently redirect to `https://wooffy.app/...`. In the native app these open in the system browser and can't return the user to the app unless we register a Universal Link or custom scheme.
+- Recommended: register **Universal Links** for `wooffy.app` (Apple App Site Association file served from the domain) so verification/reset links reopen the installed app. Alternative: custom scheme `wooffy://` — simpler, but weaker UX.
+- Stripe Embedded Checkout runs inside the webview and is fine as-is; no native Stripe SDK needed.
+
+### 6. Build & release workflow (runs on user's Mac, not sandbox)
+
+Documented steps for the user:
+
+```text
+1. Export project to GitHub, git pull locally
+2. npm install
+3. npx cap add ios
+4. npm run build
+5. npx cap sync ios
+6. npx cap open ios     # opens Xcode
+7. In Xcode: set Team, Bundle ID, version, archive → upload to App Store Connect
+```
+
+Requirements: macOS + Xcode 15+, Apple Developer account ($99/yr).
+
+### 7. App Store Connect metadata (prep, not code)
+
+Provide draft copy for:
+- App name: **Wooffy**
+- Subtitle: "Pet community for Cyprus"
+- Description, keywords, support URL (`wooffy.app`), privacy policy URL (`wooffy.app/terms`)
+- Screenshots for 6.7" and 6.1" iPhone (captured from the running app)
+
+### Technical details
+
+- Files to add: `src/lib/native.ts`, `resources/icon.png`, `resources/splash.png`, updated `capacitor.config.ts`, `ios/` folder (generated by `cap add ios`, committed).
+- Files to touch: `src/main.tsx` (call native bootstrap), `index.html` (optional viewport-fit tweak — already set), `package.json` (add plugins).
+- No backend/database changes.
+- No changes to `src/integrations/supabase/client.ts`.
+
+### Clarifying questions before I start
+
+1. **Bundle ID** — keep `app.lovable.woofyapp` or switch to something you own like `app.wooffy` or `com.wooffy.app`? This is permanent.
+2. **Deep links** — set up Universal Links on `wooffy.app` (best UX, needs a small file hosted at `/.well-known/apple-app-site-association`), or start with a `wooffy://` custom scheme and upgrade later?
+3. **Scope for this turn** — do you want me to (a) do steps 1–4 (code + config + assets) so your GitHub export is submission-ready, then you run steps 6–7 on your Mac, or (b) also draft the App Store listing copy in the same pass?
