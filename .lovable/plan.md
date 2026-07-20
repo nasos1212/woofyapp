@@ -1,45 +1,32 @@
-No good reason — you are right to flag it. `app.lovable.woofyapp` was the default from the earlier Capacitor setup, but it should match your real domain. I will switch the bundle ID to `app.wooffy` (or `com.wooffy.app` if you prefer) so it aligns with `wooffy.app` and looks correct in App Store Connect.
+Plan: Connect this Lovable project to GitHub and get the repository URL
 
-## Updated plan
+Goal
+- Enable GitHub two-way sync for the Wooffy project and provide the exact GitHub repository URL.
 
-### What I'll do in this project
+Steps
+1. Open the GitHub connection flow in Lovable
+   - Desktop: click the Plus (+) menu in the chat input → GitHub → Connect project.
+   - Mobile: switch to Chat mode, tap the Plus (+) menu → GitHub.
 
-1. Update `capacitor.config.ts`:
-   - Change `appId` from `app.lovable.woofyapp` to `app.wooffy` (or your preferred variant).
-   - Add iOS block: `contentInset: "always"`, `backgroundColor: "#1A1A2E"`.
-2. Install native Capacitor plugins: `@capacitor/status-bar`, `@capacitor/splash-screen`, `@capacitor/app`, `@capacitor/browser`, `@capacitor/keyboard`, `@capacitor/assets`.
-3. Add `src/lib/native.ts` to initialize StatusBar (dark), hide splash screen, handle external links via `Browser.open`, and listen for app-state changes. Guarded by `Capacitor.isNativePlatform()`.
-4. Bootstrap the native module from `src/main.tsx`.
-5. Generate iOS icon and splash screen assets from the Wooffy dog mark (`public/wooffy-logo.png` or existing source). Output into `resources/` and run `npx capacitor-assets generate --ios`.
-6. Audit fixed bottom navigation bars and add `env(safe-area-inset-bottom)` padding so the iPhone home indicator does not overlap controls.
-7. Add a `.capacitor` class fallback so the Lovable badge is hidden inside the native shell.
+2. Authorize the Lovable GitHub App
+   - Sign in to the GitHub account that should own the repo.
+   - Grant the requested repository permissions.
 
-### What you'll do on your Mac
+3. Choose the GitHub account/organization
+   - Select the personal account or organization where the repo should live.
 
-```text
-1. Export project → GitHub → git pull
-2. npm install
-3. npx cap add ios
-4. npm run build
-5. npx capacitor-assets generate --ios
-6. npx cap sync ios
-7. npx cap open ios
-8. In Xcode: set Signing Team + Bundle ID, bump version, Archive → App Store Connect
-```
+4. Create the repository
+   - Lovable will create a new repo (e.g., `woofy` or `wooffy`) under the selected account.
+   - Initial sync will push the current project code.
 
-Prereqs: macOS + Xcode 15+, Apple Developer account, App Store Connect app record.
+5. Retrieve the repo URL
+   - Once created, the repo URL will be `https://github.com/<account>/<repo-name>`.
+   - You can copy it from the success message in Lovable or from GitHub directly.
 
-### Two decisions still needed
+Outcome
+- The project code will sync bidirectionally between Lovable and GitHub.
+- You will have the GitHub URL to share, clone, or open in Xcode for the iOS build.
 
-1. **Bundle ID preference**
-   - `app.wooffy` — clean, matches domain, Apple-acceptable
-   - `com.wooffy.app` — more conventional if you ever expect Android too
-   - Keep whichever you choose consistent forever across iOS/Android.
-
-2. **Deep links for auth**
-   - **Option A (recommended):** Universal Links on `wooffy.app` — best UX, links open in app automatically. Requires serving `/.well-known/apple-app-site-association` from your domain.
-   - **Option B:** Custom scheme `wooffy://` — easier to set up, but users see a system confirmation sheet and it looks less polished.
-
-3. **Scope for this turn** — implement steps 1–7 (code + config + assets), or also draft App Store listing copy (name, subtitle, description, keywords) in the same pass?
-
-Tell me your bundle ID preference and deep-link choice and I'll implement.
+Notes
+- This is a Lovable UI action; no code changes are needed in the project itself.
+- If you already have a GitHub account connected, the flow will skip the authorization step and only ask you to pick/create the repo.
