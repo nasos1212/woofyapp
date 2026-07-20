@@ -1,0 +1,25 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "<APPLE_TEAM_ID>.app.wooffy",
+        "paths": [
+          "/auth",
+          "/verify-email",
+          "/reset-password",
+          "/member/*",
+          "/business/*",
+          "/shelter/*",
+          "/blog/*",
+          "/partner/*",
+          "/community/*",
+          "*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["<APPLE_TEAM_ID>.app.wooffy"]
+  }
+}
