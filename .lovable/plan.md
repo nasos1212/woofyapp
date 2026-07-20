@@ -1,75 +1,45 @@
-## Ship Wooffy to iOS via Capacitor
+No good reason — you are right to flag it. `app.lovable.woofyapp` was the default from the earlier Capacitor setup, but it should match your real domain. I will switch the bundle ID to `app.wooffy` (or `com.wooffy.app` if you prefer) so it aligns with `wooffy.app` and looks correct in App Store Connect.
 
-Capacitor is already wired up (`capacitor.config.ts` with `appId: app.lovable.woofyapp`, `appName: Wooffy`, `webDir: dist`). This plan covers the remaining work to get a production-ready iOS build submittable to the App Store.
+## Updated plan
 
-### 1. Finalize Capacitor config for production
+### What I'll do in this project
 
-- Keep the dev-only `server.url` block commented out (it currently is) so the shipped app loads local `dist/` bundles, not `wooffy.app`.
-- Add `ios` config block: `contentInset: "always"` and `backgroundColor: "#1A1A2E"` to match the brand dark background and avoid white flashes on launch.
-- Confirm `appId` follows reverse-DNS convention — `app.lovable.woofyapp` is fine, but if you'd rather ship under `app.wooffy` we should change it **now** (App Store bundle ID cannot change after first submission).
+1. Update `capacitor.config.ts`:
+   - Change `appId` from `app.lovable.woofyapp` to `app.wooffy` (or your preferred variant).
+   - Add iOS block: `contentInset: "always"`, `backgroundColor: "#1A1A2E"`.
+2. Install native Capacitor plugins: `@capacitor/status-bar`, `@capacitor/splash-screen`, `@capacitor/app`, `@capacitor/browser`, `@capacitor/keyboard`, `@capacitor/assets`.
+3. Add `src/lib/native.ts` to initialize StatusBar (dark), hide splash screen, handle external links via `Browser.open`, and listen for app-state changes. Guarded by `Capacitor.isNativePlatform()`.
+4. Bootstrap the native module from `src/main.tsx`.
+5. Generate iOS icon and splash screen assets from the Wooffy dog mark (`public/wooffy-logo.png` or existing source). Output into `resources/` and run `npx capacitor-assets generate --ios`.
+6. Audit fixed bottom navigation bars and add `env(safe-area-inset-bottom)` padding so the iPhone home indicator does not overlap controls.
+7. Add a `.capacitor` class fallback so the Lovable badge is hidden inside the native shell.
 
-### 2. Install native iOS plugins we actually use
-
-Add and configure only what the app already relies on:
-- `@capacitor/status-bar` — force dark status bar to match `#1A1A2E`.
-- `@capacitor/splash-screen` — brand splash while JS bundle boots.
-- `@capacitor/app` — hardware back / deep-link handling.
-- `@capacitor/browser` — open external partner/blog links inside an in-app Safari view (App Store review prefers this over `target="_blank"` for external navigation from a native shell).
-- `@capacitor/keyboard` — proper input handling on iOS.
-
-Wire these in a small `src/lib/native.ts` bootstrap called from `main.tsx`, guarded by `Capacitor.isNativePlatform()` so web behavior is unchanged.
-
-### 3. iOS assets
-
-- App icon: generate 1024×1024 from the existing Wooffy dog-on-dark mark (`public/pwa-512x512.svg`), plus the full iOS icon set.
-- Splash screen: dark `#1A1A2E` with centered Wooffy logo, generated at required sizes.
-- Use `@capacitor/assets` to auto-generate every required icon/splash from a single source PNG.
-
-### 4. Safe-area + PWA cleanup for native shell
-
-- Verify all fixed bottom nav bars (`BusinessMobileNav`, member bottom nav) respect `env(safe-area-inset-bottom)` so they clear the iPhone home indicator.
-- The `index.html` service-worker "force-clear" script and auto-update bundle poller are harmless but redundant inside Capacitor — leave them (they only run in a browser context where SW exists), no code change needed.
-- Hide the Lovable badge in native shell (already handled via `display-mode: standalone` CSS; add a `.capacitor` body class fallback).
-
-### 5. Auth + deep links
-
-- Supabase email verification / password reset / OAuth currently redirect to `https://wooffy.app/...`. In the native app these open in the system browser and can't return the user to the app unless we register a Universal Link or custom scheme.
-- Recommended: register **Universal Links** for `wooffy.app` (Apple App Site Association file served from the domain) so verification/reset links reopen the installed app. Alternative: custom scheme `wooffy://` — simpler, but weaker UX.
-- Stripe Embedded Checkout runs inside the webview and is fine as-is; no native Stripe SDK needed.
-
-### 6. Build & release workflow (runs on user's Mac, not sandbox)
-
-Documented steps for the user:
+### What you'll do on your Mac
 
 ```text
-1. Export project to GitHub, git pull locally
+1. Export project → GitHub → git pull
 2. npm install
 3. npx cap add ios
 4. npm run build
-5. npx cap sync ios
-6. npx cap open ios     # opens Xcode
-7. In Xcode: set Team, Bundle ID, version, archive → upload to App Store Connect
+5. npx capacitor-assets generate --ios
+6. npx cap sync ios
+7. npx cap open ios
+8. In Xcode: set Signing Team + Bundle ID, bump version, Archive → App Store Connect
 ```
 
-Requirements: macOS + Xcode 15+, Apple Developer account ($99/yr).
+Prereqs: macOS + Xcode 15+, Apple Developer account, App Store Connect app record.
 
-### 7. App Store Connect metadata (prep, not code)
+### Two decisions still needed
 
-Provide draft copy for:
-- App name: **Wooffy**
-- Subtitle: "Pet community for Cyprus"
-- Description, keywords, support URL (`wooffy.app`), privacy policy URL (`wooffy.app/terms`)
-- Screenshots for 6.7" and 6.1" iPhone (captured from the running app)
+1. **Bundle ID preference**
+   - `app.wooffy` — clean, matches domain, Apple-acceptable
+   - `com.wooffy.app` — more conventional if you ever expect Android too
+   - Keep whichever you choose consistent forever across iOS/Android.
 
-### Technical details
+2. **Deep links for auth**
+   - **Option A (recommended):** Universal Links on `wooffy.app` — best UX, links open in app automatically. Requires serving `/.well-known/apple-app-site-association` from your domain.
+   - **Option B:** Custom scheme `wooffy://` — easier to set up, but users see a system confirmation sheet and it looks less polished.
 
-- Files to add: `src/lib/native.ts`, `resources/icon.png`, `resources/splash.png`, updated `capacitor.config.ts`, `ios/` folder (generated by `cap add ios`, committed).
-- Files to touch: `src/main.tsx` (call native bootstrap), `index.html` (optional viewport-fit tweak — already set), `package.json` (add plugins).
-- No backend/database changes.
-- No changes to `src/integrations/supabase/client.ts`.
+3. **Scope for this turn** — implement steps 1–7 (code + config + assets), or also draft App Store listing copy (name, subtitle, description, keywords) in the same pass?
 
-### Clarifying questions before I start
-
-1. **Bundle ID** — keep `app.lovable.woofyapp` or switch to something you own like `app.wooffy` or `com.wooffy.app`? This is permanent.
-2. **Deep links** — set up Universal Links on `wooffy.app` (best UX, needs a small file hosted at `/.well-known/apple-app-site-association`), or start with a `wooffy://` custom scheme and upgrade later?
-3. **Scope for this turn** — do you want me to (a) do steps 1–4 (code + config + assets) so your GitHub export is submission-ready, then you run steps 6–7 on your Mac, or (b) also draft the App Store listing copy in the same pass?
+Tell me your bundle ID preference and deep-link choice and I'll implement.
