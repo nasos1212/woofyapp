@@ -653,6 +653,7 @@ export default function BusinessProfile() {
                             business_name: business.business_name,
                             category: business.category,
                             city: business.city,
+                            logo_url: business.logo_url,
                           },
                         });
                       }}
