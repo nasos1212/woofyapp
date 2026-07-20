@@ -202,3 +202,22 @@ html, body {
     display: none !important;
   }
 }
+
+/* Native Capacitor shell: hide Lovable badge and adjust bottom nav safe-area spacing */
+body.capacitor #lovable-badge,
+body.capacitor [data-lovable-badge],
+body.capacitor a[href*="lovable.dev"][style*="fixed"],
+body.capacitor div[style*="fixed"][style*="right"][style*="bottom"] a[href*="lovable"] {
+  display: none !important;
+}
+
+/* Push page content above the fixed mobile nav when the iPhone home indicator is present */
+.pb-20:has(+ .business-mobile-nav),
+.pb-20:has(+ * .business-mobile-nav) {
+  padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+}
+
+/* Ensure fixed bottom nav always clears the home indicator */
+.business-mobile-nav {
+  padding-bottom: env(safe-area-inset-bottom);
+}
