@@ -3,7 +3,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import { Keyboard } from '@capacitor/keyboard';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 /**
  * Initialize native iOS/Android shell behavior.
