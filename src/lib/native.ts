@@ -36,7 +36,7 @@ export async function initializeNativeShell(): Promise<void> {
   try {
     // Let the web view resize when the keyboard opens instead of pushing
     // fixed bottom nav bars up and breaking layout.
-    await Keyboard.setResizeMode({ mode: 'body' });
+    await Keyboard.setResizeMode({ mode: KeyboardResize.Body });
   } catch (error) {
     console.warn('Keyboard resize mode failed:', error);
   }
