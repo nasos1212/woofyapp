@@ -95,6 +95,8 @@ const Index = () => {
           content="Join 250+ pet parents. Get exclusive discounts at 100+ pet shops, trainers, hotels & more. 10% goes to animal shelters. Save €200+ yearly with Wooffy membership." 
         />
         <meta name="keywords" content="pet membership, dog owners, pet discounts, pet services, dog training, pet hotels, pet shops, dog shelters, pet charity, Wooffy" />
+        <link rel="canonical" href="https://wooffy.app/" />
+        <meta property="og:url" content="https://wooffy.app/" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
