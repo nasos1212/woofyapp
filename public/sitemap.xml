@@ -117,14 +117,14 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/karmas-story</loc>
-    <lastmod>2026-08-01</lastmod>
+    <loc>https://wooffy.app/blog/pet-haus-small-changes-big-differences-in-pet-nutrition</loc>
+    <lastmod>2026-07-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/pet-haus-small-changes-big-differences-in-pet-nutrition</loc>
-    <lastmod>2026-07-24</lastmod>
+    <loc>https://wooffy.app/blog/karmas-story</loc>
+    <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -149,6 +149,12 @@
   <url>
     <loc>https://wooffy.app/blog/my-dog-kobe</loc>
     <lastmod>2026-07-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooffy.app/blog/unleashed-dog-handling-building-a-partnership-beyond-training</loc>
+    <lastmod>2026-08-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
