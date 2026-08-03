@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "<APPLE_TEAM_ID>.app.wooffy",
+        "appID": "2DLWZ7MYZ5.app.wooffy",
         "paths": [
           "/auth",
           "/verify-email",
@@ -20,6 +20,6 @@
     ]
   },
   "webcredentials": {
-    "apps": ["<APPLE_TEAM_ID>.app.wooffy"]
+    "apps": ["2DLWZ7MYZ5.app.wooffy"]
   }
 }
