@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
-import { getGoogleMapsUrl } from "@/lib/maps";
+import { getGoogleMapsUrl, getGooglePlacePageUrl } from "@/lib/maps";
 import DogLoader from "@/components/DogLoader";
 
 interface Place {
