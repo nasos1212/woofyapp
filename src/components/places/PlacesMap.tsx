@@ -125,7 +125,7 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
     // Add new markers
     cyprusPlaces.forEach((place) => {
       const config = getPlaceConfig(place.place_type);
-      const directionsUrl = place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`;
+      const directionsUrl = getGoogleMapsUrl(place);
 
       const popupContent = `
         <div style="min-width: 200px; max-width: 280px;">
