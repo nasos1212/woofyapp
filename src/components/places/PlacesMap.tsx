@@ -13,6 +13,7 @@ interface Place {
   place_type: string;
   phone: string | null;
   website: string | null;
+  google_maps_url: string | null;
   rating: number | null;
   is_24_hour: boolean | null;
   is_emergency: boolean | null;
@@ -37,6 +38,9 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
   const getPlaceConfig = (type: string) => {
     return placeTypeConfig[type] || { label: "Other", color: "text-gray-600", bgColor: "bg-gray-100" };
   };
+
+  const escapeHtml = (value: string) =>
+    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
   // Initialize map once
   useEffect(() => {
