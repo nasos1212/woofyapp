@@ -13,6 +13,7 @@ interface Place {
   place_type: string;
   phone: string | null;
   website: string | null;
+  google_maps_url: string | null;
   rating: number | null;
   is_24_hour: boolean | null;
   is_emergency: boolean | null;
@@ -37,6 +38,9 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
   const getPlaceConfig = (type: string) => {
     return placeTypeConfig[type] || { label: "Other", color: "text-gray-600", bgColor: "bg-gray-100" };
   };
+
+  const escapeHtml = (value: string) =>
+    value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
   // Initialize map once
   useEffect(() => {
@@ -121,38 +125,39 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
     // Add new markers
     cyprusPlaces.forEach((place) => {
       const config = getPlaceConfig(place.place_type);
-      
+      const directionsUrl = place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`;
+
       const popupContent = `
         <div style="min-width: 200px; max-width: 280px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <strong style="font-size: 14px;">${place.name}</strong>
+            <strong style="font-size: 14px;">${escapeHtml(place.name)}</strong>
             ${place.verified ? '<span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Verified</span>' : ''}
           </div>
-          
+
           <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
-            <span style="background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 11px;">${config.label}</span>
+            <span style="background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-size: 11px;">${escapeHtml(config.label)}</span>
             ${place.is_24_hour ? '<span style="background: #dbeafe; color: #2563eb; padding: 2px 8px; border-radius: 4px; font-size: 11px;">24h</span>' : ''}
             ${place.is_emergency ? '<span style="background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 4px; font-size: 11px;">Emergency</span>' : ''}
           </div>
-          
-          ${place.description ? `<p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">${place.description.substring(0, 100)}${place.description.length > 100 ? '...' : ''}</p>` : ''}
-          
+
+          ${place.description ? `<p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">${escapeHtml(place.description.substring(0, 100))}${place.description.length > 100 ? '...' : ''}</p>` : ''}
+
           ${(place.address || place.area || place.city) ? `
             <p style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
-              📍 ${[place.address, place.area ? getCityDisplayName(place.area, i18n.language) : null, place.city ? getCityDisplayName(place.city, i18n.language) : null].filter(Boolean).join(", ")}
+              📍 ${escapeHtml([place.address, place.area ? getCityDisplayName(place.area, i18n.language) : null, place.city ? getCityDisplayName(place.city, i18n.language) : null].filter(Boolean).join(", "))}
             </p>
           ` : ''}
-          
+
           ${place.rating ? `
             <p style="font-size: 12px; margin-bottom: 8px;">
               ⭐ ${place.rating.toFixed(1)}
             </p>
           ` : ''}
-          
+
           <div style="display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
-            <a href="https://www.google.com/maps?q=${place.latitude},${place.longitude}" target="_blank" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">🗺️ Directions</a>
-            ${place.phone ? `<a href="tel:${place.phone}" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">📞 Call</a>` : ''}
-            ${place.website ? `<a href="${place.website}" target="_blank" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">🌐 Web</a>` : ''}
+            <a href="${escapeHtml(directionsUrl)}" target="_blank" rel="noopener noreferrer" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">🗺️ Directions</a>
+            ${place.phone ? `<a href="tel:${escapeHtml(place.phone)}" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">📞 Call</a>` : ''}
+            ${place.website ? `<a href="${escapeHtml(place.website)}" target="_blank" rel="noopener noreferrer" style="flex: 1; text-align: center; padding: 6px; background: #f3f4f6; border-radius: 6px; font-size: 12px; text-decoration: none; color: inherit;">🌐 Web</a>` : ''}
           </div>
         </div>
       `;

@@ -345,18 +345,15 @@ const PetFriendlyPlaces = () => {
 
                       {/* Actions */}
                       <div className="flex gap-1.5 pt-2 border-t">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 h-7 text-xs px-2"
-                          onClick={() => window.open(
-                            place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`, 
-                            "_blank"
-                          )}
+                        <a
+                          href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 inline-flex items-center justify-center gap-1 h-7 text-xs px-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground font-medium"
                         >
-                          <Navigation className="w-3 h-3 mr-1" />
+                          <Navigation className="w-3 h-3" />
                           {t("petFriendlyPlaces.actions.go")}
-                        </Button>
+                        </a>
                         {place.phone && (
                           <a
                             href={`tel:${place.phone}`}
@@ -367,14 +364,14 @@ const PetFriendlyPlaces = () => {
                           </a>
                         )}
                         {place.website && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 h-7 text-xs px-2"
-                            onClick={() => window.open(place.website!, "_blank")}
+                          <a
+                            href={place.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 inline-flex items-center justify-center gap-1 h-7 text-xs px-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground font-medium"
                           >
                             <Globe className="w-3 h-3" />
-                          </Button>
+                          </a>
                         )}
                       </div>
                     </div>
