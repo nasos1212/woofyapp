@@ -44,7 +44,7 @@ import { cyprusCityNames } from "@/data/cyprusLocations";
 import { sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
-import { getGoogleMapsUrl } from "@/lib/maps";
+import { getGoogleMapsUrl, getGooglePlacePageUrl } from "@/lib/maps";
 
 interface PetFriendlyPlace {
   id: string;
@@ -292,7 +292,15 @@ const PetFriendlyPlaces = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-sm text-foreground truncate">
-                            {place.name}
+                            <a
+                              href={getGooglePlacePageUrl(place)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline transition-colors"
+                              title={place.name}
+                            >
+                              {place.name}
+                            </a>
                           </h3>
                           <div className="flex items-center gap-1 flex-wrap">
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0">

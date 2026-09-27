@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
-import { getGoogleMapsUrl } from "@/lib/maps";
+import { getGoogleMapsUrl, getGooglePlacePageUrl } from "@/lib/maps";
 import DogLoader from "@/components/DogLoader";
 
 interface Place {
@@ -127,11 +127,12 @@ const PlacesMap = ({ places, placeTypeConfig }: PlacesMapProps) => {
     cyprusPlaces.forEach((place) => {
       const config = getPlaceConfig(place.place_type);
       const directionsUrl = getGoogleMapsUrl(place);
+      const placePageUrl = getGooglePlacePageUrl(place);
 
       const popupContent = `
         <div style="min-width: 200px; max-width: 280px;">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <strong style="font-size: 14px;">${escapeHtml(place.name)}</strong>
+            <strong style="font-size: 14px;"><a href="${escapeHtml(placePageUrl)}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">${escapeHtml(place.name)}</a></strong>
             ${place.verified ? '<span style="background: #dcfce7; color: #15803d; padding: 2px 6px; border-radius: 4px; font-size: 11px;">Verified</span>' : ''}
           </div>
 
