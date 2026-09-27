@@ -44,7 +44,7 @@ import { cyprusCityNames } from "@/data/cyprusLocations";
 import { sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
-import { getGoogleMapsUrl } from "@/lib/maps";
+import { getGoogleMapsUrl, getGooglePlacePageUrl } from "@/lib/maps";
 
 interface PetFriendlyPlace {
   id: string;

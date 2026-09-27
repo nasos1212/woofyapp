@@ -21,3 +21,19 @@ export function getGoogleMapsUrl(place: MapsPlaceLike): string {
   const destination = `${place.name}, ${location}`;
   return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
 }
+
+/**
+ * Builds a Google Maps "search" universal link for a place's own listing page
+ * (reviews, photos, opening hours, website/menu) — as opposed to
+ * getGoogleMapsUrl, which builds directions.
+ *
+ * Same api=1 pattern: opens the place page directly in the Google Maps app on
+ * iOS/Android when installed, web otherwise. A text query (name + city) is
+ * used instead of stored goo.gl links or raw coordinates, since some places
+ * have coordinates rounded to the city center.
+ */
+export function getGooglePlacePageUrl(place: MapsPlaceLike): string {
+  const location = place.city || place.area || "Cyprus";
+  const query = `${place.name}, ${location}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
