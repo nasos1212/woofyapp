@@ -44,6 +44,7 @@ import { cyprusCityNames } from "@/data/cyprusLocations";
 import { sortPetFriendlyPlaceTypesByLabel } from "@/data/petFriendlyPlaceTypes";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
+import { getGoogleMapsUrl } from "@/lib/maps";
 
 interface PetFriendlyPlace {
   id: string;
@@ -320,7 +321,7 @@ const PetFriendlyPlaces = () => {
 
                       {(place.address || place.area || place.city) && (
                         <a 
-                          href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+                          href={getGoogleMapsUrl(place)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-start gap-1.5 text-xs text-muted-foreground mb-2 hover:text-primary transition-colors group"
@@ -346,7 +347,7 @@ const PetFriendlyPlaces = () => {
                       {/* Actions */}
                       <div className="flex gap-1.5 pt-2 border-t">
                         <a
-                          href={place.google_maps_url || `https://www.google.com/maps?q=${place.latitude},${place.longitude}`}
+                          href={getGoogleMapsUrl(place)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex-1 inline-flex items-center justify-center gap-1 h-7 text-xs px-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground font-medium"
