@@ -66,9 +66,14 @@ Deno.serve(async (req) => {
     // Deactivate expired memberships
     const membershipIds = expiredMemberships.map((m) => m.id);
     
+    // Expired paid plans revert to an active Free membership (never lock members out)
     const { error: updateError } = await supabase
       .from("memberships")
-      .update({ is_active: false })
+      .update({
+        plan_type: "free",
+        max_pets: 5,
+        expires_at: new Date(Date.now() + 100 * 365 * 24 * 3600 * 1000).toISOString(),
+      })
       .in("id", membershipIds);
 
     if (updateError) {

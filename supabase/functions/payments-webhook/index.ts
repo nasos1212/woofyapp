@@ -19,6 +19,13 @@ const PRICE_TO_PLAN: Record<string, { plan_type: string; max_pets: number }> = {
   wooffy_pack_yearly: { plan_type: "family", max_pets: 5 },
 };
 
+const FREE_MEMBERSHIP = () => ({
+  is_active: true,
+  plan_type: "free",
+  max_pets: 5,
+  expires_at: new Date(Date.now() + 100 * 365 * 24 * 3600 * 1000).toISOString(),
+});
+
 async function syncMembership(
   userId: string,
   priceId: string | undefined,
@@ -39,18 +46,16 @@ async function syncMembership(
     ["active", "trialing", "past_due"].includes(status) ||
     (status === "canceled" && periodEnd && new Date(periodEnd) > new Date());
 
-  const updates: Record<string, unknown> = {
-    is_active: !!hasAccess,
-  };
-  if (hasAccess) {
-    updates.plan_type = mapping.plan_type;
-    updates.max_pets = mapping.max_pets;
-    if (periodEnd) updates.expires_at = periodEnd;
-  } else {
-    // Subscription fully canceled / unpaid → revert to free tier
-    updates.plan_type = "free";
-    updates.max_pets = 5;
-  }
+  // Members never lose their account: without paid access they revert to an
+  // active Free membership (they can still add pets).
+  const updates: Record<string, unknown> = hasAccess
+    ? {
+        is_active: true,
+        plan_type: mapping.plan_type,
+        max_pets: mapping.max_pets,
+        ...(periodEnd ? { expires_at: periodEnd } : {}),
+      }
+    : FREE_MEMBERSHIP();
 
   const { error } = await getSupabase()
     .from("memberships")
@@ -118,11 +123,10 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
 
   const userId = subscription.metadata?.userId;
   if (userId) {
-    await syncMembership(userId, undefined, "canceled", null, false);
-    // Force revert (syncMembership returns early without priceId, do it inline)
+    // Revert to an active Free membership (never deactivate the account)
     await getSupabase()
       .from("memberships")
-      .update({ is_active: false, plan_type: "free", max_pets: 5 })
+      .update(FREE_MEMBERSHIP())
       .eq("user_id", userId);
   }
 }

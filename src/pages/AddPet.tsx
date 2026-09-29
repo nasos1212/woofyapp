@@ -71,15 +71,36 @@ const AddPet = () => {
     }
 
     const checkMembership = async () => {
-      if (!user) return;
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      // Retry transient network failures (common on mobile Safari: "Load failed")
+      const withRetry = async <T,>(fn: () => PromiseLike<{ data: T; error: any; count?: number | null }>) => {
+        let last: any;
+        for (let i = 0; i < 3; i++) {
+          try {
+            const res = await fn();
+            if (!res.error) return res;
+            last = res.error;
+          } catch (e) {
+            last = e;
+          }
+          await new Promise((r) => setTimeout(r, 400 * (i + 1)));
+        }
+        throw last;
+      };
 
       try {
         // Get membership
-        const { data: membershipData } = await supabase
-          .from("memberships")
-          .select("id, max_pets")
-          .eq("user_id", user.id)
-          .maybeSingle();
+        const { data: membershipData } = await withRetry(() =>
+          supabase
+            .from("memberships")
+            .select("id, max_pets")
+            .eq("user_id", user.id)
+            .maybeSingle()
+        );
 
         if (!membershipData) {
           toast.error(t("addPet.errors.noMembership"));
@@ -90,10 +111,12 @@ const AddPet = () => {
         setMembership(membershipData);
 
         // Get current pet count
-        const { count } = await supabase
-          .from("pets")
-          .select("*", { count: "exact", head: true })
-          .eq("membership_id", membershipData.id);
+        const { count } = await withRetry(() =>
+          supabase
+            .from("pets")
+            .select("*", { count: "exact", head: true })
+            .eq("membership_id", membershipData.id)
+        );
 
         setCurrentPetCount(count || 0);
 
