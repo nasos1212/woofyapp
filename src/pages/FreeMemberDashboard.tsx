@@ -319,7 +319,11 @@ const FreeMemberDashboard = () => {
                   <p className="text-sm text-wooffy-light/70 mb-5 max-w-md mx-auto">
                     {t("freeMember.pets.emptyDesc")}
                   </p>
-                  <Button onClick={() => navigate("/member/add-pet")} size="lg" className="gap-2">
+                  <Button
+                    onClick={() => navigate("/member/add-pet")}
+                    size="lg"
+                    className="mx-auto h-auto min-h-12 max-w-[calc(100%-2rem)] whitespace-normal px-4 text-center leading-snug sm:px-8"
+                  >
                     <PlusCircle className="w-5 h-5" />
                     {t("freeMember.pets.addFirst")}
                   </Button>
@@ -609,7 +613,7 @@ const FreeMemberDashboard = () => {
                                 </Badge>
                                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                                   <Clock className="w-3 h-3" />
-                                  {post.reading_minutes} {t("blog.minRead")}
+                                  {post.reading_minutes} {t("blog.minRead", { count: post.reading_minutes })}
                                 </span>
                               </div>
                               <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">

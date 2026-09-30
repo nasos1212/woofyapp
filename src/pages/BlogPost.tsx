@@ -228,7 +228,7 @@ const BlogPostPage = () => {
               <span>{formatDate(post.published_at)}</span>
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {post.reading_minutes} {t("blog.minRead")}
+                 {post.reading_minutes} {t("blog.minRead", { count: post.reading_minutes })}
               </span>
             </div>
           </div>
