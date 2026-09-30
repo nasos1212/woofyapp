@@ -322,7 +322,7 @@ const FreeMemberDashboard = () => {
                   <Button
                     onClick={() => navigate("/member/add-pet")}
                     size="lg"
-                    className="mx-auto h-auto min-h-12 max-w-[calc(100%-2rem)] whitespace-normal px-4 text-center leading-snug sm:px-8"
+                    className="mx-auto h-auto min-h-12 w-[calc(100%_-_2rem)] whitespace-normal px-4 text-center leading-snug sm:w-auto sm:px-8"
                   >
                     <PlusCircle className="w-5 h-5" />
                     {t("freeMember.pets.addFirst")}
