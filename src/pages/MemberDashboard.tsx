@@ -844,7 +844,7 @@ const MemberDashboard = () => {
                                     </Badge>
                                     <span className="text-xs text-muted-foreground flex items-center gap-1">
                                       <Clock className="w-3 h-3" />
-                                      {post.reading_minutes} {t("blog.minRead")}
+                                       {post.reading_minutes} {t("blog.minRead", { count: post.reading_minutes })}
                                     </span>
                                   </div>
                                   <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
