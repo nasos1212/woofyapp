@@ -1,6 +1,18 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      // Native app Google sign-in: hand the finished login back to the Wooffy iPhone app.
+      (function () {
+        try {
+          var p = new URLSearchParams((location.hash || "").replace(/^#/, "") + "&" + location.search.replace(/^\?/, ""));
+          var s = p.get("state") || "";
+          if (location.pathname === "/auth" && s.indexOf("native") === 0 && (p.get("access_token") || p.get("error"))) {
+            location.replace("wooffy://auth#" + p.toString());
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 

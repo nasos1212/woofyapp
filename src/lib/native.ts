@@ -44,8 +44,20 @@ export async function initializeNativeShell(): Promise<void> {
   try {
     // Handle Universal Links / custom scheme deep links so email verification,
     // password reset, and shared content open inside the app.
-    const openDeepLink = ({ url }: { url: string }) => {
+    const openDeepLink = async ({ url }: { url: string }) => {
       try {
+        if (url.startsWith('wooffy://')) {
+          await Browser.close().catch(() => undefined);
+          const params = new URLSearchParams(url.split('#')[1] || url.split('?')[1] || '');
+          const access_token = params.get('access_token');
+          const refresh_token = params.get('refresh_token');
+          if (access_token && refresh_token) {
+            const { supabase } = await import('@/integrations/supabase/client');
+            await supabase.auth.setSession({ access_token, refresh_token });
+            window.location.href = '/';
+          }
+          return;
+        }
         const parsed = new URL(url);
         void Browser.close()
           .catch(() => undefined)
