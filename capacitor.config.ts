@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.wooffy',
+  appId: 'app.wooffy.ios',
   appName: 'Wooffy',
   webDir: 'dist',
   backgroundColor: '#1A1A2E',
