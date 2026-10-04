@@ -49,6 +49,7 @@ export async function initializeNativeShell(): Promise<void> {
         const parsed = new URL(url);
         // Navigate the local webview to the deep-linked path.
         window.location.href = parsed.pathname + parsed.search + parsed.hash;
+        void Browser.close().catch(() => undefined);
       } catch (error) {
         console.warn('Failed to handle deep link:', url, error);
       }
