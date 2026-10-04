@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { z } from "zod";
 import DogLoader from "@/components/DogLoader";
+import { Capacitor } from "@capacitor/core";
 import ContactPopover from "@/components/ContactPopover";
 import PetFriendlyPlaceRequestDialog from "@/components/PetFriendlyPlaceRequestDialog";
 import { useTranslation } from "react-i18next";
@@ -742,6 +743,9 @@ const Auth = () => {
         <div className="bg-card rounded-2xl shadow-card p-8">
           {/* Header */}
           <div className="text-center mb-8">
+            {Capacitor.isNativePlatform() && (
+              <img src="/wooffy-logo.png" alt="Wooffy" className="h-16 w-auto mx-auto mb-6 object-contain" />
+            )}
             <div className={`w-16 h-16 ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} rounded-2xl flex items-center justify-center mx-auto mb-4`}>
               {isLogin ? <Dog className="w-8 h-8 text-primary-foreground" /> : getAccountIcon()}
             </div>
