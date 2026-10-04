@@ -19,6 +19,7 @@ import BackToTop from "@/components/BackToTop";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import DogLoader from "@/components/DogLoader";
+import { Capacitor } from "@capacitor/core";
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -72,6 +73,15 @@ const Index = () => {
       checkAndRedirect();
     }
   }, [user, loading, navigate, skipRedirect]);
+
+  const isNative = Capacitor.isNativePlatform();
+
+  // In the native app there is no landing page: signed-out users go straight to sign in
+  useEffect(() => {
+    if (isNative && !loading && !user) navigate("/auth", { replace: true });
+  }, [isNative, loading, user, navigate]);
+
+  if (isNative && !user) return null;
 
   if (loading || checkingMembership) {
     return (
