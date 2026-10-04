@@ -44,27 +44,38 @@ export async function initializeNativeShell(): Promise<void> {
   try {
     // Handle Universal Links / custom scheme deep links so email verification,
     // password reset, and shared content open inside the app.
+    // iOS keeps returning the same launch URL for the whole app session, so
+    // remember handled links to avoid an endless reload loop.
+    const HANDLED_KEY = 'wooffy_handled_deep_links';
+    const alreadyHandled = (url: string) => {
+      try {
+        const list: string[] = JSON.parse(localStorage.getItem(HANDLED_KEY) || '[]');
+        if (list.includes(url)) return true;
+        localStorage.setItem(HANDLED_KEY, JSON.stringify([...list.slice(-9), url]));
+      } catch { /* ignore */ }
+      return false;
+    };
+
     const openDeepLink = async ({ url }: { url: string }) => {
       try {
+        if (alreadyHandled(url)) return;
+        await Browser.close().catch(() => undefined);
         if (url.startsWith('wooffy://')) {
-          await Browser.close().catch(() => undefined);
           const params = new URLSearchParams(url.split('#')[1] || url.split('?')[1] || '');
           const access_token = params.get('access_token');
           const refresh_token = params.get('refresh_token');
           if (access_token && refresh_token) {
             const { supabase } = await import('@/integrations/supabase/client');
-            await supabase.auth.setSession({ access_token, refresh_token });
-            window.location.href = '/';
+            const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+            if (error) console.warn('Native sign-in failed:', error);
+            if (window.location.pathname !== '/') window.location.replace('/');
           }
           return;
         }
         const parsed = new URL(url);
-        void Browser.close()
-          .catch(() => undefined)
-          .finally(() => {
-            // Preserve the OAuth query/hash so the auth client can restore the session.
-            window.location.href = parsed.pathname + parsed.search + parsed.hash;
-          });
+        const target = parsed.pathname + parsed.search + parsed.hash;
+        const current = window.location.pathname + window.location.search + window.location.hash;
+        if (target !== current) window.location.href = target;
       } catch (error) {
         console.warn('Failed to handle deep link:', url, error);
       }
@@ -72,7 +83,7 @@ export async function initializeNativeShell(): Promise<void> {
 
     App.addListener('appUrlOpen', openDeepLink);
     void App.getLaunchUrl().then((launch) => {
-      if (launch?.url) openDeepLink({ url: launch.url });
+      if (launch?.url) void openDeepLink({ url: launch.url });
     });
   } catch (error) {
     console.warn('App deep link listener failed:', error);
