@@ -4,7 +4,8 @@ const PRODUCTION_ORIGIN = "https://wooffy.app";
 
 export async function signInWithGoogleFromNative() {
   const stateBytes = crypto.getRandomValues(new Uint8Array(16));
-  const state = Array.from(stateBytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  // "native" prefix tells the website callback to hand tokens back to the app.
+  const state = "native" + Array.from(stateBytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
   const params = new URLSearchParams({
     provider: "google",
     redirect_uri: `${PRODUCTION_ORIGIN}/auth`,
