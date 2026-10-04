@@ -717,15 +717,22 @@ const Auth = () => {
   return (
     <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {Capacitor.isNativePlatform() && (
+          <div className="flex justify-center mb-8 pt-[env(safe-area-inset-top)]">
+            <img src="/wooffy-logo.png" alt="Wooffy" className="h-16 w-auto" />
+          </div>
+        )}
         {isLogin ? (
-          <Button
-            variant="ghost"
-            onClick={() => navigate("/?stay=true")}
-            className="mb-6 gap-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t("auth.backHome")}
-          </Button>
+          !Capacitor.isNativePlatform() && (
+            <Button
+              variant="ghost"
+              onClick={() => navigate("/?stay=true")}
+              className="mb-6 gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {t("auth.backHome")}
+            </Button>
+          )
         ) : (
           <Button
             variant="ghost"
