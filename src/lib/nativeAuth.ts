@@ -1,27 +1,23 @@
-import { createLovableAuth } from "@lovable.dev/cloud-auth-js";
-import { supabase } from "@/integrations/supabase/client";
+import { Browser } from "@capacitor/browser";
 
 const PRODUCTION_ORIGIN = "https://wooffy.app";
 
-const nativeLovableAuth = createLovableAuth({
-  oauthBrokerUrl: `${PRODUCTION_ORIGIN}/~oauth/initiate`,
-});
-
 export async function signInWithGoogleFromNative() {
-  const result = await nativeLovableAuth.signInWithOAuth("google", {
+  const stateBytes = crypto.getRandomValues(new Uint8Array(16));
+  const state = Array.from(stateBytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  const params = new URLSearchParams({
+    provider: "google",
     redirect_uri: `${PRODUCTION_ORIGIN}/auth`,
-    extraParams: {
-      prompt: "select_account",
-    },
+    state,
+    prompt: "select_account",
   });
 
-  if (result.redirected || result.error) {
-    return result;
-  }
-
   try {
-    await supabase.auth.setSession(result.tokens);
-    return result;
+    await Browser.open({
+      url: `${PRODUCTION_ORIGIN}/~oauth/initiate?${params.toString()}`,
+      presentationStyle: "fullscreen",
+    });
+    return { error: null, redirected: true as const };
   } catch (error) {
     return { error: error instanceof Error ? error : new Error(String(error)) };
   }

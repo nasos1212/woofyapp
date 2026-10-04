@@ -44,15 +44,23 @@ export async function initializeNativeShell(): Promise<void> {
   try {
     // Handle Universal Links / custom scheme deep links so email verification,
     // password reset, and shared content open inside the app.
-    App.addListener('appUrlOpen', ({ url }) => {
+    const openDeepLink = ({ url }: { url: string }) => {
       try {
         const parsed = new URL(url);
-        // Navigate the local webview to the deep-linked path.
-        window.location.href = parsed.pathname + parsed.search + parsed.hash;
-        void Browser.close().catch(() => undefined);
+        void Browser.close()
+          .catch(() => undefined)
+          .finally(() => {
+            // Preserve the OAuth query/hash so the auth client can restore the session.
+            window.location.href = parsed.pathname + parsed.search + parsed.hash;
+          });
       } catch (error) {
         console.warn('Failed to handle deep link:', url, error);
       }
+    };
+
+    App.addListener('appUrlOpen', openDeepLink);
+    void App.getLaunchUrl().then((launch) => {
+      if (launch?.url) openDeepLink({ url: launch.url });
     });
   } catch (error) {
     console.warn('App deep link listener failed:', error);
