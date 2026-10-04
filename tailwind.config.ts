@@ -83,6 +83,10 @@ export default {
         "3xl": "calc(var(--radius) + 16px)",
       },
       keyframes: {
+        "logo-float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -143,6 +147,7 @@ export default {
         },
       },
       animation: {
+        "logo-float": "logo-float 3s ease-in-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite linear",

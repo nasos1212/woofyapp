@@ -748,7 +748,7 @@ const Auth = () => {
         <div className={`bg-card shadow-card ${isNative ? "rounded-[2rem] px-6 py-5" : "rounded-2xl p-8"}`}>
           {/* Header */}
           <div className={`text-center ${isNative ? "mb-5" : "mb-8"}`}>
-            <div className={`${isNative ? "w-[4.5rem] h-[4.5rem] rounded-full shadow-soft ring-4 ring-secondary mb-4" : "w-16 h-16 rounded-2xl mb-4"} ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} flex items-center justify-center mx-auto`}>
+            <div className={`${isNative ? "w-[4.5rem] h-[4.5rem] rounded-full shadow-soft ring-4 ring-secondary mb-4 animate-logo-float motion-reduce:animate-none" : "w-16 h-16 rounded-2xl mb-4"} ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} flex items-center justify-center mx-auto`}>
               {isLogin ? <Dog className={`${isNative ? "w-10 h-10" : "w-8 h-8"} text-primary-foreground`} /> : getAccountIcon()}
             </div>
             <h1 className={`font-display font-bold text-foreground ${isNative ? "text-3xl" : "text-2xl"}`}>
