@@ -715,11 +715,13 @@ const Auth = () => {
     return "bg-secondary text-secondary-foreground";
   };
 
+  const isNative = Capacitor.isNativePlatform();
+
   return (
-    <div className="min-h-screen bg-gradient-warm flex items-center justify-center p-4">
+    <div className={`${isNative ? "min-h-[100dvh] px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]" : "min-h-screen p-4"} bg-gradient-warm flex items-center justify-center`}>
       <div className="w-full max-w-md">
         {isLogin ? (
-          !Capacitor.isNativePlatform() && (
+          !isNative && (
             <Button
               variant="ghost"
               onClick={() => navigate("/?stay=true")}
@@ -743,17 +745,17 @@ const Auth = () => {
           </Button>
         )}
 
-        <div className="bg-card rounded-2xl shadow-card p-8">
+        <div className={`bg-card shadow-card ${isNative ? "rounded-[2rem] px-6 py-5" : "rounded-2xl p-8"}`}>
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className={`w-16 h-16 ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} ${Capacitor.isNativePlatform() ? 'rounded-full' : 'rounded-2xl'} flex items-center justify-center mx-auto mb-4`}>
-              {isLogin ? <Dog className="w-8 h-8 text-primary-foreground" /> : getAccountIcon()}
+          <div className={`text-center ${isNative ? "mb-5" : "mb-8"}`}>
+            <div className={`${isNative ? "w-[4.5rem] h-[4.5rem] rounded-full shadow-soft ring-4 ring-secondary mb-4" : "w-16 h-16 rounded-2xl mb-4"} ${isLogin ? 'bg-gradient-hero' : getHeaderBgClass()} flex items-center justify-center mx-auto`}>
+              {isLogin ? <Dog className={`${isNative ? "w-10 h-10" : "w-8 h-8"} text-primary-foreground`} /> : getAccountIcon()}
             </div>
-            <h1 className="font-display text-2xl font-bold text-foreground">
+            <h1 className={`font-display font-bold text-foreground ${isNative ? "text-3xl" : "text-2xl"}`}>
               {isLogin ? t("auth.welcomeBack") : t("auth.joinWooffy")}
             </h1>
-            <p className="text-muted-foreground mt-2">
-              {isLogin ? t("auth.signInAccount") : getAccountDescription()}
+            <p className={`text-muted-foreground mt-2 ${isNative ? "text-sm leading-5 max-w-xs mx-auto" : ""}`}>
+              {isLogin ? (isNative ? t("auth.nativeTagline") : t("auth.signInAccount")) : getAccountDescription()}
             </p>
             {!isLogin && (
               <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${getBadgeBgClass()}`}>
@@ -780,16 +782,16 @@ const Auth = () => {
           {/* Social Sign-In — only for pet owners and existing sign-ins */}
           {(isLogin || accountType === "member") && (
             <>
-              <div className="space-y-2 mb-4">
+              <div className={`space-y-2 ${isNative ? "mb-5" : "mb-4"}`}>
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full gap-2"
+                  className={`w-full gap-2 ${isNative ? "h-12 rounded-2xl" : ""}`}
                   disabled={isLoading || (!isLogin && !acceptedTerms)}
                   onClick={async () => {
                     setIsLoading(true);
                     try {
-                      const result = Capacitor.isNativePlatform()
+                      const result = isNative
                         ? await signInWithGoogleFromNative()
                         : await lovable.auth.signInWithOAuth("google", {
                             redirect_uri: window.location.origin,
@@ -828,7 +830,7 @@ const Auth = () => {
                 )}
               </div>
 
-              <div className="relative my-4">
+              <div className={`relative ${isNative ? "my-5" : "my-4"}`}>
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-border" />
                 </div>
@@ -840,7 +842,7 @@ const Auth = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className={isNative ? "space-y-3.5" : "space-y-4"}>
             {!isLogin && (
               <div className="space-y-2">
                 <Label htmlFor="fullName">{t("auth.fullName")}</Label>
@@ -872,7 +874,7 @@ const Auth = () => {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
+                  className={`pl-10 ${isNative ? "h-12 rounded-2xl bg-secondary/40" : ""}`}
                   required
                 />
               </div>
@@ -899,7 +901,7 @@ const Auth = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10"
+                  className={`pl-10 pr-10 ${isNative ? "h-12 rounded-2xl bg-secondary/40" : ""}`}
                   required
                 />
                 <button
@@ -937,7 +939,7 @@ const Auth = () => {
             <Button
               type="submit"
               variant="hero"
-              className="w-full"
+              className={`w-full ${isNative ? "h-12 rounded-2xl mt-1 shadow-soft" : ""}`}
               disabled={isLoading || (!isLogin && !acceptedTerms)}
             >
               {isLoading ? <DogLoader size="sm" /> : isLogin ? t("auth.signInBtn") : t("auth.createAccountBtn")}
@@ -945,7 +947,7 @@ const Auth = () => {
           </form>
 
           {/* Toggle */}
-          <div className="mt-6 text-center">
+          <div className={`${isNative ? "mt-5" : "mt-6"} text-center`}>
             <button
               type="button"
               onClick={() => {
