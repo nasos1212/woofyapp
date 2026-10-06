@@ -39,6 +39,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wooffy.app/blog/diana-the-sister-who-is-still-waiting</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wooffy.app/blog/is-dog-daycare-right-for-your-dog-insights-from-petvibe</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -76,7 +82,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/why-dogs-go-missing-and-how-we-can-prevent-it</loc>
-    <lastmod>2026-10-01</lastmod>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -149,12 +155,6 @@
   <url>
     <loc>https://wooffy.app/blog/pet-haus-small-changes-big-differences-in-pet-nutrition</loc>
     <lastmod>2026-09-25</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/blog/diana-the-sister-who-is-still-waiting</loc>
-    <lastmod>2026-10-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
