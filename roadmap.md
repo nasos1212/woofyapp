@@ -3,8 +3,8 @@
 ## v1.1 update (in progress — code done, needs APNs key + rebuild)
 - [x] App icon notification badge (unread count on home-screen icon) — client badge sync + badge number included in push payloads
 - [x] Apple push notifications server path — `send-push` edge function deployed, `on_notification_created` DB trigger wired
-- [ ] Add APNs key + Key ID as project secrets (waiting on user: download .p8 key from wife's Apple Developer account)
-- [ ] End-to-end test: sign in on device, send a test notification while app is closed, confirm alert + sound + badge
+- [x] Add APNs key + Key ID as project secrets (key "Wooffy Push", both environments)
+- [ ] End-to-end test: run the v8 build on the phone, tap Allow on the notification prompt, then send a test notification with the app closed — confirm alert + sound + badge
 - [ ] Rebuild, re-archive, and upload v1.1 under wife's account (Team XC7893VNBD, Bundle ID app.wooffy.ios) once the above are in
 
 ## v1.0 submission (DONE — approved and live)
