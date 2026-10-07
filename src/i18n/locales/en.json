@@ -597,7 +597,6 @@
       "futureDate": "Birthday cannot be a future date",
       "noBreed": "Please select or type your pet's breed",
       "addFailed": "Failed to add pet"
-
     },
     "success": "{{name}} has been added! 🐾"
   },
@@ -1212,7 +1211,6 @@
     "updateFailed": "Failed to update pet profile",
     "nameRequired": "Please enter a pet name",
     "breedRequired": "Please enter your pet's breed",
-
     "loadFailed": "Failed to load pet profile",
     "birthday": "Birthday",
     "notSet": "Not set",
@@ -1647,7 +1645,7 @@
     "range7d": "7D",
     "range30d": "30D",
     "range6m": "6M",
-    "export": "Export",
+    "export": "PDF report",
     "redemptionsThisMonth": "Redemptions This Month",
     "redemptionsTooltip": "Number of times members used your offers this month. The percentage shows month-over-month change.",
     "customers": "Customers",
@@ -1676,9 +1674,10 @@
     "colLastVisit": "Last Visit",
     "unknownMember": "Unknown",
     "exportFailed": "Failed to load analytics",
-    "exportSuccess": "Data exported successfully",
+    "exportSuccess": "Your report is ready",
     "birthdayPrefix": "🎂 Birthday: {{pet}}",
-    "birthdayMember": "🎂 Birthday"
+    "birthdayMember": "🎂 Birthday",
+    "exportError": "Couldn't create the report. Please try again."
   },
   "businessSettings": {
     "pageTitle": "Business Settings | Wooffy Business",
@@ -2698,7 +2697,7 @@
     "metaDescription": "Get instant pet advice from our AI-powered assistant.",
     "back": "Back to Dashboard",
     "title": "Wooffy Assistant",
-    "subtitle": "Ask me anything about your pet!\u00a0🐾",
+    "subtitle": "Ask me anything about your pet! 🐾",
     "history": "History",
     "howCanIHelp": "How can I help today?",
     "howCanIHelpDesc": "Ask me about pet health, nutrition, behavior, or any concerns you have about your furry friend.",

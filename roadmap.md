@@ -11,3 +11,8 @@
 - [x] Website published with apple-app-site-association (XC7893VNBD.app.wooffy.ios) live
 - [x] Age Rating (4+), Pricing (Tier 0 Free), availability (Cyprus + Greece), DAC7, App Privacy, screenshots, review account (apple@test.com)
 - [x] Approved and live on the App Store
+
+## v1.1 extras (done)
+- [x] Birthday offers expire 7 days after the pet birthday
+- [x] Business analytics PDF report (replaces CSV), share sheet in iOS app
+- [x] Admin gift: upgrade Free and lower-tier Paid members

@@ -54,6 +54,7 @@ const InfluencerMemberships = () => {
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
   const [existingMembership, setExistingMembership] = useState<Membership | null>(null);
   const [checkingMembership, setCheckingMembership] = useState(false);
+  const [hasStripeSub, setHasStripeSub] = useState(false);
   const [editingMembership, setEditingMembership] = useState<PromoMembership | null>(null);
   const [updating, setUpdating] = useState(false);
   const [newMembership, setNewMembership] = useState({
@@ -148,22 +149,45 @@ const InfluencerMemberships = () => {
     }
   };
 
+  const PLAN_RANK: Record<string, number> = { free: 0, single: 1, duo: 2, family: 3 };
+  const PLAN_MAX_PETS: Record<string, number> = { single: 1, duo: 2, family: 5 };
+
+  const existingRank = existingMembership ? (PLAN_RANK[existingMembership.plan_type] ?? 0) : -1;
+  const isUpgrade = !!existingMembership;
+  const canGift = !!selectedUser && (!existingMembership || (PLAN_RANK[newMembership.plan_type] ?? 0) > existingRank);
+
   const selectUser = async (profile: Profile) => {
     setSelectedUser(profile);
     setSearchResults([]);
     setSearchEmail(profile.email);
     setCheckingMembership(true);
+    setHasStripeSub(false);
     
     try {
-      // Check if user already has an active membership
-      const { data: membership } = await supabase
-        .from("memberships")
-        .select("*")
-        .eq("user_id", profile.user_id)
-        .eq("is_active", true)
-        .single();
-      
-      setExistingMembership(membership || null);
+      const [{ data: memberships }, { data: subs }] = await Promise.all([
+        supabase
+          .from("memberships")
+          .select("*")
+          .eq("user_id", profile.user_id)
+          .eq("is_active", true)
+          .order("created_at", { ascending: false })
+          .limit(1),
+        supabase
+          .from("subscriptions")
+          .select("id, status")
+          .eq("user_id", profile.user_id)
+          .in("status", ["active", "trialing", "past_due"])
+          .limit(1),
+      ]);
+      const membership = memberships?.[0] || null;
+      setExistingMembership(membership);
+      setHasStripeSub(!!subs?.length);
+      if (membership) {
+        // Pre-select the next tier up so the admin can upgrade in one click
+        const rank = PLAN_RANK[membership.plan_type] ?? 0;
+        const next = rank <= 0 ? "single" : rank === 1 ? "duo" : "family";
+        setNewMembership((prev) => ({ ...prev, plan_type: next }));
+      }
     } catch (error) {
       setExistingMembership(null);
     } finally {
@@ -177,64 +201,90 @@ const InfluencerMemberships = () => {
       return;
     }
 
-    if (existingMembership) {
-      toast.error("User already has an active membership");
+    if (!canGift) {
+      toast.error("Choose a higher plan than the member already has");
       return;
     }
 
     setGranting(true);
     
     try {
-      const expiresAt = new Date();
-      expiresAt.setMonth(expiresAt.getMonth() + parseInt(newMembership.duration_months));
+      const giftEnd = new Date();
+      giftEnd.setMonth(giftEnd.getMonth() + parseInt(newMembership.duration_months));
+      let membershipId: string;
+      let expiresAt = giftEnd;
 
-      // Generate sequential member number using database function
-      const { data: memberNumberData } = await supabase.rpc('generate_member_number');
-      const memberNumber = memberNumberData || `WF-${new Date().getFullYear()}-1`;
-      
-      const { data: membershipData, error: membershipError } = await supabase
-        .from("memberships")
-        .insert({
-          user_id: selectedUser.user_id,
-          member_number: memberNumber,
-          plan_type: newMembership.plan_type,
-          max_pets: newMembership.plan_type === "family" ? 5 : newMembership.plan_type === "duo" ? 2 : 1,
-          expires_at: expiresAt.toISOString(),
-          is_active: true,
-        })
-        .select()
-        .single();
+      if (existingMembership) {
+        // Upgrade the member's existing membership — keeps pets and member number.
+        const wasPaid = existingMembership.plan_type !== "free";
+        const currentEnd = new Date(existingMembership.expires_at);
+        // Paid members keep whichever end date is later; free members get the gift period.
+        if (wasPaid && currentEnd > giftEnd) expiresAt = currentEnd;
+        const maxPets = Math.max(
+          PLAN_MAX_PETS[newMembership.plan_type] ?? 1,
+          (existingMembership as any).max_pets ?? 0
+        );
+        const { error } = await supabase
+          .from("memberships")
+          .update({
+            plan_type: newMembership.plan_type,
+            max_pets: maxPets,
+            expires_at: expiresAt.toISOString(),
+            is_active: true,
+          })
+          .eq("id", existingMembership.id);
+        if (error) throw error;
+        membershipId = existingMembership.id;
+      } else {
+        const { data: memberNumberData } = await supabase.rpc('generate_member_number');
+        const memberNumber = memberNumberData || `WF-${new Date().getFullYear()}-1`;
+        const { data: membershipData, error: membershipError } = await supabase
+          .from("memberships")
+          .insert({
+            user_id: selectedUser.user_id,
+            member_number: memberNumber,
+            plan_type: newMembership.plan_type,
+            max_pets: PLAN_MAX_PETS[newMembership.plan_type] ?? 1,
+            expires_at: expiresAt.toISOString(),
+            is_active: true,
+          })
+          .select()
+          .single();
+        if (membershipError) throw membershipError;
+        membershipId = membershipData.id;
 
-      if (membershipError) throw membershipError;
+        await supabase.from("user_roles").upsert(
+          { user_id: selectedUser.user_id, role: "member" },
+          { onConflict: "user_id,role" }
+        );
+      }
 
-      // Ensure user has the member role
-      await supabase.from("user_roles").upsert(
-        { user_id: selectedUser.user_id, role: "member" },
-        { onConflict: "user_id,role" }
-      );
-
-      // Track the promo membership
+      const previousPlan = existingMembership?.plan_type;
       const { error: promoError } = await supabase.from("promo_memberships").insert({
         user_id: selectedUser.user_id,
-        membership_id: membershipData.id,
+        membership_id: membershipId,
         reason: newMembership.reason,
         granted_by: user?.id,
         expires_at: expiresAt.toISOString(),
-        notes: newMembership.notes || null,
+        notes:
+          [previousPlan ? `Upgraded from ${previousPlan === "free" ? "Free" : getPlanLabel(previousPlan)}` : null, newMembership.notes || null]
+            .filter(Boolean)
+            .join(" — ") || null,
       });
-
       if (promoError) throw promoError;
 
-      // Create a notification for the user
+      const upgradedFromPaid = previousPlan && previousPlan !== "free";
       await supabase.from("notifications").insert({
         user_id: selectedUser.user_id,
         type: "gift_membership",
-        title: "🎁 You received a gift membership!",
-        message: `You've been granted a free ${getPlanLabel(newMembership.plan_type)} membership. Enjoy your benefits!`,
+        title: upgradedFromPaid ? "🎁 You received a free upgrade!" : "🎁 You received a gift membership!",
+        message: upgradedFromPaid
+          ? `Your membership has been upgraded to ${getPlanLabel(newMembership.plan_type)} as a gift. Enjoy your benefits!`
+          : `You've been granted a free ${getPlanLabel(newMembership.plan_type)} membership. Enjoy your benefits!`,
         data: { reason: newMembership.reason, plan_type: newMembership.plan_type },
       });
 
-      toast.success("Free membership granted successfully!");
+      toast.success(isUpgrade ? "Membership upgraded successfully!" : "Free membership granted successfully!");
       setDialogOpen(false);
       fetchData();
     } catch (error: any) {
@@ -457,15 +507,31 @@ const InfluencerMemberships = () => {
                   </div>
                 )}
 
-                {/* Existing membership warning */}
+                {/* Existing membership status */}
                 {existingMembership && (
-                  <Alert variant="destructive" className="mt-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      This user already has an active {getPlanLabel(existingMembership.plan_type)} membership 
-                      (expires {formatDate(new Date(existingMembership.expires_at))}).
-                    </AlertDescription>
-                  </Alert>
+                  existingMembership.plan_type === "free" ? (
+                    <Alert className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Free member — choose a paid plan below to gift an upgrade. Their pets and member number stay the same.
+                      </AlertDescription>
+                    </Alert>
+                  ) : existingRank >= 3 ? (
+                    <Alert variant="destructive" className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Paid member on {getPlanLabel(existingMembership.plan_type)} (until {formatDate(new Date(existingMembership.expires_at))}). This is already the highest plan, so there's nothing to upgrade.
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <Alert className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Paid member on {getPlanLabel(existingMembership.plan_type)} (until {formatDate(new Date(existingMembership.expires_at))}). Choose a higher plan to gift an upgrade; they keep their current end date if it's later.
+                        {hasStripeSub && " Note: they pay through the app, so their next yearly renewal will charge their own plan again."}
+                      </AlertDescription>
+                    </Alert>
+                  )
                 )}
               </div>
               
@@ -498,9 +564,9 @@ const InfluencerMemberships = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="single">Solo Paw (1 pet)</SelectItem>
-                    <SelectItem value="duo">Dynamic Duo (2 pets)</SelectItem>
-                    <SelectItem value="family">Pack Leader (3-5 pets)</SelectItem>
+                    <SelectItem value="single" disabled={existingRank >= 1}>Solo Paw (1 pet)</SelectItem>
+                    <SelectItem value="duo" disabled={existingRank >= 2}>Dynamic Duo (2 pets)</SelectItem>
+                    <SelectItem value="family" disabled={existingRank >= 3}>Pack Leader (3-5 pets)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -536,7 +602,7 @@ const InfluencerMemberships = () => {
               <Button 
                 onClick={grantMembership} 
                 className="w-full" 
-                disabled={!selectedUser || granting || !!existingMembership}
+                disabled={!canGift || granting || checkingMembership}
               >
                 {granting ? (
                   <>
@@ -546,7 +612,7 @@ const InfluencerMemberships = () => {
                 ) : (
                   <>
                     <Gift className="w-4 h-4 mr-2" />
-                    Grant Free Membership
+                    {isUpgrade ? `Gift upgrade to ${getPlanLabel(newMembership.plan_type)}` : "Grant Free Membership"}
                   </>
                 )}
               </Button>

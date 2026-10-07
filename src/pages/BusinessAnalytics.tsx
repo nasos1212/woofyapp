@@ -58,6 +58,7 @@ const BusinessAnalytics = () => {
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
   const [isLoading, setIsLoading] = useState(true);
   const [businessId, setBusinessId] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState("");
   const [stats, setStats] = useState({
     totalRedemptions: 0,
     thisMonth: 0,
@@ -98,7 +99,7 @@ const BusinessAnalytics = () => {
       // Get business
       const { data: business } = await supabase
         .from("businesses")
-        .select("id")
+        .select("id, business_name")
         .eq("user_id", user.id)
         .maybeSingle();
 
@@ -108,6 +109,7 @@ const BusinessAnalytics = () => {
       }
 
       setBusinessId(business.id);
+      setBusinessName(business.business_name);
 
       // Calculate date ranges
       const now = new Date();
@@ -420,22 +422,30 @@ const BusinessAnalytics = () => {
     }
   };
 
-  const exportData = () => {
-    const csvContent = [
-      ["Date", "Redemptions"],
-      ...dailyData.map((d) => [d.date, d.redemptions.toString()]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `wooffy-analytics-${format(new Date(), "yyyy-MM-dd")}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(t("businessAnalytics.exportSuccess"));
+  const [exporting, setExporting] = useState(false);
+  const exportData = async () => {
+    setExporting(true);
+    try {
+      const { buildBusinessReportPdf, deliverPdf } = await import("@/lib/businessReportPdf");
+      const rangeLabel = dateRange === "7d" ? "Last 7 days" : dateRange === "30d" ? "Last 30 days" : "Last 6 months";
+      const doc = await buildBusinessReportPdf({
+        businessName,
+        rangeLabel,
+        stats,
+        monthChange,
+        engagement: engagementStats,
+        daily: dailyData,
+        topOffers,
+        customers,
+      });
+      await deliverPdf(doc, `wooffy-report-${format(new Date(), "yyyy-MM-dd")}.pdf`);
+      toast.success(t("businessAnalytics.exportSuccess"));
+    } catch (error) {
+      console.error("PDF export failed:", error);
+      toast.error(t("businessAnalytics.exportError"));
+    } finally {
+      setExporting(false);
+    }
   };
 
   const monthChange =
@@ -537,7 +547,7 @@ const BusinessAnalytics = () => {
                   </button>
                 ))}
               </div>
-              <Button variant="outline" onClick={exportData} className="gap-2" size="sm">
+              <Button variant="outline" onClick={exportData} className="gap-2" size="sm" disabled={exporting}>
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("businessAnalytics.export")}</span>
               </Button>
