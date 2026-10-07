@@ -1,12 +1,13 @@
 # Roadmap
 
-## Post-App-Store-approval (v1.1)
-- [ ] App icon notification badge (unread count on home-screen icon) — requires native badge API + clearing logic
-- [ ] Apple push notifications (APNs) so notifications arrive with sound when the app is closed — needs push capability, certificates/keys, and a server-side send path
+## v1.1 update (in progress — code done, needs APNs key + rebuild)
+- [x] App icon notification badge (unread count on home-screen icon) — client badge sync + badge number included in push payloads
+- [x] Apple push notifications server path — `send-push` edge function deployed, `on_notification_created` DB trigger wired
+- [ ] Add APNs key + Key ID as project secrets (waiting on user: download .p8 key from wife's Apple Developer account)
+- [ ] End-to-end test: sign in on device, send a test notification while app is closed, confirm alert + sound + badge
 - [ ] Rebuild, re-archive, and upload v1.1 under wife's account (Team XC7893VNBD, Bundle ID app.wooffy.ios) once the above are in
 
-## v1.0 submission (DONE — submitted for review 2026-10-05)
-- [x] Publish the website so the updated apple-app-site-association (XC7893VNBD.app.wooffy.ios) is live
-- [x] Age Rating questionnaire in App Store Connect
-- [x] Pricing (Tier 0 Free), availability (Cyprus + Greece), DAC7, App Privacy, screenshots, review account (apple@test.com)
-- [x] Submit for review
+## v1.0 submission (DONE — approved and live)
+- [x] Website published with apple-app-site-association (XC7893VNBD.app.wooffy.ios) live
+- [x] Age Rating (4+), Pricing (Tier 0 Free), availability (Cyprus + Greece), DAC7, App Privacy, screenshots, review account (apple@test.com)
+- [x] Approved and live on the App Store
