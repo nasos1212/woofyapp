@@ -4,6 +4,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
+import { initializePushNotifications } from './push';
 
 /**
  * Initialize native iOS/Android shell behavior.
@@ -90,12 +91,11 @@ export async function initializeNativeShell(): Promise<void> {
   }
 
   try {
-    // Listen for app state changes if needed for analytics or refresh logic.
-    App.addListener('appStateChange', ({ isActive }) => {
-      console.log('App state changed. Active:', isActive);
-    });
+    // Register for Apple push notifications and keep the device token
+    // synced so the backend can deliver alerts when the app is closed.
+    initializePushNotifications();
   } catch (error) {
-    console.warn('App state listener failed:', error);
+    console.warn('Push notifications init failed:', error);
   }
 }
 
