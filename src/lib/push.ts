@@ -3,7 +3,7 @@ import {
   PushNotifications,
   type Token,
 } from "@capacitor/push-notifications";
-import { LocalNotifications } from "@capacitor/local-notifications";
+import { Badge } from "@capawesome/capacitor-badge";
 import { supabase } from "@/integrations/supabase/client";
 
 export const isNativeApp = (): boolean => Capacitor.isNativePlatform();
@@ -15,7 +15,7 @@ export const isNativeApp = (): boolean => Capacitor.isNativePlatform();
 export async function setAppBadge(count: number): Promise<void> {
   if (!isNativeApp()) return;
   try {
-    await LocalNotifications.setBadgeCount({ count: Math.max(0, count) });
+    await Badge.set({ count: Math.max(0, count) });
   } catch (error) {
     console.warn("setAppBadge failed:", error);
   }
