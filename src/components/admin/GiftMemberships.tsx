@@ -507,15 +507,31 @@ const InfluencerMemberships = () => {
                   </div>
                 )}
 
-                {/* Existing membership warning */}
+                {/* Existing membership status */}
                 {existingMembership && (
-                  <Alert variant="destructive" className="mt-2">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      This user already has an active {getPlanLabel(existingMembership.plan_type)} membership 
-                      (expires {formatDate(new Date(existingMembership.expires_at))}).
-                    </AlertDescription>
-                  </Alert>
+                  existingMembership.plan_type === "free" ? (
+                    <Alert className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Free member — choose a paid plan below to gift an upgrade. Their pets and member number stay the same.
+                      </AlertDescription>
+                    </Alert>
+                  ) : existingRank >= 3 ? (
+                    <Alert variant="destructive" className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Paid member on {getPlanLabel(existingMembership.plan_type)} (until {formatDate(new Date(existingMembership.expires_at))}). This is already the highest plan, so there's nothing to upgrade.
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <Alert className="mt-2">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Paid member on {getPlanLabel(existingMembership.plan_type)} (until {formatDate(new Date(existingMembership.expires_at))}). Choose a higher plan to gift an upgrade; they keep their current end date if it's later.
+                        {hasStripeSub && " Note: they pay through the app, so their next yearly renewal will charge their own plan again."}
+                      </AlertDescription>
+                    </Alert>
+                  )
                 )}
               </div>
               
@@ -548,9 +564,9 @@ const InfluencerMemberships = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="single">Solo Paw (1 pet)</SelectItem>
-                    <SelectItem value="duo">Dynamic Duo (2 pets)</SelectItem>
-                    <SelectItem value="family">Pack Leader (3-5 pets)</SelectItem>
+                    <SelectItem value="single" disabled={existingRank >= 1}>Solo Paw (1 pet)</SelectItem>
+                    <SelectItem value="duo" disabled={existingRank >= 2}>Dynamic Duo (2 pets)</SelectItem>
+                    <SelectItem value="family" disabled={existingRank >= 3}>Pack Leader (3-5 pets)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -586,7 +602,7 @@ const InfluencerMemberships = () => {
               <Button 
                 onClick={grantMembership} 
                 className="w-full" 
-                disabled={!selectedUser || granting || !!existingMembership}
+                disabled={!canGift || granting || checkingMembership}
               >
                 {granting ? (
                   <>
@@ -596,7 +612,7 @@ const InfluencerMemberships = () => {
                 ) : (
                   <>
                     <Gift className="w-4 h-4 mr-2" />
-                    Grant Free Membership
+                    {isUpgrade ? `Gift upgrade to ${getPlanLabel(newMembership.plan_type)}` : "Grant Free Membership"}
                   </>
                 )}
               </Button>
