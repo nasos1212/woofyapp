@@ -547,7 +547,7 @@ const BusinessAnalytics = () => {
                   </button>
                 ))}
               </div>
-              <Button variant="outline" onClick={exportData} className="gap-2" size="sm">
+              <Button variant="outline" onClick={exportData} className="gap-2" size="sm" disabled={exporting}>
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">{t("businessAnalytics.export")}</span>
               </Button>
