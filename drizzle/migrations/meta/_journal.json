@@ -8,6 +8,13 @@
       "when": 1791353295526,
       "tag": "0000_push_notifications_infrastructure",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791379012746,
+      "tag": "0001_admin_view_subscriptions",
+      "breakpoints": true
     }
   ]
 }
