@@ -21,12 +21,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/sandra-grooming-studio-gentle-care-for-every-dogs-individual-needs</loc>
-    <lastmod>2026-10-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://wooffy.app/blog/the-story-of-may-they-told-us-he-was-nobodys-dog</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
@@ -57,6 +51,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wooffy.app/blog/sandra-grooming-studio-gentle-care-for-every-dogs-individual-needs</loc>
+    <lastmod>2026-10-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wooffy.app/blog/looking-for-their-forever-home-lazaros-and-nasos</loc>
     <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
@@ -82,7 +82,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/why-dogs-go-missing-and-how-we-can-prevent-it</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -118,7 +118,7 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/his-body-was-broken-his-heart-was-broken-but-his-spirit-never-gave-up</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
