@@ -18,6 +18,7 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-
 const APNS_TEAM_ID = Deno.env.get("APNS_TEAM_ID") ?? "XC7893VNBD";
 const APNS_TOPIC = "app.wooffy.ios";
 const APNS_HOST = "https://api.push.apple.com";
+const APNS_SANDBOX_HOST = "https://api.sandbox.push.apple.com";
 
 let cachedApnsToken: { value: string; exp: number } | null = null;
 
@@ -147,16 +148,31 @@ const handler = async (req: Request): Promise<Response> => {
     let delivered = 0;
     for (const { token } of tokens) {
       try {
-        const res = await fetch(`${APNS_HOST}/3/device/${token}`, {
-          method: "POST",
-          headers: {
-            authorization: `bearer ${apnsToken}`,
-            "apns-topic": APNS_TOPIC,
-            "apns-push-type": "alert",
-            "Content-Type": "application/json",
-          },
-          body: payload,
-        });
+        const post = (host: string) =>
+          fetch(`${host}/3/device/${token}`, {
+            method: "POST",
+            headers: {
+              authorization: `bearer ${apnsToken}`,
+              "apns-topic": APNS_TOPIC,
+              "apns-push-type": "alert",
+              "Content-Type": "application/json",
+            },
+            body: payload,
+          });
+
+        let res = await post(APNS_HOST);
+
+        // Devices running a build launched from Xcode hold a sandbox token.
+        // The same key works there, so retry once against the sandbox host.
+        if (res.status === 400) {
+          const body = await res.text().catch(() => "");
+          if (body.includes("BadDeviceToken")) {
+            res = await post(APNS_SANDBOX_HOST);
+          } else {
+            console.warn(`APNs 400 for token ${token.slice(0, 8)}…:`, body);
+          }
+        }
+
         if (res.status === 200) {
           delivered += 1;
         } else if (res.status === 410 || res.status === 404) {
