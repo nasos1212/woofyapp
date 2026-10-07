@@ -6,7 +6,7 @@
 - [x] Add APNs key + Key ID as project secrets (key "Wooffy Push", both environments)
 - [x] End-to-end test passed on iPhone (v9 build): alert + sound + badge confirmed, Apple accepted pushes 2026-10-07
 - [x] Rebuild, re-archive, and upload v1.1 under wife's account (Team XC7893VNBD, Bundle ID app.wooffy.ios) — uploaded 2026-10-07
-- [ ] Create version 1.1 in App Store Connect, attach build, add What's New, Submit for Review
+- [x] Create version 1.1 in App Store Connect, attach build, add What's New (EN/EL), submitted for review 2026-10-07
 
 ## v1.0 submission (DONE — approved and live)
 - [x] Website published with apple-app-site-association (XC7893VNBD.app.wooffy.ios) live
