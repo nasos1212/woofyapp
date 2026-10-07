@@ -36,14 +36,32 @@ const safe = (s: string | null | undefined) =>
 
 const loadLogo = async (): Promise<string | null> => {
   try {
-    const res = await fetch("/wooffy-logo.png");
+    const res = await fetch("/favicon.svg");
     if (!res.ok) return null;
-    const blob = await res.blob();
+    // Reuse the brand dog artwork without the favicon's background frame.
+    const svg = new DOMParser().parseFromString(await res.text(), "image/svg+xml").documentElement;
+    svg.querySelector("rect")?.remove();
+    svg.setAttribute("viewBox", "6 6 22 22");
+    svg.setAttribute("width", "256");
+    svg.setAttribute("height", "256");
+    const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
     return await new Promise((resolve) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result as string);
-      r.onerror = () => resolve(null);
-      r.readAsDataURL(blob);
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = 256;
+          canvas.height = 256;
+          const context = canvas.getContext("2d");
+          if (!context) { resolve(null); return; }
+          context.drawImage(image, 0, 0, 256, 256);
+          resolve(canvas.toDataURL("image/png"));
+        } catch { resolve(null); }
+        finally { URL.revokeObjectURL(url); }
+      };
+      image.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+      image.src = url;
     });
   } catch {
     return null;
@@ -63,8 +81,8 @@ export async function buildBusinessReportPdf(d: BusinessReportData): Promise<jsP
   if (logo) {
     try {
       const props = doc.getImageProperties(logo);
-      const h = 14;
-      doc.addImage(logo, "PNG", M, 10, (props.width / props.height) * h, h);
+      const h = 22;
+      doc.addImage(logo, "PNG", M, 6, (props.width / props.height) * h, h);
     } catch { /* ignore logo errors */ }
   }
   doc.setTextColor(255, 255, 255);
