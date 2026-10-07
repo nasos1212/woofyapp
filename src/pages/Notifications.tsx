@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatRelative } from "@/lib/relativeTime";
+import { setAppBadge } from "@/lib/push";
 import Header from "@/components/Header";
 import { BirthdayOfferViewDialog } from "@/components/BirthdayOfferViewDialog";
 
@@ -106,6 +107,7 @@ const Notifications = () => {
     setNotifications((prev) =>
       prev.map((n) => ({ ...n, read: true }))
     );
+    void setAppBadge(0);
   };
 
   const handleNotificationClick = async (notification: Notification) => {

@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import PushTapHandler from "./components/PushTapHandler";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
 import { useEffect } from "react";
@@ -146,6 +147,7 @@ const App = () => (
               <Route path="/checkout/return" element={<CheckoutReturn />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <PushTapHandler />
             
             <SupportButton />
           </BrowserRouter>

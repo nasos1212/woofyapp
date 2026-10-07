@@ -11,6 +11,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatRelative } from "@/lib/relativeTime";
+import { setAppBadge } from "@/lib/push";
 import { useNavigate } from "react-router-dom";
 import { useBarkSound } from "@/hooks/useBarkSound";
 
@@ -45,8 +46,17 @@ const NotificationBell = () => {
 
       if (!error && data) {
         setNotifications(data);
-        setUnreadCount(data.filter((n) => !n.read).length);
       }
+
+      // Exact unread count for the app icon badge (the list above is
+      // capped at 10, so count it separately).
+      const { count } = await supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("read", false);
+
+      setUnreadCount(count ?? 0);
     };
 
     fetchNotifications();
@@ -74,6 +84,11 @@ const NotificationBell = () => {
       supabase.removeChannel(channel);
     };
   }, [user]);
+
+  // Keep the home-screen app icon badge in sync with unread notifications.
+  useEffect(() => {
+    void setAppBadge(unreadCount);
+  }, [unreadCount]);
 
   const markAsRead = async (id: string) => {
     await supabase
