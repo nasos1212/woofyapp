@@ -127,9 +127,11 @@ export function BirthdayOfferModal({
 
       if (notifError) throw notifError;
 
-      // Also save to sent_birthday_offers for tracking (expires in 30 days)
+      // Save to sent_birthday_offers for tracking — expires 7 days after the pet's birthday (end of day)
+      const BIRTHDAY_OFFER_GRACE_DAYS = 7;
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 30);
+      expiresAt.setDate(expiresAt.getDate() + Math.max(0, pet.daysUntil) + BIRTHDAY_OFFER_GRACE_DAYS);
+      expiresAt.setHours(23, 59, 59, 999);
       
       const { error: trackError } = await supabase.from("sent_birthday_offers").insert({
         business_id: businessId,
