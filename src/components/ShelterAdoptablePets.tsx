@@ -54,6 +54,24 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
   const [uploading, setUploading] = useState(false);
   const [breedOpen, setBreedOpen] = useState(false);
   const breedListRef = useRef<HTMLDivElement>(null);
+  const dialogContentRef = useRef<HTMLDivElement>(null);
+
+  // iOS overlays the keyboard instead of shrinking fixed dialogs, so keep the
+  // focused field inside the top half of the dialog's visible area.
+  const handleFieldFocus = (e: React.FocusEvent<HTMLElement>) => {
+    const el = e.target as HTMLElement;
+    if (!el.matches("input, textarea")) return;
+    window.setTimeout(() => {
+      const scroller = dialogContentRef.current;
+      if (!scroller) return;
+      const fieldRect = el.getBoundingClientRect();
+      const scrollerRect = scroller.getBoundingClientRect();
+      const limit = scrollerRect.top + scrollerRect.height * 0.5;
+      if (fieldRect.bottom > limit) {
+        scroller.scrollTop += fieldRect.bottom - limit;
+      }
+    }, 350);
+  };
   const [photos, setPhotos] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: "",
@@ -345,7 +363,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
               {t("adoptablePets.addPet")}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto overscroll-contain [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
+          <DialogContent ref={dialogContentRef} className="max-w-lg max-h-[90vh] overflow-y-auto overscroll-contain [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
             <DialogHeader>
               <DialogTitle>
                 {editingPet ? t("adoptablePets.editPet") : t("adoptablePets.addNewPet")}
