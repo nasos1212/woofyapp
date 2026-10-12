@@ -43,6 +43,13 @@
       "when": 1791817679978,
       "tag": "0005_restrict_hidden_shelters_to_admins",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791841135593,
+      "tag": "0006_hidden_shelters_owner_access",
+      "breakpoints": true
     }
   ]
 }
