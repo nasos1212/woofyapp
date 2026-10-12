@@ -90,7 +90,7 @@ const handler = async (req: Request): Promise<Response> => {
       type: "recovery",
       email: email.trim(),
       options: {
-        redirectTo: "https://www.wooffy.app/reset-password",
+        redirectTo: "https://wooffy.app/reset-password",
       },
     });
 
