@@ -139,7 +139,8 @@ const BusinessDashboard = () => {
       .from('offers')
       .select('id, title, discount_value, discount_type, is_active')
       .eq('business_id', businessData.id)
-      .eq('is_active', true);
+      .eq('is_active', true)
+      .or(`valid_until.is.null,valid_until.gte.${new Date().toISOString()}`);
 
     console.log('Offers query result:', { offersData, offersError, businessId: businessData.id });
 

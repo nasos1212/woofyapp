@@ -1513,6 +1513,7 @@
     }
   },
   "businessOffers": {
+    "expired": "Expired",
     "metaTitle": "Manage Offers | Wooffy Business",
     "metaDesc": "Create and manage your Wooffy partner offers.",
     "backToDashboard": "Back to Dashboard",
