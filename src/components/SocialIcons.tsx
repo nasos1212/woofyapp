@@ -49,3 +49,16 @@ export const TikTokIcon = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 );
+
+export const XIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path fill="hsl(var(--social-ink))" d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.5 22H2.3l7.4-8.5L2 2h6.5l4.4 6.7L18.9 2Zm-1.1 18h1.7L7.6 3.9H5.8L17.8 20Z" />
+  </svg>
+);
+
+export const WhatsAppIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path fill="hsl(var(--social-whatsapp))" d="M20.5 3.5A11.8 11.8 0 0 0 2 17.7L.4 23.6l6-1.6A11.8 11.8 0 0 0 20.5 3.5ZM12 21.4a9.6 9.6 0 0 1-4.9-1.3l-.4-.2-3.5.9.9-3.4-.2-.4A9.7 9.7 0 1 1 12 21.4Z" />
+    <path fill="hsl(var(--social-whatsapp))" d="M17.4 14.4c-.3-.1-1.7-.8-2-.9-.2-.1-.4-.1-.6.2l-.9 1c-.2.2-.3.2-.6.1-1.8-.9-3-2-3.8-3.6-.2-.3 0-.4.1-.6l.7-.8c.1-.2.1-.4 0-.6l-.9-2.1c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.7.7-1.1 1.5-1.1 2.5 0 1.5 1.1 3 1.3 3.2.1.2 2.2 3.4 5.3 4.7 2.2.9 3 .7 3.5.6.8-.1 1.7-.7 2-1.4.2-.7.2-1.3.1-1.4-.1-.2-.3-.2-.6-.4Z" />
+  </svg>
+);

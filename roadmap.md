@@ -1,9 +1,9 @@
 # Roadmap
 
 ## v1.2 remaining feedback
-- [ ] #16 Admin-only hidden shelters, including direct-page access
-- [ ] #29 Check Greek article dog-name boldness; wait for agreement before changing
-- [ ] #30 Diagnose Facebook sharing and apply branded social logos throughout app
+- [x] #16 Admin-only hidden shelters; guest/member/admin live access regression passed
+- [ ] #29 Confirmed titles bold, story names plain; awaiting permission to bold story names
+- [x] #30 Branded social logos throughout app; native Facebook uses share menu (phone check awaits next build)
 - [ ] #5, #11, #14, #31 Await clarification from user
 - [ ] #10, #15, #18 On hold at user's request
 - [ ] Package next iPhone release after feedback is complete

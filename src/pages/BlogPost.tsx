@@ -6,8 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
-import { ArrowLeft, Clock, Share2, Twitter, MessageCircle, Link as LinkIcon, Building2 } from "lucide-react";
-import { FacebookIcon } from "@/components/SocialIcons";
+import { ArrowLeft, Clock, Share2, Link as LinkIcon, Building2 } from "lucide-react";
+import { FacebookIcon, XIcon, WhatsAppIcon } from "@/components/SocialIcons";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import Header from "@/components/Header";
@@ -393,12 +393,12 @@ const BlogPostPage = () => {
               )}
               <a href={share("twitter")} target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="icon" aria-label="X / Twitter">
-                  <Twitter className="w-4 h-4 text-social-ink" />
+                  <XIcon className="w-4 h-4" />
                 </Button>
               </a>
               <a href={share("whatsapp")} target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" size="icon" aria-label="WhatsApp">
-                  <MessageCircle className="w-4 h-4 text-social-whatsapp" />
+                  <WhatsAppIcon className="w-4 h-4" />
                 </Button>
               </a>
               <Button variant="outline" size="icon" onClick={copyLink} aria-label="Copy link">
