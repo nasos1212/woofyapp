@@ -75,6 +75,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wooffy.app/blog/apollons-story-the-dog-who-deserves-a-second-chance</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wooffy.app/blog/king-of-k9-cy-great-behaviour-begins-long-before-training</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
@@ -165,6 +171,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wooffy.app/blog/unleashed-dog-handling-building-a-partnership-beyond-training</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
     <lastmod>2026-10-11</lastmod>
     <changefreq>monthly</changefreq>
@@ -173,12 +185,6 @@
   <url>
     <loc>https://wooffy.app/blog/my-dog-kobe</loc>
     <lastmod>2026-10-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/blog/unleashed-dog-handling-building-a-partnership-beyond-training</loc>
-    <lastmod>2026-10-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
