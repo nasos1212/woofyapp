@@ -85,7 +85,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Fetch the notification.
     const { data: notification } = await admin
       .from("notifications")
-      .select("id, user_id, type, title, message, push_sent_at")
+      .select("id, user_id, type, title, message, data, push_sent_at")
       .eq("id", notificationId)
       .maybeSingle();
 
@@ -143,6 +143,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       notification_id: notification.id,
       type: notification.type ?? "",
+      data: notification.data ?? {},
     });
 
     let delivered = 0;
