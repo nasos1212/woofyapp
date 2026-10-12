@@ -394,29 +394,31 @@ export const AIProactiveAlerts = () => {
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsCollapsed(false);
               }}
             >
               {t("proactiveAlerts.showMore")}
+              <ChevronRight className="w-3.5 h-3.5 shrink-0" />
             </Button>
           ) : (
             <Button
               variant="ghost"
               size="sm"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
               onClick={(e) => {
                 e.stopPropagation();
                 hideWidget();
               }}
             >
               {t("proactiveAlerts.hide")}
+              <ChevronRight className="w-3.5 h-3.5 shrink-0 rotate-90" />
             </Button>
           )}
           <ChevronRight className={cn(
-            "w-4 h-4 text-muted-foreground transition-transform",
+            "hidden w-4 h-4 text-muted-foreground transition-transform",
             !isCollapsed && "rotate-90"
           )} />
         </div>
