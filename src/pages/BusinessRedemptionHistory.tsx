@@ -298,7 +298,7 @@ const BusinessRedemptionHistory = () => {
     }, 0);
   };
 
-  const exportToCSV = () => {
+  const exportToCSV = async () => {
     // Helper to escape CSV values properly
     const escapeCSV = (value: string) => {
       if (value.includes(',') || value.includes('"') || value.includes('\n')) {
@@ -326,11 +326,21 @@ const BusinessRedemptionHistory = () => {
     // Add BOM for proper Excel UTF-8 encoding
     const BOM = '\uFEFF';
     const csvContent = BOM + [headers, ...rows].map(row => row.join(',')).join('\n');
+    const fileName = `redemptions-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    const { Capacitor } = await import('@capacitor/core');
+    if (Capacitor.isNativePlatform()) {
+      // iPhone app cannot download files; save then open the share sheet
+      const { Filesystem, Directory, Encoding } = await import('@capacitor/filesystem');
+      const { Share } = await import('@capacitor/share');
+      const saved = await Filesystem.writeFile({ path: fileName, data: csvContent, directory: Directory.Cache, encoding: Encoding.UTF8 });
+      await Share.share({ title: fileName, url: saved.uri });
+      return;
+    }
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `redemptions-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    a.download = fileName;
     a.click();
     URL.revokeObjectURL(url);
   };
