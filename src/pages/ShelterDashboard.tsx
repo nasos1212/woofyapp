@@ -250,17 +250,17 @@ const ShelterDashboard = () => {
           {isApproved && (
             <Card className="mb-6 border-green-200 bg-green-50">
               <CardContent className="py-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <div>
+                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <div className="min-w-0">
                       <h3 className="font-medium text-green-800">{t("shelter.isLive")}</h3>
                       <p className="text-sm text-green-700">
                         {t("shelter.isLiveDesc")}
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm" asChild>
+                  <Button variant="outline" size="sm" asChild className="self-start sm:self-auto flex-shrink-0">
                     <a href={`/shelter/${shelter.id}`} target="_blank" rel="noopener noreferrer">
                       {t("shelter.viewPublicProfile")}
                       <ExternalLink className="h-3 w-3 ml-2" />
