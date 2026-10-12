@@ -22,6 +22,14 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Wooffy uses the camera to take photos of your pets, lost and found reports, and to scan member QR codes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Wooffy needs access to your photos so you can upload pictures of your pets.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Wooffy can save images such as reports to your photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Wooffy may use the microphone when you record a video to upload.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
