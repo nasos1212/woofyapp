@@ -1,5 +1,13 @@
 # Roadmap
 
+## v1.2 remaining feedback
+- [x] #16 Admin-only hidden shelters; guest/member/admin live access regression passed
+- [ ] #29 Confirmed titles bold, story names plain; awaiting permission to bold story names
+- [x] #30 Branded social logos throughout app; native Facebook uses share menu (phone check awaits next build)
+- [ ] #5, #11, #14, #31 Await clarification from user
+- [ ] #10, #15, #18 On hold at user's request
+- [ ] Package next iPhone release after feedback is complete
+
 ## v1.1 update (code + backend done, push verified — needs rebuild/upload)
 - [x] App icon notification badge (unread count on home-screen icon) — client badge sync + badge number included in push payloads
 - [x] Apple push notifications server path — `send-push` edge function deployed, `on_notification_created` DB trigger wired

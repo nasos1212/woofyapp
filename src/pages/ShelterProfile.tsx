@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import AdoptionInquiryDialog from "@/components/AdoptionInquiryDialog";
 import { useAnalyticsTracking } from "@/hooks/useAnalyticsTracking";
 import LanguageToggle from "@/components/LanguageToggle";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/SocialIcons";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   ArrowLeft, 
   Heart, 
@@ -21,8 +23,6 @@ import {
   Phone, 
   Mail, 
   Globe, 
-  Facebook, 
-  Instagram,
   Calendar,
   Dog,
   ExternalLink,
@@ -36,6 +36,7 @@ const ShelterProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   const { t, i18n } = useTranslation();
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
@@ -44,13 +45,13 @@ const ShelterProfile = () => {
   const { trackShelterView } = useAnalyticsTracking();
 
   const { data: shelter, isLoading: shelterLoading } = useQuery({
-    queryKey: ['shelter', id],
+    queryKey: ['shelter', id, user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('shelters_public')
         .select('*')
         .eq('id', id)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data as any;
@@ -452,7 +453,7 @@ const ShelterProfile = () => {
                   {shelter.facebook_url && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={ensureHttps(shelter.facebook_url)} target="_blank" rel="noopener noreferrer">
-                        <Facebook className="h-4 w-4 mr-2" />
+                        <FacebookIcon className="h-4 w-4 mr-2" />
                         Facebook
                       </a>
                     </Button>
@@ -460,7 +461,7 @@ const ShelterProfile = () => {
                   {shelter.instagram_url && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={ensureHttps(shelter.instagram_url)} target="_blank" rel="noopener noreferrer">
-                        <Instagram className="h-4 w-4 mr-2" />
+                        <InstagramIcon className="h-4 w-4 mr-2" />
                         Instagram
                       </a>
                     </Button>
@@ -468,6 +469,7 @@ const ShelterProfile = () => {
                   {shelter.tiktok_url && (
                     <Button variant="outline" size="sm" asChild>
                       <a href={ensureHttps(shelter.tiktok_url)} target="_blank" rel="noopener noreferrer">
+                        <TikTokIcon className="h-4 w-4 mr-2" />
                         TikTok
                       </a>
                     </Button>

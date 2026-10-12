@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ensureHttps, formatDate } from "@/lib/utils";
@@ -25,6 +26,7 @@ interface Shelter {
   verification_status: "pending" | "approved" | "rejected";
   created_at: string;
   verified_at: string | null;
+  is_hidden: boolean;
 }
 
 const ShelterManager = () => {
@@ -97,6 +99,16 @@ const ShelterManager = () => {
       console.error("Error updating dogs helped:", error);
       toast.error(error.message || "Failed to update");
     }
+  };
+
+  const updateVisibility = async (shelterId: string, isHidden: boolean) => {
+    const { error } = await supabase.from("shelters").update({ is_hidden: isHidden }).eq("id", shelterId);
+    if (error) {
+      toast.error("Failed to update shelter visibility");
+      return;
+    }
+    toast.success(isHidden ? "Shelter visible to admins only" : "Shelter visibility restored");
+    await fetchShelters();
   };
 
   const getStatusBadge = (status: string) => {
@@ -264,6 +276,7 @@ const ShelterManager = () => {
                         <p className="text-muted-foreground text-sm">{shelter.location}</p>
                       </div>
                       {getStatusBadge(shelter.verification_status)}
+                      {shelter.is_hidden && <Badge variant="secondary">Admins only</Badge>}
                     </div>
                     {expandedShelter === shelter.id ? (
                       <ChevronUp className="w-5 h-5 text-muted-foreground" />
@@ -273,6 +286,13 @@ const ShelterManager = () => {
                   </div>
                   {expandedShelter === shelter.id && (
                     <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Switch id={`hidden-${shelter.id}`} checked={shelter.is_hidden} onCheckedChange={(hidden) => updateVisibility(shelter.id, hidden)} />
+                        <Label htmlFor={`hidden-${shelter.id}`}>Visible to admins only</Label>
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={`/shelter/${shelter.id}`} target="_blank" rel="noopener noreferrer"><Eye className="w-4 h-4 mr-1" /> View profile</a>
+                        </Button>
+                      </div>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <p><span className="text-muted-foreground">Contact:</span> {shelter.contact_name}</p>
                         <p><span className="text-muted-foreground">Email:</span> {shelter.email}</p>

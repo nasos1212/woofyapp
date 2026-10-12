@@ -18,6 +18,7 @@ import { getCategoryLabel, getCategoriesLabel } from "@/data/businessCategories"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from "@/components/ui/pagination";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { BusinessEditDialog } from "@/components/BusinessEditDialog";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/SocialIcons";
 
 const CHART_COLORS = ["#60a5fa", "#34d399", "#f472b6", "#fbbf24"];
 // Full membership info
@@ -1279,21 +1280,21 @@ const UserManagement = () => {
                                 {user.business.instagram_url && (
                                   <Button size="sm" variant="outline" asChild>
                                     <a href={ensureHttps(user.business.instagram_url)} target="_blank" rel="noopener noreferrer">
-                                      <Globe className="w-4 h-4 mr-1" /> Instagram
+                                      <InstagramIcon className="w-4 h-4 mr-1" /> Instagram
                                     </a>
                                   </Button>
                                 )}
                                 {user.business.facebook_url && (
                                   <Button size="sm" variant="outline" asChild>
                                     <a href={ensureHttps(user.business.facebook_url)} target="_blank" rel="noopener noreferrer">
-                                      <Globe className="w-4 h-4 mr-1" /> Facebook
+                                      <FacebookIcon className="w-4 h-4 mr-1" /> Facebook
                                     </a>
                                   </Button>
                                 )}
                                 {user.business.tiktok_url && (
                                   <Button size="sm" variant="outline" asChild>
                                     <a href={ensureHttps(user.business.tiktok_url)} target="_blank" rel="noopener noreferrer">
-                                      <Globe className="w-4 h-4 mr-1" /> TikTok
+                                      <TikTokIcon className="w-4 h-4 mr-1" /> TikTok
                                     </a>
                                   </Button>
                                 )}
@@ -1377,12 +1378,15 @@ const UserManagement = () => {
                               {/* Visibility toggle - hide internal/test accounts from public + analytics */}
                               <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
                                 <Switch
+                                  aria-label="Hide shelter from everyone except admins"
                                   checked={user.shelter.is_hidden}
-                                  onCheckedChange={() => toggleShelterHidden(user.shelter!.id, user.shelter!.is_hidden)}
+                                  onCheckedChange={() => {
+                                    if (user.shelter) toggleShelterHidden(user.shelter.id, user.shelter.is_hidden);
+                                  }}
                                 />
                                 <div className="text-sm">
                                   <p className="font-medium">Hide from public &amp; metrics</p>
-                                  <p className="text-xs text-muted-foreground">When ON, this shelter is excluded from the public shelters list and admin analytics.</p>
+                                  <p className="text-xs text-muted-foreground">When ON, only admins can see this shelter and its profile. It is excluded from public lists and analytics.</p>
                                 </div>
                               </div>
                               <div className="flex gap-2 flex-wrap">
