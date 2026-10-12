@@ -1377,12 +1377,15 @@ const UserManagement = () => {
                               {/* Visibility toggle - hide internal/test accounts from public + analytics */}
                               <div className="flex items-center gap-3 p-3 mb-3 rounded-md bg-background/60 border border-border/50">
                                 <Switch
+                                  aria-label="Hide shelter from everyone except admins"
                                   checked={user.shelter.is_hidden}
-                                  onCheckedChange={() => toggleShelterHidden(user.shelter!.id, user.shelter!.is_hidden)}
+                                  onCheckedChange={() => {
+                                    if (user.shelter) toggleShelterHidden(user.shelter.id, user.shelter.is_hidden);
+                                  }}
                                 />
                                 <div className="text-sm">
                                   <p className="font-medium">Hide from public &amp; metrics</p>
-                                  <p className="text-xs text-muted-foreground">When ON, this shelter is excluded from the public shelters list and admin analytics.</p>
+                                  <p className="text-xs text-muted-foreground">When ON, only admins can see this shelter and its profile. It is excluded from public lists and analytics.</p>
                                 </div>
                               </div>
                               <div className="flex gap-2 flex-wrap">

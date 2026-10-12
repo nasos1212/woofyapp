@@ -24,6 +24,7 @@ import ShelterHeaderUpload from "@/components/ShelterHeaderUpload";
 import ShelterGalleryUpload from "@/components/ShelterGalleryUpload";
 import ShelterAdoptablePets from "@/components/ShelterAdoptablePets";
 import ShelterAdoptionInquiries from "@/components/ShelterAdoptionInquiries";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/SocialIcons";
 import { 
   Home, 
   Clock, 
@@ -32,8 +33,6 @@ import {
   Save, 
   Heart,
   Globe,
-  Facebook,
-  Instagram,
   ExternalLink,
   ImageIcon,
   ChevronRight
@@ -482,7 +481,7 @@ const ShelterDashboard = () => {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="facebook_url" className="flex items-center gap-2">
-                          <Facebook className="h-4 w-4" />
+                          <FacebookIcon className="h-4 w-4" />
                           {t("shelter.fields.facebookUrl")}
                         </Label>
                         <Input
@@ -495,7 +494,7 @@ const ShelterDashboard = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="instagram_url" className="flex items-center gap-2">
-                          <Instagram className="h-4 w-4" />
+                          <InstagramIcon className="h-4 w-4" />
                           {t("shelter.fields.instagramUrl")}
                         </Label>
                         <Input
@@ -508,6 +507,7 @@ const ShelterDashboard = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="tiktok_url" className="flex items-center gap-2">
+                          <TikTokIcon className="h-4 w-4" />
                           {t("shelter.fields.tiktokUrl")}
                         </Label>
                         <Input

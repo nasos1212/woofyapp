@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon, Facebook, Instagram, Music2 } from "lucide-react";
+import { MapPin, Phone, Globe, Mail, Map, Trash2, Image as ImageIcon } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "./SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -297,7 +298,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
               <div className="space-y-2">
                 <Label htmlFor="facebookUrl" className="text-xs text-muted-foreground">Facebook</Label>
                 <div className="relative">
-                  <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                   <Input
                     id="facebookUrl"
                     placeholder="https://facebook.com/yourpage"
@@ -310,7 +311,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
               <div className="space-y-2">
                 <Label htmlFor="instagramUrl" className="text-xs text-muted-foreground">Instagram</Label>
                 <div className="relative">
-                  <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                   <Input
                     id="instagramUrl"
                     placeholder="https://instagram.com/yourhandle"
@@ -323,7 +324,7 @@ export function BusinessEditDialog({ business, open, onOpenChange, onSave }: Bus
               <div className="space-y-2">
                 <Label htmlFor="tiktokUrl" className="text-xs text-muted-foreground">TikTok</Label>
                 <div className="relative">
-                  <Music2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <TikTokIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                   <Input
                     id="tiktokUrl"
                     placeholder="https://tiktok.com/@yourhandle"
