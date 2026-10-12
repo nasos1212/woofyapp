@@ -189,7 +189,7 @@ const ShelterProfile = () => {
               }
             }}
 
-            className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
+            className="absolute top-[calc(1rem+env(safe-area-inset-top))] left-4 z-20 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-colors"
             aria-label="Back"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -197,7 +197,7 @@ const ShelterProfile = () => {
 
 
           {/* Language Toggle */}
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-[calc(1rem+env(safe-area-inset-top))] right-4 z-20">
             <LanguageToggle className="bg-white/90 hover:bg-white border-0" />
           </div>
         </div>

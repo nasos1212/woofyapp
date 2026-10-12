@@ -415,7 +415,11 @@ const BusinessOfferManagement = () => {
               {offers.map((offer) => (
                 <div
                   key={offer.id}
-                  className={`bg-white rounded-2xl p-6 shadow-sm border transition-all ${
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('button, a')) return;
+                    openEditDialog(offer);
+                  }}
+                  className={`cursor-pointer bg-white rounded-2xl p-6 shadow-sm border transition-all ${
                     offer.is_active ? "border-slate-200" : "border-amber-200 bg-amber-50/30"
                   }`}
                 >
@@ -476,6 +480,11 @@ const BusinessOfferManagement = () => {
                             ? t("businessOffers.redemptionsWithLimit", { used: offer.redemption_count, total: offer.max_redemptions })
                             : t("businessOffers.redemptions", { count: offer.redemption_count })}
                         </span>
+                        {offer.valid_until && new Date(offer.valid_until) < new Date() && (
+                          <span className="text-[10px] sm:text-xs bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded-full">
+                            {t("businessOffers.expired")}
+                          </span>
+                        )}
                         {offer.max_redemptions && offer.redemption_count >= offer.max_redemptions && (
                           <span className="text-[10px] sm:text-xs bg-red-100 text-red-700 px-1.5 sm:px-2 py-0.5 rounded-full">
                             {t("businessOffers.limitReached")}
