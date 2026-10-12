@@ -138,7 +138,7 @@ const handler = async (req: Request): Promise<Response> => {
           title: String(notification.title ?? "").slice(0, 120),
           body: String(notification.message ?? "").slice(0, 200),
         },
-        sound: "default",
+        sound: "bark.caf",
         badge: unreadCount ?? 1,
       },
       notification_id: notification.id,
