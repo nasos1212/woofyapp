@@ -22,6 +22,11 @@ export default {
         body: ["Inter", "sans-serif"],
       },
       colors: {
+        social: {
+          facebook: "hsl(var(--social-facebook))",
+          whatsapp: "hsl(var(--social-whatsapp))",
+          ink: "hsl(var(--social-ink))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -51,6 +51,18 @@ html, body {
     --wooffy-accent: 185 80% 45%;
     --wooffy-soft: 200 40% 95%;
 
+    /* Official social identity colours, shared by every social logo. */
+    --social-facebook: 214 89% 52%;
+    --social-white: 0 0% 100%;
+    --social-ink: 0 0% 0%;
+    --social-instagram-yellow: 55 96% 79%;
+    --social-instagram-orange: 5 98% 64%;
+    --social-instagram-pink: 318 71% 49%;
+    --social-instagram-blue: 225 83% 54%;
+    --social-tiktok-cyan: 178 90% 55%;
+    --social-tiktok-pink: 348 99% 58%;
+    --social-whatsapp: 142 70% 49%;
+
     /* Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(200 85% 50%) 0%, hsl(195 90% 60%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(200 30% 98%) 100%);
