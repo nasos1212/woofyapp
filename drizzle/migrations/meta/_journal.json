@@ -29,6 +29,13 @@
       "when": 1791816010742,
       "tag": "0003_notify_new_shelters",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791816106261,
+      "tag": "0004_notify_all_members_new_shelter",
+      "breakpoints": true
     }
   ]
 }
