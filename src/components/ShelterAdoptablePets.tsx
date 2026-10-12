@@ -369,7 +369,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                 {editingPet ? t("adoptablePets.editPet") : t("adoptablePets.addNewPet")}
               </DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} onFocusCapture={handleFieldFocus} className="space-y-4 pb-24">
               {/* Photo Upload - Multiple */}
               <div className="space-y-2">
                 <Label>{t("adoptablePets.photosLabel", { max: MAX_PHOTOS })}</Label>
