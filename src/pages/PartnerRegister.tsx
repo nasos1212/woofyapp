@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle, Instagram, Facebook, Music } from "lucide-react";
+import { Building2, ArrowLeft, Check, Clock, Globe, Mail, AlertTriangle, HelpCircle } from "lucide-react";
+import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -468,7 +469,7 @@ const PartnerRegister = () => {
                     <div className="space-y-1.5">
                       <Label htmlFor="instagram" className="text-sm">{t("partnerRegister.instagram")}</Label>
                       <div className="relative">
-                        <Instagram className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <InstagramIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <Input
                           id="instagram"
                           placeholder="instagram.com/yourbusiness"
@@ -481,7 +482,7 @@ const PartnerRegister = () => {
                     <div className="space-y-1.5">
                       <Label htmlFor="facebook" className="text-sm">{t("partnerRegister.facebook")}</Label>
                       <div className="relative">
-                        <Facebook className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <FacebookIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <Input
                           id="facebook"
                           placeholder="facebook.com/yourbusiness"
@@ -494,7 +495,7 @@ const PartnerRegister = () => {
                     <div className="space-y-1.5">
                       <Label htmlFor="tiktok" className="text-sm">{t("partnerRegister.tiktok")}</Label>
                       <div className="relative">
-                        <Music className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <TikTokIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" />
                         <Input
                           id="tiktok"
                           placeholder="tiktok.com/@yourbusiness"
