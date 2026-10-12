@@ -19,6 +19,8 @@ import CommunityReportsManager from "@/components/admin/CommunityReportsManager"
 import LostFoundManager from "@/components/admin/LostFoundManager";
 import BlogManager from "@/components/admin/BlogManager";
 import PendingDeletionsPanel from "@/components/admin/PendingDeletionsPanel";
+import AppMetrics from "@/components/admin/AppMetrics";
+import { Smartphone } from "lucide-react";
 
 interface PendingCounts {
   support: number;
@@ -196,6 +198,10 @@ const AdminDashboard = () => {
               <TrendingUp className="w-4 h-4" />
               Engagement
             </TabsTrigger>
+            <TabsTrigger value="appmetrics" className="gap-1">
+              <Smartphone className="w-4 h-4" />
+              App Metrics
+            </TabsTrigger>
             <TabsTrigger value="expiring" className="gap-1">
               <Clock className="w-4 h-4" />
               Expiring
@@ -242,6 +248,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="engagement">
             <EngagementAnalytics />
+          </TabsContent>
+
+          <TabsContent value="appmetrics">
+            <AppMetrics />
           </TabsContent>
 
           <TabsContent value="expiring">
