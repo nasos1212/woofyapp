@@ -15,6 +15,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { validateImageFile } from "@/lib/fileValidation";
+import { formatPetAge } from "@/lib/petAge";
 import { Plus, Trash2, Edit2, PawPrint, Upload, X, ChevronsUpDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { dogBreeds } from "@/data/dogBreeds";
@@ -649,7 +650,7 @@ const ShelterAdoptablePets = ({ shelterId }: ShelterAdoptablePetsProps) => {
                             )}
                             {pet.age && (
                               <Badge variant="outline" className="text-xs">
-                                {/^\d+$/.test(pet.age.trim()) ? t("adoptablePets.yearsOld", { age: pet.age }) : pet.age}
+                                {formatPetAge(pet.age, t)}
                               </Badge>
                             )}
                             {pet.gender && (
