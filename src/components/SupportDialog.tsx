@@ -37,9 +37,10 @@ interface SupportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onMessagesRead?: () => void;
+  initialSubject?: string;
 }
 
-const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProps) => {
+const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: SupportDialogProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -58,7 +59,11 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead }: SupportDialogProp
     if (open && user) {
       fetchConversations();
     }
-  }, [open, user]);
+    if (open && initialSubject) {
+      setNewSubject(initialSubject);
+      setView("new");
+    }
+  }, [open, user, initialSubject]);
 
   useEffect(() => {
     if (selectedConversation) {

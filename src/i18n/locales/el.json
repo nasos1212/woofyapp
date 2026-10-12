@@ -1985,7 +1985,10 @@
       "pending": "σε εκκρεμότητα",
       "resolved": "επιλυθεί",
       "closed": "κλείσει"
-    }
+    },
+    "closureSubjectShelter": "Αίτημα κλεισίματος λογαριασμού καταφυγίου",
+    "closureSubjectBusiness": "Αίτημα κλεισίματος επιχειρηματικού λογαριασμού",
+    "closureSubjectAccount": "Αίτημα κλεισίματος λογαριασμού"
   },
   "shelter": {
     "pageTitle": "Αρχική Καταφυγίου | Wooffy",
