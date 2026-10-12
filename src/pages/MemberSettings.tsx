@@ -132,7 +132,7 @@ const MemberSettings = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <Header />
-      <main className="container mx-auto max-w-2xl px-4 pt-24 pb-16">
+      <main className="container mx-auto max-w-2xl px-4 pt-[calc(6rem+env(safe-area-inset-top))] pb-16">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
           <ArrowLeft className="w-4 h-4 mr-1" /> {t("memberSettings.back")}
         </Button>

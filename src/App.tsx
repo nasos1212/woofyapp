@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PushTapHandler from "./components/PushTapHandler";
+import NativeStatusBar from "./components/NativeStatusBar";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "./hooks/useAuth";
 import { useEffect } from "react";
@@ -148,6 +149,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <PushTapHandler />
+            <NativeStatusBar />
             
             <SupportButton />
           </BrowserRouter>
