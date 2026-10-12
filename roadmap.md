@@ -2,7 +2,7 @@
 
 ## v1.2 remaining feedback
 - [x] #16 Admin-only hidden shelters; guest/member/admin live access regression passed
-- [ ] #29 Confirmed titles bold, story names plain; awaiting permission to bold story names
+- [x] #29 Verified titles bold in both languages; user confirmed no changes wanted
 - [x] #30 Branded social logos throughout app; native Facebook uses share menu (phone check awaits next build)
 - [ ] #5, #11, #14, #31 Await clarification from user
 - [ ] #10, #15, #18 On hold at user's request
