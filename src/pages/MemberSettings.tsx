@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
@@ -208,11 +209,10 @@ const MemberSettings = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm mb-4">{t("memberSettings.partnerHelp")}</p>
-              <Button asChild variant="outline">
-                <a href="mailto:hello@wooffy.app?subject=Account%20closure%20request">
-                  {t("memberSettings.contactSupport")}
-                </a>
-              </Button>
+              <CloseAccountSupportButton
+                label={t("memberSettings.contactSupport")}
+                subject={t("support.closureSubjectAccount", "Account closure request")}
+              />
             </CardContent>
           </Card>
         )}

@@ -1984,7 +1984,10 @@
       "pending": "pending",
       "resolved": "resolved",
       "closed": "closed"
-    }
+    },
+    "closureSubjectShelter": "Shelter account closure request",
+    "closureSubjectBusiness": "Business account closure request",
+    "closureSubjectAccount": "Account closure request"
   },
   "shelter": {
     "pageTitle": "Shelter Dashboard | Wooffy",

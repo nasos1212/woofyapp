@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -568,11 +569,10 @@ const ShelterDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild variant="outline">
-                <a href="mailto:hello@wooffy.app?subject=Shelter%20account%20closure%20request">
-                  {t("shelter.contactSupport")}
-                </a>
-              </Button>
+              <CloseAccountSupportButton
+                label={t("shelter.contactSupport")}
+                subject={t("support.closureSubjectShelter", "Shelter account closure request")}
+              />
             </CardContent>
           </Card>
         </main>
