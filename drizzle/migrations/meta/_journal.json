@@ -15,6 +15,13 @@
       "when": 1791379012746,
       "tag": "0001_admin_view_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791815665923,
+      "tag": "0002_notify_new_articles_and_partners",
+      "breakpoints": true
     }
   ]
 }
