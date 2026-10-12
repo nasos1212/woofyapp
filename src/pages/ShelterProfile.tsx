@@ -345,7 +345,7 @@ const ShelterProfile = () => {
                             )}
                             {pet.age && (
                               <Badge variant="outline" className="text-xs">
-                                {pet.age}
+                                {formatPetAge(pet.age, t)}
                               </Badge>
                             )}
                             {pet.gender && (
@@ -542,7 +542,7 @@ const ShelterProfile = () => {
                 <div className="flex flex-wrap gap-1.5">
                   <Badge variant="secondary" className="capitalize">{viewingPet.pet_type}</Badge>
                   {viewingPet.breed && <Badge variant="outline">{viewingPet.breed}</Badge>}
-                  {viewingPet.age && <Badge variant="outline">{viewingPet.age}</Badge>}
+                  {viewingPet.age && <Badge variant="outline">{formatPetAge(viewingPet.age, t)}</Badge>}
                   {viewingPet.gender && <Badge variant="outline" className="capitalize">{viewingPet.gender}</Badge>}
                 </div>
 
