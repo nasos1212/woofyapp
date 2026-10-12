@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { Helmet } from "react-helmet-async";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";

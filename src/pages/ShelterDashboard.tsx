@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
