@@ -5,16 +5,7 @@
       {
         "appID": "XC7893VNBD.app.wooffy.ios",
         "paths": [
-          "/auth",
-          "/verify-email",
-          "/reset-password",
-          "/member/*",
-          "/business/*",
-          "/shelter/*",
-          "/blog/*",
-          "/partner/*",
-          "/community/*",
-          "*"
+          "NOT /*"
         ]
       }
     ]
