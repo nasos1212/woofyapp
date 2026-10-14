@@ -7,6 +7,7 @@
 - [ ] #5, #11, #14, #31 Await clarification from user
 - [ ] #10, #15, #18 On hold at user's request
 - [ ] Package next iPhone release after feedback is complete
+- [ ] App Store search fix: keywords + subtitle (EN/EL) written before the next update goes live
 
 ## v1.1 update (code + backend done, push verified — needs rebuild/upload)
 - [x] App icon notification badge (unread count on home-screen icon) — client badge sync + badge number included in push payloads
