@@ -274,19 +274,18 @@ const ShelterDashboard = () => {
 
           {/* Stats */}
           {isApproved && (
-            <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="grid grid-cols-2 gap-3 mb-5">
               <Card>
-                <CardContent className="py-4 text-center">
-                  <Heart className="h-6 w-6 text-rose-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{shelter.dogs_in_care || '-'}</div>
-                  <div className="text-sm text-muted-foreground">{t("shelter.dogsInCare")}</div>
+                <CardContent className="px-3 py-3 text-center">
+                  <Heart className="h-5 w-5 text-destructive mx-auto mb-1" />
+                  <div className="text-xl font-bold">{shelter.dogs_in_care || '-'}</div>
+                  <div className="text-xs text-muted-foreground">{t("shelter.dogsInCare")}</div>
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="py-4 text-center">
-                  <Globe className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold">{shelter.years_operating ? t("shelter.since", { year: shelter.years_operating }) : '-'}</div>
-                  <div className="text-sm text-muted-foreground">{t("shelter.operatingSince")}</div>
+                <CardContent className="px-3 py-3 text-center">
+                  <Globe className="h-5 w-5 text-primary mx-auto mb-1" />
+                  <div className="text-lg font-bold leading-snug">{shelter.years_operating ? t("shelter.since", { year: shelter.years_operating }) : '-'}</div>
                 </CardContent>
               </Card>
             </div>

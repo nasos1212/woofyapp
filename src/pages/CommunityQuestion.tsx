@@ -421,17 +421,17 @@ const CommunityQuestion = () => {
           {/* Question Card */}
           <Card className="mb-6">
             <CardHeader className="pb-3">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 gap-3">
                   {!question.is_anonymous ? (
-                    <Avatar className="h-12 w-12">
+                    <Avatar className="h-12 w-12 shrink-0">
                       <AvatarImage src={question.author?.avatar_url || ''} />
                       <AvatarFallback className="bg-primary/10 text-primary">
                         {question.author?.full_name?.charAt(0) || 'U'}
                       </AvatarFallback>
                     </Avatar>
                   ) : (
-                    <div className="h-12 w-12 flex items-center justify-center bg-muted rounded-full">
+                    <div className="h-12 w-12 shrink-0 flex items-center justify-center bg-muted rounded-full">
                       <span className="text-muted-foreground text-lg">?</span>
                     </div>
                   )}
@@ -439,7 +439,7 @@ const CommunityQuestion = () => {
                     <p className="font-medium">
                       {question.author?.full_name || t('communityQuestion.anonymous')}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
                       {formatRelative(question.created_at)}
                     </p>
                   </div>

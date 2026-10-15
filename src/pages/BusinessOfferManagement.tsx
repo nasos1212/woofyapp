@@ -28,6 +28,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { el, enGB } from "date-fns/locale";
 import {
   Popover,
   PopoverContent,
@@ -85,7 +87,7 @@ interface Offer {
 }
 
 const BusinessOfferManagement = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { isApproved, verificationStatus, loading: verificationLoading } = useBusinessVerification();
@@ -634,18 +636,18 @@ const BusinessOfferManagement = () => {
               </h4>
               <div className="space-y-2">
                 <Label htmlFor="pet_type">{t("businessOffers.petTypeLabel")}</Label>
-                <select
-                  id="pet_type"
-                  value={formData.pet_type || ""}
-                  onChange={(e) =>
-                    setFormData({ ...formData, pet_type: e.target.value === "" ? null : e.target.value as PetType })
-                  }
-                  className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">{t("businessOffers.petTypeAll")}</option>
-                  <option value="dog">{t("businessOffers.petTypeDog")}</option>
-                  <option value="cat">{t("businessOffers.petTypeCat")}</option>
-                </select>
+                <Select value={formData.pet_type || "all"} onValueChange={(value) =>
+                  setFormData({ ...formData, pet_type: value === "all" ? null : value as PetType })
+                }>
+                  <SelectTrigger id="pet_type" className="h-auto min-h-10 text-left [&>span]:line-clamp-none [&>span]:whitespace-normal [&>span]:break-words [&>svg]:shrink-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent position="popper" className="max-h-[40vh] max-w-[calc(100vw-2rem)]">
+                    <SelectItem value="all">{t("businessOffers.petTypeAll")}</SelectItem>
+                    <SelectItem value="dog">{t("businessOffers.petTypeDog")}</SelectItem>
+                    <SelectItem value="cat">{t("businessOffers.petTypeCat")}</SelectItem>
+                  </SelectContent>
+                </Select>
                 <p className="text-xs text-muted-foreground">
                   {formData.pet_type === 'dog' 
                     ? t("businessOffers.petTypeHelpDog")
@@ -781,6 +783,11 @@ const BusinessOfferManagement = () => {
                         <Calendar
                           mode="single"
                           selected={formData.valid_from}
+                          defaultMonth={formData.valid_from}
+                          captionLayout="dropdown-buttons"
+                          fromYear={2000}
+                          toYear={2100}
+                          locale={i18n.language.startsWith("el") ? el : enGB}
                           onSelect={(date) => setFormData({ ...formData, valid_from: date })}
                           initialFocus
                           className={cn("p-3 pointer-events-auto")}
@@ -811,6 +818,11 @@ const BusinessOfferManagement = () => {
                         <Calendar
                           mode="single"
                           selected={formData.valid_until}
+                          defaultMonth={formData.valid_until ?? formData.valid_from}
+                          captionLayout="dropdown-buttons"
+                          fromYear={2000}
+                          toYear={2100}
+                          locale={i18n.language.startsWith("el") ? el : enGB}
                           onSelect={(date) => setFormData({ ...formData, valid_until: date })}
                           disabled={(date) => formData.valid_from ? date < formData.valid_from : false}
                           initialFocus
@@ -826,7 +838,7 @@ const BusinessOfferManagement = () => {
                       ? t("businessOffers.validRange", { from: formatDate(formData.valid_from), to: formatDate(formData.valid_until) })
                       : formData.valid_from 
                         ? t("businessOffers.validStarts", { date: formatDate(formData.valid_from) })
-                        : t("businessOffers.validEnds", { date: formatDate(formData.valid_until!) })}
+                        : formData.valid_until ? t("businessOffers.validEnds", { date: formatDate(formData.valid_until) }) : ""}
                   </p>
                 )}
 

@@ -50,6 +50,9 @@ html, body {
     --wooffy-dark: 210 30% 20%;
     --wooffy-accent: 185 80% 45%;
     --wooffy-soft: 200 40% 95%;
+    --status-open: 217 91% 60%;
+    --status-pending: 45 93% 47%;
+    --status-resolved: 142 71% 45%;
 
     /* Official social identity colours, shared by every social logo. */
     --social-facebook: 214 89% 52%;

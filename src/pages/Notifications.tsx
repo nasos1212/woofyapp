@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Bell, ArrowLeft, Check, CheckCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,9 @@ import { formatRelative } from "@/lib/relativeTime";
 import { setAppBadge } from "@/lib/push";
 import Header from "@/components/Header";
 import { BirthdayOfferViewDialog } from "@/components/BirthdayOfferViewDialog";
+import SupportDialog from "@/components/SupportDialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { notificationDestination } from "@/lib/notificationRouting";
 
 interface NotificationData {
   business_id?: string;
@@ -49,7 +52,10 @@ const Notifications = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const conversationId = searchParams.get("conversation");
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const selectedNotification = notifications.find((item) => item.id === searchParams.get("notification"));
   const [isLoading, setIsLoading] = useState(true);
   const [selectedBirthdayOffer, setSelectedBirthdayOffer] = useState<Notification | null>(null);
 
@@ -84,6 +90,10 @@ const Notifications = () => {
     fetchNotifications();
   }, [user]);
 
+  useEffect(() => {
+    if (selectedNotification?.type === "birthday_offer") setSelectedBirthdayOffer(selectedNotification);
+  }, [selectedNotification]);
+
   const markAsRead = async (id: string) => {
     await supabase
       .from("notifications")
@@ -113,26 +123,10 @@ const Notifications = () => {
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
     
-    const data = notification.data;
-    if (notification.type === "family_invite" && data?.share_code) {
-      navigate(`/member/join-family?code=${data.share_code}`);
-    } else if (notification.type === "redemption") {
-      navigate("/member/history");
-    } else if (notification.type === "lost_pet_alert" && data?.alert_id) {
-      navigate(`/member/lost-found?alert=${data.alert_id}`);
-    } else if ((notification.type === "community_answer" || notification.type === "community_follow_activity" || notification.type === "answer_accepted") && data?.question_id) {
-      navigate(`/community/question/${data.question_id}`);
-    } else if (notification.type === "business_birthday_reminder") {
-      navigate("/business/birthdays");
-    } else if (notification.type === "birthday_offer" && data?.business_id) {
-      // Open birthday offer dialog to show full message
+    if (notification.type === "birthday_offer" && notification.data?.business_id) {
       setSelectedBirthdayOffer(notification);
-    } else if (notification.type === "review_request" && data?.business_id) {
-      navigate(`/business/${data.business_id}`);
-    } else if (notification.type === "pet_birthday") {
-      navigate("/member");
-    } else if (notification.type === "anniversary") {
-      navigate("/member");
+    } else {
+      navigate(notificationDestination(notification.type, notification.data, notification.id));
     }
   };
 
@@ -187,7 +181,7 @@ const Notifications = () => {
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       <main className="w-full max-w-7xl mx-auto px-4 py-8 pt-[calc(6rem+env(safe-area-inset-top))] box-border">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
@@ -227,6 +221,14 @@ const Notifications = () => {
             notifications.map((notification) => (
               <Card
                 key={notification.id}
+                role="link"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault();
+                    void handleNotificationClick(notification);
+                  }
+                }}
                 className={`cursor-pointer transition-all hover:shadow-md ${
                   !notification.read ? "border-primary/50 bg-accent/30" : ""
                 }`}
@@ -283,9 +285,18 @@ const Notifications = () => {
         </p>
 
         {/* Birthday Offer Dialog */}
+        <SupportDialog open={!!conversationId} initialConversationId={conversationId ?? undefined} onOpenChange={(open) => {
+          if (!open) setSearchParams({});
+        }} />
+        <Dialog open={!!selectedNotification && selectedNotification.type !== "birthday_offer"} onOpenChange={(open) => { if (!open) setSearchParams({}); }}>
+          <DialogContent>
+            <DialogHeader><DialogTitle className="pr-5 break-words">{selectedNotification?.title}</DialogTitle></DialogHeader>
+            <p className="text-sm whitespace-pre-wrap break-words">{selectedNotification?.message}</p>
+          </DialogContent>
+        </Dialog>
         <BirthdayOfferViewDialog
           open={!!selectedBirthdayOffer}
-          onOpenChange={(open) => !open && setSelectedBirthdayOffer(null)}
+          onOpenChange={(open) => { if (!open) { setSelectedBirthdayOffer(null); setSearchParams({}); } }}
           title={selectedBirthdayOffer?.title || ""}
           message={selectedBirthdayOffer?.message || ""}
           data={selectedBirthdayOffer?.data ? {

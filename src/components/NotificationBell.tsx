@@ -14,6 +14,7 @@ import { formatRelative } from "@/lib/relativeTime";
 import { setAppBadge } from "@/lib/push";
 import { useNavigate } from "react-router-dom";
 import { useBarkSound } from "@/hooks/useBarkSound";
+import { notificationDestination } from "@/lib/notificationRouting";
 
 interface Notification {
   id: string;
@@ -104,7 +105,7 @@ const NotificationBell = () => {
 
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
-    navigate("/member/notifications");
+    navigate(notificationDestination(notification.type, notification.data, notification.id));
   };
 
   const markAllAsRead = async () => {

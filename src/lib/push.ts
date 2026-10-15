@@ -23,6 +23,13 @@ export async function setAppBadge(count: number): Promise<void> {
 
 let pushInitialized = false;
 let pendingToken: string | null = null;
+let pendingPushTap: Record<string, unknown> | null = null;
+
+export function consumePendingPushTap(): Record<string, unknown> | null {
+  const tap = pendingPushTap;
+  pendingPushTap = null;
+  return tap;
+}
 
 const saveToken = async (token: string): Promise<void> => {
   try {
@@ -86,14 +93,12 @@ export function initializePushNotifications(): void {
         });
 
         // User tapped a notification while the app was closed/backgrounded.
-        // The app relaunches into the app; route them to the notifications page.
-        PushNotifications.addListener(
+        // Buffer the tap until the authenticated router is ready, including cold starts.
+        await PushNotifications.addListener(
           "pushNotificationActionPerformed",
           (action) => {
-            const data = (action.notification?.data ?? {}) as {
-              notification_id?: string;
-              type?: string;
-            };
+            const data = (action.notification?.data ?? {}) as Record<string, unknown>;
+            pendingPushTap = data;
             window.dispatchEvent(
               new CustomEvent("wooffy:push-tap", { detail: data })
             );

@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { consumePendingPushTap } from "@/lib/push";
+import { notificationDestination } from "@/lib/notificationRouting";
 
 interface PushTapData {
   notification_id?: string;
@@ -20,35 +23,23 @@ interface PushTapData {
  */
 const PushTapHandler = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
 
   useEffect(() => {
-    const handler = (event: Event) => {
-      const { type, data } = (event as CustomEvent<PushTapData>).detail ?? {};
-
-      if (type === "new_blog_post" && data?.slug) {
-        navigate(`/blog/${data.slug}`);
-      } else if (type === "new_partner") {
-        navigate("/member/partners");
-      } else if (type === "new_shelter") {
-        navigate("/member/shelters");
-      } else if (type === "lost_pet_alert" && data?.alert_id) {
-        navigate(`/member/lost-found?alert=${data.alert_id}`);
-      } else if (
-        (type === "community_answer" ||
-          type === "community_follow_activity" ||
-          type === "answer_accepted") &&
-        data?.question_id
-      ) {
-        navigate(`/community/question/${data.question_id}`);
-      } else if (type === "family_invite" && data?.share_code) {
-        navigate(`/member/join-family?code=${data.share_code}`);
-      } else {
-        navigate("/member/notifications");
-      }
+    if (loading || !user) return;
+    const handler = () => {
+      const tap = consumePendingPushTap();
+      if (!tap) return;
+      navigate(notificationDestination(
+        typeof tap.type === "string" ? tap.type : "",
+        tap.data,
+        typeof tap.notification_id === "string" ? tap.notification_id : undefined,
+      ));
     };
     window.addEventListener("wooffy:push-tap", handler);
+    handler();
     return () => window.removeEventListener("wooffy:push-tap", handler);
-  }, [navigate]);
+  }, [navigate, user, loading]);
 
   return null;
 };

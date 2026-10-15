@@ -1257,18 +1257,18 @@ const BusinessDashboard = () => {
                 ) : (
                   <div className="space-y-2">
                     {offers.slice(0, 3).map(offer => (
-                      <div key={offer.id} className="bg-white/10 rounded-xl p-3 hover:bg-white/15 transition-colors">
+                      <Button variant="ghost" asChild key={offer.id} className="w-full h-auto block text-left whitespace-normal rounded-lg bg-primary-foreground/10 p-3 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground">
+                        <Link to="/business/offers">
                         <p className="font-display font-bold">
                           {offer.discount_value}{offer.discount_type === 'percentage' ? '%' : '€'} {t("businessDashboard.yourOffers.off")}
                         </p>
                         <p className="text-white/70 text-sm">{offer.title}</p>
-                      </div>
+                        </Link>
+                      </Button>
                     ))}
-                    {offers.length > 3 && (
-                      <Link to="/business/offers" className="block text-center text-white/70 text-sm hover:text-white pt-2">
-                        {t("businessDashboard.yourOffers.moreOffers", { count: offers.length - 3 })}
-                      </Link>
-                    )}
+                    <Button variant="ghost" asChild className="w-full text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
+                      <Link to="/business/offers">{t("businessDashboard.recent.viewAll")}</Link>
+                    </Button>
                   </div>
                 )}
               </div>
