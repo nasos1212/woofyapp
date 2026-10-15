@@ -1,12 +1,14 @@
 # Roadmap
 
 ## October 15 small fixes
-- [ ] #1–5 Shelter remove controls, compact stats, single-line timestamps, complete titles and gallery captions
-- [ ] #6–7 Offer month/year picker and fully visible pet-type choices
-- [ ] #8 Notifications open actual destinations, including support replies
-- [ ] #9 Support status shown as coloured clickable dots
-- [ ] #10 Business profile offers open details
-- [ ] Verify affected screens and notification destinations
+- [x] #1–5 Shelter remove controls, compact stats, single-line timestamps, two-line support subjects and gallery captions
+- [x] #6–7 Offer month/year picker and fully visible pet-type choices
+- [x] #8 Shared notification destinations, exact lost-pet popup, support conversation links, buffered native taps
+- [x] #9 Support status shown as coloured clickable dots
+- [x] #10 Business dashboard offer cards link to management, with View All always available; public profile already opens details
+- [x] Signed-in notification/article/lost-pet/support flows verified; Greek subject and status dots checked at iPhone width; destination tests and preview build pass
+- [ ] Real shelter/business-owner screen checks: current test session is a member, not a shelter/business owner
+- [ ] Native push warm/cold tap check on an iPhone after next build; requires device/Xcode
 
 ## v1.2 remaining feedback
 - [x] #16 Admin-only hidden shelters; guest/member/admin live access regression passed
