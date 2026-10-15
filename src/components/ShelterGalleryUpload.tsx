@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Upload, X, Images, Trash2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { validateImageFile } from "@/lib/fileValidation";
 import { useTranslation } from "react-i18next";
 
@@ -203,43 +204,42 @@ const ShelterGalleryUpload = ({ shelterId }: ShelterGalleryUploadProps) => {
             <h4 className="text-sm font-medium">{t("shelterGallery.yourGallery", { count: photos.length })}</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {photos.map((photo) => (
-                <div key={photo.id} className="group relative aspect-square">
-                  <img src={photo.photo_url} alt={photo.caption || t("shelterProfile.photoAlt")} className="w-full h-full object-cover rounded-lg border" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-2">
-                    <Button variant="destructive" size="sm" onClick={() => handleDelete(photo)}>
-                      <Trash2 className="h-3 w-3 mr-1" />
-                      {t("shelterGallery.delete")}
+                <div key={photo.id} className="min-w-0 space-y-2">
+                  <div className="relative aspect-square overflow-hidden rounded-lg border">
+                    <img src={photo.photo_url} alt={photo.caption || t("shelterProfile.photoAlt")} className="w-full h-full object-cover" />
+                    <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-8 w-8" aria-label={t("shelterGallery.delete")} onClick={() => handleDelete(photo)}>
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                   {editingCaption === photo.id ? (
-                    <div className="absolute bottom-0 left-0 right-0 p-2 bg-black/70 rounded-b-lg">
-                      <Input
+                    <div className="space-y-2">
+                      <Textarea
                         value={captionValue}
                         onChange={(e) => setCaptionValue(e.target.value)}
                         placeholder={t("shelterGallery.addCaption")}
-                        className="h-8 text-xs mb-1"
+                        className="min-h-16 text-sm"
                         autoFocus
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleUpdateCaption(photo.id);
+                          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleUpdateCaption(photo.id); }
                           if (e.key === 'Escape') setEditingCaption(null);
                         }}
                       />
-                      <div className="flex gap-1">
-                        <Button size="sm" className="h-6 text-xs flex-1" onClick={() => handleUpdateCaption(photo.id)}>
+                      <div className="flex flex-wrap gap-1">
+                        <Button size="sm" className="h-auto min-h-8 text-xs flex-1 whitespace-normal px-2" onClick={() => handleUpdateCaption(photo.id)}>
                           {t("shelterGallery.save")}
                         </Button>
-                        <Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => setEditingCaption(null)}>
+                        <Button size="sm" variant="ghost" className="h-auto min-h-8 text-xs whitespace-normal px-2" onClick={() => setEditingCaption(null)}>
                           {t("shelterGallery.cancel")}
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    <button
-                      className="absolute bottom-0 left-0 right-0 p-2 bg-black/50 text-white text-xs truncate rounded-b-lg hover:bg-black/70 transition-colors"
+                    <Button variant="outline"
+                      className="w-full h-auto min-h-10 px-2 py-2 text-xs whitespace-normal break-words leading-snug"
                       onClick={() => { setEditingCaption(photo.id); setCaptionValue(photo.caption || ""); }}
                     >
                       {photo.caption || t("shelterGallery.addCaption")}
-                    </button>
+                    </Button>
                   )}
                 </div>
               ))}

@@ -158,9 +158,9 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
                   {savingPosition ? t("shelterHeader.saving") : t("shelterHeader.savePosition")}
                 </Button>
               </div>
-              <div className="flex gap-2">
-                <label className="flex-1">
-                  <Button variant="outline" className="w-full" asChild>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <label className="block min-w-0 flex-1">
+                  <Button variant="outline" className="w-full h-auto min-h-10 whitespace-normal px-3 py-2" asChild>
                     <span>
                       <Upload className="h-4 w-4 mr-2" />
                       {t("shelterHeader.changeCover")}
@@ -168,7 +168,7 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
                   </Button>
                   <input type="file" className="hidden" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleFileSelect(e, 'cover')} />
                 </label>
-                <Button variant="destructive" onClick={() => handleRemove('cover')}>
+                <Button variant="destructive" className="shrink-0" onClick={() => handleRemove('cover')}>
                   {t("shelterHeader.remove")}
                 </Button>
               </div>
@@ -196,7 +196,7 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
           <CardDescription>{t("shelterHeader.logoDesc")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-start gap-4">
+          <div className="flex flex-col sm:flex-row items-start gap-4">
             {logoPreview ? (
               <div className="relative">
                 <img src={logoPreview} alt={t("shelterHeader.logoTitle")} className="w-24 h-24 object-cover rounded-lg border" />
@@ -212,15 +212,15 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
               </div>
             )}
 
-            <div className="flex-1 space-y-2">
+            <div className="w-full min-w-0 flex-1 space-y-2">
               {logoPreview ? (
                 <Button onClick={() => handleUpload('logo')} disabled={uploadingLogo} className="w-full">
                   {uploadingLogo ? t("shelterHeader.uploading") : t("shelterHeader.saveLogo")}
                 </Button>
               ) : (
                 <>
-                  <label className="w-full">
-                    <Button variant="outline" className="w-full" asChild>
+                  <label className="block w-full">
+                    <Button variant="outline" className="w-full h-auto min-h-10 whitespace-normal px-3 py-2" asChild>
                       <span>
                         <Upload className="h-4 w-4 mr-2" />
                         {currentLogoUrl ? t("shelterHeader.changeLogo") : t("shelterHeader.uploadLogo")}
@@ -229,7 +229,7 @@ const ShelterHeaderUpload = ({ shelterId, currentLogoUrl, currentCoverUrl, curre
                     <input type="file" className="hidden" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleFileSelect(e, 'logo')} />
                   </label>
                   {currentLogoUrl && (
-                    <Button variant="ghost" size="sm" className="w-full text-destructive hover:text-destructive" onClick={() => handleRemove('logo')}>
+                    <Button variant="ghost" size="sm" className="w-full h-auto min-h-9 whitespace-normal text-destructive hover:text-destructive" onClick={() => handleRemove('logo')}>
                       {t("shelterHeader.removeLogo")}
                     </Button>
                   )}

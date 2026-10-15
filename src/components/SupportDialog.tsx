@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -38,9 +38,10 @@ interface SupportDialogProps {
   onOpenChange: (open: boolean) => void;
   onMessagesRead?: () => void;
   initialSubject?: string;
+  initialConversationId?: string;
 }
 
-const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: SupportDialogProps) => {
+const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, initialConversationId }: SupportDialogProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -64,6 +65,12 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: S
       setView("new");
     }
   }, [open, user, initialSubject]);
+
+  useEffect(() => {
+    if (!open || !initialConversationId) return;
+    const conversation = conversations.find((item) => item.id === initialConversationId);
+    if (conversation) { setSelectedConversation(conversation); setView("conversation"); }
+  }, [open, initialConversationId, conversations]);
 
   useEffect(() => {
     if (selectedConversation) {
@@ -260,11 +267,11 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: S
   const getStatusColor = (status: string) => {
     switch (status) {
       case "open":
-        return "bg-blue-500";
+        return "bg-status-open";
       case "pending":
-        return "bg-yellow-500";
+        return "bg-status-pending";
       case "resolved":
-        return "bg-green-500";
+        return "bg-status-resolved";
       case "closed":
         return "bg-muted";
       default:
@@ -282,7 +289,7 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: S
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             )}
-            <DialogTitle>
+            <DialogTitle className="min-w-0 pr-6 text-base leading-snug break-words">
               {view === "list" && t("support.titleSupport")}
               {view === "new" && t("support.titleNewRequest")}
               {view === "conversation" && selectedConversation?.subject}
@@ -316,26 +323,25 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: S
                 ) : (
                   <div className="space-y-2 pb-4">
                     {conversations.map((conv) => (
-                      <button
+                      <div
                         key={conv.id}
-                        onClick={() => openConversation(conv)}
-                        className="w-full text-left p-3 rounded-lg border hover:bg-accent transition-colors"
+                        className="w-full p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <span className="font-medium line-clamp-1">
-                            {conv.subject}
-                          </span>
-                          <Badge
-                            variant="secondary"
-                            className={`${getStatusColor(conv.status)} text-white text-xs`}
-                          >
-                            {t(`support.status.${conv.status}`, conv.status)}
-                          </Badge>
+                          <Button variant="ghost" onClick={() => openConversation(conv)} className="min-w-0 flex-1 block h-auto p-0 text-left whitespace-normal hover:bg-transparent">
+                            <span className="font-medium text-sm break-words leading-snug">{conv.subject}</span>
+                            <span className="block text-xs text-muted-foreground mt-1 font-normal">{t("support.updatedPrefix")} {formatRelative(conv.updated_at)}</span>
+                          </Button>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8" aria-label={t(`support.status.${conv.status}`, conv.status)}>
+                                <span className={`h-3 w-3 rounded-full ${getStatusColor(conv.status)}`} />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto px-3 py-2 text-sm" side="top">{t(`support.status.${conv.status}`, conv.status)}</PopoverContent>
+                          </Popover>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {t("support.updatedPrefix")} {formatRelative(conv.updated_at)}
-                        </p>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -347,11 +353,13 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject }: S
             <div className="p-4 space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t("support.subjectLabel")}</label>
-                <Input
+                <Textarea
                   placeholder={t("support.subjectPlaceholder")}
                   value={newSubject}
                   onChange={(e) => setNewSubject(e.target.value)}
                   maxLength={100}
+                  rows={2}
+                  className="min-h-16 resize-none text-sm"
                 />
               </div>
               <div className="space-y-2">

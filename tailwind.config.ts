@@ -22,6 +22,11 @@ export default {
         body: ["Inter", "sans-serif"],
       },
       colors: {
+        status: {
+          open: "hsl(var(--status-open))",
+          pending: "hsl(var(--status-pending))",
+          resolved: "hsl(var(--status-resolved))",
+        },
         social: {
           facebook: "hsl(var(--social-facebook))",
           whatsapp: "hsl(var(--social-whatsapp))",

@@ -1,5 +1,13 @@
 # Roadmap
 
+## October 15 small fixes
+- [ ] #1–5 Shelter remove controls, compact stats, single-line timestamps, complete titles and gallery captions
+- [ ] #6–7 Offer month/year picker and fully visible pet-type choices
+- [ ] #8 Notifications open actual destinations, including support replies
+- [ ] #9 Support status shown as coloured clickable dots
+- [ ] #10 Business profile offers open details
+- [ ] Verify affected screens and notification destinations
+
 ## v1.2 remaining feedback
 - [x] #16 Admin-only hidden shelters; guest/member/admin live access regression passed
 - [x] #29 Verified titles bold in both languages; user confirmed no changes wanted
