@@ -192,7 +192,8 @@ export default function BusinessProfile() {
         .from("offers")
         .select("*")
         .eq("business_id", id)
-        .eq("is_active", true);
+        .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${new Date().toISOString()}`);
 
       setOffers((offersData as Offer[]) || []);
 

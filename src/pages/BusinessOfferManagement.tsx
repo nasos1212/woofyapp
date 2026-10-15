@@ -413,8 +413,21 @@ const BusinessOfferManagement = () => {
               </Button>
             </div>
           ) : isApproved && (
-            <div className="space-y-4">
-              {offers.map((offer) => (
+            <div className="space-y-8">
+              {(() => {
+                const now = new Date();
+                const isEnded = (o: Offer) => !o.is_active || (!!o.valid_until && new Date(o.valid_until) < now);
+                const isEl = i18n.language?.startsWith("el");
+                return [
+                  { key: "active", label: isEl ? "Ενεργές Προσφορές" : "Active Offers", items: offers.filter((o) => !isEnded(o)) },
+                  { key: "ended", label: isEl ? "Ληγμένες / Ανενεργές Προσφορές" : "Expired / Inactive Offers", items: offers.filter(isEnded) },
+                ].filter((g) => g.items.length > 0);
+              })().map((group) => (
+                <div key={group.key} className="space-y-4">
+                  <h2 className="font-display font-semibold text-lg">
+                    {group.label} <span className="text-muted-foreground font-normal">({group.items.length})</span>
+                  </h2>
+              {group.items.map((offer) => (
                 <div
                   key={offer.id}
                   onClick={(e) => {
@@ -530,6 +543,8 @@ const BusinessOfferManagement = () => {
                       </Button>
                     </div>
                   </div>
+                </div>
+              ))}
                 </div>
               ))}
             </div>
