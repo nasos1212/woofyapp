@@ -91,6 +91,8 @@ const LostFoundAlerts = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
+  const linkedAlertId = searchParams.get("alert");
+  const linkedAlert = alerts.find((alert) => alert.id === linkedAlertId);
   const tabParam = searchParams.get("tab");
   const activeTab: "lost" | "found" | "reunited" = 
     tabParam === "found" || tabParam === "reunited" ? tabParam : "lost";
@@ -1210,6 +1212,20 @@ const LostFoundAlerts = () => {
         onOpenChange={setShowEditDialog}
         onSaved={fetchAlerts}
       />
+
+      <Dialog open={!!linkedAlert} onOpenChange={(open) => {
+        if (!open) {
+          const params = new URLSearchParams(searchParams);
+          params.delete("alert");
+          if (linkedAlert) params.set("tab", linkedAlert.status === "active" ? linkedAlert.alert_type : "reunited");
+          setSearchParams(params, { replace: true });
+        }
+      }}>
+        <DialogContent className="max-w-lg max-h-[85dvh] overflow-y-auto p-4">
+          <DialogHeader><DialogTitle className="pr-6">{linkedAlert?.pet_name}</DialogTitle></DialogHeader>
+          {linkedAlert && renderAlertCard(linkedAlert)}
+        </DialogContent>
+      </Dialog>
 
       {cropperSrc && (
         <ImageCropperDialog
