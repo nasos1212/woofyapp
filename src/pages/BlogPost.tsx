@@ -7,7 +7,6 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { ArrowLeft, Clock, Share2, Link as LinkIcon, Building2 } from "lucide-react";
-import { FacebookIcon, XIcon, WhatsAppIcon } from "@/components/SocialIcons";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import Header from "@/components/Header";
