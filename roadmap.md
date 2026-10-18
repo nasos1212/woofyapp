@@ -1,5 +1,10 @@
 # Roadmap
 
+## October 18 community activity alerts
+- [x] Notify savers, followers, answerers, voters and helpful-markers about new replies on that specific question; exclude reply author and avoid duplicates
+- [x] Verify deployed function and isolated PostgreSQL recipient rules without broadcasting test alerts; retain existing question-owner alerts and destination links
+- [ ] Confirm an actual new-reply alert on iPhone; requires user/device test without unsolicited test broadcasts
+
 ## October 18 offer expiry check
 - [x] Exclude expired offers from Offers Near Me and public offer previews before limiting results
 - [x] Verify expiry regression and signed-in nearby offer query

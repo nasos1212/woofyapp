@@ -1,6 +1,7 @@
 # Architecture Rules
 
 - Apply offer expiry filtering before limits in user-facing nearby and public offer queries; owner management retains all offers for history.
+- Generate community participant reply alerts in the existing database answer trigger using a deduplicated union of interactions, retaining the existing notification type so deployed clients and push delivery remain compatible.
 
 - Native OAuth opens externally from Wooffy's production origin and returns via the `wooffy://` URL scheme; the website claims no Universal Link paths so wooffy.app always opens in the browser; handle both warm and cold app launches.
 - Keep native authentication as a compact single-screen experience with one circular brand mark and safe-area-aware spacing.
