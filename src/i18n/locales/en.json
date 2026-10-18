@@ -3008,6 +3008,8 @@
     "backToBlog": "Back to Wooffy Blog",
     "notFound": "Post not found",
     "share": "Share",
+    "shareArticle": "Share Article",
+    "copyLink": "Copy Link",
     "linkCopied": "Link copied",
     "linkCopyError": "Could not copy link",
     "related": "Related posts",

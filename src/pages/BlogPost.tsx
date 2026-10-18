@@ -7,7 +7,6 @@ import remarkGfm from "remark-gfm";
 import remarkBreaks from "remark-breaks";
 import rehypeRaw from "rehype-raw";
 import { ArrowLeft, Clock, Share2, Link as LinkIcon, Building2 } from "lucide-react";
-import { FacebookIcon, XIcon, WhatsAppIcon } from "@/components/SocialIcons";
 import { Capacitor } from "@capacitor/core";
 import { Share } from "@capacitor/share";
 import Header from "@/components/Header";
@@ -383,50 +382,23 @@ const BlogPostPage = () => {
           )}
 
           {/* Share */}
-          <div className="mt-10 pt-6 border-t">
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className="font-medium flex items-center gap-2">
-                <Share2 className="w-4 h-4" /> {t("blog.share")}:
-              </span>
-              {Capacitor.isNativePlatform() ? (
-                <Button variant="outline" size="icon" aria-label="Facebook" onClick={shareArticle}>
-                  <FacebookIcon className="w-4 h-4" />
-                </Button>
-              ) : (
-                <Button variant="outline" size="icon" asChild>
-                  <a
-                    href={share("facebook")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Facebook"
-                    onClick={(event) => {
-                      // Safari's system menu avoids Facebook app redirects that lose the article URL.
-                      // Retain the ordinary Facebook link in browsers without Web Share support.
-                      if (navigator.share && (!navigator.canShare || navigator.canShare({ url }))) {
-                        event.preventDefault();
-                        void shareArticle();
-                      }
-                    }}
-                  >
-                    <FacebookIcon className="w-4 h-4" />
-                  </a>
-                </Button>
-              )}
-              <a href={share("twitter")} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon" aria-label="X / Twitter">
-                  <XIcon className="w-4 h-4" />
-                </Button>
-              </a>
-              <a href={share("whatsapp")} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon" aria-label="WhatsApp">
-                  <WhatsAppIcon className="w-4 h-4" />
-                </Button>
-              </a>
-              <Button variant="outline" size="icon" onClick={copyLink} aria-label="Copy link">
-                <LinkIcon className="w-4 h-4" />
+          <div className="mt-10 pt-6 border-t flex flex-col items-center gap-3">
+            {Capacitor.isNativePlatform() || typeof navigator.share === "function" ? (
+              <Button size="lg" className="w-full max-w-sm gap-2" onClick={shareArticle}>
+                <Share2 className="w-5 h-5" /> {t("blog.shareArticle")}
               </Button>
-            </div>
+            ) : (
+              <Button size="lg" className="w-full max-w-sm gap-2" asChild>
+                <a href={share("facebook")} target="_blank" rel="noopener noreferrer">
+                  <Share2 className="w-5 h-5" /> {t("blog.shareArticle")}
+                </a>
+              </Button>
+            )}
+            <Button variant="outline" size="lg" className="w-full max-w-sm gap-2" onClick={copyLink}>
+              <LinkIcon className="w-5 h-5" /> {t("blog.copyLink")}
+            </Button>
           </div>
+
 
           {/* Related */}
           {related.length > 0 && (
