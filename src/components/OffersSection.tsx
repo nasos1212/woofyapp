@@ -11,6 +11,7 @@ import OfferDetailDialog, { OfferWithDetails } from "./OfferDetailDialog";
 import { useBusinessCategoryLabel } from "@/hooks/useBusinessCategoryLabel";
 import { useTranslation } from "react-i18next";
 import { getCityDisplayName } from "@/lib/cityDisplay";
+import { excludeExpiredOffers } from "@/lib/offerExpiry";
 
 interface Offer {
   id: string;
@@ -48,7 +49,7 @@ const OffersSection = () => {
 
   const fetchOffers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await excludeExpiredOffers(supabase
         .from("offers")
         .select(`
           id,
@@ -71,7 +72,7 @@ const OffersSection = () => {
             city
           )
         `)
-        .eq("is_active", true)
+        .eq("is_active", true))
         .limit(6);
 
       if (error) throw error;
