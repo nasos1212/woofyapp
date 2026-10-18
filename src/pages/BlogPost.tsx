@@ -173,11 +173,19 @@ const BlogPostPage = () => {
     }
   };
 
-  const shareFromApp = async () => {
+  const shareArticle = async () => {
     try {
-      await Share.share({ title, url });
-    } catch {
-      // Cancellation is not an error; leave the article open.
+      if (Capacitor.isNativePlatform()) {
+        // Keep the URL as a URL item: Facebook's iOS extension can ignore text items.
+        await Share.share({ url });
+      } else if (navigator.share) {
+        await navigator.share({ url });
+      }
+    } catch (error) {
+      // Dismissing the system menu is normal; actual failures must not be silent.
+      const message = error instanceof Error ? error.message : String(error);
+      if ((error instanceof DOMException && error.name === "AbortError") || /cancel/i.test(message)) return;
+      toast({ title: t("blog.linkCopyError"), variant: "destructive" });
     }
   };
 
@@ -381,12 +389,25 @@ const BlogPostPage = () => {
                 <Share2 className="w-4 h-4" /> {t("blog.share")}:
               </span>
               {Capacitor.isNativePlatform() ? (
-                <Button variant="outline" size="icon" aria-label="Facebook" onClick={shareFromApp}>
+                <Button variant="outline" size="icon" aria-label="Facebook" onClick={shareArticle}>
                   <FacebookIcon className="w-4 h-4" />
                 </Button>
               ) : (
                 <Button variant="outline" size="icon" asChild>
-                  <a href={share("facebook")} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                  <a
+                    href={share("facebook")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook"
+                    onClick={(event) => {
+                      // Safari's system menu avoids Facebook app redirects that lose the article URL.
+                      // Retain the ordinary Facebook link in browsers without Web Share support.
+                      if (navigator.share && (!navigator.canShare || navigator.canShare({ url }))) {
+                        event.preventDefault();
+                        void shareArticle();
+                      }
+                    }}
+                  >
                     <FacebookIcon className="w-4 h-4" />
                   </a>
                 </Button>
