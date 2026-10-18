@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "@/components/LanguageSelector";
 import ChatHistoryPanel from "@/components/ChatHistoryPanel";
+import { excludeExpiredOffers } from "@/lib/offerExpiry";
 
 interface Message {
   role: "user" | "assistant";
@@ -358,8 +359,8 @@ const PetHealthAssistant = () => {
           `)
           .eq("user_id", user.id)
           .limit(10),
-        // Fetch all active offers from the database
-        supabase
+        // Only unexpired active offers can be suggested as available
+        excludeExpiredOffers(supabase
           .from("offers")
           .select(`
             id,
@@ -370,7 +371,7 @@ const PetHealthAssistant = () => {
             pet_type,
             businesses:business_id (id, business_name, category, city)
           `)
-          .eq("is_active", true)
+          .eq("is_active", true))
           .limit(50),
       ]);
 
