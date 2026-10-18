@@ -271,7 +271,7 @@ const SuggestPlaceDialog = ({ onPlaceAdded }: SuggestPlaceDialogProps) => {
             <RadioGroup
               value={formData.submitted_by}
               onValueChange={(v) => setFormData({ ...formData, submitted_by: v as "owner" | "someone_else" })}
-              className="flex gap-4"
+              className="flex flex-col items-start gap-3"
             >
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="owner" id="suggest-owner" />
