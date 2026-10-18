@@ -1,5 +1,9 @@
 # Roadmap
 
+## October 18 offer expiry check
+- [x] Exclude expired offers from Offers Near Me and public offer previews before limiting results
+- [ ] Verify expiry regression and signed-in nearby offer query
+
 ## October 15 small fixes
 - [x] #1–5 Shelter remove controls, compact stats, single-line timestamps, two-line support subjects and gallery captions
 - [x] #6–7 Offer month/year picker and fully visible pet-type choices

@@ -39,6 +39,7 @@ import { PAID_MEMBERSHIP_ENABLED } from "@/lib/featureFlags";
 import CityPromptBanner from "@/components/CityPromptBanner";
 import { cyprusCityNames } from "@/data/cyprusLocations";
 import { getCityDisplayName } from "@/lib/cityDisplay";
+import { excludeExpiredOffers } from "@/lib/offerExpiry";
 
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
 
@@ -316,7 +317,7 @@ const MemberDashboard = () => {
         // Extract the main city name (before parenthesis)
         const citySearch = profile.preferred_city.split(" (")[0];
         
-        const { data, error } = await supabase
+        const { data, error } = await excludeExpiredOffers(supabase
           .from("offers")
           .select(`
             id,
@@ -325,7 +326,7 @@ const MemberDashboard = () => {
             discount_type,
             business:businesses!inner(id, business_name, city)
           `)
-          .eq("is_active", true)
+          .eq("is_active", true))
           .ilike("business.city", `%${citySearch}%`)
           .limit(5);
 
