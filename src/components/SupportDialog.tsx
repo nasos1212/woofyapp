@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -227,6 +226,16 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, ini
 
       if (error) throw error;
 
+      // Client replies reopen the ticket internally so the team sees it again
+      if (selectedConversation.status !== "open") {
+        await supabase
+          .from("support_conversations")
+          .update({ status: "open" })
+          .eq("id", selectedConversation.id);
+        setSelectedConversation({ ...selectedConversation, status: "open" });
+      }
+
+
       // Notify via edge function
       await supabase.functions.invoke("send-support-notification", {
         body: {
@@ -264,20 +273,6 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, ini
     setView("conversation");
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "open":
-        return "bg-status-open";
-      case "pending":
-        return "bg-status-pending";
-      case "resolved":
-        return "bg-status-resolved";
-      case "closed":
-        return "bg-muted";
-      default:
-        return "bg-muted";
-    }
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -327,20 +322,10 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, ini
                         key={conv.id}
                         className="w-full p-3 rounded-lg border hover:bg-muted/50 transition-colors"
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <Button variant="ghost" onClick={() => openConversation(conv)} className="min-w-0 flex-1 block h-auto p-0 text-left whitespace-normal hover:bg-transparent">
-                            <span className="font-medium text-sm break-words leading-snug">{conv.subject}</span>
-                            <span className="block text-xs text-muted-foreground mt-1 font-normal">{t("support.updatedPrefix")} {formatRelative(conv.updated_at)}</span>
-                          </Button>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8" aria-label={t(`support.status.${conv.status}`, conv.status)}>
-                                <span className={`h-3 w-3 rounded-full ${getStatusColor(conv.status)}`} />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto px-3 py-2 text-sm" side="top">{t(`support.status.${conv.status}`, conv.status)}</PopoverContent>
-                          </Popover>
-                        </div>
+                        <Button variant="ghost" onClick={() => openConversation(conv)} className="w-full block h-auto p-0 text-left whitespace-normal hover:bg-transparent">
+                          <span className="font-medium text-sm break-words leading-snug">{conv.subject}</span>
+                          <span className="block text-xs text-muted-foreground mt-1 font-normal">{t("support.updatedPrefix")} {formatRelative(conv.updated_at)}</span>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -426,39 +411,33 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, ini
                   <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
-              {selectedConversation.status !== "closed" && selectedConversation.status !== "resolved" ? (
-                <div className="p-4 border-t">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder={t("support.typeMessagePlaceholder")}
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          sendMessage();
-                        }
-                      }}
-                      disabled={sending}
-                    />
-                    <Button
-                      onClick={sendMessage}
-                      disabled={!newMessage.trim() || sending}
-                      size="icon"
-                    >
-                      {sending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Send className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+              <div className="p-4 border-t">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder={t("support.typeMessagePlaceholder")}
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                      }
+                    }}
+                    disabled={sending}
+                  />
+                  <Button
+                    onClick={sendMessage}
+                    disabled={!newMessage.trim() || sending}
+                    size="icon"
+                  >
+                    {sending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
-              ) : (
-                <div className="p-4 border-t text-center text-sm text-muted-foreground">
-                  {t("support.conversationClosed", { status: t(`support.status.${selectedConversation.status}`, selectedConversation.status) })}
-                </div>
-              )}
+              </div>
             </div>
           )}
         </div>
