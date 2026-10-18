@@ -211,7 +211,7 @@ const PetFriendlyPlaceRequestDialog = () => {
 
           <div className="space-y-2">
             <Label>{t("getListed.dialog.whoSubmitting")} *</Label>
-            <RadioGroup value={submittedBy} onValueChange={(v) => setSubmittedBy(v as "owner" | "someone_else")} className="flex gap-4">
+            <RadioGroup value={submittedBy} onValueChange={(v) => setSubmittedBy(v as "owner" | "someone_else")} className="flex flex-col items-start gap-3">
               <div className="flex items-center gap-2">
                 <RadioGroupItem value="owner" id="req-owner" />
                 <Label htmlFor="req-owner" className="font-normal cursor-pointer">{t("getListed.dialog.owner")}</Label>
