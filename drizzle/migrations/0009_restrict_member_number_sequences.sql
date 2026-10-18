@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Anyone can read sequences" ON public.member_number_sequences;
+CREATE POLICY "Admins can read sequences" ON public.member_number_sequences FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
