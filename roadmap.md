@@ -2,7 +2,8 @@
 
 ## October 18 Facebook article sharing
 - [x] Prefer URL-only system sharing on iPhone and supported web browsers; retain Facebook link fallback on other browsers
-- [ ] Verify browser handoff and fallback, then confirm Facebook composer on a real iPhone (requires device)
+- [x] Verify URL-only browser handoff, Facebook fallback and error-free article rendering
+- [ ] Confirm Facebook composer on a real iPhone after publishing (requires device)
 
 ## October 18 community activity alerts
 - [x] Notify savers, followers, answerers, voters and helpful-markers about new replies on that specific question; exclude reply author and avoid duplicates
