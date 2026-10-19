@@ -85,3 +85,7 @@
 ## Medical record dialog date field (2026-10-19)
 - [x] "Ημερομηνία Χορήγησης" / "Date Given" box was taller than the boxes above it in iOS Safari (native date input ignores h-10); replaced with the app's standard Popover + Calendar trigger (h-10) so it matches every other field — verified all single-line boxes measure 40px in EN and EL, both record-type branches, and picking a date works
 - [x] The calendar closes as soon as a day is tapped (no extra tap to dismiss)
+
+## Recent Activity date on second line (2026-10-19)
+- Member dashboard Recent Activity rows: offer title and date were joined with a dot separator on one line; Greek wrapped them inconsistently. Now the offer title is one line and the date always on its own second line, no dot, identical in EN and EL (MemberDashboard.tsx ~line 918).
+- Verified with klodianakoutsouki@gmail.com session at 393x756 in Greek and English.
