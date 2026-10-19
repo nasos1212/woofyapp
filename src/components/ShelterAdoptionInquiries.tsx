@@ -140,9 +140,12 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
             <Card key={inquiry.id}>
               <CardContent className="p-4">
                 <div className="flex flex-col gap-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap order-first">
+                      {formatRelative(inquiry.created_at)}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
                         <h4 className="font-medium">{inquiry.inquirer_name}</h4>
                         {getStatusBadge(inquiry.status)}
                       </div>
@@ -151,9 +154,6 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                         <span className="capitalize"> ({inquiry.shelter_adoptable_pets?.pet_type})</span>
                       </p>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      {formatRelative(inquiry.created_at)}
-                    </span>
                   </div>
 
                   <div className="flex flex-wrap gap-3 text-sm">
@@ -182,14 +182,14 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t">
                     <div className="flex items-center gap-2">
                       <span className="text-sm text-muted-foreground">{t("adoptionInquiries.statusLabel")}</span>
                       <Select
                         value={inquiry.status}
                         onValueChange={(value) => updateStatusMutation.mutate({ id: inquiry.id, status: value })}
                       >
-                        <SelectTrigger className="w-32 h-8">
+                        <SelectTrigger className="w-auto min-w-32 h-8 gap-2 whitespace-nowrap">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -203,7 +203,7 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-destructive hover:text-destructive"
+                      className="text-destructive hover:text-destructive ml-auto px-2"
                       onClick={() => {
                         if (confirm(t("adoptionInquiries.confirmDelete"))) {
                           deleteMutation.mutate(inquiry.id);
