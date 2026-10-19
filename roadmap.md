@@ -70,3 +70,8 @@
 
 ## Naming (2026-10-19)
 - [x] Assistant always named "Wooffy AI" — disclaimer (EN/EL) and its own self-introduction; live
+
+## Offer title visibility (2026-10-19)
+- [x] Redemption history row: offer title now spans the full row width (EN/EL, phone + desktop verified); discount + date on the compact line below
+- [x] Offer titles in nearby offers, business recent activity and business redemption history wrap instead of cutting off
+- [ ] Support widget can cover a row's date when the list is short — awaiting user's go-ahead to add bottom spacing
