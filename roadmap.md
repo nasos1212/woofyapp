@@ -93,3 +93,7 @@
 ## Frequency label single line (2026-10-19)
 - Health records medication/vaccine cards: "Κάθε 60 ημέρες" wrapped onto two lines next to the Done/edit/delete buttons. Added whitespace-nowrap to the interval label span in both the Vaccination and Medication tabs (PetHealthRecords.tsx ~lines 1509, 1586).
 - Verified at 393x756 in Greek and English: label renders on one line in both.
+
+## Shelter gallery dog names (2026-10-19)
+- Public shelter profile photo gallery showed photos without the dogs' names (captions saved in the onboarding/dashboard form were only used as alt text). Each gallery photo now shows its name below it (ShelterProfile.tsx photo gallery card).
+- Verified at 393x756 on the test shelter profile: Leo, Leo, Mia, Mia render under their photos.
