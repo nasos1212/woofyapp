@@ -80,3 +80,7 @@
 - [x] Floating help button (expanded and minimized states) can be dragged anywhere on screen; position saved in localStorage, clamped on resize/rotation, taps still open the widget (verified in browser)
 - [x] Saved widget position is pulled back on screen on mount and when minimized/expanded (fixes button landing off-screen after being moved on a larger screen); container size (92x56) used for clamping
 - [x] Widget position now anchored by bottom/right offsets instead of top/left pixels, so browser-bar/keyboard viewport changes no longer shift the button after opening/closing the chat; legacy {x,y} saved positions migrated automatically (verified: open+close, viewport shrink/restore, reload)
+- [x] SupportButton containerRef typed HTMLDivElement (fixed the typecheck error that blocked the build)
+
+## Medical record dialog date field (2026-10-19)
+- [x] "Ημερομηνία Χορήγησης" / "Date Given" box was taller than the boxes above it in iOS Safari (native date input ignores h-10); replaced with the app's standard Popover + Calendar trigger (h-10) so it matches every other field — verified all single-line boxes measure 40px in EN and EL, both record-type branches, and picking a date works
