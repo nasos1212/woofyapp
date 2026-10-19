@@ -2208,7 +2208,8 @@
   },
   "adoptionInquiries": {
     "title": "Αιτήματα Υιοθεσίας",
-    "newBadge": "{{count}} νέα",
+    "newBadge_one": "{{count}} νέο",
+    "newBadge_other": "{{count}} νέα",
     "subtitle": "Διαχειριστείτε αιτήματα από πιθανούς υιοθετούντες",
     "interestedIn": "Ενδιαφέρεται για:",
     "unknownPet": "Αγνωστο Κατοικίδιο",
