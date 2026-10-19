@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, Link, Navigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Phone, MapPin, Globe, Star, Clock, Tag, Send, Pencil, ArrowLeft } from "lucide-react";
 import { InstagramIcon, FacebookIcon, TikTokIcon } from "@/components/SocialIcons";
@@ -97,7 +97,7 @@ export default function BusinessProfile() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { trackBusinessView, trackSocialClick, trackContactClick } = useAnalyticsTracking();
   const { label: getCategoryLabel } = useBusinessCategoryLabel();
   const [business, setBusiness] = useState<Business | null>(null);
@@ -129,12 +129,13 @@ export default function BusinessProfile() {
   }, [business, id, isOwner, trackBusinessView]);
 
   useEffect(() => {
-    if (id) {
+    if (!authLoading && user && id) {
       fetchBusinessData();
     }
-  }, [id, user]);
+  }, [id, user, authLoading]);
 
   const fetchBusinessData = async () => {
+    if (authLoading || !user) return;
     try {
       // First try to fetch from businesses_public view (safe for public access)
       // This excludes sensitive data like email, phone, user_id
@@ -329,7 +330,11 @@ export default function BusinessProfile() {
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : 0;
 
-  if (loading) {
+  if (!authLoading && !user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <DogLoader size="lg" />
