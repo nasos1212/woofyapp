@@ -48,7 +48,7 @@ const SupportButton = () => {
     return null;
   });
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
   const dragStateRef = useRef({
     active: false,
     startX: 0,
@@ -276,7 +276,7 @@ const SupportButton = () => {
   if (isMinimized) {
     return (
       <button
-        ref={containerRef as React.Ref<HTMLButtonElement>}
+        ref={containerRef as unknown as React.Ref<HTMLButtonElement>}
         onClick={handleExpand}
         onPointerDown={handlePointerDown}
         style={positionStyle}
