@@ -164,6 +164,27 @@ const SupportButton = () => {
     };
   }, []);
 
+  // Pull a saved position back on screen whenever the widget mounts or switches
+  // size — e.g. it was dragged on a wider screen and reopened on a phone
+  useEffect(() => {
+    setPosition((prev) => {
+      if (!prev) return prev;
+      const el = containerRef.current;
+      const w = el?.offsetWidth ?? 56;
+      const h = el?.offsetHeight ?? 56;
+      const clamped = clampPosition(prev.x, prev.y, w, h);
+      if (clamped.x !== prev.x || clamped.y !== prev.y) {
+        try {
+          localStorage.setItem(POSITION_KEY, JSON.stringify(clamped));
+        } catch {
+          // storage may be unavailable
+        }
+        return clamped;
+      }
+      return prev;
+    });
+  }, [isMinimized, user]);
+
   // Remove window listeners if the widget unmounts mid-drag
   useEffect(() => {
     return () => {
