@@ -183,7 +183,7 @@ const SupportButton = () => {
       }
       return prev;
     });
-  }, [isMinimized]);
+  }, [isMinimized, user]);
 
   // Remove window listeners if the widget unmounts mid-drag
   useEffect(() => {
