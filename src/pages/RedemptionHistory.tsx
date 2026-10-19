@@ -318,12 +318,12 @@ const RedemptionHistory = () => {
                     onClick={() => setSelectedRedemption(redemption)}
                     className="w-full p-4 hover:bg-muted/30 transition-colors text-left"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Building2 className="w-6 h-6 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground truncate">
+                        <p className="font-medium text-foreground line-clamp-2">
                           {redemption.offer?.title || t("redemptionHistory.offerFallback")}
                         </p>
                         <p className="text-sm text-muted-foreground">

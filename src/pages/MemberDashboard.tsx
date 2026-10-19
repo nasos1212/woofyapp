@@ -705,7 +705,7 @@ const MemberDashboard = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium text-foreground text-sm truncate">{offer.business.business_name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{offer.title}</p>
+                          <p className="text-xs text-muted-foreground line-clamp-2">{offer.title}</p>
                         </div>
                         <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full whitespace-nowrap">
                           {offer.discount_type === "percentage" 
