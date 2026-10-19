@@ -658,26 +658,20 @@ export default function BusinessProfile() {
                           },
                         });
                       }}
-                      className="w-full text-left p-4 bg-primary/5 rounded-xl border border-primary/20 hover:bg-primary/10 hover:border-primary/40 transition-colors cursor-pointer"
+                      className="w-full text-left p-3 sm:p-4 bg-primary/5 rounded-xl border border-primary/20 hover:bg-primary/10 hover:border-primary/40 transition-colors cursor-pointer"
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h3 className="font-semibold text-foreground">{offer.title}</h3>
-                          {offer.description && (
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {offer.description}
-                            </p>
-                          )}
-                          {offer.terms && (
-                            <p className="text-xs text-muted-foreground mt-2 italic">
-                              {offer.terms}
-                            </p>
-                          )}
-                        </div>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-semibold text-foreground min-w-0">{offer.title}</h3>
                         <Badge className="bg-primary text-primary-foreground shrink-0">
                           {formatDiscount(offer)}
                         </Badge>
                       </div>
+                      {offer.description && (
+                        <p className="text-sm text-muted-foreground mt-1">{offer.description}</p>
+                      )}
+                      {offer.terms && (
+                        <p className="text-xs text-muted-foreground mt-1.5 italic">{offer.terms}</p>
+                      )}
                     </button>
                   ))}
 
