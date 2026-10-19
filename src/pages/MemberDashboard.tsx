@@ -914,9 +914,8 @@ const MemberDashboard = () => {
                         <div key={redemption.id} className="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
                           <div>
                             <p className="font-medium text-foreground">{redemption.business?.business_name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {redemption.offer?.title} • {formatDate(new Date(redemption.redeemed_at))}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{redemption.offer?.title}</p>
+                            <p className="text-sm text-muted-foreground">{formatDate(new Date(redemption.redeemed_at))}</p>
                           </div>
                           <div className="text-right">
                             <span className="text-green-500 font-semibold">{savedAmount}</span>
