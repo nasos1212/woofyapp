@@ -667,10 +667,14 @@ export default function BusinessProfile() {
                         </Badge>
                       </div>
                       {offer.description && (
-                        <p className="text-sm text-muted-foreground mt-1">{offer.description}</p>
+                        <p className="text-sm text-muted-foreground mt-1 whitespace-pre-line">
+                          {offer.description}
+                        </p>
                       )}
                       {offer.terms && (
-                        <p className="text-xs text-muted-foreground mt-1.5 italic">{offer.terms}</p>
+                        <p className="text-xs text-muted-foreground mt-1.5 italic whitespace-pre-line">
+                          {offer.terms}
+                        </p>
                       )}
                     </button>
                   ))}
