@@ -334,7 +334,7 @@ const AddPet = () => {
                     <div className="relative">
                       <div 
                         className={cn(
-                          "w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center overflow-hidden cursor-pointer transition-all hover:border-primary",
+                          "w-28 h-28 rounded-full border-2 border-dashed flex items-center justify-center overflow-hidden cursor-pointer transition-all hover:border-primary",
                           photoPreview ? "border-solid border-primary" : "border-border"
                         )}
                         onClick={() => fileInputRef.current?.click()}
@@ -344,7 +344,7 @@ const AddPet = () => {
                         ) : (
                           <div className="text-center">
                             <Camera className="w-8 h-8 text-muted-foreground mx-auto" />
-                            <span className="text-xs text-muted-foreground">{t("addPet.addPhoto")}</span>
+                            <span className="block text-[10px] leading-tight text-muted-foreground px-1">{t("addPet.addPhoto")}</span>
                           </div>
                         )}
                       </div>
