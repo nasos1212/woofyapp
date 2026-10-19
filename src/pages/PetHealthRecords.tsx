@@ -1506,7 +1506,7 @@ const PetHealthRecords = () => {
                               <div>
                                 <h4 className="font-semibold text-foreground">{record.title}</h4>
                                 {record.reminder_interval_type && (
-                                  <span className="text-xs text-muted-foreground">
+                                  <span className="text-xs text-muted-foreground whitespace-nowrap">
                                     {getIntervalLabel(record.reminder_interval_type, record.reminder_interval_days)}
                                   </span>
                                 )}
@@ -1581,7 +1581,7 @@ const PetHealthRecords = () => {
                               <div>
                                 <h4 className="font-semibold text-foreground">{record.title}</h4>
                                 {record.reminder_interval_type && (
-                                  <span className="text-xs text-muted-foreground">
+                                  <span className="text-xs text-muted-foreground whitespace-nowrap">
                                     {getIntervalLabel(record.reminder_interval_type, record.reminder_interval_days)}
                                   </span>
                                 )}
