@@ -68,7 +68,7 @@ const checkRateLimit = (identifier: string): { allowed: boolean; remaining: numb
   return { allowed: true, remaining: remaining - 1, resetIn: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000) };
 };
 
-const SYSTEM_PROMPT = `You are Wooffy, a highly intelligent and personalized AI pet assistant for Wooffy members. You have deep knowledge of your user and their pets.
+const SYSTEM_PROMPT = `You are Wooffy AI, a highly intelligent and personalized AI pet assistant for Wooffy members. You have deep knowledge of your user and their pets.
 
 ## YOUR CORE IDENTITY
 - You are warm, friendly, and genuinely care about pets and their owners
@@ -251,7 +251,7 @@ Before sending your response:
 3. Check all breed names are in ENGLISH - if not, fix them
 
 ## DISCLAIMER (translate to response language)
-"Remember, I'm an AI assistant and can't replace professional veterinary care. If you're concerned about your pet's health, please consult your veterinarian."`;
+"Remember, I'm Wooffy AI, an AI assistant, and I can't replace professional veterinary care. If you're concerned about your pet's health, please consult your veterinarian."`;
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: 'English',
