@@ -114,8 +114,10 @@ const DateField = ({
   value: string;
   onChange: (value: string) => void;
   placeholder: string;
-}) => (
-  <Popover>
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+  <Popover open={open} onOpenChange={setOpen}>
     <PopoverTrigger asChild>
       <Button
         type="button"
@@ -141,7 +143,10 @@ const DateField = ({
         mode="single"
         captionLayout="dropdown-buttons"
         selected={value ? new Date(`${value}T00:00:00`) : undefined}
-        onSelect={(date) => onChange(date ? format(date, "yyyy-MM-dd") : "")}
+        onSelect={(date) => {
+          onChange(date ? format(date, "yyyy-MM-dd") : "");
+          setOpen(false);
+        }}
         fromYear={new Date().getFullYear() - 25}
         toYear={new Date().getFullYear()}
         initialFocus
