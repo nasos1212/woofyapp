@@ -2,7 +2,7 @@
 
 ## October 19 guest business profile links
 - [x] Require sign-in for business profile links using the shared web/app page without changing database access
-- [ ] Verify guests reach /auth without fetching business records
+- [x] Verify guests reach /auth without fetching business records (normal and owner-preview links); preview build passes
 
 ## October 19 article share button, question title and offer box
 - [x] Replace article social icons with one centered "Share Article" button plus Copy Link
