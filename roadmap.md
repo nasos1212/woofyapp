@@ -84,3 +84,4 @@
 
 ## Medical record dialog date field (2026-10-19)
 - [x] "Ημερομηνία Χορήγησης" / "Date Given" box was taller than the boxes above it in iOS Safari (native date input ignores h-10); replaced with the app's standard Popover + Calendar trigger (h-10) so it matches every other field — verified all single-line boxes measure 40px in EN and EL, both record-type branches, and picking a date works
+- [x] The calendar closes as soon as a day is tapped (no extra tap to dismiss)
