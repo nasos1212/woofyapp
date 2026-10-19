@@ -40,6 +40,7 @@ const ShelterProfile = () => {
   const { user } = useAuth();
 
   const { t, i18n } = useTranslation();
+  currentLang = i18n.language || "en";
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -338,7 +339,7 @@ const ShelterProfile = () => {
                           <h3 className="font-medium">{pet.name}</h3>
                           <div className="flex flex-wrap gap-1 mt-1">
                             <Badge variant="secondary" className="text-xs capitalize">
-                              {pet.pet_type}
+                              {petLabel(pet.pet_type)}
                             </Badge>
                             {pet.breed && (
                               <Badge variant="outline" className="text-xs">
@@ -352,7 +353,7 @@ const ShelterProfile = () => {
                             )}
                             {pet.gender && (
                               <Badge variant="outline" className="text-xs capitalize">
-                                {pet.gender}
+                                {petLabel(pet.gender)}
                               </Badge>
                             )}
                           </div>
@@ -546,10 +547,10 @@ const ShelterProfile = () => {
                 </DialogHeader>
 
                 <div className="flex flex-wrap gap-1.5">
-                  <Badge variant="secondary" className="capitalize">{viewingPet.pet_type}</Badge>
+                  <Badge variant="secondary" className="capitalize">{petLabel(viewingPet.pet_type)}</Badge>
                   {viewingPet.breed && <Badge variant="outline">{viewingPet.breed}</Badge>}
                   {viewingPet.age && <Badge variant="outline">{formatPetAge(viewingPet.age, t)}</Badge>}
-                  {viewingPet.gender && <Badge variant="outline" className="capitalize">{viewingPet.gender}</Badge>}
+                  {viewingPet.gender && <Badge variant="outline" className="capitalize">{petLabel(viewingPet.gender)}</Badge>}
                 </div>
 
                 {viewingPet.description && (
@@ -585,6 +586,19 @@ const ShelterProfile = () => {
       )}
     </>
   );
+};
+
+const PET_LABELS: Record<string, { en: string; el: string }> = {
+  dog: { en: "Dog", el: "Σκύλος" },
+  cat: { en: "Cat", el: "Γάτα" },
+  male: { en: "Male", el: "Αρσενικό" },
+  female: { en: "Female", el: "Θηλυκό" },
+};
+let currentLang = "en";
+const petLabel = (v?: string | null) => {
+  if (!v) return "";
+  const l = PET_LABELS[v.toLowerCase()];
+  return l ? (currentLang.startsWith("el") ? l.el : l.en) : v;
 };
 
 export default ShelterProfile;
