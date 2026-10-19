@@ -334,7 +334,8 @@ const RedemptionHistory = () => {
                           <span className="text-sm font-semibold text-green-600 whitespace-nowrap">
                             {formatDiscount(redemption.offer)}
                           </span>
-                          <span className="ml-auto flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
+                          <span className="text-muted-foreground/40 shrink-0">·</span>
+                          <span className="flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
                             <Calendar className="w-3 h-3" />
                             {formatDate(new Date(redemption.redeemed_at))}
                           </span>
