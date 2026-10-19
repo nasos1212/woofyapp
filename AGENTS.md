@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Gate business profile rendering and data fetching on hydrated authentication, redirecting guests to `/auth` in the shared web/native page to avoid false not-found results and anonymous requests.
+
 - Apply offer expiry filtering before limits in user-facing nearby and public offer queries; owner management retains all offers for history.
 - Generate community participant reply alerts in the existing database answer trigger using a deduplicated union of interactions, retaining the existing notification type so deployed clients and push delivery remain compatible.
 
