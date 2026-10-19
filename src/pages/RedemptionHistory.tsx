@@ -318,26 +318,27 @@ const RedemptionHistory = () => {
                     onClick={() => setSelectedRedemption(redemption)}
                     className="w-full p-4 hover:bg-muted/30 transition-colors text-left"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-start gap-3">
                       <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
                         <Building2 className="w-6 h-6 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground line-clamp-2">
+                        <p className="font-medium text-foreground leading-snug break-words">
                           {redemption.offer?.title || t("redemptionHistory.offerFallback")}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {redemption.business?.business_name || t("redemptionHistory.businessFallback")}
-                        </p>
-                      </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="font-semibold text-green-600">
-                          {formatDiscount(redemption.offer)}
-                        </p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
-                          <Calendar className="w-3 h-3" />
-                          {formatDate(new Date(redemption.redeemed_at))}
-                        </p>
+                        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="text-sm text-muted-foreground">
+                            {redemption.business?.business_name || t("redemptionHistory.businessFallback")}
+                          </span>
+                          <span className="text-muted-foreground/40 shrink-0">·</span>
+                          <span className="text-sm font-semibold text-green-600 whitespace-nowrap">
+                            {formatDiscount(redemption.offer)}
+                          </span>
+                          <span className="ml-auto flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
+                            <Calendar className="w-3 h-3" />
+                            {formatDate(new Date(redemption.redeemed_at))}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </button>
