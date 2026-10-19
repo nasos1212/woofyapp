@@ -1130,6 +1130,7 @@
       "dateGiven": "Date Given",
       "dateGivenHint": "Next due date will be auto-calculated based on the interval below",
       "date": "Date",
+      "pickDate": "Select a date",
       "remindMe": "Remind Me",
       "remindHint": "✓ You'll be reminded in your Wooffy Reminders",
       "reminderInterval": "Reminder Interval",
