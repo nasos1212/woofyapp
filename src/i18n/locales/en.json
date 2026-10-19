@@ -2709,7 +2709,7 @@
     "history": "History",
     "howCanIHelp": "How can I help today?",
     "howCanIHelpDesc": "Ask me about pet health, nutrition, behavior, or any concerns you have about your furry friend.",
-    "disclaimer": "Wooffy is an AI assistant and cannot replace professional veterinary care. For emergencies, please contact your vet immediately.",
+    "disclaimer": "Wooffy AI is an AI assistant and cannot replace professional veterinary care. For emergencies, please contact your vet immediately.",
     "inputPlaceholder": "Ask about your pet's health...",
     "errorMessage": "I'm sorry, I encountered an error. Please try again in a moment. 🐾",
     "switchedTo": "Switched to {{name}}",
