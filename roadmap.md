@@ -67,3 +67,6 @@
 - [x] Birthday offers expire 7 days after the pet birthday
 - [x] Business analytics PDF report (replaces CSV), share sheet in iOS app
 - [x] Admin gift: upgrade Free and lower-tier Paid members
+
+## Naming (2026-10-19)
+- [x] Assistant always named "Wooffy AI" — disclaimer (EN/EL) and its own self-introduction; live
