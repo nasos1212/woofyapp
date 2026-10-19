@@ -326,18 +326,18 @@ const RedemptionHistory = () => {
                         <p className="font-medium text-foreground leading-snug break-words">
                           {redemption.offer?.title || t("redemptionHistory.offerFallback")}
                         </p>
-                        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                          <span className="text-sm text-muted-foreground">
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <span className="min-w-0 truncate text-sm text-muted-foreground">
                             {redemption.business?.business_name || t("redemptionHistory.businessFallback")}
                           </span>
-                          <span className="text-muted-foreground/40 shrink-0">·</span>
-                          <span className="text-sm font-semibold text-green-600 whitespace-nowrap">
-                            {formatDiscount(redemption.offer)}
-                          </span>
-                          <span className="text-muted-foreground/40 shrink-0">·</span>
-                          <span className="flex items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
-                            <Calendar className="w-3 h-3" />
-                            {formatDate(new Date(redemption.redeemed_at))}
+                          <span className="ml-auto flex items-center gap-2 whitespace-nowrap">
+                            <span className="text-sm font-semibold text-green-600">
+                              {formatDiscount(redemption.offer)}
+                            </span>
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Calendar className="w-3 h-3" />
+                              {formatDate(new Date(redemption.redeemed_at))}
+                            </span>
                           </span>
                         </div>
                       </div>
