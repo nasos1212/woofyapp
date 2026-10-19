@@ -377,15 +377,19 @@ const ShelterProfile = () => {
                 <h2 className="text-lg font-semibold mb-4">{t("shelterProfile.photoGallery")}</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {photos.map((photo) => (
-                    <div 
-                      key={photo.id} 
-                      className="aspect-square rounded-lg overflow-hidden bg-muted"
-                    >
-                      <img 
-                        src={photo.photo_url} 
-                        alt={photo.caption || t("shelterProfile.photoAlt")}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      />
+                    <div key={photo.id}>
+                      <div 
+                        className="aspect-square rounded-lg overflow-hidden bg-muted"
+                      >
+                        <img 
+                          src={photo.photo_url} 
+                          alt={photo.caption || t("shelterProfile.photoAlt")}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                      {photo.caption && (
+                        <p className="mt-1.5 text-sm font-medium text-foreground text-center">{photo.caption}</p>
+                      )}
                     </div>
                   ))}
                 </div>
