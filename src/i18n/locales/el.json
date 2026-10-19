@@ -331,8 +331,9 @@
     "title": "Διαθέσιμες Προσφορές",
     "subtitle_one": "{{count}} προσφορά από τους συνεργάτες μας",
     "subtitle_other": "{{count}} προσφορές από τους συνεργάτες μας",
-    "availableToRedeem": "• {{count}} διαθέσιμες για εξαργύρωση",
-    "searchPlaceholder": "Αναζήτηση προσφορών ή επιχειρήσεων...",
+    "availableToRedeem_one": "• {{count}} διαθέσιμη για εξαργύρωση",
+    "availableToRedeem_other": "• {{count}} διαθέσιμες για εξαργύρωση",
+    "searchPlaceholder": "Βρες προσφορά ή επιχείρηση",
     "allCategoriesShort": "Ολες",
     "allCities": "Ολες οι Πόλεις",
     "petFilter": {

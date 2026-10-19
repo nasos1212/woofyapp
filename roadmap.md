@@ -1,5 +1,11 @@
 # Roadmap
 
+## October 19 offers page search hint and count wording
+- [x] Shorten the Greek search hint to "Βρες προσφορά ή επιχείρηση" so the whole sentence fits inside the field on phones
+- [x] Show singular "1 διαθέσιμη για εξαργύρωση" when one offer is available; plural form unchanged
+- [x] Verify both forms and placeholder fit at 360 and 390 px widths
+- [ ] Visible on wooffy.app after publishing
+
 ## October 19 guest business profile links
 - [x] Require sign-in for business profile links using the shared web/app page without changing database access
 - [x] Verify guests reach /auth without fetching business records (normal and owner-preview links); preview build passes
