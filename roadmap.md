@@ -78,3 +78,4 @@
 
 ## Draggable help button (2026-10-19)
 - [x] Floating help button (expanded and minimized states) can be dragged anywhere on screen; position saved in localStorage, clamped on resize/rotation, taps still open the widget (verified in browser)
+- [x] Saved widget position is pulled back on screen on mount and when minimized/expanded (fixes button landing off-screen after being moved on a larger screen); container size (92x56) used for clamping
