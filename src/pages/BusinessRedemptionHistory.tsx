@@ -512,7 +512,7 @@ const BusinessRedemptionHistory = () => {
                     </div>
                     {/* Line 2: Offer + Pet + Discount */}
                     <div className="flex items-center gap-1.5 text-sm text-slate-600 min-w-0">
-                      <span className="truncate">
+                      <span className="line-clamp-2 min-w-0">
                         {redemption.offer?.title || t("businessRedemptions.notAvailable")}
                       </span>
                       {redemption.pet_names && (
