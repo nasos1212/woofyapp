@@ -34,7 +34,7 @@ const ShelterDetailDialog = ({ shelter, open, onOpenChange }: ShelterDetailDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[85dvh] overflow-y-auto overscroll-contain [touch-action:pan-y] [-webkit-overflow-scrolling:touch]">
         {/* Cover */}
         <div className="-mx-6 -mt-6 h-40 bg-gradient-to-br from-rose-100 to-pink-100 relative overflow-hidden rounded-t-lg">
           {shelter.cover_photo_url ? (
