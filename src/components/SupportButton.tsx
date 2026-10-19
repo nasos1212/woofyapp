@@ -67,7 +67,7 @@ const SupportButton = () => {
     return null;
   });
 
-  const containerRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const dragStateRef = useRef({
     active: false,
     startX: 0,
