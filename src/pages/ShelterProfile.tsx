@@ -40,6 +40,7 @@ const ShelterProfile = () => {
   const { user } = useAuth();
 
   const { t, i18n } = useTranslation();
+  currentLang = i18n.language || "en";
   const [selectedPet, setSelectedPet] = useState<{ id: string; name: string; shelter_id: string } | null>(null);
   const [viewingPet, setViewingPet] = useState<any | null>(null);
   const [photoIndex, setPhotoIndex] = useState(0);
