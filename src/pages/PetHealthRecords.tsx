@@ -18,9 +18,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import { format, isPast, addDays, differenceInDays, isToday } from "date-fns";
-import { formatDate } from "@/lib/utils";
+import { formatDate, cn } from "@/lib/utils";
 import DogLoader from "@/components/DogLoader";
 import { validateDocumentFile, MAX_DOCUMENT_SIZE, VALID_DOCUMENT_EXTENSIONS } from "@/lib/fileValidation";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 interface HealthRecord {
   id: string;
@@ -101,6 +103,53 @@ const TREATMENT_PRESETS: TreatmentPreset[] = [
   { id: 'feline-chlamydia', name: 'Chlamydia Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Protects against feline chlamydiosis', recordType: 'vaccination', petType: 'cat' },
   { id: 'fip', name: 'FIP Vaccine', category: 'vaccine', intervalType: 'yearly', intervalDays: 365, description: 'Feline Infectious Peritonitis prevention', recordType: 'vaccination', petType: 'cat' },
 ];
+
+// Date picker styled as a standard h-10 field so it aligns with the other boxes
+// (a native date input renders taller than h-10 in iOS Safari).
+const DateField = ({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+}) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <Button
+        type="button"
+        variant="outline"
+        className={cn(
+          "h-10 w-full justify-start text-left font-normal",
+          !value && "text-muted-foreground"
+        )}
+      >
+        <Calendar className="mr-2 h-4 w-4 shrink-0" />
+        <span className="min-w-0 flex-1 truncate">
+          {value ? format(new Date(`${value}T00:00:00`), "d MMM yyyy") : placeholder}
+        </span>
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent
+      className="w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-0"
+      align="start"
+      side="bottom"
+      sideOffset={6}
+    >
+      <CalendarComponent
+        mode="single"
+        captionLayout="dropdown-buttons"
+        selected={value ? new Date(`${value}T00:00:00`) : undefined}
+        onSelect={(date) => onChange(date ? format(date, "yyyy-MM-dd") : "")}
+        fromYear={new Date().getFullYear() - 25}
+        toYear={new Date().getFullYear()}
+        initialFocus
+        className="p-2 pointer-events-auto"
+      />
+    </PopoverContent>
+  </Popover>
+);
 
 const PetHealthRecords = () => {
   const { t } = useTranslation();
@@ -900,10 +949,10 @@ const PetHealthRecords = () => {
                   {(recordType === 'vaccination' || recordType === 'medication') ? (
                     <div className="space-y-2">
                       <Label>{t("petHealth.dialog.dateGiven")}</Label>
-                      <Input
-                        type="date"
+                      <DateField
                         value={dateAdministered}
-                        onChange={(e) => setDateAdministered(e.target.value)}
+                        onChange={setDateAdministered}
+                        placeholder={t("petHealth.dialog.pickDate")}
                       />
                       <p className="text-xs text-muted-foreground">
                         {t("petHealth.dialog.dateGivenHint")}
@@ -913,10 +962,10 @@ const PetHealthRecords = () => {
                     <>
                       <div className="space-y-2">
                         <Label>{t("petHealth.dialog.date")}</Label>
-                        <Input
-                          type="date"
+                        <DateField
                           value={dateAdministered}
-                          onChange={(e) => setDateAdministered(e.target.value)}
+                          onChange={setDateAdministered}
+                          placeholder={t("petHealth.dialog.pickDate")}
                         />
                       </div>
 
