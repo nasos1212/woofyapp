@@ -89,3 +89,7 @@
 ## Recent Activity date on second line (2026-10-19)
 - Member dashboard Recent Activity rows: offer title and date were joined with a dot separator on one line; Greek wrapped them inconsistently. Now the offer title is one line and the date always on its own second line, no dot, identical in EN and EL (MemberDashboard.tsx ~line 918).
 - Verified with klodianakoutsouki@gmail.com session at 393x756 in Greek and English.
+
+## Frequency label single line (2026-10-19)
+- Health records medication/vaccine cards: "Κάθε 60 ημέρες" wrapped onto two lines next to the Done/edit/delete buttons. Added whitespace-nowrap to the interval label span in both the Vaccination and Medication tabs (PetHealthRecords.tsx ~lines 1509, 1586).
+- Verified at 393x756 in Greek and English: label renders on one line in both.
