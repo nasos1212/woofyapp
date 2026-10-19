@@ -726,7 +726,7 @@
       "foundCity": "Found Location City",
       "areaLabel": "Area",
       "additionalLocation": "Additional Location Details",
-      "additionalLocationPlaceholder": "e.g., Near the central park, by the fountain",
+      "additionalLocationPlaceholder": "e.g. near the central park",
       "lastSeenDate": "Last Seen Date *",
       "dateFound": "Date Found *",
       "photosLabel": "Photos * (up to {{max}})",

@@ -60,7 +60,7 @@ const SearchableAreaSelect = ({
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <Command>
-          <CommandInput placeholder="Search area..." />
+          <CommandInput placeholder={i18n.language?.startsWith("el") ? "Βρες περιοχή..." : "Search area..."} />
           <div
             onTouchMove={handleTouchMove}
             onWheel={(e) => e.stopPropagation()}
