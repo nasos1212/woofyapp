@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,7 +44,11 @@ const ShelterDashboard = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { t, i18n } = useTranslation();
-  const [activeTab, setActiveTab] = useState("basic");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => {
+    const tab = searchParams.get("tab");
+    return tab && ["basic", "about", "social", "branding", "adoptable-pets", "inquiries"].includes(tab) ? tab : "basic";
+  });
   const [formData, setFormData] = useState({
     shelter_name: "",
     contact_name: "",
@@ -300,7 +304,7 @@ const ShelterDashboard = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="basic" onValueChange={setActiveTab}>
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <div className="relative mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
                   <div className="overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
                     <TabsList className="inline-flex w-max gap-1">

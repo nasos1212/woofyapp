@@ -18,6 +18,7 @@ export function notificationDestination(type: string, rawData: unknown, id?: str
   if (type === "family_invite" && data.share_code) return `/member/join-family?code=${encoded(data.share_code)}`;
   if (type === "support_reply" && data.conversation_id) return `/member/notifications?conversation=${encoded(data.conversation_id)}`;
   if (type === "new_partner") return data.business_id ? `/business/${encoded(data.business_id)}` : "/member/partners";
+  if (type === "adoption_inquiry") return "/shelter-dashboard?tab=inquiries";
   if (type === "new_shelter") return "/member/shelters";
   if (type === "review_request" && data.business_id) return `/business/${encoded(data.business_id)}`;
   if (type === "redemption") return "/member/history";

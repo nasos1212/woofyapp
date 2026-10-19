@@ -8,4 +8,5 @@ assert.equal(notificationDestination("support_reply", { conversation_id: "reques
 assert.equal(notificationDestination("new_partner", { business_id: "partner-1" }), "/business/partner-1");
 assert.equal(notificationDestination("announcement", {}, "notice-1"), "/member/notifications?notification=notice-1");
 assert.equal(notificationDestination("announcement", { action_url: "https://evil.example/path" }, "notice-1"), "/member/notifications?notification=notice-1");
+assert.equal(notificationDestination("adoption_inquiry", { inquiry_id: "inq-1" }), "/shelter-dashboard?tab=inquiries");
 console.log("Notification destination tests passed");
