@@ -1,5 +1,11 @@
 # Roadmap
 
+## October 19 article share button, question title and offer box
+- [x] Replace article social icons with one centered "Share Article" button plus Copy Link
+- [x] Shorten the community question title placeholder so the whole sentence is visible on phones
+- [x] Make the business profile offer box compact with text using the full card width, keeping each sentence on its own line
+- [ ] Confirm the new share button on a real iPhone after publishing (requires device)
+
 ## October 18 Facebook article sharing
 - [x] Prefer URL-only system sharing on iPhone and supported web browsers; retain Facebook link fallback on other browsers
 - [x] Verify URL-only browser handoff, Facebook fallback and error-free article rendering
