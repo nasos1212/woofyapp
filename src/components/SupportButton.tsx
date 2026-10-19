@@ -10,14 +10,16 @@ const POSITION_KEY = "support-widget-position";
 const DRAG_THRESHOLD = 6;
 const EDGE_MARGIN = 8;
 
-type WidgetPosition = { x: number; y: number };
+type WidgetPosition = { right: number; bottom: number };
 
-const clampPosition = (x: number, y: number, w: number, h: number): WidgetPosition => {
-  const maxX = window.innerWidth - w - EDGE_MARGIN;
-  const maxY = window.innerHeight - h - EDGE_MARGIN;
+// Position is stored as distance from the bottom-right corner so that
+// browser bar / keyboard viewport changes never shift the widget.
+const clampPosition = (right: number, bottom: number, w: number, h: number): WidgetPosition => {
+  const maxRight = window.innerWidth - w - EDGE_MARGIN;
+  const maxBottom = window.innerHeight - h - EDGE_MARGIN;
   return {
-    x: Math.min(Math.max(EDGE_MARGIN, x), Math.max(EDGE_MARGIN, maxX)),
-    y: Math.min(Math.max(EDGE_MARGIN, y), Math.max(EDGE_MARGIN, maxY)),
+    right: Math.min(Math.max(EDGE_MARGIN, right), Math.max(EDGE_MARGIN, maxRight)),
+    bottom: Math.min(Math.max(EDGE_MARGIN, bottom), Math.max(EDGE_MARGIN, maxBottom)),
   };
 };
 
@@ -33,14 +35,31 @@ const SupportButton = () => {
     try {
       const raw = localStorage.getItem(POSITION_KEY);
       const parsed = raw ? JSON.parse(raw) : null;
+      if (!parsed || typeof parsed !== "object") return null;
       if (
-        parsed &&
+        typeof parsed.right === "number" &&
+        typeof parsed.bottom === "number" &&
+        parsed.right >= 0 &&
+        parsed.bottom >= 0
+      ) {
+        return { right: parsed.right, bottom: parsed.bottom };
+      }
+      // Legacy absolute {x, y} format: convert to corner offsets
+      if (
         typeof parsed.x === "number" &&
         typeof parsed.y === "number" &&
         parsed.x >= 0 &&
         parsed.y >= 0
       ) {
-        return parsed as WidgetPosition;
+        const minimized = localStorage.getItem("support-widget-minimized") === "true";
+        const w = minimized ? 32 : 92;
+        const h = minimized ? 32 : 56;
+        return clampPosition(
+          window.innerWidth - parsed.x - w,
+          window.innerHeight - parsed.y - h,
+          w,
+          h
+        );
       }
     } catch {
       // ignore malformed stored position
@@ -53,8 +72,8 @@ const SupportButton = () => {
     active: false,
     startX: 0,
     startY: 0,
-    origX: 0,
-    origY: 0,
+    origRight: 0,
+    origBottom: 0,
     moved: false,
   });
   const movedRef = useRef(false);
@@ -145,35 +164,16 @@ const SupportButton = () => {
     };
   }, [user, fetchUnreadCount]);
 
-  // Keep a dragged position on screen when the window is resized or rotated
-  useEffect(() => {
-    const onResize = () => {
-      setPosition((prev) => {
-        if (!prev) return prev;
-        const el = containerRef.current;
-        const w = el?.offsetWidth ?? 56;
-        const h = el?.offsetHeight ?? 56;
-        return clampPosition(prev.x, prev.y, w, h);
-      });
-    };
-    window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
-    };
-  }, []);
-
-  // Pull a saved position back on screen whenever the widget mounts or switches
-  // size — e.g. it was dragged on a wider screen and reopened on a phone
+  // Pull a saved position back on screen if the viewport shrank or the
+  // widget was moved on a larger screen and reopened on a smaller one
   useEffect(() => {
     setPosition((prev) => {
       if (!prev) return prev;
       const el = containerRef.current;
-      const w = el?.offsetWidth ?? 56;
+      const w = el?.offsetWidth ?? 92;
       const h = el?.offsetHeight ?? 56;
-      const clamped = clampPosition(prev.x, prev.y, w, h);
-      if (clamped.x !== prev.x || clamped.y !== prev.y) {
+      const clamped = clampPosition(prev.right, prev.bottom, w, h);
+      if (clamped.right !== prev.right || clamped.bottom !== prev.bottom) {
         try {
           localStorage.setItem(POSITION_KEY, JSON.stringify(clamped));
         } catch {
@@ -184,6 +184,27 @@ const SupportButton = () => {
       return prev;
     });
   }, [isMinimized, user]);
+
+  // Keep a dragged position on screen when the window is resized or rotated
+  // (transient changes only — not persisted, so the spot is kept when the
+  // viewport returns to its previous size)
+  useEffect(() => {
+    const onResize = () => {
+      setPosition((prev) => {
+        if (!prev) return prev;
+        const el = containerRef.current;
+        const w = el?.offsetWidth ?? 92;
+        const h = el?.offsetHeight ?? 56;
+        return clampPosition(prev.right, prev.bottom, w, h);
+      });
+    };
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
+    };
+  }, []);
 
   // Remove window listeners if the widget unmounts mid-drag
   useEffect(() => {
@@ -203,8 +224,8 @@ const SupportButton = () => {
       active: true,
       startX: e.clientX,
       startY: e.clientY,
-      origX: rect.left,
-      origY: rect.top,
+      origRight: window.innerWidth - rect.right,
+      origBottom: window.innerHeight - rect.bottom,
       moved: false,
     };
     movedRef.current = false;
@@ -218,9 +239,9 @@ const SupportButton = () => {
       drag.moved = true;
       movedRef.current = true;
       const el = containerRef.current;
-      const w = el?.offsetWidth ?? 56;
+      const w = el?.offsetWidth ?? 92;
       const h = el?.offsetHeight ?? 56;
-      setPosition(clampPosition(drag.origX + dx, drag.origY + dy, w, h));
+      setPosition(clampPosition(drag.origRight - dx, drag.origBottom - dy, w, h));
     };
 
     const onEnd = () => {
@@ -231,22 +252,24 @@ const SupportButton = () => {
       window.removeEventListener("pointercancel", onEnd);
 
       if (drag.moved) {
-        // Final clamped position based on where the widget actually ended up
+        // Persist exactly where the widget visually ended up
         const el = containerRef.current;
         const rect = el?.getBoundingClientRect();
-        const w = el?.offsetWidth ?? 56;
-        const h = el?.offsetHeight ?? 56;
-        const finalPos = clampPosition(
-          rect ? rect.left : position?.x ?? 0,
-          rect ? rect.top : position?.y ?? 0,
-          w,
-          h
-        );
-        setPosition(finalPos);
-        try {
-          localStorage.setItem(POSITION_KEY, JSON.stringify(finalPos));
-        } catch {
-          // storage may be unavailable
+        if (rect) {
+          const w = el?.offsetWidth ?? 92;
+          const h = el?.offsetHeight ?? 56;
+          const finalPos = clampPosition(
+            window.innerWidth - rect.right,
+            window.innerHeight - rect.bottom,
+            w,
+            h
+          );
+          setPosition(finalPos);
+          try {
+            localStorage.setItem(POSITION_KEY, JSON.stringify(finalPos));
+          } catch {
+            // storage may be unavailable
+          }
         }
       }
       // Reset after the click event has had a chance to read the flag
@@ -286,12 +309,8 @@ const SupportButton = () => {
   if (!user) return null;
 
   const positionStyle = position
-    ? { left: `${position.x}px`, top: `${position.y}px`, right: "auto", bottom: "auto" }
+    ? { right: `${position.right}px`, bottom: `${position.bottom}px`, left: "auto", top: "auto" }
     : undefined;
-  const dragProps = {
-    onPointerDown: handlePointerDown,
-    style: positionStyle,
-  };
 
   // Minimized state - small dot that can be expanded (and dragged)
   if (isMinimized) {
@@ -319,7 +338,8 @@ const SupportButton = () => {
     <>
       <div
         ref={containerRef}
-        {...dragProps}
+        onPointerDown={handlePointerDown}
+        style={positionStyle}
         className="fixed bottom-[5.5rem] md:bottom-6 right-4 z-50 flex items-center gap-1 cursor-grab active:cursor-grabbing select-none touch-none"
       >
         <Button

@@ -79,3 +79,4 @@
 ## Draggable help button (2026-10-19)
 - [x] Floating help button (expanded and minimized states) can be dragged anywhere on screen; position saved in localStorage, clamped on resize/rotation, taps still open the widget (verified in browser)
 - [x] Saved widget position is pulled back on screen on mount and when minimized/expanded (fixes button landing off-screen after being moved on a larger screen); container size (92x56) used for clamping
+- [x] Widget position now anchored by bottom/right offsets instead of top/left pixels, so browser-bar/keyboard viewport changes no longer shift the button after opening/closing the chat; legacy {x,y} saved positions migrated automatically (verified: open+close, viewport shrink/restore, reload)
