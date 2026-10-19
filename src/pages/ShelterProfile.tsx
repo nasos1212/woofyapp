@@ -240,8 +240,10 @@ const ShelterProfile = () => {
                         {shelter.years_operating && (
                           <>
                             <span>•</span>
-                            <Calendar className="h-4 w-4" />
-                            <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
+                            <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                              <Calendar className="h-4 w-4 shrink-0" />
+                              <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
+                            </span>
                           </>
                         )}
                       </div>
