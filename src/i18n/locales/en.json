@@ -950,7 +950,7 @@
       "category": "Category *",
       "selectCategory": "Select a category",
       "questionTitle": "Question Title *",
-      "titlePlaceholder": "E.g., My dog has swollen paws - what could it be?",
+      "titlePlaceholder": "E.g., My dog has swollen paws",
       "characters": "{{count}}/150 characters",
       "details": "Details *",
       "detailsPlaceholder": "Describe your question in detail. Include when the issue started, any symptoms, what you've tried, etc.",
