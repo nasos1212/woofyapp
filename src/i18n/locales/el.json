@@ -1142,7 +1142,7 @@
       "veterinarian": "Κτηνίατρος",
       "vetPlaceholder": "Δρ. Παπαδόπουλος",
       "clinic": "Κλινική",
-      "clinicPlaceholder": "Κτηνιατρική Κλινική Wooffy",
+      "clinicPlaceholder": "π.χ. Κλινική",
       "notes": "Σημειώσεις",
       "notesPlaceholder": "Επιπλέον σημειώσεις...",
       "attachDocs": "Συνημμένα Εγγραφα (Προαιρετικά, έως {{max}})",

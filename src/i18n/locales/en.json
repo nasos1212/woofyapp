@@ -1142,7 +1142,7 @@
       "veterinarian": "Veterinarian",
       "vetPlaceholder": "Dr. Smith",
       "clinic": "Clinic",
-      "clinicPlaceholder": "Wooffy Vet Clinic",
+      "clinicPlaceholder": "e.g. Vet Clinic",
       "notes": "Notes",
       "notesPlaceholder": "Any additional notes...",
       "attachDocs": "Attach Documents (Optional, up to {{max}})",
