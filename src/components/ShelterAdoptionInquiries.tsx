@@ -203,7 +203,7 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-destructive hover:text-destructive ml-auto px-2"
+                      className="text-destructive hover:text-destructive px-2"
                       onClick={() => {
                         if (confirm(t("adoptionInquiries.confirmDelete"))) {
                           deleteMutation.mutate(inquiry.id);
