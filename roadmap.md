@@ -97,3 +97,8 @@
 ## Shelter gallery dog names (2026-10-19)
 - Public shelter profile photo gallery showed photos without the dogs' names (captions saved in the onboarding/dashboard form were only used as alt text). Each gallery photo now shows its name below it (ShelterProfile.tsx photo gallery card).
 - Verified at 393x756 on the test shelter profile: Leo, Leo, Mia, Mia render under their photos.
+
+## Notifications back button + enquiry delete alignment (2026-10-21)
+- [x] Notifications back arrow now lands on the account's main page for shelter/business accounts (was browser-history only, which broke after cold-start push taps); members keep the normal back step (Notifications.tsx).
+- [x] Adoption enquiry card: the red "Διαγραφή" button dropped to its own line at narrow widths but stayed pushed to the far right (ml-auto). Removed ml-auto so a wrapped delete sits flush left under "Κατάσταση:" (ShelterAdoptionInquiries.tsx ~line 206); at 440px+ it still shares the row with the status dropdown.
+- Verified as koboulinis2@gmail.com at 375x800 (delete at card left edge, fully visible) and 440x727 (same line as status). Build OK.
