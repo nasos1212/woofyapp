@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,7 +36,8 @@ import {
   Globe,
   ExternalLink,
   ImageIcon,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 const ShelterDashboard = () => {
@@ -49,6 +50,24 @@ const ShelterDashboard = () => {
     const tab = searchParams.get("tab");
     return tab && ["basic", "about", "social", "branding", "adoptable-pets", "inquiries"].includes(tab) ? tab : "basic";
   });
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const updateTabArrows = () => {
+    const el = tabsScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+  useEffect(() => {
+    updateTabArrows();
+    const el = tabsScrollRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(updateTabArrows);
+    ro.observe(el);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
   const [formData, setFormData] = useState({
     shelter_name: "",
     contact_name: "",
@@ -306,7 +325,7 @@ const ShelterDashboard = () => {
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <div className="relative mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-                  <div className="overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+                  <div ref={tabsScrollRef} onScroll={updateTabArrows} className="overflow-x-auto scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
                     <TabsList className="inline-flex w-max gap-1">
                       <TabsTrigger value="basic" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
                         {t("shelter.tabs.basic")}
@@ -324,7 +343,7 @@ const ShelterDashboard = () => {
                       <TabsTrigger value="adoptable-pets" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap">
                         {t("shelter.tabs.pets")}
                       </TabsTrigger>
-                      <TabsTrigger value="inquiries" className="snap-start text-xs px-2 py-1 sm:text-sm sm:px-3 sm:py-1.5 whitespace-nowrap relative">
+                      <TabsTrigger value="inquiries" className="snap-start text-xs px-2 pr-5 py-1 sm:text-sm sm:px-3 sm:pr-6 sm:py-1.5 whitespace-nowrap relative">
                         {t("shelter.tabs.inquiries")}
                         {pendingInquiryCount > 0 && (
                           <span className="absolute -top-1 -right-1 h-5 min-w-[1.25rem] px-1 rounded-full bg-destructive text-destructive-foreground text-xs flex items-center justify-center">
@@ -334,10 +353,14 @@ const ShelterDashboard = () => {
                       </TabsTrigger>
                     </TabsList>
                   </div>
-                  {/* Left fade gradient */}
-                  <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden" />
-                  {/* Right fade gradient */}
-                  <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-card via-card/80 to-transparent z-10 pointer-events-none sm:hidden" />
+                  {/* Left scroll hint */}
+                  <div className={`absolute left-0 top-0 bottom-0 w-8 flex items-center justify-start pl-1 z-10 pointer-events-none sm:hidden bg-gradient-to-r from-card via-card/90 to-transparent transition-opacity duration-200 ${canScrollLeft ? "opacity-100" : "opacity-0"}`}>
+                    <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  {/* Right scroll hint */}
+                  <div className={`absolute right-0 top-0 bottom-0 w-8 flex items-center justify-end pr-1 z-10 pointer-events-none sm:hidden bg-gradient-to-l from-card via-card/90 to-transparent transition-opacity duration-200 ${canScrollRight ? "opacity-100" : "opacity-0"}`}>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
                 </div>
 
                 <form onSubmit={handleSubmit}>
