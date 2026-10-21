@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,7 +36,8 @@ import {
   Globe,
   ExternalLink,
   ImageIcon,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft
 } from "lucide-react";
 
 const ShelterDashboard = () => {
@@ -49,6 +50,24 @@ const ShelterDashboard = () => {
     const tab = searchParams.get("tab");
     return tab && ["basic", "about", "social", "branding", "adoptable-pets", "inquiries"].includes(tab) ? tab : "basic";
   });
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const updateTabArrows = () => {
+    const el = tabsScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+  useEffect(() => {
+    updateTabArrows();
+    const el = tabsScrollRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(updateTabArrows);
+    ro.observe(el);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
   const [formData, setFormData] = useState({
     shelter_name: "",
     contact_name: "",
