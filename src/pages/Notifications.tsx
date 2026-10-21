@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { formatRelative } from "@/lib/relativeTime";
 import { setAppBadge } from "@/lib/push";
+import { useAccountType } from "@/hooks/useAccountType";
 import Header from "@/components/Header";
 import { BirthdayOfferViewDialog } from "@/components/BirthdayOfferViewDialog";
 import SupportDialog from "@/components/SupportDialog";
@@ -51,6 +52,7 @@ type RawNotification = {
 const Notifications = () => {
   const { t } = useTranslation();
   const { user, loading } = useAuth();
+  const { accountType } = useAccountType();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const conversationId = searchParams.get("conversation");
@@ -186,7 +188,11 @@ const Notifications = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => {
+                if (accountType === "shelter") navigate("/shelter-dashboard");
+                else if (accountType === "business") navigate("/business");
+                else navigate(-1);
+              }}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
