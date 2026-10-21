@@ -158,7 +158,7 @@ const Community = () => {
             <div className="flex-1 min-w-0">
               {/* Title and badges */}
               <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-2">
-                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 flex-1 text-sm sm:text-base">
+                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors flex-1 text-sm sm:text-base">
                   {question.is_pinned && <span className="text-primary mr-1">📌</span>}
                   {question.title}
                 </h3>
