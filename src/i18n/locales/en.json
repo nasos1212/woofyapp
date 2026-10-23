@@ -1273,7 +1273,7 @@
     "add": "Add",
     "uploadDocument": "Upload Document",
     "documentTitle": "Document Title",
-    "titlePlaceholder": "e.g. Birth Certificate, Passport...",
+    "titlePlaceholder": "e.g. Passport Number",
     "file": "File",
     "remove": "Remove",
     "clickToSelect": "Click to select a file",
