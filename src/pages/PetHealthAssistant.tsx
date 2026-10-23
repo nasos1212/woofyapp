@@ -881,7 +881,7 @@ const PetHealthAssistant = () => {
                 </div>
                 <h2 className="font-display font-semibold text-foreground mb-2">
                   {t("petHealthAssistantUI.howCanIHelp")}
-                </h3>
+                </h2>
                 <p className="text-sm text-muted-foreground mb-6 max-w-sm">
                   {t("petHealthAssistantUI.howCanIHelpDesc")}
                 </p>

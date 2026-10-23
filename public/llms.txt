@@ -1,0 +1,17 @@
+# Wooffy
+
+> Wooffy is the pet membership community for Cyprus: a dog-friendly directory, lost and found alerts, shelter adoptions, partner discounts and pet health tools for dog and cat owners.
+
+Free and Paid memberships are available. Partner businesses offer member discounts, and part of membership revenue supports animal shelters in Cyprus.
+
+## Pages
+
+- [Home](https://wooffy.app/): What Wooffy is, membership plans and partners.
+- [Blog](https://wooffy.app/blog): Pet care guides, partner interviews and adoption stories from Cyprus.
+- [Community](https://wooffy.app/community): Questions and answers from Cyprus pet owners.
+- [Become a partner](https://wooffy.app/partner-register): Register a pet business or shelter.
+- [Terms](https://wooffy.app/terms): Terms and conditions.
+
+## Optional
+
+- [Peanut butter for dogs](https://wooffy.app/blog/peanut-butter-for-dogs-healthy-or-not): Example guide article.
