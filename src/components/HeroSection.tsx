@@ -35,15 +35,15 @@ const HeroSection = () => {
           <div className="relative h-full min-h-[78vh] sm:min-h-[80vh] flex flex-col justify-between sm:justify-end p-6 sm:p-12 lg:p-16">
             {/* Title (top on mobile) */}
             <div className="max-w-2xl text-white sm:hidden">
-              <h1 className="text-[2.25rem] leading-[1.05] font-display font-bold drop-shadow-lg">
+              <p aria-hidden="true" className="text-[2.25rem] leading-[1.05] font-display font-bold drop-shadow-lg">
                 {t("hero.titlePart1")} {t("hero.titleOf")}{" "}
                 <span className="text-wooffy-sky">{t("hero.titleHighlight")}</span>
-              </h1>
+              </p>
             </div>
 
             {/* Description + CTAs (bottom on mobile, full block on desktop) */}
             <div className="max-w-2xl space-y-5 sm:space-y-6 text-white">
-              <h1 className="hidden sm:block sm:text-5xl lg:text-6xl font-display font-bold drop-shadow-lg leading-[1.05]">
+              <h1 className="sr-only sm:not-sr-only sm:block sm:text-5xl lg:text-6xl font-display font-bold drop-shadow-lg leading-[1.05]">
                 {t("hero.titlePart1")} {t("hero.titleOf")}{" "}
                 <span className="text-wooffy-sky">{t("hero.titleHighlight")}</span>
               </h1>
