@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Mail, Phone, MessageSquare, Clock, CheckCircle, XCircle, Inbox } from "lucide-react";
+import { Mail, Phone, MessageSquare, Clock, CheckCircle, XCircle, Inbox, Trash2 } from "lucide-react";
 import { formatRelative } from "@/lib/relativeTime";
 import { useTranslation } from "react-i18next";
 
@@ -182,8 +182,8 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col gap-2 pt-2 border-t">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm text-muted-foreground">{t("adoptionInquiries.statusLabel")}</span>
                       <Select
                         value={inquiry.status}
@@ -203,13 +203,14 @@ const ShelterAdoptionInquiries = ({ shelterId }: ShelterAdoptionInquiriesProps) 
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-destructive hover:text-destructive px-2"
+                      className="self-start -ml-2 inline-flex items-center gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() => {
                         if (confirm(t("adoptionInquiries.confirmDelete"))) {
                           deleteMutation.mutate(inquiry.id);
                         }
                       }}
                     >
+                      <Trash2 className="h-4 w-4 shrink-0" />
                       {t("adoptionInquiries.delete")}
                     </Button>
                   </div>
