@@ -879,9 +879,9 @@ const PetHealthAssistant = () => {
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <Sparkles className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="font-display font-semibold text-foreground mb-2">
+                <h2 className="font-display font-semibold text-foreground mb-2">
                   {t("petHealthAssistantUI.howCanIHelp")}
-                </h3>
+                </h2>
                 <p className="text-sm text-muted-foreground mb-6 max-w-sm">
                   {t("petHealthAssistantUI.howCanIHelpDesc")}
                 </p>
