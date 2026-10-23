@@ -107,3 +107,7 @@
 - User report: on the business profile's "Photos" section the photos look like circles sitting inside rounded squares — the upload cropper (ImageCropperDialog) defaults to a circular mask, so every business photo was saved as a circle with transparent corners.
 - Fix: business photo uploads now crop square (circular={false} in PhotoUpload.tsx); the profile tiles (rounded-lg, object-cover) already expect square photos. Pet profile photos keep their circle crop (AddPet, PetProfile unchanged).
 - Existing photos (e.g. Pet Nas) are already saved as circles and stay that way until re-uploaded. Verified the square crop path in the cropper code and build OK; did not run a real upload.
+
+## Pet Nas existing photos made square (2026-10-23)
+- The three photos already on Pet Nas's profile were saved as circle-cropped files (transparent corners), so they still looked round after the uploader fix. Rebuilt each as a 512x512 square: the photo fills the frame, corners filled with a blurred nearest-pixel extension of the photo (scipy distance-transform fill, feathered edge, no white halo).
+- Uploaded replacements to the same storage folder (new timestamps 1798456800001-3) and updated the three business_photos.photo_url rows; old circle files remain in storage, unreferenced. Verified the gallery renders square tiles at 393x756.
