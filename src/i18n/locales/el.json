@@ -1067,9 +1067,9 @@
       "next": "Επόμενο",
       "vet": "Κτηνίατρος",
       "clinic": "Κλινική",
-      "document": "Εγγραφο",
+      "document": "Έγγραφο",
       "doc": "Εγγρ. {{n}}",
-      "documentN": "Εγγραφο {{n}}",
+      "documentN": "Έγγραφο {{n}}",
       "viewDocument": "Προβολή Εγγράφου"
     },
     "actions": {
@@ -1145,7 +1145,7 @@
       "clinicPlaceholder": "π.χ. Κλινική",
       "notes": "Σημειώσεις",
       "notesPlaceholder": "Επιπλέον σημειώσεις...",
-      "attachDocs": "Συνημμένα Εγγραφα (Προαιρετικά, έως {{max}})",
+      "attachDocs": "Συνημμένα Έγγραφα (Προαιρετικά, έως {{max}})",
       "removeAllDocs": "Αφαίρεση όλων των υπαρχόντων εγγράφων",
       "docsWillBeRemoved": "Τα έγγραφα θα αφαιρεθούν",
       "undo": "Αναίρεση",
@@ -1156,7 +1156,7 @@
       "uploading": "Ανέβασμα...",
       "updateRecord": "Ενημέρωση Εγγραφής",
       "addRecordBtn": "Προσθήκη",
-      "documentLabel": "Εγγραφο {{n}}"
+      "documentLabel": "Έγγραφο {{n}}"
     },
     "reminderOptions": {
       "threeDays": "3 ημέρες πριν",
@@ -1180,7 +1180,7 @@
       "doneNext": "Ολοκληρώθηκε! Επόμενο σε {{interval}}."
     },
     "preview": {
-      "documentSuffix": "Εγγραφο",
+      "documentSuffix": "Έγγραφο",
       "openInNewTab": "Ανοιγμα σε Νέα Καρτέλα",
       "download": "Λήψη",
       "downloadFile": "Λήψη Αρχείου",
@@ -1251,7 +1251,7 @@
     "visitToRedeem": "Επισκεφθείτε για Εξαργύρωση",
     "petRecords": "Αρχεία Κατοικιδίου",
     "healthRecords": "Αρχεία Υγείας & Υπενθυμίσεις",
-    "generalDocuments": "Γενικά Εγγραφα",
+    "generalDocuments": "Γενικά Έγγραφα",
     "removeFromAccount": "Αφαίρεση {{name}} από τον λογαριασμό",
     "removeTitle": "Αφαίρεση {{name}};",
     "removeDesc": "Αυτό θα διαγράψει οριστικά το προφίλ και όλα τα αρχεία υγείας του {{name}}. Η ενέργεια δεν αναιρείται.",
@@ -1260,16 +1260,16 @@
     "deleteFailed": "Αποτυχία διαγραφής κατοικιδίου"
   },
   "petDocuments": {
-    "pageTitle": "Εγγραφα {{name}} | Wooffy",
+    "pageTitle": "Έγγραφα {{name}} | Wooffy",
     "metaDescription": "Διαχειριστείτε γενικά έγγραφα του {{name}} όπως πιστοποιητικά και εγγραφές.",
     "loadFailed": "Αποτυχία φόρτωσης εγγράφων",
     "notFoundTitle": "Δεν Βρέθηκε Κατοικίδιο",
     "notFoundDesc": "Επιλέξτε ένα κατοικίδιο για να δείτε τα έγγραφά του.",
     "backToDashboard": "Πίσω στην Αρχική",
     "dashboard": "Αρχική",
-    "documents": "Εγγραφα",
+    "documents": "Έγγραφα",
     "back": "Πίσω στον/στην {{name}}",
-    "title": "Εγγραφα {{name}}",
+    "title": "Έγγραφα {{name}}",
     "add": "Προσθήκη",
     "uploadDocument": "Ανέβασμα Εγγράφου",
     "documentTitle": "Τίτλος Εγγράφου",
@@ -1293,7 +1293,7 @@
     "deleted": "Το έγγραφο διαγράφηκε",
     "deleteFailed": "Αποτυχία διαγραφής εγγράφου",
     "openFailed": "Αποτυχία ανοίγματος εγγράφου",
-    "previewSuffix": "Εγγραφο",
+    "previewSuffix": "Έγγραφο",
     "openInNewTab": "Ανοιγμα σε Νέα Καρτέλα",
     "download": "Λήψη",
     "downloadFile": "Λήψη Αρχείου",
