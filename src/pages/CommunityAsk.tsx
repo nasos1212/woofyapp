@@ -498,7 +498,7 @@ const CommunityAsk = () => {
                     {photos.length < 5 && (
                       <label className="w-24 h-24 border-2 border-dashed border-muted-foreground/25 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
                         <ImagePlus className="w-6 h-6 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground mt-1">{t('community.ask.addPhoto')}</span>
+                        <span className="text-xs text-muted-foreground mt-1 text-center leading-tight px-1">{t('community.ask.addPhoto')}</span>
                         <input
                           type="file"
                           ref={fileInputRef}
