@@ -1,5 +1,11 @@
 # Roadmap
 
+## October 23 adoption enquiry delete button
+- [x] Move "Διαγραφή" onto its own line, left-aligned under the status dropdown, with a trash icon and extra space
+- [x] Verified on the test shelter account at 393x756 in Greek: button left edge aligns with the "Κατάσταση:" label and nothing overlaps it
+- [ ] Visible on wooffy.app after publishing
+
+
 ## October 19 offers page search hint and count wording
 - [x] Shorten the Greek search hint to "Βρες προσφορά ή επιχείρηση" so the whole sentence fits inside the field on phones
 - [x] Show singular "1 διαθέσιμη για εξαργύρωση" when one offer is available; plural form unchanged
