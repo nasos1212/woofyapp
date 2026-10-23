@@ -200,6 +200,7 @@ export function PhotoUpload({ businessId, onUploadComplete }: PhotoUploadProps) 
           }}
           imageSrc={cropperSrc}
           onCropComplete={handleCropComplete}
+          circular={false}
         />
       )}
     </div>

@@ -102,3 +102,8 @@
 - [x] Notifications back arrow now lands on the account's main page for shelter/business accounts (was browser-history only, which broke after cold-start push taps); members keep the normal back step (Notifications.tsx).
 - [x] Adoption enquiry card: the red "Διαγραφή" button dropped to its own line at narrow widths but stayed pushed to the far right (ml-auto). Removed ml-auto so a wrapped delete sits flush left under "Κατάσταση:" (ShelterAdoptionInquiries.tsx ~line 206); at 440px+ it still shares the row with the status dropdown.
 - Verified as koboulinis2@gmail.com at 375x800 (delete at card left edge, fully visible) and 440x727 (same line as status). Build OK.
+
+## Business photo circular crop (2026-10-23)
+- User report: on the business profile's "Photos" section the photos look like circles sitting inside rounded squares — the upload cropper (ImageCropperDialog) defaults to a circular mask, so every business photo was saved as a circle with transparent corners.
+- Fix: business photo uploads now crop square (circular={false} in PhotoUpload.tsx); the profile tiles (rounded-lg, object-cover) already expect square photos. Pet profile photos keep their circle crop (AddPet, PetProfile unchanged).
+- Existing photos (e.g. Pet Nas) are already saved as circles and stay that way until re-uploaded. Verified the square crop path in the cropper code and build OK; did not run a real upload.
