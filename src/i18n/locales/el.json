@@ -1268,7 +1268,7 @@
     "backToDashboard": "Πίσω στην Αρχική",
     "dashboard": "Αρχική",
     "documents": "Έγγραφα",
-    "back": "Πίσω στον/στην {{name}}",
+    "back": "Πίσω",
     "title": "Έγγραφα {{name}}",
     "add": "Προσθήκη",
     "uploadDocument": "Ανέβασμα Εγγράφου",

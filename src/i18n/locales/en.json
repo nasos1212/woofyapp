@@ -1268,7 +1268,7 @@
     "backToDashboard": "Back to Dashboard",
     "dashboard": "Dashboard",
     "documents": "Documents",
-    "back": "Back to {{name}}",
+    "back": "Back",
     "title": "{{name}}'s Documents",
     "add": "Add",
     "uploadDocument": "Upload Document",
