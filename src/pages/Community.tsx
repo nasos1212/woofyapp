@@ -325,7 +325,7 @@ const Community = () => {
           </div>
 
           {/* Category Dropdown */}
-          <div className="mb-6">
+          <div className="mb-2">
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
               <SelectTrigger className="w-full">
                 <Filter className="w-4 h-4 mr-2 shrink-0 text-muted-foreground" />
