@@ -239,13 +239,11 @@ const ShelterProfile = () => {
                         <MapPin className="h-4 w-4" />
                         <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                         {shelter.years_operating && (
-                          <>
+                          <span className="inline-flex items-center gap-2 whitespace-nowrap">
                             <span>•</span>
-                            <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                              <Calendar className="h-4 w-4 shrink-0" />
-                              <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
-                            </span>
-                          </>
+                            <Calendar className="h-4 w-4 shrink-0" />
+                            <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
+                          </span>
                         )}
                       </div>
                       <Badge variant="secondary" className="bg-green-100 text-green-700">
