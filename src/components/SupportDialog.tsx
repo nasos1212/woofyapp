@@ -58,12 +58,18 @@ const SupportDialog = ({ open, onOpenChange, onMessagesRead, initialSubject, ini
   useEffect(() => {
     if (open && user) {
       fetchConversations();
+      // Without the in-thread back arrow, reopening must land on the list again.
+      if (!initialSubject && !initialConversationId) {
+        setView("list");
+        setSelectedConversation(null);
+        setMessages([]);
+      }
     }
     if (open && initialSubject) {
       setNewSubject(initialSubject);
       setView("new");
     }
-  }, [open, user, initialSubject]);
+  }, [open, user, initialSubject, initialConversationId]);
 
   useEffect(() => {
     if (!open || !initialConversationId) return;
