@@ -121,4 +121,4 @@
 ## 2026-10-25 — v1.4 release prep
 - Bumped iOS to MARKETING_VERSION 1.4 / build 4 (pbxproj).
 - Published web app (wooffy.app) with all pending fixes: notification tap routing + clickable notifications, shelter inquiry delete layout, Greek accents, community/documents/health placeholder fixes, business square photos, SEO heading fixes, etc.
-- User archives v1.4 in Xcode themselves.
+- User archives v1.4 in Xcode themselves (2026-10-25: delivered as downloadable `wooffy-ios-package-v1.4.zip`, fresh web build synced into ios/App/App/public, IOS-STEPS.md included).
