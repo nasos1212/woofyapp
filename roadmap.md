@@ -117,3 +117,8 @@
 ## Pet Nas existing photos made square (2026-10-23)
 - The three photos already on Pet Nas's profile were saved as circle-cropped files (transparent corners), so they still looked round after the uploader fix. Rebuilt each as a 512x512 square: the photo fills the frame, corners filled with a blurred nearest-pixel extension of the photo (scipy distance-transform fill, feathered edge, no white halo).
 - Uploaded replacements to the same storage folder (new timestamps 1798456800001-3) and updated the three business_photos.photo_url rows; old circle files remain in storage, unreferenced. Verified the gallery renders square tiles at 393x756.
+
+## 2026-10-25 — v1.4 release prep
+- Bumped iOS to MARKETING_VERSION 1.4 / build 4 (pbxproj).
+- Published web app (wooffy.app) with all pending fixes: notification tap routing + clickable notifications, shelter inquiry delete layout, Greek accents, community/documents/health placeholder fixes, business square photos, SEO heading fixes, etc.
+- User archives v1.4 in Xcode themselves.
