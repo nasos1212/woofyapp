@@ -240,7 +240,6 @@ const ShelterProfile = () => {
                         <span>{getCityDisplayName(shelter.city || shelter.location, i18n.language)}</span>
                         {shelter.years_operating && (
                           <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                            <span>•</span>
                             <Calendar className="h-4 w-4 shrink-0" />
                             <span>{t("shelterProfile.since", { year: shelter.years_operating })}</span>
                           </span>
