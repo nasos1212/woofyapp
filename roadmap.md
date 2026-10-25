@@ -1,5 +1,11 @@
 # Roadmap
 
+## October 25 shelter profile dot and v1.4 package
+- [x] Remove the dot before "Λειτουργεί από το 2023" on shelter profiles so the calendar line starts with its icon
+- [x] Verified on UANA's page at 393x756 in Greek: no bullet anywhere before the calendar line
+- [ ] Rebuild and deliver the complete v1.4 Xcode package after the user's remaining changes
+
+
 ## October 23 adoption enquiry delete button
 - [x] Move "Διαγραφή" onto its own line, left-aligned under the status dropdown, with a trash icon and extra space
 - [x] Verified on the test shelter account at 393x756 in Greek: button left edge aligns with the "Κατάσταση:" label and nothing overlaps it
