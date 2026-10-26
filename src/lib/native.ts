@@ -20,6 +20,7 @@ export async function initializeNativeShell(): Promise<void> {
 
   setupKeyboardScroll();
   setupPullToRefresh();
+  setupFixedBarRepair();
 
   try {
     // Dark status bar text/icons on our dark background
@@ -135,6 +136,39 @@ export async function hideSplashScreen(): Promise<void> {
   }
 }
 
+
+/**
+ * iOS WebKit sometimes leaves fixed bars (the top header) drawn at a stale
+ * position after the screen size changes (call banner, keyboard, resume).
+ * A tap or reload fixes it, so nudge a re-layout ourselves on those events.
+ */
+function setupFixedBarRepair(): void {
+  let pending = false;
+  const repair = () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      const x = window.scrollX;
+      const y = window.scrollY;
+      window.scrollTo(x, y + 1);
+      window.scrollTo(x, y);
+      document.querySelectorAll<HTMLElement>('header.fixed, header[class*="fixed"]').forEach((el) => {
+        el.style.transform = 'translateZ(0)';
+        void el.offsetHeight;
+        el.style.transform = '';
+      });
+    });
+  };
+  const repairSoon = () => { repair(); setTimeout(repair, 300); };
+  window.addEventListener('resize', repairSoon);
+  window.addEventListener('orientationchange', repairSoon);
+  window.visualViewport?.addEventListener('resize', repairSoon);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) repairSoon(); });
+  window.addEventListener('focusout', () => setTimeout(repairSoon, 100));
+  void App.addListener('resume', repairSoon);
+  void Keyboard.addListener('keyboardDidHide', repairSoon);
+}
 
 /** Keep the focused field visible above the iOS keyboard. */
 function setupKeyboardScroll(): void {
