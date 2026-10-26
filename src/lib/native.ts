@@ -5,6 +5,7 @@ import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { initializePushNotifications } from './push';
+import { getScrollTop } from './scroll';
 
 /**
  * Initialize native iOS/Android shell behavior.
@@ -16,6 +17,8 @@ export async function initializeNativeShell(): Promise<void> {
   }
 
   // Tag the document so CSS can hide web-only chrome (e.g. Lovable badge)
+  // and switch scrolling to #root so fixed top bars stay pinned on iOS.
+  document.documentElement.classList.add('capacitor');
   document.body.classList.add('capacitor');
 
   setupKeyboardScroll();
@@ -149,10 +152,9 @@ function setupFixedBarRepair(): void {
     pending = true;
     requestAnimationFrame(() => {
       pending = false;
-      const x = window.scrollX;
-      const y = window.scrollY;
-      window.scrollTo(x, y + 1);
-      window.scrollTo(x, y);
+      // The document itself never scrolls in the native shell; snap it back
+      // in case iOS shifted it (e.g. after the keyboard closed).
+      if (window.scrollY !== 0 || window.scrollX !== 0) window.scrollTo(0, 0);
       document.querySelectorAll<HTMLElement>('header.fixed, header[class*="fixed"]').forEach((el) => {
         el.style.transform = 'translateZ(0)';
         void el.offsetHeight;
@@ -205,7 +207,7 @@ function setupPullToRefresh(): void {
   };
 
   window.addEventListener('touchstart', (e) => {
-    startY = window.scrollY <= 0 && !inScrollable(e.target) ? e.touches[0].clientY : null;
+    startY = getScrollTop() <= 0 && !inScrollable(e.target) ? e.touches[0].clientY : null;
     distance = 0;
   }, { passive: true });
   window.addEventListener('touchmove', (e) => {
