@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { addScrollListener, getScrollTop, scrollToTop as scrollContainerToTop } from "@/lib/scroll";
 
 const BackToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -8,22 +9,18 @@ const BackToTop = () => {
   useEffect(() => {
     const toggleVisibility = () => {
       // Show button when page is scrolled down 300px
-      if (window.scrollY > 300) {
+      if (getScrollTop() > 300) {
         setIsVisible(true);
       } else {
         setIsVisible(false);
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    return addScrollListener(toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    scrollContainerToTop("smooth");
   };
 
   if (!isVisible) return null;

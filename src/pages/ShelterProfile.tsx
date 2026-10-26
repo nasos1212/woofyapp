@@ -1,3 +1,4 @@
+import { scrollToTop } from "@/lib/scroll";
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -63,7 +64,7 @@ const ShelterProfile = () => {
 
   // Scroll to top when entering shelter profile
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, [id]);
 
   // Track shelter view

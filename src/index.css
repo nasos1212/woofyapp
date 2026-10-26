@@ -217,6 +217,22 @@ html, body {
   }
 }
 
+/* Native iPhone shell: the document never scrolls, #root does. When the whole
+   document scrolls, iOS WebKit can leave fixed top bars drawn mid-screen. */
+html.capacitor,
+html.capacitor body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+html.capacitor #root {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
 /* Native Capacitor shell: hide Lovable badge and adjust bottom nav safe-area spacing */
 body.capacitor #lovable-badge,
 body.capacitor [data-lovable-badge],
