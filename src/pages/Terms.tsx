@@ -1,3 +1,4 @@
+import { scrollToTop } from "@/lib/scroll";
 import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ const Terms = () => {
         setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
       }
     } else {
-      window.scrollTo(0, 0);
+      scrollToTop();
     }
   }, [hash]);
 

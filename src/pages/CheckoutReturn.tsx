@@ -1,3 +1,4 @@
+import { scrollToTop } from "@/lib/scroll";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useSearchParams } from "react-router-dom";
@@ -10,7 +11,7 @@ const CheckoutReturn = () => {
   const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    scrollToTop();
   }, []);
 
   return (

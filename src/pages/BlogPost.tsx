@@ -1,3 +1,4 @@
+import { scrollToTop } from "@/lib/scroll";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -53,7 +54,7 @@ const BlogPostPage = () => {
   const [related, setRelated] = useState<BlogPost[]>([]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop("smooth");
   }, [slug]);
 
   useEffect(() => {

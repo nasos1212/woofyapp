@@ -1,3 +1,4 @@
+import { scrollToTop } from "@/lib/scroll";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -56,7 +57,7 @@ const Blog = () => {
   }, [user, isPaidMember]);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop("smooth");
   }, []);
 
   useEffect(() => {
@@ -111,7 +112,7 @@ const Blog = () => {
     if (p <= 1) params.delete("page");
     else params.set("page", String(p));
     setSearchParams(params);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop("smooth");
   };
 
   const visiblePosts = useMemo(() => {
