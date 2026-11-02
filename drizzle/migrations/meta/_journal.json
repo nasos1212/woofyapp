@@ -71,6 +71,13 @@
       "when": 1792342274624,
       "tag": "0009_restrict_member_number_sequences",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793639467140,
+      "tag": "0010_blog_notify_businesses",
+      "breakpoints": true
     }
   ]
 }
