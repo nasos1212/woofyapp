@@ -166,7 +166,7 @@ const PlaceReviewDialog = ({
         if (error) throw error;
       }
 
-      toast.success(existing ? "Review updated! ⭐" : "Review submitted! ⭐");
+      toast.success(existing ? t("placeReview.updated") : t("placeReview.submitted"));
       onReviewSubmitted?.();
       onClose();
     } catch (error) {
@@ -185,10 +185,10 @@ const PlaceReviewDialog = ({
         <DialogHeader>
           <DialogTitle className="font-display text-xl flex items-center gap-2">
             <span className="text-2xl">⭐</span>
-            Review {placeName}
+            {t("placeReview.title", { name: placeName })}
           </DialogTitle>
           <DialogDescription>
-            Share your experience to help other pet owners!
+            {t("placeReview.description")}
           </DialogDescription>
         </DialogHeader>
 
@@ -217,17 +217,17 @@ const PlaceReviewDialog = ({
 
           {rating > 0 && (
             <p className="text-center text-sm text-muted-foreground">
-              {rating === 1 && "Poor"}
-              {rating === 2 && "Fair"}
-              {rating === 3 && "Good"}
-              {rating === 4 && "Very Good"}
-              {rating === 5 && "Excellent!"}
+              {rating === 1 && t("placeReview.r1")}
+              {rating === 2 && t("placeReview.r2")}
+              {rating === 3 && t("placeReview.r3")}
+              {rating === 4 && t("placeReview.r4")}
+              {rating === 5 && t("placeReview.r5")}
             </p>
           )}
 
           {/* Review Text */}
           <Textarea
-            placeholder="Tell us about your experience... (optional)"
+            placeholder={t("placeReview.placeholder")}
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
             rows={3}
@@ -275,7 +275,7 @@ const PlaceReviewDialog = ({
                     >
                       <Camera className="w-5 h-5 text-muted-foreground" />
                       <span className="text-xs text-muted-foreground">
-                        Photo {index + 1}
+                        {t("placeReview.photo", { n: index + 1 })}
                       </span>
                     </button>
                   )}
@@ -283,7 +283,7 @@ const PlaceReviewDialog = ({
               ))}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Add up to {MAX_PHOTOS} photos (optional)
+              {t("placeReview.photosHint", { max: MAX_PHOTOS })}
             </p>
           </div>
 
@@ -296,12 +296,12 @@ const PlaceReviewDialog = ({
             {isSubmitting ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                Submitting...
+                {t("placeReview.submitting")}
               </>
             ) : existingRating ? (
-              "Update Review"
+              t("placeReview.update")
             ) : (
-              "Submit Review"
+              t("placeReview.submit")
             )}
           </Button>
         </div>

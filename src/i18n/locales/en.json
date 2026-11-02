@@ -2417,7 +2417,22 @@
     "submitFailed": "Failed to submit review"
   },
   "placeReview": {
-    "submitFailed": "Failed to submit review. Please try again."
+    "submitFailed": "Failed to submit review. Please try again.",
+    "title": "Review {{name}}",
+    "description": "Share your experience to help other pet owners!",
+    "r1": "Poor",
+    "r2": "Fair",
+    "r3": "Good",
+    "r4": "Very Good",
+    "r5": "Excellent!",
+    "placeholder": "Tell us about your experience... (optional)",
+    "photo": "Photo {{n}}",
+    "photosHint": "Add up to {{max}} photos (optional)",
+    "submitting": "Submitting...",
+    "update": "Update Review",
+    "submit": "Submit Review",
+    "submitted": "Review submitted! ⭐",
+    "updated": "Review updated! ⭐"
   },
   "affiliateInquiry": {
     "title": "Become an Affiliate",
