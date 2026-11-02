@@ -1,3 +1,5 @@
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -259,7 +261,8 @@ const CommunityQuestion = () => {
   const handleShare = async () => {
     if (!question) return;
     
-    const shareUrl = `${window.location.origin}/community/question/${question.id}`;
+    // Always share the public site URL: in the iOS app window.location.origin is capacitor://localhost.
+    const shareUrl = `https://wooffy.app/community/question/${question.id}`;
     const shareData = {
       title: question.title,
       text: t('communityQuestion.shareTitle', { title: question.title }),
@@ -267,7 +270,10 @@ const CommunityQuestion = () => {
     };
 
     try {
-      // Try native share dialog first
+      if (Capacitor.isNativePlatform()) {
+        await Share.share({ url: shareUrl });
+        return;
+      }
       if (navigator.share && navigator.canShare?.(shareData)) {
         await navigator.share(shareData);
         toast.success(t('communityQuestion.shareSuccess'));
@@ -278,7 +284,7 @@ const CommunityQuestion = () => {
       }
     } catch (error) {
       // User cancelled or error - try clipboard as fallback
-      if ((error as Error).name !== 'AbortError') {
+      if ((error as Error).name !== 'AbortError' && !/cancel/i.test(String((error as Error)?.message))) {
         try {
           await navigator.clipboard.writeText(shareUrl);
           toast.success(t('communityQuestion.shareCopied'));

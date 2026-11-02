@@ -512,6 +512,7 @@ const BusinessOfferManagement = () => {
                     </div>
 
                     <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-auto">
+                      {!(offer.valid_until && new Date(offer.valid_until) < new Date()) && (
                       <Button
                         variant="ghost"
                         size="icon"
@@ -525,6 +526,7 @@ const BusinessOfferManagement = () => {
                           <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500" />
                         )}
                       </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
