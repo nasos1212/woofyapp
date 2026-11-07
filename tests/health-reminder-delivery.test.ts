@@ -11,6 +11,8 @@ CREATE TABLE notifications(id uuid DEFAULT gen_random_uuid(),user_id uuid,type t
 `);
 const migration = readFileSync(new URL('../drizzle/migrations/0013_scheduled_health_reminder_notifications.sql', import.meta.url),'utf8');
 await db.exec(migration.slice(0,migration.indexOf("SELECT cron.schedule")));
+await db.exec(readFileSync(new URL('../supabase/health-reminder-schedule.sql', import.meta.url),'utf8'));
+await db.exec(readFileSync(new URL('../supabase/health-reminder-dispatch.sql', import.meta.url),'utf8'));
 const owner='11111111-1111-4111-8111-111111111111';
 const pet='22222222-2222-4222-8222-222222222222';
 await db.exec(`INSERT INTO profiles VALUES('${owner}','el',NULL); INSERT INTO user_roles VALUES('${owner}','member'); INSERT INTO pets VALUES('${pet}','${owner}','Kobe');
@@ -31,5 +33,18 @@ assert.equal((await db.query('SELECT * FROM notifications')).rows.length,1,'Acco
 await db.exec(`UPDATE profiles SET deletion_requested_at=NULL; UPDATE user_roles SET role='business';`);
 await db.query('SELECT public.dispatch_health_reminders()');
 assert.equal((await db.query('SELECT * FROM notifications')).rows.length,1,'Non-member accounts receive no pet reminders');
+await db.exec(`UPDATE user_roles SET role='member'; UPDATE pet_health_records SET record_type='vet_visit',reminder_interval_type=NULL,next_due_date=(now() AT TIME ZONE 'Europe/Athens')::date-1;`);
+await db.query('SELECT public.dispatch_health_reminders()');
+await db.query('SELECT public.dispatch_health_reminders()');
+assert.equal((await db.query('SELECT * FROM notifications')).rows.length,2,'Day-after follow-up sends only once despite repeated checks');
+await db.exec(`UPDATE pet_health_records SET next_due_date=(now() AT TIME ZONE 'Europe/Athens')::date-2;`);
+await db.query('SELECT public.dispatch_health_reminders()');
+assert.equal((await db.query('SELECT * FROM notifications')).rows.length,2,'No notifications two days after event');
+await db.exec(`DELETE FROM health_reminder_deliveries; UPDATE pet_health_records SET next_due_date=NULL;`);
+await db.query('SELECT public.dispatch_health_reminders()');
+assert.equal((await db.query('SELECT * FROM notifications')).rows.length,2,'Done clears one-off date and cancels final follow-up');
+await db.exec(`UPDATE pet_health_records SET record_type='vaccination',reminder_interval_type='yearly',next_due_date=(now() AT TIME ZONE 'Europe/Athens')::date+365;`);
+await db.query('SELECT public.dispatch_health_reminders()');
+assert.equal((await db.query('SELECT * FROM notifications')).rows.length,2,'Done advances recurring date and cancels final follow-up');
 await db.close();
 console.log('Health reminder delivery tests passed');
