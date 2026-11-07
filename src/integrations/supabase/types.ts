@@ -765,13 +765,6 @@ export type Database = {
             referencedRelation: "community_answers"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "community_answer_photos_answer_id_fkey"
-            columns: ["answer_id"]
-            isOneToOne: false
-            referencedRelation: "community_answers_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       community_answers: {
@@ -1165,13 +1158,6 @@ export type Database = {
             columns: ["answer_id"]
             isOneToOne: false
             referencedRelation: "community_answers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "community_votes_answer_id_fkey"
-            columns: ["answer_id"]
-            isOneToOne: false
-            referencedRelation: "community_answers_public"
             referencedColumns: ["id"]
           },
         ]
@@ -3192,15 +3178,7 @@ export type Database = {
           updated_at: string | null
           upvotes: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "community_answers_question_id_fkey"
-            columns: ["question_id"]
-            isOneToOne: false
-            referencedRelation: "community_questions"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       lost_pet_alerts_public: {
         Row: {
@@ -3335,20 +3313,6 @@ export type Database = {
           full_name: string | null
           preferred_city: string | null
           user_id: string | null
-        }
-        Insert: {
-          anonymous_handle?: string | null
-          avatar_url?: string | null
-          full_name?: string | null
-          preferred_city?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          anonymous_handle?: string | null
-          avatar_url?: string | null
-          full_name?: string | null
-          preferred_city?: string | null
-          user_id?: string | null
         }
         Relationships: []
       }
@@ -3546,6 +3510,35 @@ export type Database = {
       can_view_lost_pet_contact: {
         Args: { alert_id: string; alert_owner_id: string }
         Returns: boolean
+      }
+      community_answer_display: {
+        Args: never
+        Returns: {
+          author_avatar_url: string
+          author_is_verified_professional: boolean
+          author_name: string
+          author_professional_title: string
+          content: string
+          created_at: string
+          downvotes: number
+          id: string
+          is_accepted: boolean
+          is_anonymous: boolean
+          is_verified_pro: boolean
+          question_id: string
+          updated_at: string
+          upvotes: number
+        }[]
+      }
+      community_profile_display: {
+        Args: never
+        Returns: {
+          anonymous_handle: string
+          avatar_url: string
+          full_name: string
+          preferred_city: string
+          user_id: string
+        }[]
       }
       create_family_invite_notification: {
         Args: { _invitee_user_id: string; _share_code: string }

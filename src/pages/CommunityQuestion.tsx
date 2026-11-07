@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAccountType } from '@/hooks/useAccountType';
 import { useCommunity, Question, Answer } from '@/hooks/useCommunity';
 import { validateImageFile } from '@/lib/fileValidation';
+import { ownsCommunityQuestion } from '@/lib/communityOwnership';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import Header from '@/components/Header';
@@ -18,6 +19,7 @@ import DogLoader from '@/components/DogLoader';
 import ContributorBadges from '@/components/ContributorBadges';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -66,7 +68,8 @@ import {
   MoreVertical,
   ChevronLeft,
   Trash2,
-  EyeOff
+  EyeOff,
+  Pencil
 } from 'lucide-react';
 import { formatRelative } from '@/lib/relativeTime';
 import { formatDate } from "@/lib/utils";
@@ -101,6 +104,7 @@ const CommunityQuestion = () => {
     fetchQuestion,
     fetchAnswers,
     createAnswer,
+    updateQuestion,
     voteAnswer,
     acceptAnswer,
     toggleSaveQuestion,
@@ -119,6 +123,10 @@ const CommunityQuestion = () => {
   const [showPhotoGallery, setShowPhotoGallery] = useState<string | null>(null);
   const [showReportDialog, setShowReportDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [reportDetails, setReportDetails] = useState('');
@@ -183,10 +191,11 @@ const CommunityQuestion = () => {
   };
 
   const handleVote = async (answerId: string, voteType: 'up' | 'down') => {
+    if (!question) return;
     try {
       await voteAnswer(answerId, voteType);
       // Reload answers to get updated vote counts
-      const updatedAnswers = await fetchAnswers(question!.id);
+      const updatedAnswers = await fetchAnswers(question.id);
       setAnswers(updatedAnswers);
     } catch (error) {
       console.error('Error voting:', error);
@@ -367,6 +376,22 @@ const CommunityQuestion = () => {
     }
   };
 
+  const handleEditQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!question || !ownsCommunityQuestion(question.user_id, user?.id)) return;
+    setIsSaving(true);
+    try {
+      await updateQuestion(question.id, editTitle, editContent);
+      await loadData();
+      setShowEditDialog(false);
+      toast.success(t('communityQuestion.editSuccess'));
+    } catch {
+      toast.error(t('communityQuestion.editFailed'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
 
   if (authLoading || loading) {
     return (
@@ -390,7 +415,7 @@ const CommunityQuestion = () => {
   const urgency = urgencyConfig[question.urgency];
   const status = statusConfig[question.status];
   const UrgencyIcon = urgency.icon;
-  const isOwner = user?.id === question.user_id;
+  const isOwner = ownsCommunityQuestion(question.user_id, user?.id);
 
   return (
     <>
@@ -564,11 +589,11 @@ const CommunityQuestion = () => {
                   )}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" aria-label={t('communityQuestion.moreActions')}>
                         <MoreVertical className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align="start" collisionPadding={16} className="max-w-[calc(100vw-2rem)]">
                       <DropdownMenuItem onClick={handleShare}>
                         <Share2 className="w-4 h-4 mr-2" />
                         {t('communityQuestion.share')}
@@ -580,6 +605,16 @@ const CommunityQuestion = () => {
                         >
                           <Flag className="w-4 h-4 mr-2" />
                           {t('communityQuestion.report')}
+                        </DropdownMenuItem>
+                      )}
+                      {isOwner && (
+                        <DropdownMenuItem onClick={() => {
+                          setEditTitle(question.title);
+                          setEditContent(question.content);
+                          setShowEditDialog(true);
+                        }}>
+                          <Pencil className="w-4 h-4 mr-2 shrink-0" />
+                          {t('communityQuestion.editQuestion')}
                         </DropdownMenuItem>
                       )}
                       {isOwner && (
@@ -637,9 +672,9 @@ const CommunityQuestion = () => {
                           </Button>
                         </div>
 
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           {/* Author */}
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                             <div className="flex items-center gap-2">
                               {answer.is_anonymous ? (
                                 <div className="h-8 w-8 flex items-center justify-center bg-muted rounded-full">
@@ -710,7 +745,7 @@ const CommunityQuestion = () => {
                           </div>
 
                           {/* Content */}
-                          <p className="text-foreground whitespace-pre-wrap mb-3">
+                          <p className="text-foreground whitespace-pre-wrap break-words mb-3">
                             {answer.content}
                           </p>
 
@@ -841,6 +876,27 @@ const CommunityQuestion = () => {
           )}
 
           {/* Report Dialog */}
+          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>{t('communityQuestion.editQuestion')}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleEditQuestion} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-question-title">{t('community.ask.questionTitle')}</Label>
+                  <Input id="edit-question-title" value={editTitle} onChange={e => setEditTitle(e.target.value)} maxLength={150} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-question-content">{t('community.ask.details')}</Label>
+                  <Textarea id="edit-question-content" value={editContent} onChange={e => setEditContent(e.target.value)} className="min-h-[150px]" />
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)} disabled={isSaving}>{t('communityQuestion.cancel')}</Button>
+                  <Button type="submit" disabled={isSaving || !editTitle.trim() || !editContent.trim()}>{t(isSaving ? 'communityQuestion.saving' : 'communityQuestion.saveChanges')}</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
           <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
             <DialogContent className="sm:max-w-md">
               <DialogHeader>

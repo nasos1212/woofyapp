@@ -186,7 +186,7 @@ export const useCommunity = () => {
       if (q.is_anonymous) {
         return {
           author: { full_name: p?.anonymous_handle || 'Anonymous', avatar_url: null },
-          user_id: null as string | null,
+          user_id: q.user_id === user?.id ? q.user_id : null as string | null,
         };
       }
       return {
@@ -263,7 +263,7 @@ export const useCommunity = () => {
       : authorProfile
         ? { full_name: authorProfile.full_name, avatar_url: authorProfile.avatar_url }
         : null;
-    const exposedUserId = isAnon ? null : data.user_id;
+    const exposedUserId = isAnon && data.user_id !== user?.id ? null : data.user_id;
 
     // Increment view count
     await supabase
@@ -370,6 +370,16 @@ export const useCommunity = () => {
       setLoading(false);
     }
   }, [user, toast]);
+
+  const updateQuestion = useCallback(async (id: string, title: string, content: string) => {
+    if (!user) throw new Error('Must be logged in');
+    if (!title.trim() || !content.trim() || title.trim().length > 150) throw new Error('Invalid question');
+    const { data, error } = await supabase.from('community_questions')
+      .update({ title: title.trim(), content: content.trim() })
+      .eq('id', id).eq('user_id', user.id).select('id').single();
+    if (error) throw error;
+    return data;
+  }, [user]);
 
   const fetchAnswers = useCallback(async (questionId: string): Promise<Answer[]> => {
     // Use the public view that masks raw user_id and embeds author display info
@@ -704,6 +714,7 @@ export const useCommunity = () => {
     fetchQuestions,
     fetchQuestion,
     createQuestion,
+    updateQuestion,
     fetchAnswers,
     createAnswer,
     voteAnswer,

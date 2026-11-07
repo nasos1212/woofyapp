@@ -2958,6 +2958,12 @@
     "petPhotoAlt": "Pet photo {{n}}"
   },
   "communityQuestion": {
+    "editQuestion": "Edit Question",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "editSuccess": "Question updated",
+    "editFailed": "Could not update your question. Please try again.",
+    "moreActions": "Question actions",
     "notFound": "Question not found",
     "anonymousAnswer": "Post anonymously",
     "anonymousAnswerHint": "Your name and avatar will be hidden",
