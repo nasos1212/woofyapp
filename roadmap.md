@@ -1,8 +1,8 @@
 # Roadmap
 
 ## November 7 English-only notifications
-- [ ] Switch all language-dependent notification producers to English without changing recipients, schedules, links or app language
-- [ ] Verify Greek-preferring accounts receive the same notification language as English-preferring accounts
+- [x] Live article, partner, shelter, community and reminder producers now use English; birthday-offer defaults use English (publish and next iPhone update needed for that form)
+- [x] Language-invariance tests pass for Greek/English accounts; reminder and routing regressions pass; signed-in list checked; previously delivered notifications remain unchanged
 
 ## November 7 health reminder notifications
 - [x] Add final day-after notification with chosen English/Greek wording; stop after that and preserve Done cancellation; schedule/delivery/completion tests pass and live function definitions verified
