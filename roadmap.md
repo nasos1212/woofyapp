@@ -1,5 +1,10 @@
 # Roadmap
 
+## November 7 health reminder notifications
+- [ ] Schedule saved health reminders in Athens time with duplicate protection
+- [ ] Deliver notification bell entries and existing iPhone push alerts with health-record links
+- [ ] Test scheduling, permissions, duplicates and signed-in notification navigation
+
 ## November 7 community feedback
 - [x] Correct named author and reply visibility without exposing private profile fields
 - [x] Allow original authors to edit question title and details
