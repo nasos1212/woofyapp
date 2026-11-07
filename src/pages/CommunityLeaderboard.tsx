@@ -187,7 +187,7 @@ const CommunityLeaderboard = () => {
                       <p className="text-muted-foreground mb-3">
                         {userRank ? t('community.leaderboard.rankIn', { rank: userRank }) : t('community.leaderboard.rankNone')}
                       </p>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
                         <div className="text-center">
                           <p className="text-2xl font-bold text-primary">{userStats.reputation_score}</p>
                           <p className="text-xs text-muted-foreground">{t('community.leaderboard.reputation')}</p>
@@ -195,10 +195,6 @@ const CommunityLeaderboard = () => {
                         <div className="text-center">
                           <p className="text-2xl font-bold">{userStats.total_answers}</p>
                           <p className="text-xs text-muted-foreground">{t('community.leaderboard.answers')}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-green-600">{userStats.accepted_answers}</p>
-                          <p className="text-xs text-muted-foreground">{t('community.leaderboard.accepted')}</p>
                         </div>
                         <div className="text-center">
                           <p className="text-2xl font-bold text-blue-600">{userStats.total_upvotes}</p>
@@ -377,15 +373,6 @@ const CommunityLeaderboard = () => {
                   <div>
                     <p className="font-medium">{t('community.leaderboard.getUpvotes')}</p>
                     <p className="text-sm text-muted-foreground">{t('community.leaderboard.upvotePoints')}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-yellow-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{t('community.leaderboard.answerAccepted')}</p>
-                    <p className="text-sm text-muted-foreground">{t('community.leaderboard.acceptedPoints')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
