@@ -31,7 +31,8 @@ CREATE TRIGGER shelter AFTER INSERT ON shelters FOR EACH ROW EXECUTE FUNCTION no
 CREATE TRIGGER reply AFTER INSERT ON community_answers FOR EACH ROW EXECUTE FUNCTION notify_followers_on_answer();
 `);
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
-await db.query(`INSERT INTO profiles VALUES ($1,'en','Limassol',NULL),($2,'el','Limassol',NULL); INSERT INTO user_roles VALUES ($1,'member'),($2,'member');`, [id(1),id(2)]);
+await db.query(`INSERT INTO profiles VALUES ($1,'en','Limassol',NULL),($2,'el','Limassol',NULL)`, [id(1),id(2)]);
+await db.query(`INSERT INTO user_roles VALUES ($1,'member'),($2,'member')`, [id(1),id(2)]);
 await db.query(`INSERT INTO blog_posts VALUES ($1,'article','English article','Ελληνικό άρθρο','published')`,[id(10)]);
 await db.query(`INSERT INTO businesses VALUES ($1,$2,'Studio','Limassol','approved',false)`,[id(11),id(99)]);
 await db.query(`INSERT INTO shelters VALUES ($1,$2,'Shelter','approved',false)`,[id(12),id(99)]);
