@@ -1221,6 +1221,41 @@ export type Database = {
           },
         ]
       }
+      health_reminder_deliveries: {
+        Row: {
+          created_at: string
+          days_until: number
+          event_date: string
+          id: string
+          owner_user_id: string
+          record_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_until: number
+          event_date: string
+          id?: string
+          owner_user_id: string
+          record_id: string
+        }
+        Update: {
+          created_at?: string
+          days_until?: number
+          event_date?: string
+          id?: string
+          owner_user_id?: string
+          record_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_reminder_deliveries_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "pet_health_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lost_pet_alert_photos: {
         Row: {
           alert_id: string
@@ -3544,6 +3579,7 @@ export type Database = {
         Args: { _invitee_user_id: string; _share_code: string }
         Returns: undefined
       }
+      dispatch_health_reminders: { Args: never; Returns: number }
       generate_member_number: { Args: never; Returns: string }
       generate_member_share_code: {
         Args: { member_name: string }
@@ -3568,6 +3604,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      health_reminder_occurrence: {
+        Args: {
+          current_time_utc: string
+          days_before: number[]
+          due_date: string
+          interval_type: string
+          preferred_time: string
+          record_type: string
+        }
+        Returns: {
+          days_until: number
+          event_date: string
+        }[]
       }
       increment_blog_view: { Args: { _slug: string }; Returns: undefined }
       is_membership_owner: {
