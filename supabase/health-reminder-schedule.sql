@@ -17,7 +17,7 @@ LANGUAGE sql STABLE SET search_path = public AS $$
   WHERE local_now::time >= COALESCE(preferred_time, time '09:00')
     AND CASE
       WHEN record_type = 'medication' AND interval_type = 'daily' THEN due_date <= local_now::date
-      ELSE days_until IN (1, 0)
+      ELSE days_until IN (1, 0, -1)
     END;
 $$;
 REVOKE ALL ON FUNCTION public.health_reminder_occurrence(text,text,date,time,integer[],timestamptz) FROM PUBLIC, anon, authenticated;
