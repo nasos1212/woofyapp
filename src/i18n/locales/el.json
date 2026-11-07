@@ -1058,7 +1058,9 @@
       "dueToday": "Σήμερα",
       "dueSoon": "Σύντομα",
       "upcoming": "Επερχόμενο",
-      "daysOverdue": "Καθυστέρηση {{count}} ημερών"
+      "daysOverdue": "Καθυστέρηση {{count}} ημερών",
+      "daysOverdue_one": "Καθυστέρηση {{count}} ημέρας",
+      "daysOverdue_other": "Καθυστέρηση {{count}} ημερών"
     },
     "fields": {
       "due": "Λήξη",
