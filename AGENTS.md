@@ -1,6 +1,7 @@
 # Architecture Rules
 
 - Schedule health reminders server-side in Europe/Athens with an atomic occurrence ledger, inserting existing reminder notifications so bell and APNs delivery share the same path without duplicate alerts.
+- Compute health-record completion through the shared Athens-time helper, clearing one-off due dates and advancing recurring ones so Done cancels the current reminder occurrence.
 
 - Serve community display identities and replies through authenticated, fixed-column security-definer functions behind security-invoker views; private profile fields and raw anonymous reply ownership remain inaccessible.
 - Question edits change only title and content, scoped to the authenticated original author by database ownership policy.

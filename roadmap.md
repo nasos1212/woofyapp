@@ -1,7 +1,7 @@
 # Roadmap
 
 ## November 7 health reminder notifications
-- [ ] Replace advance alerts with one day before and due day for all health records; Done cancels the current occurrence
+- [x] Replace advance alerts with one day before and due day for all health records; Done cancels the current occurrence; schedule/completion tests pass
 - [x] Schedule saved health reminders in Athens time with duplicate protection
 - [x] Deliver notification bell entries through the existing iPhone push trigger with canonical health-record links; first genuine daily reminder created
 - [x] Scheduling, permissions, duplicate and routing tests pass; live scheduled run succeeded; signed-in notifications page renders
