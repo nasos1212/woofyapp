@@ -90,7 +90,7 @@ const urgencyConfig = {
 const statusConfig = {
   open: { color: 'bg-blue-500', label: 'Open', textColor: 'text-blue-700' },
   answered: { color: 'bg-purple-500', label: 'Answered', textColor: 'text-purple-700' },
-  resolved: { color: 'bg-green-500', label: 'Resolved', textColor: 'text-green-700' },
+  resolved: { color: 'bg-purple-500', label: 'Answered', textColor: 'text-purple-700' },
   closed: { color: 'bg-gray-500', label: 'Closed', textColor: 'text-gray-700' }
 };
 
@@ -106,7 +106,6 @@ const CommunityQuestion = () => {
     createAnswer,
     updateQuestion,
     voteAnswer,
-    acceptAnswer,
     toggleSaveQuestion,
     toggleFollowQuestion,
     markAsHelped,
@@ -199,20 +198,6 @@ const CommunityQuestion = () => {
       setAnswers(updatedAnswers);
     } catch (error) {
       console.error('Error voting:', error);
-    }
-  };
-
-  const handleAccept = async (answerId: string) => {
-    if (!question) return;
-    try {
-      await acceptAnswer(question.id, answerId);
-      setQuestion(prev => prev ? { ...prev, status: 'resolved' } : null);
-      setAnswers(prev => prev.map(a => ({
-        ...a,
-        is_accepted: a.id === answerId
-      })));
-    } catch (error) {
-      console.error('Error accepting answer:', error);
     }
   };
 
@@ -645,7 +630,6 @@ const CommunityQuestion = () => {
                 {answers.map(answer => (
                   <Card 
                     key={answer.id}
-                    className={answer.is_accepted ? 'border-green-500 border-2' : ''}
                   >
                     <CardContent className="p-4">
                       <div className="flex gap-4">
@@ -699,12 +683,6 @@ const CommunityQuestion = () => {
                                       {t('communityQuestion.verifiedPro')}
                                     </Badge>
                                   )}
-                                  {answer.is_accepted && (
-                                    <Badge className="bg-green-500 text-white text-xs">
-                                      <CheckCircle2 className="w-3 h-3 mr-1" />
-                                      {t('communityQuestion.accepted')}
-                                    </Badge>
-                                  )}
                                 </div>
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs text-muted-foreground">
@@ -712,36 +690,11 @@ const CommunityQuestion = () => {
                                   </span>
                                   <ContributorBadges 
                                     totalAnswers={answer.expert_stats?.total_answers}
-                                    acceptedAnswers={answer.expert_stats?.accepted_answers}
                                   />
                                 </div>
                               </div>
                             </div>
 
-                            {isOwner && !answer.is_accepted && question.status !== 'resolved' && (
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button variant="outline" size="sm" className="text-green-600">
-                                    <CheckCircle2 className="w-4 h-4 mr-1" />
-                                    {t('communityQuestion.acceptAnswer')}
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>{t("communityQuestionDialogs.acceptTitle")}</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      {t("communityQuestionDialogs.acceptDescription")}
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>{t("communityQuestionDialogs.acceptCancel")}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleAccept(answer.id)}>
-                                      {t("communityQuestionDialogs.acceptConfirm")}
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            )}
                           </div>
 
                           {/* Content */}

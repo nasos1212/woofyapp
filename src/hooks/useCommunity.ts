@@ -387,7 +387,6 @@ export const useCommunity = () => {
       .from('community_answers_public' as any)
       .select('*')
       .eq('question_id', questionId)
-      .order('is_accepted', { ascending: false })
       .order('upvotes', { ascending: false })
       .order('created_at', { ascending: true });
 
@@ -546,33 +545,6 @@ export const useCommunity = () => {
     }
   }, [user]);
 
-  const acceptAnswer = useCallback(async (questionId: string, answerId: string) => {
-    if (!user) throw new Error('Must be logged in');
-
-    // Unaccept any previously accepted answer
-    await supabase
-      .from('community_answers')
-      .update({ is_accepted: false })
-      .eq('question_id', questionId);
-
-    // Accept this answer
-    await supabase
-      .from('community_answers')
-      .update({ is_accepted: true })
-      .eq('id', answerId);
-
-    // Update question status
-    await supabase
-      .from('community_questions')
-      .update({ status: 'resolved' })
-      .eq('id', questionId);
-
-    toast({
-      title: "Answer accepted!",
-      description: "This answer has been marked as the solution.",
-    });
-  }, [user, toast]);
-
   const toggleSaveQuestion = useCallback(async (questionId: string, isSaved: boolean) => {
     if (!user) throw new Error('Must be logged in');
 
@@ -718,7 +690,6 @@ export const useCommunity = () => {
     fetchAnswers,
     createAnswer,
     voteAnswer,
-    acceptAnswer,
     toggleSaveQuestion,
     toggleFollowQuestion,
     markAsHelped,

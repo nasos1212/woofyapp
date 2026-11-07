@@ -62,7 +62,7 @@ const Community = () => {
   const statusConfig = {
     open: { color: 'bg-blue-500', label: t('community.open') },
     answered: { color: 'bg-purple-500', label: t('community.answered') },
-    resolved: { color: 'bg-green-500', label: t('community.resolved') },
+    resolved: { color: 'bg-purple-500', label: t('community.answered') },
     closed: { color: 'bg-gray-500', label: t('community.closed') }
   };
 
@@ -458,12 +458,6 @@ const Community = () => {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t('community.totalQuestions')}</span>
                       <span className="font-medium">{questions.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.resolvedCount')}</span>
-                      <span className="font-medium text-green-600">
-                        {questions.filter(q => q.status === 'resolved').length}
-                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">{t('community.awaitingHelp')}</span>

@@ -1,0 +1,13 @@
+import { strict as assert } from 'node:assert';
+import { readFileSync } from 'node:fs';
+import { PGlite } from '@electric-sql/pglite';
+const db = new PGlite();
+await db.exec('CREATE TABLE community_answers(id integer PRIMARY KEY, content text, is_accepted boolean);');
+await db.exec(readFileSync(new URL('../drizzle/migrations/0012_retire_community_answer_acceptance.sql', import.meta.url), 'utf8'));
+await db.exec("INSERT INTO community_answers VALUES (1,'Existing reply',true);");
+assert.equal((await db.query<{is_accepted:boolean}>('SELECT is_accepted FROM community_answers')).rows[0].is_accepted,false,'New replies cannot be accepted');
+await db.exec('UPDATE community_answers SET is_accepted=true WHERE id=1');
+assert.equal((await db.query<{is_accepted:boolean}>('SELECT is_accepted FROM community_answers')).rows[0].is_accepted,false,'Older clients cannot accept a reply');
+assert.equal((await db.query<{content:string}>('SELECT content FROM community_answers')).rows[0].content,'Existing reply','Reply content is preserved');
+await db.close();
+console.log('Answer acceptance retirement tests passed');
