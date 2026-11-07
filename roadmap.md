@@ -1,5 +1,11 @@
 # Roadmap
 
+## November 7 health reminder notifications
+- [x] Schedule saved health reminders in Athens time with duplicate protection
+- [x] Deliver notification bell entries through the existing iPhone push trigger with canonical health-record links; first genuine daily reminder created
+- [x] Scheduling, permissions, duplicate and routing tests pass; live scheduled run succeeded; signed-in notifications page renders
+- [ ] Confirm a reminder tap and actual phone receipt on an eligible owner's iPhone (requires device; current signed-in account has no due reminder)
+
 ## November 7 community feedback
 - [x] Correct named author and reply visibility without exposing private profile fields
 - [x] Allow original authors to edit question title and details

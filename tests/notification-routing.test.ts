@@ -10,3 +10,5 @@ assert.equal(notificationDestination("announcement", {}, "notice-1"), "/member/n
 assert.equal(notificationDestination("announcement", { action_url: "https://evil.example/path" }, "notice-1"), "/member/notifications?notification=notice-1");
 assert.equal(notificationDestination("adoption_inquiry", { inquiry_id: "inq-1" }), "/shelter-dashboard?tab=inquiries");
 console.log("Notification destination tests passed");
+assert.equal(notificationDestination("reminder", { pet_id: "kobe-1" }), "/member/health-records?pet=kobe-1");
+assert.equal(notificationDestination("reminder", {}), "/member/health-records");
