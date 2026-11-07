@@ -2961,6 +2961,12 @@
     "petPhotoAlt": "Φωτογραφία κατοικιδίου {{n}}"
   },
   "communityQuestion": {
+    "editQuestion": "Επεξεργασία Ερώτησης",
+    "saveChanges": "Αποθήκευση Αλλαγών",
+    "saving": "Αποθήκευση...",
+    "editSuccess": "Η ερώτηση ενημερώθηκε",
+    "editFailed": "Δεν ήταν δυνατή η ενημέρωση. Δοκιμάστε ξανά.",
+    "moreActions": "Ενέργειες ερώτησης",
     "notFound": "Η ερώτηση δεν βρέθηκε",
     "anonymousAnswer": "Δημοσίευση ανώνυμα",
     "anonymousAnswerHint": "Το όνομα και η εικόνα σας θα αποκρυφτούν",

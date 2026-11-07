@@ -359,25 +359,25 @@ export const AIProactiveAlerts = () => {
       {/* Header */}
       <div 
         className={cn(
-          "px-4 py-3 flex items-center justify-between cursor-pointer transition-colors",
+          "px-4 py-3 flex flex-wrap items-center justify-between gap-2 cursor-pointer transition-colors",
           hasUrgentItems 
             ? "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" 
             : "bg-gradient-to-r from-cyan-50 via-teal-50 to-emerald-50"
         )}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <div className={cn(
-            "p-2 rounded-full",
+            "p-2 rounded-full shrink-0",
             hasUrgentItems ? "bg-primary text-primary-foreground" : "bg-gradient-to-br from-cyan-400 to-teal-500 text-white"
           )}>
             <Sparkles className="w-4 h-4" />
           </div>
-          <div>
-            <h3 className="font-semibold text-sm flex items-center gap-2">
+          <div className="min-w-0">
+            <h3 className="font-semibold text-sm flex flex-wrap items-center gap-2">
               {t("proactiveAlerts.title")}
               {(overdueCount > 0 || todayCount > 0) && (
-                <Badge variant="destructive" className="text-xs">
+                <Badge variant="destructive" className="text-xs whitespace-nowrap">
                   {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
                   {overdueCount > 0 && todayCount > 0 && " · "}
                   {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
@@ -389,7 +389,7 @@ export const AIProactiveAlerts = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 ml-auto">
           {isCollapsed ? (
             <Button
               variant="ghost"

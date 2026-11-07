@@ -1,5 +1,8 @@
 # Architecture Rules
 
+- Serve community display identities and replies through authenticated, fixed-column security-definer functions behind security-invoker views; private profile fields and raw anonymous reply ownership remain inaccessible.
+- Question edits change only title and content, scoped to the authenticated original author by database ownership policy.
+
 - Gate business profile rendering and data fetching on hydrated authentication, redirecting guests to `/auth` in the shared web/native page to avoid false not-found results and anonymous requests.
 
 - Apply offer expiry filtering before limits in user-facing nearby and public offer queries; owner management retains all offers for history.
