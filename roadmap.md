@@ -1,5 +1,12 @@
 # Roadmap
 
+## November 7 community feedback
+- [ ] Correct named author and reply visibility without exposing private profile fields
+- [ ] Allow original authors to edit question title and details
+- [ ] Keep the question menu within the phone screen and fix reminder banner wrapping in English and Greek
+- [ ] Discuss Accept Answer before changing it (awaiting user decision)
+- [ ] Verify signed-in community flow and privacy rules
+
 ## October 25 shelter profile dot and v1.4 package
 - [x] Remove the dot before "Λειτουργεί από το 2023" on shelter profiles so the calendar line starts with its icon
 - [x] Verified on UANA's page at 393x756 in Greek: no bullet anywhere before the calendar line
