@@ -7,11 +7,13 @@ export interface NotificationLinkData {
   share_code?: string;
   conversation_id?: string;
   action_url?: string;
+  pet_id?: string;
 }
 
 export function notificationDestination(type: string, rawData: unknown, id?: string): string {
   const data = (rawData && typeof rawData === "object" ? rawData : {}) as NotificationLinkData;
   const encoded = encodeURIComponent;
+  if (type === "reminder") return data.pet_id ? `/member/health-records?pet=${encoded(data.pet_id)}` : "/member/health-records";
   if (type === "new_blog_post" && data.slug) return `/blog/${encoded(data.slug)}`;
   if (type === "lost_pet_alert" && data.alert_id) return `/member/lost-found?alert=${encoded(data.alert_id)}`;
   if (["community_answer", "community_follow_activity", "answer_accepted"].includes(type) && data.question_id) return `/community/question/${encoded(data.question_id)}`;
