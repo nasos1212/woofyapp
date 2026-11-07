@@ -1,5 +1,9 @@
 # Roadmap
 
+## November 7 English-only notifications
+- [x] Live article, partner, shelter, community and reminder producers now use English; birthday-offer defaults use English (publish and next iPhone update needed for that form)
+- [x] Language-invariance tests pass for Greek/English accounts; reminder and routing regressions pass; signed-in list checked; previously delivered notifications remain unchanged
+
 ## November 7 health reminder notifications
 - [x] Add final day-after notification with chosen English/Greek wording; stop after that and preserve Done cancellation; schedule/delivery/completion tests pass and live function definitions verified
 - [x] Replace advance alerts with one day before and due day for all health records; Done cancels the current occurrence; schedule/completion tests pass

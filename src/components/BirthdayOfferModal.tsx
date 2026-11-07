@@ -67,7 +67,7 @@ export function BirthdayOfferModal({
     setFixedAmount("5");
     if (pet) {
       const discountText = `15% off`;
-      setMessage(t("birthdayOfferModal.defaultMessage", { petName: pet.pet_name, discount: discountText, businessName }));
+      setMessage(t("birthdayOfferModal.defaultMessage", { lng: "en", petName: pet.pet_name, discount: discountText, businessName }));
     }
   };
 
@@ -86,7 +86,7 @@ export function BirthdayOfferModal({
     }
     if (pet) {
       const discountText = mode === "percentage" ? `${discount}% off` : `€${discount} off`;
-      setMessage(t("birthdayOfferModal.defaultMessage", { petName: pet.pet_name, discount: discountText, businessName }));
+      setMessage(t("birthdayOfferModal.defaultMessage", { lng: "en", petName: pet.pet_name, discount: discountText, businessName }));
     }
   };
 
@@ -110,7 +110,7 @@ export function BirthdayOfferModal({
       // Create notification for the pet owner
       const { error: notifError } = await supabase.from("notifications").insert({
         user_id: pet.owner_user_id,
-        title: t("birthdayOfferModal.notifTitle", { businessName }),
+        title: t("birthdayOfferModal.notifTitle", { lng: "en", businessName }),
         message: message,
         type: "birthday_offer",
         data: {
