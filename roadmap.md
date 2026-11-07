@@ -4,7 +4,7 @@
 - [x] Correct named author and reply visibility without exposing private profile fields
 - [x] Allow original authors to edit question title and details
 - [x] Keep the question menu within the phone screen and fix reminder banner wrapping in English and Greek
-- [ ] Discuss Accept Answer before changing it (awaiting user decision)
+- [ ] Remove Accept Answer entirely, including special reply markings and acceptance-based helper badges (user confirmed)
 - [x] Verified Koboulinis3 sees Aris and Klodia’s reply; Aris can save his question; isolated privacy/ownership tests pass
 - [ ] Publish website and include layout/edit controls in next iPhone update (not requested in this task)
 
