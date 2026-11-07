@@ -1,5 +1,9 @@
 # Roadmap
 
+## November 7 English-only notifications
+- [ ] Switch all language-dependent notification producers to English without changing recipients, schedules, links or app language
+- [ ] Verify Greek-preferring accounts receive the same notification language as English-preferring accounts
+
 ## November 7 health reminder notifications
 - [x] Add final day-after notification with chosen English/Greek wording; stop after that and preserve Done cancellation; schedule/delivery/completion tests pass and live function definitions verified
 - [x] Replace advance alerts with one day before and due day for all health records; Done cancels the current occurrence; schedule/completion tests pass
