@@ -1,11 +1,12 @@
 # Roadmap
 
 ## November 7 community feedback
-- [ ] Correct named author and reply visibility without exposing private profile fields
-- [ ] Allow original authors to edit question title and details
-- [ ] Keep the question menu within the phone screen and fix reminder banner wrapping in English and Greek
+- [x] Correct named author and reply visibility without exposing private profile fields
+- [x] Allow original authors to edit question title and details
+- [x] Keep the question menu within the phone screen and fix reminder banner wrapping in English and Greek
 - [ ] Discuss Accept Answer before changing it (awaiting user decision)
-- [ ] Verify signed-in community flow and privacy rules
+- [x] Verified Koboulinis3 sees Aris and Klodia’s reply; Aris can save his question; isolated privacy/ownership tests pass
+- [ ] Publish website and include layout/edit controls in next iPhone update (not requested in this task)
 
 ## October 25 shelter profile dot and v1.4 package
 - [x] Remove the dot before "Λειτουργεί από το 2023" on shelter profiles so the calendar line starts with its icon
