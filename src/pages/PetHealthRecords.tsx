@@ -20,6 +20,7 @@ import Header from "@/components/Header";
 import { format, isPast, addDays, differenceInDays, isToday } from "date-fns";
 import { formatDate, cn } from "@/lib/utils";
 import DogLoader from "@/components/DogLoader";
+import { healthReminderCompletion } from "@/lib/healthReminderCompletion";
 import { validateDocumentFile, MAX_DOCUMENT_SIZE, VALID_DOCUMENT_EXTENSIONS } from "@/lib/fileValidation";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
@@ -515,18 +516,13 @@ const PetHealthRecords = () => {
     if (!selectedPet) return;
     
     try {
-      const today = new Date();
-      const isOneTime = record.reminder_interval_type === 'once';
+      const completion = healthReminderCompletion(record);
+      const isOneTime = completion.next_due_date === null;
       const intervalDays = record.reminder_interval_days || 365;
-      
-      const nextDue = isOneTime ? null : format(addDays(today, intervalDays), "yyyy-MM-dd");
 
       const { error } = await supabase
         .from("pet_health_records")
-        .update({
-          date_administered: format(today, "yyyy-MM-dd"),
-          next_due_date: nextDue,
-        })
+        .update(completion)
         .eq("id", record.id);
 
       if (error) throw error;
