@@ -11,7 +11,7 @@ async function occurrence(type: string, interval: string | null, due: string | n
 assert.equal((await occurrence('vaccination','yearly','2026-12-07',null,null)).length,0,'No 30-day vaccination notification');
 assert.equal((await occurrence('vaccination','yearly','2026-11-08',null,null)).length,1,'One-day vaccination reminder');
 assert.equal((await occurrence('vaccination','yearly','2026-11-07',null,null)).length,1,'Due-day vaccination reminder');
-assert.deepEqual(await occurrence('vaccination','yearly','2026-11-06',null,null),[{event_date:'2026-11-06',days_until:-1}],'Final reminder one day after the event');
+assert.deepEqual(await occurrence('vaccination','yearly','2026-11-06',null,null),[{event_date:new Date('2026-11-06T00:00:00Z'),days_until:-1}],'Final reminder one day after the event');
 assert.equal((await occurrence('vaccination','yearly','2026-11-05',null,null)).length,0,'Stop two days after the event');
 assert.equal((await occurrence('vet_visit',null,'2026-11-06',null,[3])).length,1,'One-off visits get the final day-after reminder');
 assert.equal((await occurrence('medication','monthly','2026-11-06',null,null)).length,1,'Non-daily medication gets the final day-after reminder');
