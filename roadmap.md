@@ -1,6 +1,7 @@
 # Roadmap
 
 ## November 8 animal records video
+- [ ] Remove the last sentence from the final slide and replace Missi's whiskers record with an officially verified record and authentic photo; render v6 and inspect all slides
 - [x] Verify all ten animal achievements against Guinness sources; distinguish historical records and Merlin's tie
 - [x] Find seven authentic named-animal photos; Augie, Missi and Creme Puff use graphics because authentic photos could not be verified
 - [x] Create an 82-second Wooffy Instagram review video mixing animated record slides and labelled generated introduction with readable timing
