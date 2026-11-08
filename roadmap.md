@@ -1,5 +1,11 @@
 # Roadmap
 
+## November 8 animal records video
+- [x] Verify all ten animal achievements against Guinness sources; distinguish historical records and Merlin's tie
+- [ ] Find authentic named-animal photos and record source/permission limitations
+- [ ] Create a Wooffy Instagram video mixing animated record slides and labelled generated introduction with readable timing
+- [ ] Check every slide and deliver the video with photo permission qualifications
+
 ## November 7 English-only notifications
 - [x] Live article, partner, shelter, community and reminder producers now use English; birthday-offer defaults use English (publish and next iPhone update needed for that form)
 - [x] Language-invariance tests pass for Greek/English accounts; reminder and routing regressions pass; signed-in list checked; previously delivered notifications remain unchanged
