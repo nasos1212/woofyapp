@@ -1,5 +1,12 @@
 # Roadmap
 
+## November 8 animal records video
+- [x] Verify all ten animal achievements against Guinness sources; distinguish historical records and Merlin's tie
+- [x] Find seven authentic named-animal photos; Augie, Missi and Creme Puff use graphics because authentic photos could not be verified
+- [x] Create an 82-second Wooffy Instagram review video mixing animated record slides and labelled generated introduction with readable timing
+- [x] Check all ten slides; correct oldest-cat timeline wording and shorten tennis-ball metric for social-overlay clearance; deliver with permission qualifications
+- [ ] Clear reuse permissions for seven sourced photos before public Instagram posting (requires rights-holder permission)
+
 ## November 7 English-only notifications
 - [x] Live article, partner, shelter, community and reminder producers now use English; birthday-offer defaults use English (publish and next iPhone update needed for that form)
 - [x] Language-invariance tests pass for Greek/English accounts; reminder and routing regressions pass; signed-in list checked; previously delivered notifications remain unchanged
