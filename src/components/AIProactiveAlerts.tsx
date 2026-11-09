@@ -357,7 +357,6 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                 {todayCount > 0 && <span>{t("proactiveAlerts.today", { count: todayCount })}</span>}
               </div>
             )}
-            {isPreview && <Badge variant="secondary" className="mt-1 rounded px-1.5 py-0 text-[10px] leading-4">Preview only</Badge>}
           </div>
         </div>
         <Button
