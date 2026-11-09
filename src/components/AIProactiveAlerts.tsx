@@ -409,9 +409,11 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                     <Badge className={cn("rounded-md border px-2 py-0.5 text-xs font-medium leading-5 shadow-none hover:bg-muted", statusStyles[reminder.status])}>
                       {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
-                    <span className={cn("text-sm leading-5", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
-                      {getDaysText(reminder.daysUntil)}
-                    </span>
+                    {reminder.status !== "today" && (
+                      <span className={cn("text-sm leading-5", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
+                        {getDaysText(reminder.daysUntil)}
+                      </span>
+                    )}
                   </div>
                 </div>
               </Button>
