@@ -1,10 +1,10 @@
 # Roadmap
 
 ## November 9 blog and shelter feedback
-- [ ] Check and correct duplicate blog category highlighting.
-- [ ] Check shelter public-profile navigation without exposing hidden test shelters.
-- [ ] Remove the unnecessary back arrow from shelter account-closure support.
-- [ ] Add dogs/cats currently-in-care selection under About and use animals in gallery wording.
+- [x] Blog filters have one selected state; unselected hover/focus no longer resembles selection; checked All and Stories in the live blog.
+- [x] Shelter dashboard profile opens in-app; real UANA profile renders, hidden Test shelter remains unavailable to its owner.
+- [x] Account-closure support already has no back arrow; verified as the Test shelter owner (Send Request and Close only).
+- [x] Dogs/cats/both choice under About saves and reads back after reload; restored Test shelter to dogs; gallery wording uses animals in English and Greek.
 
 ## November 9 shared dashboard reminders
 - [x] Shared Free/Paid reminder panel cleaned up; Hide collapses and reopens the same reminders; English/Greek phone and desktop checks pass with no record or alert requests.
