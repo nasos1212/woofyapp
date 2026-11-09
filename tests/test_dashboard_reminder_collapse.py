@@ -33,8 +33,8 @@ async def main():
         mutations = []
         page.on('request', lambda r: mutations.append(r.method) if r.method in ('POST', 'PATCH', 'DELETE') and ('pet_health_records' in r.url or '/functions/v1/' in r.url or 'ai_proactive_alerts' in r.url) else None)
         for language, title, hide, show in (
-            ('en', 'Wooffy Reminders', 'Hide', 'Show More'),
-            ('el', 'Wooffy Υπενθυμίσεις', 'Απόκρυψη', 'Δες Περισσότερα'),
+            ('en', 'Reminders', 'Hide', 'Show More'),
+            ('el', 'Υπενθυμίσεις', 'Απόκρυψη', 'Δες Περισσότερα'),
         ):
             await page.evaluate('(lng) => localStorage.setItem("wooffy_lang", lng)', language)
             for width, height in ((393, 756), (1280, 1800)):

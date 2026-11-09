@@ -2752,7 +2752,7 @@
     "untitled": "Συνομιλία χωρίς τίτλο"
   },
   "proactiveAlerts": {
-    "title": "Wooffy Υπενθυμίσεις",
+    "title": "Υπενθυμίσεις",
     "overdue": "{{count}} εκπρόθεσμα",
     "today": "{{count}} σήμερα",
     "upcomingOne": "{{count}} επερχόμενη υπενθύμιση",
