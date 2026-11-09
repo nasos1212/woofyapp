@@ -44,6 +44,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMembership } from "@/hooks/useMembership";
 import { supabase } from "@/integrations/supabase/client";
 import FreemiumOnboardingTour from "@/components/FreemiumOnboardingTour";
+import AIProactiveAlerts from "@/components/AIProactiveAlerts";
 
 import CityPromptBanner from "@/components/CityPromptBanner";
 import { PetType, getPetTypeEmoji } from "@/data/petBreeds";
@@ -288,6 +289,8 @@ const FreeMemberDashboard = () => {
               {t("freeMember.hello", { name: profileName || t("freeMember.friend") })}
             </h1>
           </div>
+
+          {import.meta.env.DEV && pets[0] && <AIProactiveAlerts previewPet={pets[0]} />}
 
           {/* My Pets Section - FIRST */}
           <Card className="relative mb-8 overflow-hidden border-wooffy-blue/20 shadow-card bg-wooffy-dark text-wooffy-light">
