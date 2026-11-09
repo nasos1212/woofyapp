@@ -36,7 +36,7 @@ async def main():
             ('en', 'Wooffy Reminders', 'Hide', 'Show More'),
             ('el', 'Wooffy Υπενθυμίσεις', 'Απόκρυψη', 'Δες Περισσότερα'),
         ):
-            await page.evaluate('(lng) => localStorage.setItem("i18nextLng", lng)', language)
+            await page.evaluate('(lng) => localStorage.setItem("wooffy_lang", lng)', language)
             for width, height in ((393, 756), (1280, 1800)):
                 await page.set_viewport_size({'width': width, 'height': height})
                 await page.goto('http://localhost:8080/member/free')
