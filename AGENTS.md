@@ -1,5 +1,8 @@
 # Architecture Rules
 
+- Store shelter care-species separately from the existing care count and expose it through the existing public view, preserving legacy counts and hidden-shelter access.
+- Use in-app links for shelter dashboard public-profile navigation so native shells do not open a separate unauthenticated browser.
+
 - Keep dashboard reminders in the shared AIProactiveAlerts presentation with local reversible collapse state, so membership views stay consistent without altering records or delivery.
 
 - Keep reminder design samples in development-only local state with synthetic IDs guarded before mutations, so preview actions never save health records or dispatch alerts.

@@ -156,6 +156,8 @@ const Blog = () => {
                 key={cat}
                 variant={activeCategory === cat ? "default" : "outline"}
                 size="sm"
+                aria-pressed={activeCategory === cat}
+                className={activeCategory === cat ? "" : "hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground"}
                 onClick={() => setCategory(cat)}
               >
                 {t(`blog.categories.${cat}`)}

@@ -2042,6 +2042,7 @@
       "missionStatement": "Mission Statement",
       "missionPlaceholder": "Your shelter's mission in a few sentences...",
       "dogsInCare": "Dogs Currently in Care",
+      "animalsInCareType": "Animals Currently in Care",
       "dogsInCarePlaceholder": "e.g., 25-30",
       "operatingSinceLabel": "Operating Since (Year)",
       "operatingSincePlaceholder": "e.g., 2020",
@@ -2060,7 +2061,7 @@
       "coverPhoto": "Cover Photo",
       "coverPhotoDesc": "This photo appears at the top of your public shelter profile.",
       "photoGallery": "Photo Gallery",
-      "photoGalleryDesc": "Upload photos of your shelter, dogs, and activities. These will be displayed on your public profile."
+      "photoGalleryDesc": "Upload photos of your shelter, animals, and activities. These will be displayed on your public profile."
     },
     "toasts": {
       "profileUpdated": "Profile updated successfully!",
@@ -2251,7 +2252,7 @@
   },
   "shelterGallery": {
     "title": "Photo Gallery",
-    "description": "Showcase your dogs and facilities. These photos appear on your public profile.",
+    "description": "Showcase your animals and facilities. These photos appear on your public profile.",
     "clickToAdd": "Click to add photos",
     "fileHint": "JPG, PNG, or WebP (max 5MB each)",
     "previewAlt": "Preview",
@@ -2283,6 +2284,8 @@
     "bottom": "Bottom",
     "uploading": "Uploading...",
     "saveCover": "Save Cover Photo",
+    "careTypes": { "dogs": "Dogs", "cats": "Cats", "both": "Dogs and cats" },
+    "careLabels": { "dogs": "Dogs in Care", "cats": "Cats in Care", "both": "Animals in Care" },
     "saving": "Saving...",
     "savePosition": "Save Position",
     "changeCover": "Change Cover",
