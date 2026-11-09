@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Keep dashboard reminders in the shared AIProactiveAlerts presentation with local reversible collapse state, so membership views stay consistent without altering records or delivery.
+
 - Keep reminder design samples in development-only local state with synthetic IDs guarded before mutations, so preview actions never save health records or dispatch alerts.
 
 - Generate notification copy in English at the producer, not in bell or APNs rendering, so installed clients and phone delivery receive identical text without changing app language preferences.
