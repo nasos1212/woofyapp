@@ -47,9 +47,9 @@ const alertIcons: Record<string, React.ReactNode> = {
 const statusStyles: Record<UpcomingReminder["status"], string> = {
   overdue: "bg-destructive/10 text-destructive border-destructive/20",
   today: "bg-primary/10 text-primary border-primary/20",
-  urgent: "bg-accent text-accent-foreground border-border",
-  soon: "bg-secondary text-secondary-foreground border-border",
-  upcoming: "bg-muted text-muted-foreground border-border",
+  urgent: "bg-status-pending/15 text-foreground border-status-pending/30",
+  soon: "bg-primary/10 text-primary border-primary/20",
+  upcoming: "bg-primary/5 text-primary border-primary/15",
 };
 
 export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; pet_name: string } } = {}) => {
@@ -341,17 +341,16 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
   if (reminders.length === 0 && alerts.length === 0) return null;
 
   return (
-    <Card className="mb-6 overflow-hidden rounded-lg border-border bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
+    <Card className="mb-6 overflow-hidden rounded-lg border-primary/20 bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-l-4 border-primary bg-primary/5 px-4 py-4">
         <div className="flex min-w-0 flex-1 items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Bell className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold text-foreground break-words">{t("proactiveAlerts.title")}</h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {t(reminders.length === 1 ? "proactiveAlerts.upcomingOne" : "proactiveAlerts.upcomingOther", { count: reminders.length })}
-            </p>
+            <h3 className="text-sm font-semibold text-foreground break-words">
+              {t("proactiveAlerts.title")} <span className="whitespace-nowrap text-primary">({reminders.length})</span>
+            </h3>
             {hasUrgentItems && (overdueCount > 0 || todayCount > 0) && (
               <p className="mt-1 text-xs font-medium text-destructive">
                 {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
@@ -365,7 +364,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto h-9 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="ml-auto h-9 shrink-0 gap-1.5 px-2 text-xs text-primary hover:bg-primary/10 hover:text-primary"
           aria-expanded={!isCollapsed}
           aria-controls="dashboard-reminder-list"
           onClick={() => setIsCollapsed(current => !current)}
@@ -387,7 +386,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
               >
                 <div className={cn(
                   "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
-                  reminder.status === "overdue" ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"
+                  statusStyles[reminder.status]
                 )}>
                   {alertIcons[reminder.type] || <Calendar className="h-4 w-4" />}
                 </div>
