@@ -342,8 +342,8 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
 
   return (
     <Card className="mb-6 overflow-hidden rounded-lg border-primary/20 bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-l-4 border-primary bg-primary/5 px-4 py-4">
-        <div className="flex min-w-0 w-full items-start gap-3 sm:w-auto sm:flex-1">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-l-4 border-primary bg-primary/10 px-3 py-3">
+        <div className="flex min-w-0 flex-1 items-start gap-2.5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Bell className="h-4 w-4" />
           </div>
@@ -352,12 +352,12 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
               {t("proactiveAlerts.title")} <span className="whitespace-nowrap text-primary">({reminders.length})</span>
             </h3>
             {hasUrgentItems && (overdueCount > 0 || todayCount > 0) && (
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs font-medium leading-5 text-destructive">
+              <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium leading-5 text-destructive">
                 {overdueCount > 0 && <span>{t("proactiveAlerts.overdue", { count: overdueCount })}</span>}
                 {todayCount > 0 && <span>{t("proactiveAlerts.today", { count: todayCount })}</span>}
               </div>
             )}
-            {isPreview && <Badge variant="secondary" className="mt-1 text-xs">Preview only</Badge>}
+            {isPreview && <Badge variant="secondary" className="mt-1 rounded px-1.5 py-0 text-[10px] leading-4">Preview only</Badge>}
           </div>
         </div>
         <Button
@@ -380,7 +380,14 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
               <Button
                 key={`${reminder.type}-${reminder.id}`}
                 variant="ghost"
-                className="grid h-auto w-full grid-cols-[2rem_minmax(0,1fr)_1rem] items-start justify-start gap-x-3 gap-y-3 whitespace-normal rounded-none px-4 py-4 text-left font-normal hover:bg-muted/50"
+                className={cn(
+                  "grid h-auto w-full grid-cols-[2rem_minmax(0,1fr)_1rem] items-start justify-start gap-x-3 gap-y-3 whitespace-normal rounded-none border-l-4 px-4 py-4 text-left font-normal hover:text-foreground",
+                  reminder.status === "overdue"
+                    ? "border-destructive/50 bg-destructive/5 hover:bg-destructive/10"
+                    : reminder.status === "urgent"
+                      ? "border-status-pending/60 bg-status-pending/10 hover:bg-status-pending/15"
+                      : "border-primary/40 bg-primary/5 hover:bg-primary/10"
+                )}
                 onClick={() => navigate(reminder.type === "birthday" ? `/member/pet/${reminder.id}` : "/member/health-records")}
               >
                 <div className={cn(
