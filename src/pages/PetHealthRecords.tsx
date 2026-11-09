@@ -21,6 +21,7 @@ import { format, isPast, addDays, differenceInDays, isToday } from "date-fns";
 import { formatDate, cn } from "@/lib/utils";
 import DogLoader from "@/components/DogLoader";
 import { healthReminderCompletion } from "@/lib/healthReminderCompletion";
+import { createReminderPreview, isPreviewReminder } from "@/lib/reminderPreview";
 import { validateDocumentFile, MAX_DOCUMENT_SIZE, VALID_DOCUMENT_EXTENSIONS } from "@/lib/fileValidation";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
@@ -188,6 +189,8 @@ const PetHealthRecords = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [activeTab, setActiveTab] = useState("reminders");
+  const [showReminderPreview, setShowReminderPreview] = useState(import.meta.env.DEV);
+  const [dismissedPreviewIds, setDismissedPreviewIds] = useState<string[]>([]);
   const [editingRecord, setEditingRecord] = useState<HealthRecord | null>(null);
   const [removeExistingDocument, setRemoveExistingDocument] = useState(false);
   const [previewDocument, setPreviewDocument] = useState<{ url: string; title: string; type: string } | null>(null);
@@ -513,6 +516,10 @@ const PetHealthRecords = () => {
   };
 
   const markAsCompleted = async (record: HealthRecord) => {
+    if (isPreviewReminder(record.id)) {
+      setDismissedPreviewIds(prev => [...prev, record.id]);
+      return;
+    }
     if (!selectedPet) return;
     
     try {
@@ -546,6 +553,10 @@ const PetHealthRecords = () => {
   };
 
   const deleteRecord = async (recordId: string) => {
+    if (isPreviewReminder(recordId)) {
+      setDismissedPreviewIds(prev => [...prev, recordId]);
+      return;
+    }
     try {
       const { error } = await supabase
         .from("pet_health_records")
@@ -728,7 +739,10 @@ const PetHealthRecords = () => {
       });
   };
 
-  const reminders = getRemindersWithStatus();
+  const previewActive = import.meta.env.DEV && showReminderPreview && records.length === 0 && selectedPet !== null;
+  const reminders = previewActive && selectedPet
+    ? createReminderPreview(selectedPet.id).filter(sample => !dismissedPreviewIds.includes(sample.id))
+    : getRemindersWithStatus();
   const overdueCount = reminders.filter(r => r.status === 'overdue').length;
   const dueSoonCount = reminders.filter(r => r.status === 'due-today' || r.status === 'due-soon').length;
 
@@ -1286,7 +1300,7 @@ const PetHealthRecords = () => {
                   <div className="flex items-center gap-3">
                     <CheckCircle className="h-6 w-6 text-green-500" />
                     <div>
-                      <p className="text-xl font-bold">{records.length}</p>
+                      <p className="text-xl font-bold">{previewActive ? reminders.length : records.length}</p>
                       <p className="text-xs text-muted-foreground">{t("petHealth.summary.total")}</p>
                     </div>
                   </div>
@@ -1294,6 +1308,19 @@ const PetHealthRecords = () => {
               </div>
 
               {/* Tabs */}
+              {import.meta.env.DEV && records.length === 0 && (
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                  {previewActive && <Badge variant="secondary">Preview only · {selectedPet?.pet_name}</Badge>}
+                  <Button variant="outline" size="sm" onClick={() => {
+                    setShowReminderPreview(prev => !prev);
+                    setDismissedPreviewIds([]);
+                    setActiveTab("reminders");
+                  }}>
+                    {previewActive ? <X className="mr-1 h-4 w-4" /> : <Bell className="mr-1 h-4 w-4" />}
+                    {previewActive ? "Close preview" : "Preview reminders"}
+                  </Button>
+                </div>
+              )}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="mb-4 w-full grid grid-cols-2 sm:grid-cols-4 h-auto gap-1 p-1">
                   <TabsTrigger value="reminders" className="text-xs sm:text-sm gap-1 whitespace-normal break-words leading-tight py-2 min-w-0">
