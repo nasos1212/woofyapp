@@ -1,7 +1,7 @@
 # Roadmap
 
 ## November 9 reminder design preview
-- [ ] Show development-only sample health reminders in the signed-in account with local-only Done/delete actions; verify phone and desktop display and no sample writes.
+- [x] Show development-only sample health reminders in the signed-in account with local-only Done/delete guards; phone and desktop checked, Done/close/reopen verified with no sample writes or alert calls; preview and completion tests pass.
 
 ## November 8 animal records video
 - [ ] Remove the last sentence from the final slide and replace Missi's whiskers record with an officially verified record and authentic photo; render v6 and inspect all slides
