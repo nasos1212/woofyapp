@@ -342,8 +342,8 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
 
   return (
     <Card className="mb-6 overflow-hidden rounded-lg border-primary/20 bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-l-4 border-primary bg-primary/5 px-4 py-4">
-        <div className="flex min-w-0 flex-1 items-start gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-l-4 border-primary bg-primary/5 px-4 py-4">
+        <div className="flex min-w-0 w-full items-start gap-3 sm:w-auto sm:flex-1">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Bell className="h-4 w-4" />
           </div>
@@ -352,11 +352,10 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
               {t("proactiveAlerts.title")} <span className="whitespace-nowrap text-primary">({reminders.length})</span>
             </h3>
             {hasUrgentItems && (overdueCount > 0 || todayCount > 0) && (
-              <p className="mt-1 text-xs font-medium text-destructive">
-                {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
-                {overdueCount > 0 && todayCount > 0 && " · "}
-                {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
-              </p>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs font-medium leading-5 text-destructive">
+                {overdueCount > 0 && <span>{t("proactiveAlerts.overdue", { count: overdueCount })}</span>}
+                {todayCount > 0 && <span>{t("proactiveAlerts.today", { count: todayCount })}</span>}
+              </div>
             )}
             {isPreview && <Badge variant="secondary" className="mt-1 text-xs">Preview only</Badge>}
           </div>
@@ -381,7 +380,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
               <Button
                 key={`${reminder.type}-${reminder.id}`}
                 variant="ghost"
-                className="flex h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-none px-4 py-3 text-left font-normal hover:bg-muted/50"
+                className="grid h-auto w-full grid-cols-[2rem_minmax(0,1fr)_1rem] items-start justify-start gap-x-3 gap-y-3 whitespace-normal rounded-none px-4 py-4 text-left font-normal hover:bg-muted/50"
                 onClick={() => navigate(reminder.type === "birthday" ? `/member/pet/${reminder.id}` : "/member/health-records")}
               >
                 <div className={cn(
@@ -390,23 +389,25 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                 )}>
                   {alertIcons[reminder.type] || <Calendar className="h-4 w-4" />}
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0">
                   <p className="break-words text-sm font-medium leading-5 text-foreground">{reminder.title}</p>
-                  <p className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
-                    <span className="break-words">{reminder.petName}</span>
-                    <span aria-hidden="true">·</span>
-                    <span>{formatDate(reminder.dueDate)}</span>
+                  <p className="mt-1.5 break-words text-sm leading-5 text-muted-foreground">{reminder.petName}</p>
+                </div>
+                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+                <div className="col-span-3 flex min-w-0 flex-col items-start gap-2.5 sm:col-start-2 sm:col-span-2">
+                  <p className="flex items-center gap-2 text-sm leading-5 text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    {formatDate(reminder.dueDate)}
                   </p>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <Badge className={cn("rounded-md border px-1.5 py-0 text-[10px] font-medium shadow-none hover:bg-muted", statusStyles[reminder.status])}>
+                  <div className="flex w-full flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
+                    <Badge className={cn("rounded-md border px-2 py-0.5 text-xs font-medium leading-5 shadow-none hover:bg-muted", statusStyles[reminder.status])}>
                       {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
-                    <span className={cn("text-xs", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
+                    <span className={cn("text-sm leading-5", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
                       {getDaysText(reminder.daysUntil)}
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
               </Button>
             ))}
           </div>
