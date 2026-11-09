@@ -365,7 +365,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
         <Button
           variant="ghost"
           size="sm"
-          className="ml-auto h-9 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground"
+          className="ml-auto h-9 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
           aria-expanded={!isCollapsed}
           aria-controls="dashboard-reminder-list"
           onClick={() => setIsCollapsed(current => !current)}

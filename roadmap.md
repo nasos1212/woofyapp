@@ -1,7 +1,7 @@
 # Roadmap
 
 ## November 9 shared dashboard reminders
-- [ ] Clean up the shared reminder panel, make Hide reversible, and verify phone/desktop layouts and no-mutation behavior.
+- [x] Shared Free/Paid reminder panel cleaned up; Hide collapses and reopens the same reminders; English/Greek phone and desktop checks pass with no record or alert requests.
 
 ## November 9 reminder design preview
 - [x] Show development-only sample health reminders in the signed-in account with local-only Done/delete guards; phone and desktop checked, Done/close/reopen verified with no sample writes or alert calls; preview and completion tests pass.
