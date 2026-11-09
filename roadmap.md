@@ -1,5 +1,11 @@
 # Roadmap
 
+## November 9 blog and shelter feedback
+- [ ] Check and correct duplicate blog category highlighting.
+- [ ] Check shelter public-profile navigation without exposing hidden test shelters.
+- [ ] Remove the unnecessary back arrow from shelter account-closure support.
+- [ ] Add dogs/cats currently-in-care selection under About and use animals in gallery wording.
+
 ## November 9 shared dashboard reminders
 - [x] Shared Free/Paid reminder panel cleaned up; Hide collapses and reopens the same reminders; English/Greek phone and desktop checks pass with no record or alert requests.
 
