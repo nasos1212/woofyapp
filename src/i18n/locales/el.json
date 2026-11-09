@@ -2753,7 +2753,9 @@
   },
   "proactiveAlerts": {
     "title": "Υπενθυμίσεις",
-    "overdue": "{{count}} εκπρόθεσμα",
+    "overdue": "{{count}} εκπρόθεσμες",
+    "overdue_one": "{{count}} εκπρόθεσμη",
+    "overdue_other": "{{count}} εκπρόθεσμες",
     "today": "{{count}} σήμερα",
     "upcomingOne": "{{count}} επερχόμενη υπενθύμιση",
     "upcomingOther": "{{count}} επερχόμενες υπενθυμίσεις",
@@ -2762,18 +2764,20 @@
     "viewAll": "Δες όλες τις {{count}} υπενθυμίσεις",
     "suggestions": "Προτάσεις για σένα",
     "status": {
-      "overdue": "Εκπρόθεσμο",
+      "overdue": "Εκπρόθεσμη",
       "today": "Σήμερα",
       "urgent": "Σύντομα",
       "soon": "Αυτή την Εβδομάδα",
-      "upcoming": "Επερχόμενο"
+      "upcoming": "Επερχόμενη"
     },
     "days": {
-      "overdueOne": "{{count}} ημέρα καθυστέρηση",
-      "overdueOther": "{{count}} ημέρες καθυστέρηση",
+      "overdueOne": "{{count}} ημέρα καθυστέρησης",
+      "overdueOther": "{{count}} ημέρες καθυστέρησης",
       "today": "Σήμερα",
       "tomorrow": "Αύριο",
-      "inDays": "Σε {{count}} ημέρες"
+      "inDays": "Σε {{count}} ημέρες",
+      "inDays_one": "Σε {{count}} ημέρα",
+      "inDays_other": "Σε {{count}} ημέρες"
     }
   },
   "notFoundPage": {
