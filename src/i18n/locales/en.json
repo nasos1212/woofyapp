@@ -46,6 +46,8 @@
   },
   "hero": {
     "badge": "Join Free · No Credit Card Needed",
+    "appStoreSmall": "Download on the",
+    "appStoreAria": "Download Wooffy on the App Store",
     "titlePart1": "Unlock a World",
     "titleOf": "of",
     "titleHighlight": "Pet Benefits",
