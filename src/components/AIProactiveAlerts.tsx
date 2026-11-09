@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, X, Syringe, Gift, Tag, Lightbulb, AlertTriangle, Calendar, ChevronRight, Sparkles } from "lucide-react";
+import { Bell, X, Syringe, Gift, Tag, Lightbulb, Calendar, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -44,27 +44,12 @@ const alertIcons: Record<string, React.ReactNode> = {
   birthday: <Gift className="w-5 h-5" />,
 };
 
-const statusStyles: Record<string, { className: string; bgClass: string }> = {
-  overdue: {
-    className: "bg-red-500 text-white",
-    bgClass: "bg-gradient-to-r from-red-50 to-red-100 border-red-200"
-  },
-  today: {
-    className: "bg-orange-500 text-white",
-    bgClass: "bg-gradient-to-r from-orange-50 to-amber-100 border-orange-200"
-  },
-  urgent: {
-    className: "bg-amber-500 text-white",
-    bgClass: "bg-gradient-to-r from-amber-50 to-yellow-100 border-amber-200"
-  },
-  soon: {
-    className: "bg-blue-500 text-white",
-    bgClass: "bg-gradient-to-r from-blue-50 to-sky-100 border-blue-200"
-  },
-  upcoming: {
-    className: "bg-slate-500 text-white",
-    bgClass: "bg-gradient-to-r from-slate-50 to-gray-100 border-slate-200"
-  },
+const statusStyles: Record<UpcomingReminder["status"], string> = {
+  overdue: "bg-destructive/10 text-destructive border-destructive/20",
+  today: "bg-primary/10 text-primary border-primary/20",
+  urgent: "bg-accent text-accent-foreground border-border",
+  soon: "bg-secondary text-secondary-foreground border-border",
+  upcoming: "bg-muted text-muted-foreground border-border",
 };
 
 export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; pet_name: string } } = {}) => {
@@ -76,14 +61,8 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(!isPreview); // Preview starts expanded
-  const [isHidden, setIsHidden] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [dataFetched, setDataFetched] = useState(false);
-
-  const hideWidget = () => {
-    if (!isPreview) sessionStorage.setItem('wooffy_reminders_hidden', 'true');
-    setIsHidden(true);
-  };
 
   // Listen for auth state changes - clear session data on logout
   useEffect(() => {
@@ -93,7 +72,6 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
         sessionStorage.removeItem('wooffy_reminders_hidden');
         sessionStorage.removeItem('wooffy_alerts_generated');
         sessionStorage.removeItem('wooffy_current_user_id');
-        setIsHidden(false);
         setDataFetched(false);
         setReminders([]);
         setAlerts([]);
@@ -124,10 +102,9 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
       return;
     }
 
-    // Check hidden state from storage (will be cleared on logout)
-    const hiddenState = sessionStorage.getItem('wooffy_reminders_hidden') === 'true';
-    setIsHidden(hiddenState);
-    
+    // Legacy Hide must no longer suppress the panel.
+    sessionStorage.removeItem('wooffy_reminders_hidden');
+
     // Store current user ID
     sessionStorage.setItem('wooffy_current_user_id', user.id);
 
@@ -359,141 +336,81 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
   const overdueCount = reminders.filter(r => r.status === "overdue").length;
   const todayCount = reminders.filter(r => r.status === "today").length;
 
-  // If hidden by user, show nothing
-  if (isHidden) return null;
-  
   // If still loading or no reminders, show nothing
   if (isLoading) return null;
   if (reminders.length === 0 && alerts.length === 0) return null;
 
   return (
-    <Card className={cn(
-      "mb-6 overflow-hidden transition-all duration-300",
-      hasUrgentItems 
-        ? "border-2 border-primary/50 shadow-lg shadow-primary/10" 
-        : "border-2 border-cyan-200 shadow-md"
-    )}>
-      {/* Header */}
-      <div 
-        className={cn(
-          "px-4 py-3 flex flex-wrap items-center justify-between gap-2 cursor-pointer transition-colors",
-          hasUrgentItems 
-            ? "bg-gradient-to-r from-primary/10 via-primary/5 to-transparent" 
-            : "bg-gradient-to-r from-cyan-50 via-teal-50 to-emerald-50"
-        )}
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <div className={cn(
-            "p-2 rounded-full shrink-0",
-            hasUrgentItems ? "bg-primary text-primary-foreground" : "bg-gradient-to-br from-cyan-400 to-teal-500 text-white"
-          )}>
-            <Sparkles className="w-4 h-4" />
+    <Card className="mb-6 overflow-hidden rounded-lg border-border bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <Bell className="h-4 w-4" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-semibold text-sm flex flex-wrap items-center gap-2">
-              {t("proactiveAlerts.title")}
-              {isPreview && <Badge variant="secondary" className="text-xs">Preview only</Badge>}
-              {(overdueCount > 0 || todayCount > 0) && (
-                <Badge variant="destructive" className="text-xs whitespace-nowrap">
-                  {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
-                  {overdueCount > 0 && todayCount > 0 && " · "}
-                  {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
-                </Badge>
-              )}
-            </h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="text-sm font-semibold text-foreground break-words">{t("proactiveAlerts.title")}</h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">
               {t(reminders.length === 1 ? "proactiveAlerts.upcomingOne" : "proactiveAlerts.upcomingOther", { count: reminders.length })}
             </p>
+            {hasUrgentItems && (overdueCount > 0 || todayCount > 0) && (
+              <p className="mt-1 text-xs font-medium text-destructive">
+                {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
+                {overdueCount > 0 && todayCount > 0 && " · "}
+                {todayCount > 0 && t("proactiveAlerts.today", { count: todayCount })}
+              </p>
+            )}
+            {isPreview && <Badge variant="secondary" className="mt-1 text-xs">Preview only</Badge>}
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2 ml-auto">
-          {isCollapsed ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsCollapsed(false);
-              }}
-            >
-              {t("proactiveAlerts.showMore")}
-              <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
-              onClick={(e) => {
-                e.stopPropagation();
-                hideWidget();
-              }}
-            >
-              {t("proactiveAlerts.hide")}
-              <ChevronRight className="w-3.5 h-3.5 shrink-0 rotate-90" />
-            </Button>
-          )}
-          <ChevronRight className={cn(
-            "hidden w-4 h-4 text-muted-foreground transition-transform",
-            !isCollapsed && "rotate-90"
-          )} />
-        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="ml-auto h-9 shrink-0 gap-1.5 px-2 text-xs text-muted-foreground"
+          aria-expanded={!isCollapsed}
+          aria-controls="dashboard-reminder-list"
+          onClick={() => setIsCollapsed(current => !current)}
+        >
+          {t(isCollapsed ? "proactiveAlerts.showMore" : "proactiveAlerts.hide")}
+          {isCollapsed ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronUp className="h-4 w-4 shrink-0" />}
+        </Button>
       </div>
 
-      {/* Content */}
       {!isCollapsed && (
-        <CardContent className="p-4 pt-2 space-y-3">
-          {/* Reminders List */}
-          {reminders.slice(0, 5).map((reminder) => (
-            <div
-              key={`${reminder.type}-${reminder.id}`}
-              className={cn(
-                "relative p-3 rounded-lg border transition-all cursor-pointer hover:shadow-md",
-                statusStyles[reminder.status].bgClass
-              )}
-              onClick={() => {
-                if (reminder.type === "birthday") {
-                  navigate(`/member/pet/${reminder.id}`);
-                } else {
-                  navigate("/member/health-records");
-                }
-              }}
-            >
-              <div className="flex items-center gap-3">
+        <CardContent id="dashboard-reminder-list" className="border-t border-border p-0">
+          <div className="divide-y divide-border">
+            {reminders.slice(0, 5).map((reminder) => (
+              <Button
+                key={`${reminder.type}-${reminder.id}`}
+                variant="ghost"
+                className="flex h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-none px-4 py-3 text-left font-normal hover:bg-muted/50"
+                onClick={() => navigate(reminder.type === "birthday" ? `/member/pet/${reminder.id}` : "/member/health-records")}
+              >
                 <div className={cn(
-                  "shrink-0 p-2 rounded-full",
-                  reminder.status === "overdue" ? "bg-red-500 text-white" :
-                  reminder.status === "today" ? "bg-orange-500 text-white" :
-                  reminder.status === "urgent" ? "bg-amber-500 text-white" :
-                  "bg-white/80 text-foreground"
+                  "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                  reminder.status === "overdue" ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"
                 )}>
-                  {alertIcons[reminder.type] || <Calendar className="w-5 h-5" />}
+                  {alertIcons[reminder.type] || <Calendar className="h-4 w-4" />}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <p className="font-medium text-sm truncate">{reminder.title}</p>
-                    <Badge className={cn("text-[10px] px-1.5 py-0 shrink-0", statusStyles[reminder.status].className)}>
+                <div className="min-w-0 flex-1">
+                  <p className="break-words text-sm font-medium leading-5 text-foreground">{reminder.title}</p>
+                  <p className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+                    <span className="break-words">{reminder.petName}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{formatDate(reminder.dueDate)}</span>
+                  </p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <Badge className={cn("rounded-md border px-1.5 py-0 text-[10px] font-medium shadow-none hover:bg-muted", statusStyles[reminder.status])}>
                       {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>{reminder.petName}</span>
-                    <span>•</span>
-                    <span className={cn(
-                      reminder.status === "overdue" && "text-red-600 font-medium"
-                    )}>
+                    <span className={cn("text-xs", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
                       {getDaysText(reminder.daysUntil)}
                     </span>
-                    <span>•</span>
-                    <span>{formatDate(reminder.dueDate)}</span>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
-              </div>
-            </div>
-          ))}
+                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
+              </Button>
+            ))}
+          </div>
 
           {/* View All Link */}
           {reminders.length > 5 && (
@@ -509,7 +426,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
 
           {/* AI Alerts (offer suggestions, etc.) */}
           {alerts.filter(a => a.alert_type === "offer_suggestion").length > 0 && (
-            <div className="pt-2 border-t">
+            <div className="border-t border-border px-4 py-3">
               <p className="text-xs text-muted-foreground mb-2">{t("proactiveAlerts.suggestions")}</p>
               {alerts.filter(a => a.alert_type === "offer_suggestion").map((alert) => (
                 <div
