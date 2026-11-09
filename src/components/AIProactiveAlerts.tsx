@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { differenceInDays } from "date-fns";
 import { formatDate } from "@/lib/utils";
 import { toZonedTime } from "date-fns-tz";
+import { createReminderPreview } from "@/lib/reminderPreview";
 
 interface ProactiveAlert {
   id: string;
@@ -66,20 +67,21 @@ const statusStyles: Record<string, { className: string; bgClass: string }> = {
   },
 };
 
-export const AIProactiveAlerts = () => {
+export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; pet_name: string } } = {}) => {
+  const isPreview = import.meta.env.DEV && previewPet !== undefined;
   const { user } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [alerts, setAlerts] = useState<ProactiveAlert[]>([]);
   const [reminders, setReminders] = useState<UpcomingReminder[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(true); // Start collapsed by default
+  const [isCollapsed, setIsCollapsed] = useState(!isPreview); // Preview starts expanded
   const [isHidden, setIsHidden] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [dataFetched, setDataFetched] = useState(false);
 
   const hideWidget = () => {
-    sessionStorage.setItem('wooffy_reminders_hidden', 'true');
+    if (!isPreview) sessionStorage.setItem('wooffy_reminders_hidden', 'true');
     setIsHidden(true);
   };
 
@@ -103,6 +105,20 @@ export const AIProactiveAlerts = () => {
 
   // Fetch data when user is available
   useEffect(() => {
+    if (isPreview && previewPet) {
+      setReminders(createReminderPreview(previewPet.id).map(sample => ({
+        id: sample.id,
+        type: "vaccination",
+        title: sample.title,
+        petName: previewPet.pet_name,
+        dueDate: new Date(`${sample.next_due_date}T12:00:00`),
+        daysUntil: sample.daysUntil,
+        status: sample.status === "due-today" ? "today" : sample.status === "due-soon" ? "urgent" : sample.status,
+      })));
+      setAlerts([]);
+      setIsLoading(false);
+      return;
+    }
     if (!user) {
       setIsLoading(false);
       return;
@@ -136,7 +152,7 @@ export const AIProactiveAlerts = () => {
     };
     
     fetchData();
-  }, [user, dataFetched]);
+  }, [user, dataFetched, isPreview, previewPet?.id, previewPet?.pet_name]);
 
   const fetchHealthRecords = async () => {
     if (!user) return;
@@ -291,7 +307,7 @@ export const AIProactiveAlerts = () => {
   };
 
   const generateNewAlerts = async () => {
-    if (!user || isGenerating) return;
+    if (isPreview || !user || isGenerating) return;
     setIsGenerating(true);
 
     try {
@@ -308,6 +324,7 @@ export const AIProactiveAlerts = () => {
   };
 
   const dismissAlert = async (alertId: string) => {
+    if (isPreview) return;
     await supabase
       .from("ai_proactive_alerts")
       .update({ is_dismissed: true })
@@ -317,7 +334,7 @@ export const AIProactiveAlerts = () => {
   };
 
   const dismissAllAlerts = async () => {
-    if (!user || alerts.length === 0) return;
+    if (isPreview || !user || alerts.length === 0) return;
     
     await supabase
       .from("ai_proactive_alerts")
@@ -376,6 +393,7 @@ export const AIProactiveAlerts = () => {
           <div className="min-w-0">
             <h3 className="font-semibold text-sm flex flex-wrap items-center gap-2">
               {t("proactiveAlerts.title")}
+              {isPreview && <Badge variant="secondary" className="text-xs">Preview only</Badge>}
               {(overdueCount > 0 || todayCount > 0) && (
                 <Badge variant="destructive" className="text-xs whitespace-nowrap">
                   {overdueCount > 0 && t("proactiveAlerts.overdue", { count: overdueCount })}
