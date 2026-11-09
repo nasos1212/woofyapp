@@ -2057,6 +2057,8 @@
     },
     "saving": "Saving...",
     "saveChanges": "Save Changes",
+    "careTypes": { "dogs": "Dogs", "cats": "Cats", "both": "Dogs and cats" },
+    "careLabels": { "dogs": "Dogs in Care", "cats": "Cats in Care", "both": "Animals in Care" },
     "branding": {
       "coverPhoto": "Cover Photo",
       "coverPhotoDesc": "This photo appears at the top of your public shelter profile.",
@@ -2284,8 +2286,6 @@
     "bottom": "Bottom",
     "uploading": "Uploading...",
     "saveCover": "Save Cover Photo",
-    "careTypes": { "dogs": "Dogs", "cats": "Cats", "both": "Dogs and cats" },
-    "careLabels": { "dogs": "Dogs in Care", "cats": "Cats in Care", "both": "Animals in Care" },
     "saving": "Saving...",
     "savePosition": "Save Position",
     "changeCover": "Change Cover",
