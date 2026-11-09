@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import CloseAccountSupportButton from "@/components/CloseAccountSupportButton";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,6 +80,7 @@ const ShelterDashboard = () => {
     description: "",
     mission_statement: "",
     dogs_in_care: "",
+    animals_in_care_type: "dogs",
     years_operating: "",
     facebook_url: "",
     tiktok_url: "",
@@ -134,6 +135,7 @@ const ShelterDashboard = () => {
         description: shelter.description || "",
         mission_statement: shelter.mission_statement || "",
         dogs_in_care: shelter.dogs_in_care || "",
+        animals_in_care_type: shelter.animals_in_care_type || "dogs",
         years_operating: shelter.years_operating || "",
         facebook_url: shelter.facebook_url || "",
         instagram_url: shelter.instagram_url || "",
@@ -285,10 +287,10 @@ const ShelterDashboard = () => {
                     </div>
                   </div>
                   <Button variant="outline" size="sm" asChild className="self-start sm:self-auto flex-shrink-0">
-                    <a href={`/shelter/${shelter.id}`} target="_blank" rel="noopener noreferrer">
+                    <Link to={`/shelter/${shelter.id}`}>
                       {t("shelter.viewPublicProfile")}
                       <ExternalLink className="h-3 w-3 ml-2" />
-                    </a>
+                    </Link>
                   </Button>
                 </div>
               </CardContent>
@@ -302,7 +304,7 @@ const ShelterDashboard = () => {
                 <CardContent className="px-3 py-3 text-center">
                   <Heart className="h-5 w-5 text-destructive mx-auto mb-1" />
                   <div className="text-xl font-bold">{shelter.dogs_in_care || '-'}</div>
-                  <div className="text-xs text-muted-foreground">{t("shelter.dogsInCare")}</div>
+                  <div className="text-xs text-muted-foreground">{t(`shelter.careLabels.${shelter.animals_in_care_type || "dogs"}`)}</div>
                 </CardContent>
               </Card>
               <Card>
@@ -459,7 +461,16 @@ const ShelterDashboard = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="dogs_in_care">{t("shelter.fields.dogsInCare")}</Label>
+                        <Label htmlFor="animals_in_care_type">{t("shelter.fields.animalsInCareType")}</Label>
+                        <Select value={formData.animals_in_care_type} onValueChange={(value) => setFormData(prev => ({ ...prev, animals_in_care_type: value }))}>
+                          <SelectTrigger id="animals_in_care_type"><SelectValue /></SelectTrigger>
+                          <SelectContent position="popper" className="max-h-[40vh]">
+                            <SelectItem value="dogs">{t("shelter.careTypes.dogs")}</SelectItem>
+                            <SelectItem value="cats">{t("shelter.careTypes.cats")}</SelectItem>
+                            <SelectItem value="both">{t("shelter.careTypes.both")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Label htmlFor="dogs_in_care" className="block pt-2">{t(`shelter.careLabels.${formData.animals_in_care_type}`)}</Label>
                         <Input
                           id="dogs_in_care"
                           value={formData.dogs_in_care}

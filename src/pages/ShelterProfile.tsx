@@ -267,7 +267,7 @@ const ShelterProfile = () => {
                     {shelter.dogs_in_care && (
                       <div className="text-center">
                         <div className="text-2xl font-bold text-primary">{shelter.dogs_in_care}</div>
-                        <div className="text-sm text-muted-foreground">{t("shelterProfile.dogsInCare")}</div>
+                        <div className="text-sm text-muted-foreground">{t(`shelter.careLabels.${shelter.animals_in_care_type || "dogs"}`)}</div>
                       </div>
                     )}
                   </div>

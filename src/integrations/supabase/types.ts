@@ -2691,6 +2691,7 @@ export type Database = {
       shelters: {
         Row: {
           address: string | null
+          animals_in_care_type: string
           city: string | null
           contact_name: string
           cover_photo_position: number | null
@@ -2720,6 +2721,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          animals_in_care_type?: string
           city?: string | null
           contact_name: string
           cover_photo_position?: number | null
@@ -2749,6 +2751,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          animals_in_care_type?: string
           city?: string | null
           contact_name?: string
           cover_photo_position?: number | null
@@ -3438,6 +3441,7 @@ export type Database = {
       shelters_public: {
         Row: {
           address: string | null
+          animals_in_care_type: string | null
           city: string | null
           contact_name: string | null
           cover_photo_position: number | null
@@ -3469,6 +3473,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          animals_in_care_type?: string | null
           city?: string | null
           contact_name?: string | null
           cover_photo_position?: number | null
@@ -3500,6 +3505,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          animals_in_care_type?: string | null
           city?: string | null
           contact_name?: string | null
           cover_photo_position?: number | null
