@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Keep reminder design samples in development-only local state with synthetic IDs guarded before mutations, so preview actions never save health records or dispatch alerts.
+
 - Generate notification copy in English at the producer, not in bell or APNs rendering, so installed clients and phone delivery receive identical text without changing app language preferences.
 
 - Schedule health reminders server-side in Europe/Athens with an atomic occurrence ledger, inserting existing reminder notifications so bell and APNs delivery share the same path without duplicate alerts.
