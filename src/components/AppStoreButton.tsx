@@ -10,7 +10,7 @@ export default function AppStoreButton() {
     <Button
       asChild
       variant="outline"
-      className="h-[72px] w-[232px] max-w-full gap-3 rounded-[8px] border-app-store-foreground/20 bg-app-store px-6 text-app-store-foreground shadow-card hover:bg-app-store hover:text-app-store-foreground hover:shadow-soft [&_svg]:size-10"
+      className="h-16 w-[216px] max-w-full gap-2.5 rounded-full border-app-store-foreground/20 bg-app-store px-6 text-app-store-foreground shadow-card hover:bg-app-store hover:text-app-store-foreground hover:shadow-soft [&_svg]:size-8"
     >
       <a
         href="https://apps.apple.com/cy/app/wooffy/id6819098781"
@@ -23,7 +23,7 @@ export default function AppStoreButton() {
         </svg>
         <span className="flex min-w-0 flex-col text-left leading-tight">
           <span className="text-xs font-normal leading-5">{t("hero.appStoreSmall")}</span>
-          <span className="text-2xl font-medium leading-7">App Store</span>
+          <span className="text-[22px] font-medium leading-6">App Store</span>
         </span>
       </a>
     </Button>
