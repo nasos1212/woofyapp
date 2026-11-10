@@ -5,6 +5,7 @@ import { InstagramIcon, TikTokIcon } from "./SocialIcons";
 import { toast } from "sonner";
 import AffiliateInquiryDialog from "./AffiliateInquiryDialog";
 import { useTranslation } from "react-i18next";
+import AppStoreButton from "./AppStoreButton";
 
 const Footer = () => {
   const location = useLocation();
@@ -52,6 +53,7 @@ const Footer = () => {
                 <TikTokIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </div>
+            <AppStoreButton />
           </div>
 
           {/* Links */}

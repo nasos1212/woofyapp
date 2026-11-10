@@ -20,6 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import DogLoader from "@/components/DogLoader";
 import { Capacitor } from "@capacitor/core";
+import AppStoreButton from "@/components/AppStoreButton";
 
 const Index = () => {
   const { user, loading } = useAuth();
@@ -123,6 +124,11 @@ const Index = () => {
             <GetListedSection />
           </div>
           <LatestFromBlog />
+          {!isNative && (
+            <div className="flex justify-center border-t border-border bg-card px-4 py-10 sm:py-12">
+              <AppStoreButton />
+            </div>
+          )}
           <CTASection />
         </main>
         <Footer />

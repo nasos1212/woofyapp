@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Share App Store download links through AppStoreButton, hidden in native shells, so landing and footer placements keep one production destination and consistent styling.
+
 - Store shelter care-species separately from the existing care count and expose it through the existing public view, preserving legacy counts and hidden-shelter access.
 - Use in-app links for shelter dashboard public-profile navigation so native shells do not open a separate unauthenticated browser.
 

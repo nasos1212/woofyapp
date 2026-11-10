@@ -1,5 +1,8 @@
 # Roadmap
 
+## November 10 App Store landing placements
+- [x] Matching download buttons beneath the hero photo and in a second white section, plus the shared footer; English/Greek phone, tablet and desktop layouts checked with three correct production links and no overflow.
+
 ## November 9 blog and shelter feedback
 - [x] Blog filters have one selected state; unselected hover/focus no longer resembles selection; checked All and Stories in the live blog.
 - [x] Shelter dashboard profile opens in-app; real UANA profile renders, hidden Test shelter remains unavailable to its owner.
