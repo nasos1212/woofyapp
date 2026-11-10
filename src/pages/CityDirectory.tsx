@@ -100,7 +100,7 @@ const CityDirectory = () => {
             <ul className="grid gap-4 sm:grid-cols-2">
               {businesses.map((b) => (
                 <li key={b.id} className="rounded-xl border border-border bg-card p-4 flex gap-3">
-                  {b.logo_url ? <img src={b.logo_url} alt={`${b.business_name} logo`} loading="lazy" className="w-12 h-12 rounded-lg object-cover" /> : <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center"><PawPrint className="w-6 h-6 text-primary" /></div>}
+                  {b.logo_url ? <img src={b.logo_url} alt={`${b.business_name} logo`} loading="lazy" className="w-12 h-12 shrink-0 rounded-lg object-contain bg-background" /> : <div className="w-12 h-12 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center"><PawPrint className="w-6 h-6 text-primary" /></div>}
                   <div className="min-w-0">
                     <h3 className="font-semibold text-foreground">{b.business_name}</h3>
                     <p className="text-sm text-primary">{catLabel(b.category)} · {city.name}</p>
