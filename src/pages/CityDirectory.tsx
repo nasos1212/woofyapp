@@ -30,7 +30,7 @@ const CityDirectory = () => {
     if (!city) return;
     setLoading(true);
     Promise.all([
-      supabase.rpc("public_city_businesses" as never),
+      supabase.rpc("public_city_businesses"),
       supabase.from("pet_friendly_places").select("id,name,place_type,area,description,google_maps_url,latitude,longitude,city")
         .eq("verified", true).neq("place_type", "vet").eq("city", city.name).order("name"),
     ]).then(([b, p]) => {

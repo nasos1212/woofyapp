@@ -3634,6 +3634,18 @@ export type Database = {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean
       }
+      public_city_businesses: {
+        Args: never
+        Returns: {
+          business_name: string
+          categories: string[]
+          category: Database["public"]["Enums"]["business_category"]
+          city: string
+          description: string
+          id: string
+          logo_url: string
+        }[]
+      }
       user_has_membership_access: {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean
