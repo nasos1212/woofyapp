@@ -66,6 +66,7 @@ const Footer = () => {
               <li><button onClick={() => scrollToSection("freemium")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.pricing")}</button></li>
               <li><button onClick={() => scrollToSection("get-listed")} className="text-left hover:text-wooffy-sky transition-colors">{t("header.dogFriendlyPlaces")}</button></li>
               <li><Link to="/blog" className="block text-left hover:text-wooffy-sky transition-colors">{t("header.blog")}</Link></li>
+              <li><Link to="/places" className="block text-left hover:text-wooffy-sky transition-colors">Cyprus Pet Directory</Link></li>
             </ul>
           </div>
 

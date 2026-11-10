@@ -52,6 +52,8 @@ import PetFriendlyPlaces from "./pages/PetFriendlyPlaces";
 import VerifyEmail from "./pages/VerifyEmail";
 import Terms from "./pages/Terms";
 import Blog from "./pages/Blog";
+import PlacesHub from "./pages/PlacesHub";
+import CityDirectory from "./pages/CityDirectory";
 import BlogPost from "./pages/BlogPost";
 import CheckoutReturn from "./pages/CheckoutReturn";
 
@@ -143,6 +145,8 @@ const App = () => (
               <Route path="/shelter-onboarding" element={<ShelterOnboarding />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/places" element={<PlacesHub />} />
+              <Route path="/places/:city" element={<CityDirectory />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/checkout/return" element={<CheckoutReturn />} />
