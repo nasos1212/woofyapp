@@ -23,6 +23,7 @@ import RedemptionHistory from "./pages/RedemptionHistory";
 import BusinessOfferManagement from "./pages/BusinessOfferManagement";
 import BusinessAnalytics from "./pages/BusinessAnalytics";
 import BusinessProfile from "./pages/BusinessProfile";
+import CityServiceDirectory from "./pages/CityServiceDirectory";
 import BusinessSettings from "./pages/BusinessSettings";
 import MemberSettings from "./pages/MemberSettings";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -147,6 +148,7 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/places" element={<PlacesHub />} />
               <Route path="/places/:city" element={<CityDirectory />} />
+              <Route path="/places/:city/:service" element={<CityServiceDirectory />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/checkout/return" element={<CheckoutReturn />} />

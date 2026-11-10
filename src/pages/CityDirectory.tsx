@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { MapPin, Store, PawPrint, ExternalLink, Phone, Globe, Gift } from "lucide-react";
-import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/SocialIcons";
-import { useAuth } from "@/hooks/useAuth";
+import { MapPin, Store, ExternalLink, Phone, Globe } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -12,15 +10,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { DIRECTORY_CITIES, getDirectoryCity } from "@/data/cityDirectory";
 import { businessCategories } from "@/data/businessCategories";
 import { getGooglePlacePageUrl } from "@/lib/maps";
+import BusinessCard, { type DirectoryBusiness as Biz } from "@/components/directory/BusinessCard";
+import { CITY_SERVICES } from "@/data/cityServices";
 
-interface Biz { id: string; business_name: string; category: string; city: string; logo_url: string | null; description: string | null; address: string | null; phone: string | null; website: string | null; google_maps_url: string | null; facebook_url: string | null; instagram_url: string | null; tiktok_url: string | null }
 interface Place { id: string; name: string; place_type: string; area: string | null; address: string | null; phone: string | null; website: string | null; description: string | null; google_maps_url: string | null; latitude: number; longitude: number; city: string | null }
 
 const SITE = "https://wooffy.app";
 const PLACE_LABELS: Record<string, string> = { beach: "Beach", cafe: "Café", restaurant: "Restaurant", bar: "Bar", hotel: "Hotel", park: "Park", nature_trail: "Nature Trail", pharmacy: "Pharmacy", patisserie: "Patisserie", store: "Retail Store", office: "Office", other: "Other" };
 const webUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : `https://${u}`);
 const linkCls = "text-sm text-primary hover:underline inline-flex items-center gap-1";
-const catLabel = (v: string) => businessCategories.find((c) => c.value === v)?.label ?? v;
 
 const CityDirectory = () => {
   const { city: slug } = useParams();
@@ -29,7 +27,6 @@ const CityDirectory = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
-  const { user } = useAuth();
 
   useEffect(() => {
     if (!city) return;
@@ -94,6 +91,15 @@ const CityDirectory = () => {
           ))}
         </div>
 
+        <nav aria-label="Services" className="mb-10">
+          <h2 className="font-display text-lg font-semibold mb-3">Browse by service in {city.name}</h2>
+          <div className="flex flex-wrap gap-2">
+            {CITY_SERVICES.map((sv) => (
+              <Link key={sv.slug} to={`/places/${city.slug}/${sv.slug}`} className="rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:border-primary hover:text-primary">{sv.label} in {city.name}</Link>
+            ))}
+          </div>
+        </nav>
+
         <section className="mb-12">
           <h2 className="font-display text-2xl font-semibold mb-4 flex items-center gap-2"><Store className="w-6 h-6 text-primary" />Pet businesses in {city.name}</h2>
           {loading ? <p className="text-muted-foreground">Loading…</p> : businesses.length === 0 ? (
@@ -104,28 +110,7 @@ const CityDirectory = () => {
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2">
               {businesses.map((b) => (
-                <li key={b.id} className="rounded-xl border border-border bg-card p-4 flex gap-3">
-                  {b.logo_url ? <img src={b.logo_url} alt={`${b.business_name} logo`} loading="lazy" className="w-12 h-12 shrink-0 rounded-lg object-contain bg-background" /> : <div className="w-12 h-12 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center"><PawPrint className="w-6 h-6 text-primary" /></div>}
-                  <div className="min-w-0">
-                    <h3 className="font-semibold text-foreground">{b.business_name}</h3>
-                    <p className="text-sm text-primary">{catLabel(b.category)} · {city.name}</p>
-                    {b.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{b.description}</p>}
-                    {b.address && <p className="text-sm text-muted-foreground mt-1">{b.address}</p>}
-                    <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
-                      {b.phone && <a href={`tel:${b.phone.replace(/\s/g, "")}`} className={linkCls}><Phone className="w-3.5 h-3.5" />{b.phone}</a>}
-                      {b.website && <a href={webUrl(b.website)} target="_blank" rel="noopener noreferrer" className={linkCls}><Globe className="w-3.5 h-3.5" />Website</a>}
-                      {b.google_maps_url && <a href={b.google_maps_url} target="_blank" rel="noopener noreferrer" className={linkCls}><MapPin className="w-3.5 h-3.5" />Directions</a>}
-                    </div>
-                    {(b.facebook_url || b.instagram_url || b.tiktok_url) && (
-                      <div className="flex gap-2 mt-2">
-                        {b.facebook_url && <a href={webUrl(b.facebook_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on Facebook`}><FacebookIcon className="w-5 h-5" /></a>}
-                        {b.instagram_url && <a href={webUrl(b.instagram_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on Instagram`}><InstagramIcon className="w-5 h-5" /></a>}
-                        {b.tiktok_url && <a href={webUrl(b.tiktok_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on TikTok`}><TikTokIcon className="w-5 h-5" /></a>}
-                      </div>
-                    )}
-                    <Button asChild size="sm" className="mt-3"><Link to={user ? `/business/${b.id}` : "/auth"}><Gift className="w-4 h-4 mr-1" />View member offers</Link></Button>
-                  </div>
-                </li>
+                <BusinessCard key={b.id} b={b} cityName={city.name} />
               ))}
             </ul>
           )}
