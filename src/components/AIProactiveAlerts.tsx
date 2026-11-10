@@ -380,7 +380,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                 key={`${reminder.type}-${reminder.id}`}
                 variant="ghost"
                 className={cn(
-                  "grid h-auto w-full grid-cols-[2rem_minmax(0,1fr)_1rem] items-start justify-start gap-x-3 gap-y-3 whitespace-normal rounded-none border-l-4 px-4 py-4 text-left font-normal hover:text-foreground",
+                  "grid h-auto w-full grid-cols-[1.75rem_minmax(0,1fr)_1rem] items-start justify-start gap-x-2.5 whitespace-normal rounded-none border-l-4 px-3 py-2 text-left font-normal hover:text-foreground",
                   reminder.status === "overdue"
                     ? "border-destructive/50 bg-destructive/5 hover:bg-destructive/10"
                     : reminder.status === "urgent"
@@ -390,32 +390,33 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                 onClick={() => navigate(reminder.type === "birthday" ? `/member/pet/${reminder.id}` : "/member/health-records")}
               >
                 <div className={cn(
-                  "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                  "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md [&>svg]:h-3.5 [&>svg]:w-3.5",
                   statusStyles[reminder.status]
                 )}>
-                  {alertIcons[reminder.type] || <Calendar className="h-4 w-4" />}
+                  {alertIcons[reminder.type] || <Calendar className="h-3.5 w-3.5" />}
                 </div>
                 <div className="min-w-0">
-                  <p className="break-words text-sm font-medium leading-5 text-foreground">{reminder.title}</p>
-                  <p className="mt-1.5 break-words text-sm leading-5 text-muted-foreground">{reminder.petName}</p>
-                </div>
-                <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground" />
-                <div className="col-span-3 flex min-w-0 flex-col items-start gap-2.5 sm:col-start-2 sm:col-span-2">
-                  <p className="flex items-center gap-2 text-sm leading-5 text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    {formatDate(reminder.dueDate)}
-                  </p>
-                  <div className="flex w-full flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
-                    <Badge className={cn("rounded-md border px-2 py-0.5 text-xs font-medium leading-5 shadow-none hover:bg-muted", statusStyles[reminder.status])}>
+                  <div className="flex items-start gap-2">
+                    <p className="min-w-0 flex-1 break-words text-sm font-medium leading-5 text-foreground">{reminder.title}</p>
+                    <Badge className={cn("mt-0.5 shrink-0 rounded-md border px-1.5 py-0 text-[10px] font-medium leading-4 shadow-none hover:bg-muted", statusStyles[reminder.status])}>
                       {t(`proactiveAlerts.status.${reminder.status}`)}
                     </Badge>
+                  </div>
+                  <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-4 text-muted-foreground">
+                    <span className="break-words">{reminder.petName}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="break-words">{formatDate(reminder.dueDate)}</span>
                     {reminder.status !== "today" && (
-                      <span className={cn("text-sm leading-5", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
+                      <span aria-hidden="true">·</span>
+                    )}
+                    {reminder.status !== "today" && (
+                      <span className={cn("break-words", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
                         {getDaysText(reminder.daysUntil)}
                       </span>
                     )}
-                  </div>
+                  </p>
                 </div>
+                <ChevronRight className="mt-1.5 h-4 w-4 shrink-0 text-muted-foreground" />
               </Button>
             ))}
           </div>
