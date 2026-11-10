@@ -134,6 +134,13 @@
       "when": 1794334589408,
       "tag": "0018_public_city_directory",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794334942018,
+      "tag": "0019_public_city_directory_businesses",
+      "breakpoints": true
     }
   ]
 }

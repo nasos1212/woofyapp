@@ -3646,6 +3646,25 @@ export type Database = {
           logo_url: string
         }[]
       }
+      public_city_directory_businesses: {
+        Args: never
+        Returns: {
+          address: string
+          business_name: string
+          categories: string[]
+          category: Database["public"]["Enums"]["business_category"]
+          city: string
+          description: string
+          facebook_url: string
+          google_maps_url: string
+          id: string
+          instagram_url: string
+          logo_url: string
+          phone: string
+          tiktok_url: string
+          website: string
+        }[]
+      }
       user_has_membership_access: {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean

@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { MapPin, Store, PawPrint, ExternalLink } from "lucide-react";
+import { MapPin, Store, PawPrint, ExternalLink, Phone, Globe, Gift } from "lucide-react";
+import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/SocialIcons";
+import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -11,11 +13,13 @@ import { DIRECTORY_CITIES, getDirectoryCity } from "@/data/cityDirectory";
 import { businessCategories } from "@/data/businessCategories";
 import { getGooglePlacePageUrl } from "@/lib/maps";
 
-interface Biz { id: string; business_name: string; category: string; city: string; logo_url: string | null; description: string | null }
-interface Place { id: string; name: string; place_type: string; area: string | null; description: string | null; google_maps_url: string | null; latitude: number; longitude: number; city: string | null }
+interface Biz { id: string; business_name: string; category: string; city: string; logo_url: string | null; description: string | null; address: string | null; phone: string | null; website: string | null; google_maps_url: string | null; facebook_url: string | null; instagram_url: string | null; tiktok_url: string | null }
+interface Place { id: string; name: string; place_type: string; area: string | null; address: string | null; phone: string | null; website: string | null; description: string | null; google_maps_url: string | null; latitude: number; longitude: number; city: string | null }
 
 const SITE = "https://wooffy.app";
 const PLACE_LABELS: Record<string, string> = { beach: "Beach", cafe: "Café", restaurant: "Restaurant", bar: "Bar", hotel: "Hotel", park: "Park", nature_trail: "Nature Trail", pharmacy: "Pharmacy", patisserie: "Patisserie", store: "Retail Store", office: "Office", other: "Other" };
+const webUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : `https://${u}`);
+const linkCls = "text-sm text-primary hover:underline inline-flex items-center gap-1";
 const catLabel = (v: string) => businessCategories.find((c) => c.value === v)?.label ?? v;
 
 const CityDirectory = () => {
@@ -25,13 +29,14 @@ const CityDirectory = () => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!city) return;
     setLoading(true);
     Promise.all([
-      supabase.rpc("public_city_businesses"),
-      supabase.from("pet_friendly_places").select("id,name,place_type,area,description,google_maps_url,latitude,longitude,city")
+      supabase.rpc("public_city_directory_businesses"),
+      supabase.from("pet_friendly_places").select("id,name,place_type,area,address,phone,website,description,google_maps_url,latitude,longitude,city")
         .eq("verified", true).neq("place_type", "vet").eq("city", city.name).order("name"),
     ]).then(([b, p]) => {
       const all = ((b.data as Biz[] | null) ?? []).filter((x) => x.city === city.name);
@@ -105,7 +110,20 @@ const CityDirectory = () => {
                     <h3 className="font-semibold text-foreground">{b.business_name}</h3>
                     <p className="text-sm text-primary">{catLabel(b.category)} · {city.name}</p>
                     {b.description && <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{b.description}</p>}
-                    <Link to={`/business/${b.id}`} className="text-sm font-medium text-primary hover:underline mt-2 inline-block">See member offers</Link>
+                    {b.address && <p className="text-sm text-muted-foreground mt-1">{b.address}</p>}
+                    <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+                      {b.phone && <a href={`tel:${b.phone.replace(/\s/g, "")}`} className={linkCls}><Phone className="w-3.5 h-3.5" />{b.phone}</a>}
+                      {b.website && <a href={webUrl(b.website)} target="_blank" rel="noopener noreferrer" className={linkCls}><Globe className="w-3.5 h-3.5" />Website</a>}
+                      {b.google_maps_url && <a href={b.google_maps_url} target="_blank" rel="noopener noreferrer" className={linkCls}><MapPin className="w-3.5 h-3.5" />Directions</a>}
+                    </div>
+                    {(b.facebook_url || b.instagram_url || b.tiktok_url) && (
+                      <div className="flex gap-2 mt-2">
+                        {b.facebook_url && <a href={webUrl(b.facebook_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on Facebook`}><FacebookIcon className="w-5 h-5" /></a>}
+                        {b.instagram_url && <a href={webUrl(b.instagram_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on Instagram`}><InstagramIcon className="w-5 h-5" /></a>}
+                        {b.tiktok_url && <a href={webUrl(b.tiktok_url)} target="_blank" rel="noopener noreferrer" aria-label={`${b.business_name} on TikTok`}><TikTokIcon className="w-5 h-5" /></a>}
+                      </div>
+                    )}
+                    <Button asChild size="sm" className="mt-3"><Link to={user ? `/business/${b.id}` : "/auth"}><Gift className="w-4 h-4 mr-1" />View member offers</Link></Button>
                   </div>
                 </li>
               ))}
@@ -131,6 +149,11 @@ const CityDirectory = () => {
                   <h3 className="font-semibold text-foreground">{p.name}</h3>
                   <p className="text-sm text-primary">{PLACE_LABELS[p.place_type] ?? p.place_type}{p.area ? ` · ${p.area}` : ""}</p>
                   {p.description && <p className="text-sm text-muted-foreground mt-1">{p.description}</p>}
+                  {p.address && <p className="text-sm text-muted-foreground mt-1">{p.address}</p>}
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
+                    {p.phone && <a href={`tel:${p.phone.replace(/\s/g, "")}`} className={linkCls}><Phone className="w-3.5 h-3.5" />{p.phone}</a>}
+                    {p.website && <a href={webUrl(p.website)} target="_blank" rel="noopener noreferrer" className={linkCls}><Globe className="w-3.5 h-3.5" />Website</a>}
+                  </div>
                   <a href={p.google_maps_url || getGooglePlacePageUrl(p)} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline mt-2 inline-flex items-center gap-1">
                     Open in Google Maps <ExternalLink className="w-3.5 h-3.5" />
                   </a>
