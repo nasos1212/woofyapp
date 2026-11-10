@@ -120,15 +120,15 @@ const Index = () => {
           <SheltersSection />
           <OffersSection />
           <PricingSection />
-          <div id="get-listed">
-            <GetListedSection />
-          </div>
-          <LatestFromBlog />
           {!isNative && (
             <div className="flex justify-center border-t border-border bg-card px-4 py-10 sm:py-12">
               <AppStoreButton />
             </div>
           )}
+          <div id="get-listed">
+            <GetListedSection />
+          </div>
+          <LatestFromBlog />
           <CTASection />
         </main>
         <Footer />

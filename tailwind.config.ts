@@ -22,6 +22,10 @@ export default {
         body: ["Inter", "sans-serif"],
       },
       colors: {
+        "app-store": {
+          DEFAULT: "hsl(var(--app-store))",
+          foreground: "hsl(var(--app-store-foreground))",
+        },
         status: {
           open: "hsl(var(--status-open))",
           pending: "hsl(var(--status-pending))",

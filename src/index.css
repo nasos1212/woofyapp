@@ -21,6 +21,9 @@ html, body {
     --card: 0 0% 100%;
     --card-foreground: 210 20% 15%;
 
+    --app-store: 0 0% 0%;
+    --app-store-foreground: 0 0% 100%;
+
     --popover: 0 0% 100%;
     --popover-foreground: 210 20% 15%;
 
