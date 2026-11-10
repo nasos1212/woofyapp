@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { scrollToTop } from "@/lib/scroll";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { MapPin, Store, ExternalLink, Phone, Globe } from "lucide-react";
 import Header from "@/components/Header";
@@ -22,6 +23,7 @@ const linkCls = "text-sm text-primary hover:underline inline-flex items-center g
 
 const CityDirectory = () => {
   const { city: slug } = useParams();
+  useEffect(() => { scrollToTop(); }, [slug]);
   const city = getDirectoryCity(slug);
   const [businesses, setBusinesses] = useState<Biz[]>([]);
   const [places, setPlaces] = useState<Place[]>([]);

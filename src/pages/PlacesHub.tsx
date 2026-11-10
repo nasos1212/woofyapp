@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { scrollToTop } from "@/lib/scroll";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import Header from "@/components/Header";
@@ -6,6 +8,7 @@ import Footer from "@/components/Footer";
 import { DIRECTORY_CITIES } from "@/data/cityDirectory";
 
 const PlacesHub = () => {
+  useEffect(() => { scrollToTop(); }, []);
   const title = "Cyprus Pet Directory: Pet Shops, Vets & Dog-Friendly Places | Wooffy";
   const desc = "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in Limassol, Nicosia, Larnaca, Paphos and Famagusta.";
   return (

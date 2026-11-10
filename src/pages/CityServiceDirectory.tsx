@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import { scrollToTop } from "@/lib/scroll";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -13,6 +14,7 @@ const SITE = "https://wooffy.app";
 
 const CityServiceDirectory = () => {
   const { city: citySlug, service: serviceSlug } = useParams();
+  useEffect(() => { scrollToTop(); }, [citySlug, serviceSlug]);
   const city = getDirectoryCity(citySlug);
   const service = getCityService(serviceSlug);
   const [items, setItems] = useState<DirectoryBusiness[]>([]);
