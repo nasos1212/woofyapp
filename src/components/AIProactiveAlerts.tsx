@@ -322,16 +322,6 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
     setAlerts([]);
   };
 
-  const getDaysText = (daysUntil: number) => {
-    if (daysUntil < 0) {
-      const n = Math.abs(daysUntil);
-      return t(n === 1 ? "proactiveAlerts.days.overdueOne" : "proactiveAlerts.days.overdueOther", { count: n });
-    }
-    if (daysUntil === 0) return t("proactiveAlerts.days.today");
-    if (daysUntil === 1) return t("proactiveAlerts.days.tomorrow");
-    return t("proactiveAlerts.days.inDays", { count: daysUntil });
-  };
-
   const hasUrgentItems = reminders.some(r => r.status === "overdue" || r.status === "today" || r.status === "urgent");
   const overdueCount = reminders.filter(r => r.status === "overdue").length;
   const todayCount = reminders.filter(r => r.status === "today").length;
@@ -406,14 +396,6 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
                     <span className="break-words">{reminder.petName}</span>
                     <span aria-hidden="true">·</span>
                     <span className="break-words">{formatDate(reminder.dueDate)}</span>
-                    {reminder.status !== "today" && (
-                      <span aria-hidden="true">·</span>
-                    )}
-                    {reminder.status !== "today" && (
-                      <span className={cn("break-words", reminder.status === "overdue" ? "text-destructive" : "text-muted-foreground")}>
-                        {getDaysText(reminder.daysUntil)}
-                      </span>
-                    )}
                   </p>
                 </div>
                 <ChevronRight className="mt-1.5 h-4 w-4 shrink-0 text-muted-foreground" />
