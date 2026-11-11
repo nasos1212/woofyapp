@@ -742,16 +742,16 @@ const MemberOffers = () => {
                     </div>
 
                     {/* Discount Badge */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                    <div className={!isPaidMember ? "flex flex-col items-center gap-2" : "flex items-center justify-between"}>
+                      <div className={`flex items-center gap-2 ${!isPaidMember ? "self-start" : ""}`}>
                         <Tag className="w-4 h-4 text-primary" />
-                        <span className="font-semibold text-primary">
+                        <span className={`font-semibold text-primary ${!isPaidMember ? "text-sm" : ""}`}>
                           {formatDiscount(offer)}
                         </span>
                       </div>
 
                       {!isPaidMember ? (
-                        <Badge className="bg-amber-100 text-amber-700 border-amber-200">
+                        <Badge className="bg-amber-100 text-amber-700 border-amber-200 justify-center">
                           <Lock className="w-3 h-3 mr-1" />
                           {t("offers.upgradeToRedeem")}
                         </Badge>
