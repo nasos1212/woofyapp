@@ -141,6 +141,13 @@
       "when": 1794334942018,
       "tag": "0019_public_city_directory_businesses",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1794427406413,
+      "tag": "0020_blog_alerts_include_shelters",
+      "breakpoints": true
     }
   ]
 }

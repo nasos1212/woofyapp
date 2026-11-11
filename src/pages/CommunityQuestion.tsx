@@ -851,7 +851,7 @@ const CommunityQuestion = () => {
             </DialogContent>
           </Dialog>
           <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md top-4 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] max-h-[85dvh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
                   <Flag className="w-5 h-5 text-destructive" />
@@ -898,6 +898,8 @@ const CommunityQuestion = () => {
                     placeholder={t('communityQuestion.reportDetailsPh')}
                     value={reportDetails}
                     onChange={(e) => setReportDetails(e.target.value)}
+                    onFocus={(e) => setTimeout(() => e.target.scrollIntoView({ block: "center" }), 300)}
+                    maxLength={1000}
                     rows={3}
                   />
                 </div>

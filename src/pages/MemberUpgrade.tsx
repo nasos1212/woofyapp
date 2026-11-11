@@ -29,6 +29,12 @@ const PLANS = [
 ];
 
 
+export const PLAN_MAX_PETS: Record<string, number> = {
+  wooffy_solo_yearly: 1,
+  wooffy_duo_yearly: 2,
+  wooffy_pack_yearly: 5,
+};
+
 const PLAN_TYPE_TO_PRICE_ID: Record<string, string> = {
   single: "wooffy_solo_yearly",
   duo: "wooffy_duo_yearly",
@@ -63,6 +69,13 @@ const MemberUpgrade = () => {
   const [reactivateLoading, setReactivateLoading] = useState(false);
   const [pendingChange, setPendingChange] = useState<{ priceId: string | null; scheduledFor: number | null } | null>(null);
   const [cancelPendingLoading, setCancelPendingLoading] = useState(false);
+
+  const [petCount, setPetCount] = useState(0);
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("pets").select("id", { count: "exact", head: true }).eq("owner_user_id", user.id)
+      .then(({ count }) => setPetCount(count ?? 0));
+  }, [user]);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
 
@@ -498,7 +511,8 @@ const MemberUpgrade = () => {
                         : -1;
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
                       const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
-                      const blocked = !!pendingChange && !isCurrent && !isPending;
+                      const tooManyPets = !isCurrent && petCount > (PLAN_MAX_PETS[plan.priceId] ?? 5);
+                      const blocked = (!!pendingChange && !isCurrent && !isPending) || tooManyPets;
                       const label = isCurrent
                         ? t("memberUpgrade.cta.current")
                         : isPending
@@ -509,6 +523,7 @@ const MemberUpgrade = () => {
                               : t("memberUpgrade.cta.switchTo", { plan: plan.name })
                             : t("memberUpgrade.cta.select", { plan: plan.name });
                       return (
+                        <>
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
@@ -517,6 +532,12 @@ const MemberUpgrade = () => {
                         >
                           {label}
                         </Button>
+                        {tooManyPets && (
+                          <p className="mt-2 text-xs text-center text-muted-foreground">
+                            {t("memberUpgrade.cta.tooManyPets", { count: petCount })}
+                          </p>
+                        )}
+                        </>
                       );
                     })()}
 

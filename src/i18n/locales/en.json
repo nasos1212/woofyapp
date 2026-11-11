@@ -2561,6 +2561,7 @@
       "canceling": "Canceling…"
     },
     "cta": {
+      "tooManyPets": "You have {{count}} pets. Choose a plan that covers all of them.",
       "current": "Your current plan",
       "scheduled": "Scheduled at renewal",
       "upgradeTo": "Upgrade to {{plan}}",
