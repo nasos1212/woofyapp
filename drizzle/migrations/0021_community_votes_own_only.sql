@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Users can view all votes" ON public.community_votes;
+CREATE POLICY "Users can view their own votes" ON public.community_votes FOR SELECT TO authenticated USING (auth.uid() = user_id);

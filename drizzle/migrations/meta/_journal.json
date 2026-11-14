@@ -148,6 +148,13 @@
       "when": 1794427406413,
       "tag": "0020_blog_alerts_include_shelters",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1794676842130,
+      "tag": "0021_community_votes_own_only",
+      "breakpoints": true
     }
   ]
 }

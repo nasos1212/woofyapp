@@ -11,36 +11,6 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/places</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/nicosia</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/larnaca</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/paphos</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/famagusta</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://wooffy.app/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
@@ -51,14 +21,14 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/the-story-of-may-they-told-us-he-was-nobodys-dog</loc>
-    <lastmod>2026-11-04</lastmod>
+    <loc>https://wooffy.app/blog/peanut-butter-for-dogs-healthy-or-not</loc>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/peanut-butter-for-dogs-healthy-or-not</loc>
-    <lastmod>2026-10-23</lastmod>
+    <loc>https://wooffy.app/blog/the-story-of-may-they-told-us-he-was-nobodys-dog</loc>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -112,19 +82,19 @@
   </url>
   <url>
     <loc>https://wooffy.app/blog/king-of-k9-cy-great-behaviour-begins-long-before-training</loc>
-    <lastmod>2026-10-23</lastmod>
+    <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooffy.app/blog/why-dogs-go-missing-and-how-we-can-prevent-it</loc>
-    <lastmod>2026-10-22</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooffy.app/blog/sandra-grooming-studio-gentle-care-for-every-dogs-individual-needs</loc>
-    <lastmod>2026-11-10</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -213,14 +183,14 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
-    <lastmod>2026-10-28</lastmod>
+    <loc>https://wooffy.app/blog/unleashed-dog-handling-building-a-partnership-beyond-training</loc>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://wooffy.app/blog/unleashed-dog-handling-building-a-partnership-beyond-training</loc>
-    <lastmod>2026-10-29</lastmod>
+    <loc>https://wooffy.app/blog/patellar-luxation-in-dogs-what-every-pet-owner-should-know</loc>
+    <lastmod>2026-11-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -229,70 +199,5 @@
     <lastmod>2026-11-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol/pet-shops</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol/grooming</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol/dog-trainers</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol/pet-hotels</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/limassol/pet-sitters</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/nicosia/pet-shops</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/nicosia/grooming</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/nicosia/dog-trainers</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/larnaca/pet-shops</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/larnaca/grooming</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/larnaca/pet-hotels</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/larnaca/pet-sitters</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://wooffy.app/places/paphos/dog-trainers</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
