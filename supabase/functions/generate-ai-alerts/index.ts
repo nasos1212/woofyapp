@@ -1,3 +1,4 @@
+import { getUserId, isInternal, forbidden } from "../_shared/auth.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
@@ -41,6 +42,13 @@ serve(async (req) => {
         JSON.stringify({ error: 'Invalid user ID format' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Only the signed-in user may generate their own alerts (or internal jobs).
+    if (!(await isInternal(req))) {
+      const callerId = await getUserId(req);
+      if (!callerId) return forbidden(corsHeaders, 401);
+      if (callerId !== userId) return forbidden(corsHeaders);
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;

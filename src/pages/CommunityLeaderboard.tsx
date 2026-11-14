@@ -63,7 +63,7 @@ const CommunityLeaderboard = () => {
       try {
         // Fetch leaderboard
         const { data: statsData, error } = await supabase
-          .from('community_expert_stats')
+          .from('community_expert_stats_public')
           .select('*')
           .order('reputation_score', { ascending: false })
           .limit(50);
@@ -107,7 +107,7 @@ const CommunityLeaderboard = () => {
             setUserStats(stats);
             // Calculate approximate rank
             const { count } = await supabase
-              .from('community_expert_stats')
+              .from('community_expert_stats_public')
               .select('*', { count: 'exact', head: true })
               .gt('reputation_score', stats.reputation_score);
             setUserRank((count || 0) + 1);

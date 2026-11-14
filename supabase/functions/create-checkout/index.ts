@@ -1,3 +1,4 @@
+import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
 
 const corsHeaders = {
@@ -19,18 +20,6 @@ async function resolveOrCreateCustomer(
       limit: 1,
     });
     if (found.data.length) return found.data[0].id;
-  }
-  if (options.email) {
-    const existing = await stripe.customers.list({ email: options.email, limit: 1 });
-    if (existing.data.length) {
-      const customer = existing.data[0];
-      if (options.userId && customer.metadata?.userId !== options.userId) {
-        await stripe.customers.update(customer.id, {
-          metadata: { ...customer.metadata, userId: options.userId },
-        });
-      }
-      return customer.id;
-    }
   }
   const created = await stripe.customers.create({
     ...(options.email && { email: options.email }),
@@ -74,7 +63,7 @@ async function createCheckoutSession(options: {
   }
 
   const session = await stripe.checkout.sessions.create({
-    line_items: [{ price: stripePrice.id, quantity: options.quantity || 1 }],
+    line_items: [{ price: stripePrice.id, quantity: 1 }],
     mode: isRecurring ? "subscription" : "payment",
     ui_mode: "embedded_page",
     return_url: options.returnUrl,
@@ -101,14 +90,24 @@ Deno.serve(async (req) => {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
   try {
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const { data: authData } = token ? await sb.auth.getUser(token) : { data: { user: null } };
+    const authUser = authData?.user;
+    if (!authUser) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const body = await req.json();
     const environment: StripeEnv =
       body.environment === "live" ? "live" : "sandbox";
     const clientSecret = await createCheckoutSession({
       priceId: body.priceId,
-      quantity: body.quantity,
-      customerEmail: body.customerEmail,
-      userId: body.userId,
+      quantity: 1,
+      customerEmail: authUser.email ?? undefined,
+      userId: authUser.id,
       returnUrl: body.returnUrl,
       environment,
     });

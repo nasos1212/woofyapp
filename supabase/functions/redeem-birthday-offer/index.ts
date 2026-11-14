@@ -109,6 +109,13 @@ serve(async (req) => {
       );
     }
 
+    if (birthdayOffer.business_id !== businessId) {
+      return new Response(
+        JSON.stringify({ error: 'Birthday offer not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (birthdayOffer.redeemed_at) {
       return new Response(
         JSON.stringify({ error: 'Birthday offer already redeemed', code: 'ALREADY_REDEEMED' }),
@@ -123,7 +130,9 @@ serve(async (req) => {
         redeemed_at: new Date().toISOString(),
         redeemed_by_business_id: businessId
       })
-      .eq('id', birthdayOfferId);
+      .eq('id', birthdayOfferId)
+      .eq('business_id', businessId)
+      .is('redeemed_at', null);
 
     if (updateError) {
       console.error('Update error:', updateError.message);

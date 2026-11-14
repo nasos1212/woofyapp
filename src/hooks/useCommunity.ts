@@ -595,7 +595,7 @@ export const useCommunity = () => {
 
   const fetchLeaderboard = useCallback(async (limit = 10): Promise<ExpertStats[]> => {
     const { data, error } = await supabase
-      .from('community_expert_stats')
+      .from('community_expert_stats_public')
       .select('*')
       .order('reputation_score', { ascending: false })
       .limit(limit);

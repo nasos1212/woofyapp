@@ -112,11 +112,11 @@ serve(async (req) => {
     // Get membership details
     const { data: membership } = await supabaseAdmin
       .from('memberships')
-      .select('id, user_id, member_number, pet_name')
+      .select('id, user_id, member_number, pet_name, is_active, expires_at')
       .eq('id', membershipId)
       .single();
 
-    if (!membership) {
+    if (!membership || !membership.is_active || new Date(membership.expires_at) < new Date() || membership.user_id === user.id) {
       return new Response(
         JSON.stringify({ error: 'Invalid request' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -149,7 +149,7 @@ serve(async (req) => {
       .eq('id', offerId)
       .single();
 
-    if (!offer) {
+    if (!offer || offer.business_id !== businessId) {
       return new Response(
         JSON.stringify({ error: 'Invalid request' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

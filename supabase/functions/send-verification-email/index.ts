@@ -34,6 +34,21 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email and userId are required");
     }
 
+    // Bind the token to the account's own registered email, and only while unverified.
+    const { data: authUser, error: authErr } = await supabase.auth.admin.getUserById(userId);
+    if (authErr || !authUser?.user?.email ||
+        authUser.user.email.toLowerCase() !== String(email).trim().toLowerCase()) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: prof } = await supabase.from("profiles").select("email_verified").eq("user_id", userId).maybeSingle();
+    if (prof?.email_verified) {
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Generate a secure token
     const token = crypto.randomUUID() + crypto.randomUUID().replace(/-/g, '');
     

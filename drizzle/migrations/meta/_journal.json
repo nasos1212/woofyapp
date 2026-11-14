@@ -169,6 +169,13 @@
       "when": 1794678946671,
       "tag": "0023_community_moderation_and_auto_hide",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1794680430885,
+      "tag": "0024_protect_paid_and_approval_fields",
+      "breakpoints": true
     }
   ]
 }

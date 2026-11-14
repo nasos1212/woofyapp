@@ -3236,6 +3236,21 @@ export type Database = {
         }
         Relationships: []
       }
+      community_expert_stats_public: {
+        Row: {
+          accepted_answers: number | null
+          expertise_areas: string[] | null
+          id: string | null
+          is_verified_professional: boolean | null
+          professional_title: string | null
+          reputation_score: number | null
+          total_answers: number | null
+          total_upvotes: number | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
       community_questions_public: {
         Row: {
           animal_type: string | null
@@ -3617,6 +3632,21 @@ export type Database = {
           upvotes: number
         }[]
       }
+      community_expert_stats_display: {
+        Args: never
+        Returns: {
+          accepted_answers: number
+          expertise_areas: string[]
+          id: string
+          is_verified_professional: boolean
+          professional_title: string
+          reputation_score: number
+          total_answers: number
+          total_upvotes: number
+          updated_at: string
+          user_id: string
+        }[]
+      }
       community_profile_display: {
         Args: never
         Returns: {
@@ -3706,6 +3736,7 @@ export type Database = {
         Args: { _membership_id: string; _user_id: string }
         Returns: boolean
       }
+      is_privileged_caller: { Args: never; Returns: boolean }
       public_city_businesses: {
         Args: never
         Returns: {

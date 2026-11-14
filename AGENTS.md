@@ -32,3 +32,6 @@
 - Share articles as URL-only items through the native Share plugin or browser Web Share API when supported, with Facebook share anchors as the browser fallback; this avoids mobile redirects losing the article URL.
 - Resolve notification destinations through the shared notificationRouting module and buffer native push taps until authentication is ready, preventing inconsistent links and lost cold-start taps.- In the native iOS shell, #root is the only scroll container (html.capacitor locks document scroll); scroll via src/lib/scroll.ts, never window.scrollTo, because iOS WebKit draws fixed headers mid-screen when the document scrolls.
 - Community moderation: replies and questions are reportable once per member (unique indexes); a database trigger hides an item once two different members have pending reports, and the display functions show hidden items only to their author and admins. Admin dismiss unhides; members cannot change is_hidden themselves.
+
+- Edge functions authorize via supabase/functions/_shared/auth.ts; scheduled jobs send X-Internal-Secret (app_secrets.cron_secret) because public endpoints must never run privileged work unauthenticated.
+- Paid-plan, membership expiry and partner verification fields are locked by database triggers for non-admins, so only payments/admin code can grant them.

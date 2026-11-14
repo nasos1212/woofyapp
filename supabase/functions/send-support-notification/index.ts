@@ -1,3 +1,4 @@
+import { getUserId, isAdmin, forbidden } from "../_shared/auth.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
@@ -57,6 +58,14 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields");
     }
 
+    // Authorize: caller must be signed in; admin replies require admin role,
+    // otherwise the caller must own the conversation they are notifying about.
+    const callerId = await getUserId(req);
+    if (!callerId) return forbidden(corsHeaders, 401);
+    const callerIsAdmin = await isAdmin(callerId);
+    if (isAdminReply && !callerIsAdmin) return forbidden(corsHeaders);
+    if (!callerIsAdmin && callerId !== userId) return forbidden(corsHeaders);
+
     // Create Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -66,6 +75,13 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: convo } = await supabase
+      .from("support_conversations")
+      .select("user_id")
+      .eq("id", conversationId)
+      .maybeSingle();
+    if (!convo || convo.user_id !== userId) return forbidden(corsHeaders);
 
     // Get user profile
     const { data: profile, error: profileError } = await supabase
