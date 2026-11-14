@@ -96,6 +96,22 @@ export interface ExpertStats {
   professional_credentials: string | null;
 }
 
+// Questions are read from a masked view, so categories and photos are loaded separately.
+const attachQuestionExtras = async (rows: any[], withPhotos: boolean): Promise<any[]> => {
+  const catIds = [...new Set(rows.map(r => r.category_id).filter(Boolean))];
+  const ids = rows.map(r => r.id);
+  const [cats, photos] = await Promise.all([
+    catIds.length ? supabase.from('community_categories').select('*').in('id', catIds) : Promise.resolve({ data: [] as any[] }),
+    withPhotos && ids.length ? supabase.from('community_question_photos').select('*').in('question_id', ids) : Promise.resolve({ data: [] as any[] }),
+  ]);
+  const catMap = new Map((cats.data || []).map((c: any) => [c.id, c]));
+  return rows.map(r => ({
+    ...r,
+    category: catMap.get(r.category_id) || null,
+    ...(withPhotos ? { photos: (photos.data || []).filter((p: any) => p.question_id === r.id) } : {}),
+  }));
+};
+
 export const useCommunity = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -123,12 +139,8 @@ export const useCommunity = () => {
     offset?: number;
   }): Promise<Question[]> => {
     let query = supabase
-      .from('community_questions')
-      .select(`
-        *,
-        category:community_categories(*),
-        photos:community_question_photos(*)
-      `)
+      .from('community_questions_public')
+      .select('*')
       .order('is_pinned', { ascending: false });
 
     if (filters?.category_id) {
@@ -165,35 +177,19 @@ export const useCommunity = () => {
       query = query.range(filters.offset, filters.offset + (filters.limit || 20) - 1);
     }
 
-    const { data, error } = await query;
+    const { data: rawData, error } = await query;
     if (error) throw error;
 
-    if (!data || data.length === 0) {
+    if (!rawData || rawData.length === 0) {
       return [];
     }
+    const data = await attachQuestionExtras(rawData as any[], true);
 
-    // Fetch author profiles from public view (excludes sensitive data like email/phone)
-    const userIds = [...new Set(data.map(q => q.user_id))];
-    const { data: profiles } = await supabase
-      .from('profiles_public')
-      .select('user_id, full_name, avatar_url, anonymous_handle')
-      .in('user_id', userIds);
-
-    const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
-
-    const resolveAuthor = (q: any) => {
-      const p = profileMap.get(q.user_id);
-      if (q.is_anonymous) {
-        return {
-          author: { full_name: p?.anonymous_handle || 'Anonymous', avatar_url: null },
-          user_id: q.user_id === user?.id ? q.user_id : null as string | null,
-        };
-      }
-      return {
-        author: p ? { full_name: p.full_name, avatar_url: p.avatar_url } : null,
-        user_id: q.user_id as string | null,
-      };
-    };
+    // Author identity comes from the masked view; anonymous posters' accounts are never exposed
+    const resolveAuthor = (q: any) => ({
+      author: q.author_name || q.author_avatar_url ? { full_name: q.author_name, avatar_url: q.author_avatar_url } : null,
+      user_id: q.user_id as string | null,
+    });
 
     // Get saved and following status for current user
     if (user) {
@@ -238,32 +234,17 @@ export const useCommunity = () => {
   }, [user]);
 
   const fetchQuestion = useCallback(async (id: string): Promise<Question | null> => {
-    const { data, error } = await supabase
-      .from('community_questions')
-      .select(`
-        *,
-        category:community_categories(*),
-        photos:community_question_photos(*)
-      `)
+    const { data: rawQuestion, error } = await supabase
+      .from('community_questions_public')
+      .select('*')
       .eq('id', id)
       .single();
 
     if (error) throw error;
+    const data = (await attachQuestionExtras([rawQuestion as any], true))[0];
 
-    // Fetch author profile from public view (excludes sensitive data)
-    const { data: authorProfile } = await supabase
-      .from('profiles_public')
-      .select('full_name, avatar_url, anonymous_handle')
-      .eq('user_id', data.user_id)
-      .maybeSingle();
-
-    const isAnon = (data as any).is_anonymous === true;
-    const authorDisplay = isAnon
-      ? { full_name: authorProfile?.anonymous_handle || 'Anonymous', avatar_url: null }
-      : authorProfile
-        ? { full_name: authorProfile.full_name, avatar_url: authorProfile.avatar_url }
-        : null;
-    const exposedUserId = isAnon && data.user_id !== user?.id ? null : data.user_id;
+    const authorDisplay = { full_name: data.author_name, avatar_url: data.author_avatar_url };
+    const exposedUserId = data.user_id;
 
     // Increment view count
     await supabase
@@ -652,29 +633,18 @@ export const useCommunity = () => {
 
     const questionIds = saved.map(s => s.question_id);
     const { data, error } = await supabase
-      .from('community_questions')
-      .select(`
-        *,
-        category:community_categories(*)
-      `)
+      .from('community_questions_public')
+      .select('*')
       .in('id', questionIds)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
     if (!data || data.length === 0) return [];
+    const withExtras = await attachQuestionExtras(data as any[], false);
 
-    // Fetch author profiles from public view (excludes sensitive data)
-    const userIds = [...new Set(data.map(q => q.user_id))];
-    const { data: profiles } = await supabase
-      .from('profiles_public')
-      .select('user_id, full_name, avatar_url')
-      .in('user_id', userIds);
-
-    const profileMap = new Map(profiles?.map(p => [p.user_id, { full_name: p.full_name, avatar_url: p.avatar_url }]) || []);
-
-    return data.map(q => ({
+    return withExtras.map(q => ({
       ...q,
-      author: profileMap.get(q.user_id) || null,
+      author: { full_name: q.author_name, avatar_url: q.author_avatar_url },
       answer_count: 0,
       is_saved: true
     })) as unknown as Question[];

@@ -187,7 +187,7 @@ const FreeMemberDashboard = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       const { data } = await supabase
-        .from("community_questions")
+        .from("community_questions_public")
         .select("id, title, helped_count, created_at")
         .order("created_at", { ascending: false })
         .limit(4);

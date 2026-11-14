@@ -17,7 +17,7 @@
 - Keep the current health reminder occurrence and dispatch definitions in supabase/health-reminder-schedule.sql and supabase/health-reminder-dispatch.sql for isolated delivery regression tests; apply database changes through migrations.
 - Compute health-record completion through the shared Athens-time helper, clearing one-off due dates and advancing recurring ones so Done cancels the current reminder occurrence.
 
-- Serve community display identities and replies through authenticated, fixed-column security-definer functions behind security-invoker views; private profile fields and raw anonymous reply ownership remain inaccessible.
+- Serve community display identities, questions and replies through authenticated, fixed-column security-definer functions behind security-invoker views; private profile fields and raw anonymous reply ownership remain inaccessible.
 - Question edits change only title and content, scoped to the authenticated original author by database ownership policy.
 
 - Gate business profile rendering and data fetching on hydrated authentication, redirecting guests to `/auth` in the shared web/native page to avoid false not-found results and anonymous requests.

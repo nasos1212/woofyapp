@@ -3218,6 +3218,30 @@ export type Database = {
         }
         Relationships: []
       }
+      community_questions_public: {
+        Row: {
+          animal_type: string | null
+          author_avatar_url: string | null
+          author_name: string | null
+          breed_tags: string[] | null
+          category_id: string | null
+          content: string | null
+          created_at: string | null
+          helped_count: number | null
+          id: string | null
+          is_anonymous: boolean | null
+          is_featured: boolean | null
+          is_pinned: boolean | null
+          pet_id: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          urgency: string | null
+          user_id: string | null
+          view_count: number | null
+        }
+        Relationships: []
+      }
       lost_pet_alerts_public: {
         Row: {
           additional_info: string | null
@@ -3579,6 +3603,30 @@ export type Database = {
           full_name: string
           preferred_city: string
           user_id: string
+        }[]
+      }
+      community_question_display: {
+        Args: never
+        Returns: {
+          animal_type: string
+          author_avatar_url: string
+          author_name: string
+          breed_tags: string[]
+          category_id: string
+          content: string
+          created_at: string
+          helped_count: number
+          id: string
+          is_anonymous: boolean
+          is_featured: boolean
+          is_pinned: boolean
+          pet_id: string
+          status: string
+          title: string
+          updated_at: string
+          urgency: string
+          user_id: string
+          view_count: number
         }[]
       }
       create_family_invite_notification: {

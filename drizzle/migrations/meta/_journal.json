@@ -155,6 +155,13 @@
       "when": 1794676842130,
       "tag": "0021_community_votes_own_only",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1794677154796,
+      "tag": "0022_mask_anonymous_question_authors",
+      "breakpoints": true
     }
   ]
 }
