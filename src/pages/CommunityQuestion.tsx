@@ -87,13 +87,6 @@ const urgencyConfig = {
   urgent: { icon: AlertCircle, color: 'bg-red-500', label: 'Urgent', textColor: 'text-red-700' }
 };
 
-const statusConfig = {
-  open: { color: 'bg-blue-500', label: 'Open', textColor: 'text-blue-700' },
-  answered: { color: 'bg-purple-500', label: 'Answered', textColor: 'text-purple-700' },
-  resolved: { color: 'bg-purple-500', label: 'Answered', textColor: 'text-purple-700' },
-  closed: { color: 'bg-gray-500', label: 'Closed', textColor: 'text-gray-700' }
-};
-
 const CommunityQuestion = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
@@ -398,7 +391,6 @@ const CommunityQuestion = () => {
   }
 
   const urgency = urgencyConfig[question.urgency];
-  const status = statusConfig[question.status];
   const UrgencyIcon = urgency.icon;
   const isOwner = ownsCommunityQuestion(question.user_id, user?.id);
 
@@ -464,9 +456,6 @@ const CommunityQuestion = () => {
                   <Badge className={`${urgency.color} text-white`}>
                     <UrgencyIcon className="w-3 h-3 mr-1" />
                     {urgency.label}
-                  </Badge>
-                  <Badge className={`${status.color} text-white`}>
-                    {status.label}
                   </Badge>
                 </div>
               </div>

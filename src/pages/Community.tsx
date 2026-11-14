@@ -59,13 +59,6 @@ const Community = () => {
     urgent: { icon: AlertCircle, color: 'bg-red-500', label: t('community.urgent') }
   };
 
-  const statusConfig = {
-    open: { color: 'bg-blue-500', label: t('community.open') },
-    answered: { color: 'bg-purple-500', label: t('community.answered') },
-    resolved: { color: 'bg-purple-500', label: t('community.answered') },
-    closed: { color: 'bg-gray-500', label: t('community.closed') }
-  };
-
   const [categories, setCategories] = useState<Category[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,7 +123,6 @@ const Community = () => {
 
   const QuestionCard = ({ question }: { question: Question }) => {
     const urgency = urgencyConfig[question.urgency];
-    const status = statusConfig[question.status];
     const UrgencyIcon = urgency.icon;
 
     return (
@@ -166,9 +158,6 @@ const Community = () => {
                   <Badge className={`${urgency.color} text-white text-xs`}>
                     <UrgencyIcon className="w-3 h-3 mr-1" />
                     {urgency.label}
-                  </Badge>
-                  <Badge className={`${status.color} text-white text-xs`}>
-                    {status.label}
                   </Badge>
                 </div>
               </div>

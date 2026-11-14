@@ -1,5 +1,8 @@
 # Roadmap
 
+## November 14 community presentation
+- [x] Removed question status badges from the list and detail page; signed-in checks show the existing corrected Raw diet title. Admin reports support viewing, dismissal and deletion, not editing others' questions. Community privacy and acceptance regression scripts pass; mobile detail has no overflow.
+
 ## November 10 App Store landing placements
 - [x] Matching download buttons beneath the hero photo and in a second white section, plus the shared footer; English/Greek phone, tablet and desktop layouts checked with three correct production links and no overflow.
 
