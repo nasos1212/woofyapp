@@ -2561,7 +2561,7 @@
       "canceling": "Canceling…"
     },
     "cta": {
-      "tooManyPets": "This plan covers fewer pets than you have ({{count}}). You can still choose it — your pets stay as they are.",
+      "tooManyPets": "This plan covers fewer pets than you have ({{count}}). You can still choose it. Your pets stay as they are.",
       "current": "Your current plan",
       "scheduled": "Scheduled at renewal",
       "upgradeTo": "Upgrade to {{plan}}",
