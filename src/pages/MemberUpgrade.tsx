@@ -512,7 +512,7 @@ const MemberUpgrade = () => {
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
                       const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
                       const tooManyPets = !isCurrent && petCount > (PLAN_MAX_PETS[plan.priceId] ?? 5);
-                      const blocked = (!!pendingChange && !isCurrent && !isPending) || tooManyPets;
+                      const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
                         ? t("memberUpgrade.cta.current")
                         : isPending
