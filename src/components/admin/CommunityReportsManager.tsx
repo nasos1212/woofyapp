@@ -52,6 +52,8 @@ interface Report {
   created_at: string;
   resolved_at: string | null;
   resolved_by: string | null;
+  answer_id?: string | null;
+  answer_content?: string;
   question_title?: string;
   reporter_name?: string;
 }
@@ -104,7 +106,7 @@ const CommunityReportsManager = () => {
     // Enrich with question titles and reporter names
     const enrichedReports = await Promise.all(
       (data || []).map(async (report) => {
-        const [questionResult, profileResult] = await Promise.all([
+        const [questionResult, profileResult, answerResult] = await Promise.all([
           supabase
             .from("community_questions")
             .select("title")
@@ -115,12 +117,16 @@ const CommunityReportsManager = () => {
             .select("full_name")
             .eq("user_id", report.reporter_user_id)
             .single(),
+          report.answer_id
+            ? supabase.from("community_answers").select("content").eq("id", report.answer_id).maybeSingle()
+            : Promise.resolve({ data: null }),
         ]);
 
         return {
           ...report,
           question_title: questionResult.data?.title || "Unknown Question",
           reporter_name: profileResult.data?.full_name || "Unknown User",
+          answer_content: (answerResult as any).data?.content || undefined,
         };
       })
     );
@@ -155,6 +161,15 @@ const CommunityReportsManager = () => {
       return;
     }
 
+    if (newStatus === "dismissed") {
+      const target = reports.find((r) => r.id === reportId) || selectedReport;
+      if (target?.answer_id) {
+        await supabase.from("community_answers").update({ is_hidden: false }).eq("id", target.answer_id);
+      } else if (target) {
+        await supabase.from("community_questions").update({ is_hidden: false }).eq("id", target.question_id);
+      }
+    }
+
     if (showToast) {
       toast({
         title: "Report updated",
@@ -185,17 +200,16 @@ const CommunityReportsManager = () => {
         })
         .eq("id", selectedReport.id);
 
-      // Delete the question (this will cascade delete related data)
-      const { error } = await supabase
-        .from("community_questions")
-        .delete()
-        .eq("id", selectedReport.question_id);
+      // Delete the reported reply, or the whole question (cascades related data)
+      const { error } = selectedReport.answer_id
+        ? await supabase.from("community_answers").delete().eq("id", selectedReport.answer_id)
+        : await supabase.from("community_questions").delete().eq("id", selectedReport.question_id);
 
       if (error) throw error;
 
       toast({
-        title: "Question deleted",
-        description: "The reported question has been removed",
+        title: selectedReport.answer_id ? "Reply deleted" : "Question deleted",
+        description: selectedReport.answer_id ? "The reported reply has been removed" : "The reported question has been removed",
       });
 
       setDeleteDialogOpen(false);
@@ -298,6 +312,12 @@ const CommunityReportsManager = () => {
                         {report.question_title}
                         <ExternalLink className="h-3 w-3 shrink-0" />
                       </Link>
+                      {report.answer_id && (
+                        <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                          <Badge variant="outline" className="mr-1 text-[10px]">Reply</Badge>
+                          {report.answer_content || "Reply removed"}
+                        </p>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div>
@@ -356,6 +376,13 @@ const CommunityReportsManager = () => {
                     <ExternalLink className="h-3 w-3" />
                   </Link>
                 </div>
+
+                {selectedReport.answer_id && (
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground">Reported Reply</p>
+                    <p className="mt-1 text-sm bg-muted p-3 rounded-md whitespace-pre-wrap">{selectedReport.answer_content || "Reply removed"}</p>
+                  </div>
+                )}
 
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Reason</p>
@@ -427,9 +454,11 @@ const CommunityReportsManager = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this question?</AlertDialogTitle>
+            <AlertDialogTitle>{selectedReport?.answer_id ? "Delete this reply?" : "Delete this question?"}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the question "{selectedReport?.question_title}" and all its answers. This action cannot be undone.
+              {selectedReport?.answer_id
+                ? "This will permanently delete the reported reply. The question stays. This action cannot be undone."
+                : `This will permanently delete the question "${selectedReport?.question_title}" and all its replies. This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -118,6 +118,17 @@ const CommunityQuestion = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [reportAnswerId, setReportAnswerId] = useState<string | null>(null);
+  const [editingAnswer, setEditingAnswer] = useState<Answer | null>(null);
+  const [editAnswerContent, setEditAnswerContent] = useState('');
+  const [deletingAnswer, setDeletingAnswer] = useState<Answer | null>(null);
+  const [answerBusy, setAnswerBusy] = useState(false);
+
+  useEffect(() => {
+    if (!user) { setIsAdmin(false); return; }
+    supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' }).then(({ data }) => setIsAdmin(!!data));
+  }, [user]);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [reportReason, setReportReason] = useState('');
@@ -291,15 +302,25 @@ const CommunityQuestion = () => {
         .from('community_reports')
         .insert({
           question_id: question.id,
+          answer_id: reportAnswerId,
           reporter_user_id: user.id,
           reason: reportReason,
           details: reportDetails.trim() || null,
         });
 
-      if (error) throw error;
+      if (error) {
+        if ((error as any).code === '23505') {
+          toast.info(t('communityQuestion.alreadyReported'));
+          setShowReportDialog(false);
+          setReportAnswerId(null);
+          return;
+        }
+        throw error;
+      }
 
       toast.success(t('communityQuestion.reportSuccess'));
       setShowReportDialog(false);
+      setReportAnswerId(null);
       setReportReason('');
       setReportDetails('');
     } catch (error) {
@@ -311,7 +332,7 @@ const CommunityQuestion = () => {
   };
 
   const handleDeleteQuestion = async () => {
-    if (!question || !user || user.id !== question.user_id) return;
+    if (!question || !user || (user.id !== question.user_id && !isAdmin)) return;
     
     setIsDeleting(true);
     try {
@@ -336,11 +357,9 @@ const CommunityQuestion = () => {
         supabase.from('community_reports').delete().eq('question_id', question.id),
       ]);
 
-      const { error } = await supabase
-        .from('community_questions')
-        .delete()
-        .eq('id', question.id)
-        .eq('user_id', user.id);
+      let del = supabase.from('community_questions').delete().eq('id', question.id);
+      if (!isAdmin) del = del.eq('user_id', user.id);
+      const { error } = await del;
 
       if (error) throw error;
 
@@ -356,10 +375,19 @@ const CommunityQuestion = () => {
 
   const handleEditQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!question || !ownsCommunityQuestion(question.user_id, user?.id)) return;
+    const ownsIt = ownsCommunityQuestion(question?.user_id ?? null, user?.id) || !!question?.is_mine;
+    if (!question || (!ownsIt && !isAdmin)) return;
     setIsSaving(true);
     try {
-      await updateQuestion(question.id, editTitle, editContent);
+      if (ownsIt) {
+        await updateQuestion(question.id, editTitle, editContent);
+      } else {
+        if (!editTitle.trim() || !editContent.trim() || editTitle.trim().length > 150) throw new Error('Invalid');
+        const { error } = await supabase.from('community_questions')
+          .update({ title: editTitle.trim(), content: editContent.trim() })
+          .eq('id', question.id);
+        if (error) throw error;
+      }
       await loadData();
       setShowEditDialog(false);
       toast.success(t('communityQuestion.editSuccess'));
@@ -370,6 +398,41 @@ const CommunityQuestion = () => {
     }
   };
 
+  const handleSaveAnswer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingAnswer || !editAnswerContent.trim()) return;
+    setAnswerBusy(true);
+    try {
+      const { error } = await supabase.from('community_answers')
+        .update({ content: editAnswerContent.trim() })
+        .eq('id', editingAnswer.id);
+      if (error) throw error;
+      setAnswers((prev) => prev.map((a) => a.id === editingAnswer.id ? { ...a, content: editAnswerContent.trim() } : a));
+      setEditingAnswer(null);
+      toast.success(t('communityQuestion.replyUpdated'));
+    } catch {
+      toast.error(t('communityQuestion.actionFailed'));
+    } finally {
+      setAnswerBusy(false);
+    }
+  };
+
+  const handleDeleteAnswer = async () => {
+    if (!deletingAnswer) return;
+    setAnswerBusy(true);
+    try {
+      await supabase.from('community_answer_photos').delete().eq('answer_id', deletingAnswer.id);
+      const { error } = await supabase.from('community_answers').delete().eq('id', deletingAnswer.id);
+      if (error) throw error;
+      setAnswers((prev) => prev.filter((a) => a.id !== deletingAnswer.id));
+      setDeletingAnswer(null);
+      toast.success(t('communityQuestion.replyDeleted'));
+    } catch {
+      toast.error(t('communityQuestion.actionFailed'));
+    } finally {
+      setAnswerBusy(false);
+    }
+  };
 
   if (authLoading || loading) {
     return (
@@ -392,7 +455,8 @@ const CommunityQuestion = () => {
 
   const urgency = urgencyConfig[question.urgency];
   const UrgencyIcon = urgency.icon;
-  const isOwner = ownsCommunityQuestion(question.user_id, user?.id);
+  const isOwner = ownsCommunityQuestion(question.user_id, user?.id) || !!question.is_mine;
+  const canModerate = isOwner || isAdmin;
 
   return (
     <>
@@ -462,6 +526,11 @@ const CommunityQuestion = () => {
             </CardHeader>
             <CardContent>
               {/* Title */}
+              {question.is_hidden && (
+                <Badge variant="outline" className="mb-2 text-xs border-destructive/40 text-destructive">
+                  {t('communityQuestion.hiddenNotice')}
+                </Badge>
+              )}
               <h1 className="text-2xl font-bold mb-4">{question.title}</h1>
 
               {/* Content */}
@@ -575,13 +644,13 @@ const CommunityQuestion = () => {
                       {!isOwner && (
                         <DropdownMenuItem 
                           className="text-destructive"
-                          onClick={() => setShowReportDialog(true)}
+                          onClick={() => { setReportAnswerId(null); setShowReportDialog(true); }}
                         >
                           <Flag className="w-4 h-4 mr-2" />
                           {t('communityQuestion.report')}
                         </DropdownMenuItem>
                       )}
-                      {isOwner && (
+                      {canModerate && (
                         <DropdownMenuItem onClick={() => {
                           setEditTitle(question.title);
                           setEditContent(question.content);
@@ -591,7 +660,7 @@ const CommunityQuestion = () => {
                           {t('communityQuestion.editQuestion')}
                         </DropdownMenuItem>
                       )}
-                      {isOwner && (
+                      {canModerate && (
                         <DropdownMenuItem 
                           className="text-destructive"
                           onClick={() => setShowDeleteDialog(true)}
@@ -683,8 +752,44 @@ const CommunityQuestion = () => {
                                 </div>
                               </div>
                             </div>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label={t('communityQuestion.moreActions')}>
+                                  <MoreVertical className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" collisionPadding={16} className="max-w-[calc(100vw-2rem)]">
+                                {!answer.is_mine && (
+                                  <DropdownMenuItem
+                                    className="text-destructive"
+                                    onClick={() => { setReportAnswerId(answer.id); setShowReportDialog(true); }}
+                                  >
+                                    <Flag className="w-4 h-4 mr-2" />
+                                    {t('communityQuestion.reportReply')}
+                                  </DropdownMenuItem>
+                                )}
+                                {(answer.is_mine || isAdmin) && (
+                                  <DropdownMenuItem onClick={() => { setEditingAnswer(answer); setEditAnswerContent(answer.content); }}>
+                                    <Pencil className="w-4 h-4 mr-2 shrink-0" />
+                                    {t('communityQuestion.editReply')}
+                                  </DropdownMenuItem>
+                                )}
+                                {(answer.is_mine || isAdmin) && (
+                                  <DropdownMenuItem className="text-destructive" onClick={() => setDeletingAnswer(answer)}>
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    {t('communityQuestion.deleteReply')}
+                                  </DropdownMenuItem>
+                                )}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
 
                           </div>
+
+                          {answer.is_hidden && (
+                            <Badge variant="outline" className="mb-2 text-xs border-destructive/40 text-destructive">
+                              {t('communityQuestion.hiddenNotice')}
+                            </Badge>
+                          )}
 
                           {/* Content */}
                           <p className="text-foreground whitespace-pre-wrap break-words mb-3">
@@ -915,6 +1020,36 @@ const CommunityQuestion = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <Dialog open={!!editingAnswer} onOpenChange={(o) => !o && setEditingAnswer(null)}>
+            <DialogContent className="sm:max-w-lg top-4 translate-y-0 sm:top-[50%] sm:translate-y-[-50%] max-h-[85dvh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>{t('communityQuestion.editReply')}</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSaveAnswer} className="space-y-4">
+                <Textarea value={editAnswerContent} onChange={(e) => setEditAnswerContent(e.target.value)} className="min-h-[150px]" maxLength={5000} />
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setEditingAnswer(null)} disabled={answerBusy}>{t('communityQuestion.cancel')}</Button>
+                  <Button type="submit" disabled={answerBusy || !editAnswerContent.trim()}>{t(answerBusy ? 'communityQuestion.saving' : 'communityQuestion.saveChanges')}</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
+          <AlertDialog open={!!deletingAnswer} onOpenChange={(o) => !o && setDeletingAnswer(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>{t('communityQuestion.deleteReplyTitle')}</AlertDialogTitle>
+                <AlertDialogDescription>{t('communityQuestion.deleteReplyDescription')}</AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={answerBusy}>{t('communityQuestion.cancel')}</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAnswer} disabled={answerBusy} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  {t('communityQuestion.deleteReply')}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
 
           {/* Delete Confirmation Dialog */}
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

@@ -162,6 +162,13 @@
       "when": 1794677154796,
       "tag": "0022_mask_anonymous_question_authors",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1794678946671,
+      "tag": "0023_community_moderation_and_auto_hide",
+      "breakpoints": true
     }
   ]
 }

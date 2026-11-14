@@ -775,6 +775,7 @@ export type Database = {
           id: string
           is_accepted: boolean | null
           is_anonymous: boolean
+          is_hidden: boolean
           is_verified_pro: boolean | null
           question_id: string
           updated_at: string
@@ -788,6 +789,7 @@ export type Database = {
           id?: string
           is_accepted?: boolean | null
           is_anonymous?: boolean
+          is_hidden?: boolean
           is_verified_pro?: boolean | null
           question_id: string
           updated_at?: string
@@ -801,6 +803,7 @@ export type Database = {
           id?: string
           is_accepted?: boolean | null
           is_anonymous?: boolean
+          is_hidden?: boolean
           is_verified_pro?: boolean | null
           question_id?: string
           updated_at?: string
@@ -993,6 +996,7 @@ export type Database = {
           id: string
           is_anonymous: boolean
           is_featured: boolean | null
+          is_hidden: boolean
           is_pinned: boolean | null
           pet_id: string | null
           status: string
@@ -1012,6 +1016,7 @@ export type Database = {
           id?: string
           is_anonymous?: boolean
           is_featured?: boolean | null
+          is_hidden?: boolean
           is_pinned?: boolean | null
           pet_id?: string | null
           status?: string
@@ -1031,6 +1036,7 @@ export type Database = {
           id?: string
           is_anonymous?: boolean
           is_featured?: boolean | null
+          is_hidden?: boolean
           is_pinned?: boolean | null
           pet_id?: string | null
           status?: string
@@ -1059,6 +1065,7 @@ export type Database = {
       }
       community_reports: {
         Row: {
+          answer_id: string | null
           created_at: string
           details: string | null
           id: string
@@ -1070,6 +1077,7 @@ export type Database = {
           status: string
         }
         Insert: {
+          answer_id?: string | null
           created_at?: string
           details?: string | null
           id?: string
@@ -1081,6 +1089,7 @@ export type Database = {
           status?: string
         }
         Update: {
+          answer_id?: string | null
           created_at?: string
           details?: string | null
           id?: string
@@ -1092,6 +1101,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "community_reports_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "community_answers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "community_reports_question_id_fkey"
             columns: ["question_id"]
@@ -3211,6 +3227,8 @@ export type Database = {
           id: string | null
           is_accepted: boolean | null
           is_anonymous: boolean | null
+          is_hidden: boolean | null
+          is_mine: boolean | null
           is_verified_pro: boolean | null
           question_id: string | null
           updated_at: string | null
@@ -3231,6 +3249,8 @@ export type Database = {
           id: string | null
           is_anonymous: boolean | null
           is_featured: boolean | null
+          is_hidden: boolean | null
+          is_mine: boolean | null
           is_pinned: boolean | null
           pet_id: string | null
           status: string | null
@@ -3589,6 +3609,8 @@ export type Database = {
           id: string
           is_accepted: boolean
           is_anonymous: boolean
+          is_hidden: boolean
+          is_mine: boolean
           is_verified_pro: boolean
           question_id: string
           updated_at: string
@@ -3619,6 +3641,8 @@ export type Database = {
           id: string
           is_anonymous: boolean
           is_featured: boolean
+          is_hidden: boolean
+          is_mine: boolean
           is_pinned: boolean
           pet_id: string
           status: string

@@ -43,6 +43,8 @@ export interface Question {
   answer_count?: number;
   is_saved?: boolean;
   is_following?: boolean;
+  is_mine?: boolean;
+  is_hidden?: boolean;
 }
 
 export interface QuestionPhoto {
@@ -73,6 +75,8 @@ export interface Answer {
   expert_stats?: ExpertStats;
   photos?: AnswerPhoto[];
   user_vote?: 'up' | 'down' | null;
+  is_mine?: boolean;
+  is_hidden?: boolean;
 }
 
 export interface AnswerPhoto {

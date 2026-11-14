@@ -2057,8 +2057,16 @@
     },
     "saving": "Saving...",
     "saveChanges": "Save Changes",
-    "careTypes": { "dogs": "Dogs", "cats": "Cats", "both": "Dogs and cats" },
-    "careLabels": { "dogs": "Dogs in Care", "cats": "Cats in Care", "both": "Animals in Care" },
+    "careTypes": {
+      "dogs": "Dogs",
+      "cats": "Cats",
+      "both": "Dogs and cats"
+    },
+    "careLabels": {
+      "dogs": "Dogs in Care",
+      "cats": "Cats in Care",
+      "both": "Animals in Care"
+    },
     "branding": {
       "coverPhoto": "Cover Photo",
       "coverPhotoDesc": "This photo appears at the top of your public shelter profile.",
@@ -3015,7 +3023,17 @@
     "reportFailed": "Failed to submit report. Please try again.",
     "deleteSuccess": "Question deleted successfully",
     "deleteFailed": "Failed to delete question. Please try again.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "reportReply": "Report reply",
+    "editReply": "Edit reply",
+    "deleteReply": "Delete reply",
+    "deleteReplyTitle": "Delete this reply?",
+    "deleteReplyDescription": "This reply will be removed permanently. This cannot be undone.",
+    "replyUpdated": "Reply updated",
+    "replyDeleted": "Reply deleted",
+    "actionFailed": "Something went wrong. Please try again.",
+    "alreadyReported": "You have already reported this. Our team will review it.",
+    "hiddenNotice": "Hidden after reports. Only you and admins can see this."
   },
   "commonExtra": {
     "close": "Close",
