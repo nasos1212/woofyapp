@@ -3165,5 +3165,87 @@
     "noSessionTitle": "No payment session found",
     "noSessionBody": "We couldn't find a checkout session. If you completed a payment, please refresh your dashboard.",
     "backToDashboard": "Back to Dashboard"
+  },
+  "directory": {
+    "hubTitle": "Cyprus Pet Directory: Pet Shops, Vets & Dog-Friendly Places | Wooffy",
+    "hubDesc": "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in Limassol, Nicosia, Larnaca, Paphos and Famagusta.",
+    "hubHeading": "Cyprus Pet Directory",
+    "cityCardTitle": "Pet places in {{city}}",
+    "cityCardSub": "Pet shops, vets, groomers and dog-friendly spots",
+    "breadcrumb": "Cyprus Pet Directory",
+    "loading": "Loading…",
+    "listYourBusiness": "List your pet business",
+    "website": "Website",
+    "directions": "Directions",
+    "openInGoogleMaps": "Open in Google Maps",
+    "viewMemberOffers": "View member offers",
+    "all": "All",
+    "noPlaces": "No places listed yet.",
+    "ctaTitle": "Dog or cat owner in {{city}}?",
+    "ctaBody": "Join Wooffy free for partner discounts, pet health reminders and lost & found alerts.",
+    "joinFree": "Join Wooffy free",
+    "cityTitle": "Pet Shops, Vets & Dog-Friendly Places in {{city}} | Wooffy",
+    "cityDesc": "Pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in {{city}}, Cyprus. Browse {{count}} dog-friendly places on Wooffy.",
+    "cityDescLocal": "Pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in {{city}}, Cyprus. Browse local dog-friendly places on Wooffy.",
+    "cityHeading": "Pet Shops, Vets & Dog-Friendly Places in {{city}}",
+    "browseByService": "Browse by service in {{city}}",
+    "serviceInCity": "{{service}} in {{city}}",
+    "petBusinessesIn": "Pet businesses in {{city}}",
+    "noBusinesses": "No Wooffy partner businesses in {{city}} yet. Own a pet shop, vet clinic or grooming salon here?",
+    "dogFriendlyPlacesIn": "Dog-friendly places in {{city}}",
+    "dogFriendlyPlaces": "Dog-friendly places",
+    "serviceTitle": "{{service}} in {{city}}, Cyprus | Wooffy",
+    "serviceDesc": "Find {{blurb}} in {{city}}, Cyprus. Phone numbers, websites and directions, plus exclusive Wooffy member offers.",
+    "serviceIntro": "Find {{blurb}} in {{city}}, Cyprus, listed on Wooffy. Call, visit their website or get directions, and sign in to see exclusive member offers.",
+    "serviceNoneYet": "No {{service}} in {{city}} are listed on Wooffy yet. Run one here?",
+    "moreServices": "More pet services in {{city}}",
+    "inOtherCities": "{{service}} in other cities",
+    "cities": {
+      "limassol": "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in Limassol, listed by the Wooffy community.",
+      "nicosia": "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and parks in Nicosia, listed by the Wooffy community.",
+      "larnaca": "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in Larnaca, listed by the Wooffy community.",
+      "paphos": "Find pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in Paphos, listed by the Wooffy community.",
+      "famagusta": "Find pet shops, vets, groomers and dog-friendly places in the Famagusta district, listed by the Wooffy community."
+    },
+    "services": {
+      "pet-shops": {
+        "label": "Pet Shops",
+        "blurb": "pet shops, pet food and accessories"
+      },
+      "vets": {
+        "label": "Vets",
+        "blurb": "veterinary clinics and vets"
+      },
+      "grooming": {
+        "label": "Dog Grooming",
+        "blurb": "dog and cat groomers"
+      },
+      "dog-trainers": {
+        "label": "Dog Trainers",
+        "blurb": "dog trainers and behaviour specialists"
+      },
+      "pet-hotels": {
+        "label": "Pet Hotels",
+        "blurb": "pet hotels and boarding"
+      },
+      "pet-sitters": {
+        "label": "Pet Sitters & Dog Walkers",
+        "blurb": "pet sitters, daycare and dog walkers"
+      }
+    },
+    "placeTypes": {
+      "beach": "Beach",
+      "cafe": "Café",
+      "restaurant": "Restaurant",
+      "bar": "Bar",
+      "hotel": "Hotel",
+      "park": "Park",
+      "nature_trail": "Nature Trail",
+      "pharmacy": "Pharmacy",
+      "patisserie": "Patisserie",
+      "store": "Retail Store",
+      "office": "Office",
+      "other": "Other"
+    }
   }
 }

@@ -13,15 +13,16 @@ import { businessCategories } from "@/data/businessCategories";
 import { getGooglePlacePageUrl } from "@/lib/maps";
 import BusinessCard, { type DirectoryBusiness as Biz } from "@/components/directory/BusinessCard";
 import { CITY_SERVICES } from "@/data/cityServices";
+import { useTranslation } from "react-i18next";
 
 interface Place { id: string; name: string; place_type: string; area: string | null; address: string | null; phone: string | null; website: string | null; description: string | null; google_maps_url: string | null; latitude: number; longitude: number; city: string | null }
 
 const SITE = "https://wooffy.app";
-const PLACE_LABELS: Record<string, string> = { beach: "Beach", cafe: "Café", restaurant: "Restaurant", bar: "Bar", hotel: "Hotel", park: "Park", nature_trail: "Nature Trail", pharmacy: "Pharmacy", patisserie: "Patisserie", store: "Retail Store", office: "Office", other: "Other" };
 const webUrl = (u: string) => (/^https?:\/\//i.test(u) ? u : `https://${u}`);
 const linkCls = "text-sm text-primary hover:underline inline-flex items-center gap-1";
 
 const CityDirectory = () => {
+  const { t } = useTranslation();
   const { city: slug } = useParams();
   useEffect(() => { scrollToTop(); }, [slug]);
   const city = getDirectoryCity(slug);
@@ -49,8 +50,11 @@ const CityDirectory = () => {
   if (!city) return <Navigate to="/places" replace />;
 
   const url = `${SITE}/places/${city.slug}`;
-  const title = `Pet Shops, Vets & Dog-Friendly Places in ${city.name} | Wooffy`;
-  const desc = `Pet shops, vets, groomers and dog-friendly cafés, restaurants and beaches in ${city.name}, Cyprus. Browse ${places.length || "local"} dog-friendly places on Wooffy.`;
+  const title = t("directory.cityTitle", { city: city.name });
+  const desc = places.length
+    ? t("directory.cityDesc", { city: city.name, count: places.length })
+    : t("directory.cityDescLocal", { city: city.name });
+  const placeLabel = (type: string) => t(`directory.placeTypes.${type}`, { defaultValue: type });
   const shownPlaces = filter === "all" ? places : places.filter((p) => p.place_type === filter);
   const jsonLd = {
     "@context": "https://schema.org",
@@ -81,10 +85,10 @@ const CityDirectory = () => {
       <Header />
       <main className="container mx-auto px-4 pt-28 pb-16 max-w-5xl">
         <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground mb-4">
-          <Link to="/" className="hover:text-primary">Wooffy</Link> / <Link to="/places" className="hover:text-primary">Cyprus Pet Directory</Link> / <span>{city.name}</span>
+          <Link to="/" className="hover:text-primary">Wooffy</Link> / <Link to="/places" className="hover:text-primary">{t("directory.breadcrumb")}</Link> / <span>{city.name}</span>
         </nav>
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">Pet Shops, Vets & Dog-Friendly Places in {city.name}</h1>
-        <p className="text-muted-foreground text-lg mb-6">{city.intro}</p>
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3">{t("directory.cityHeading", { city: city.name })}</h1>
+        <p className="text-muted-foreground text-lg mb-6">{t(`directory.cities.${city.slug}`, { defaultValue: city.intro })}</p>
         <div className="flex flex-wrap gap-2 mb-10">
           {DIRECTORY_CITIES.map((c) => (
             <Link key={c.slug} to={`/places/${c.slug}`}>
@@ -94,20 +98,20 @@ const CityDirectory = () => {
         </div>
 
         <nav aria-label="Services" className="mb-10">
-          <h2 className="font-display text-lg font-semibold mb-3">Browse by service in {city.name}</h2>
+          <h2 className="font-display text-lg font-semibold mb-3">{t("directory.browseByService", { city: city.name })}</h2>
           <div className="flex flex-wrap gap-2">
             {CITY_SERVICES.map((sv) => (
-              <Link key={sv.slug} to={`/places/${city.slug}/${sv.slug}`} className="rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:border-primary hover:text-primary">{sv.label} in {city.name}</Link>
+              <Link key={sv.slug} to={`/places/${city.slug}/${sv.slug}`} className="rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:border-primary hover:text-primary">{t("directory.serviceInCity", { service: t(`directory.services.${sv.slug}.label`, { defaultValue: sv.label }), city: city.name })}</Link>
             ))}
           </div>
         </nav>
 
         <section className="mb-12">
-          <h2 className="font-display text-2xl font-semibold mb-4 flex items-center gap-2"><Store className="w-6 h-6 text-primary" />Pet businesses in {city.name}</h2>
-          {loading ? <p className="text-muted-foreground">Loading…</p> : businesses.length === 0 ? (
+          <h2 className="font-display text-2xl font-semibold mb-4 flex items-center gap-2"><Store className="w-6 h-6 text-primary" />{t("directory.petBusinessesIn", { city: city.name })}</h2>
+          {loading ? <p className="text-muted-foreground">{t("directory.loading")}</p> : businesses.length === 0 ? (
             <div className="rounded-xl border border-border bg-card p-6">
-              <p className="text-muted-foreground mb-4">No Wooffy partner businesses in {city.name} yet. Own a pet shop, vet clinic or grooming salon here?</p>
-              <Button asChild><Link to="/partner-register">List your pet business</Link></Button>
+              <p className="text-muted-foreground mb-4">{t("directory.noBusinesses", { city: city.name })}</p>
+              <Button asChild><Link to="/partner-register">{t("directory.listYourBusiness")}</Link></Button>
             </div>
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2">
@@ -119,30 +123,30 @@ const CityDirectory = () => {
         </section>
 
         <section className="mb-12">
-          <h2 className="font-display text-2xl font-semibold mb-4 flex items-center gap-2"><MapPin className="w-6 h-6 text-primary" />Dog-friendly places in {city.name}</h2>
+          <h2 className="font-display text-2xl font-semibold mb-4 flex items-center gap-2"><MapPin className="w-6 h-6 text-primary" />{t("directory.dogFriendlyPlacesIn", { city: city.name })}</h2>
           {placeTypes.length > 1 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {["all", ...placeTypes].map((t) => (
-                <Button key={t} size="sm" variant={filter === t ? "default" : "outline"} aria-pressed={filter === t} onClick={() => setFilter(t)}>
-                  {t === "all" ? "All" : PLACE_LABELS[t] ?? t}
+              {["all", ...placeTypes].map((t2) => (
+                <Button key={t2} size="sm" variant={filter === t2 ? "default" : "outline"} aria-pressed={filter === t2} onClick={() => setFilter(t2)}>
+                  {t2 === "all" ? t("directory.all") : placeLabel(t2)}
                 </Button>
               ))}
             </div>
           )}
-          {loading ? <p className="text-muted-foreground">Loading…</p> : shownPlaces.length === 0 ? <p className="text-muted-foreground">No places listed yet.</p> : (
+          {loading ? <p className="text-muted-foreground">{t("directory.loading")}</p> : shownPlaces.length === 0 ? <p className="text-muted-foreground">{t("directory.noPlaces")}</p> : (
             <ul className="grid gap-3 sm:grid-cols-2">
               {shownPlaces.map((p) => (
                 <li key={p.id} className="rounded-xl border border-border bg-card p-4">
                   <h3 className="font-semibold text-foreground">{p.name}</h3>
-                  <p className="text-sm text-primary">{PLACE_LABELS[p.place_type] ?? p.place_type}{p.area ? ` · ${p.area}` : ""}</p>
+                  <p className="text-sm text-primary">{placeLabel(p.place_type)}{p.area ? ` · ${p.area}` : ""}</p>
                   {p.description && <p className="text-sm text-muted-foreground mt-1">{p.description}</p>}
                   {p.address && <p className="text-sm text-muted-foreground mt-1">{p.address}</p>}
                   <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2">
                     {p.phone && <a href={`tel:${p.phone.replace(/\s/g, "")}`} className={linkCls}><Phone className="w-3.5 h-3.5" />{p.phone}</a>}
-                    {p.website && <a href={webUrl(p.website)} target="_blank" rel="noopener noreferrer" className={linkCls}><Globe className="w-3.5 h-3.5" />Website</a>}
+                    {p.website && <a href={webUrl(p.website)} target="_blank" rel="noopener noreferrer" className={linkCls}><Globe className="w-3.5 h-3.5" />{t("directory.website")}</a>}
                   </div>
                   <a href={p.google_maps_url || getGooglePlacePageUrl(p)} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary hover:underline mt-2 inline-flex items-center gap-1">
-                    Open in Google Maps <ExternalLink className="w-3.5 h-3.5" />
+                    {t("directory.openInGoogleMaps")} <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                 </li>
               ))}
@@ -151,9 +155,9 @@ const CityDirectory = () => {
         </section>
 
         <section className="rounded-2xl bg-primary/10 border border-primary/20 p-6 text-center">
-          <h2 className="font-display text-xl font-semibold mb-2">Dog or cat owner in {city.name}?</h2>
-          <p className="text-muted-foreground mb-4">Join Wooffy free for partner discounts, pet health reminders and lost & found alerts.</p>
-          <Button asChild size="lg"><Link to="/auth">Join Wooffy free</Link></Button>
+          <h2 className="font-display text-xl font-semibold mb-2">{t("directory.ctaTitle", { city: city.name })}</h2>
+          <p className="text-muted-foreground mb-4">{t("directory.ctaBody")}</p>
+          <Button asChild size="lg"><Link to="/auth">{t("directory.joinFree")}</Link></Button>
         </section>
       </main>
       <Footer />

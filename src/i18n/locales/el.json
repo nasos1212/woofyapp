@@ -3174,5 +3174,87 @@
     "noSessionTitle": "Δεν βρέθηκε συνεδρία πληρωμής",
     "noSessionBody": "Δεν μπορέσαμε να βρούμε τη συνεδρία πληρωμής. Αν ολοκληρώσατε την πληρωμή, ανανεώστε τον πίνακα ελέγχου σας.",
     "backToDashboard": "Επιστροφή στον Πίνακα Ελέγχου"
+  },
+  "directory": {
+    "hubTitle": "Κατάλογος Κατοικίδιων Κύπρου: Pet Shops, Κτηνίατροι & Dog-Friendly Μέρη | Wooffy",
+    "hubDesc": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly καφέ, εστιατόρια και παραλίες σε Limassol, Nicosia, Larnaca, Paphos και Famagusta.",
+    "hubHeading": "Κατάλογος Κατοικίδιων Κύπρου",
+    "cityCardTitle": "Μέρη για κατοικίδια σε {{city}}",
+    "cityCardSub": "Pet shops, κτηνίατροι, groomers και dog-friendly σημεία",
+    "breadcrumb": "Κατάλογος Κατοικίδιων Κύπρου",
+    "loading": "Φόρτωση…",
+    "listYourBusiness": "Καταχωρήστε την επιχείρησή σας",
+    "website": "Ιστοσελίδα",
+    "directions": "Οδηγίες",
+    "openInGoogleMaps": "Άνοιγμα στο Google Maps",
+    "viewMemberOffers": "Δείτε προσφορές μελών",
+    "all": "Όλα",
+    "noPlaces": "Δεν έχουν καταχωρηθεί μέρη ακόμη.",
+    "ctaTitle": "Έχετε σκύλο ή γάτα σε {{city}};",
+    "ctaBody": "Γίνετε μέλος του Wooffy δωρεάν για εκπτώσεις συνεργατών, υπενθυμίσεις υγείας κατοικίδιων και ειδοποιήσεις lost & found.",
+    "joinFree": "Δωρεάν εγγραφή στο Wooffy",
+    "cityTitle": "Pet Shops, Κτηνίατροι & Dog-Friendly Μέρη σε {{city}} | Wooffy",
+    "cityDesc": "Pet shops, κτηνίατροι, groomers και dog-friendly καφέ, εστιατόρια και παραλίες σε {{city}}, Κύπρος. Δείτε {{count}} dog-friendly μέρη στο Wooffy.",
+    "cityDescLocal": "Pet shops, κτηνίατροι, groomers και dog-friendly καφέ, εστιατόρια και παραλίες σε {{city}}, Κύπρος. Δείτε τοπικά dog-friendly μέρη στο Wooffy.",
+    "cityHeading": "Pet Shops, Κτηνίατροι & Dog-Friendly Μέρη σε {{city}}",
+    "browseByService": "Περιήγηση ανά υπηρεσία σε {{city}}",
+    "serviceInCity": "{{service}} σε {{city}}",
+    "petBusinessesIn": "Επιχειρήσεις για κατοικίδια σε {{city}}",
+    "noBusinesses": "Δεν υπάρχουν ακόμη συνεργαζόμενες επιχειρήσεις Wooffy σε {{city}}. Έχετε pet shop, κτηνιατρείο ή grooming salon εδώ;",
+    "dogFriendlyPlacesIn": "Dog-friendly μέρη σε {{city}}",
+    "dogFriendlyPlaces": "Dog-friendly μέρη",
+    "serviceTitle": "{{service}} σε {{city}}, Κύπρος | Wooffy",
+    "serviceDesc": "Βρείτε {{blurb}} σε {{city}}, Κύπρος. Τηλέφωνα, ιστοσελίδες και οδηγίες, plus αποκλειστικές προσφορές μελών Wooffy.",
+    "serviceIntro": "Βρείτε {{blurb}} σε {{city}}, Κύπρος, καταχωρημένα στο Wooffy. Καλέστε, επισκεφθείτε την ιστοσελίδα ή δείτε οδηγίες, και συνδεθείτε για αποκλειστικές προσφορές μελών.",
+    "serviceNoneYet": "Δεν έχουν καταχωρηθεί ακόμη {{service}} σε {{city}} στο Wooffy. Έχετε μια εδώ;",
+    "moreServices": "Περισσότερες υπηρεσίες για κατοικίδια σε {{city}}",
+    "inOtherCities": "{{service}} σε άλλες πόλεις",
+    "cities": {
+      "limassol": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly καφέ, εστιατόρια και παραλίες στη Limassol, καταχωρημένα από την κοινότητα του Wooffy.",
+      "nicosia": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly καφέ, εστιατόρια και πάρκα στη Nicosia, καταχωρημένα από την κοινότητα του Wooffy.",
+      "larnaca": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly καφέ, εστιατόρια και παραλίες στη Larnaca, καταχωρημένα από την κοινότητα του Wooffy.",
+      "paphos": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly καφέ, εστιατόρια και παραλίες στη Paphos, καταχωρημένα από την κοινότητα του Wooffy.",
+      "famagusta": "Βρείτε pet shops, κτηνιάτρους, groomers και dog-friendly μέρη στην επαρχία Famagusta, καταχωρημένα από την κοινότητα του Wooffy."
+    },
+    "services": {
+      "pet-shops": {
+        "label": "Pet Shops",
+        "blurb": "pet shops, τροφές και αξεσουάρ για κατοικίδια"
+      },
+      "vets": {
+        "label": "Κτηνίατροι",
+        "blurb": "κτηνιατρικές κλινικές και κτηνιάτρους"
+      },
+      "grooming": {
+        "label": "Grooming Σκύλων",
+        "blurb": "groomers για σκύλους και γάτες"
+      },
+      "dog-trainers": {
+        "label": "Εκπαιδευτές Σκύλων",
+        "blurb": "εκπαιδευτές σκύλων και ειδικούς συμπεριφοράς"
+      },
+      "pet-hotels": {
+        "label": "Ξενοδοχεία Κατοικίδιων",
+        "blurb": "ξενοδοχεία και φιλοξενία κατοικίδιων"
+      },
+      "pet-sitters": {
+        "label": "Pet Sitters & Dog Walkers",
+        "blurb": "pet sitters, daycare και dog walkers"
+      }
+    },
+    "placeTypes": {
+      "beach": "Παραλία",
+      "cafe": "Καφέ",
+      "restaurant": "Εστιατόριο",
+      "bar": "Μπαρ",
+      "hotel": "Ξενοδοχείο",
+      "park": "Πάρκο",
+      "nature_trail": "Μονοπάτι Φύσης",
+      "pharmacy": "Φαρμακείο",
+      "patisserie": "Ζαχαροπλαστείο",
+      "store": "Κατάστημα",
+      "office": "Γραφείο",
+      "other": "Άλλο"
+    }
   }
 }
