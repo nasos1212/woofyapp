@@ -126,7 +126,17 @@ const PetFriendlyPlaceRequestDialog = () => {
           <span className="text-sm text-left text-foreground">{t("getListed.ctaQuestion")} <strong className="text-primary">{t("getListed.ctaAction")}</strong></span>
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="sm:max-w-md max-h-[90vh] overflow-y-auto"
+        onInteractOutside={(e) => {
+          // Keep the dialog open when the tap lands on an open dropdown/list
+          // instead of the page behind the dialog.
+          const target = e.target as HTMLElement | null;
+          if (target?.closest('[data-radix-popper-content-wrapper], [role="listbox"], [cmdk-root]')) {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MapPin className="w-5 h-5 text-primary" />

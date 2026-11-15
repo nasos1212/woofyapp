@@ -928,7 +928,16 @@ const PlacesManager = () => {
 
       {/* Edit/Add Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent
+          className="max-w-lg max-h-[90vh] overflow-y-auto"
+          onInteractOutside={(e) => {
+            // Keep the dialog open when the tap lands on an open dropdown/list.
+            const target = e.target as HTMLElement | null;
+            if (target?.closest('[data-radix-popper-content-wrapper], [role="listbox"], [cmdk-root]')) {
+              e.preventDefault();
+            }
+          }}
+        >
           <DialogHeader>
             <DialogTitle>
               {editingPlace ? "Edit Place" : "Add New Place"}
