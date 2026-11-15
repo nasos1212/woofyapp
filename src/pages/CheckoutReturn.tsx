@@ -5,8 +5,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
+import { useTranslation } from "react-i18next";
 
 const CheckoutReturn = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
 
@@ -17,7 +19,7 @@ const CheckoutReturn = () => {
   return (
     <>
       <Helmet>
-        <title>Payment Complete – Wooffy</title>
+        <title>{t("checkoutReturn.title")}</title>
         <meta name="robots" content="noindex" />
       </Helmet>
       <div className="min-h-screen bg-gradient-to-b from-wooffy-light to-background">
@@ -30,14 +32,14 @@ const CheckoutReturn = () => {
                   <CheckCircle2 className="w-9 h-9 text-green-600" />
                 </div>
                 <h1 className="text-2xl font-display font-bold mb-3">
-                  Welcome to Wooffy Paid Membership! 🎉
+                  {t("checkoutReturn.successTitle")}
                 </h1>
                 <p className="text-muted-foreground mb-6">
-                  Your payment was successful. Your membership is being activated and will be available in your dashboard within a few moments.
+                  {t("checkoutReturn.successBody")}
                 </p>
                 <Button asChild className="w-full">
                   <Link to="/member">
-                    Go to Dashboard
+                    {t("checkoutReturn.goToDashboard")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
@@ -45,13 +47,13 @@ const CheckoutReturn = () => {
             ) : (
               <>
                 <h1 className="text-2xl font-display font-bold mb-3">
-                  No payment session found
+                  {t("checkoutReturn.noSessionTitle")}
                 </h1>
                 <p className="text-muted-foreground mb-6">
-                  We couldn't find a checkout session. If you completed a payment, please refresh your dashboard.
+                  {t("checkoutReturn.noSessionBody")}
                 </p>
                 <Button asChild variant="outline" className="w-full">
-                  <Link to="/member">Back to Dashboard</Link>
+                  <Link to="/member">{t("checkoutReturn.backToDashboard")}</Link>
                 </Button>
               </>
             )}

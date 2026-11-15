@@ -3156,5 +3156,14 @@
     "errorTitle": "Something went wrong",
     "errorGeneric": "Could not process deletion request.",
     "headerSettingsLink": "Account settings"
+  },
+  "checkoutReturn": {
+    "title": "Payment Complete – Wooffy",
+    "successTitle": "Welcome to Wooffy Paid Membership! 🎉",
+    "successBody": "Your payment was successful. Your membership is being activated and will be available in your dashboard within a few moments.",
+    "goToDashboard": "Go to Dashboard",
+    "noSessionTitle": "No payment session found",
+    "noSessionBody": "We couldn't find a checkout session. If you completed a payment, please refresh your dashboard.",
+    "backToDashboard": "Back to Dashboard"
   }
 }
