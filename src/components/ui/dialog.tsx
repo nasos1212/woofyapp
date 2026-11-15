@@ -27,6 +27,22 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+let lastDropdownCloseAt = 0;
+if (typeof document !== "undefined") {
+  const observer = new MutationObserver((mutations) => {
+    for (const m of mutations) {
+      for (const n of Array.from(m.removedNodes)) {
+        if (n instanceof HTMLElement && (n.matches?.("[data-radix-popper-content-wrapper]") || n.querySelector?.("[data-radix-popper-content-wrapper], [role=listbox]"))) {
+          lastDropdownCloseAt = Date.now();
+        }
+      }
+    }
+  });
+  const start = () => observer.observe(document.body, { childList: true, subtree: true });
+  if (document.body) start();
+  else document.addEventListener("DOMContentLoaded", start);
+}
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
@@ -40,7 +56,15 @@ const DialogContent = React.forwardRef<
         // so Radix would mistake it for a tap on the page and close the dialog.
         // Swallow it here: only the dropdown should close, never the dialog.
         const target = e.target as HTMLElement | null;
-        if (
+        // If any dropdown is still open (or just closed on this same tap, common on
+        // iPhone where the tap that closes the list lands on the page behind it),
+        // treat the tap as "close the dropdown" only.
+        const dropdownOpen = !!document.querySelector(
+          '[data-radix-popper-content-wrapper], [role="listbox"]',
+        );
+        if (dropdownOpen || Date.now() - lastDropdownCloseAt < 500) {
+          e.preventDefault();
+        } else if (
           target?.closest?.(
             '[data-radix-popper-content-wrapper], [role="listbox"], [cmdk-root], [data-radix-toast-viewport], [data-sonner-toaster]',
           )
