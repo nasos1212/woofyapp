@@ -614,20 +614,18 @@ const MemberDashboard = () => {
                   {/* Upgrade prompt when at max pets but not on highest plan */}
                   {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
                     <div className="mt-5 p-4 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
-                      <div className="flex items-center gap-3 flex-wrap">
+                      <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center shrink-0">
                           <Sparkles className="w-5 h-5 text-wooffy-sky" />
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-wooffy-sky text-sm">{t("memberDashboard.pets.anotherFriend")}</p>
-                          <p className="text-xs text-wooffy-light/70">{t("memberDashboard.pets.upgradePrompt")}</p>
-                        </div>
-                        <Link to="/member/upgrade">
-                          <Button size="sm" variant="hero" className="shrink-0">
-                            {t("memberDashboard.pets.upgrade")}
-                          </Button>
-                        </Link>
+                        <p className="font-medium text-wooffy-sky text-sm">{t("memberDashboard.pets.anotherFriend")}</p>
                       </div>
+                      <p className="mt-2 text-xs text-wooffy-light/70 leading-relaxed">{t("memberDashboard.pets.upgradePrompt")}</p>
+                      <Link to="/member/upgrade" className="mt-3 block">
+                        <Button size="sm" variant="hero" className="w-full sm:w-auto">
+                          {t("memberDashboard.pets.upgrade")}
+                        </Button>
+                      </Link>
                     </div>
                   )}
                 </CardContent>
