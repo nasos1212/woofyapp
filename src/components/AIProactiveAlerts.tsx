@@ -333,7 +333,7 @@ export const AIProactiveAlerts = ({ previewPet }: { previewPet?: { id: string; p
   return (
     <Card className="mb-6 overflow-hidden rounded-lg border-primary/20 bg-card shadow-none" aria-label={t("proactiveAlerts.title")}>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-l-4 border-primary bg-primary/10 px-3 py-3">
-        <div className="flex min-w-0 flex-1 items-start gap-2.5">
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Bell className="h-4 w-4" />
           </div>
