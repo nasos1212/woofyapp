@@ -1,5 +1,9 @@
 # Roadmap
 
+## November 19 cat-poo article
+- [x] Added supplied article as a Guide draft with natural English/Greek excerpts, SEO titles/descriptions, AKC/CDC sources, directory link and three generated illustrative images.
+- [x] Verified saved English/Greek text and SEO in the signed-in admin editor; cover and both inline images load. Remains a draft with no publication or article alerts, as requested.
+
 ## November 14 community presentation
 - [x] Removed question status badges from the list and detail page; signed-in checks show the existing corrected Raw diet title. Admin reports support viewing, dismissal and deletion, not editing others' questions. Community privacy and acceptance regression scripts pass; mobile detail has no overflow.
 
