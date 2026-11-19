@@ -915,12 +915,10 @@
     "concerned": "Concerned",
     "urgent": "Urgent",
     "open": "Open",
-    "answered": "Answered",
     "resolved": "Resolved",
     "closed": "Closed",
     "mostRecent": "Most Recent",
     "mostPopular": "Most Popular",
-    "unanswered": "Unanswered",
     "tabs": {
       "all": "All",
       "my": "My Questions",

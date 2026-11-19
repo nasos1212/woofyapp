@@ -915,12 +915,10 @@
     "concerned": "Ανησυχία",
     "urgent": "Επείγον",
     "open": "Ανοιχτό",
-    "answered": "Απαντημένο",
     "resolved": "Επιλύθηκε",
     "closed": "Κλειστό",
     "mostRecent": "Πιο Πρόσφατα",
     "mostPopular": "Πιο Δημοφιλή",
-    "unanswered": "Αναπάντητα",
     "tabs": {
       "all": "Όλα",
       "my": "Οι Ερωτήσεις μου",

@@ -138,7 +138,7 @@ export const useCommunity = () => {
     search?: string;
     breed?: string;
     animal_type?: string;
-    sort?: 'recent' | 'popular' | 'unanswered';
+    sort?: 'recent' | 'popular';
     limit?: number;
     offset?: number;
   }): Promise<Question[]> => {
@@ -169,9 +169,8 @@ export const useCommunity = () => {
     // Sorting
     if (filters?.sort === 'popular') {
       query = query.order('helped_count', { ascending: false });
-    } else if (filters?.sort === 'unanswered') {
-      query = query.eq('status', 'open');
     }
+
     query = query.order('created_at', { ascending: false });
 
     if (filters?.limit) {

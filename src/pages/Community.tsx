@@ -66,7 +66,7 @@ const Community = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedUrgency, setSelectedUrgency] = useState<string>('all');
   const [selectedAnimalType, setSelectedAnimalType] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'recent' | 'popular' | 'unanswered'>('recent');
+  const [sortBy, setSortBy] = useState<'recent' | 'popular'>('recent');
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
 
   useEffect(() => {
@@ -360,11 +360,6 @@ const Community = () => {
                   <SelectItem value="popular">
                     <span className="flex items-center gap-2">
                       <TrendingUp className="w-4 h-4" /> {t('community.mostPopular')}
-                    </span>
-                  </SelectItem>
-                  <SelectItem value="unanswered">
-                    <span className="flex items-center gap-2">
-                      <HelpCircle className="w-4 h-4" /> {t('community.unanswered')}
                     </span>
                   </SelectItem>
                 </SelectContent>

@@ -1,5 +1,9 @@
 # Roadmap
 
+## November 19 community stats cleanup
+- [x] Removed the "Awaiting Help" statistic from the community stats card; the card now shows only Total Questions, checked signed in.
+- [x] Removed the "Unanswered" sort option and its unused English/Greek labels; the dropdown now offers only Most Recent and Most Popular, checked signed in.
+
 ## November 19 article photos in iPhone app
 - [x] Corrected cover and both inline images in English/Greek to absolute production HTTPS URLs. Verified the saved public article renders all three images from localhost; existing published status unchanged. Actual iPhone receipt awaits device check.
 - [x] Replaced the training-section photo with a dog walking past on a lead; English/Greek captions updated, live article checked, and the unused photo removed from storage.
