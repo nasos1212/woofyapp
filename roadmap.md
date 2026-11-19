@@ -2,6 +2,7 @@
 
 ## November 19 article photos in iPhone app
 - [x] Corrected cover and both inline images in English/Greek to absolute production HTTPS URLs. Verified the saved public article renders all three images from localhost; existing published status unchanged. Actual iPhone receipt awaits device check.
+- [x] Replaced the training-section photo with a dog walking past on a lead; English/Greek captions updated, live article checked, and the unused photo removed from storage.
 
 ## November 19 cat-poo article
 - [x] Added supplied article as a Guide draft with natural English/Greek excerpts, SEO titles/descriptions, AKC/CDC sources, directory link and three generated illustrative images.
