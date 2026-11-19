@@ -1,5 +1,8 @@
 # Roadmap
 
+## November 19 question author reply prompt
+- [x] Question authors with no replies now see "We will notify you as soon as someone replies to your question." and an "Add a reply or update" reply box; other members still see "Be the first to help with this question!" and "Your Answer". English and Greek author and visitor views checked signed in; temporary test question removed.
+
 ## November 19 community stats cleanup
 - [x] Removed the "Awaiting Help" statistic from the community stats card; the card now shows only Total Questions, checked signed in.
 - [x] Removed the "Unanswered" sort option and its unused English/Greek labels; the dropdown now offers only Most Recent and Most Popular, checked signed in.
