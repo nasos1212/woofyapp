@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -99,6 +100,9 @@ const LostFoundAlerts = () => {
   const setActiveTab = (tab: "lost" | "found" | "reunited") => {
     setSearchParams(tab === "lost" ? {} : { tab }, { replace: true });
   };
+
+  // Resolve confirmation state
+  const [resolveConfirm, setResolveConfirm] = useState<LostFoundAlert | null>(null);
 
   // Notification preferences state
   const [notificationPrefs, setNotificationPrefs] = useState<NotificationPreferences | null>(null);
@@ -544,7 +548,33 @@ const LostFoundAlerts = () => {
             </div>
           </div>
 
-          {(canSeeContactInfo || alert.owner_user_id === user?.id) ? (
+          {alert.owner_user_id === user?.id && alert.status === "active" ? (
+            <div className="mt-4 pt-4 border-t">
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 gap-2"
+                  onClick={() => {
+                    setEditingAlert(alert);
+                    setShowEditDialog(true);
+                  }}
+                >
+                  <Pencil className="w-4 h-4" />
+                  {t("lostFound.card.edit")}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 text-green-600 border-green-200 hover:bg-green-50 gap-2"
+                  onClick={() => setResolveConfirm(alert)}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  {isLost ? t("lostFound.card.markAsFound") : t("lostFound.card.markAsReunited")}
+                </Button>
+              </div>
+            </div>
+          ) : canSeeContactInfo ? (
             <div className="mt-4 pt-4 border-t space-y-2">
               {alert.contact_phone && (
                 <div className="flex items-center gap-2 text-sm">
@@ -579,31 +609,6 @@ const LostFoundAlerts = () => {
                   </a>
                 )}
               </div>
-              {alert.owner_user_id === user?.id && alert.status === "active" && (
-                <div className="flex flex-col sm:flex-row gap-2 mt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 gap-2"
-                    onClick={() => {
-                      setEditingAlert(alert);
-                      setShowEditDialog(true);
-                    }}
-                  >
-                    <Pencil className="w-4 h-4" />
-                    {t("lostFound.card.edit")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex-1 text-green-600 border-green-200 hover:bg-green-50 gap-2"
-                    onClick={() => markAsResolved(alert.id, alert.alert_type)}
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    {isLost ? t("lostFound.card.markAsFound") : t("lostFound.card.markAsReunited")}
-                  </Button>
-                </div>
-              )}
             </div>
           ) : (
             <div className="mt-4 pt-4 border-t">
@@ -1189,6 +1194,34 @@ const LostFoundAlerts = () => {
         onOpenChange={setShowEditDialog}
         onSaved={fetchAlerts}
       />
+
+      <AlertDialog open={!!resolveConfirm} onOpenChange={(open) => !open && setResolveConfirm(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {resolveConfirm?.alert_type === "lost"
+                ? t("lostFound.card.confirmResolveTitleLost")
+                : t("lostFound.card.confirmResolveTitleFound")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("lostFound.card.confirmResolveDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("lostFound.card.confirmResolveCancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (resolveConfirm) {
+                  markAsResolved(resolveConfirm.id, resolveConfirm.alert_type);
+                }
+                setResolveConfirm(null);
+              }}
+            >
+              {t("lostFound.card.confirmResolveConfirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Dialog open={!!linkedAlert} onOpenChange={(open) => {
         if (!open) {

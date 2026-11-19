@@ -679,6 +679,11 @@
       "edit": "Edit",
       "markAsFound": "Mark as Found",
       "markAsReunited": "Mark as Reunited",
+      "confirmResolveTitleLost": "Mark as found?",
+      "confirmResolveTitleFound": "Mark as reunited?",
+      "confirmResolveDescription": "This will close the alert and remove it from the active listings.",
+      "confirmResolveCancel": "Cancel",
+      "confirmResolveConfirm": "Confirm",
       "enableToSeeContact": "Enable notifications to see contact info and help",
       "ownerFound": "Owner Found!",
       "foundShort": "Found!"

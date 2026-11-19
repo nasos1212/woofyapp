@@ -679,6 +679,11 @@
       "edit": "Επεξεργασία",
       "markAsFound": "Σήμανση ως Βρέθηκε",
       "markAsReunited": "Σήμανση ως Επανενωμένο",
+      "confirmResolveTitleLost": "Σήμανση ως βρέθηκε;",
+      "confirmResolveTitleFound": "Σήμανση ως επανενωμένο;",
+      "confirmResolveDescription": "Αυτό θα κλείσει την αγγελία και θα την αφαιρέσει από τις ενεργές αγγελίες.",
+      "confirmResolveCancel": "Άκυρο",
+      "confirmResolveConfirm": "Επιβεβαίωση",
       "enableToSeeContact": "Ενεργοποίησε ειδοποιήσεις για να δεις τα στοιχεία επικοινωνίας και να βοηθήσεις",
       "ownerFound": "Βρέθηκε ο ιδιοκτήτης!",
       "foundShort": "Βρέθηκε!"
