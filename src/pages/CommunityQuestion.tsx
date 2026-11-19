@@ -821,7 +821,9 @@ const CommunityQuestion = () => {
                 <MessageCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
                 <h3 className="font-semibold mb-2">{t('communityQuestion.noAnswers')}</h3>
                 <p className="text-muted-foreground">
-                  {t('communityQuestion.noAnswersDesc')}
+                  {isOwner
+                    ? t('communityQuestion.noAnswersDescOwner')
+                    : t('communityQuestion.noAnswersDesc')}
                 </p>
               </Card>
             )}
@@ -831,7 +833,11 @@ const CommunityQuestion = () => {
           {question.status !== 'closed' && (
             <Card>
               <CardHeader>
-                <h3 className="font-semibold">{t('communityQuestion.yourAnswer')}</h3>
+                <h3 className="font-semibold">
+                  {isOwner
+                    ? t('communityQuestion.yourAnswerOwner')
+                    : t('communityQuestion.yourAnswer')}
+                </h3>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmitAnswer} className="space-y-4">
