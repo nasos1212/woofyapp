@@ -1,5 +1,8 @@
 # Roadmap
 
+## November 19 article photos in iPhone app
+- [x] Corrected cover and both inline images in English/Greek to absolute production HTTPS URLs. Verified the saved public article renders all three images from localhost; existing published status unchanged. Actual iPhone receipt awaits device check.
+
 ## November 19 cat-poo article
 - [x] Added supplied article as a Guide draft with natural English/Greek excerpts, SEO titles/descriptions, AKC/CDC sources, directory link and three generated illustrative images.
 - [x] Verified saved English/Greek text and SEO in the signed-in admin editor; cover and both inline images load. Remains a draft with no publication or article alerts, as requested.

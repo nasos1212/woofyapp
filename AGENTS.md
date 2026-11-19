@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Store dynamically saved blog cover and inline media as absolute HTTPS URLs on the production origin or public storage, because installed native clients cannot resolve website-relative hosted asset paths.
+
 
 - Serve public city directory businesses only through the fixed-column security-definer public_city_directory_businesses function (approved, not hidden, public contact fields only, never account email); offers stay behind sign-in, so guests and crawlers never read raw business rows. City service pages (/places/:city/:service) reuse that function and the shared directory BusinessCard; empty ones are noindex and left out of the sitemap.
 - Share App Store download links through AppStoreButton, hidden in native shells, so landing and footer placements keep one production destination and consistent styling.
