@@ -448,12 +448,6 @@ const Community = () => {
                       <span className="text-muted-foreground">{t('community.totalQuestions')}</span>
                       <span className="font-medium">{questions.length}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t('community.awaitingHelp')}</span>
-                      <span className="font-medium text-blue-600">
-                        {questions.filter(q => q.status === 'open').length}
-                      </span>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
