@@ -164,11 +164,12 @@ const BusinessCustomerBirthdays = () => {
       const membershipIds = [...new Set(redemptionsData?.map(r => r.membership_id) || [])];
       
       if (membershipIds.length > 0) {
-        // Get pets for these memberships
+        // Get covered pets for these memberships (paid plan slots only)
         const { data: petsData, error: petsError } = await supabase
           .from("pets")
           .select("id, pet_name, pet_breed, birthday, owner_user_id, membership_id")
-          .in("membership_id", membershipIds);
+          .in("membership_id", membershipIds)
+          .eq("is_covered", true);
 
         if (petsError) throw petsError;
 

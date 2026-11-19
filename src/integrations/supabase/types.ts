@@ -2117,9 +2117,11 @@ export type Database = {
           age_years: number | null
           birthday: string | null
           birthday_locked: boolean | null
+          covered_at: string | null
           created_at: string
           gender: string | null
           id: string
+          is_covered: boolean
           membership_id: string
           notes: string | null
           owner_user_id: string
@@ -2132,9 +2134,11 @@ export type Database = {
           age_years?: number | null
           birthday?: string | null
           birthday_locked?: boolean | null
+          covered_at?: string | null
           created_at?: string
           gender?: string | null
           id?: string
+          is_covered?: boolean
           membership_id: string
           notes?: string | null
           owner_user_id: string
@@ -2147,9 +2151,11 @@ export type Database = {
           age_years?: number | null
           birthday?: string | null
           birthday_locked?: boolean | null
+          covered_at?: string | null
           created_at?: string
           gender?: string | null
           id?: string
+          is_covered?: boolean
           membership_id?: string
           notes?: string | null
           owner_user_id?: string

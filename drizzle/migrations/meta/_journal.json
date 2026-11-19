@@ -176,6 +176,13 @@
       "when": 1794680430885,
       "tag": "0024_protect_paid_and_approval_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795123201164,
+      "tag": "0025_add_covered_pet_flags",
+      "breakpoints": true
     }
   ]
 }

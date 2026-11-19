@@ -120,13 +120,10 @@ const AddPet = () => {
 
         setCurrentPetCount(count || 0);
 
-        // Check if at max pets
-        if ((count || 0) >= membershipData.max_pets) {
-          if (membershipData.max_pets >= 5) {
-            toast.error(t("addPet.errors.maxFivePets"));
-          } else {
-            toast.error(t("addPet.errors.petLimit"));
-          }
+        // Everyone can keep up to 5 pet profiles; paid plans decide how many
+        // of them are covered for perks, not how many can be added.
+        if ((count || 0) >= 5) {
+          toast.error(t("addPet.errors.maxFivePets"));
           navigate("/member");
           return;
         }

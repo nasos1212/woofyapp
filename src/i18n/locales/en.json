@@ -2351,7 +2351,15 @@
       "empty": "No pets added yet",
       "anotherFriend": "Got another furry friend?",
       "upgradePrompt": "Upgrade your plan to add more pets!",
-      "upgrade": "Upgrade"
+      "upgrade": "Upgrade",
+      "covered": "Covered by your plan",
+      "manageCovered": "Covered pets",
+      "coveredDialogTitle": "Covered pets",
+      "coveredDialogDesc": "Your plan covers {{count}} pet(s). Covered pets receive birthday offers from partner businesses.",
+      "coveredLocked": "Locked until {{date}}",
+      "coveredLockHint": "A covered pet can be swapped 12 months after it was covered.",
+      "coverFull": "Your plan already covers {{count}} pet(s). Remove one first or upgrade your plan.",
+      "coverFailed": "Could not update covered pets. Please try again."
     },
     "nearby": {
       "title": "Nearby Offers",
@@ -2570,8 +2578,9 @@
       "cancel": "Cancel scheduled change",
       "canceling": "Canceling…"
     },
+    "prorateNote": "Upgrading mid-year? You only pay the prorated difference for the time remaining on your plan. Your renewal date stays the same.",
+    "coverageNote": "You have {{count}} pets. Whichever plan you choose, you pick which pets it covers from your dashboard.",
     "cta": {
-      "tooManyPets": "This plan covers fewer pets than you have ({{count}}). You can still choose it. Your pets stay as they are.",
       "current": "Your current plan",
       "scheduled": "Scheduled at renewal",
       "upgradeTo": "Upgrade to {{plan}}",

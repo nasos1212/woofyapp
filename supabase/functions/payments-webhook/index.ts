@@ -64,6 +64,47 @@ async function syncMembership(
 
   if (error) {
     console.error("Failed to sync membership for user", userId, error);
+    return;
+  }
+
+  await syncCoveredPets(userId, hasAccess ? mapping.max_pets : 0);
+}
+
+// Keeps each member's covered pets in line with their plan slots.
+// Already-covered pets keep their slots; free slots go to the oldest pets.
+async function syncCoveredPets(userId: string, slots: number) {
+  const supabase = getSupabase();
+  const { data: pets, error } = await supabase
+    .from("pets")
+    .select("id, is_covered, created_at")
+    .eq("owner_user_id", userId)
+    .order("created_at", { ascending: true });
+
+  if (error || !pets) {
+    console.error("Failed to fetch pets for coverage sync", userId, error);
+    return;
+  }
+
+  const covered = pets.filter((p) => p.is_covered);
+  const uncovered = pets.filter((p) => !p.is_covered);
+
+  const keep = covered.slice(0, slots);
+  const toUncover = covered.slice(slots);
+  const toCover = uncovered.slice(0, Math.max(0, slots - keep.length));
+
+  if (toUncover.length > 0) {
+    const { error: e } = await supabase
+      .from("pets")
+      .update({ is_covered: false, covered_at: null })
+      .in("id", toUncover.map((p) => p.id));
+    if (e) console.error("Failed to uncover pets", userId, e);
+  }
+  if (toCover.length > 0) {
+    const { error: e } = await supabase
+      .from("pets")
+      .update({ is_covered: true, covered_at: new Date().toISOString() })
+      .in("id", toCover.map((p) => p.id));
+    if (e) console.error("Failed to cover pets", userId, e);
   }
 }
 

@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check, History, Heart, Building2, BookOpen, ArrowRight, Dog, Cat } from "lucide-react";
+import { Gift, MapPin, Clock, QrCode, Shield, Bot, AlertTriangle, Syringe, PlusCircle, Sparkles, ChevronDown, Check, History, Heart, Building2, BookOpen, ArrowRight, Dog, Cat, BadgeCheck, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import {
   Carousel,
   CarouselContent,
@@ -49,6 +51,8 @@ interface Pet {
   pet_breed: string | null;
   pet_type: PetType;
   photo_url: string | null;
+  is_covered: boolean;
+  covered_at: string | null;
 }
 
 interface Membership {
@@ -112,6 +116,8 @@ const MemberDashboard = () => {
     return sessionStorage.getItem('wooffy_city_prompt_dismissed') === 'true';
   });
   const [hasMembership, setHasMembership] = useState<boolean | null>(null);
+  const [coveredDialogOpen, setCoveredDialogOpen] = useState(false);
+  const [coveredSaving, setCoveredSaving] = useState<string | null>(null);
   const [showAllServices, setShowAllServices] = useState(false);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [blogLoading, setBlogLoading] = useState(true);
@@ -212,7 +218,7 @@ const MemberDashboard = () => {
         // Fetch pets for this membership
         const { data: petsData } = await supabase
           .from("pets")
-          .select("id, pet_name, pet_breed, pet_type, photo_url")
+          .select("id, pet_name, pet_breed, pet_type, photo_url, is_covered, covered_at")
           .eq("membership_id", membershipData.id);
 
         if (petsData) {
@@ -390,6 +396,59 @@ const MemberDashboard = () => {
     ? Math.max(0, Math.ceil((new Date(membership.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : 0;
 
+  // Covered pets: paid plans cover a fixed number of pets for birthday offers
+  // and paid perks. A covered pet is locked in for 12 months.
+  const COVER_LOCK_MONTHS = 12;
+  const coveredSlots = membership?.max_pets ?? 0;
+  const coveredCount = pets.filter((p) => p.is_covered).length;
+
+  const coveredLockDate = (pet: Pet) => {
+    if (!pet.covered_at) return null;
+    const d = new Date(pet.covered_at);
+    d.setMonth(d.getMonth() + COVER_LOCK_MONTHS);
+    return d;
+  };
+
+  const isCoverLocked = (pet: Pet) => {
+    const lock = coveredLockDate(pet);
+    return !!lock && lock > new Date();
+  };
+
+  const toggleCovered = async (pet: Pet) => {
+    if (coveredSaving) return;
+    if (pet.is_covered) {
+      if (isCoverLocked(pet)) return;
+      setCoveredSaving(pet.id);
+      const { error } = await supabase
+        .from("pets")
+        .update({ is_covered: false, covered_at: null })
+        .eq("id", pet.id);
+      setCoveredSaving(null);
+      if (error) {
+        toast.error(t("memberDashboard.pets.coverFailed"));
+        return;
+      }
+      setPets((prev) => prev.map((p) => (p.id === pet.id ? { ...p, is_covered: false, covered_at: null } : p)));
+    } else {
+      if (coveredCount >= coveredSlots) {
+        toast.error(t("memberDashboard.pets.coverFull", { count: coveredSlots }));
+        return;
+      }
+      setCoveredSaving(pet.id);
+      const now = new Date().toISOString();
+      const { error } = await supabase
+        .from("pets")
+        .update({ is_covered: true, covered_at: now })
+        .eq("id", pet.id);
+      setCoveredSaving(null);
+      if (error) {
+        toast.error(t("memberDashboard.pets.coverFailed"));
+        return;
+      }
+      setPets((prev) => prev.map((p) => (p.id === pet.id ? { ...p, is_covered: true, covered_at: now } : p)));
+    }
+  };
+
   if (loading || accountTypeLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -555,16 +614,29 @@ const MemberDashboard = () => {
                     <h2 className="font-display text-lg md:text-xl font-bold text-wooffy-sky">
                       {t("memberDashboard.pets.title")}
                     </h2>
-                    {membership && pets.length < membership.max_pets && (
-                      <Button
-                        size="sm"
-                        onClick={() => navigate("/member/add-pet")}
-                        className="gap-1"
-                      >
-                        <PlusCircle className="w-4 h-4" />
-                        {t("memberDashboard.pets.addPet")}
-                      </Button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {PAID_MEMBERSHIP_ENABLED && membership && membership.plan_type !== "free" && pets.length > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setCoveredDialogOpen(true)}
+                          className="gap-1 border-wooffy-blue/40 text-wooffy-sky hover:bg-wooffy-blue/10"
+                        >
+                          <BadgeCheck className="w-4 h-4" />
+                          {t("memberDashboard.pets.manageCovered")}
+                        </Button>
+                      )}
+                      {membership && pets.length < 5 && (
+                        <Button
+                          size="sm"
+                          onClick={() => navigate("/member/add-pet")}
+                          className="gap-1"
+                        >
+                          <PlusCircle className="w-4 h-4" />
+                          {t("memberDashboard.pets.addPet")}
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
                   {pets.length === 0 ? (
@@ -600,7 +672,12 @@ const MemberDashboard = () => {
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-wooffy-sky truncate">{pet.pet_name}</h3>
+                            <div className="flex items-center gap-1.5">
+                              <h3 className="font-semibold text-wooffy-sky truncate">{pet.pet_name}</h3>
+                              {pet.is_covered && (
+                                <BadgeCheck className="w-4 h-4 text-wooffy-sky shrink-0" aria-label={t("memberDashboard.pets.covered")} />
+                              )}
+                            </div>
                             <p className="text-sm text-wooffy-light/70 truncate">
                               {pet.pet_breed || t("memberDashboard.pets.mixedBreed")}
                             </p>
@@ -611,8 +688,8 @@ const MemberDashboard = () => {
                     </div>
                   )}
 
-                  {/* Upgrade prompt when at max pets but not on highest plan */}
-                  {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= membership.max_pets && membership.plan_type !== "family" && (
+                  {/* Upgrade prompt when at the 5-pet profile limit but not on highest plan */}
+                  {PAID_MEMBERSHIP_ENABLED && membership && pets.length >= 5 && membership.plan_type !== "family" && (
                     <div className="mt-5 p-4 bg-wooffy-blue/10 rounded-xl border border-wooffy-blue/20">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-wooffy-blue/20 rounded-full flex items-center justify-center shrink-0">
@@ -630,6 +707,62 @@ const MemberDashboard = () => {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Covered pets chooser */}
+              <Dialog open={coveredDialogOpen} onOpenChange={setCoveredDialogOpen}>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>{t("memberDashboard.pets.coveredDialogTitle")}</DialogTitle>
+                  </DialogHeader>
+                  <p className="text-sm text-muted-foreground">
+                    {t("memberDashboard.pets.coveredDialogDesc", { count: coveredSlots })}
+                  </p>
+                  <div className="space-y-2 mt-2">
+                    {pets.map((pet) => {
+                      const locked = pet.is_covered && isCoverLocked(pet);
+                      const lockDate = coveredLockDate(pet);
+                      const full = !pet.is_covered && coveredCount >= coveredSlots;
+                      return (
+                        <button
+                          key={pet.id}
+                          onClick={() => toggleCovered(pet)}
+                          disabled={locked || full || coveredSaving === pet.id}
+                          className={`w-full flex items-center gap-3 rounded-xl border p-3 text-left transition-colors ${
+                            pet.is_covered
+                              ? "border-primary/40 bg-primary/5"
+                              : "border-border hover:border-primary/30"
+                          } ${(locked || full) ? "opacity-60 cursor-not-allowed" : ""}`}
+                        >
+                          {pet.photo_url ? (
+                            <img src={pet.photo_url} alt={pet.pet_name} className="w-10 h-10 rounded-full object-cover" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                              {pet.pet_type === "cat" ? <Cat className="w-5 h-5 text-primary" /> : <Dog className="w-5 h-5 text-primary" />}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-foreground truncate">{pet.pet_name}</p>
+                            {locked && lockDate && (
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                <Lock className="w-3 h-3" />
+                                {t("memberDashboard.pets.coveredLocked", { date: formatDate(lockDate) })}
+                              </p>
+                            )}
+                          </div>
+                          {pet.is_covered ? (
+                            <BadgeCheck className="w-5 h-5 text-primary shrink-0" />
+                          ) : (
+                            <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30 shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {t("memberDashboard.pets.coveredLockHint")}
+                  </p>
+                </DialogContent>
+              </Dialog>
 
 
               {/* Nearby Offers */}

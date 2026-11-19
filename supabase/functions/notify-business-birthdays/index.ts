@@ -106,12 +106,14 @@ serve(async (req) => {
         continue;
       }
 
-      // Get pets for these memberships with birthdays
+      // Get covered pets for these memberships with birthdays
+      // (only pets holding a paid plan slot are eligible for birthday offers)
       const petsData = await fetchAll(
         supabase
           .from('pets')
           .select('id, pet_name, pet_breed, birthday, owner_user_id')
           .in('membership_id', membershipIds)
+          .eq('is_covered', true)
           .not('birthday', 'is', null)
       );
       const petsError = null;

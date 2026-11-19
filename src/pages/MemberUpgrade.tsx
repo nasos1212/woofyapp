@@ -511,7 +511,6 @@ const MemberUpgrade = () => {
                         : -1;
                       const thisIdx = PLANS.findIndex((p) => p.priceId === plan.priceId);
                       const isPending = !!pendingChange && pendingChange.priceId === plan.priceId;
-                      const tooManyPets = !isCurrent && petCount > (PLAN_MAX_PETS[plan.priceId] ?? 5);
                       const blocked = !!pendingChange && !isCurrent && !isPending;
                       const label = isCurrent
                         ? t("memberUpgrade.cta.current")
@@ -532,11 +531,6 @@ const MemberUpgrade = () => {
                         >
                           {label}
                         </Button>
-                        {tooManyPets && (
-                          <p className="mt-2 text-xs text-center text-muted-foreground">
-                            {t("memberUpgrade.cta.tooManyPets", { count: petCount })}
-                          </p>
-                        )}
                         </>
                       );
                     })()}
@@ -546,6 +540,17 @@ const MemberUpgrade = () => {
               );
             })}
           </div>
+
+          {isPaidMember && (
+            <p className="max-w-2xl mx-auto -mt-4 mb-8 text-center text-sm text-muted-foreground">
+              {t("memberUpgrade.prorateNote")}
+            </p>
+          )}
+          {!isPaidMember && petCount > 1 && (
+            <p className="max-w-2xl mx-auto -mt-4 mb-8 text-center text-sm text-muted-foreground">
+              {t("memberUpgrade.coverageNote", { count: petCount })}
+            </p>
+          )}
 
           <div className="max-w-2xl mx-auto bg-card rounded-2xl p-6 shadow-card border border-border">
             <h3 className="font-display font-semibold text-lg text-center mb-4">{t("memberUpgrade.benefitsHeading")}</h3>
