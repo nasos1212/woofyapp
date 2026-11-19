@@ -1,5 +1,9 @@
 # Roadmap
 
+## November 19 pre-payment pet choice
+- [x] Choose covered pets before checkout or plan-change payment, explain benefits in English and Greek, validate ownership and carry the choice in payment metadata for paid coverage.
+- [x] Verified signed-in phone and desktop selection and a real checkout session with the chosen pet, without submitting payment or changing accounts. Selection and webhook resolution tests pass; an actual paid transaction was not performed.
+
 ## November 19 question author reply prompt
 - [x] Question authors with no replies now see "We will notify you as soon as someone replies to your question." and an "Add a reply or update" reply box; other members still see "Be the first to help with this question!" and "Your Answer". English and Greek author and visitor views checked signed in; temporary test question removed.
 

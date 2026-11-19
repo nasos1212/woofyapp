@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { loadCoverageSelection, coverageMetadata } from "../_shared/petCoverage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -206,6 +207,9 @@ Deno.serve(async (req) => {
     const currentUnitAmount = (currentItem.price.unit_amount ?? 0) as number;
     const newUnitAmount = (newPrice.unit_amount ?? 0) as number;
     const isUpgrade = newUnitAmount > currentUnitAmount;
+    const selectedPets = mode === "confirm"
+      ? await loadCoverageSelection(supabase, user.id, body.coveredPetIds, newPriceLookupKey, isUpgrade)
+      : [];
 
     if (mode === "preview") {
       let amountDueNow: number | null = null;
@@ -276,6 +280,7 @@ Deno.serve(async (req) => {
           metadata: {
             ...((subscription as any).metadata || {}),
             userId: user.id,
+            ...coverageMetadata(selectedPets, newPriceLookupKey),
           },
         },
       );
@@ -321,6 +326,7 @@ Deno.serve(async (req) => {
         },
         {
           items: [{ price: newPrice.id, quantity: 1 }],
+          metadata: { userId: user.id, ...coverageMetadata(selectedPets, newPriceLookupKey) },
         },
       ],
       metadata: {

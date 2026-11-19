@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Crown, Star, Check } from "lucide-react";
+import { ArrowLeft, Crown, Star, Check, PawPrint, Lock } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { COVERAGE_SLOTS, validateCoverageSelection } from "../../supabase/functions/_shared/petCoverage";
 import { Button } from "@/components/ui/button";
 import soloPawImg from "@/assets/plan-solo-paw.jpg";
 import duoImg from "@/assets/plan-dynamic-duo.jpg";
@@ -71,10 +73,19 @@ const MemberUpgrade = () => {
   const [cancelPendingLoading, setCancelPendingLoading] = useState(false);
 
   const [petCount, setPetCount] = useState(0);
+  const [coveragePets, setCoveragePets] = useState<Array<{ id: string; pet_name: string; photo_url: string | null; is_covered: boolean; covered_at: string | null }>>([]);
+  const [petsLoading, setPetsLoading] = useState(true);
+  const [coveragePlan, setCoveragePlan] = useState<typeof PLANS[number] | null>(null);
+  const [selectedPetIds, setSelectedPetIds] = useState<string[]>([]);
   useEffect(() => {
     if (!user) return;
-    supabase.from("pets").select("id", { count: "exact", head: true }).eq("owner_user_id", user.id)
-      .then(({ count }) => setPetCount(count ?? 0));
+    supabase.from("pets").select("id, pet_name, photo_url, is_covered, covered_at").eq("owner_user_id", user.id).order("created_at")
+      .then(({ data, error }) => {
+        if (error) toast.error(t("memberUpgrade.petChoice.loadError"));
+        setCoveragePets(data ?? []);
+        setPetCount(data?.length ?? 0);
+        setPetsLoading(false);
+      });
   }, [user]);
 
   const currentPriceId = membership ? PLAN_TYPE_TO_PRICE_ID[membership.plan_type] : undefined;
@@ -191,7 +202,7 @@ const MemberUpgrade = () => {
     );
   }
 
-  const handleSelect = async (priceId: string) => {
+  const handleSelect = async (priceId: string, coveredPetIds: string[]) => {
     if (!isPaymentsConfigured()) {
       toast.error("Payments are not yet configured for this environment.");
       return;
@@ -214,6 +225,7 @@ const MemberUpgrade = () => {
         const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
           body: {
             priceId,
+            coveredPetIds,
             mode: "preview",
             environment: getStripeEnvironment(),
           },
@@ -226,6 +238,7 @@ const MemberUpgrade = () => {
           setPreviewLoading(false);
           openCheckout({
             priceId,
+            coveredPetIds,
             customerEmail: user.email || undefined,
             userId: user.id,
             returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
@@ -251,6 +264,7 @@ const MemberUpgrade = () => {
     // New subscriber → fresh checkout
     openCheckout({
       priceId,
+      coveredPetIds,
       customerEmail: user.email || undefined,
       userId: user.id,
       returnUrl: `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
@@ -281,6 +295,7 @@ const MemberUpgrade = () => {
       const { data, error } = await supabase.functions.invoke("change-subscription-plan", {
         body: {
           priceId: changePlan.priceId,
+          coveredPetIds: selectedPetIds,
           mode: "confirm",
           environment: getStripeEnvironment(),
         },
@@ -526,8 +541,11 @@ const MemberUpgrade = () => {
                         <Button
                           variant={plan.popular ? "hero" : "outline"}
                           className="w-full"
-                          onClick={() => handleSelect(plan.priceId)}
-                          disabled={isCurrent || isPending || blocked}
+                          onClick={() => {
+                            setSelectedPetIds(isPaidMember ? coveragePets.filter(p => p.is_covered).slice(0, COVERAGE_SLOTS[plan.priceId]).map(p => p.id) : []);
+                            setCoveragePlan(plan);
+                          }}
+                          disabled={isCurrent || isPending || blocked || petsLoading}
                         >
                           {label}
                         </Button>
@@ -564,6 +582,52 @@ const MemberUpgrade = () => {
             </div>
           </div>
         </main>
+
+        <Dialog open={!!coveragePlan} onOpenChange={(open) => !open && setCoveragePlan(null)}>
+          <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{t("memberUpgrade.petChoice.title", { plan: coveragePlan?.name })}</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground leading-relaxed">{t("memberUpgrade.petChoice.explanation")}</p>
+            {coveragePets.length === 0 ? (
+              <>
+                <p className="text-sm text-foreground">{t("memberUpgrade.petChoice.noPets")}</p>
+                <Button onClick={() => navigate("/member/add-pet")}>{t("memberDashboard.pets.addPet")}</Button>
+              </>
+            ) : (
+              <>
+                <p className="text-sm font-medium">{t("memberUpgrade.petChoice.count", { selected: selectedPetIds.length, count: Math.min(coveragePlan ? COVERAGE_SLOTS[coveragePlan.priceId] : 0, petCount) })}</p>
+                <div className="space-y-2">
+                  {coveragePets.map(pet => {
+                    const selected = selectedPetIds.includes(pet.id);
+                    const until = pet.covered_at ? new Date(pet.covered_at) : null;
+                    if (until) until.setUTCFullYear(until.getUTCFullYear() + 1);
+                    const preserving = isPaidMember && !!coveragePlan && COVERAGE_SLOTS[coveragePlan.priceId] >= (currentPriceId ? COVERAGE_SLOTS[currentPriceId] : 0);
+                    const locked = preserving && pet.is_covered && !!until && until > new Date();
+                    return (
+                      <label key={pet.id} className={`flex items-center gap-3 p-3 rounded-lg border ${selected ? "border-primary bg-primary/5" : "border-border"}`}>
+                        {pet.photo_url ? <img src={pet.photo_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0" /> : <PawPrint className="w-10 h-10 p-2 text-primary bg-muted rounded-full shrink-0" />}
+                        <span className="flex-1 min-w-0 text-sm font-medium break-words">{pet.pet_name}{locked && <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground"><Lock className="w-3 h-3" />{t("memberUpgrade.petChoice.alreadyCovered")}</span>}</span>
+                        <Checkbox aria-label={pet.pet_name} checked={selected} disabled={locked || (!selected && selectedPetIds.length >= (coveragePlan ? COVERAGE_SLOTS[coveragePlan.priceId] : 0))} onCheckedChange={() => setSelectedPetIds(ids => selected ? ids.filter(id => id !== pet.id) : [...ids, pet.id])} />
+                      </label>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground">{t("memberUpgrade.petChoice.lockNote")}</p>
+                <Button className="w-full" disabled={selectedPetIds.length !== Math.min(coveragePlan ? COVERAGE_SLOTS[coveragePlan.priceId] : 0, petCount)} onClick={() => {
+                  if (!coveragePlan) return;
+                  try {
+                    const preserving = isPaidMember && COVERAGE_SLOTS[coveragePlan.priceId] >= (currentPriceId ? COVERAGE_SLOTS[currentPriceId] : 0);
+                    validateCoverageSelection(coveragePets, selectedPetIds, coveragePlan.priceId, preserving);
+                    const priceId = coveragePlan.priceId;
+                    setCoveragePlan(null);
+                    void handleSelect(priceId, selectedPetIds);
+                  } catch (error) { toast.error(error instanceof Error ? error.message : t("memberUpgrade.petChoice.loadError")); }
+                }}>{t("memberUpgrade.petChoice.continue")}</Button>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={isOpen} onOpenChange={(open) => !open && closeCheckout()}>
           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">

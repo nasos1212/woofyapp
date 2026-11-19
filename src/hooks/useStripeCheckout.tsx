@@ -3,6 +3,7 @@ import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
 
 interface CheckoutOptions {
   priceId: string;
+  coveredPetIds?: string[];
   quantity?: number;
   customerEmail?: string;
   userId?: string;

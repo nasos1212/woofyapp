@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, verifyWebhook } from "../_shared/stripe.ts";
+import { resolveCoveredPetIds } from "../_shared/petCoverage.ts";
 
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
@@ -32,6 +33,7 @@ async function syncMembership(
   status: string,
   periodEnd: string | null,
   cancelAtPeriodEnd: boolean,
+  metadata?: Record<string, string>,
 ) {
   if (!priceId) return;
   const mapping = PRICE_TO_PLAN[priceId];
@@ -67,16 +69,16 @@ async function syncMembership(
     return;
   }
 
-  await syncCoveredPets(userId, hasAccess ? mapping.max_pets : 0);
+  await syncCoveredPets(userId, hasAccess ? mapping.max_pets : 0, metadata, priceId);
 }
 
 // Keeps each member's covered pets in line with their plan slots.
 // Already-covered pets keep their slots; free slots go to the oldest pets.
-async function syncCoveredPets(userId: string, slots: number) {
+async function syncCoveredPets(userId: string, slots: number, metadata?: Record<string, string>, priceId?: string) {
   const supabase = getSupabase();
   const { data: pets, error } = await supabase
     .from("pets")
-    .select("id, is_covered, created_at")
+    .select("id, is_covered, covered_at, created_at")
     .eq("owner_user_id", userId)
     .order("created_at", { ascending: true });
 
@@ -85,12 +87,9 @@ async function syncCoveredPets(userId: string, slots: number) {
     return;
   }
 
-  const covered = pets.filter((p) => p.is_covered);
-  const uncovered = pets.filter((p) => !p.is_covered);
-
-  const keep = covered.slice(0, slots);
-  const toUncover = covered.slice(slots);
-  const toCover = uncovered.slice(0, Math.max(0, slots - keep.length));
+  const selected = resolveCoveredPetIds(pets, slots, metadata, priceId);
+  const toUncover = pets.filter(p => p.is_covered && !selected.includes(p.id));
+  const toCover = pets.filter(p => !p.is_covered && selected.includes(p.id));
 
   if (toUncover.length > 0) {
     const { error: e } = await supabase
@@ -152,6 +151,7 @@ async function upsertSubscription(subscription: any, env: StripeEnv) {
     subscription.status,
     periodEndIso,
     subscription.cancel_at_period_end || false,
+    subscription.metadata,
   );
 }
 

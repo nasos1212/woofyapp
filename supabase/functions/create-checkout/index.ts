@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { type StripeEnv, createStripeClient } from "../_shared/stripe.ts";
+import { loadCoverageSelection, coverageMetadata } from "../_shared/petCoverage.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -35,6 +36,7 @@ async function createCheckoutSession(options: {
   userId?: string;
   returnUrl: string;
   environment: StripeEnv;
+  coveredPetIds: string[];
 }) {
   if (!/^[a-zA-Z0-9_-]+$/.test(options.priceId)) throw new Error("Invalid priceId");
   const stripe = createStripeClient(options.environment);
@@ -74,7 +76,7 @@ async function createCheckoutSession(options: {
     ...(options.userId && {
       metadata: { userId: options.userId },
       ...(isRecurring && {
-        subscription_data: { metadata: { userId: options.userId } },
+        subscription_data: { metadata: { userId: options.userId, ...coverageMetadata(options.coveredPetIds, options.priceId) } },
       }),
     }),
   } as any);
@@ -92,7 +94,10 @@ Deno.serve(async (req) => {
   try {
     const authHeader = req.headers.get("Authorization") ?? "";
     const token = authHeader.replace(/^Bearer\s+/i, "");
-    const sb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const backendUrl = Deno.env.get("SUPABASE_URL");
+    const backendKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!backendUrl || !backendKey) throw new Error("Payments are unavailable. Please try again later.");
+    const sb = createClient(backendUrl, backendKey, { global: { headers: { Authorization: authHeader } } });
     const { data: authData } = token ? await sb.auth.getUser(token) : { data: { user: null } };
     const authUser = authData?.user;
     if (!authUser) {
@@ -103,7 +108,9 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const environment: StripeEnv =
       body.environment === "live" ? "live" : "sandbox";
+    const coveredPetIds = await loadCoverageSelection(sb, authUser.id, body.coveredPetIds, body.priceId, true);
     const clientSecret = await createCheckoutSession({
+      coveredPetIds,
       priceId: body.priceId,
       quantity: 1,
       customerEmail: authUser.email ?? undefined,

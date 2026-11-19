@@ -2579,7 +2579,17 @@
       "canceling": "Canceling…"
     },
     "prorateNote": "Upgrading mid-year? You only pay the prorated difference for the time remaining on your plan. Your renewal date stays the same.",
-    "coverageNote": "You have {{count}} pets. Whichever plan you choose, you pick which pets it covers from your dashboard.",
+    "coverageNote": "You have {{count}} pets. Choose which pets your plan covers before payment.",
+    "petChoice": {
+      "title": "Choose pets for {{plan}}",
+      "explanation": "Choose which pets receive birthday offers with this plan. Partner discounts and Wooffy AI remain available for your whole account. Your other pets keep their profiles.",
+      "count": "Selected {{selected}} of {{count}}",
+      "lockNote": "Each chosen pet stays covered for 12 months before you can swap it. Coverage starts only after successful payment, or at renewal for a scheduled plan change.",
+      "alreadyCovered": "Already covered",
+      "continue": "Continue",
+      "noPets": "Add a pet first so you can choose who your plan covers.",
+      "loadError": "We could not load your pets. Please refresh and try again."
+    },
     "cta": {
       "current": "Your current plan",
       "scheduled": "Scheduled at renewal",

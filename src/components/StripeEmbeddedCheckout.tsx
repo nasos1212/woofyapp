@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface StripeEmbeddedCheckoutProps {
   priceId: string;
+  coveredPetIds?: string[];
   quantity?: number;
   customerEmail?: string;
   userId?: string;
@@ -15,6 +16,7 @@ interface StripeEmbeddedCheckoutProps {
 
 export function StripeEmbeddedCheckout({
   priceId,
+  coveredPetIds,
   quantity,
   customerEmail,
   userId,
@@ -24,6 +26,7 @@ export function StripeEmbeddedCheckout({
     const { data, error } = await supabase.functions.invoke("create-checkout", {
       body: {
         priceId,
+        coveredPetIds,
         quantity,
         customerEmail,
         userId,

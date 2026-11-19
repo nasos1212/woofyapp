@@ -1,5 +1,7 @@
 # Architecture Rules
 
+- Validate pre-payment pet selections server-side and carry them in plan-specific Stripe subscription metadata; payment webhooks apply chosen coverage only after paid access and preserve later dashboard swaps.
+
 - Store dynamically saved blog cover and inline media as absolute HTTPS URLs on the production origin or public storage, because installed native clients cannot resolve website-relative hosted asset paths.
 
 
