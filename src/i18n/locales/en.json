@@ -654,7 +654,6 @@
     "reportPet": "Report Pet",
     "filters": {
       "allCities": "All Cities",
-      "allBreeds": "All Breeds",
       "clear": "Clear filters"
     },
     "tabs": {

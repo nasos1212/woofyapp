@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Filter, Pencil } from "lucide-react";
+import { AlertTriangle, MapPin, Clock, Phone, Mail, Plus, Search, CheckCircle2, Bell, BellOff, ArrowLeft, Upload, X, Calendar, Dog, Cat, HelpCircle, Heart, Eye, ChevronUp, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -84,7 +84,6 @@ const LostFoundAlerts = () => {
   const [myPets, setMyPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterCity, setFilterCity] = useState<string>("all");
-  const [filterBreed, setFilterBreed] = useState<string>("all");
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [editingAlert, setEditingAlert] = useState<LostFoundAlert | null>(null);
@@ -449,9 +448,6 @@ const LostFoundAlerts = () => {
 
   const canSeeContactInfo = user && notificationPrefs?.enabled && (notificationPrefs?.cities?.length || 0) > 0;
 
-  // Extract unique breeds from alerts for filter
-  const uniqueBreeds = [...new Set(alerts.map(a => a.pet_breed).filter(Boolean) as string[])].sort();
-
   // Known city names for filter
   const cityNames = cyprusCitiesWithCoords.map(c => c.name);
 
@@ -460,11 +456,7 @@ const LostFoundAlerts = () => {
       filterCity === "all" ||
       alert.last_seen_location.toLowerCase().includes(filterCity.toLowerCase());
 
-    const matchesBreed =
-      filterBreed === "all" ||
-      alert.pet_breed?.toLowerCase() === filterBreed.toLowerCase();
-
-    return matchesCity && matchesBreed;
+    return matchesCity;
   });
 
   const lostAlerts = filteredAlerts.filter((a) => a.alert_type === "lost" && a.status === "active");
@@ -1083,26 +1075,11 @@ const LostFoundAlerts = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={filterBreed} onValueChange={setFilterBreed}>
-                <SelectTrigger className="w-[180px]">
-                  <div className="flex items-center gap-2">
-                    <Filter className="w-4 h-4 text-muted-foreground" />
-                    <SelectValue placeholder={t("lostFound.filters.allBreeds")} />
-                  </div>
-                </SelectTrigger>
-                <SelectContent position="popper" className="max-h-[40vh]">
-                  <SelectItem value="all">{t("lostFound.filters.allBreeds")}</SelectItem>
-                  {uniqueBreeds.map((breed) => (
-                    <SelectItem key={breed} value={breed}>{breed}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {(filterCity !== "all" || filterBreed !== "all") && (
+              {filterCity !== "all" && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => { setFilterCity("all"); setFilterBreed("all"); }}
+                  onClick={() => { setFilterCity("all"); }}
                   className="text-muted-foreground"
                 >
                   <X className="w-4 h-4 mr-1" />
