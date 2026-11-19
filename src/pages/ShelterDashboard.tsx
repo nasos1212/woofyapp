@@ -50,6 +50,14 @@ const ShelterDashboard = () => {
     const tab = searchParams.get("tab");
     return tab && ["basic", "about", "social", "branding", "adoptable-pets", "inquiries"].includes(tab) ? tab : "basic";
   });
+  // React to tab param changes after mount (e.g. tapping an adoption inquiry
+  // notification while the dashboard is already open does not remount).
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && ["basic", "about", "social", "branding", "adoptable-pets", "inquiries"].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
   const tabsScrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
